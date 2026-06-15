@@ -1,0 +1,31 @@
+# Dependencies
+node_modules
+.pnpm-store
+
+# Build / cache
+.turbo
+.next
+out
+dist
+build
+
+# Storybook: copied into web for production; intermediate build stays unignored for Turbo cache
+apps/web/public/design-system
+storybook-static
+
+# Debug / env
+.env*.local
+npm-debug.log*
+pnpm-debug.log*
+.DS_Store
+
+# IDE
+.idea
+.vscode/*
+!.vscode/extensions.json
+
+# TypeScript
+*.tsbuildinfo
+
+# Vercel
+.vercel

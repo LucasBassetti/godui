@@ -1,0 +1,137 @@
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    --background: #121212;
+    --foreground: #eeeeee;
+    --card: #181818;
+    --card-foreground: #eeeeee;
+    --popover: #181818;
+    --popover-foreground: #eeeeee;
+    --primary: #fcdfc2;
+    --primary-foreground: #0a191a;
+    --secondary: #3a3128;
+    --secondary-foreground: #fcdfc2;
+    --muted: #222222;
+    --muted-foreground: #b4b4b4;
+    --accent: #2b2b2b;
+    --accent-foreground: #eeeeee;
+    --destructive: #e55032;
+    --border: #211f1a;
+    --input: #484848;
+    --ring: #fcdfc2;
+    --chart-1: #fcdfc2;
+    --chart-2: #3a3128;
+    --chart-3: #2b2b2b;
+    --chart-4: #423930;
+    --chart-5: #fcdfc2;
+    --sidebar: #18181d;
+    --sidebar-foreground: #f5f5f5;
+    --sidebar-primary: #1d4eda;
+    --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: #26262b;
+    --sidebar-accent-foreground: #f5f5f5;
+    --sidebar-border: #26262b;
+    --sidebar-ring: #d3d3db;
+
+    --syntax-plain: #e5e5e5;
+    --syntax-punctuation: #94a3b8;
+    --syntax-keyword: #c792ea;
+    --syntax-property: #ffa657;
+    --syntax-string: #86efac;
+    --syntax-comment: #6b7280;
+    --syntax-number: #7dd3fc;
+
+    --shadow-2xs: 0 1px 3px 0px rgb(0 0 0 / 0.05);
+    --shadow-xs: 0 1px 3px 0px rgb(0 0 0 / 0.05);
+    --shadow-sm:
+      0 1px 3px 0px rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --shadow: 0 1px 3px 0px rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --shadow-md:
+      0 1px 3px 0px rgb(0 0 0 / 0.1), 0 2px 4px -1px rgb(0 0 0 / 0.1);
+    --shadow-lg:
+      0 1px 3px 0px rgb(0 0 0 / 0.1), 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    --shadow-xl:
+      0 1px 3px 0px rgb(0 0 0 / 0.1), 0 8px 10px -1px rgb(0 0 0 / 0.1);
+    --shadow-2xl: 0 1px 3px 0px rgb(0 0 0 / 0.25);
+
+    --color-bg: var(--background);
+    --color-fg: var(--foreground);
+    --color-muted: var(--muted-foreground);
+    --color-border: var(--border);
+    --color-primary: var(--primary);
+    --color-primary-fg: var(--primary-foreground);
+    --color-secondary-bg: var(--secondary);
+    --color-secondary-fg: var(--secondary-foreground);
+    --color-destructive: var(--destructive);
+    --color-destructive-fg: #ffffff;
+    --glow-highlight: 0, 0, 0;
+    --color-primary-rgb: 252, 223, 194;
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-lg: var(--radius);
+  }
+}
+
+.dark {
+  --background: #121212;
+  --foreground: #eeeeee;
+  --card: #181818;
+  --card-foreground: #eeeeee;
+  --popover: #181818;
+  --popover-foreground: #eeeeee;
+  --primary: #fcdfc2;
+  --primary-foreground: #0a191a;
+  --secondary: #3a3128;
+  --secondary-foreground: #fcdfc2;
+  --muted: #222222;
+  --muted-foreground: #b4b4b4;
+  --accent: #2b2b2b;
+  --accent-foreground: #eeeeee;
+  --destructive: #e55032;
+  --border: #211f1a;
+  --input: #484848;
+  --ring: #fcdfc2;
+  --chart-1: #fcdfc2;
+  --chart-2: #3a3128;
+  --chart-3: #2b2b2b;
+  --chart-4: #423930;
+  --chart-5: #fcdfc2;
+  --sidebar: #18181d;
+  --sidebar-foreground: #f5f5f5;
+  --sidebar-primary: #1d4eda;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #26262b;
+  --sidebar-accent-foreground: #f5f5f5;
+  --sidebar-border: #26262b;
+  --sidebar-ring: #d3d3db;
+
+  --syntax-plain: #e5e5e5;
+  --syntax-punctuation: #94a3b8;
+  --syntax-keyword: #c792ea;
+  --syntax-property: #ffa657;
+  --syntax-string: #86efac;
+  --syntax-comment: #6b7280;
+  --syntax-number: #7dd3fc;
+
+  --shadow-2xs: 0 1px 3px 0px rgb(0 0 0 / 0.05);
+  --shadow-xs: 0 1px 3px 0px rgb(0 0 0 / 0.05);
+  --shadow-sm: 0 1px 3px 0px rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow: 0 1px 3px 0px rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 1px 3px 0px rgb(0 0 0 / 0.1), 0 2px 4px -1px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 1px 3px 0px rgb(0 0 0 / 0.1), 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 1px 3px 0px rgb(0 0 0 / 0.1), 0 8px 10px -1px rgb(0 0 0 / 0.1);
+  --shadow-2xl: 0 1px 3px 0px rgb(0 0 0 / 0.25);
+
+  --color-bg: var(--background);
+  --color-fg: var(--foreground);
+  --color-muted: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-fg: var(--primary-foreground);
+  --color-secondary-bg: var(--secondary);
+  --color-secondary-fg: var(--secondary-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-fg: #ffffff;
+  --glow-highlight: 0, 0, 0;
+  --color-primary-rgb: 252, 223, 194;
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+}
