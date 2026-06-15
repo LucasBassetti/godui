@@ -1,0 +1,46 @@
+---
+title: Magic Button
+description: A pushable 3D button with rainbow edge animation and solid front face.
+---
+
+import { MagicButton } from "@godui/components";
+
+<ComponentPreview
+  code={`import { MagicButton } from "@godui/components";
+
+export function MagicButtonDemo() {
+  return (
+    <div className="flex flex-wrap items-center justify-center gap-6">
+      <MagicButton variant="default">Push me</MagicButton>
+      <MagicButton variant="secondary">Push me</MagicButton>
+    </div>
+  );
+}`}
+>
+  <div className="flex flex-wrap items-center justify-center gap-6">
+    <MagicButton variant="default">Push me</MagicButton>
+    <MagicButton variant="secondary">Push me</MagicButton>
+  </div>
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="MagicButton" />
+
+## Usage
+
+```tsx
+import { MagicButton } from "@godui/components";
+```
+
+```tsx
+<MagicButton variant="default">Push me</MagicButton>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `variant` | `"default" \| "secondary"` | `"default"` | Front face color scheme |
+| `size` | `"sm" \| "default" \| "lg"` | `"default"` | Button padding and text size |
+| `rainbow` | `boolean` | `true` | Animate the 3D edge and shadow with a rainbow gradient |

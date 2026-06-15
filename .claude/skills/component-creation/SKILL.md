@@ -5,87 +5,39 @@ description: "Use when creating a new component for the design system. Covers fi
 
 # Creating a New Component
 
-This skill documents the full process for adding a new component to the `@godui` design system monorepo.
+This skill documents the full process for adding a new component to the `@godui/components` design system monorepo.
 
 ## 1. Package Structure
 
-Create `packages/{name}/` with the following files:
+All components live in the shared package at `packages/components/`:
 
 ```
-packages/{name}/
-  package.json
-  tsconfig.json
+packages/components/
+  package.json          # @godui/components
+  styles.css            # theme tokens + @source "./src" + @layer components
   src/
-    index.ts
-    {name}.tsx
-```
-
-### package.json
-
-```json
-{
-  "name": "@godui/{name}",
-  "version": "0.0.0",
-  "private": true,
-  "sideEffects": false,
-  "exports": {
-    ".": {
-      "types": "./src/index.ts",
-      "default": "./src/index.ts"
-    }
-  },
-  "scripts": {
-    "build": "echo 'skip'",
-    "lint": "tsc -p tsconfig.json --noEmit"
-  },
-  "peerDependencies": {
-    "react": "^18 || ^19"
-  },
-  "devDependencies": {
-    "@types/react": "^19.2.14",
-    "typescript": "^5.9.3"
-  }
-}
-```
-
-Add workspace dependencies only if actually needed (e.g. a shared `@godui/hooks` or `@godui/primitives` package, once one exists).
-
-### tsconfig.json
-
-```json
-{
-  "extends": "../../tsconfig.json",
-  "compilerOptions": {
-    "outDir": "./dist"
-  },
-  "include": ["src"]
-}
-```
-
-### src/index.ts
-
-Named exports only — export the component, its props type, and any sub-components:
-
-```typescript
-export { MyComponent, type MyComponentProps } from "./my-component";
+    index.ts            # re-exports all components
+    shimmer-button.tsx
+    magic-button.tsx
 ```
 
 ### src/{name}.tsx
 
 ```typescript
-"use client";  // ONLY if the component uses hooks (useState, useEffect, useRef, etc.)
-
 import * as React from "react";
 
+export type MyComponentVariant = "primary" | "secondary";
 export type MyComponentProps = React.HTMLAttributes<HTMLDivElement> & {
-  variant?: "default" | "secondary";
-  // Add component-specific props here
+  variant?: MyComponentVariant;
+};
+
+const variantClasses: Record<MyComponentVariant, string> = {
+  primary: "bg-primary text-primary-foreground",
+  secondary: "bg-secondary text-secondary-foreground",
 };
 
 const MyComponent = React.forwardRef<HTMLDivElement, MyComponentProps>(
-  ({ className, variant = "default", ...props }, ref) => {
-    // Component logic here
-
+  ({ className, variant = "primary", ...props }, ref) => {
     return (
       <div
         ref={ref}
@@ -93,120 +45,160 @@ const MyComponent = React.forwardRef<HTMLDivElement, MyComponentProps>(
         {...props}
       />
     );
-  }
+  },
 );
 MyComponent.displayName = "MyComponent";
 
 export { MyComponent };
 ```
 
+### src/index.ts
+
+Add named exports for the component and its prop types:
+
+```typescript
+export { MyComponent, type MyComponentProps, type MyComponentVariant } from "./my-component";
+```
+
 ## 2. Wiring Into the System
 
-The following files must be updated to make the component available:
+### A. `packages/components/styles.css` — **required for Tailwind utilities**
 
-### A. `apps/storybook/src/tailwind.css`
-
-Add a `@source` directive so Tailwind scans the component for class names:
+The package stylesheet must include `@source "./src"` so Tailwind scans component files for utility classes:
 
 ```css
-@source "../node_modules/@godui/{name}";
+@import "tailwindcss";
+@import "./theme/light.css";
+@import "./theme/dark.css";
+
+@source "./src";
 ```
 
-### B. `apps/docs/src/app/globals.css`
+Without this, Tailwind utility classes in component `.tsx` files (e.g. `bg-primary`) will not be generated.
 
-Add a `@source` directive with the relative path to the package:
+For complex components that cannot use Tailwind utilities alone (e.g. 3D effects), add styles under `@layer components` in the same file.
+
+### B. `apps/storybook/src/tailwind.css`
+
+Storybook imports the package stylesheet and scans component source:
 
 ```css
-@source "../../../../packages/{name}";
+@import "tailwindcss";
+@import "@godui/components/fonts/vite.css";
+@import "@godui/components/styles.css";
+
+@source "../node_modules/@godui/components/src";
 ```
 
-### C. `apps/storybook/package.json`
+### C. `apps/docs/src/app/globals.css`
 
-Add the dependency:
+Docs already import `@godui/components/styles.css`. Keep an explicit source path:
 
-```json
-{
-  "dependencies": {
-    "@godui/{name}": "workspace:*"
-  }
-}
+```css
+@source "../../../../packages/components/src";
 ```
 
 ### D. `apps/docs/next.config.ts`
 
-Add the package to `transpilePackages`:
+`@godui/components` is already in `transpilePackages`. No change needed unless adding a new package.
 
-```typescript
-transpilePackages: ["@godui/{name}"],
-```
+### E. Storybook & docs dependencies
 
-### E. Install dependencies
-
-Run from the repo root:
-
-```bash
-pnpm install
-```
+Both apps already depend on `@godui/components` via `workspace:*`. No `pnpm install` needed for new components in the shared package.
 
 ## 3. Storybook Story
 
 Create `apps/storybook/src/stories/{name}.stories.tsx`:
 
 ```typescript
+import { MyComponent, type MyComponentProps } from "@godui/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { MyComponent, type MyComponentProps } from "@godui/{name}";
 
 const meta = {
   title: "Components/MyComponent",
   component: MyComponent,
   tags: ["autodocs"],
   parameters: {
-    layout: "centered",  // or "fullscreen" / "padded" for layout components
+    layout: "centered",
   },
 } satisfies Meta<typeof MyComponent>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
+export const Primary: Story = {
   args: {
     children: "Default",
-    variant: "default",
+    variant: "primary",
   } satisfies MyComponentProps,
-};
-
-export const Secondary: Story = {
-  args: {
-    children: "Secondary",
-    variant: "secondary",
-  } satisfies MyComponentProps,
-};
-
-// For complex rendering, use the render function pattern:
-export const Complex: Story = {
-  render: () => (
-    <MyComponent variant="default">
-      <span>Custom content</span>
-    </MyComponent>
-  ),
 };
 ```
 
-## 4. Styling Rules
+Include stories for each variant, disabled state, and sizes where applicable.
 
-### Use static Tailwind classes
+## 4. Docs Page
 
-All styling MUST use static, scannable Tailwind class strings. Tailwind JIT scans source files for class names at build time — it cannot detect dynamically constructed strings.
+Create `apps/docs/content/docs/components/{name}.mdx` using the Preview/Code + Installation + Usage pattern:
+
+```mdx
+---
+title: My Component
+description: Short description.
+---
+
+import { MyComponent } from "@godui/components";
+
+<ComponentPreview code={`import { MyComponent } from "@godui/components";
+
+export function MyComponentDemo() {
+  return <MyComponent variant="primary">Example</MyComponent>;
+}`}>
+  <MyComponent variant="primary">Example</MyComponent>
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="MyComponent" />
+
+## Usage
+
+\`\`\`tsx
+import { MyComponent } from "@godui/components";
+\`\`\`
+
+\`\`\`tsx
+<MyComponent variant="primary">Example</MyComponent>
+\`\`\`
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `variant` | `"primary" \| "secondary"` | `"primary"` | Visual style |
+```
+
+Add the page slug to `apps/docs/content/docs/components/meta.json`:
+
+```json
+{
+  "title": "Components",
+  "pages": ["button", "my-component"]
+}
+```
+
+`ComponentPreview` and `ComponentInstall` are registered globally in `apps/docs/src/components/mdx.tsx`.
+
+## 5. Styling Rules
+
+### Prefer static Tailwind utility classes
+
+All styling MUST use static, scannable Tailwind class strings:
 
 ```typescript
-// CORRECT — static class strings
-const variantClasses = {
-  default: "bg-primary text-primary-foreground",
-  secondary: "bg-secondary text-secondary-foreground",
+const variantClasses: Record<string, string> = {
+  primary: "bg-primary text-primary-foreground shadow-sm hover:bg-primary/90",
+  outline: "border border-border bg-background hover:bg-accent",
 };
-
-// CORRECT — conditional between static strings
-<div className={`base ${active ? "opacity-100" : "opacity-0"}`} />
 ```
 
 ### Use design system tokens
@@ -214,128 +206,71 @@ const variantClasses = {
 Reference CSS custom properties through Tailwind utilities mapped in `@theme inline`:
 
 ```typescript
-// CORRECT — uses theme tokens
-"bg-primary"          // maps to var(--color-primary)
-"z-overlay"           // maps to var(--z-index-overlay)
-"rounded-lg"          // maps to var(--radius-lg)
-"shadow-md"           // maps to var(--shadow-md)
-
-// CORRECT — direct CSS variable reference when no Tailwind utility exists
-"bg-[var(--some-token)]"
+"bg-primary"       // var(--color-primary)
+"text-foreground"  // var(--color-foreground)
+"rounded-lg"       // var(--radius-lg)
+"shadow-sm"        // var(--shadow-sm)
 ```
 
-### Use inline styles only for truly dynamic values
+### Use `@layer components` for non-utility styles
 
-Inline `style` prop is acceptable only for values computed at runtime that cannot be expressed as static Tailwind classes (e.g., grid positions, mouse-tracked coordinates).
+When a component needs layered DOM, animations, or pseudo-elements that Tailwind utilities cannot express cleanly, add CSS classes to `packages/components/styles.css`:
 
-```typescript
-// CORRECT — runtime-computed positioning
-<div style={{ gridColumnStart: column, gridColumnEnd: column + span }} />
-
-// CORRECT — animation driven by JS
-<div style={{ transform: `translate(${x}px, ${y}px)` }} />
+```css
+@layer components {
+  .my-component { /* ... */ }
+}
 ```
 
-## 5. Anti-Patterns
+Reference those classes from the component with static strings: `className="my-component"`.
 
-### NEVER use `dangerouslySetInnerHTML` for styling
-
-```typescript
-// WRONG — injecting <style> tags
-<style dangerouslySetInnerHTML={{ __html: `.grid { grid-template-columns: ... }` }} />
-
-// CORRECT — use static Tailwind classes or inline style for dynamic values
-<div className="grid grid-cols-4 sm:grid-cols-8 lg:grid-cols-12" />
-```
+## 6. Anti-Patterns
 
 ### NEVER construct Tailwind class names dynamically
 
 ```typescript
-// WRONG — Tailwind cannot scan template literals
+// WRONG
 <div className={`grid-cols-${count}`} />
-<div className={`grid-cols-[repeat(${n},1fr)]`} />
 
-// CORRECT — map to static classes
+// CORRECT
 const columnClasses: Record<number, string> = {
   4: "grid-cols-4",
   8: "grid-cols-8",
-  12: "grid-cols-12",
 };
-<div className={columnClasses[count]} />
 ```
+
+### NEVER skip `@source "./src"` in styles.css
+
+Tailwind will not generate utility classes used in component files without it.
 
 ### NEVER use `"use client"` unnecessarily
 
-Only add the directive when the component uses React hooks (`useState`, `useEffect`, `useRef`, `useContext`, etc.) or event handlers that require client-side interactivity. Pure layout/presentational components should NOT have it.
-
-### NEVER use `useLayoutEffect` or `window` in initial state
-
-Server-side rendering will cause hydration mismatches:
-
-```typescript
-// WRONG — window is undefined on the server
-const [width, setWidth] = useState(window.innerWidth);
-
-// CORRECT — use mobile-first default, update in useEffect
-const [width, setWidth] = useState(0);
-useEffect(() => setWidth(window.innerWidth), []);
-```
+Only add when the component uses React hooks or requires client-only APIs.
 
 ### NEVER skip `forwardRef`
 
-All components must forward refs for composition and imperative access:
-
-```typescript
-// WRONG
-function MyComponent(props: MyComponentProps) { ... }
-
-// CORRECT
-const MyComponent = React.forwardRef<HTMLDivElement, MyComponentProps>(
-  (props, ref) => { ... }
-);
-```
+All components must forward refs for composition.
 
 ### NEVER use arbitrary z-index values
 
-Use the design system z-index scale:
+Use the design system scale: `z-base`, `z-raised`, `z-overlay`, `z-sticky`, `z-popover`, `z-modal`, `z-toast`.
 
-```typescript
-// WRONG
-"z-10"
-"z-[999]"
-
-// CORRECT
-"z-base"       // 0
-"z-raised"     // 10
-"z-overlay"    // 20
-"z-sticky"     // 30
-"z-popover"    // 40
-"z-modal"      // 50
-"z-toast"      // 60
-```
-
-## 6. Checklist
+## 7. Checklist
 
 Before considering a component done:
 
-- [ ] Package created at `packages/{name}/` with `package.json`, `tsconfig.json`, `src/index.ts`, `src/{name}.tsx`
-- [ ] Component and props type exported from `src/index.ts`
-- [ ] `@source` added to `apps/storybook/src/tailwind.css`
-- [ ] `@source` added to `apps/docs/src/app/globals.css`
-- [ ] Added to `apps/storybook/package.json` dependencies
-- [ ] Added to `apps/docs/next.config.ts` `transpilePackages`
-- [ ] `pnpm install` run from repo root
-- [ ] Storybook story created at `apps/storybook/src/stories/{name}.stories.tsx` with `tags: ["autodocs"]`
+- [ ] Component created at `packages/components/src/{name}.tsx`
+- [ ] Component and prop types exported from `packages/components/src/index.ts`
+- [ ] `@source "./src"` present in `packages/components/styles.css`
+- [ ] Complex CSS (if any) added to `@layer components` in `styles.css`
+- [ ] Storybook story at `apps/storybook/src/stories/{name}.stories.tsx` with `tags: ["autodocs"]`
+- [ ] Docs page at `apps/docs/content/docs/components/{name}.mdx`
+- [ ] Page added to `apps/docs/content/docs/components/meta.json`
 - [ ] All Tailwind classes are static strings
-- [ ] `"use client"` only if hooks are used
 - [ ] `React.forwardRef` used
-- [ ] Z-index uses design system tokens
-- [ ] No `dangerouslySetInnerHTML`
-- [ ] No hydration mismatches (no `window` in initial state)
+- [ ] Variant, disabled, and size stories included where applicable
 
-## 7. Available Theme Tokens
-
-When styling components, these tokens are available via Tailwind utilities:
+## 8. Available Theme Tokens
 
 | Category | Examples | Usage |
 |----------|----------|-------|
@@ -344,4 +279,3 @@ When styling components, these tokens are available via Tailwind utilities:
 | Shadows | `shadow-2xs` through `shadow-2xl` | `--shadow-*` tokens |
 | Z-index | `z-base`, `z-raised`, `z-overlay`, `z-sticky`, `z-popover`, `z-modal`, `z-toast` | `--z-index-*` tokens |
 | Fonts | `font-sans`, `font-mono`, `font-serif` | `--font-*` tokens |
-| Spacing | Standard Tailwind spacing scale (`p-1` = 4px through `p-24` = 96px) | Default scale |
