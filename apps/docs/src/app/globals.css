@@ -2,7 +2,7 @@
 @import "@godui/components/styles.css";
 @import "fumadocs-ui/css/preset.css";
 
-@source "../../../../packages/components";
+@source "../../../../packages/components/src";
 
 /* Map Fumadocs design tokens onto the @godui theme so docs UI follows it */
 @theme inline {
@@ -37,7 +37,6 @@
 html,
 body {
   max-width: 100vw;
-  overflow-x: hidden;
 }
 
 body {
@@ -57,4 +56,146 @@ body {
     color: inherit;
     text-decoration: none;
   }
+}
+
+/* Docs layout — tighter sidebar, no outer gutter columns */
+@media (width >= 48rem) {
+  #nd-docs-layout {
+    --fd-sidebar-width: 220px;
+  }
+
+  [data-sidebar-placeholder] {
+    --fd-sidebar-width: 220px;
+  }
+}
+
+#nd-sidebar > .flex.flex-col.gap-3.p-4 {
+  padding-inline: 0.875rem;
+}
+
+/* Component preview canvas */
+.component-preview-canvas {
+  background-color: var(--color-fd-background);
+  background-image: radial-gradient(
+    color-mix(in srgb, var(--color-fd-border) 70%, transparent) 1px,
+    transparent 1px
+  );
+  background-size: 16px 16px;
+}
+
+.component-install-cli pre {
+  margin: 0;
+}
+
+/* Props tables — celestial data grid */
+.docs-table-wrapper {
+  --table-border: color-mix(in srgb, var(--color-fd-primary) 16%, var(--color-fd-border));
+  --table-glow: color-mix(in srgb, var(--color-fd-primary) 10%, transparent);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--table-border);
+  background: var(--color-fd-card);
+  box-shadow:
+    0 1px 2px var(--table-glow),
+    0 12px 32px color-mix(in srgb, var(--color-fd-primary) 5%, transparent);
+}
+
+.docs-table {
+  border-collapse: collapse;
+}
+
+.docs-table thead th {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--color-fd-primary) 10%, var(--color-fd-card)) 0%,
+    color-mix(in srgb, var(--color-fd-accent) 55%, var(--color-fd-card)) 100%
+  );
+  color: color-mix(in srgb, var(--color-fd-foreground) 70%, var(--color-fd-accent-foreground));
+  font-weight: 600;
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.75rem 1.125rem;
+  text-align: left;
+  border-bottom: 1px solid var(--table-border);
+  white-space: nowrap;
+}
+
+.docs-table thead th:first-child {
+  border-top-left-radius: calc(var(--radius-xl) - 1px);
+}
+
+.docs-table thead th:last-child {
+  border-top-right-radius: calc(var(--radius-xl) - 1px);
+}
+
+.docs-table tbody td {
+  padding: 0.875rem 1.125rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-fd-border) 70%, transparent);
+  vertical-align: top;
+  line-height: 1.55;
+}
+
+.docs-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.docs-table tbody tr {
+  background: var(--color-fd-card);
+}
+
+.docs-table td:first-child code {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-fd-primary);
+  background: color-mix(in srgb, var(--color-fd-primary) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-fd-primary) 18%, transparent);
+  border-radius: calc(var(--radius) - 2px);
+  padding: 0.125rem 0.5rem;
+  white-space: nowrap;
+}
+
+.docs-table td:nth-child(2) code {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--color-fd-accent-foreground);
+  background: color-mix(in srgb, var(--color-fd-accent) 50%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-fd-accent-foreground) 12%, transparent);
+  border-radius: calc(var(--radius) - 2px);
+  padding: 0.125rem 0.375rem;
+  line-height: 1.4;
+}
+
+.docs-table td:nth-child(3) code {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--color-fd-secondary-foreground);
+  background: color-mix(in srgb, var(--color-fd-secondary) 55%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-fd-secondary-foreground) 12%, transparent);
+  border-radius: calc(var(--radius) - 2px);
+  padding: 0.125rem 0.375rem;
+}
+
+.docs-table td:nth-child(4) {
+  color: color-mix(in srgb, var(--color-fd-foreground) 88%, var(--color-fd-muted-foreground));
+  font-size: 0.875rem;
+}
+
+.dark .docs-table-wrapper {
+  --table-glow: color-mix(in srgb, var(--color-fd-primary) 18%, transparent);
+  box-shadow:
+    0 1px 2px var(--table-glow),
+    0 12px 40px color-mix(in srgb, var(--color-fd-primary) 8%, transparent),
+    inset 0 1px 0 color-mix(in srgb, var(--color-fd-primary) 8%, transparent);
+}
+
+.dark .docs-table thead th {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--color-fd-primary) 14%, var(--color-fd-card)) 0%,
+    color-mix(in srgb, var(--color-fd-accent) 70%, var(--color-fd-card)) 100%
+  );
 }

@@ -1,0 +1,51 @@
+---
+title: Shimmer Button
+description: A button with an animated shimmering border light effect.
+---
+
+import { ShimmerButton } from "@godui/components";
+
+<ComponentPreview
+  code={`import { ShimmerButton } from "@godui/components";
+
+export function ShimmerButtonDemo() {
+  return (
+    <div className="flex flex-wrap items-center justify-center gap-4">
+      <ShimmerButton variant="primary">Primary</ShimmerButton>
+      <ShimmerButton variant="secondary">Secondary</ShimmerButton>
+      <ShimmerButton variant="outline">Outline</ShimmerButton>
+    </div>
+  );
+}`}
+>
+  <div className="flex flex-wrap items-center justify-center gap-4">
+    <ShimmerButton variant="primary">Primary</ShimmerButton>
+    <ShimmerButton variant="secondary">Secondary</ShimmerButton>
+    <ShimmerButton variant="outline">Outline</ShimmerButton>
+  </div>
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="ShimmerButton" />
+
+## Usage
+
+```tsx
+import { ShimmerButton } from "@godui/components";
+```
+
+```tsx
+<ShimmerButton variant="primary">Click me</ShimmerButton>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `variant` | `"primary" \| "secondary" \| "outline"` | `"primary"` | Visual style of the button |
+| `size` | `"sm" \| "default" \| "lg"` | `"default"` | Button padding and text size |
+| `shimmer` | `boolean` | `true` | Animate the button with a shimmering border light effect |
+| `shimmerColor` | `string` | variant default | Color of the shimmering light |
+| `shimmerDuration` | `string` | `"3s"` | Duration of the shimmer animation |
+| `background` | `string` | variant default | Background color override |

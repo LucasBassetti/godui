@@ -1,6 +1,6 @@
 "use client";
 
-import { ThreeDButton } from "@godui/components";
+import { MagicButton } from "@godui/components";
 import { useRouter } from "next/navigation";
 
 export default function NotFound() {
@@ -15,7 +15,7 @@ export default function NotFound() {
           The page you&apos;re looking for doesn&apos;t exist or was moved.
         </p>
       </div>
-      <ThreeDButton onClick={() => router.push("/")}>Back to home</ThreeDButton>
+      <MagicButton onClick={() => router.push("/")}>Back to home</MagicButton>
     </main>
   );
 }
