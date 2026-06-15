@@ -104,7 +104,7 @@ export { MyComponent };
 
 The following files must be updated to make the component available:
 
-### A. `apps/docs/src/tailwind.css`
+### A. `apps/storybook/src/tailwind.css`
 
 Add a `@source` directive so Tailwind scans the component for class names:
 
@@ -112,7 +112,7 @@ Add a `@source` directive so Tailwind scans the component for class names:
 @source "../node_modules/@godui/{name}";
 ```
 
-### B. `apps/web/src/app/globals.css`
+### B. `apps/docs/src/app/globals.css`
 
 Add a `@source` directive with the relative path to the package:
 
@@ -120,7 +120,7 @@ Add a `@source` directive with the relative path to the package:
 @source "../../../../packages/{name}";
 ```
 
-### C. `apps/docs/package.json`
+### C. `apps/storybook/package.json`
 
 Add the dependency:
 
@@ -132,7 +132,7 @@ Add the dependency:
 }
 ```
 
-### D. `apps/web/next.config.ts`
+### D. `apps/docs/next.config.ts`
 
 Add the package to `transpilePackages`:
 
@@ -150,7 +150,7 @@ pnpm install
 
 ## 3. Storybook Story
 
-Create `apps/docs/src/stories/{name}.stories.tsx`:
+Create `apps/storybook/src/stories/{name}.stories.tsx`:
 
 ```typescript
 import type { Meta, StoryObj } from "@storybook/react-vite";
@@ -320,12 +320,12 @@ Before considering a component done:
 
 - [ ] Package created at `packages/{name}/` with `package.json`, `tsconfig.json`, `src/index.ts`, `src/{name}.tsx`
 - [ ] Component and props type exported from `src/index.ts`
-- [ ] `@source` added to `apps/docs/src/tailwind.css`
-- [ ] `@source` added to `apps/web/src/app/globals.css`
-- [ ] Added to `apps/docs/package.json` dependencies
-- [ ] Added to `apps/web/next.config.ts` `transpilePackages`
+- [ ] `@source` added to `apps/storybook/src/tailwind.css`
+- [ ] `@source` added to `apps/docs/src/app/globals.css`
+- [ ] Added to `apps/storybook/package.json` dependencies
+- [ ] Added to `apps/docs/next.config.ts` `transpilePackages`
 - [ ] `pnpm install` run from repo root
-- [ ] Storybook story created at `apps/docs/src/stories/{name}.stories.tsx` with `tags: ["autodocs"]`
+- [ ] Storybook story created at `apps/storybook/src/stories/{name}.stories.tsx` with `tags: ["autodocs"]`
 - [ ] All Tailwind classes are static strings
 - [ ] `"use client"` only if hooks are used
 - [ ] `React.forwardRef` used

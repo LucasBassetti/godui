@@ -1,0 +1,226 @@
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    /* Base */
+    --background: #080b14;
+    --foreground: #f8fafc;
+
+    /* Surfaces */
+    --card: #0f1423;
+    --card-foreground: #f8fafc;
+
+    --popover: #0f1423;
+    --popover-foreground: #f8fafc;
+
+    /* Brand */
+    --primary: #9ec5ff;
+    --primary-foreground: #08101f;
+
+    /* Heavenly Gold */
+    --secondary: #2d2436;
+    --secondary-foreground: #ffe8b3;
+
+    /* Celestial Accent */
+    --accent: #16203a;
+    --accent-foreground: #c9dcff;
+
+    /* Neutral */
+    --muted: #121826;
+    --muted-foreground: #94a3b8;
+
+    /* Status */
+    --destructive: #ff6b6b;
+
+    /* Inputs */
+    --border: #20293d;
+    --input: #20293d;
+    --ring: #9ec5ff;
+
+    /* Charts */
+    --chart-1: #9ec5ff;
+    --chart-2: #ffe4a8;
+    --chart-3: #b8f2e6;
+    --chart-4: #d7c3ff;
+    --chart-5: #ffd1dc;
+
+    /* Sidebar */
+    --sidebar: #0c101c;
+    --sidebar-foreground: #f8fafc;
+
+    --sidebar-primary: #9ec5ff;
+    --sidebar-primary-foreground: #08101f;
+
+    --sidebar-accent: #151d31;
+    --sidebar-accent-foreground: #c9dcff;
+
+    --sidebar-border: #20293d;
+    --sidebar-ring: #9ec5ff;
+
+    /* Syntax Highlighting */
+    --syntax-plain: #f8fafc;
+    --syntax-punctuation: #94a3b8;
+    --syntax-keyword: #c8b8ff;
+    --syntax-property: #ffe4a8;
+    --syntax-string: #b8f2e6;
+    --syntax-comment: #64748b;
+    --syntax-number: #9ec5ff;
+
+    /* Shadows */
+    --shadow-2xs: 0 1px 2px rgb(0 0 0 / 0.12);
+
+    --shadow-xs: 0 1px 3px rgb(0 0 0 / 0.15);
+
+    --shadow-sm: 0 2px 6px rgb(0 0 0 / 0.2);
+
+    --shadow: 0 4px 12px rgb(0 0 0 / 0.25);
+
+    --shadow-md: 0 8px 20px rgb(0 0 0 / 0.3);
+
+    --shadow-lg: 0 16px 32px rgb(0 0 0 / 0.35);
+
+    --shadow-xl: 0 24px 48px rgb(0 0 0 / 0.4);
+
+    --shadow-2xl: 0 40px 80px rgb(0 0 0 / 0.5);
+
+    /* GOD UI aliases */
+    --color-bg: var(--background);
+    --color-fg: var(--foreground);
+    --color-muted: var(--muted-foreground);
+    --color-border: var(--border);
+
+    --color-primary: var(--primary);
+    --color-primary-fg: var(--primary-foreground);
+
+    --color-secondary-bg: var(--secondary);
+    --color-secondary-fg: var(--secondary-foreground);
+
+    --color-destructive: var(--destructive);
+    --color-destructive-fg: #ffffff;
+
+    /* Brand Effects */
+    --glow-highlight: 158, 197, 255;
+    --color-primary-rgb: 158, 197, 255;
+
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-lg: var(--radius);
+
+    /* GOD UI */
+    --god-gradient: linear-gradient(
+      135deg,
+      #9ec5ff 0%,
+      #ffffff 50%,
+      #ffe4a8 100%
+    );
+
+    --god-glow:
+      0 0 24px rgba(158, 197, 255, 0.2), 0 0 80px rgba(255, 228, 168, 0.08);
+
+    --rainbow-1: #9ec5ff;
+    --rainbow-2: #c8b8ff;
+    --rainbow-3: #b8f2e6;
+    --rainbow-4: #ffd1dc;
+    --rainbow-5: #ffe4a8;
+
+    --rainbow-speed: 2s;
+  }
+}
+
+.dark {
+  --background: #080b14;
+  --foreground: #f8fafc;
+
+  --card: #0f1423;
+  --card-foreground: #f8fafc;
+
+  --popover: #0f1423;
+  --popover-foreground: #f8fafc;
+
+  --primary: #9ec5ff;
+  --primary-foreground: #08101f;
+
+  --secondary: #2d2436;
+  --secondary-foreground: #ffe8b3;
+
+  --accent: #16203a;
+  --accent-foreground: #c9dcff;
+
+  --muted: #121826;
+  --muted-foreground: #94a3b8;
+
+  --destructive: #ff6b6b;
+
+  --border: #20293d;
+  --input: #20293d;
+  --ring: #9ec5ff;
+
+  --chart-1: #9ec5ff;
+  --chart-2: #ffe4a8;
+  --chart-3: #b8f2e6;
+  --chart-4: #d7c3ff;
+  --chart-5: #ffd1dc;
+
+  --sidebar: #0c101c;
+  --sidebar-foreground: #f8fafc;
+
+  --sidebar-primary: #9ec5ff;
+  --sidebar-primary-foreground: #08101f;
+
+  --sidebar-accent: #151d31;
+  --sidebar-accent-foreground: #c9dcff;
+
+  --sidebar-border: #20293d;
+  --sidebar-ring: #9ec5ff;
+
+  --syntax-plain: #f8fafc;
+  --syntax-punctuation: #94a3b8;
+  --syntax-keyword: #c8b8ff;
+  --syntax-property: #ffe4a8;
+  --syntax-string: #b8f2e6;
+  --syntax-comment: #64748b;
+  --syntax-number: #9ec5ff;
+
+  --shadow-2xs: 0 1px 2px rgb(0 0 0 / 0.12);
+  --shadow-xs: 0 1px 3px rgb(0 0 0 / 0.15);
+  --shadow-sm: 0 2px 6px rgb(0 0 0 / 0.2);
+  --shadow: 0 4px 12px rgb(0 0 0 / 0.25);
+  --shadow-md: 0 8px 20px rgb(0 0 0 / 0.3);
+  --shadow-lg: 0 16px 32px rgb(0 0 0 / 0.35);
+  --shadow-xl: 0 24px 48px rgb(0 0 0 / 0.4);
+  --shadow-2xl: 0 40px 80px rgb(0 0 0 / 0.5);
+
+  --color-bg: var(--background);
+  --color-fg: var(--foreground);
+  --color-muted: var(--muted-foreground);
+  --color-border: var(--border);
+
+  --color-primary: var(--primary);
+  --color-primary-fg: var(--primary-foreground);
+
+  --color-secondary-bg: var(--secondary);
+  --color-secondary-fg: var(--secondary-foreground);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-fg: #ffffff;
+
+  --glow-highlight: 158, 197, 255;
+  --color-primary-rgb: 158, 197, 255;
+
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+
+  --god-gradient: linear-gradient(
+    135deg,
+    #9ec5ff 0%,
+    #ffffff 50%,
+    #ffe4a8 100%
+  );
+
+  --god-glow:
+    0 0 24px rgba(158, 197, 255, 0.2), 0 0 80px rgba(255, 228, 168, 0.08);
+
+  --rainbow-1: #9ec5ff;
+  --rainbow-2: #c8b8ff;
+  --rainbow-3: #b8f2e6;
+  --rainbow-4: #ffd1dc;
+  --rainbow-5: #ffe4a8;
+  --rainbow-speed: 2s;
+}

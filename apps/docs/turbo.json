@@ -2,7 +2,7 @@
   "extends": ["//"],
   "tasks": {
     "build": {
-      "outputs": ["storybook-static/**", "../web/public/design-system/**"]
+      "dependsOn": ["^build", "storybook#build"]
     }
   }
 }

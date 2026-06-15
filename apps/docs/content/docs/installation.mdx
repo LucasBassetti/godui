@@ -1,0 +1,91 @@
+---
+title: Installation
+description: Install @godui/components and set up the theme in your project.
+---
+
+GoDUI is a design system built with Tailwind CSS v4 and React. Components live in
+`@godui/components` and are documented here and in the
+[Storybook showcase](/design-system).
+
+## Install the package
+
+From the monorepo workspace:
+
+```package-install
+@godui/components
+```
+
+## Import styles
+
+Add the theme stylesheet once in your app entry (e.g. `globals.css` or root layout):
+
+```css
+@import "@godui/components/styles.css";
+```
+
+## Geist typography
+
+GoDUI typography uses [Geist Sans](https://vercel.com/font) and Geist Mono. Load the fonts in your app, then theme tokens pick them up automatically.
+
+### Next.js (recommended)
+
+Install the official `geist` package for full glyph support and OpenType features:
+
+```package-install
+geist @godui/components
+```
+
+In your root layout:
+
+```tsx
+import { GeistMono, GeistSans } from "@godui/components/fonts/next";
+import "@godui/components/styles.css";
+
+export default function RootLayout({ children }) {
+  return (
+    <html className={`${GeistSans.variable} ${GeistMono.variable}`}>
+      <body>{children}</body>
+    </html>
+  );
+}
+```
+
+`GeistSans.variable` and `GeistMono.variable` set `--font-geist-sans` and `--font-geist-mono`, which map to `--font-sans` and `--font-mono` in the theme.
+
+### Vite / Storybook / other bundlers
+
+Install [`non.geist`](https://www.npmjs.com/package/non.geist) and import the Vite font entry:
+
+```package-install
+non.geist @godui/components
+```
+
+```css
+@import "@godui/components/fonts/vite.css";
+@import "@godui/components/styles.css";
+```
+
+## Use components
+
+```tsx
+import { ThreeDButton, Typography } from "@godui/components";
+import "@godui/components/styles.css";
+
+export function App() {
+  return <ThreeDButton>Push me</ThreeDButton>;
+}
+```
+
+## Dark mode
+
+The theme supports light and dark modes via the `.dark` class on a parent element
+(typically `<html>`). This docs site uses Fumadocs' built-in theme switcher in the
+header to toggle between light, dark, and system preference.
+
+```html
+<html class="dark">
+  <!-- dark theme tokens apply -->
+</html>
+```
+
+Browse the [3D Button](/docs/components/3d-button) docs for a live preview.
