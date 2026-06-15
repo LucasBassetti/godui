@@ -1,0 +1,49 @@
+---
+title: 3D Button
+description: A pushable 3D button with rainbow edge animation and solid front face.
+---
+
+import { ThreeDButton } from "@godui/components";
+
+A pushable 3D button with layered shadow, edge, and front surfaces. The edge and
+shadow use a flowing
+[Magic UI rainbow](https://github.com/magicuidesign/magicui/blob/main/apps/www/registry/magicui/rainbow-button.tsx)
+gradient; the front face stays solid. Inspired by
+[Josh W. Comeau's 3D button tutorial](https://www.joshwcomeau.com/animation/3d-button/).
+
+## Usage
+
+```tsx
+import { ThreeDButton } from "@godui/components";
+
+<ThreeDButton variant="default">Push me</ThreeDButton>;
+```
+
+## Examples
+
+<div className="flex flex-wrap items-center gap-6 not-prose py-4">
+  <ThreeDButton variant="default">Push me</ThreeDButton>
+  <ThreeDButton variant="secondary">Push me</ThreeDButton>
+</div>
+
+### Sizes
+
+<div className="flex flex-wrap items-center gap-4 not-prose py-4">
+  <ThreeDButton size="sm">Small</ThreeDButton>
+  <ThreeDButton size="default">Default</ThreeDButton>
+  <ThreeDButton size="lg">Large</ThreeDButton>
+</div>
+
+### Without rainbow
+
+<div className="not-prose py-4">
+  <ThreeDButton rainbow={false}>Classic edge</ThreeDButton>
+</div>
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `variant` | `"default" \| "secondary"` | `"default"` | Front face color scheme |
+| `size` | `"sm" \| "default" \| "lg"` | `"default"` | Button padding and text size |
+| `rainbow` | `boolean` | `true` | Animate the 3D edge and shadow with a rainbow gradient |

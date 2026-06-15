@@ -1,0 +1,5 @@
+@import "tailwindcss";
+@import "@godui/components/fonts/vite.css";
+@import "@godui/components/styles.css";
+
+@source "../node_modules/@godui/components";

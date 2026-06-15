@@ -1,0 +1,31 @@
+{
+  "name": "storybook",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "storybook dev -p 6006 --no-open",
+    "build": "storybook build -o storybook-static && shx rm -rf ../docs/public/design-system && shx mkdir -p ../docs/public && shx cp -R storybook-static ../docs/public/design-system",
+    "lint": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@godui/components": "workspace:*",
+    "@tailwindcss/vite": "^4.1.16",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "tailwindcss": "^4.1.6"
+  },
+  "devDependencies": {
+    "@storybook/addon-docs": "^10.3.1",
+    "@storybook/react": "^10.3.1",
+    "@storybook/react-vite": "^10.3.1",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.0.4",
+    "non.geist": "^2.0.1",
+    "shx": "^0.4.0",
+    "storybook": "^10.3.1",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1"
+  }
+}

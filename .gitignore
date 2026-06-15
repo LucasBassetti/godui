@@ -8,9 +8,10 @@ node_modules
 out
 dist
 build
+.source
 
-# Storybook: copied into web for production; intermediate build stays unignored for Turbo cache
-apps/web/public/design-system
+# Storybook: copied into docs for production; intermediate build stays unignored for Turbo cache
+apps/docs/public/design-system
 storybook-static
 
 # Debug / env

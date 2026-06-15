@@ -1,0 +1,177 @@
+:root,
+.light {
+  /* Base */
+  --background: #fcfbf8;
+  --foreground: #1f2937;
+
+  /* Surfaces */
+  --card: #ffffff;
+  --card-foreground: #1f2937;
+
+  --popover: #ffffff;
+  --popover-foreground: #1f2937;
+
+  /* Brand */
+  --primary: #7da8ff;
+  --primary-foreground: #ffffff;
+
+  /* Heavenly Gold */
+  --secondary: #fff3d9;
+  --secondary-foreground: #7c5b18;
+
+  /* Celestial Accent */
+  --accent: #eef5ff;
+  --accent-foreground: #4c6cbf;
+
+  /* Neutral */
+  --muted: #f5f6f8;
+  --muted-foreground: #6b7280;
+
+  /* Status */
+  --destructive: #ef4444;
+
+  /* Inputs */
+  --border: #e9edf5;
+  --input: #e9edf5;
+  --ring: #7da8ff;
+
+  /* Charts */
+  --chart-1: #7da8ff;
+  --chart-2: #ffe4a8;
+  --chart-3: #b8f2e6;
+  --chart-4: #d7c3ff;
+  --chart-5: #ffd1dc;
+
+  /* Sidebar */
+  --sidebar: #ffffff;
+  --sidebar-foreground: #1f2937;
+
+  --sidebar-primary: #7da8ff;
+  --sidebar-primary-foreground: #ffffff;
+
+  --sidebar-accent: #f7faff;
+  --sidebar-accent-foreground: #4c6cbf;
+
+  --sidebar-border: #e9edf5;
+  --sidebar-ring: #7da8ff;
+
+  /* Typography — set --font-geist-* in your app (see @godui/components/fonts) */
+  --font-sans: var(
+    --font-geist-sans,
+    "Geist",
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    Arial,
+    "Noto Sans",
+    sans-serif
+  );
+
+  --font-serif: var(
+    --font-geist-sans,
+    "Geist",
+    ui-serif,
+    Georgia,
+    Cambria,
+    "Times New Roman",
+    Times,
+    serif
+  );
+
+  --font-mono: var(
+    --font-geist-mono,
+    "Geist Mono",
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    "Liberation Mono",
+    "Courier New",
+    monospace
+  );
+
+  /* Radius */
+  --radius: 0.75rem;
+
+  /* Shadows */
+  --shadow-2xs: 0 1px 2px rgb(0 0 0 / 0.02);
+
+  --shadow-xs: 0 1px 3px rgb(0 0 0 / 0.04);
+
+  --shadow-sm: 0 2px 6px rgb(0 0 0 / 0.05);
+
+  --shadow: 0 4px 12px rgb(0 0 0 / 0.06);
+
+  --shadow-md: 0 8px 20px rgb(0 0 0 / 0.08);
+
+  --shadow-lg: 0 16px 32px rgb(0 0 0 / 0.1);
+
+  --shadow-xl: 0 24px 48px rgb(0 0 0 / 0.12);
+
+  --shadow-2xl: 0 40px 80px rgb(0 0 0 / 0.16);
+
+  /* Syntax Highlighting */
+  --syntax-plain: #1f2937;
+  --syntax-punctuation: #64748b;
+  --syntax-keyword: #8b7cff;
+  --syntax-property: #d4a23c;
+  --syntax-string: #10b981;
+  --syntax-comment: #94a3b8;
+  --syntax-number: #0891b2;
+
+  /* Z-index */
+  --z-base: 0;
+  --z-raised: 10;
+  --z-overlay: 20;
+  --z-sticky: 30;
+  --z-popover: 40;
+  --z-modal: 50;
+  --z-toast: 60;
+
+  /* GOD UI aliases */
+  --color-bg: var(--background);
+  --color-fg: var(--foreground);
+  --color-muted: var(--muted-foreground);
+  --color-border: var(--border);
+
+  --color-primary: var(--primary);
+  --color-primary-fg: var(--primary-foreground);
+
+  --color-secondary-bg: var(--secondary);
+  --color-secondary-fg: var(--secondary-foreground);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-fg: #ffffff;
+
+  /* Effects */
+  --glow-highlight: 125, 168, 255;
+  --color-primary-rgb: 125, 168, 255;
+
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+
+  /* GOD UI Brand */
+  --god-gradient: linear-gradient(
+    135deg,
+    #7da8ff 0%,
+    #ffffff 50%,
+    #ffe4a8 100%
+  );
+
+  --god-glow:
+    0 0 24px rgba(125, 168, 255, 0.12), 0 0 80px rgba(255, 228, 168, 0.05);
+
+  /* Rainbow */
+  --rainbow-1: #7da8ff;
+  --rainbow-2: #d7c3ff;
+  --rainbow-3: #b8f2e6;
+  --rainbow-4: #ffd1dc;
+  --rainbow-5: #ffe4a8;
+
+  --rainbow-speed: 2s;
+}

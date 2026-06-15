@@ -1,0 +1,236 @@
+@import "tailwindcss";
+@import "./theme/light.css";
+@import "./theme/dark.css";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --font-serif: var(--font-serif);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --shadow-2xs: var(--shadow-2xs);
+  --shadow-xs: var(--shadow-xs);
+  --shadow-sm: var(--shadow-sm);
+  --shadow: var(--shadow);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  --shadow-xl: var(--shadow-xl);
+  --shadow-2xl: var(--shadow-2xl);
+
+  --z-index-base: var(--z-base);
+  --z-index-raised: var(--z-raised);
+  --z-index-overlay: var(--z-overlay);
+  --z-index-sticky: var(--z-sticky);
+  --z-index-popover: var(--z-popover);
+  --z-index-modal: var(--z-modal);
+  --z-index-toast: var(--z-toast);
+}
+
+@keyframes three-d-rainbow {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+@layer components {
+  .three-d-button {
+    position: relative;
+    border: none;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+    outline-offset: 4px;
+    transition: filter 600ms;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+
+  .three-d-button:hover {
+    filter: brightness(110%);
+    transition: filter 250ms;
+  }
+
+  .three-d-button:focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  .three-d-button:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 4px;
+  }
+
+  .three-d-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  .three-d-button-shadow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: var(--radius-xl);
+    background: hsl(0deg 0% 0% / 0.25);
+    will-change: transform;
+    transform: translateY(2px);
+    filter: blur(4px);
+    transition: transform 600ms cubic-bezier(0.3, 0.7, 0.4, 1);
+  }
+
+  .three-d-button:hover .three-d-button-shadow {
+    transform: translateY(4px);
+    transition: transform 250ms cubic-bezier(0.3, 0.7, 0.4, 1.5);
+  }
+
+  .three-d-button:active .three-d-button-shadow {
+    transform: translateY(1px);
+    transition: transform 34ms;
+  }
+
+  .three-d-button-edge {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: var(--radius-xl);
+  }
+
+  .three-d-button[data-variant="default"] .three-d-button-edge {
+    background: linear-gradient(
+      to left,
+      color-mix(in srgb, var(--primary) 50%, black) 0%,
+      color-mix(in srgb, var(--primary) 75%, black) 8%,
+      color-mix(in srgb, var(--primary) 75%, black) 92%,
+      color-mix(in srgb, var(--primary) 50%, black) 100%
+    );
+  }
+
+  .three-d-button[data-variant="secondary"] .three-d-button-edge {
+    background: linear-gradient(
+      to left,
+      color-mix(in srgb, var(--secondary) 50%, black) 0%,
+      color-mix(in srgb, var(--secondary) 75%, black) 8%,
+      color-mix(in srgb, var(--secondary) 75%, black) 92%,
+      color-mix(in srgb, var(--secondary) 50%, black) 100%
+    );
+  }
+
+  .three-d-button[data-rainbow="true"] .three-d-button-edge {
+    background: linear-gradient(
+      90deg,
+      var(--rainbow-1),
+      var(--rainbow-5),
+      var(--rainbow-3),
+      var(--rainbow-4),
+      var(--rainbow-2)
+    );
+    background-size: 200% 100%;
+    animation: three-d-rainbow var(--rainbow-speed, 2s) infinite linear;
+  }
+
+  .three-d-button[data-rainbow="true"] .three-d-button-shadow {
+    background: linear-gradient(
+      90deg,
+      var(--rainbow-1),
+      var(--rainbow-5),
+      var(--rainbow-3),
+      var(--rainbow-4),
+      var(--rainbow-2)
+    );
+    background-size: 200% 100%;
+    animation: three-d-rainbow var(--rainbow-speed, 2s) infinite linear;
+    filter: blur(12px);
+    opacity: 0.7;
+  }
+
+  .three-d-button-front {
+    display: block;
+    position: relative;
+    border-radius: var(--radius-xl);
+    will-change: transform;
+    transform: translateY(-4px);
+    transition: transform 600ms cubic-bezier(0.3, 0.7, 0.4, 1);
+  }
+
+  .three-d-button[data-variant="default"] .three-d-button-front {
+    color: var(--primary-foreground);
+    background: var(--primary);
+  }
+
+  .three-d-button[data-variant="secondary"] .three-d-button-front {
+    color: var(--secondary-foreground);
+    background: var(--secondary);
+  }
+
+  .three-d-button:hover .three-d-button-front {
+    transform: translateY(-6px);
+    transition: transform 250ms cubic-bezier(0.3, 0.7, 0.4, 1.5);
+  }
+
+  .three-d-button:active .three-d-button-front {
+    transform: translateY(-2px);
+    transition: transform 34ms;
+  }
+
+  .three-d-button-front--sm {
+    padding: 8px 20px;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+
+  .three-d-button-front--default {
+    padding: 12px 32px;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+
+  .three-d-button-front--lg {
+    padding: 14px 42px;
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
+}

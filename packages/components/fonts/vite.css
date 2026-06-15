@@ -1,0 +1,12 @@
+/**
+ * Geist for Vite / Storybook / non-Next apps.
+ * Install: npm i non.geist
+ * Import before @godui/components/styles.css
+ */
+@import "non.geist";
+@import "non.geist/mono";
+
+:root {
+  --font-geist-sans: "Geist-Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-geist-mono: "GeistMono-Variable", ui-monospace, monospace;
+}
