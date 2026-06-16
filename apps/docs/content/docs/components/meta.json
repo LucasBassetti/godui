@@ -6,6 +6,7 @@
     "buttons/shimmer-button",
     "---Text---",
     "text/typography",
-    "text/variable-text"
+    "text/variable-text",
+    "text/text-animate"
   ]
 }

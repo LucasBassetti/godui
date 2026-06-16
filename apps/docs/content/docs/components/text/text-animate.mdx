@@ -1,0 +1,99 @@
+---
+title: Text Animate
+description: Staggered entrance animations for headlines and copy, split by word, character, or line.
+---
+
+import { TextAnimate } from "@godui/components";
+
+<ComponentPreview
+  code={`import { TextAnimate } from "@godui/components";
+
+export function TextAnimateDemo() {
+  return (
+    <TextAnimate
+      animation="blurInUp"
+      by="word"
+      className="text-4xl font-semibold tracking-tight"
+    >
+      Animate your ideas into reality
+    </TextAnimate>
+  );
+}`}
+>
+  <TextAnimate
+    animation="blurInUp"
+    by="word"
+    className="text-4xl font-semibold tracking-tight"
+  >
+    Animate your ideas into reality
+  </TextAnimate>
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="TextAnimate" />
+
+`TextAnimate` requires `framer-motion` as a peer dependency:
+
+```bash
+npm install framer-motion
+```
+
+## Usage
+
+```tsx
+import { TextAnimate } from "@godui/components";
+```
+
+### Word fade in
+
+```tsx
+<TextAnimate animation="fadeIn" by="word" className="text-4xl">
+  Animate your ideas into reality
+</TextAnimate>
+```
+
+### Character stagger
+
+```tsx
+<TextAnimate animation="slideUp" by="character" stagger={0.03} className="text-3xl">
+  Character by character
+</TextAnimate>
+```
+
+### Scroll into view
+
+```tsx
+<TextAnimate animation="blurInUp" startOnView once className="text-5xl font-bold">
+  Scroll to reveal
+</TextAnimate>
+```
+
+### Semantic heading
+
+```tsx
+<TextAnimate as="h1" animation="scaleUp" by="word" className="text-5xl font-bold">
+  Hero headline
+</TextAnimate>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `children` | `string` | — | Text content to animate |
+| `animation` | `"fadeIn" \| "blurIn" \| "blurInUp" \| "blurInDown" \| "slideUp" \| "slideDown" \| "slideLeft" \| "slideRight" \| "scaleUp" \| "scaleDown"` | `"fadeIn"` | Entrance animation preset |
+| `by` | `"text" \| "word" \| "character" \| "line"` | `"word"` | How to split text for staggering |
+| `as` | `"p" \| "h1"–"h6" \| "span" \| "div" \| …` | `"p"` | Root element to render |
+| `delay` | `number` | `0` | Delay before animation starts (seconds) |
+| `duration` | `number` | `0.3` | Total animation duration; also drives default stagger when `stagger` is omitted |
+| `stagger` | `number` | derived | Delay between each segment |
+| `startOnView` | `boolean` | `true` | Animate when the element enters the viewport |
+| `once` | `boolean` | `false` | Only animate the first time it enters view |
+| `viewportAmount` | `number \| "some" \| "all"` | `0.3` | How much of the element must be visible to trigger |
+| `accessible` | `boolean` | `true` | Screen-reader text with `aria-hidden` on animated segments |
+| `className` | `string` | — | Classes on the root element |
+| `segmentClassName` | `string` | — | Classes on each animated segment |
+| `variants` | `Variants` | — | Custom Framer Motion item variants |
+
+Respects `prefers-reduced-motion` — text renders immediately without animation when the user has reduced motion enabled.

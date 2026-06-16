@@ -24,3 +24,10 @@ export {
   type VariableTextSpring,
   type AxisValue,
 } from "./variable-text";
+export {
+  TextAnimate,
+  type TextAnimateProps,
+  type TextAnimatePreset,
+  type TextAnimateBy,
+  type TextAnimateElement,
+} from "./text-animate";

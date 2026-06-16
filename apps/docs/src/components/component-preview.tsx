@@ -2,9 +2,10 @@
 
 import { DocsPanel, DocsTabs } from "@/components/docs-tabs";
 import { cn } from "@/lib/cn";
+import { formatCode } from "@/lib/format-code";
 import { DynamicCodeBlock } from "fumadocs-ui/components/dynamic-codeblock";
 import type { ReactNode } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type ComponentPreviewProps = {
   children: ReactNode;
@@ -20,6 +21,21 @@ export function ComponentPreview({
   className,
 }: ComponentPreviewProps) {
   const [tab, setTab] = useState("preview");
+  const [formattedCode, setFormattedCode] = useState(() => code.trim());
+
+  useEffect(() => {
+    let active = true;
+
+    void formatCode(code, lang).then((next) => {
+      if (active) {
+        setFormattedCode(next);
+      }
+    });
+
+    return () => {
+      active = false;
+    };
+  }, [code, lang]);
 
   return (
     <DocsPanel className="my-8">
@@ -34,7 +50,7 @@ export function ComponentPreview({
 
       <div
         className={cn(
-          "component-preview-frame mt-4 overflow-hidden rounded-xl border border-fd-border bg-fd-card shadow-sm",
+          "component-preview-frame mt-4 overflow-hidden rounded-xl border border-fd-border bg-fd-card",
           className,
         )}
       >
@@ -45,8 +61,12 @@ export function ComponentPreview({
         ) : (
           <DynamicCodeBlock
             lang={lang}
-            code={code.trim()}
-            codeblock={{ allowCopy: true, className: "my-0 rounded-none border-0 shadow-none" }}
+            code={formattedCode}
+            codeblock={{
+              allowCopy: true,
+              className:
+                "component-preview-code my-0 rounded-none border-0 shadow-none",
+            }}
           />
         )}
       </div>
