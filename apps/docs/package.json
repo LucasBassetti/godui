@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@godui/components": "workspace:*",
+    "framer-motion": "^12.40.0",
     "fumadocs-core": "16.10.2",
     "fumadocs-mdx": "15.0.12",
     "fumadocs-ui": "16.10.2",

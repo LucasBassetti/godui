@@ -1,5 +1,4 @@
 import * as React from "react";
-import type { CSSProperties } from "react";
 
 export type MagicButtonVariant = "default" | "secondary";
 export type MagicButtonSize = "default" | "sm" | "lg";

@@ -2,7 +2,7 @@ import { Typography, type TypographyProps } from "@godui/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 const meta = {
-  title: "Components/Typography",
+  title: "Text/Typography",
   component: Typography,
   tags: ["autodocs"],
   parameters: {

@@ -1,4 +1,11 @@
 {
   "title": "Components",
-  "pages": ["shimmer-button", "magic-button"]
+  "pages": [
+    "---Buttons---",
+    "buttons/magic-button",
+    "buttons/shimmer-button",
+    "---Text---",
+    "text/typography",
+    "text/variable-text"
+  ]
 }

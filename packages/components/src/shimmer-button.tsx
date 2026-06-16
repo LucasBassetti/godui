@@ -1,25 +1,26 @@
-import * as React from "react";
 import type { CSSProperties } from "react";
+import * as React from "react";
 
 export type ShimmerButtonVariant = "primary" | "secondary" | "outline";
 export type ShimmerButtonSize = "default" | "sm" | "lg";
 
-export type ShimmerButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: ShimmerButtonVariant;
-  size?: ShimmerButtonSize;
-  /** Animate the button with a shimmering border light effect */
-  shimmer?: boolean;
-  /** Color of the shimmering light effect */
-  shimmerColor?: string;
-  /** Inset size of the shimmer backdrop cut */
-  shimmerSize?: string;
-  /** Duration of the shimmer animation */
-  shimmerDuration?: string;
-  /** Border radius of the button */
-  borderRadius?: string;
-  /** Background color of the button */
-  background?: string;
-};
+export type ShimmerButtonProps =
+  React.ButtonHTMLAttributes<HTMLButtonElement> & {
+    variant?: ShimmerButtonVariant;
+    size?: ShimmerButtonSize;
+    /** Animate the button with a shimmering border light effect */
+    shimmer?: boolean;
+    /** Color of the shimmering light effect */
+    shimmerColor?: string;
+    /** Inset size of the shimmer backdrop cut */
+    shimmerSize?: string;
+    /** Duration of the shimmer animation */
+    shimmerDuration?: string;
+    /** Border radius of the button */
+    borderRadius?: string;
+    /** Background color of the button */
+    background?: string;
+  };
 
 const sizeClasses: Record<ShimmerButtonSize, string> = {
   sm: "px-4 py-2 text-xs",
@@ -45,7 +46,8 @@ const variantDefaults: Record<
 > = {
   primary: {
     background: "var(--primary)",
-    shimmerColor: "color-mix(in srgb, var(--primary-foreground) 80%, var(--primary))",
+    shimmerColor:
+      "color-mix(in srgb, var(--primary-foreground) 80%, var(--primary))",
     shimmerSpread: "55deg",
     textClass: "text-primary-foreground",
     borderClass: "border-transparent",

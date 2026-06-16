@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "@godui/components/fonts/variable-text.css";
 @import "@godui/components/styles.css";
 @import "fumadocs-ui/css/preset.css";
 
@@ -17,8 +18,8 @@
   --color-fd-border: var(--color-border);
   --color-fd-primary: var(--color-primary);
   --color-fd-primary-foreground: var(--color-primary-foreground);
-  --color-fd-secondary: var(--color-secondary);
-  --color-fd-secondary-foreground: var(--color-secondary-foreground);
+  --color-fd-secondary: var(--color-muted);
+  --color-fd-secondary-foreground: var(--color-foreground);
   --color-fd-accent: var(--color-accent);
   --color-fd-accent-foreground: var(--color-accent-foreground);
   --color-fd-ring: var(--color-ring);
@@ -87,6 +88,181 @@ body {
   margin: 0;
 }
 
+/* Code blocks — neutral surfaces in both themes */
+.shiki.bg-fd-secondary,
+.shiki.bg-fd-card {
+  background-color: var(--code-block, var(--color-fd-card)) !important;
+}
+
+.shiki pre,
+.shiki code {
+  background: transparent !important;
+}
+
+.shiki {
+  border-color: var(--code-block-border, var(--color-fd-border)) !important;
+  box-shadow: none !important;
+}
+
+.component-install-cli {
+  background: var(--code-block, var(--color-fd-card));
+  border-color: var(--code-block-border, var(--color-fd-border)) !important;
+  box-shadow: none;
+}
+
+/* Inline code in prose — beats Fumadocs muted bg + Shiki span colors */
+.prose :where(code):not(:where(pre code, [class~="not-prose"], [class~="not-prose"] *)) {
+  background: var(--inline-code-bg) !important;
+  color: var(--inline-code-fg) !important;
+  border: 1px solid var(--inline-code-border) !important;
+  padding: 0.125rem 0.375rem;
+  border-radius: calc(var(--radius) - 4px);
+  font-size: 0.875em;
+  font-weight: 500;
+  font-family: var(--font-mono);
+  box-shadow: none;
+}
+
+.prose :where(code):not(:where(pre code, [class~="not-prose"], [class~="not-prose"] *)) span {
+  color: inherit !important;
+  font-style: normal !important;
+}
+
+.prose {
+  --tw-prose-code: var(--inline-code-fg);
+}
+
+.dark .prose {
+  --tw-prose-body: var(--color-fd-foreground);
+  --tw-prose-headings: var(--color-fd-foreground);
+  --tw-prose-bold: var(--color-fd-foreground);
+  --tw-prose-links: var(--color-fd-primary);
+  --tw-prose-counters: var(--color-fd-muted-foreground);
+  --tw-prose-bullets: var(--color-fd-muted-foreground);
+}
+
+:root:not(.dark) .prose,
+.light .prose {
+  --tw-prose-body: var(--color-fd-foreground);
+  --tw-prose-headings: var(--color-fd-foreground);
+  --tw-prose-bold: var(--color-fd-foreground);
+  --tw-prose-links: var(--color-fd-primary);
+  --tw-prose-counters: var(--color-fd-muted-foreground);
+  --tw-prose-bullets: var(--color-fd-muted-foreground);
+}
+
+/* Search — sidebar trigger & dialog */
+[data-search-full] {
+  background: var(--search-bg) !important;
+  color: var(--search-fg) !important;
+  border-color: var(--search-border) !important;
+}
+
+[data-search-full]:hover {
+  background: color-mix(
+    in srgb,
+    var(--search-bg) 88%,
+    var(--color-fd-primary) 12%
+  ) !important;
+  color: var(--color-fd-foreground) !important;
+  border-color: color-mix(
+    in srgb,
+    var(--search-border) 70%,
+    var(--color-fd-primary) 30%
+  ) !important;
+}
+
+[data-search-full] svg {
+  color: currentColor;
+}
+
+[data-search-full] kbd {
+  background: var(--search-kbd-bg) !important;
+  color: var(--search-kbd-fg) !important;
+  border-color: var(--search-border) !important;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+[data-search] {
+  color: var(--search-fg);
+}
+
+[data-search]:hover {
+  color: var(--color-fd-foreground);
+  background: color-mix(
+    in srgb,
+    var(--search-bg) 88%,
+    var(--color-fd-primary) 12%
+  );
+}
+
+.bg-fd-popover input {
+  color: var(--color-fd-foreground) !important;
+}
+
+.bg-fd-popover input::placeholder {
+  color: var(--search-placeholder) !important;
+  opacity: 1;
+}
+
+.bg-fd-popover > div:first-child svg {
+  color: var(--search-fg);
+}
+
+/* Theme panel — sidebar switcher bar */
+#nd-sidebar .rounded-lg:has([data-theme-toggle]) {
+  background: var(--theme-panel-bg) !important;
+  border-color: var(--theme-panel-border) !important;
+  color: var(--theme-panel-fg);
+}
+
+#nd-sidebar .rounded-lg:has([data-theme-toggle]) > a,
+#nd-sidebar .rounded-lg:has([data-theme-toggle]) > button:not([data-theme-toggle] *) {
+  color: var(--theme-panel-fg);
+}
+
+#nd-sidebar .rounded-lg:has([data-theme-toggle]) > a:hover,
+#nd-sidebar .rounded-lg:has([data-theme-toggle]) > button:not([data-theme-toggle] *):hover {
+  color: var(--color-fd-foreground);
+  background: color-mix(
+    in srgb,
+    var(--theme-panel-bg) 85%,
+    var(--color-fd-primary) 15%
+  );
+}
+
+[data-theme-toggle] {
+  background: var(--theme-panel-bg) !important;
+  border-color: var(--theme-panel-border) !important;
+}
+
+#nd-sidebar .rounded-lg:has([data-theme-toggle]) [data-theme-toggle] {
+  background: transparent !important;
+  border-block-color: transparent !important;
+  border-inline-end-color: transparent !important;
+  border-inline-start-color: var(--theme-panel-border) !important;
+}
+
+[data-theme-toggle] .text-fd-muted-foreground {
+  color: var(--theme-panel-fg) !important;
+}
+
+[data-theme-toggle] .bg-fd-accent {
+  background: var(--theme-panel-active-bg) !important;
+}
+
+[data-theme-toggle] .text-fd-accent-foreground {
+  color: var(--theme-panel-active-fg) !important;
+}
+
+[data-theme-toggle] button:hover,
+[data-theme-toggle] > button:hover {
+  color: var(--color-fd-foreground) !important;
+}
+
 /* Props tables — celestial data grid */
 .docs-table-wrapper {
   --table-border: color-mix(in srgb, var(--color-fd-primary) 16%, var(--color-fd-border));
@@ -143,7 +319,8 @@ body {
   background: var(--color-fd-card);
 }
 
-.docs-table td:first-child code {
+.docs-table td:first-child code,
+.docs-table td:nth-child(3) code {
   display: inline-block;
   font-family: var(--font-mono);
   font-size: 0.8125rem;
@@ -166,17 +343,6 @@ body {
   border-radius: calc(var(--radius) - 2px);
   padding: 0.125rem 0.375rem;
   line-height: 1.4;
-}
-
-.docs-table td:nth-child(3) code {
-  display: inline-block;
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  color: var(--color-fd-secondary-foreground);
-  background: color-mix(in srgb, var(--color-fd-secondary) 55%, transparent);
-  border: 1px solid color-mix(in srgb, var(--color-fd-secondary-foreground) 12%, transparent);
-  border-radius: calc(var(--radius) - 2px);
-  padding: 0.125rem 0.375rem;
 }
 
 .docs-table td:nth-child(4) {

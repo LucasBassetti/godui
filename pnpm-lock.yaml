@@ -26,6 +26,9 @@ importers:
       '@godui/components':
         specifier: workspace:*
         version: link:../../packages/components
+      framer-motion:
+        specifier: ^12.40.0
+        version: 12.40.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       fumadocs-core:
         specifier: 16.10.2
         version: 16.10.2(@mdx-js/mdx@3.1.1)(@types/estree-jsx@1.0.5)(@types/hast@3.0.4)(@types/mdast@4.0.4)(@types/react@19.2.17)(lucide-react@1.18.0(react@19.2.4))(next@16.2.6(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(zod@4.4.3)
@@ -87,6 +90,9 @@ importers:
       '@tailwindcss/vite':
         specifier: ^4.1.16
         version: 4.3.1(vite@7.3.5(@types/node@25.9.3)(jiti@2.7.0)(lightningcss@1.32.0))
+      framer-motion:
+        specifier: ^12.40.0
+        version: 12.40.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react:
         specifier: ^19.2.4
         version: 19.2.4
@@ -133,6 +139,9 @@ importers:
 
   packages/components:
     dependencies:
+      '@fontsource-variable/roboto-flex':
+        specifier: ^5.2.8
+        version: 5.2.8
       react:
         specifier: ^18 || ^19
         version: 19.2.4
@@ -143,6 +152,9 @@ importers:
       '@types/react':
         specifier: ^19.2.14
         version: 19.2.17
+      framer-motion:
+        specifier: ^12.40.0
+        version: 12.40.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       geist:
         specifier: ^1.7.0
         version: 1.7.2(next@16.2.6(react-dom@19.2.4(react@19.2.4))(react@19.2.4))
@@ -691,6 +703,9 @@ packages:
 
   '@floating-ui/utils@0.2.11':
     resolution: {integrity: sha512-RiB/yIh78pcIxl6lLMG0CgBXAZ2Y0eVHqMPYugu+9U0AeT6YBeiJpf7lbdJNIugFP5SIjwNRgo4DhR1Qxi26Gg==}
+
+  '@fontsource-variable/roboto-flex@5.2.8':
+    resolution: {integrity: sha512-Q9zbz+P2VrDeIxBu9YAIG+eYpLmQF5FIJEEwAWn8En9Lao1TOISnoYcywGV+jSv7LGsHEndCR8hveXPnvCBEQQ==}
 
   '@fuma-translate/react@1.0.2':
     resolution: {integrity: sha512-uOiOtBx3nRXR8Nu1GzBf1tApgF1FErDBTHxRIAQeyQdyOoZbrNRN6H4kDCWObY4qyGeGbHydG0DHzgeUgFDMIw==}
@@ -5134,6 +5149,8 @@ snapshots:
       react-dom: 19.2.4(react@19.2.4)
 
   '@floating-ui/utils@0.2.11': {}
+
+  '@fontsource-variable/roboto-flex@5.2.8': {}
 
   '@fuma-translate/react@1.0.2(@types/react@19.2.17)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
     dependencies:

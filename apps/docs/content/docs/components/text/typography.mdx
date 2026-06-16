@@ -1,0 +1,52 @@
+---
+title: Typography
+description: Semantic text styles for headings, body copy, and inline code.
+---
+
+import { Typography } from "@godui/components";
+
+<ComponentPreview
+  code={`import { Typography } from "@godui/components";
+
+export function TypographyDemo() {
+  return (
+    <div className="flex flex-col gap-4">
+      <Typography variant="h2">Heading</Typography>
+      <Typography variant="p">
+        Body text for general copy across the app.
+      </Typography>
+      <Typography variant="code">inline code</Typography>
+    </div>
+  );
+}`}
+>
+  <div className="flex flex-col gap-4">
+    <Typography variant="h2">Heading</Typography>
+    <Typography variant="p">
+      Body text for general copy across the app.
+    </Typography>
+    <Typography variant="code">inline code</Typography>
+  </div>
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="Typography" />
+
+## Usage
+
+```tsx
+import { Typography } from "@godui/components";
+```
+
+```tsx
+<Typography variant="h1">Page title</Typography>
+<Typography variant="p">Paragraph text.</Typography>
+<Typography variant="code">npm install @godui/components</Typography>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `variant` | `"h1" \| "h2" \| "h3" \| "h4" \| "p" \| "lead" \| "large" \| "small" \| "muted" \| "code"` | `"p"` | Semantic text style to render |

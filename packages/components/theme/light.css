@@ -124,6 +124,31 @@
   --syntax-comment: #94a3b8;
   --syntax-number: #0891b2;
 
+  /* Inline code */
+  --inline-code-bg: #e8efff;
+  --inline-code-fg: #1e40af;
+  --inline-code-border: #93b4fd;
+
+  /* Code blocks */
+  --code-block: #f4f7fb;
+  --code-block-foreground: #1f2937;
+  --code-block-border: #e9edf5;
+
+  /* Search */
+  --search-bg: #ffffff;
+  --search-fg: #374151;
+  --search-border: #c5ced9;
+  --search-kbd-bg: #eef2f8;
+  --search-kbd-fg: #1f2937;
+  --search-placeholder: #6b7280;
+
+  /* Theme panel */
+  --theme-panel-bg: #ffffff;
+  --theme-panel-border: #c5ced9;
+  --theme-panel-fg: #4b5563;
+  --theme-panel-active-bg: #e8efff;
+  --theme-panel-active-fg: #1e40af;
+
   /* Z-index */
   --z-base: 0;
   --z-raised: 10;

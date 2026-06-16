@@ -2,7 +2,7 @@ import { ShimmerButton, type ShimmerButtonProps } from "@godui/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 const meta = {
-  title: "Components/Shimmer Button",
+  title: "Buttons/Shimmer Button",
   component: ShimmerButton,
   tags: ["autodocs"],
   parameters: {

@@ -1,0 +1,5 @@
+/**
+ * Variable font for VariableText (Roboto Flex).
+ * Import before @godui/components/styles.css in your app entry CSS.
+ */
+@import "@fontsource-variable/roboto-flex/standard.css";

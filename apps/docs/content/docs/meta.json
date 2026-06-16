@@ -1,9 +1,4 @@
 {
   "title": "GoDUI",
-  "pages": [
-    "---Installation---",
-    "installation",
-    "---Components---",
-    "components"
-  ]
+  "pages": ["installation", "components"]
 }

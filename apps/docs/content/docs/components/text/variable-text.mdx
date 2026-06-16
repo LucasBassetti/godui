@@ -1,0 +1,111 @@
+---
+title: Variable Text
+description: Animate OpenType variable font axes for premium, organic typography motion.
+---
+
+import { VariableText } from "@godui/components";
+
+<ComponentPreview
+  code={`import { VariableText } from "@godui/components";
+
+export function VariableTextDemo() {
+  return (
+    <VariableText preset="breathing" duration={4} className="text-4xl font-sans">
+      Design for Humans
+    </VariableText>
+  );
+}`}
+>
+  <VariableText preset="breathing" duration={4} className="text-4xl font-sans tracking-tight">
+    Design for Humans
+  </VariableText>
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="VariableText" />
+
+`VariableText` requires `framer-motion` as a peer dependency:
+
+```bash
+npm install framer-motion
+```
+
+Use a variable font with full axis support. Import `@godui/components/fonts/variable-text.css` before `styles.css` (included automatically in the docs app).
+
+## Usage
+
+```tsx
+import { VariableText } from "@godui/components";
+```
+
+### Breathing hero
+
+```tsx
+<VariableText preset="breathing" duration={4} className="text-4xl">
+  Design for Humans
+</VariableText>
+```
+
+### Weight wave
+
+```tsx
+<VariableText preset="weight-wave" stagger={0.05} className="text-5xl tracking-widest">
+  MAGIC UI
+</VariableText>
+```
+
+### Cursor reactive
+
+```tsx
+<VariableText preset="cursor" className="text-4xl">
+  Move Your Mouse
+</VariableText>
+```
+
+### Scroll responsive
+
+```tsx
+<VariableText preset="scroll" className="text-5xl">
+  The Future Is Variable
+</VariableText>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `children` | `ReactNode` | — | Text content to animate |
+| `preset` | `"weight-pulse" \| "weight-wave" \| "accordion" \| "breathing" \| "italic-sway" \| "focus" \| "elastic" \| "cursor" \| "scroll"` | `"breathing"` | Built-in animation preset |
+| `trigger` | `"auto" \| "hover" \| "click" \| "cursor" \| "scroll" \| "inView"` | preset default | When the animation runs |
+| `splitBy` | `"character" \| "word" \| "line" \| "none"` | preset default | Split text for per-segment motion |
+| `weight` | `number \| [number, number]` | preset range | Weight (`wght`) axis range |
+| `width` | `number \| [number, number]` | preset range | Width (`wdth`) axis range |
+| `slant` | `number \| [number, number]` | preset range | Slant (`slnt`) axis range |
+| `opticalSize` | `number \| [number, number]` | preset range | Optical size (`opsz`) axis range |
+| `duration` | `number` | `2` | Animation duration in seconds |
+| `delay` | `number` | `0` | Delay before animation starts |
+| `stagger` | `number` | `0.03` | Stagger between split segments |
+| `loop` | `boolean` | `true` | Loop the animation |
+| `spring` | `{ stiffness, damping, mass }` | `{ stiffness: 120, damping: 20, mass: 1 }` | Spring config for elastic preset |
+| `cursorRadius` | `number` | `120` | Mouse influence radius for cursor preset |
+| `minWeight` | `number` | axis min | Minimum weight for cursor preset |
+| `maxWeight` | `number` | axis max | Maximum weight for cursor preset |
+
+## Accessibility
+
+When `prefers-reduced-motion` is enabled, animations are disabled and static typography is rendered with the starting axis values.
+
+## Presets
+
+| Preset | Axes | Best for |
+| ------ | ---- | -------- |
+| `breathing` | weight + width | Hero headlines, subtle premium motion |
+| `weight-pulse` | weight | Attention-grabbing headlines |
+| `weight-wave` | weight (per character) | Brand wordmarks, kinetic type |
+| `accordion` | width | Metrics, product names |
+| `italic-sway` | slant | Quotes, editorial layouts |
+| `focus` | weight spotlight | Hero sections, premium landing pages |
+| `elastic` | weight (overshoot) | Playful CTAs, hover interactions |
+| `cursor` | weight (proximity) | Interactive hero text |
+| `scroll` | weight + width + slant | Storytelling pages |

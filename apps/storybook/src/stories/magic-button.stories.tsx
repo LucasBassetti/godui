@@ -2,7 +2,7 @@ import { MagicButton, type MagicButtonProps } from "@godui/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 const meta = {
-  title: "Components/Magic Button",
+  title: "Buttons/Magic Button",
   component: MagicButton,
   tags: ["autodocs"],
   parameters: {

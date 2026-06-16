@@ -15,3 +15,12 @@ export {
   type TypographyProps,
   type TypographyVariant,
 } from "./typography";
+export {
+  VariableText,
+  type VariableTextProps,
+  type VariableTextPreset,
+  type VariableTextTrigger,
+  type VariableTextSplitBy,
+  type VariableTextSpring,
+  type AxisValue,
+} from "./variable-text";

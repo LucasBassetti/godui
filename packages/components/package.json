@@ -11,6 +11,7 @@
     },
     "./styles.css": "./styles.css",
     "./fonts/vite.css": "./fonts/vite.css",
+    "./fonts/variable-text.css": "./fonts/variable-text.css",
     "./fonts/next": {
       "types": "./fonts/next.ts",
       "default": "./fonts/next.ts"
@@ -29,8 +30,12 @@
     "lint": "tsc -p tsconfig.json --noEmit"
   },
   "peerDependencies": {
+    "framer-motion": ">=11.0.0",
     "geist": ">=1.3.0",
     "react": "^18 || ^19"
+  },
+  "dependencies": {
+    "@fontsource-variable/roboto-flex": "^5.2.8"
   },
   "peerDependenciesMeta": {
     "geist": {
@@ -38,6 +43,7 @@
     }
   },
   "devDependencies": {
+    "framer-motion": "^12.40.0",
     "geist": "^1.7.0",
     "@tailwindcss/postcss": "^4.1.6",
     "@types/react": "^19.2.14",
