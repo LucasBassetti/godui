@@ -339,4 +339,120 @@
       will-change: auto;
     }
   }
+
+  /* Progress Fold Button: front face folds on hover, click runs progress bar */
+  .progress-fold-button {
+    position: relative;
+    display: inline-flex;
+    padding: 0;
+    border: none;
+    border-radius: var(--radius-lg);
+    background: var(--color-border);
+    cursor: pointer;
+    white-space: nowrap;
+    perspective: 800px;
+    transform-style: preserve-3d;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .progress-fold-button:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 4px;
+  }
+
+  .progress-fold-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  /* Folding front face — tilts back on hover to reveal the layers behind */
+  .progress-fold-button-front {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 100%;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-lg);
+    transform: rotateX(0deg);
+    transform-origin: top center;
+    transition: transform 0.2s;
+  }
+
+  .progress-fold-button:hover:not(:disabled) .progress-fold-button-front {
+    transform: rotateX(35deg);
+  }
+
+  /* Front face colors and the fold-side tints come from Tailwind utility
+     classes on the elements (bg-primary / text-primary-foreground and alpha
+     tints like bg-primary/15). Those resolve theme tokens reliably and adapt
+     to the surrounding light/dark background. */
+
+  /* Clip layer — keeps back panel and progress bar inside the rounded shape */
+  .progress-fold-button-layers {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+  }
+
+  /* Static back panel revealed by the fold (color via Tailwind alpha tint) */
+  .progress-fold-button-back {
+    position: absolute;
+    inset: 0;
+  }
+
+  /* Progress bar — animates on click via data-active (color via Tailwind) */
+  .progress-fold-button-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0;
+  }
+
+  .progress-fold-button[data-active="true"] .progress-fold-button-bar {
+    animation: progress-fold-bar 1.2s;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .progress-fold-button-front,
+    .progress-fold-button[data-active="true"] .progress-fold-button-bar {
+      transition: none;
+      animation: none;
+    }
+  }
+}
+
+@keyframes progress-fold-bar {
+  0% {
+    opacity: 1;
+    width: 0;
+  }
+  10% {
+    opacity: 1;
+    width: 15%;
+  }
+  25% {
+    opacity: 1;
+    width: 25%;
+  }
+  40% {
+    opacity: 1;
+    width: 35%;
+  }
+  55% {
+    opacity: 1;
+    width: 75%;
+  }
+  60% {
+    opacity: 1;
+    width: 100%;
+  }
+  to {
+    opacity: 0;
+    width: 100%;
+  }
 }

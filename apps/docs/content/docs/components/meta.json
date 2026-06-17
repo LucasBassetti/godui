@@ -4,6 +4,7 @@
     "---Buttons---",
     "buttons/magic-button",
     "buttons/shimmer-button",
+    "buttons/progress-fold-button",
     "---Text---",
     "text/typography",
     "text/variable-text",
