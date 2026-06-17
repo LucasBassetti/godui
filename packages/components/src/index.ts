@@ -36,3 +36,8 @@ export {
   type TextAnimateBy,
   type TextAnimateElement,
 } from "./text-animate";
+export {
+  Highlighter,
+  type HighlighterProps,
+  type HighlighterAction,
+} from "./highlighter";
