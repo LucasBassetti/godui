@@ -1,3 +1,5 @@
+"use client";
+
 import type { CSSProperties } from "react";
 import * as React from "react";
 
@@ -82,11 +84,14 @@ const ShimmerButton = React.forwardRef<HTMLButtonElement, ShimmerButtonProps>(
       background,
       children,
       type = "button",
+      onMouseEnter,
+      onMouseLeave,
       ...props
     },
     ref,
   ) => {
     const defaults = variantDefaults[variant];
+    const sparkRef = React.useRef<HTMLDivElement>(null);
 
     const style = {
       "--spread": defaults.shimmerSpread,
@@ -97,6 +102,20 @@ const ShimmerButton = React.forwardRef<HTMLButtonElement, ShimmerButtonProps>(
       "--bg": background ?? defaults.background,
     } as CSSProperties;
 
+    const handleMouseEnter = (e: React.MouseEvent<HTMLButtonElement>) => {
+      sparkRef.current?.getAnimations({ subtree: true }).forEach((a) => {
+        a.playbackRate = 3;
+      });
+      onMouseEnter?.(e);
+    };
+
+    const handleMouseLeave = (e: React.MouseEvent<HTMLButtonElement>) => {
+      sparkRef.current?.getAnimations({ subtree: true }).forEach((a) => {
+        a.playbackRate = 1;
+      });
+      onMouseLeave?.(e);
+    };
+
     return (
       <button
         ref={ref}
@@ -106,9 +125,12 @@ const ShimmerButton = React.forwardRef<HTMLButtonElement, ShimmerButtonProps>(
         data-shimmer={shimmer ? "true" : undefined}
         style={style}
         className={`group shimmer-button relative z-0 flex cursor-pointer items-center justify-center overflow-hidden [border-radius:var(--radius)] border whitespace-nowrap [background:var(--bg)] transform-gpu transition-transform duration-300 ease-in-out active:translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${defaults.textClass} ${defaults.borderClass} ${sizeClasses[size]} ${className ?? ""}`}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
         {...props}
       >
         <div
+          ref={sparkRef}
           className="shimmer-button-spark absolute inset-0 -z-30 overflow-visible blur-[2px] [container-type:size]"
           aria-hidden="true"
         >

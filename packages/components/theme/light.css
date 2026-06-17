@@ -1,59 +1,59 @@
 :root,
 .light {
   /* Base — luminous cool-white */
-  --background: oklch(0.991 0.003 264);
-  --foreground: oklch(0.21 0.035 264);
+  --background: oklch(0.992 0.004 266);
+  --foreground: oklch(0.2 0.036 266);
 
   /* Surfaces */
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.21 0.035 264);
+  --card-foreground: oklch(0.2 0.036 266);
 
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.21 0.035 264);
+  --popover-foreground: oklch(0.2 0.036 266);
 
   /* Brand — Celestial Sapphire (AA-safe with white) */
-  --primary: oklch(0.545 0.205 264);
+  --primary: oklch(0.55 0.19 266);
   --primary-foreground: oklch(1 0 0);
 
   /* Heavenly Gold */
-  --secondary: oklch(0.965 0.035 88);
-  --secondary-foreground: oklch(0.43 0.085 75);
+  --secondary: oklch(0.97 0.04 90);
+  --secondary-foreground: oklch(0.42 0.09 80);
 
   /* Celestial Accent */
-  --accent: oklch(0.96 0.03 264);
-  --accent-foreground: oklch(0.45 0.15 264);
+  --accent: oklch(0.965 0.025 266);
+  --accent-foreground: oklch(0.46 0.155 266);
 
   /* Neutral */
-  --muted: oklch(0.965 0.004 264);
-  --muted-foreground: oklch(0.52 0.02 264);
+  --muted: oklch(0.97 0.005 266);
+  --muted-foreground: oklch(0.51 0.022 266);
 
   /* Status */
-  --destructive: oklch(0.58 0.22 27);
+  --destructive: oklch(0.57 0.21 25);
 
   /* Inputs */
-  --border: oklch(0.92 0.008 264);
-  --input: oklch(0.92 0.008 264);
-  --ring: oklch(0.545 0.205 264);
+  --border: oklch(0.925 0.01 266);
+  --input: oklch(0.925 0.01 266);
+  --ring: oklch(0.55 0.19 266);
 
   /* Charts — angelic spectrum */
-  --chart-1: oklch(0.55 0.2 264);
-  --chart-2: oklch(0.8 0.13 85);
-  --chart-3: oklch(0.82 0.1 180);
-  --chart-4: oklch(0.68 0.16 300);
-  --chart-5: oklch(0.78 0.12 12);
+  --chart-1: oklch(0.55 0.19 266);
+  --chart-2: oklch(0.8 0.13 90);
+  --chart-3: oklch(0.82 0.1 185);
+  --chart-4: oklch(0.68 0.16 305);
+  --chart-5: oklch(0.78 0.12 14);
 
   /* Sidebar */
   --sidebar: oklch(1 0 0);
-  --sidebar-foreground: oklch(0.21 0.035 264);
+  --sidebar-foreground: oklch(0.2 0.036 266);
 
-  --sidebar-primary: oklch(0.545 0.205 264);
+  --sidebar-primary: oklch(0.55 0.19 266);
   --sidebar-primary-foreground: oklch(1 0 0);
 
-  --sidebar-accent: oklch(0.97 0.02 264);
-  --sidebar-accent-foreground: oklch(0.45 0.15 264);
+  --sidebar-accent: oklch(0.97 0.018 266);
+  --sidebar-accent-foreground: oklch(0.46 0.155 266);
 
-  --sidebar-border: oklch(0.92 0.008 264);
-  --sidebar-ring: oklch(0.545 0.205 264);
+  --sidebar-border: oklch(0.925 0.01 266);
+  --sidebar-ring: oklch(0.55 0.19 266);
 
   /* Typography — set --font-geist-* in your app (see @godui/components/fonts) */
   --font-sans: var(
@@ -116,38 +116,38 @@
   --shadow-2xl: 0 40px 80px rgb(0 0 0 / 0.16);
 
   /* Syntax Highlighting */
-  --syntax-plain: oklch(0.21 0.035 264);
-  --syntax-punctuation: oklch(0.55 0.02 264);
-  --syntax-keyword: oklch(0.52 0.19 300);
-  --syntax-property: oklch(0.56 0.11 85);
-  --syntax-string: oklch(0.52 0.13 165);
-  --syntax-comment: oklch(0.64 0.015 264);
-  --syntax-number: oklch(0.54 0.13 230);
+  --syntax-plain: oklch(0.2 0.036 266);
+  --syntax-punctuation: oklch(0.54 0.022 266);
+  --syntax-keyword: oklch(0.52 0.19 302);
+  --syntax-property: oklch(0.56 0.11 90);
+  --syntax-string: oklch(0.52 0.13 168);
+  --syntax-comment: oklch(0.63 0.016 266);
+  --syntax-number: oklch(0.54 0.13 235);
 
   /* Inline code */
-  --inline-code-bg: oklch(0.95 0.03 264);
-  --inline-code-fg: oklch(0.45 0.17 264);
-  --inline-code-border: oklch(0.8 0.08 264);
+  --inline-code-bg: oklch(0.955 0.028 266);
+  --inline-code-fg: oklch(0.46 0.165 266);
+  --inline-code-border: oklch(0.82 0.07 266);
 
   /* Code blocks */
-  --code-block: oklch(0.975 0.006 264);
-  --code-block-foreground: oklch(0.21 0.035 264);
-  --code-block-border: oklch(0.92 0.008 264);
+  --code-block: oklch(0.978 0.006 266);
+  --code-block-foreground: oklch(0.2 0.036 266);
+  --code-block-border: oklch(0.925 0.01 266);
 
   /* Search */
   --search-bg: oklch(1 0 0);
-  --search-fg: oklch(0.3 0.025 264);
-  --search-border: oklch(0.88 0.01 264);
-  --search-kbd-bg: oklch(0.96 0.006 264);
-  --search-kbd-fg: oklch(0.21 0.035 264);
-  --search-placeholder: oklch(0.55 0.02 264);
+  --search-fg: oklch(0.29 0.026 266);
+  --search-border: oklch(0.89 0.011 266);
+  --search-kbd-bg: oklch(0.965 0.006 266);
+  --search-kbd-fg: oklch(0.2 0.036 266);
+  --search-placeholder: oklch(0.54 0.022 266);
 
   /* Theme panel */
   --theme-panel-bg: oklch(1 0 0);
-  --theme-panel-border: oklch(0.88 0.01 264);
-  --theme-panel-fg: oklch(0.4 0.02 264);
-  --theme-panel-active-bg: oklch(0.95 0.03 264);
-  --theme-panel-active-fg: oklch(0.45 0.17 264);
+  --theme-panel-border: oklch(0.89 0.011 266);
+  --theme-panel-fg: oklch(0.4 0.022 266);
+  --theme-panel-active-bg: oklch(0.955 0.028 266);
+  --theme-panel-active-fg: oklch(0.46 0.165 266);
 
   /* Z-index */
   --z-base: 0;
@@ -174,8 +174,8 @@
   --color-destructive-fg: oklch(1 0 0);
 
   /* Effects — sRGB triplets tracking --primary for rgba() consumers */
-  --glow-highlight: 59, 91, 217;
-  --color-primary-rgb: 59, 91, 217;
+  --glow-highlight: 61, 102, 223;
+  --color-primary-rgb: 61, 102, 223;
 
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -183,21 +183,21 @@
   /* GOD UI Brand — sapphire → light → divine gold */
   --god-gradient: linear-gradient(
     135deg,
-    oklch(0.545 0.205 264) 0%,
+    oklch(0.55 0.19 266) 0%,
     oklch(1 0 0) 50%,
-    oklch(0.85 0.12 85) 100%
+    oklch(0.85 0.12 90) 100%
   );
 
   --god-glow:
-    0 0 24px oklch(0.545 0.205 264 / 0.14),
-    0 0 80px oklch(0.85 0.12 85 / 0.06);
+    0 0 24px oklch(0.55 0.19 266 / 0.14),
+    0 0 80px oklch(0.85 0.12 90 / 0.06);
 
   /* Rainbow — sapphire, iris, aqua, rose, gold */
-  --rainbow-1: oklch(0.55 0.2 264);
-  --rainbow-2: oklch(0.68 0.16 300);
-  --rainbow-3: oklch(0.82 0.1 180);
-  --rainbow-4: oklch(0.78 0.12 12);
-  --rainbow-5: oklch(0.8 0.13 85);
+  --rainbow-1: oklch(0.55 0.19 266);
+  --rainbow-2: oklch(0.68 0.16 305);
+  --rainbow-3: oklch(0.82 0.1 185);
+  --rainbow-4: oklch(0.78 0.12 14);
+  --rainbow-5: oklch(0.8 0.13 90);
 
   --rainbow-speed: 2s;
 }

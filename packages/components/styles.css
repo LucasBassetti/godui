@@ -287,6 +287,7 @@
     transition: box-shadow 300ms ease-in-out;
   }
 
+
   .shimmer-button:not([data-shimmer="true"]) .shimmer-button-spark,
   .shimmer-button:not([data-shimmer="true"]) .shimmer-button-highlight,
   .shimmer-button:not([data-shimmer="true"]) .shimmer-button-backdrop,
@@ -300,34 +301,13 @@
     filter: blur(1px);
   }
 
-  .shimmer-button[data-variant="primary"] .shimmer-button-highlight {
-    box-shadow: inset 0 1px 0
-      color-mix(in srgb, var(--primary-foreground) 28%, transparent);
-  }
-
-  .shimmer-button[data-variant="primary"]:hover .shimmer-button-highlight {
-    box-shadow: inset 0 1px 0
-      color-mix(in srgb, var(--primary-foreground) 38%, transparent);
-  }
-
-  .shimmer-button[data-variant="secondary"] .shimmer-button-highlight {
-    box-shadow: inset 0 1px 0
-      color-mix(in srgb, var(--secondary-foreground) 18%, transparent);
-  }
-
-  .shimmer-button[data-variant="secondary"]:hover .shimmer-button-highlight {
-    box-shadow: inset 0 1px 0
-      color-mix(in srgb, var(--secondary-foreground) 28%, transparent);
-  }
-
-  .shimmer-button[data-variant="outline"] .shimmer-button-highlight {
-    box-shadow: inset 0 -6px 10px
-      color-mix(in srgb, var(--foreground) 6%, transparent);
-  }
-
+  .shimmer-button[data-variant="primary"] .shimmer-button-highlight,
+  .shimmer-button[data-variant="primary"]:hover .shimmer-button-highlight,
+  .shimmer-button[data-variant="secondary"] .shimmer-button-highlight,
+  .shimmer-button[data-variant="secondary"]:hover .shimmer-button-highlight,
+  .shimmer-button[data-variant="outline"] .shimmer-button-highlight,
   .shimmer-button[data-variant="outline"]:hover .shimmer-button-highlight {
-    box-shadow: inset 0 -6px 10px
-      color-mix(in srgb, var(--foreground) 10%, transparent);
+    box-shadow: none;
   }
 
   .variable-text {
