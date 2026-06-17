@@ -1,4 +1,9 @@
 export {
+  ElasticText,
+  type ElasticTextMode,
+  type ElasticTextProps,
+} from "./elastic-text";
+export {
   Highlighter,
   type HighlighterAction,
   type HighlighterProps,
@@ -35,17 +40,3 @@ export {
   type TextAnimatePreset,
   type TextAnimateProps,
 } from "./text-animate";
-export {
-  Typography,
-  type TypographyProps,
-  type TypographyVariant,
-} from "./typography";
-export {
-  type AxisValue,
-  VariableText,
-  type VariableTextPreset,
-  type VariableTextProps,
-  type VariableTextSplitBy,
-  type VariableTextSpring,
-  type VariableTextTrigger,
-} from "./variable-text";

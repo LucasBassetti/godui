@@ -2,21 +2,21 @@
 
 import {
   AnimatePresence,
+  type MotionProps,
   motion,
   useReducedMotion,
-  type MotionProps,
   type Variants,
 } from "framer-motion";
 import * as React from "react";
-import { getTextContent } from "./variable-text-utils";
 import {
   getSegmentClassName,
   resolveTextAnimateVariants,
-  splitTextAnimate,
   STAGGER_BY_SPLIT,
+  splitTextAnimate,
   type TextAnimateBy,
   type TextAnimatePreset,
 } from "./text-animate-utils";
+import { getTextContent } from "./text-utils";
 
 export type {
   TextAnimateBy,
@@ -69,7 +69,7 @@ const TextAnimate = React.forwardRef<HTMLElement, TextAnimateProps>(
       segmentClassName,
       as: Component = "p",
       startOnView = true,
-      once = false,
+      once = true,
       viewportAmount = 0.3,
       by = "word",
       animation = "fadeIn",
@@ -88,9 +88,7 @@ const TextAnimate = React.forwardRef<HTMLElement, TextAnimateProps>(
 
     const staggerChildren =
       stagger ??
-      (segments.length > 1
-        ? duration / segments.length
-        : STAGGER_BY_SPLIT[by]);
+      (segments.length > 1 ? duration / segments.length : STAGGER_BY_SPLIT[by]);
 
     const finalVariants = React.useMemo(
       () =>

@@ -6,7 +6,7 @@ description: Staggered entrance animations for headlines and copy, split by word
 import { TextAnimate } from "@godui/components";
 
 <ComponentPreview
-  code={`import { TextAnimate } from "@godui/components";
+  code={`import { TextAnimate } from "@/components/godui/text-animate";
 
 export function TextAnimateDemo() {
   return (
@@ -42,7 +42,7 @@ npm install framer-motion
 ## Usage
 
 ```tsx
-import { TextAnimate } from "@godui/components";
+import { TextAnimate } from "@/components/godui/text-animate";
 ```
 
 ### Word fade in
@@ -89,7 +89,7 @@ import { TextAnimate } from "@godui/components";
 | `duration` | `number` | `0.3` | Total animation duration; also drives default stagger when `stagger` is omitted |
 | `stagger` | `number` | derived | Delay between each segment |
 | `startOnView` | `boolean` | `true` | Animate when the element enters the viewport |
-| `once` | `boolean` | `false` | Only animate the first time it enters view |
+| `once` | `boolean` | `true` | Animate only the first time it enters view, then never again |
 | `viewportAmount` | `number \| "some" \| "all"` | `0.3` | How much of the element must be visible to trigger |
 | `accessible` | `boolean` | `true` | Screen-reader text with `aria-hidden` on animated segments |
 | `className` | `string` | — | Classes on the root element |

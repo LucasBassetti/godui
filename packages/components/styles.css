@@ -371,32 +371,24 @@
     box-shadow: none;
   }
 
-  .variable-text {
+  .elastic-text {
     font-family: "Roboto Flex Variable", var(--font-sans), sans-serif;
     font-optical-sizing: auto;
     display: inline-block;
-    font-variation-settings: "wght" 400, "wdth" 100, "slnt" 0, "opsz" 14;
+    font-variation-settings: "wght" 400;
     line-height: 1.1;
-    border: none;
-    background: transparent;
-    padding: 0;
-    margin: 0;
     color: inherit;
-    text-align: inherit;
-    cursor: inherit;
   }
 
-  .variable-text-segment {
+  .elastic-text-segment {
     display: inline-block;
     white-space: pre;
     will-change: font-variation-settings;
-    font-variation-settings:
-      "wght" var(--vt-wght, 400), "wdth" var(--vt-wdth, 100),
-      "slnt" var(--vt-slnt, 0), "opsz" var(--vt-opsz, 14);
+    font-variation-settings: "wght" var(--et-wght, 400);
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .variable-text-segment {
+    .elastic-text-segment {
       will-change: auto;
     }
   }

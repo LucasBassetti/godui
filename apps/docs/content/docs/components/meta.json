@@ -7,8 +7,7 @@
     "buttons/progress-fold-button",
     "buttons/mask-button",
     "---Text---",
-    "text/typography",
-    "text/variable-text",
+    "text/elastic-text",
     "text/text-animate",
     "text/highlighter"
   ]

@@ -1,0 +1,84 @@
+---
+title: Elastic Text
+description: Variable-font text whose weight springs up under an automatic spotlight or the pointer.
+---
+
+import { ElasticText } from "@godui/components";
+
+<ComponentPreview
+  code={`import { ElasticText } from "@/components/godui/elastic-text";
+
+export function ElasticTextDemo() {
+  return (
+    <ElasticText className="text-4xl font-sans">
+      Design for Humans
+    </ElasticText>
+  );
+}`}
+>
+  <ElasticText className="text-4xl font-sans tracking-tight">
+    Design for Humans
+  </ElasticText>
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="ElasticText" />
+
+ElasticText renders with the [Roboto Flex](https://fonts.google.com/specimen/Roboto+Flex)
+variable font for a smooth weight axis. The CLI installs
+`@fontsource-variable/roboto-flex` for you — import it once in your app entry:
+
+```ts
+import "@fontsource-variable/roboto-flex/standard.css";
+```
+
+## Usage
+
+```tsx
+import { ElasticText } from "@/components/godui/elastic-text";
+```
+
+### Auto (default)
+
+A spotlight sweeps across the text on its own, springing each character's weight up as it passes.
+
+```tsx
+<ElasticText className="text-4xl">
+  Design for Humans
+</ElasticText>
+```
+
+By default the spotlight loops forever. Set `loop={false}` to run a single sweep out and back to rest:
+
+```tsx
+<ElasticText loop={false} className="text-4xl">
+  Plays once
+</ElasticText>
+```
+
+### Hover
+
+The weight emphasis follows the pointer while it's over the text.
+
+```tsx
+<ElasticText mode="hover" className="text-4xl">
+  Move Your Mouse
+</ElasticText>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `children` | `ReactNode` | — | Text content to animate |
+| `mode` | `"auto" \| "hover"` | `"auto"` | `auto` self-sweeps a spotlight; `hover` follows the pointer |
+| `minWeight` | `number` | `300` | Resting (lightest) font weight |
+| `maxWeight` | `number` | `900` | Peak (heaviest) weight under the spotlight / pointer |
+| `duration` | `number` | `2` | Seconds for one full `auto` sweep |
+| `loop` | `boolean` | `true` | Repeat the `auto` sweep |
+| `radius` | `number` | `120` | Pointer influence radius in px (`hover` mode) |
+
+## Accessibility
+
+When `prefers-reduced-motion` is enabled, the animation is disabled and the text renders statically at `minWeight`.

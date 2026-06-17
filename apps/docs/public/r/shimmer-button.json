@@ -1,0 +1,53 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "shimmer-button",
+  "title": "Shimmer Button",
+  "description": "A button with an animated shimmering border light that speeds up on hover.",
+  "registryDependencies": [
+    "@godui/godui-theme"
+  ],
+  "files": [
+    {
+      "path": "packages/components/src/shimmer-button.tsx",
+      "content": "\"use client\";\n\nimport type { CSSProperties } from \"react\";\nimport * as React from \"react\";\n\nexport type ShimmerButtonVariant = \"primary\" | \"secondary\" | \"outline\";\nexport type ShimmerButtonSize = \"sm\" | \"md\" | \"lg\";\n\nexport type ShimmerButtonProps =\n  React.ButtonHTMLAttributes<HTMLButtonElement> & {\n    variant?: ShimmerButtonVariant;\n    size?: ShimmerButtonSize;\n    /** Animate the button with a shimmering border light effect */\n    shimmer?: boolean;\n    /** Color of the shimmering light effect */\n    shimmerColor?: string;\n    /** Inset size of the shimmer backdrop cut */\n    shimmerSize?: string;\n    /** Duration of the shimmer animation */\n    shimmerDuration?: string;\n    /** Border radius of the button */\n    borderRadius?: string;\n    /** Background color of the button */\n    background?: string;\n  };\n\n// Padding and font-size come from the shared button size scale via\n// `.shimmer-button[data-size=\"…\"]` rules in styles.css.\nconst radiusBySize: Record<ShimmerButtonSize, string> = {\n  sm: \"var(--button-radius-sm)\",\n  md: \"var(--button-radius-md)\",\n  lg: \"var(--button-radius-lg)\",\n};\n\nconst variantDefaults: Record<\n  ShimmerButtonVariant,\n  {\n    background: string;\n    shimmerColor: string;\n    shimmerSpread: string;\n    textClass: string;\n    borderClass: string;\n  }\n> = {\n  primary: {\n    background: \"var(--primary)\",\n    shimmerColor:\n      \"color-mix(in srgb, var(--primary-foreground) 80%, var(--primary))\",\n    shimmerSpread: \"55deg\",\n    textClass: \"text-primary-foreground\",\n    borderClass: \"border-transparent\",\n  },\n  secondary: {\n    background: \"var(--secondary)\",\n    shimmerColor: \"var(--secondary-foreground)\",\n    shimmerSpread: \"90deg\",\n    textClass: \"text-secondary-foreground\",\n    borderClass: \"border-secondary-foreground/20\",\n  },\n  outline: {\n    background: \"var(--background)\",\n    shimmerColor: \"var(--primary)\",\n    shimmerSpread: \"90deg\",\n    textClass: \"text-foreground\",\n    borderClass: \"border-border\",\n  },\n};\n\nconst ShimmerButton = React.forwardRef<HTMLButtonElement, ShimmerButtonProps>(\n  (\n    {\n      className,\n      variant = \"primary\",\n      size = \"md\",\n      shimmer = true,\n      shimmerColor,\n      shimmerSize = \"0.05em\",\n      shimmerDuration = \"3s\",\n      borderRadius,\n      background,\n      children,\n      type = \"button\",\n      onMouseEnter,\n      onMouseLeave,\n      ...props\n    },\n    ref,\n  ) => {\n    const defaults = variantDefaults[variant];\n    const sparkRef = React.useRef<HTMLDivElement>(null);\n\n    const style = {\n      \"--spread\": defaults.shimmerSpread,\n      \"--shimmer-color\": shimmerColor ?? defaults.shimmerColor,\n      \"--radius\": borderRadius ?? radiusBySize[size],\n      \"--speed\": shimmerDuration,\n      \"--cut\": shimmerSize,\n      \"--bg\": background ?? defaults.background,\n    } as CSSProperties;\n\n    const handleMouseEnter = (e: React.MouseEvent<HTMLButtonElement>) => {\n      sparkRef.current?.getAnimations({ subtree: true }).forEach((a) => {\n        a.playbackRate = 3;\n      });\n      onMouseEnter?.(e);\n    };\n\n    const handleMouseLeave = (e: React.MouseEvent<HTMLButtonElement>) => {\n      sparkRef.current?.getAnimations({ subtree: true }).forEach((a) => {\n        a.playbackRate = 1;\n      });\n      onMouseLeave?.(e);\n    };\n\n    return (\n      <button\n        ref={ref}\n        type={type}\n        data-variant={variant}\n        data-size={size}\n        data-shimmer={shimmer ? \"true\" : undefined}\n        style={style}\n        className={`group shimmer-button relative z-0 flex cursor-pointer items-center justify-center overflow-hidden [border-radius:var(--radius)] border whitespace-nowrap [background:var(--bg)] transform-gpu transition-transform duration-300 ease-in-out active:translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${defaults.textClass} ${defaults.borderClass} ${className ?? \"\"}`}\n        onMouseEnter={handleMouseEnter}\n        onMouseLeave={handleMouseLeave}\n        {...props}\n      >\n        <div\n          ref={sparkRef}\n          className=\"shimmer-button-spark absolute inset-0 -z-30 overflow-visible blur-[2px] [container-type:size]\"\n          aria-hidden=\"true\"\n        >\n          <div className=\"animate-shimmer-slide absolute inset-0 aspect-square h-[100cqh] rounded-none [mask:none]\">\n            <div className=\"animate-spin-around absolute -inset-full w-auto rotate-0 [translate:0_0] [background:conic-gradient(from_calc(270deg-(var(--spread)*0.5)),transparent_0,var(--shimmer-color)_var(--spread),transparent_var(--spread))]\" />\n          </div>\n        </div>\n\n        <span className=\"relative z-10\">{children}</span>\n\n        <div className=\"shimmer-button-highlight\" aria-hidden=\"true\" />\n\n        <div\n          className=\"shimmer-button-backdrop absolute -z-20 [inset:var(--cut)] [border-radius:var(--radius)] [background:var(--bg)]\"\n          aria-hidden=\"true\"\n        />\n      </button>\n    );\n  },\n);\nShimmerButton.displayName = \"ShimmerButton\";\n\nexport { ShimmerButton };\n",
+      "type": "registry:ui",
+      "target": "components/godui/shimmer-button.tsx"
+    }
+  ],
+  "css": {
+    "@layer components": {
+      ".shimmer-button[data-size=\"sm\"]": {
+        "padding": "var(--button-py-sm) var(--button-px-sm)",
+        "font-size": "var(--button-text-sm)",
+        "line-height": "var(--button-leading-sm)"
+      },
+      ".shimmer-button[data-size=\"md\"]": {
+        "padding": "var(--button-py-md) var(--button-px-md)",
+        "font-size": "var(--button-text-md)",
+        "line-height": "var(--button-leading-md)"
+      },
+      ".shimmer-button[data-size=\"lg\"]": {
+        "padding": "var(--button-py-lg) var(--button-px-lg)",
+        "font-size": "var(--button-text-lg)",
+        "line-height": "var(--button-leading-lg)"
+      },
+      ".shimmer-button-highlight": {
+        "pointer-events": "none",
+        "position": "absolute",
+        "inset": "0",
+        "border-radius": "inherit",
+        "transition": "box-shadow 300ms ease-in-out"
+      },
+      ".shimmer-button:not([data-shimmer=\"true\"]) .shimmer-button-spark, .shimmer-button:not([data-shimmer=\"true\"]) .shimmer-button-highlight, .shimmer-button:not([data-shimmer=\"true\"]) .shimmer-button-backdrop, .shimmer-button:disabled .shimmer-button-spark, .shimmer-button:disabled .shimmer-button-highlight, .shimmer-button:disabled .shimmer-button-backdrop": {
+        "display": "none"
+      },
+      ".shimmer-button[data-variant=\"primary\"] .shimmer-button-spark": {
+        "filter": "blur(1px)"
+      },
+      ".shimmer-button[data-variant=\"primary\"] .shimmer-button-highlight, .shimmer-button[data-variant=\"primary\"]:hover .shimmer-button-highlight, .shimmer-button[data-variant=\"secondary\"] .shimmer-button-highlight, .shimmer-button[data-variant=\"secondary\"]:hover .shimmer-button-highlight, .shimmer-button[data-variant=\"outline\"] .shimmer-button-highlight, .shimmer-button[data-variant=\"outline\"]:hover .shimmer-button-highlight": {
+        "box-shadow": "none"
+      }
+    }
+  },
+  "type": "registry:ui"
+}

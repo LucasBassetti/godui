@@ -1,0 +1,151 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "magic-button",
+  "title": "Magic Button",
+  "description": "A tactile 3D push button with an animated rainbow edge and shadow.",
+  "registryDependencies": [
+    "@godui/godui-theme"
+  ],
+  "files": [
+    {
+      "path": "packages/components/src/magic-button.tsx",
+      "content": "import * as React from \"react\";\n\nexport type MagicButtonVariant = \"default\" | \"secondary\";\nexport type MagicButtonSize = \"sm\" | \"md\" | \"lg\";\n\nexport type MagicButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {\n  variant?: MagicButtonVariant;\n  size?: MagicButtonSize;\n  /** Animate the 3D edge and shadow with a flowing rainbow gradient */\n  rainbow?: boolean;\n};\n\nconst sizeClasses: Record<MagicButtonSize, string> = {\n  sm: \"magic-button-front--sm\",\n  md: \"magic-button-front--md\",\n  lg: \"magic-button-front--lg\",\n};\n\nconst MagicButton = React.forwardRef<HTMLButtonElement, MagicButtonProps>(\n  (\n    {\n      className,\n      variant = \"default\",\n      size = \"md\",\n      rainbow = true,\n      children,\n      ...props\n    },\n    ref,\n  ) => {\n    return (\n      <button\n        ref={ref}\n        data-variant={variant}\n        data-rainbow={rainbow ? \"true\" : undefined}\n        className={`magic-button font-medium ${className ?? \"\"}`}\n        {...props}\n      >\n        <span className=\"magic-button-shadow\" aria-hidden=\"true\" />\n        <span className=\"magic-button-edge\" aria-hidden=\"true\" />\n        <span className={`magic-button-front ${sizeClasses[size]}`}>\n          {children}\n        </span>\n      </button>\n    );\n  },\n);\nMagicButton.displayName = \"MagicButton\";\n\nexport { MagicButton };\n",
+      "type": "registry:ui",
+      "target": "components/godui/magic-button.tsx"
+    }
+  ],
+  "css": {
+    "@keyframes magic-rainbow": {
+      "0%": {
+        "background-position": "0% 50%"
+      },
+      "100%": {
+        "background-position": "200% 50%"
+      }
+    },
+    "@layer components": {
+      ".magic-button": {
+        "position": "relative",
+        "border": "none",
+        "background": "transparent",
+        "padding": "0",
+        "cursor": "pointer",
+        "outline-offset": "4px",
+        "transition": "filter 600ms",
+        "-webkit-tap-highlight-color": "transparent",
+        "user-select": "none"
+      },
+      ".magic-button:hover": {
+        "filter": "brightness(110%)",
+        "transition": "filter 250ms"
+      },
+      ".magic-button:focus:not(:focus-visible)": {
+        "outline": "none"
+      },
+      ".magic-button:focus-visible": {
+        "outline": "2px solid var(--ring)",
+        "outline-offset": "4px"
+      },
+      ".magic-button:disabled": {
+        "cursor": "not-allowed",
+        "opacity": "0.5",
+        "pointer-events": "none",
+        "filter": "none"
+      },
+      ".magic-button:disabled .magic-button-shadow, .magic-button:disabled .magic-button-edge": {
+        "display": "none"
+      },
+      ".magic-button:disabled .magic-button-front": {
+        "transform": "translateY(0)",
+        "transition": "none"
+      },
+      ".magic-button-shadow": {
+        "position": "absolute",
+        "top": "0",
+        "left": "0",
+        "width": "100%",
+        "height": "100%",
+        "border-radius": "var(--radius-xl)",
+        "background": "hsl(0deg 0% 0% / 0.25)",
+        "will-change": "transform",
+        "transform": "translateY(2px)",
+        "filter": "blur(4px)",
+        "transition": "transform 600ms cubic-bezier(0.3, 0.7, 0.4, 1)"
+      },
+      ".magic-button:hover .magic-button-shadow": {
+        "transform": "translateY(4px)",
+        "transition": "transform 250ms cubic-bezier(0.3, 0.7, 0.4, 1.5)"
+      },
+      ".magic-button:active .magic-button-shadow": {
+        "transform": "translateY(1px)",
+        "transition": "transform 34ms"
+      },
+      ".magic-button-edge": {
+        "position": "absolute",
+        "top": "0",
+        "left": "0",
+        "width": "100%",
+        "height": "100%",
+        "border-radius": "var(--radius-xl)"
+      },
+      ".magic-button[data-variant=\"default\"] .magic-button-edge": {
+        "background": "linear-gradient(to left, color-mix(in srgb, var(--primary) 50%, black) 0%, color-mix(in srgb, var(--primary) 75%, black) 8%, color-mix(in srgb, var(--primary) 75%, black) 92%, color-mix(in srgb, var(--primary) 50%, black) 100%)"
+      },
+      ".magic-button[data-variant=\"secondary\"] .magic-button-edge": {
+        "background": "linear-gradient(to left, color-mix(in srgb, var(--secondary) 50%, black) 0%, color-mix(in srgb, var(--secondary) 75%, black) 8%, color-mix(in srgb, var(--secondary) 75%, black) 92%, color-mix(in srgb, var(--secondary) 50%, black) 100%)"
+      },
+      ".magic-button[data-rainbow=\"true\"] .magic-button-edge": {
+        "background": "linear-gradient(90deg, var(--rainbow-1), var(--rainbow-5), var(--rainbow-3), var(--rainbow-4), var(--rainbow-2))",
+        "background-size": "200% 100%",
+        "animation": "magic-rainbow var(--rainbow-speed, 2s) infinite linear"
+      },
+      ".magic-button[data-rainbow=\"true\"] .magic-button-shadow": {
+        "background": "linear-gradient(90deg, var(--rainbow-1), var(--rainbow-5), var(--rainbow-3), var(--rainbow-4), var(--rainbow-2))",
+        "background-size": "200% 100%",
+        "animation": "magic-rainbow var(--rainbow-speed, 2s) infinite linear",
+        "filter": "blur(12px)",
+        "opacity": "0.7"
+      },
+      ".magic-button-front": {
+        "display": "block",
+        "position": "relative",
+        "border-radius": "var(--radius-xl)",
+        "will-change": "transform",
+        "transform": "translateY(-4px)",
+        "transition": "transform 600ms cubic-bezier(0.3, 0.7, 0.4, 1)"
+      },
+      ".magic-button[data-variant=\"default\"] .magic-button-front": {
+        "color": "var(--primary-foreground)",
+        "background": "var(--primary)"
+      },
+      ".magic-button[data-variant=\"secondary\"] .magic-button-front": {
+        "color": "var(--secondary-foreground)",
+        "background": "var(--secondary)"
+      },
+      ".magic-button:hover .magic-button-front": {
+        "transform": "translateY(-6px)",
+        "transition": "transform 250ms cubic-bezier(0.3, 0.7, 0.4, 1.5)"
+      },
+      ".magic-button:active .magic-button-front": {
+        "transform": "translateY(-2px)",
+        "transition": "transform 34ms"
+      },
+      ".magic-button-front--sm": {
+        "padding": "var(--button-py-sm) var(--button-px-sm)",
+        "font-size": "var(--button-text-sm)",
+        "line-height": "var(--button-leading-sm)"
+      },
+      ".magic-button-front--md": {
+        "padding": "var(--button-py-md) var(--button-px-md)",
+        "font-size": "var(--button-text-md)",
+        "line-height": "var(--button-leading-md)"
+      },
+      ".magic-button-front--lg": {
+        "padding": "var(--button-py-lg) var(--button-px-lg)",
+        "font-size": "var(--button-text-lg)",
+        "line-height": "var(--button-leading-lg)"
+      }
+    }
+  },
+  "type": "registry:ui"
+}
