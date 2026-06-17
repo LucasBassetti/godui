@@ -8,6 +8,7 @@
     "---Text---",
     "text/typography",
     "text/variable-text",
-    "text/text-animate"
+    "text/text-animate",
+    "text/highlighter"
   ]
 }
