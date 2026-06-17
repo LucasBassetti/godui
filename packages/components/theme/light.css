@@ -1,59 +1,59 @@
 :root,
 .light {
-  /* Base */
-  --background: #fcfbf8;
-  --foreground: #1f2937;
+  /* Base — luminous cool-white */
+  --background: oklch(0.991 0.003 264);
+  --foreground: oklch(0.21 0.035 264);
 
   /* Surfaces */
-  --card: #ffffff;
-  --card-foreground: #1f2937;
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.21 0.035 264);
 
-  --popover: #ffffff;
-  --popover-foreground: #1f2937;
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.21 0.035 264);
 
-  /* Brand */
-  --primary: #7da8ff;
-  --primary-foreground: #ffffff;
+  /* Brand — Celestial Sapphire (AA-safe with white) */
+  --primary: oklch(0.545 0.205 264);
+  --primary-foreground: oklch(1 0 0);
 
   /* Heavenly Gold */
-  --secondary: #fff3d9;
-  --secondary-foreground: #7c5b18;
+  --secondary: oklch(0.965 0.035 88);
+  --secondary-foreground: oklch(0.43 0.085 75);
 
   /* Celestial Accent */
-  --accent: #eef5ff;
-  --accent-foreground: #4c6cbf;
+  --accent: oklch(0.96 0.03 264);
+  --accent-foreground: oklch(0.45 0.15 264);
 
   /* Neutral */
-  --muted: #f5f6f8;
-  --muted-foreground: #6b7280;
+  --muted: oklch(0.965 0.004 264);
+  --muted-foreground: oklch(0.52 0.02 264);
 
   /* Status */
-  --destructive: #ef4444;
+  --destructive: oklch(0.58 0.22 27);
 
   /* Inputs */
-  --border: #e9edf5;
-  --input: #e9edf5;
-  --ring: #7da8ff;
+  --border: oklch(0.92 0.008 264);
+  --input: oklch(0.92 0.008 264);
+  --ring: oklch(0.545 0.205 264);
 
-  /* Charts */
-  --chart-1: #7da8ff;
-  --chart-2: #ffe4a8;
-  --chart-3: #b8f2e6;
-  --chart-4: #d7c3ff;
-  --chart-5: #ffd1dc;
+  /* Charts — angelic spectrum */
+  --chart-1: oklch(0.55 0.2 264);
+  --chart-2: oklch(0.8 0.13 85);
+  --chart-3: oklch(0.82 0.1 180);
+  --chart-4: oklch(0.68 0.16 300);
+  --chart-5: oklch(0.78 0.12 12);
 
   /* Sidebar */
-  --sidebar: #ffffff;
-  --sidebar-foreground: #1f2937;
+  --sidebar: oklch(1 0 0);
+  --sidebar-foreground: oklch(0.21 0.035 264);
 
-  --sidebar-primary: #7da8ff;
-  --sidebar-primary-foreground: #ffffff;
+  --sidebar-primary: oklch(0.545 0.205 264);
+  --sidebar-primary-foreground: oklch(1 0 0);
 
-  --sidebar-accent: #f7faff;
-  --sidebar-accent-foreground: #4c6cbf;
+  --sidebar-accent: oklch(0.97 0.02 264);
+  --sidebar-accent-foreground: oklch(0.45 0.15 264);
 
-  --sidebar-border: #e9edf5;
-  --sidebar-ring: #7da8ff;
+  --sidebar-border: oklch(0.92 0.008 264);
+  --sidebar-ring: oklch(0.545 0.205 264);
 
   /* Typography — set --font-geist-* in your app (see @godui/components/fonts) */
   --font-sans: var(
@@ -116,38 +116,38 @@
   --shadow-2xl: 0 40px 80px rgb(0 0 0 / 0.16);
 
   /* Syntax Highlighting */
-  --syntax-plain: #1f2937;
-  --syntax-punctuation: #64748b;
-  --syntax-keyword: #8b7cff;
-  --syntax-property: #d4a23c;
-  --syntax-string: #10b981;
-  --syntax-comment: #94a3b8;
-  --syntax-number: #0891b2;
+  --syntax-plain: oklch(0.21 0.035 264);
+  --syntax-punctuation: oklch(0.55 0.02 264);
+  --syntax-keyword: oklch(0.52 0.19 300);
+  --syntax-property: oklch(0.56 0.11 85);
+  --syntax-string: oklch(0.52 0.13 165);
+  --syntax-comment: oklch(0.64 0.015 264);
+  --syntax-number: oklch(0.54 0.13 230);
 
   /* Inline code */
-  --inline-code-bg: #e8efff;
-  --inline-code-fg: #1e40af;
-  --inline-code-border: #93b4fd;
+  --inline-code-bg: oklch(0.95 0.03 264);
+  --inline-code-fg: oklch(0.45 0.17 264);
+  --inline-code-border: oklch(0.8 0.08 264);
 
   /* Code blocks */
-  --code-block: #f4f7fb;
-  --code-block-foreground: #1f2937;
-  --code-block-border: #e9edf5;
+  --code-block: oklch(0.975 0.006 264);
+  --code-block-foreground: oklch(0.21 0.035 264);
+  --code-block-border: oklch(0.92 0.008 264);
 
   /* Search */
-  --search-bg: #ffffff;
-  --search-fg: #374151;
-  --search-border: #c5ced9;
-  --search-kbd-bg: #eef2f8;
-  --search-kbd-fg: #1f2937;
-  --search-placeholder: #6b7280;
+  --search-bg: oklch(1 0 0);
+  --search-fg: oklch(0.3 0.025 264);
+  --search-border: oklch(0.88 0.01 264);
+  --search-kbd-bg: oklch(0.96 0.006 264);
+  --search-kbd-fg: oklch(0.21 0.035 264);
+  --search-placeholder: oklch(0.55 0.02 264);
 
   /* Theme panel */
-  --theme-panel-bg: #ffffff;
-  --theme-panel-border: #c5ced9;
-  --theme-panel-fg: #4b5563;
-  --theme-panel-active-bg: #e8efff;
-  --theme-panel-active-fg: #1e40af;
+  --theme-panel-bg: oklch(1 0 0);
+  --theme-panel-border: oklch(0.88 0.01 264);
+  --theme-panel-fg: oklch(0.4 0.02 264);
+  --theme-panel-active-bg: oklch(0.95 0.03 264);
+  --theme-panel-active-fg: oklch(0.45 0.17 264);
 
   /* Z-index */
   --z-base: 0;
@@ -171,32 +171,33 @@
   --color-secondary-fg: var(--secondary-foreground);
 
   --color-destructive: var(--destructive);
-  --color-destructive-fg: #ffffff;
+  --color-destructive-fg: oklch(1 0 0);
 
-  /* Effects */
-  --glow-highlight: 125, 168, 255;
-  --color-primary-rgb: 125, 168, 255;
+  /* Effects — sRGB triplets tracking --primary for rgba() consumers */
+  --glow-highlight: 59, 91, 217;
+  --color-primary-rgb: 59, 91, 217;
 
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
 
-  /* GOD UI Brand */
+  /* GOD UI Brand — sapphire → light → divine gold */
   --god-gradient: linear-gradient(
     135deg,
-    #7da8ff 0%,
-    #ffffff 50%,
-    #ffe4a8 100%
+    oklch(0.545 0.205 264) 0%,
+    oklch(1 0 0) 50%,
+    oklch(0.85 0.12 85) 100%
   );
 
   --god-glow:
-    0 0 24px rgba(125, 168, 255, 0.12), 0 0 80px rgba(255, 228, 168, 0.05);
+    0 0 24px oklch(0.545 0.205 264 / 0.14),
+    0 0 80px oklch(0.85 0.12 85 / 0.06);
 
-  /* Rainbow */
-  --rainbow-1: #7da8ff;
-  --rainbow-2: #d7c3ff;
-  --rainbow-3: #b8f2e6;
-  --rainbow-4: #ffd1dc;
-  --rainbow-5: #ffe4a8;
+  /* Rainbow — sapphire, iris, aqua, rose, gold */
+  --rainbow-1: oklch(0.55 0.2 264);
+  --rainbow-2: oklch(0.68 0.16 300);
+  --rainbow-3: oklch(0.82 0.1 180);
+  --rainbow-4: oklch(0.78 0.12 12);
+  --rainbow-5: oklch(0.8 0.13 85);
 
   --rainbow-speed: 2s;
 }
