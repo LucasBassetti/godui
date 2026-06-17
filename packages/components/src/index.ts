@@ -5,6 +5,11 @@ export {
   type MagicButtonVariant,
 } from "./magic-button";
 export {
+  ProgressFoldButton,
+  type ProgressFoldButtonProps,
+  type ProgressFoldButtonVariant,
+} from "./progress-fold-button";
+export {
   ShimmerButton,
   type ShimmerButtonProps,
   type ShimmerButtonSize,

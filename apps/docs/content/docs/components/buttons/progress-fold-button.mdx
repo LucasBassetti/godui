@@ -1,0 +1,55 @@
+---
+title: Progress Fold Button
+description: A 3D button whose front face folds back on hover and runs a progress bar on click.
+---
+
+import { ProgressFoldButton } from "@godui/components";
+
+<ComponentPreview
+  code={`import { ProgressFoldButton } from "@godui/components";
+
+export function ProgressFoldButtonDemo() {
+  return (
+    <div className="flex flex-wrap items-center justify-center gap-6">
+      <ProgressFoldButton variant="primary">Hover & click</ProgressFoldButton>
+      <ProgressFoldButton variant="secondary">Hover & click</ProgressFoldButton>
+    </div>
+  );
+}`}
+>
+  <div className="flex flex-wrap items-center justify-center gap-6">
+    <ProgressFoldButton variant="primary">Hover & click</ProgressFoldButton>
+    <ProgressFoldButton variant="secondary">Hover & click</ProgressFoldButton>
+  </div>
+</ComponentPreview>
+
+The front face folds back on hover, revealing the layers behind it. Clicking
+runs the progress bar animation, which resets when it finishes so it can replay
+on the next click.
+
+## Installation
+
+<ComponentInstall componentName="ProgressFoldButton" />
+
+## Usage
+
+```tsx
+import { ProgressFoldButton } from "@godui/components";
+```
+
+```tsx
+<ProgressFoldButton onClick={() => console.log("activated")}>
+  Hover & click
+</ProgressFoldButton>
+```
+
+## Props
+
+Accepts all native `<button>` attributes.
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `variant` | `"primary" \| "secondary"` | `"primary"` | Theme color scheme of the front face |
+| `children` | `ReactNode` | — | Button label |
+| `disabled` | `boolean` | `false` | Disable the button and its animations |
+| `onClick` | `(e) => void` | — | Fires on click; the progress bar runs alongside it |
