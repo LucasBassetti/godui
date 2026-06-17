@@ -10,6 +10,13 @@ export {
   type MagicButtonVariant,
 } from "./magic-button";
 export {
+  MaskButton,
+  type MaskButtonMask,
+  type MaskButtonProps,
+  type MaskButtonSize,
+  type MaskButtonVariant,
+} from "./mask-button";
+export {
   ProgressFoldButton,
   type ProgressFoldButtonProps,
   type ProgressFoldButtonSize,

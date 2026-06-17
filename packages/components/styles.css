@@ -126,6 +126,29 @@
   }
 }
 
+/* Mask button: flipbook reveal driven by a sprite-sheet mask-position */
+@keyframes mask-button-in {
+  from {
+    -webkit-mask-position: 0 0;
+    mask-position: 0 0;
+  }
+  to {
+    -webkit-mask-position: 100% 0;
+    mask-position: 100% 0;
+  }
+}
+
+@keyframes mask-button-out {
+  from {
+    -webkit-mask-position: 100% 0;
+    mask-position: 100% 0;
+  }
+  to {
+    -webkit-mask-position: 0 0;
+    mask-position: 0 0;
+  }
+}
+
 @layer components {
   .magic-button {
     position: relative;
@@ -490,6 +513,130 @@
     .progress-fold-button[data-active="true"] .progress-fold-button-bar {
       transition: none;
       animation: none;
+    }
+  }
+
+  /* Mask Button: a sprite-sheet mask flipbooks across .mask-button-fill on
+     hover, wiping it away to reveal the static label behind it. */
+  .mask-button {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    isolation: isolate;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--background);
+    color: var(--foreground);
+    cursor: pointer;
+    white-space: nowrap;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .mask-button:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 4px;
+  }
+
+  .mask-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  /* Label sits in flow and sizes the button; fill overlays it exactly */
+  .mask-button-label {
+    position: relative;
+    z-index: 0;
+  }
+
+  /* The masked overlay — primary face revealed/hidden by the sprite mask */
+  .mask-button-fill {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+  }
+
+  .mask-button[data-variant="primary"] .mask-button-fill {
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
+
+  .mask-button[data-variant="secondary"] .mask-button-fill {
+    background: var(--secondary);
+    color: var(--secondary-foreground);
+  }
+
+  .mask-button[data-mask="nature"] .mask-button-fill {
+    -webkit-mask-image: url("./src/assets/mask-nature.png");
+    mask-image: url("./src/assets/mask-nature.png");
+    -webkit-mask-size: 2300% 100%;
+    mask-size: 2300% 100%;
+    animation: mask-button-out 0.7s steps(22) forwards;
+  }
+  .mask-button[data-mask="nature"]:hover:not(:disabled) .mask-button-fill {
+    animation: mask-button-in 0.7s steps(22) forwards;
+  }
+
+  .mask-button[data-mask="urban"] .mask-button-fill {
+    -webkit-mask-image: url("./src/assets/mask-urban.png");
+    mask-image: url("./src/assets/mask-urban.png");
+    -webkit-mask-size: 3000% 100%;
+    mask-size: 3000% 100%;
+    animation: mask-button-out 0.7s steps(29) forwards;
+  }
+  .mask-button[data-mask="urban"]:hover:not(:disabled) .mask-button-fill {
+    animation: mask-button-in 0.7s steps(29) forwards;
+  }
+
+  .mask-button[data-mask="forest"] .mask-button-fill {
+    -webkit-mask-image: url("./src/assets/mask-forest.png");
+    mask-image: url("./src/assets/mask-forest.png");
+    -webkit-mask-size: 7100% 100%;
+    mask-size: 7100% 100%;
+    animation: mask-button-out 0.7s steps(70) forwards;
+  }
+  .mask-button[data-mask="forest"]:hover:not(:disabled) .mask-button-fill {
+    animation: mask-button-in 0.7s steps(70) forwards;
+  }
+
+  /* Size scale — shared --button-* tokens drive padding/font/radius */
+  .mask-button--sm {
+    padding: var(--button-py-sm) var(--button-px-sm);
+    font-size: var(--button-text-sm);
+    line-height: var(--button-leading-sm);
+    border-radius: var(--button-radius-sm);
+  }
+  .mask-button--md {
+    padding: var(--button-py-md) var(--button-px-md);
+    font-size: var(--button-text-md);
+    line-height: var(--button-leading-md);
+    border-radius: var(--button-radius-md);
+  }
+  .mask-button--lg {
+    padding: var(--button-py-lg) var(--button-px-lg);
+    font-size: var(--button-text-lg);
+    line-height: var(--button-leading-lg);
+    border-radius: var(--button-radius-lg);
+  }
+
+  /* Reduced motion: drop the flipbook, keep a static hover state swap */
+  @media (prefers-reduced-motion: reduce) {
+    .mask-button-fill {
+      animation: none;
+      -webkit-mask-position: 0 0;
+      mask-position: 0 0;
+    }
+    .mask-button:hover:not(:disabled) .mask-button-fill {
+      animation: none;
+      -webkit-mask-position: 100% 0;
+      mask-position: 100% 0;
     }
   }
 }

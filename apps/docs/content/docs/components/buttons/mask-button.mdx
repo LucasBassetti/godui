@@ -1,0 +1,58 @@
+---
+title: Mask Button
+description: A button whose face wipes away on hover via an animated CSS sprite-sheet mask, revealing the label behind it.
+---
+
+import { MaskButton } from "@godui/components";
+
+<ComponentPreview
+  code={`import { MaskButton } from "@godui/components";
+
+export function MaskButtonDemo() {
+  return (
+    <div className="flex flex-wrap items-center justify-center gap-6">
+      <MaskButton mask="nature">Hover me</MaskButton>
+      <MaskButton mask="urban">Hover me</MaskButton>
+      <MaskButton mask="forest">Hover me</MaskButton>
+    </div>
+  );
+}`}
+>
+  <div className="flex flex-wrap items-center justify-center gap-6">
+    <MaskButton mask="nature">Hover me</MaskButton>
+    <MaskButton mask="urban">Hover me</MaskButton>
+    <MaskButton mask="forest">Hover me</MaskButton>
+  </div>
+</ComponentPreview>
+
+The primary face is masked by a horizontal sprite-sheet image. On hover the
+mask flipbooks frame-by-frame (`steps()` on `mask-position`), wiping the face
+away to reveal the label, then plays in reverse on mouse-leave. Each `mask`
+value uses a different sprite for a distinct transition. Inspired by
+[this Codrops article](https://tympanus.net/codrops/2016/09/29/transition-effect-with-css-masks/).
+
+## Installation
+
+<ComponentInstall componentName="MaskButton" />
+
+## Usage
+
+```tsx
+import { MaskButton } from "@godui/components";
+```
+
+```tsx
+<MaskButton mask="nature">Hover me</MaskButton>
+```
+
+## Props
+
+Accepts all native `<button>` attributes.
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `mask` | `"nature" \| "urban" \| "forest"` | `"nature"` | Sprite-sheet mask used for the hover transition |
+| `variant` | `"primary" \| "secondary"` | `"primary"` | Color of the masked face |
+| `size` | `"sm" \| "md" \| "lg"` | `"md"` | Size scale (padding / font / radius) |
+| `children` | `ReactNode` | — | Button label |
+| `disabled` | `boolean` | `false` | Disable the button and its animation |
