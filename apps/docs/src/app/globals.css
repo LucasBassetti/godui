@@ -62,16 +62,16 @@ body {
 /* Docs layout — tighter sidebar, no outer gutter columns */
 @media (width >= 48rem) {
   #nd-docs-layout {
-    --fd-sidebar-width: 220px;
+    --fd-sidebar-width: 260px;
   }
 
   [data-sidebar-placeholder] {
-    --fd-sidebar-width: 220px;
+    --fd-sidebar-width: 260px;
   }
 }
 
 #nd-sidebar > .flex.flex-col.gap-3.p-4 {
-  padding-inline: 0.875rem;
+  padding: 0.5rem 0.875rem 0.25rem;
 }
 
 /* Component preview canvas */
@@ -224,38 +224,18 @@ body {
   color: var(--search-fg);
 }
 
-/* Theme panel — sidebar switcher bar */
-#nd-sidebar .rounded-lg:has([data-theme-toggle]) {
-  background: var(--theme-panel-bg) !important;
-  border-color: var(--theme-panel-border) !important;
-  color: var(--theme-panel-fg);
-}
-
-#nd-sidebar .rounded-lg:has([data-theme-toggle]) > a,
-#nd-sidebar .rounded-lg:has([data-theme-toggle]) > button:not([data-theme-toggle] *) {
-  color: var(--theme-panel-fg);
-}
-
-#nd-sidebar .rounded-lg:has([data-theme-toggle]) > a:hover,
-#nd-sidebar .rounded-lg:has([data-theme-toggle]) > button:not([data-theme-toggle] *):hover {
-  color: var(--color-fd-foreground);
-  background: color-mix(
-    in srgb,
-    var(--theme-panel-bg) 85%,
-    var(--color-fd-primary) 15%
-  );
+/* Sidebar — no border, blend with page background, stick below header */
+#nd-sidebar {
+  border-right: none !important;
+  background: var(--color-fd-background) !important;
+  position: sticky !important;
+  top: var(--fd-nav-height, 3.5rem) !important;
+  height: calc(100dvh - var(--fd-nav-height, 3.5rem)) !important;
 }
 
 [data-theme-toggle] {
   background: var(--theme-panel-bg) !important;
   border-color: var(--theme-panel-border) !important;
-}
-
-#nd-sidebar .rounded-lg:has([data-theme-toggle]) [data-theme-toggle] {
-  background: transparent !important;
-  border-block-color: transparent !important;
-  border-inline-end-color: transparent !important;
-  border-inline-start-color: var(--theme-panel-border) !important;
 }
 
 [data-theme-toggle] .text-fd-muted-foreground {

@@ -664,14 +664,14 @@ const VariableText = React.forwardRef<HTMLElement, VariableTextProps>(
     }
 
     return (
-      <div
+      <span
         ref={mergedRef}
         className={`variable-text ${className ?? ""}`}
         {...interactionProps}
         {...props}
       >
         {renderedSegments}
-      </div>
+      </span>
     );
   },
 );

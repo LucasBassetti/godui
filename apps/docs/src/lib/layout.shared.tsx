@@ -6,8 +6,7 @@ export function baseOptions(): BaseLayoutProps {
       title: "GoDUI",
     },
     themeSwitch: {
-      enabled: true,
-      mode: "light-dark-system",
+      enabled: false,
     },
   };
 }
