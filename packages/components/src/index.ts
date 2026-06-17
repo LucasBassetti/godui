@@ -1,4 +1,9 @@
 export {
+  Highlighter,
+  type HighlighterAction,
+  type HighlighterProps,
+} from "./highlighter";
+export {
   MagicButton,
   type MagicButtonProps,
   type MagicButtonSize,

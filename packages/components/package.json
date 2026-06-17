@@ -35,7 +35,8 @@
     "react": "^18 || ^19"
   },
   "dependencies": {
-    "@fontsource-variable/roboto-flex": "^5.2.8"
+    "@fontsource-variable/roboto-flex": "^5.2.8",
+    "rough-notation": "^0.5.1"
   },
   "peerDependenciesMeta": {
     "geist": {

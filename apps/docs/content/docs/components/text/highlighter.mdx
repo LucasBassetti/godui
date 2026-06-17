@@ -1,0 +1,122 @@
+---
+title: Highlighter
+description: Draw hand-drawn sketch annotations over inline text — highlight, underline, box, circle, and more. Powered by Rough Notation.
+---
+
+import { Highlighter } from "@godui/components";
+
+Draw hand-drawn sketch annotations over inline text, powered by
+[Rough Notation](https://roughnotation.com/).
+
+<ComponentPreview
+  code={`import { Highlighter } from "@godui/components";
+
+export function HighlighterDemo() {
+  return (
+    <p className="text-2xl leading-relaxed">
+      <Highlighter action="highlight">highlight</Highlighter>{" "}
+      <Highlighter action="underline" color="#60a5fa">underline</Highlighter>{" "}
+      <Highlighter action="box" color="#f59e0b">box</Highlighter>{" "}
+      <Highlighter action="circle" color="#34d399">circle</Highlighter>{" "}
+      <Highlighter action="strike-through" color="#f87171">strike-through</Highlighter>{" "}
+      <Highlighter action="crossed-off" color="#a78bfa">crossed-off</Highlighter>{" "}
+      <Highlighter action="bracket" color="#fb7185">bracket</Highlighter>
+    </p>
+  );
+}`}
+>
+  <p className="text-2xl leading-relaxed">
+    <Highlighter action="highlight">highlight</Highlighter>{" "}
+    <Highlighter action="underline" color="#60a5fa">underline</Highlighter>{" "}
+    <Highlighter action="box" color="#f59e0b">box</Highlighter>{" "}
+    <Highlighter action="circle" color="#34d399">circle</Highlighter>{" "}
+    <Highlighter action="strike-through" color="#f87171">strike-through</Highlighter>{" "}
+    <Highlighter action="crossed-off" color="#a78bfa">crossed-off</Highlighter>{" "}
+    <Highlighter action="bracket" color="#fb7185">bracket</Highlighter>
+  </p>
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="Highlighter" />
+
+`Highlighter` draws its sketch annotations with [`rough-notation`](https://github.com/linktohack/rough-notation)
+and uses `framer-motion` for the optional in-view trigger. Both are peer dependencies:
+
+```bash
+npm install rough-notation framer-motion
+```
+
+## Usage
+
+```tsx
+import { Highlighter } from "@godui/components";
+```
+
+Wrap any inline text. The annotation is drawn over the element on mount.
+
+```tsx
+<p>
+  The quick brown <Highlighter>fox</Highlighter> jumps over the lazy dog.
+</p>
+```
+
+### Actions
+
+```tsx
+<Highlighter action="highlight">highlight</Highlighter>
+<Highlighter action="underline" color="#60a5fa">underline</Highlighter>
+<Highlighter action="box" color="#f59e0b">box</Highlighter>
+<Highlighter action="circle" color="#34d399">circle</Highlighter>
+<Highlighter action="strike-through" color="#f87171">strike-through</Highlighter>
+<Highlighter action="crossed-off" color="#a78bfa">crossed-off</Highlighter>
+<Highlighter action="bracket" color="#fb7185">bracket</Highlighter>
+```
+
+The `highlight` action paints a pale marker behind the text and renders it in
+dark ink — like a real highlighter pen — so it stays legible in both light and
+dark mode. The other actions draw around the text and keep the inherited color.
+
+### Animate on scroll
+
+Set `isView` to defer the draw-in animation until the element scrolls into view.
+
+```tsx
+<Highlighter action="underline" isView>
+  Reveals as you scroll
+</Highlighter>
+```
+
+### Tuning the sketch
+
+```tsx
+<Highlighter
+  action="box"
+  color="#22d3ee"
+  strokeWidth={2.5}
+  iterations={3}
+  padding={6}
+  animationDuration={900}
+>
+  Bolder, looser, slower
+</Highlighter>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `children` | `ReactNode` | — | Inline text to annotate |
+| `action` | `"highlight" \| "underline" \| "box" \| "circle" \| "strike-through" \| "crossed-off" \| "bracket"` | `"highlight"` | Annotation style |
+| `color` | `string` | `"#ffd1dc"` | Annotation color (any CSS color string) |
+| `strokeWidth` | `number` | `1.5` | Stroke width of the annotation |
+| `animationDuration` | `number` | `600` | Draw-in animation duration in milliseconds |
+| `iterations` | `number` | `2` | Number of sketch passes (higher = more hand-drawn) |
+| `padding` | `number` | `2` | Gap between the text and the annotation |
+| `multiline` | `boolean` | `true` | Allow the annotation to wrap across lines |
+| `isView` | `boolean` | `false` | Defer the animation until scrolled into view |
+
+## Accessibility
+
+The annotation is a decorative SVG overlay; it does not alter the text content,
+so the underlying text remains fully readable and selectable by screen readers.
