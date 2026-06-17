@@ -11,6 +11,9 @@ importers:
       '@biomejs/biome':
         specifier: ^2.4.8
         version: 2.5.0
+      portless:
+        specifier: ^0.14.0
+        version: 0.14.0
       shadcn:
         specifier: ^3.8.5
         version: 3.8.5(@types/node@25.9.3)(typescript@5.9.3)
@@ -130,6 +133,9 @@ importers:
       non.geist:
         specifier: ^2.0.1
         version: 2.0.1
+      portless:
+        specifier: ^0.14.0
+        version: 0.14.0
       shx:
         specifier: ^0.4.0
         version: 0.4.0
@@ -4745,6 +4751,12 @@ packages:
   pkg-up@3.1.0:
     resolution: {integrity: sha512-nDywThFk1i4BQK4twPQ6TA4RT8bDY96yeuCVBWL3ePARCiEKDRSrNGbFIgUJpLp+XeIR65v8ra7WuJOFUBtkMA==}
     engines: {node: '>=8'}
+
+  portless@0.14.0:
+    resolution: {integrity: sha512-kKxmxB1DQ9gI8t+V13VhuwTXu31io5nbFubvZAE82AxzXBsvcJV7qQJbmomrQUpbVxo2UVHqs14iX4YK0BClmQ==}
+    engines: {node: '>=24'}
+    os: [darwin, linux, win32]
+    hasBin: true
 
   possible-typed-array-names@1.1.0:
     resolution: {integrity: sha512-/+5VFTchJDoVj3bhoqi6UeymcD00DAwb1nJwamzPvHEszJ4FpF6SNNbUbOS8yI56qHzdV8eK0qEfOSiodkTdxg==}
@@ -10487,6 +10499,8 @@ snapshots:
   pkg-up@3.1.0:
     dependencies:
       find-up: 3.0.0
+
+  portless@0.14.0: {}
 
   possible-typed-array-names@1.1.0: {}
 

@@ -5,6 +5,7 @@
     "build": "turbo build",
     "build:registry": "shadcn build --output apps/docs/public/r",
     "dev": "turbo dev",
+    "dev:portless": "portless",
     "lint": "turbo lint",
     "check": "biome check .",
     "check:fix": "biome check --write .",
@@ -12,6 +13,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.8",
+    "portless": "^0.14.0",
     "shadcn": "^3.8.5",
     "tsup": "^8.3.5",
     "turbo": "^2.8.20",

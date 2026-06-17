@@ -4,9 +4,13 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "storybook dev -p 6006 --no-open",
+    "dev": "storybook dev -p ${PORT:-6006} --no-open",
+    "dev:portless": "portless",
     "build": "storybook build -o storybook-static && shx rm -rf ../docs/public/design-system && shx mkdir -p ../docs/public && shx cp -R storybook-static ../docs/public/design-system",
     "lint": "tsc -p tsconfig.json --noEmit"
+  },
+  "portless": {
+    "name": "godui-storybook"
   },
   "dependencies": {
     "@godui/components": "workspace:*",
@@ -24,6 +28,7 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.0.4",
     "non.geist": "^2.0.1",
+    "portless": "^0.14.0",
     "shx": "^0.4.0",
     "storybook": "^10.3.1",
     "typescript": "^5.9.3",

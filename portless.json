@@ -1,0 +1,6 @@
+{
+  "apps": {
+    "apps/docs": { "name": "godui-docs" },
+    "apps/storybook": { "name": "godui-storybook" }
+  }
+}

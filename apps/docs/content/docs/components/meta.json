@@ -1,5 +1,6 @@
 {
   "title": "Components",
+  "defaultOpen": true,
   "pages": [
     "---Buttons---",
     "buttons/magic-button",
