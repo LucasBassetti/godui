@@ -6,8 +6,7 @@
     "buttons/shimmer-button",
     "buttons/progress-fold-button",
     "---Text---",
-    "text/typography",
-    "text/variable-text",
+    "text/elastic-text",
     "text/text-animate",
     "text/highlighter"
   ]

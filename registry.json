@@ -1,0 +1,563 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "godui",
+  "homepage": "https://godui.design",
+  "items": [
+    {
+      "name": "godui-theme",
+      "type": "registry:theme",
+      "title": "GoDUI Theme",
+      "description": "Celestial Sapphire design tokens (OKLCH) — colors, radius, fonts, shadows, button scale, and rainbow tokens shared by all GoDUI components.",
+      "cssVars": {
+        "theme": {
+          "font-sans": "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif",
+          "font-serif": "ui-serif, Georgia, Cambria, \"Times New Roman\", Times, serif",
+          "font-mono": "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", monospace",
+          "radius-sm": "calc(var(--radius) - 4px)",
+          "radius-md": "calc(var(--radius) - 2px)",
+          "radius-lg": "var(--radius)",
+          "radius-xl": "calc(var(--radius) + 4px)",
+          "button-py-sm": "0.5rem",
+          "button-px-sm": "1rem",
+          "button-text-sm": "0.875rem",
+          "button-leading-sm": "1.25rem",
+          "button-radius-sm": "var(--radius-md)",
+          "button-py-md": "0.75rem",
+          "button-px-md": "1.5rem",
+          "button-text-md": "0.875rem",
+          "button-leading-md": "1.25rem",
+          "button-radius-md": "var(--radius-lg)",
+          "button-py-lg": "1rem",
+          "button-px-lg": "2rem",
+          "button-text-lg": "1rem",
+          "button-leading-lg": "1.5rem",
+          "button-radius-lg": "var(--radius-xl)",
+          "animate-shimmer-slide": "shimmer-slide var(--speed) ease-in-out infinite alternate",
+          "animate-spin-around": "spin-around calc(var(--speed) * 2) infinite linear"
+        },
+        "light": {
+          "background": "oklch(0.992 0.004 266)",
+          "foreground": "oklch(0.2 0.036 266)",
+          "card": "oklch(1 0 0)",
+          "card-foreground": "oklch(0.2 0.036 266)",
+          "popover": "oklch(1 0 0)",
+          "popover-foreground": "oklch(0.2 0.036 266)",
+          "primary": "oklch(0.55 0.19 266)",
+          "primary-foreground": "oklch(1 0 0)",
+          "secondary": "oklch(0.97 0.04 90)",
+          "secondary-foreground": "oklch(0.42 0.09 80)",
+          "accent": "oklch(0.965 0.025 266)",
+          "accent-foreground": "oklch(0.46 0.155 266)",
+          "muted": "oklch(0.97 0.005 266)",
+          "muted-foreground": "oklch(0.51 0.022 266)",
+          "destructive": "oklch(0.57 0.21 25)",
+          "border": "oklch(0.925 0.01 266)",
+          "input": "oklch(0.925 0.01 266)",
+          "ring": "oklch(0.55 0.19 266)",
+          "chart-1": "oklch(0.55 0.19 266)",
+          "chart-2": "oklch(0.8 0.13 90)",
+          "chart-3": "oklch(0.82 0.1 185)",
+          "chart-4": "oklch(0.68 0.16 305)",
+          "chart-5": "oklch(0.78 0.12 14)",
+          "sidebar": "oklch(1 0 0)",
+          "sidebar-foreground": "oklch(0.2 0.036 266)",
+          "sidebar-primary": "oklch(0.55 0.19 266)",
+          "sidebar-primary-foreground": "oklch(1 0 0)",
+          "sidebar-accent": "oklch(0.97 0.018 266)",
+          "sidebar-accent-foreground": "oklch(0.46 0.155 266)",
+          "sidebar-border": "oklch(0.925 0.01 266)",
+          "sidebar-ring": "oklch(0.55 0.19 266)",
+          "radius": "0.75rem",
+          "shadow-2xs": "0 1px 2px rgb(0 0 0 / 0.02)",
+          "shadow-xs": "0 1px 3px rgb(0 0 0 / 0.04)",
+          "shadow-sm": "0 2px 6px rgb(0 0 0 / 0.05)",
+          "shadow": "0 4px 12px rgb(0 0 0 / 0.06)",
+          "shadow-md": "0 8px 20px rgb(0 0 0 / 0.08)",
+          "shadow-lg": "0 16px 32px rgb(0 0 0 / 0.1)",
+          "shadow-xl": "0 24px 48px rgb(0 0 0 / 0.12)",
+          "shadow-2xl": "0 40px 80px rgb(0 0 0 / 0.16)",
+          "god-gradient": "linear-gradient(135deg, oklch(0.55 0.19 266) 0%, oklch(1 0 0) 50%, oklch(0.85 0.12 90) 100%)",
+          "god-glow": "0 0 24px oklch(0.55 0.19 266 / 0.14), 0 0 80px oklch(0.85 0.12 90 / 0.06)",
+          "glow-highlight": "61, 102, 223",
+          "color-primary-rgb": "61, 102, 223",
+          "rainbow-1": "oklch(0.55 0.19 266)",
+          "rainbow-2": "oklch(0.68 0.16 305)",
+          "rainbow-3": "oklch(0.82 0.1 185)",
+          "rainbow-4": "oklch(0.78 0.12 14)",
+          "rainbow-5": "oklch(0.8 0.13 90)",
+          "rainbow-speed": "2s"
+        },
+        "dark": {
+          "background": "oklch(0.16 0.026 266)",
+          "foreground": "oklch(0.96 0.008 266)",
+          "card": "oklch(0.205 0.027 266)",
+          "card-foreground": "oklch(0.96 0.008 266)",
+          "popover": "oklch(0.235 0.028 266)",
+          "popover-foreground": "oklch(0.96 0.008 266)",
+          "primary": "oklch(0.72 0.15 266)",
+          "primary-foreground": "oklch(0.18 0.04 266)",
+          "secondary": "oklch(0.275 0.038 290)",
+          "secondary-foreground": "oklch(0.9 0.07 90)",
+          "accent": "oklch(0.3 0.045 266)",
+          "accent-foreground": "oklch(0.85 0.055 266)",
+          "muted": "oklch(0.235 0.02 266)",
+          "muted-foreground": "oklch(0.72 0.02 266)",
+          "destructive": "oklch(0.7 0.17 25)",
+          "border": "oklch(0.28 0.02 266)",
+          "input": "oklch(0.265 0.02 266)",
+          "ring": "oklch(0.72 0.15 266)",
+          "chart-1": "oklch(0.71 0.16 266)",
+          "chart-2": "oklch(0.84 0.13 90)",
+          "chart-3": "oklch(0.84 0.1 185)",
+          "chart-4": "oklch(0.74 0.16 305)",
+          "chart-5": "oklch(0.8 0.12 14)",
+          "sidebar": "oklch(0.18 0.026 266)",
+          "sidebar-foreground": "oklch(0.96 0.008 266)",
+          "sidebar-primary": "oklch(0.72 0.15 266)",
+          "sidebar-primary-foreground": "oklch(0.18 0.04 266)",
+          "sidebar-accent": "oklch(0.3 0.045 266)",
+          "sidebar-accent-foreground": "oklch(0.85 0.055 266)",
+          "sidebar-border": "oklch(0.265 0.02 266)",
+          "sidebar-ring": "oklch(0.72 0.15 266)",
+          "shadow-2xs": "0 1px 2px rgb(0 0 0 / 0.12)",
+          "shadow-xs": "0 1px 3px rgb(0 0 0 / 0.15)",
+          "shadow-sm": "0 2px 6px rgb(0 0 0 / 0.2)",
+          "shadow": "0 4px 12px rgb(0 0 0 / 0.25)",
+          "shadow-md": "0 8px 20px rgb(0 0 0 / 0.3)",
+          "shadow-lg": "0 16px 32px rgb(0 0 0 / 0.35)",
+          "shadow-xl": "0 24px 48px rgb(0 0 0 / 0.4)",
+          "shadow-2xl": "0 40px 80px rgb(0 0 0 / 0.5)",
+          "god-gradient": "linear-gradient(135deg, oklch(0.72 0.15 266) 0%, oklch(1 0 0) 50%, oklch(0.86 0.12 90) 100%)",
+          "god-glow": "0 0 24px oklch(0.72 0.15 266 / 0.28), 0 0 80px oklch(0.86 0.12 90 / 0.12)",
+          "glow-highlight": "120, 160, 255",
+          "color-primary-rgb": "120, 160, 255",
+          "rainbow-1": "oklch(0.72 0.15 266)",
+          "rainbow-2": "oklch(0.74 0.16 305)",
+          "rainbow-3": "oklch(0.84 0.1 185)",
+          "rainbow-4": "oklch(0.8 0.12 14)",
+          "rainbow-5": "oklch(0.84 0.13 90)",
+          "rainbow-speed": "2s"
+        }
+      },
+      "css": {
+        "@layer base": {
+          ":is(code, kbd, samp, pre)": {
+            "font-family": "var(--font-mono)"
+          }
+        },
+        "@keyframes shimmer-slide": {
+          "to": {
+            "transform": "translate(calc(100cqw - 100%), 0)"
+          }
+        },
+        "@keyframes spin-around": {
+          "0%": {
+            "transform": "translateZ(0) rotate(0)"
+          },
+          "15%, 35%": {
+            "transform": "translateZ(0) rotate(90deg)"
+          },
+          "65%, 85%": {
+            "transform": "translateZ(0) rotate(270deg)"
+          },
+          "100%": {
+            "transform": "translateZ(0) rotate(360deg)"
+          }
+        }
+      }
+    },
+    {
+      "name": "magic-button",
+      "type": "registry:ui",
+      "title": "Magic Button",
+      "description": "A tactile 3D push button with an animated rainbow edge and shadow.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/magic-button.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/magic-button.tsx"
+        }
+      ],
+      "css": {
+        "@keyframes magic-rainbow": {
+          "0%": {
+            "background-position": "0% 50%"
+          },
+          "100%": {
+            "background-position": "200% 50%"
+          }
+        },
+        "@layer components": {
+          ".magic-button": {
+            "position": "relative",
+            "border": "none",
+            "background": "transparent",
+            "padding": "0",
+            "cursor": "pointer",
+            "outline-offset": "4px",
+            "transition": "filter 600ms",
+            "-webkit-tap-highlight-color": "transparent",
+            "user-select": "none"
+          },
+          ".magic-button:hover": {
+            "filter": "brightness(110%)",
+            "transition": "filter 250ms"
+          },
+          ".magic-button:focus:not(:focus-visible)": {
+            "outline": "none"
+          },
+          ".magic-button:focus-visible": {
+            "outline": "2px solid var(--ring)",
+            "outline-offset": "4px"
+          },
+          ".magic-button:disabled": {
+            "cursor": "not-allowed",
+            "opacity": "0.5",
+            "pointer-events": "none",
+            "filter": "none"
+          },
+          ".magic-button:disabled .magic-button-shadow, .magic-button:disabled .magic-button-edge": {
+            "display": "none"
+          },
+          ".magic-button:disabled .magic-button-front": {
+            "transform": "translateY(0)",
+            "transition": "none"
+          },
+          ".magic-button-shadow": {
+            "position": "absolute",
+            "top": "0",
+            "left": "0",
+            "width": "100%",
+            "height": "100%",
+            "border-radius": "var(--radius-xl)",
+            "background": "hsl(0deg 0% 0% / 0.25)",
+            "will-change": "transform",
+            "transform": "translateY(2px)",
+            "filter": "blur(4px)",
+            "transition": "transform 600ms cubic-bezier(0.3, 0.7, 0.4, 1)"
+          },
+          ".magic-button:hover .magic-button-shadow": {
+            "transform": "translateY(4px)",
+            "transition": "transform 250ms cubic-bezier(0.3, 0.7, 0.4, 1.5)"
+          },
+          ".magic-button:active .magic-button-shadow": {
+            "transform": "translateY(1px)",
+            "transition": "transform 34ms"
+          },
+          ".magic-button-edge": {
+            "position": "absolute",
+            "top": "0",
+            "left": "0",
+            "width": "100%",
+            "height": "100%",
+            "border-radius": "var(--radius-xl)"
+          },
+          ".magic-button[data-variant=\"default\"] .magic-button-edge": {
+            "background": "linear-gradient(to left, color-mix(in srgb, var(--primary) 50%, black) 0%, color-mix(in srgb, var(--primary) 75%, black) 8%, color-mix(in srgb, var(--primary) 75%, black) 92%, color-mix(in srgb, var(--primary) 50%, black) 100%)"
+          },
+          ".magic-button[data-variant=\"secondary\"] .magic-button-edge": {
+            "background": "linear-gradient(to left, color-mix(in srgb, var(--secondary) 50%, black) 0%, color-mix(in srgb, var(--secondary) 75%, black) 8%, color-mix(in srgb, var(--secondary) 75%, black) 92%, color-mix(in srgb, var(--secondary) 50%, black) 100%)"
+          },
+          ".magic-button[data-rainbow=\"true\"] .magic-button-edge": {
+            "background": "linear-gradient(90deg, var(--rainbow-1), var(--rainbow-5), var(--rainbow-3), var(--rainbow-4), var(--rainbow-2))",
+            "background-size": "200% 100%",
+            "animation": "magic-rainbow var(--rainbow-speed, 2s) infinite linear"
+          },
+          ".magic-button[data-rainbow=\"true\"] .magic-button-shadow": {
+            "background": "linear-gradient(90deg, var(--rainbow-1), var(--rainbow-5), var(--rainbow-3), var(--rainbow-4), var(--rainbow-2))",
+            "background-size": "200% 100%",
+            "animation": "magic-rainbow var(--rainbow-speed, 2s) infinite linear",
+            "filter": "blur(12px)",
+            "opacity": "0.7"
+          },
+          ".magic-button-front": {
+            "display": "block",
+            "position": "relative",
+            "border-radius": "var(--radius-xl)",
+            "will-change": "transform",
+            "transform": "translateY(-4px)",
+            "transition": "transform 600ms cubic-bezier(0.3, 0.7, 0.4, 1)"
+          },
+          ".magic-button[data-variant=\"default\"] .magic-button-front": {
+            "color": "var(--primary-foreground)",
+            "background": "var(--primary)"
+          },
+          ".magic-button[data-variant=\"secondary\"] .magic-button-front": {
+            "color": "var(--secondary-foreground)",
+            "background": "var(--secondary)"
+          },
+          ".magic-button:hover .magic-button-front": {
+            "transform": "translateY(-6px)",
+            "transition": "transform 250ms cubic-bezier(0.3, 0.7, 0.4, 1.5)"
+          },
+          ".magic-button:active .magic-button-front": {
+            "transform": "translateY(-2px)",
+            "transition": "transform 34ms"
+          },
+          ".magic-button-front--sm": {
+            "padding": "var(--button-py-sm) var(--button-px-sm)",
+            "font-size": "var(--button-text-sm)",
+            "line-height": "var(--button-leading-sm)"
+          },
+          ".magic-button-front--md": {
+            "padding": "var(--button-py-md) var(--button-px-md)",
+            "font-size": "var(--button-text-md)",
+            "line-height": "var(--button-leading-md)"
+          },
+          ".magic-button-front--lg": {
+            "padding": "var(--button-py-lg) var(--button-px-lg)",
+            "font-size": "var(--button-text-lg)",
+            "line-height": "var(--button-leading-lg)"
+          }
+        }
+      }
+    },
+    {
+      "name": "shimmer-button",
+      "type": "registry:ui",
+      "title": "Shimmer Button",
+      "description": "A button with an animated shimmering border light that speeds up on hover.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/shimmer-button.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/shimmer-button.tsx"
+        }
+      ],
+      "css": {
+        "@layer components": {
+          ".shimmer-button[data-size=\"sm\"]": {
+            "padding": "var(--button-py-sm) var(--button-px-sm)",
+            "font-size": "var(--button-text-sm)",
+            "line-height": "var(--button-leading-sm)"
+          },
+          ".shimmer-button[data-size=\"md\"]": {
+            "padding": "var(--button-py-md) var(--button-px-md)",
+            "font-size": "var(--button-text-md)",
+            "line-height": "var(--button-leading-md)"
+          },
+          ".shimmer-button[data-size=\"lg\"]": {
+            "padding": "var(--button-py-lg) var(--button-px-lg)",
+            "font-size": "var(--button-text-lg)",
+            "line-height": "var(--button-leading-lg)"
+          },
+          ".shimmer-button-highlight": {
+            "pointer-events": "none",
+            "position": "absolute",
+            "inset": "0",
+            "border-radius": "inherit",
+            "transition": "box-shadow 300ms ease-in-out"
+          },
+          ".shimmer-button:not([data-shimmer=\"true\"]) .shimmer-button-spark, .shimmer-button:not([data-shimmer=\"true\"]) .shimmer-button-highlight, .shimmer-button:not([data-shimmer=\"true\"]) .shimmer-button-backdrop, .shimmer-button:disabled .shimmer-button-spark, .shimmer-button:disabled .shimmer-button-highlight, .shimmer-button:disabled .shimmer-button-backdrop": {
+            "display": "none"
+          },
+          ".shimmer-button[data-variant=\"primary\"] .shimmer-button-spark": {
+            "filter": "blur(1px)"
+          },
+          ".shimmer-button[data-variant=\"primary\"] .shimmer-button-highlight, .shimmer-button[data-variant=\"primary\"]:hover .shimmer-button-highlight, .shimmer-button[data-variant=\"secondary\"] .shimmer-button-highlight, .shimmer-button[data-variant=\"secondary\"]:hover .shimmer-button-highlight, .shimmer-button[data-variant=\"outline\"] .shimmer-button-highlight, .shimmer-button[data-variant=\"outline\"]:hover .shimmer-button-highlight": {
+            "box-shadow": "none"
+          }
+        }
+      }
+    },
+    {
+      "name": "progress-fold-button",
+      "type": "registry:ui",
+      "title": "Progress Fold Button",
+      "description": "A button whose front face folds on hover and runs a progress bar on click.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/progress-fold-button.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/progress-fold-button.tsx"
+        }
+      ],
+      "css": {
+        "@keyframes progress-fold-bar": {
+          "0%": { "opacity": "1", "width": "0" },
+          "10%": { "opacity": "1", "width": "15%" },
+          "25%": { "opacity": "1", "width": "25%" },
+          "40%": { "opacity": "1", "width": "35%" },
+          "55%": { "opacity": "1", "width": "75%" },
+          "60%": { "opacity": "1", "width": "100%" },
+          "to": { "opacity": "0", "width": "100%" }
+        },
+        "@layer components": {
+          ".progress-fold-button": {
+            "position": "relative",
+            "display": "inline-flex",
+            "padding": "0",
+            "border": "none",
+            "border-radius": "var(--radius-lg)",
+            "background": "var(--color-border)",
+            "cursor": "pointer",
+            "white-space": "nowrap",
+            "perspective": "800px",
+            "transform-style": "preserve-3d",
+            "user-select": "none",
+            "-webkit-tap-highlight-color": "transparent"
+          },
+          ".progress-fold-button:focus-visible": {
+            "outline": "2px solid var(--ring)",
+            "outline-offset": "4px"
+          },
+          ".progress-fold-button:disabled": {
+            "cursor": "not-allowed",
+            "opacity": "0.5",
+            "pointer-events": "none"
+          },
+          ".progress-fold-button-front": {
+            "position": "relative",
+            "display": "grid",
+            "place-items": "center",
+            "width": "100%",
+            "border-radius": "inherit",
+            "transform": "rotateX(0deg)",
+            "transform-origin": "top center",
+            "transition": "transform 0.2s"
+          },
+          ".progress-fold-button--sm, .progress-fold-button--sm .progress-fold-button-layers": {
+            "border-radius": "var(--button-radius-sm)"
+          },
+          ".progress-fold-button--sm .progress-fold-button-front": {
+            "padding": "var(--button-py-sm) var(--button-px-sm)",
+            "font-size": "var(--button-text-sm)",
+            "line-height": "var(--button-leading-sm)"
+          },
+          ".progress-fold-button--md, .progress-fold-button--md .progress-fold-button-layers": {
+            "border-radius": "var(--button-radius-md)"
+          },
+          ".progress-fold-button--md .progress-fold-button-front": {
+            "padding": "var(--button-py-md) var(--button-px-md)",
+            "font-size": "var(--button-text-md)",
+            "line-height": "var(--button-leading-md)"
+          },
+          ".progress-fold-button--lg, .progress-fold-button--lg .progress-fold-button-layers": {
+            "border-radius": "var(--button-radius-lg)"
+          },
+          ".progress-fold-button--lg .progress-fold-button-front": {
+            "padding": "var(--button-py-lg) var(--button-px-lg)",
+            "font-size": "var(--button-text-lg)",
+            "line-height": "var(--button-leading-lg)"
+          },
+          ".progress-fold-button:hover:not(:disabled) .progress-fold-button-front": {
+            "transform": "rotateX(35deg)"
+          },
+          ".progress-fold-button-layers": {
+            "position": "absolute",
+            "inset": "0",
+            "z-index": "-1",
+            "overflow": "hidden",
+            "border-radius": "var(--radius-lg)"
+          },
+          ".progress-fold-button-back": {
+            "position": "absolute",
+            "inset": "0"
+          },
+          ".progress-fold-button-bar": {
+            "position": "absolute",
+            "top": "0",
+            "left": "0",
+            "height": "100%",
+            "width": "0"
+          },
+          ".progress-fold-button[data-active=\"true\"] .progress-fold-button-bar": {
+            "animation": "progress-fold-bar 1.2s"
+          },
+          "@media (prefers-reduced-motion: reduce)": {
+            ".progress-fold-button-front, .progress-fold-button[data-active=\"true\"] .progress-fold-button-bar": {
+              "transition": "none",
+              "animation": "none"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "elastic-text",
+      "type": "registry:ui",
+      "title": "Elastic Text",
+      "description": "Variable-font text whose weight springs up under an automatic spotlight or the pointer.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "dependencies": ["framer-motion", "@fontsource-variable/roboto-flex"],
+      "files": [
+        {
+          "path": "packages/components/src/elastic-text.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/elastic-text.tsx"
+        },
+        {
+          "path": "packages/components/src/text-utils.ts",
+          "type": "registry:ui",
+          "target": "components/godui/text-utils.ts"
+        }
+      ],
+      "css": {
+        "@layer components": {
+          ".elastic-text": {
+            "font-family": "\"Roboto Flex Variable\", var(--font-sans), sans-serif",
+            "font-optical-sizing": "auto",
+            "display": "inline-block",
+            "font-variation-settings": "\"wght\" 400",
+            "line-height": "1.1",
+            "color": "inherit"
+          },
+          ".elastic-text-segment": {
+            "display": "inline-block",
+            "white-space": "pre",
+            "will-change": "font-variation-settings",
+            "font-variation-settings": "\"wght\" var(--et-wght, 400)"
+          },
+          "@media (prefers-reduced-motion: reduce)": {
+            ".elastic-text-segment": {
+              "will-change": "auto"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "text-animate",
+      "type": "registry:ui",
+      "title": "Text Animate",
+      "description": "Staggered text entrance animations (fade, blur, slide) by character, word, or line.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "dependencies": ["framer-motion"],
+      "files": [
+        {
+          "path": "packages/components/src/text-animate.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/text-animate.tsx"
+        },
+        {
+          "path": "packages/components/src/text-animate-utils.ts",
+          "type": "registry:ui",
+          "target": "components/godui/text-animate-utils.ts"
+        },
+        {
+          "path": "packages/components/src/text-utils.ts",
+          "type": "registry:ui",
+          "target": "components/godui/text-utils.ts"
+        }
+      ]
+    },
+    {
+      "name": "highlighter",
+      "type": "registry:ui",
+      "title": "Highlighter",
+      "description": "Hand-drawn rough-notation annotations (highlight, underline, box, circle) over text.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "dependencies": ["framer-motion", "rough-notation"],
+      "files": [
+        {
+          "path": "packages/components/src/highlighter.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/highlighter.tsx"
+        }
+      ]
+    }
+  ]
+}

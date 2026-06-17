@@ -1,0 +1,51 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "elastic-text",
+  "title": "Elastic Text",
+  "description": "Variable-font text whose weight springs up under an automatic spotlight or the pointer.",
+  "dependencies": [
+    "framer-motion",
+    "@fontsource-variable/roboto-flex"
+  ],
+  "registryDependencies": [
+    "@godui/godui-theme"
+  ],
+  "files": [
+    {
+      "path": "packages/components/src/elastic-text.tsx",
+      "content": "\"use client\";\n\nimport {\n  animate,\n  motion,\n  useMotionValue,\n  useReducedMotion,\n  useSpring,\n  useTransform,\n} from \"framer-motion\";\nimport * as React from \"react\";\nimport { clamp, getTextContent, lerp } from \"./text-utils\";\n\n/**\n * How the weight emphasis is driven:\n * - `auto`  — a spotlight sweeps across the text on its own (default).\n * - `hover` — the emphasis follows the pointer while it's over the text.\n */\nexport type ElasticTextMode = \"auto\" | \"hover\";\n\nexport type ElasticTextProps = React.HTMLAttributes<HTMLSpanElement> & {\n  children: React.ReactNode;\n  mode?: ElasticTextMode;\n  /** Resting (lightest) font weight. */\n  minWeight?: number;\n  /** Peak (heaviest) font weight under the spotlight / pointer. */\n  maxWeight?: number;\n  /** Seconds for one full `auto` sweep across the text. */\n  duration?: number;\n  /** Repeat the `auto` sweep. */\n  loop?: boolean;\n  /** Pointer influence radius in px (`hover` mode). */\n  radius?: number;\n};\n\nconst SPRING = { stiffness: 150, damping: 18, mass: 1 } as const;\nconst AUTO_SPREAD = 2.5;\n\ntype SegmentProps = {\n  segment: string;\n  index: number;\n  minWeight: number;\n  maxWeight: number;\n  reducedMotion: boolean;\n  mode: ElasticTextMode;\n  spotlight: ReturnType<typeof useMotionValue<number>>;\n  pointerX: ReturnType<typeof useMotionValue<number>>;\n  pointerActive: ReturnType<typeof useMotionValue<number>>;\n  getCenter: (index: number) => number;\n  radius: number;\n};\n\nfunction Segment({\n  segment,\n  index,\n  minWeight,\n  maxWeight,\n  reducedMotion,\n  mode,\n  spotlight,\n  pointerX,\n  pointerActive,\n  getCenter,\n  radius,\n}: SegmentProps) {\n  const autoWeight = useTransform(spotlight, (position) => {\n    const distance = Math.abs(index - position);\n    const influence = clamp(1 - distance / AUTO_SPREAD, 0, 1);\n    return lerp(minWeight, maxWeight, influence);\n  });\n\n  const hoverWeight = useTransform([pointerX, pointerActive], (latest) => {\n    const [x, active] = latest as [number, number];\n    if (!active) {\n      return minWeight;\n    }\n    const distance = Math.abs(x - getCenter(index));\n    const influence = clamp(1 - distance / radius, 0, 1);\n    return lerp(minWeight, maxWeight, influence);\n  });\n\n  const rawWeight = mode === \"hover\" ? hoverWeight : autoWeight;\n  const weight = useSpring(rawWeight, SPRING);\n\n  if (reducedMotion) {\n    return (\n      <span\n        className=\"elastic-text-segment\"\n        style={{ \"--et-wght\": minWeight } as React.CSSProperties}\n      >\n        {segment}\n      </span>\n    );\n  }\n\n  return (\n    <motion.span\n      className=\"elastic-text-segment\"\n      style={{ \"--et-wght\": weight } as React.CSSProperties}\n      aria-hidden={segment.trim() === \"\" ? true : undefined}\n    >\n      {segment}\n    </motion.span>\n  );\n}\n\nconst ElasticText = React.forwardRef<HTMLSpanElement, ElasticTextProps>(\n  (\n    {\n      children,\n      className,\n      mode = \"auto\",\n      minWeight = 300,\n      maxWeight = 900,\n      duration = 2,\n      loop = true,\n      radius = 120,\n      ...props\n    },\n    ref,\n  ) => {\n    const reducedMotion = useReducedMotion() ?? false;\n    const containerRef = React.useRef<HTMLSpanElement>(null);\n    const mergedRef = React.useCallback(\n      (node: HTMLSpanElement | null) => {\n        containerRef.current = node;\n        if (typeof ref === \"function\") {\n          ref(node);\n        } else if (ref) {\n          ref.current = node;\n        }\n      },\n      [ref],\n    );\n\n    const textContent = getTextContent(children);\n    const segments = React.useMemo(\n      () => (textContent ? [...textContent] : null),\n      [textContent],\n    );\n\n    const spotlight = useMotionValue(0);\n    const pointerX = useMotionValue(0);\n    const pointerActive = useMotionValue(0);\n    const centersRef = React.useRef<number[]>([]);\n    const getCenter = React.useCallback(\n      (index: number) => centersRef.current[index] ?? 0,\n      [],\n    );\n\n    // Auto mode: sweep the spotlight back and forth across the characters.\n    React.useEffect(() => {\n      if (reducedMotion || mode !== \"auto\" || !segments) {\n        return;\n      }\n      const controls = animate(\n        spotlight,\n        [0, Math.max(segments.length - 1, 1)],\n        {\n          duration,\n          // Infinite: sweep forever. Finite: one sweep out and back to rest.\n          repeat: loop ? Number.POSITIVE_INFINITY : 1,\n          repeatType: \"mirror\",\n          ease: \"easeInOut\",\n        },\n      );\n      return () => controls.stop();\n    }, [duration, loop, mode, reducedMotion, segments, spotlight]);\n\n    const updateCenters = React.useCallback(() => {\n      const container = containerRef.current;\n      if (!container) {\n        return;\n      }\n      const spans = container.querySelectorAll(\".elastic-text-segment\");\n      centersRef.current = Array.from(spans).map((span) => {\n        const rect = span.getBoundingClientRect();\n        return rect.left + rect.width / 2;\n      });\n    }, []);\n\n    React.useLayoutEffect(() => {\n      if (mode !== \"hover\") {\n        return;\n      }\n      updateCenters();\n      if (typeof window === \"undefined\") {\n        return;\n      }\n      window.addEventListener(\"resize\", updateCenters);\n      return () => window.removeEventListener(\"resize\", updateCenters);\n    }, [mode, updateCenters]);\n\n    const handleMouseMove = React.useCallback(\n      (event: React.MouseEvent<HTMLSpanElement>) => {\n        if (mode !== \"hover\") {\n          return;\n        }\n        pointerX.set(event.clientX);\n        updateCenters();\n      },\n      [mode, pointerX, updateCenters],\n    );\n\n    const interactionProps =\n      mode === \"hover\" && !reducedMotion\n        ? {\n            onMouseEnter: () => pointerActive.set(1),\n            onMouseLeave: () => pointerActive.set(0),\n            onMouseMove: handleMouseMove,\n          }\n        : undefined;\n\n    if (!segments) {\n      return (\n        <span\n          ref={mergedRef}\n          className={`elastic-text ${className ?? \"\"}`}\n          style={{ \"--et-wght\": minWeight } as React.CSSProperties}\n          {...props}\n        >\n          {children}\n        </span>\n      );\n    }\n\n    return (\n      <span\n        ref={mergedRef}\n        className={`elastic-text ${className ?? \"\"}`}\n        {...interactionProps}\n        {...props}\n      >\n        {segments.map((segment, index) => (\n          <Segment\n            // biome-ignore lint/suspicious/noArrayIndexKey: characters are positional\n            key={index}\n            segment={segment}\n            index={index}\n            minWeight={minWeight}\n            maxWeight={maxWeight}\n            reducedMotion={reducedMotion}\n            mode={mode}\n            spotlight={spotlight}\n            pointerX={pointerX}\n            pointerActive={pointerActive}\n            getCenter={getCenter}\n            radius={radius}\n          />\n        ))}\n      </span>\n    );\n  },\n);\nElasticText.displayName = \"ElasticText\";\n\nexport { ElasticText };\n",
+      "type": "registry:ui",
+      "target": "components/godui/elastic-text.tsx"
+    },
+    {
+      "path": "packages/components/src/text-utils.ts",
+      "content": "import type { ReactNode } from \"react\";\n\nexport function getTextContent(children: ReactNode): string | null {\n  const text = collectText(children);\n  return text.length > 0 ? text : null;\n}\n\nfunction collectText(children: ReactNode): string {\n  if (children == null || typeof children === \"boolean\") {\n    return \"\";\n  }\n  if (typeof children === \"string\" || typeof children === \"number\") {\n    return String(children);\n  }\n  if (Array.isArray(children)) {\n    return children.map(collectText).join(\"\");\n  }\n  if (typeof children === \"object\" && \"props\" in children) {\n    const props = (children as { props?: { children?: ReactNode } }).props;\n    return collectText(props?.children ?? \"\");\n  }\n  return \"\";\n}\n\nexport function lerp(min: number, max: number, t: number): number {\n  return min + (max - min) * t;\n}\n\nexport function clamp(value: number, min: number, max: number): number {\n  return Math.min(max, Math.max(min, value));\n}\n",
+      "type": "registry:ui",
+      "target": "components/godui/text-utils.ts"
+    }
+  ],
+  "css": {
+    "@layer components": {
+      ".elastic-text": {
+        "font-family": "\"Roboto Flex Variable\", var(--font-sans), sans-serif",
+        "font-optical-sizing": "auto",
+        "display": "inline-block",
+        "font-variation-settings": "\"wght\" 400",
+        "line-height": "1.1",
+        "color": "inherit"
+      },
+      ".elastic-text-segment": {
+        "display": "inline-block",
+        "white-space": "pre",
+        "will-change": "font-variation-settings",
+        "font-variation-settings": "\"wght\" var(--et-wght, 400)"
+      },
+      "@media (prefers-reduced-motion: reduce)": {
+        ".elastic-text-segment": {
+          "will-change": "auto"
+        }
+      }
+    }
+  },
+  "type": "registry:ui"
+}

@@ -3,6 +3,7 @@
   "private": true,
   "scripts": {
     "build": "turbo build",
+    "build:registry": "shadcn build --output apps/docs/public/r",
     "dev": "turbo dev",
     "lint": "turbo lint",
     "check": "biome check .",
@@ -11,6 +12,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.8",
+    "shadcn": "^3.8.5",
     "tsup": "^8.3.5",
     "turbo": "^2.8.20",
     "typescript": "^5.9.3"
