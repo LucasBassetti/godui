@@ -39,7 +39,7 @@ export const Sizes: Story = {
   render: () => (
     <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
       <MagicButton size="sm">Small</MagicButton>
-      <MagicButton size="default">Default</MagicButton>
+      <MagicButton size="md">Medium</MagicButton>
       <MagicButton size="lg">Large</MagicButton>
     </div>
   ),
@@ -49,7 +49,7 @@ export const Playground: Story = {
   args: {
     children: "Push me",
     variant: "default",
-    size: "default",
+    size: "md",
     rainbow: true,
   } satisfies MagicButtonProps,
 };

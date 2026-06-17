@@ -1,7 +1,7 @@
 import * as React from "react";
 
 export type MagicButtonVariant = "default" | "secondary";
-export type MagicButtonSize = "default" | "sm" | "lg";
+export type MagicButtonSize = "sm" | "md" | "lg";
 
 export type MagicButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: MagicButtonVariant;
@@ -12,7 +12,7 @@ export type MagicButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 
 const sizeClasses: Record<MagicButtonSize, string> = {
   sm: "magic-button-front--sm",
-  default: "magic-button-front--default",
+  md: "magic-button-front--md",
   lg: "magic-button-front--lg",
 };
 
@@ -21,7 +21,7 @@ const MagicButton = React.forwardRef<HTMLButtonElement, MagicButtonProps>(
     {
       className,
       variant = "default",
-      size = "default",
+      size = "md",
       rainbow = true,
       children,
       ...props

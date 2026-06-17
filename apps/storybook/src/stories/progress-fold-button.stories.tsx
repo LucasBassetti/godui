@@ -37,3 +37,13 @@ export const Disabled: Story = {
     disabled: true,
   } satisfies ProgressFoldButtonProps,
 };
+
+export const Sizes: Story = {
+  render: () => (
+    <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+      <ProgressFoldButton size="sm">Small</ProgressFoldButton>
+      <ProgressFoldButton size="md">Medium</ProgressFoldButton>
+      <ProgressFoldButton size="lg">Large</ProgressFoldButton>
+    </div>
+  ),
+};

@@ -3,11 +3,19 @@
 import * as React from "react";
 
 export type ProgressFoldButtonVariant = "primary" | "secondary";
+export type ProgressFoldButtonSize = "sm" | "md" | "lg";
 
 export type ProgressFoldButtonProps =
   React.ButtonHTMLAttributes<HTMLButtonElement> & {
     variant?: ProgressFoldButtonVariant;
+    size?: ProgressFoldButtonSize;
   };
+
+const sizeClasses: Record<ProgressFoldButtonSize, string> = {
+  sm: "progress-fold-button--sm",
+  md: "progress-fold-button--md",
+  lg: "progress-fold-button--lg",
+};
 
 const frontClasses: Record<ProgressFoldButtonVariant, string> = {
   primary: "bg-primary text-primary-foreground",
@@ -30,37 +38,52 @@ const barClasses: Record<ProgressFoldButtonVariant, string> = {
 const ProgressFoldButton = React.forwardRef<
   HTMLButtonElement,
   ProgressFoldButtonProps
->(({ className, children, onClick, variant = "primary", ...props }, ref) => {
-  const [active, setActive] = React.useState(false);
+>(
+  (
+    {
+      className,
+      children,
+      onClick,
+      variant = "primary",
+      size = "md",
+      ...props
+    },
+    ref,
+  ) => {
+    const [active, setActive] = React.useState(false);
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setActive(true);
-    onClick?.(event);
-  };
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+      setActive(true);
+      onClick?.(event);
+    };
 
-  return (
-    <button
-      ref={ref}
-      type="button"
-      data-variant={variant}
-      data-active={active ? "true" : undefined}
-      onClick={handleClick}
-      className={`progress-fold-button text-sm font-medium ${className ?? ""}`}
-      {...props}
-    >
-      <span className="progress-fold-button-layers" aria-hidden="true">
-        <span className={`progress-fold-button-back ${backClasses[variant]}`} />
-        <span
-          className={`progress-fold-button-bar ${barClasses[variant]}`}
-          onAnimationEnd={() => setActive(false)}
-        />
-      </span>
-      <span className={`progress-fold-button-front ${frontClasses[variant]}`}>
-        {children}
-      </span>
-    </button>
-  );
-});
+    return (
+      <button
+        ref={ref}
+        type="button"
+        data-variant={variant}
+        data-size={size}
+        data-active={active ? "true" : undefined}
+        onClick={handleClick}
+        className={`progress-fold-button font-medium ${sizeClasses[size]} ${className ?? ""}`}
+        {...props}
+      >
+        <span className="progress-fold-button-layers" aria-hidden="true">
+          <span
+            className={`progress-fold-button-back ${backClasses[variant]}`}
+          />
+          <span
+            className={`progress-fold-button-bar ${barClasses[variant]}`}
+            onAnimationEnd={() => setActive(false)}
+          />
+        </span>
+        <span className={`progress-fold-button-front ${frontClasses[variant]}`}>
+          {children}
+        </span>
+      </button>
+    );
+  },
+);
 ProgressFoldButton.displayName = "ProgressFoldButton";
 
 export { ProgressFoldButton };

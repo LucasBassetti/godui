@@ -1,4 +1,9 @@
 export {
+  Highlighter,
+  type HighlighterAction,
+  type HighlighterProps,
+} from "./highlighter";
+export {
   MagicButton,
   type MagicButtonProps,
   type MagicButtonSize,
@@ -7,6 +12,7 @@ export {
 export {
   ProgressFoldButton,
   type ProgressFoldButtonProps,
+  type ProgressFoldButtonSize,
   type ProgressFoldButtonVariant,
 } from "./progress-fold-button";
 export {
@@ -16,28 +22,23 @@ export {
   type ShimmerButtonVariant,
 } from "./shimmer-button";
 export {
+  TextAnimate,
+  type TextAnimateBy,
+  type TextAnimateElement,
+  type TextAnimatePreset,
+  type TextAnimateProps,
+} from "./text-animate";
+export {
   Typography,
   type TypographyProps,
   type TypographyVariant,
 } from "./typography";
 export {
+  type AxisValue,
   VariableText,
-  type VariableTextProps,
   type VariableTextPreset,
-  type VariableTextTrigger,
+  type VariableTextProps,
   type VariableTextSplitBy,
   type VariableTextSpring,
-  type AxisValue,
+  type VariableTextTrigger,
 } from "./variable-text";
-export {
-  TextAnimate,
-  type TextAnimateProps,
-  type TextAnimatePreset,
-  type TextAnimateBy,
-  type TextAnimateElement,
-} from "./text-animate";
-export {
-  Highlighter,
-  type HighlighterProps,
-  type HighlighterAction,
-} from "./highlighter";
