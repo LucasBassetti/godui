@@ -46,7 +46,7 @@ export const Sizes: Story = {
   render: () => (
     <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
       <ShimmerButton size="sm">Small</ShimmerButton>
-      <ShimmerButton size="default">Default</ShimmerButton>
+      <ShimmerButton size="md">Medium</ShimmerButton>
       <ShimmerButton size="lg">Large</ShimmerButton>
     </div>
   ),

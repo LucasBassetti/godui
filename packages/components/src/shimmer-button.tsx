@@ -4,7 +4,7 @@ import type { CSSProperties } from "react";
 import * as React from "react";
 
 export type ShimmerButtonVariant = "primary" | "secondary" | "outline";
-export type ShimmerButtonSize = "default" | "sm" | "lg";
+export type ShimmerButtonSize = "sm" | "md" | "lg";
 
 export type ShimmerButtonProps =
   React.ButtonHTMLAttributes<HTMLButtonElement> & {
@@ -24,16 +24,12 @@ export type ShimmerButtonProps =
     background?: string;
   };
 
-const sizeClasses: Record<ShimmerButtonSize, string> = {
-  sm: "px-4 py-2 text-xs",
-  default: "px-6 py-3 text-sm",
-  lg: "px-8 py-3.5 text-base",
-};
-
+// Padding and font-size come from the shared button size scale via
+// `.shimmer-button[data-size="…"]` rules in styles.css.
 const radiusBySize: Record<ShimmerButtonSize, string> = {
-  sm: "var(--radius-md)",
-  default: "var(--radius-lg)",
-  lg: "var(--radius-xl)",
+  sm: "var(--button-radius-sm)",
+  md: "var(--button-radius-md)",
+  lg: "var(--button-radius-lg)",
 };
 
 const variantDefaults: Record<
@@ -75,7 +71,7 @@ const ShimmerButton = React.forwardRef<HTMLButtonElement, ShimmerButtonProps>(
     {
       className,
       variant = "primary",
-      size = "default",
+      size = "md",
       shimmer = true,
       shimmerColor,
       shimmerSize = "0.05em",
@@ -124,7 +120,7 @@ const ShimmerButton = React.forwardRef<HTMLButtonElement, ShimmerButtonProps>(
         data-size={size}
         data-shimmer={shimmer ? "true" : undefined}
         style={style}
-        className={`group shimmer-button relative z-0 flex cursor-pointer items-center justify-center overflow-hidden [border-radius:var(--radius)] border whitespace-nowrap [background:var(--bg)] transform-gpu transition-transform duration-300 ease-in-out active:translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${defaults.textClass} ${defaults.borderClass} ${sizeClasses[size]} ${className ?? ""}`}
+        className={`group shimmer-button relative z-0 flex cursor-pointer items-center justify-center overflow-hidden [border-radius:var(--radius)] border whitespace-nowrap [background:var(--bg)] transform-gpu transition-transform duration-300 ease-in-out active:translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${defaults.textClass} ${defaults.borderClass} ${className ?? ""}`}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         {...props}

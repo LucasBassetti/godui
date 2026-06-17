@@ -54,6 +54,25 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 
+  /* Shared button size scale — single source of truth for all buttons (sm/md/lg) */
+  --button-py-sm: 0.5rem;
+  --button-px-sm: 1rem;
+  --button-text-sm: 0.875rem;
+  --button-leading-sm: 1.25rem;
+  --button-radius-sm: var(--radius-md);
+
+  --button-py-md: 0.75rem;
+  --button-px-md: 1.5rem;
+  --button-text-md: 0.875rem;
+  --button-leading-md: 1.25rem;
+  --button-radius-md: var(--radius-lg);
+
+  --button-py-lg: 1rem;
+  --button-px-lg: 2rem;
+  --button-text-lg: 1rem;
+  --button-leading-lg: 1.5rem;
+  --button-radius-lg: var(--radius-xl);
+
   --shadow-2xs: var(--shadow-2xs);
   --shadow-xs: var(--shadow-xs);
   --shadow-sm: var(--shadow-sm);
@@ -262,21 +281,40 @@
   }
 
   .magic-button-front--sm {
-    padding: 8px 20px;
-    font-size: 0.875rem;
-    line-height: 1.25rem;
+    padding: var(--button-py-sm) var(--button-px-sm);
+    font-size: var(--button-text-sm);
+    line-height: var(--button-leading-sm);
   }
 
-  .magic-button-front--default {
-    padding: 12px 32px;
-    font-size: 0.875rem;
-    line-height: 1.25rem;
+  .magic-button-front--md {
+    padding: var(--button-py-md) var(--button-px-md);
+    font-size: var(--button-text-md);
+    line-height: var(--button-leading-md);
   }
 
   .magic-button-front--lg {
-    padding: 14px 42px;
-    font-size: 1rem;
-    line-height: 1.5rem;
+    padding: var(--button-py-lg) var(--button-px-lg);
+    font-size: var(--button-text-lg);
+    line-height: var(--button-leading-lg);
+  }
+
+  /* Shimmer button size scale (shared --button-* tokens; radius via --radius) */
+  .shimmer-button[data-size="sm"] {
+    padding: var(--button-py-sm) var(--button-px-sm);
+    font-size: var(--button-text-sm);
+    line-height: var(--button-leading-sm);
+  }
+
+  .shimmer-button[data-size="md"] {
+    padding: var(--button-py-md) var(--button-px-md);
+    font-size: var(--button-text-md);
+    line-height: var(--button-leading-md);
+  }
+
+  .shimmer-button[data-size="lg"] {
+    padding: var(--button-py-lg) var(--button-px-lg);
+    font-size: var(--button-text-lg);
+    line-height: var(--button-leading-lg);
   }
 
   .shimmer-button-highlight {
@@ -373,11 +411,41 @@
     display: grid;
     place-items: center;
     width: 100%;
-    padding: 0.75rem 1.5rem;
-    border-radius: var(--radius-lg);
+    border-radius: inherit;
     transform: rotateX(0deg);
     transform-origin: top center;
     transition: transform 0.2s;
+  }
+
+  /* Size scale — shared --button-* tokens drive padding/font; radius per size */
+  .progress-fold-button--sm,
+  .progress-fold-button--sm .progress-fold-button-layers {
+    border-radius: var(--button-radius-sm);
+  }
+  .progress-fold-button--sm .progress-fold-button-front {
+    padding: var(--button-py-sm) var(--button-px-sm);
+    font-size: var(--button-text-sm);
+    line-height: var(--button-leading-sm);
+  }
+
+  .progress-fold-button--md,
+  .progress-fold-button--md .progress-fold-button-layers {
+    border-radius: var(--button-radius-md);
+  }
+  .progress-fold-button--md .progress-fold-button-front {
+    padding: var(--button-py-md) var(--button-px-md);
+    font-size: var(--button-text-md);
+    line-height: var(--button-leading-md);
+  }
+
+  .progress-fold-button--lg,
+  .progress-fold-button--lg .progress-fold-button-layers {
+    border-radius: var(--button-radius-lg);
+  }
+  .progress-fold-button--lg .progress-fold-button-front {
+    padding: var(--button-py-lg) var(--button-px-lg);
+    font-size: var(--button-text-lg);
+    line-height: var(--button-leading-lg);
   }
 
   .progress-fold-button:hover:not(:disabled) .progress-fold-button-front {
