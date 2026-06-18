@@ -195,13 +195,8 @@
     transition: filter 250ms;
   }
 
-  .magic-button:focus:not(:focus-visible) {
+  .magic-button:focus {
     outline: none;
-  }
-
-  .magic-button:focus-visible {
-    outline: 2px solid var(--ring);
-    outline-offset: 4px;
   }
 
   .magic-button:disabled {
@@ -351,6 +346,235 @@
     padding: var(--button-py-lg) var(--button-px-lg);
     font-size: var(--button-text-lg);
     line-height: var(--button-leading-lg);
+  }
+
+  /* Magic tab — segmented bar; the selected tab lifts into the magic-button 3D
+     (shares magic-rainbow keyframes, rainbow tokens, and --button-* size scale) */
+  .magic-tab {
+    display: inline-flex;
+    align-items: stretch;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    border-radius: var(--radius-xl);
+    background: var(--muted);
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+
+  .magic-tab-item {
+    position: relative;
+    border: none;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+    outline: none;
+    transition: filter 600ms;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* focus mirrors hover — flat color preview, no outline */
+  .magic-tab-item:not([data-selected="true"]):hover,
+  .magic-tab-item:not([data-selected="true"]):focus-visible {
+    filter: brightness(110%);
+    transition: filter 250ms;
+  }
+
+  .magic-tab-item:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+    pointer-events: none;
+    filter: none;
+  }
+
+  /* shadow + edge — hidden until the tab is selected */
+  .magic-tab-shadow,
+  .magic-tab-edge {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: var(--radius-xl);
+    opacity: 0;
+    transition: opacity 250ms ease;
+  }
+
+  .magic-tab-shadow {
+    background: hsl(0deg 0% 0% / 0.25);
+    will-change: transform;
+    transform: translateY(2px);
+    filter: blur(4px);
+    transition:
+      transform 600ms cubic-bezier(0.3, 0.7, 0.4, 1),
+      opacity 250ms ease;
+  }
+
+  .magic-tab-item[data-selected="true"] .magic-tab-shadow,
+  .magic-tab-item[data-selected="true"] .magic-tab-edge {
+    opacity: 1;
+  }
+
+  .magic-tab[data-variant="default"]
+    .magic-tab-item[data-selected="true"]
+    .magic-tab-edge {
+    background: linear-gradient(
+      to left,
+      color-mix(in srgb, var(--primary) 50%, black) 0%,
+      color-mix(in srgb, var(--primary) 75%, black) 8%,
+      color-mix(in srgb, var(--primary) 75%, black) 92%,
+      color-mix(in srgb, var(--primary) 50%, black) 100%
+    );
+  }
+
+  .magic-tab[data-variant="secondary"]
+    .magic-tab-item[data-selected="true"]
+    .magic-tab-edge {
+    background: linear-gradient(
+      to left,
+      color-mix(in srgb, var(--secondary) 50%, black) 0%,
+      color-mix(in srgb, var(--secondary) 75%, black) 8%,
+      color-mix(in srgb, var(--secondary) 75%, black) 92%,
+      color-mix(in srgb, var(--secondary) 50%, black) 100%
+    );
+  }
+
+  /* rainbow — only on the selected tab's edge + shadow */
+  .magic-tab[data-rainbow="true"]
+    .magic-tab-item[data-selected="true"]
+    .magic-tab-edge {
+    background: linear-gradient(
+      90deg,
+      var(--rainbow-1),
+      var(--rainbow-5),
+      var(--rainbow-3),
+      var(--rainbow-4),
+      var(--rainbow-2)
+    );
+    background-size: 200% 100%;
+    animation: magic-rainbow var(--rainbow-speed, 2s) infinite linear;
+  }
+
+  .magic-tab[data-rainbow="true"]
+    .magic-tab-item[data-selected="true"]
+    .magic-tab-shadow {
+    background: linear-gradient(
+      90deg,
+      var(--rainbow-1),
+      var(--rainbow-5),
+      var(--rainbow-3),
+      var(--rainbow-4),
+      var(--rainbow-2)
+    );
+    background-size: 200% 100%;
+    animation: magic-rainbow var(--rainbow-speed, 2s) infinite linear;
+    filter: blur(12px);
+    opacity: 0.7;
+  }
+
+  /* front — flat label at rest, lifts into the 3D button face when selected */
+  .magic-tab-front {
+    display: block;
+    position: relative;
+    border-radius: var(--radius-xl);
+    color: var(--muted-foreground);
+    background: transparent;
+    will-change: transform;
+    transform: translateY(0);
+    transition:
+      transform 600ms cubic-bezier(0.3, 0.7, 0.4, 1),
+      color 250ms ease,
+      background 250ms ease;
+  }
+
+  .magic-tab-item[data-selected="true"] .magic-tab-front {
+    transform: translateY(-4px);
+  }
+
+  .magic-tab[data-variant="default"]
+    .magic-tab-item[data-selected="true"]
+    .magic-tab-front {
+    color: var(--primary-foreground);
+    background: var(--primary);
+  }
+
+  .magic-tab[data-variant="secondary"]
+    .magic-tab-item[data-selected="true"]
+    .magic-tab-front {
+    color: var(--secondary-foreground);
+    background: var(--secondary);
+  }
+
+  /* unselected hover — flat preview of the selected color, no 3D lift */
+  .magic-tab[data-variant="default"]
+    .magic-tab-item:not([data-selected="true"]):hover
+    .magic-tab-front,
+  .magic-tab[data-variant="default"]
+    .magic-tab-item:not([data-selected="true"]):focus-visible
+    .magic-tab-front {
+    color: var(--primary-foreground);
+    background: var(--primary);
+  }
+
+  .magic-tab[data-variant="secondary"]
+    .magic-tab-item:not([data-selected="true"]):hover
+    .magic-tab-front,
+  .magic-tab[data-variant="secondary"]
+    .magic-tab-item:not([data-selected="true"]):focus-visible
+    .magic-tab-front {
+    color: var(--secondary-foreground);
+    background: var(--secondary);
+  }
+
+  /* selected tab — keyboard focus only lifts it (like magic-button hover) so
+     the focused tab is visible; pointer hover leaves it untouched */
+  .magic-tab-item[data-selected="true"]:focus-visible {
+    filter: brightness(110%);
+    transition: filter 250ms;
+  }
+
+  .magic-tab-item[data-selected="true"]:focus-visible .magic-tab-front {
+    transform: translateY(-6px);
+    transition: transform 250ms cubic-bezier(0.3, 0.7, 0.4, 1.5);
+  }
+
+  .magic-tab-item[data-selected="true"]:focus-visible .magic-tab-shadow {
+    transform: translateY(4px);
+    transition: transform 250ms cubic-bezier(0.3, 0.7, 0.4, 1.5);
+  }
+
+  .magic-tab-front--sm {
+    padding: var(--button-py-sm) var(--button-px-sm);
+    font-size: var(--button-text-sm);
+    line-height: var(--button-leading-sm);
+  }
+
+  .magic-tab-front--md {
+    padding: var(--button-py-md) var(--button-px-md);
+    font-size: var(--button-text-md);
+    line-height: var(--button-leading-md);
+  }
+
+  .magic-tab-front--lg {
+    padding: var(--button-py-lg) var(--button-px-lg);
+    font-size: var(--button-text-lg);
+    line-height: var(--button-leading-lg);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .magic-tab-front,
+    .magic-tab-shadow,
+    .magic-tab-edge {
+      transition: none;
+    }
+
+    .magic-tab[data-rainbow="true"]
+      .magic-tab-item[data-selected="true"]
+      .magic-tab-edge,
+    .magic-tab[data-rainbow="true"]
+      .magic-tab-item[data-selected="true"]
+      .magic-tab-shadow {
+      animation: none;
+    }
   }
 
   /* Magic input — 3D layered input (shares magic-rainbow keyframes + --button-* tokens) */

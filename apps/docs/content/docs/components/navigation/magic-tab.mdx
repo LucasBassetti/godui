@@ -1,0 +1,69 @@
+---
+title: Magic Tab
+description: A segmented tab bar where the selected option lifts into a 3D button with an optional rainbow edge.
+---
+
+import { MagicTab } from "@godui/components";
+
+<ComponentPreview
+  code={`import { MagicTab } from "@/components/godui/magic-tab";
+
+const items = [
+  { value: "overview", label: "Overview" },
+  { value: "analytics", label: "Analytics" },
+  { value: "reports", label: "Reports" },
+];
+
+export function MagicTabDemo() {
+  return <MagicTab items={items} defaultValue="overview" />;
+}`}
+>
+  <MagicTab
+    items={[
+      { value: "overview", label: "Overview" },
+      { value: "analytics", label: "Analytics" },
+      { value: "reports", label: "Reports" },
+    ]}
+    defaultValue="overview"
+  />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall name="magic-tab" />
+
+## Usage
+
+```tsx
+import { MagicTab } from "@/components/godui/magic-tab";
+```
+
+```tsx
+const items = [
+  { value: "overview", label: "Overview" },
+  { value: "analytics", label: "Analytics" },
+  { value: "reports", label: "Reports" },
+];
+
+<MagicTab items={items} defaultValue="overview" />;
+```
+
+Use it controlled by passing `value` and `onValueChange`:
+
+```tsx
+const [value, setValue] = useState("overview");
+
+<MagicTab items={items} value={value} onValueChange={setValue} />;
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `items` | `MagicTabItem[]` | — | Tabs to render: `{ value, label, disabled? }` |
+| `value` | `string` | — | Controlled selected value |
+| `defaultValue` | `string` | first enabled item | Uncontrolled initial value |
+| `onValueChange` | `(value: string) => void` | — | Called when the selected tab changes |
+| `variant` | `"default" \| "secondary"` | `"default"` | Selected-tab color scheme |
+| `size` | `"sm" \| "md" \| "lg"` | `"md"` | Tab padding and text size |
+| `rainbow` | `boolean` | `true` | Animate the selected tab's 3D edge and shadow with a rainbow gradient |

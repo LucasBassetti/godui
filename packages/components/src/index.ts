@@ -23,6 +23,13 @@ export {
   type MagicInputVariant,
 } from "./magic-input";
 export {
+  MagicTab,
+  type MagicTabItem,
+  type MagicTabProps,
+  type MagicTabSize,
+  type MagicTabVariant,
+} from "./magic-tab";
+export {
   MaskButton,
   type MaskButtonMask,
   type MaskButtonProps,
