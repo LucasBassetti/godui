@@ -800,6 +800,21 @@
       }
     },
     {
+      "name": "progressive-card-reveal",
+      "type": "registry:ui",
+      "title": "Progressive Card Reveal",
+      "description": "A vertical stack of cards where one card expands to its full view while the rest collapse to compact pills, animating the morph between them.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "dependencies": ["framer-motion"],
+      "files": [
+        {
+          "path": "packages/components/src/progressive-card-reveal/progressive-card-reveal.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/progressive-card-reveal.tsx"
+        }
+      ]
+    },
+    {
       "name": "elastic-text",
       "type": "registry:ui",
       "title": "Elastic Text",

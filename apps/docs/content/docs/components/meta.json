@@ -12,6 +12,8 @@
     "---Text---",
     "text/elastic-text",
     "text/text-animate",
-    "text/highlighter"
+    "text/highlighter",
+    "---Layout---",
+    "layout/progressive-card-reveal"
   ]
 }

@@ -1,0 +1,121 @@
+---
+title: Progressive Card Reveal
+description: A vertical stack of cards where one card expands to its full view while the rest collapse to compact pills, animating the morph between them.
+---
+
+import { ProgressiveCardRevealDemo } from "@/components/demos/progressive-card-reveal-demo";
+
+A vertical stack of cards. Exactly one card is expanded at a time — the rest
+collapse to compact pills. The parent owns which card is active; clicking a
+collapsed pill asks it to switch, and Framer Motion animates the size morph and
+crossfades the content.
+
+<ComponentPreview
+  code={`import { ProgressiveCardReveal } from "@/components/godui/progressive-card-reveal";
+import { useState } from "react";
+
+const legs = [
+  { icon: "✈️", label: "Flight", meta: "~3 hours", distance: "2,400 miles", time: "~3 hours" },
+  { icon: "🚆", label: "Train", meta: "~12 hours", distance: "1,100 miles", time: "~12 hours" },
+  { icon: "🚗", label: "Driving", meta: "~18 hours", distance: "332 miles", time: "~2 hours" },
+  { icon: "🚴", label: "Cycling", meta: "~2 days", distance: "60 miles", time: "~2 days" },
+  { icon: "🚶", label: "Walking", meta: "~40 minutes", distance: "2 miles", time: "~40 minutes" },
+];
+
+export function ProgressiveCardRevealDemo() {
+  const [active, setActive] = useState(4);
+
+  return (
+    <ProgressiveCardReveal activeIndex={active} onActiveChange={setActive} className="w-[360px]">
+      {legs.map((leg) => (
+        <ProgressiveCardReveal.Card key={leg.label}>
+          <ProgressiveCardReveal.CardCollapsed>
+            <div className="flex items-center justify-between gap-4">
+              <span className="flex items-center gap-2 font-medium">
+                <span aria-hidden>{leg.icon}</span>
+                {leg.label}
+              </span>
+              <span className="text-sm text-muted-foreground">{leg.meta}</span>
+            </div>
+          </ProgressiveCardReveal.CardCollapsed>
+          <ProgressiveCardReveal.CardExpanded>
+            <div className="flex flex-col gap-4">
+              <span className="flex items-center gap-2 font-medium">
+                <span aria-hidden>{leg.icon}</span>
+                {leg.label}
+              </span>
+              <div className="flex items-end justify-between gap-6">
+                <div>
+                  <p className="text-xs uppercase tracking-wide text-muted-foreground">Distance</p>
+                  <p className="text-3xl font-semibold">{leg.distance}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-xs uppercase tracking-wide text-muted-foreground">Time</p>
+                  <p className="text-3xl font-semibold">{leg.time}</p>
+                </div>
+              </div>
+            </div>
+          </ProgressiveCardReveal.CardExpanded>
+        </ProgressiveCardReveal.Card>
+      ))}
+    </ProgressiveCardReveal>
+  );
+}`}
+>
+  <ProgressiveCardRevealDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="ProgressiveCardReveal" />
+
+## Usage
+
+```tsx
+import { ProgressiveCardReveal } from "@/components/godui/progressive-card-reveal";
+```
+
+`ProgressiveCardReveal` is a compound component. The root is **controlled** via
+`activeIndex` — keep it in state and update it from `onActiveChange`. Each
+`Card` declares two views with the `CardCollapsed` and `CardExpanded` slots; the
+card derives its index from its position, so you never pass an index manually.
+
+```tsx
+const [active, setActive] = useState(0);
+
+<ProgressiveCardReveal activeIndex={active} onActiveChange={setActive}>
+  <ProgressiveCardReveal.Card>
+    <ProgressiveCardReveal.CardCollapsed>Flight — ~3 hours</ProgressiveCardReveal.CardCollapsed>
+    <ProgressiveCardReveal.CardExpanded>{/* full content */}</ProgressiveCardReveal.CardExpanded>
+  </ProgressiveCardReveal.Card>
+  <ProgressiveCardReveal.Card>
+    <ProgressiveCardReveal.CardCollapsed>Driving — ~18 hours</ProgressiveCardReveal.CardCollapsed>
+    <ProgressiveCardReveal.CardExpanded>{/* full content */}</ProgressiveCardReveal.CardExpanded>
+  </ProgressiveCardReveal.Card>
+</ProgressiveCardReveal>
+```
+
+Clicking a collapsed card fires `onActiveChange(index)`. Clicking the
+already-expanded card is a no-op — one card stays open at all times. The
+transition respects `prefers-reduced-motion`, switching instantly when reduced
+motion is requested.
+
+## Props
+
+### ProgressiveCardReveal
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `activeIndex` | `number` | — | Index of the expanded card (controlled). |
+| `onActiveChange` | `(index: number) => void` | — | Fired when a collapsed card is activated. |
+
+Also accepts all `div` attributes (e.g. `className`).
+
+### ProgressiveCardReveal.Card
+
+Accepts all `div` attributes. Children must be a `CardCollapsed` and a
+`CardExpanded` slot.
+
+### ProgressiveCardReveal.CardCollapsed / CardExpanded
+
+Slot wrappers — their children are the collapsed (pill) and expanded views.

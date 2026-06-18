@@ -36,6 +36,11 @@ export {
   type ProgressFoldButtonVariant,
 } from "./progress-fold-button";
 export {
+  ProgressiveCardReveal,
+  type ProgressiveCardRevealCardProps,
+  type ProgressiveCardRevealProps,
+} from "./progressive-card-reveal";
+export {
   ShimmerButton,
   type ShimmerButtonProps,
   type ShimmerButtonSize,
