@@ -9,7 +9,7 @@ import {
   useTransform,
 } from "framer-motion";
 import * as React from "react";
-import { clamp, getTextContent, lerp } from "./text-utils";
+import { clamp, getTextContent, lerp } from "../lib/text-utils";
 
 /**
  * How the weight emphasis is driven:

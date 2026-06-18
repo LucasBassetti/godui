@@ -27,7 +27,9 @@
   ],
   "scripts": {
     "build": "echo 'skip'",
-    "lint": "tsc -p tsconfig.json --noEmit"
+    "lint": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "peerDependencies": {
     "framer-motion": ">=11.0.0",
@@ -44,12 +46,22 @@
     }
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.6",
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.1.0",
+    "@testing-library/user-event": "^14.5.2",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^4.3.4",
     "framer-motion": "^12.40.0",
     "geist": "^1.7.0",
-    "@tailwindcss/postcss": "^4.1.6",
-    "@types/react": "^19.2.14",
+    "jsdom": "^25.0.1",
     "postcss": "^8.5.3",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
     "tailwindcss": "^4.1.6",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^3.0.0"
   }
 }

@@ -174,7 +174,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/magic-button.tsx",
+          "path": "packages/components/src/magic-button/magic-button.tsx",
           "type": "registry:ui",
           "target": "components/godui/magic-button.tsx"
         }
@@ -321,7 +321,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/magic-input.tsx",
+          "path": "packages/components/src/magic-input/magic-input.tsx",
           "type": "registry:ui",
           "target": "components/godui/magic-input.tsx"
         }
@@ -644,7 +644,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/shimmer-button.tsx",
+          "path": "packages/components/src/shimmer-button/shimmer-button.tsx",
           "type": "registry:ui",
           "target": "components/godui/shimmer-button.tsx"
         }
@@ -693,7 +693,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/progress-fold-button.tsx",
+          "path": "packages/components/src/progress-fold-button/progress-fold-button.tsx",
           "type": "registry:ui",
           "target": "components/godui/progress-fold-button.tsx"
         }
@@ -808,12 +808,12 @@
       "dependencies": ["framer-motion", "@fontsource-variable/roboto-flex"],
       "files": [
         {
-          "path": "packages/components/src/elastic-text.tsx",
+          "path": "packages/components/src/elastic-text/elastic-text.tsx",
           "type": "registry:ui",
           "target": "components/godui/elastic-text.tsx"
         },
         {
-          "path": "packages/components/src/text-utils.ts",
+          "path": "packages/components/src/lib/text-utils.ts",
           "type": "registry:ui",
           "target": "components/godui/text-utils.ts"
         }
@@ -851,17 +851,17 @@
       "dependencies": ["framer-motion"],
       "files": [
         {
-          "path": "packages/components/src/text-animate.tsx",
+          "path": "packages/components/src/text-animate/text-animate.tsx",
           "type": "registry:ui",
           "target": "components/godui/text-animate.tsx"
         },
         {
-          "path": "packages/components/src/text-animate-utils.ts",
+          "path": "packages/components/src/text-animate/text-animate-utils.ts",
           "type": "registry:ui",
           "target": "components/godui/text-animate-utils.ts"
         },
         {
-          "path": "packages/components/src/text-utils.ts",
+          "path": "packages/components/src/lib/text-utils.ts",
           "type": "registry:ui",
           "target": "components/godui/text-utils.ts"
         }
@@ -876,7 +876,7 @@
       "dependencies": ["framer-motion", "rough-notation"],
       "files": [
         {
-          "path": "packages/components/src/highlighter.tsx",
+          "path": "packages/components/src/highlighter/highlighter.tsx",
           "type": "registry:ui",
           "target": "components/godui/highlighter.tsx"
         }

@@ -48,8 +48,7 @@ const sizeClasses: Record<MagicInputSize, string> = {
 const RING_R = 9;
 const RING_C = 2 * Math.PI * RING_R;
 
-const clampPercent = (value: number) =>
-  Math.max(0, Math.min(100, value));
+const clampPercent = (value: number) => Math.max(0, Math.min(100, value));
 
 const ArrowIcon = () => (
   <svg
@@ -234,7 +233,10 @@ const MagicInput = React.forwardRef<HTMLInputElement, MagicInputProps>(
         className={`magic-input ${className ?? ""}`}
         style={
           clamped != null
-            ? ({ ...style, "--magic-progress": `${clamped}%` } as React.CSSProperties)
+            ? ({
+                ...style,
+                "--magic-progress": `${clamped}%`,
+              } as React.CSSProperties)
             : style
         }
       >
@@ -275,17 +277,29 @@ const MagicInput = React.forwardRef<HTMLInputElement, MagicInputProps>(
             disabled={disabled}
             onClick={onSubmit ? handleSubmitClick : undefined}
           >
-            <span className="magic-input-icon" data-icon="arrow" aria-hidden="true">
+            <span
+              className="magic-input-icon"
+              data-icon="arrow"
+              aria-hidden="true"
+            >
               <ArrowIcon />
             </span>
-            <span className="magic-input-icon" data-icon="ring" aria-hidden="true">
+            <span
+              className="magic-input-icon"
+              data-icon="ring"
+              aria-hidden="true"
+            >
               {isLoading && !isDeterminate ? (
                 <Spinner />
               ) : (
                 <RingProgress value={isLoading ? (clamped as number) : 0} />
               )}
             </span>
-            <span className="magic-input-icon" data-icon="check" aria-hidden="true">
+            <span
+              className="magic-input-icon"
+              data-icon="check"
+              aria-hidden="true"
+            >
               <CheckIcon />
             </span>
             <span className="magic-input-icon" data-icon="x" aria-hidden="true">
