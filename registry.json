@@ -314,6 +314,214 @@
       }
     },
     {
+      "name": "magic-input",
+      "type": "registry:ui",
+      "title": "Magic Input",
+      "description": "A 3D layered text input that lifts on focus with an optional rainbow edge animation.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/magic-input.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/magic-input.tsx"
+        }
+      ],
+      "css": {
+        "@keyframes magic-rainbow": {
+          "0%": {
+            "background-position": "0% 50%"
+          },
+          "100%": {
+            "background-position": "200% 50%"
+          }
+        },
+        "@layer components": {
+          ".magic-input": {
+            "position": "relative",
+            "display": "inline-block",
+            "border-radius": "var(--radius-xl)",
+            "-webkit-tap-highlight-color": "transparent"
+          },
+          ".magic-input-shadow": {
+            "position": "absolute",
+            "inset": "0",
+            "border-radius": "var(--radius-xl)",
+            "background": "hsl(0deg 0% 0% / 0.25)",
+            "will-change": "transform",
+            "transform": "translateY(0)",
+            "opacity": "0",
+            "filter": "blur(4px)",
+            "transition": "transform 600ms cubic-bezier(0.3, 0.7, 0.4, 1), opacity 250ms ease"
+          },
+          ".magic-input-edge": {
+            "position": "absolute",
+            "inset": "0",
+            "border-radius": "var(--radius-xl)",
+            "opacity": "0",
+            "transition": "opacity 250ms ease"
+          },
+          ".magic-input[data-variant=\"primary\"] .magic-input-edge": {
+            "background": "linear-gradient(to left, color-mix(in srgb, var(--primary) 50%, black) 0%, color-mix(in srgb, var(--primary) 75%, black) 8%, color-mix(in srgb, var(--primary) 75%, black) 92%, color-mix(in srgb, var(--primary) 50%, black) 100%)"
+          },
+          ".magic-input[data-variant=\"secondary\"] .magic-input-edge": {
+            "background": "linear-gradient(to left, color-mix(in srgb, var(--secondary) 50%, black) 0%, color-mix(in srgb, var(--secondary) 75%, black) 8%, color-mix(in srgb, var(--secondary) 75%, black) 92%, color-mix(in srgb, var(--secondary) 50%, black) 100%)"
+          },
+          ".magic-input-front": {
+            "display": "block",
+            "position": "relative",
+            "width": "100%",
+            "box-sizing": "border-box",
+            "border": "1px solid var(--border)",
+            "outline": "none",
+            "border-radius": "var(--radius-xl)",
+            "color": "var(--foreground)",
+            "background": "var(--background)",
+            "font": "inherit",
+            "will-change": "transform",
+            "transform": "translateY(0)",
+            "transition": "transform 600ms cubic-bezier(0.3, 0.7, 0.4, 1)"
+          },
+          ".magic-input-front::placeholder": {
+            "color": "var(--muted-foreground)"
+          },
+          ".magic-input:focus-within .magic-input-front": {
+            "border-color": "transparent"
+          },
+          ".magic-input[data-depth=\"always\"] .magic-input-front": {
+            "transform": "translateY(-4px)"
+          },
+          ".magic-input[data-depth=\"always\"] .magic-input-edge": {
+            "opacity": "1"
+          },
+          ".magic-input[data-depth=\"always\"] .magic-input-shadow": {
+            "opacity": "1",
+            "transform": "translateY(4px)"
+          },
+          ".magic-input[data-depth=\"focus\"]:focus-within .magic-input-front": {
+            "transform": "translateY(-4px)",
+            "transition": "transform 250ms cubic-bezier(0.3, 0.7, 0.4, 1.5)"
+          },
+          ".magic-input[data-depth=\"focus\"]:focus-within .magic-input-edge, .magic-input[data-depth=\"focus\"]:focus-within .magic-input-shadow": {
+            "opacity": "1"
+          },
+          ".magic-input[data-depth=\"focus\"]:focus-within .magic-input-shadow": {
+            "transform": "translateY(4px)"
+          },
+          ".magic-input[data-depth=\"always\"]:focus-within .magic-input-front": {
+            "transform": "translateY(-6px)",
+            "transition": "transform 250ms cubic-bezier(0.3, 0.7, 0.4, 1.5)"
+          },
+          ".magic-input[data-depth=\"always\"]:focus-within .magic-input-shadow": {
+            "transform": "translateY(6px)"
+          },
+          ".magic-input[data-rainbow=\"true\"]:focus-within .magic-input-edge": {
+            "background": "linear-gradient(90deg, var(--rainbow-1), var(--rainbow-5), var(--rainbow-3), var(--rainbow-4), var(--rainbow-2))",
+            "background-size": "200% 100%",
+            "animation": "magic-rainbow var(--rainbow-speed, 2s) infinite linear"
+          },
+          ".magic-input[data-rainbow=\"true\"]:focus-within .magic-input-shadow": {
+            "background": "linear-gradient(90deg, var(--rainbow-1), var(--rainbow-5), var(--rainbow-3), var(--rainbow-4), var(--rainbow-2))",
+            "background-size": "200% 100%",
+            "animation": "magic-rainbow var(--rainbow-speed, 2s) infinite linear",
+            "filter": "blur(12px)",
+            "opacity": "0.7"
+          },
+          ".magic-input:has(.magic-input-front:disabled)": {
+            "cursor": "not-allowed"
+          },
+          ".magic-input-front:disabled": {
+            "opacity": "0.5",
+            "cursor": "not-allowed"
+          },
+          ".magic-input:has(.magic-input-front:disabled) .magic-input-shadow, .magic-input:has(.magic-input-front:disabled) .magic-input-edge": {
+            "display": "none"
+          },
+          ".magic-input:has(.magic-input-front:disabled) .magic-input-front": {
+            "transform": "translateY(0)"
+          },
+          ".magic-input-submit": {
+            "position": "absolute",
+            "top": "6px",
+            "right": "6px",
+            "bottom": "6px",
+            "aspect-ratio": "1",
+            "display": "inline-flex",
+            "align-items": "center",
+            "justify-content": "center",
+            "padding": "0",
+            "border": "none",
+            "border-radius": "calc(var(--radius-xl) - 6px)",
+            "background": "var(--primary)",
+            "color": "var(--primary-foreground)",
+            "font-size": "1.125rem",
+            "line-height": "1",
+            "cursor": "pointer",
+            "z-index": "1",
+            "transform": "translateY(0)",
+            "transition": "transform 600ms cubic-bezier(0.3, 0.7, 0.4, 1), filter 200ms ease",
+            "-webkit-tap-highlight-color": "transparent"
+          },
+          ".magic-input-submit:hover": {
+            "filter": "brightness(110%)"
+          },
+          ".magic-input-submit:active": {
+            "filter": "brightness(95%)"
+          },
+          ".magic-input-submit:focus-visible": {
+            "outline": "2px solid var(--ring)",
+            "outline-offset": "2px"
+          },
+          ".magic-input-submit:disabled": {
+            "cursor": "not-allowed",
+            "opacity": "0.5"
+          },
+          ".magic-input[data-depth=\"always\"] .magic-input-submit": {
+            "transform": "translateY(-4px)"
+          },
+          ".magic-input[data-depth=\"focus\"]:focus-within .magic-input-submit": {
+            "transform": "translateY(-4px)",
+            "transition": "transform 250ms cubic-bezier(0.3, 0.7, 0.4, 1.5)"
+          },
+          ".magic-input[data-depth=\"always\"]:focus-within .magic-input-submit": {
+            "transform": "translateY(-6px)",
+            "transition": "transform 250ms cubic-bezier(0.3, 0.7, 0.4, 1.5)"
+          },
+          ".magic-input[data-submit=\"true\"] .magic-input-front--sm": {
+            "padding-right": "2.5rem"
+          },
+          ".magic-input[data-submit=\"true\"] .magic-input-front--md": {
+            "padding-right": "3rem"
+          },
+          ".magic-input[data-submit=\"true\"] .magic-input-front--lg": {
+            "padding-right": "3.75rem"
+          },
+          ".magic-input-front--sm": {
+            "padding": "var(--button-py-sm) var(--button-px-sm)",
+            "font-size": "var(--button-text-sm)",
+            "line-height": "var(--button-leading-sm)"
+          },
+          ".magic-input-front--md": {
+            "padding": "var(--button-py-md) var(--button-px-md)",
+            "font-size": "var(--button-text-md)",
+            "line-height": "var(--button-leading-md)"
+          },
+          ".magic-input-front--lg": {
+            "padding": "var(--button-py-lg) var(--button-px-lg)",
+            "font-size": "var(--button-text-lg)",
+            "line-height": "var(--button-leading-lg)"
+          },
+          "@media (prefers-reduced-motion: reduce)": {
+            ".magic-input-front, .magic-input-shadow, .magic-input-edge, .magic-input-submit": {
+              "transition": "none"
+            },
+            ".magic-input[data-rainbow=\"true\"]:focus-within .magic-input-edge, .magic-input[data-rainbow=\"true\"]:focus-within .magic-input-shadow": {
+              "animation": "none"
+            }
+          }
+        }
+      }
+    },
+    {
       "name": "shimmer-button",
       "type": "registry:ui",
       "title": "Shimmer Button",

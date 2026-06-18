@@ -1,0 +1,152 @@
+---
+title: Magic Input
+description: A 3D layered text input that lifts on focus with an optional rainbow edge animation.
+---
+
+import { MagicInput } from "@godui/components";
+
+<ComponentPreview
+  code={`import { MagicInput } from "@/components/godui/magic-input";
+
+export function MagicInputDemo() {
+  return (
+    <div className="flex w-full max-w-xs flex-col gap-6">
+      <MagicInput placeholder="Focus me" />
+      <MagicInput rainbow={false} placeholder="Primary" />
+      <MagicInput variant="secondary" rainbow={false} placeholder="Secondary" />
+    </div>
+  );
+}`}
+>
+  <div className="flex w-full max-w-xs flex-col gap-6">
+    <MagicInput placeholder="Focus me" />
+    <MagicInput rainbow={false} placeholder="Primary" />
+    <MagicInput variant="secondary" rainbow={false} placeholder="Secondary" />
+  </div>
+</ComponentPreview>
+
+## Variants
+
+The `variant` tints the 3D edge. It shows when `rainbow={false}` (the rainbow
+gradient otherwise overrides the edge while focused).
+
+<ComponentPreview
+  code={`import { MagicInput } from "@/components/godui/magic-input";
+
+export function MagicInputVariants() {
+  return (
+    <div className="flex w-full max-w-xs flex-col gap-6">
+      <MagicInput variant="primary" rainbow={false} placeholder="Primary" />
+      <MagicInput variant="secondary" rainbow={false} placeholder="Secondary" />
+    </div>
+  );
+}`}
+>
+  <div className="flex w-full max-w-xs flex-col gap-6">
+    <MagicInput variant="primary" rainbow={false} placeholder="Primary" />
+    <MagicInput variant="secondary" rainbow={false} placeholder="Secondary" />
+  </div>
+</ComponentPreview>
+
+## Depth
+
+`depth="focus"` (default) stays flat until focused. `depth="always"` keeps the
+raised 3D look at rest.
+
+<ComponentPreview
+  code={`import { MagicInput } from "@/components/godui/magic-input";
+
+export function MagicInputDepth() {
+  return (
+    <div className="flex w-full max-w-xs flex-col gap-6">
+      <MagicInput depth="focus" placeholder="On focus" />
+      <MagicInput depth="always" placeholder="Always raised" />
+    </div>
+  );
+}`}
+>
+  <div className="flex w-full max-w-xs flex-col gap-6">
+    <MagicInput depth="focus" placeholder="On focus" />
+    <MagicInput depth="always" placeholder="Always raised" />
+  </div>
+</ComponentPreview>
+
+## Sizes
+
+<ComponentPreview
+  code={`import { MagicInput } from "@/components/godui/magic-input";
+
+export function MagicInputSizes() {
+  return (
+    <div className="flex w-full max-w-xs flex-col gap-6">
+      <MagicInput size="sm" placeholder="Small" />
+      <MagicInput size="md" placeholder="Medium" />
+      <MagicInput size="lg" placeholder="Large" />
+    </div>
+  );
+}`}
+>
+  <div className="flex w-full max-w-xs flex-col gap-6">
+    <MagicInput size="sm" placeholder="Small" />
+    <MagicInput size="md" placeholder="Medium" />
+    <MagicInput size="lg" placeholder="Large" />
+  </div>
+</ComponentPreview>
+
+## Submit button
+
+Pass `onSubmit` to render an arrow button on the right. It fires with the
+current value on click or when <kbd>Enter</kbd> is pressed. Without `onSubmit`,
+set `submitButton` to render a `type="submit"` button for an enclosing form.
+
+<ComponentPreview
+  code={`import { MagicInput } from "@/components/godui/magic-input";
+
+export function MagicInputSubmit() {
+  return (
+    <div className="flex w-full max-w-xs flex-col gap-6">
+      <MagicInput placeholder="Type and submit" onSubmit={(v) => alert(v)} />
+      <MagicInput size="lg" placeholder="Larger" onSubmit={(v) => alert(v)} />
+    </div>
+  );
+}`}
+>
+  <div className="flex w-full max-w-xs flex-col gap-6">
+    <MagicInput placeholder="Type and submit" onSubmit={(v) => alert(v)} />
+    <MagicInput size="lg" placeholder="Larger" onSubmit={(v) => alert(v)} />
+  </div>
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall name="magic-input" />
+
+## Usage
+
+```tsx
+import { MagicInput } from "@/components/godui/magic-input";
+```
+
+```tsx
+<MagicInput placeholder="Focus me" />
+```
+
+By default the input is flat and lifts into the 3D effect only while focused.
+Set `depth="always"` to keep the raised look at rest, and `rainbow={false}` to
+disable the animated rainbow edge.
+
+```tsx
+<MagicInput depth="always" rainbow={false} placeholder="Always raised" />
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `variant` | `"primary" \| "secondary"` | `"primary"` | 3D edge color scheme (visible when `rainbow={false}`) |
+| `size` | `"sm" \| "md" \| "lg"` | `"md"` | Input padding and text size |
+| `depth` | `"focus" \| "always"` | `"focus"` | Show the 3D depth only on focus, or always |
+| `rainbow` | `boolean` | `true` | Animate the edge and shadow with a rainbow gradient while focused |
+| `submitButton` | `boolean` | `false` | Show the arrow submit button (`type="submit"`) |
+| `onSubmit` | `(value: string) => void` | — | Fires with the value on click / Enter; also shows the button |
+| `submitLabel` | `string` | `"Submit"` | Accessible label for the submit button |

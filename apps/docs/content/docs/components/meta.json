@@ -7,6 +7,8 @@
     "buttons/shimmer-button",
     "buttons/progress-fold-button",
     "buttons/mask-button",
+    "---Inputs---",
+    "inputs/magic-input",
     "---Text---",
     "text/elastic-text",
     "text/text-animate",
