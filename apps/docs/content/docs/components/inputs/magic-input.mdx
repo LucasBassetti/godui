@@ -112,8 +112,8 @@ export function MagicInputSubmit() {
 }`}
 >
   <div className="flex w-full max-w-xs flex-col gap-6">
-    <MagicInput placeholder="Type and submit" onSubmit={(v) => alert(v)} />
-    <MagicInput size="lg" placeholder="Larger" onSubmit={(v) => alert(v)} />
+    <MagicInput placeholder="Type and submit" submitButton />
+    <MagicInput size="lg" placeholder="Larger" submitButton />
   </div>
 </ComponentPreview>
 
@@ -140,10 +140,10 @@ export function MagicInputStatus() {
 }`}
 >
   <div className="flex w-full max-w-xs flex-col gap-6">
-    <MagicInput placeholder="Indeterminate" onSubmit={() => {}} status="loading" />
-    <MagicInput placeholder="Determinate" onSubmit={() => {}} status="loading" progress={60} />
-    <MagicInput placeholder="Success" onSubmit={() => {}} status="success" />
-    <MagicInput placeholder="Error" onSubmit={() => {}} status="error" />
+    <MagicInput placeholder="Indeterminate" submitButton status="loading" />
+    <MagicInput placeholder="Determinate" submitButton status="loading" progress={60} />
+    <MagicInput placeholder="Success" submitButton status="success" />
+    <MagicInput placeholder="Error" submitButton status="error" />
   </div>
 </ComponentPreview>
 

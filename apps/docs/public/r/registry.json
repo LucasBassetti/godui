@@ -566,7 +566,7 @@
             "background-color": "var(--primary)",
             "background-position": "left center",
             "background-size": "100% 100%",
-            "animation": "magic-input-sweep 400ms ease-out"
+            "animation": "magic-input-sweep 220ms ease-out"
           },
           ".magic-input[data-status=\"success\"] .magic-input-submit": {
             "background": "oklch(0.65 0.17 150)",
@@ -579,6 +579,25 @@
           ".magic-input-spinner": {
             "animation": "magic-input-spin 0.8s linear infinite",
             "transform-origin": "center"
+          },
+          ".magic-input-icon": {
+            "position": "absolute",
+            "inset": "0",
+            "display": "grid",
+            "place-items": "center",
+            "opacity": "0",
+            "transform": "scale(0.4) rotate(-35deg)",
+            "transition": "opacity 220ms ease, transform 220ms cubic-bezier(0.3, 0.7, 0.4, 1.4)"
+          },
+          ".magic-input:not([data-status]) .magic-input-icon[data-icon=\"arrow\"], .magic-input[data-status=\"loading\"] .magic-input-icon[data-icon=\"ring\"], .magic-input[data-status=\"success\"] .magic-input-icon[data-icon=\"check\"], .magic-input[data-status=\"error\"] .magic-input-icon[data-icon=\"x\"]": {
+            "opacity": "1",
+            "transform": "scale(1) rotate(0deg)"
+          },
+          ".magic-input[data-status=\"loading\"] .magic-input-front, .magic-input[data-status=\"success\"] .magic-input-front": {
+            "color": "color-mix(in srgb, var(--foreground) 45%, transparent)"
+          },
+          ".magic-input[data-status=\"loading\"] .magic-input-front::placeholder, .magic-input[data-status=\"success\"] .magic-input-front::placeholder": {
+            "color": "color-mix(in srgb, var(--muted-foreground) 55%, transparent)"
           },
           ".magic-input-sr": {
             "position": "absolute",
@@ -607,7 +626,7 @@
             "line-height": "var(--button-leading-lg)"
           },
           "@media (prefers-reduced-motion: reduce)": {
-            ".magic-input-front, .magic-input-shadow, .magic-input-edge, .magic-input-submit": {
+            ".magic-input-front, .magic-input-shadow, .magic-input-edge, .magic-input-submit, .magic-input-icon": {
               "transition": "none"
             },
             ".magic-input[data-rainbow=\"true\"]:focus-within .magic-input-edge, .magic-input[data-rainbow=\"true\"]:focus-within .magic-input-shadow, .magic-input[data-status] .magic-input-edge, .magic-input[data-status] .magic-input-shadow, .magic-input-spinner": {

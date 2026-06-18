@@ -174,6 +174,7 @@ const MagicInput = React.forwardRef<HTMLInputElement, MagicInputProps>(
       progress,
       onKeyDown,
       disabled,
+      readOnly,
       ...props
     },
     ref,
@@ -217,15 +218,9 @@ const MagicInput = React.forwardRef<HTMLInputElement, MagicInputProps>(
       return () => cancelAnimationFrame(id);
     }, [isLoading]);
 
-    let buttonContent: React.ReactNode = <ArrowIcon />;
-    if (status === "success") buttonContent = <CheckIcon />;
-    else if (status === "error") buttonContent = <XIcon />;
-    else if (isLoading)
-      buttonContent = isDeterminate ? (
-        <RingProgress value={clamped as number} />
-      ) : (
-        <Spinner />
-      );
+    // Lock the field while submitting / on success, but keep it interactive-
+    // looking (3D + animation stay): readOnly instead of disabled.
+    const lock = readOnly || isLoading || status === "success";
 
     return (
       <div
@@ -249,6 +244,7 @@ const MagicInput = React.forwardRef<HTMLInputElement, MagicInputProps>(
           ref={innerRef}
           className={`magic-input-front ${sizeClasses[size]}`}
           disabled={disabled}
+          readOnly={lock}
           aria-busy={isLoading || undefined}
           onKeyDown={handleKeyDown}
           {...props}
@@ -279,7 +275,22 @@ const MagicInput = React.forwardRef<HTMLInputElement, MagicInputProps>(
             disabled={disabled}
             onClick={onSubmit ? handleSubmitClick : undefined}
           >
-            {buttonContent}
+            <span className="magic-input-icon" data-icon="arrow" aria-hidden="true">
+              <ArrowIcon />
+            </span>
+            <span className="magic-input-icon" data-icon="ring" aria-hidden="true">
+              {isLoading && !isDeterminate ? (
+                <Spinner />
+              ) : (
+                <RingProgress value={isLoading ? (clamped as number) : 0} />
+              )}
+            </span>
+            <span className="magic-input-icon" data-icon="check" aria-hidden="true">
+              <CheckIcon />
+            </span>
+            <span className="magic-input-icon" data-icon="x" aria-hidden="true">
+              <XIcon />
+            </span>
           </button>
         ) : null}
       </div>
