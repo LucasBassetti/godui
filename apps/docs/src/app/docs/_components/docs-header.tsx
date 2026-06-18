@@ -4,6 +4,7 @@ import { FullSearchTrigger } from "fumadocs-ui/layouts/shared/slots/search-trigg
 import { ThemeSwitch } from "fumadocs-ui/layouts/shared/slots/theme-switch";
 import Link from "fumadocs-core/link";
 import type { ComponentProps } from "react";
+import { GoduiLogo } from "./godui-logo";
 
 export function DocsHeader(props: ComponentProps<"header">) {
   return (
@@ -16,7 +17,7 @@ export function DocsHeader(props: ComponentProps<"header">) {
         href="/"
         className="inline-flex items-center gap-2.5 font-semibold text-[0.9375rem] text-fd-foreground"
       >
-        GoDUI
+        <GoduiLogo className="h-10 w-10" width={40} height={40} />
       </Link>
       <div className="flex-1" />
       <div className="flex items-center gap-2">
