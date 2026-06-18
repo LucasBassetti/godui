@@ -8,6 +8,7 @@ import {
   type Variants,
 } from "framer-motion";
 import * as React from "react";
+import { getTextContent } from "../lib/text-utils";
 import {
   getSegmentClassName,
   resolveTextAnimateVariants,
@@ -16,7 +17,6 @@ import {
   type TextAnimateBy,
   type TextAnimatePreset,
 } from "./text-animate-utils";
-import { getTextContent } from "./text-utils";
 
 export type {
   TextAnimateBy,
