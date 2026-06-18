@@ -335,6 +335,27 @@
             "background-position": "200% 50%"
           }
         },
+        "@keyframes magic-input-indeterminate": {
+          "from": {
+            "background-position": "110% center"
+          },
+          "to": {
+            "background-position": "-10% center"
+          }
+        },
+        "@keyframes magic-input-sweep": {
+          "from": {
+            "background-size": "0% 100%"
+          },
+          "to": {
+            "background-size": "100% 100%"
+          }
+        },
+        "@keyframes magic-input-spin": {
+          "to": {
+            "transform": "rotate(360deg)"
+          }
+        },
         "@layer components": {
           ".magic-input": {
             "position": "relative",
@@ -414,12 +435,12 @@
           ".magic-input[data-depth=\"always\"]:focus-within .magic-input-shadow": {
             "transform": "translateY(6px)"
           },
-          ".magic-input[data-rainbow=\"true\"]:focus-within .magic-input-edge": {
+          ".magic-input[data-rainbow=\"true\"]:not([data-status]):focus-within .magic-input-edge": {
             "background": "linear-gradient(90deg, var(--rainbow-1), var(--rainbow-5), var(--rainbow-3), var(--rainbow-4), var(--rainbow-2))",
             "background-size": "200% 100%",
             "animation": "magic-rainbow var(--rainbow-speed, 2s) infinite linear"
           },
-          ".magic-input[data-rainbow=\"true\"]:focus-within .magic-input-shadow": {
+          ".magic-input[data-rainbow=\"true\"]:not([data-status]):focus-within .magic-input-shadow": {
             "background": "linear-gradient(90deg, var(--rainbow-1), var(--rainbow-5), var(--rainbow-3), var(--rainbow-4), var(--rainbow-2))",
             "background-size": "200% 100%",
             "animation": "magic-rainbow var(--rainbow-speed, 2s) infinite linear",
@@ -486,6 +507,9 @@
             "transform": "translateY(-6px)",
             "transition": "transform 250ms cubic-bezier(0.3, 0.7, 0.4, 1.5)"
           },
+          ".magic-input[data-status] .magic-input-submit, .magic-input[data-status]:focus-within .magic-input-submit": {
+            "transform": "translateY(-4px)"
+          },
           ".magic-input[data-submit=\"true\"] .magic-input-front--sm": {
             "padding-right": "2.5rem"
           },
@@ -494,6 +518,78 @@
           },
           ".magic-input[data-submit=\"true\"] .magic-input-front--lg": {
             "padding-right": "3.75rem"
+          },
+          ".magic-input[data-status] .magic-input-front, .magic-input[data-status]:focus-within .magic-input-front": {
+            "transform": "translateY(-4px)"
+          },
+          ".magic-input[data-status]": {
+            "--magic-fill": "var(--primary)"
+          },
+          ".magic-input[data-status] .magic-input-edge": {
+            "opacity": "1",
+            "background-color": "color-mix(in srgb, var(--foreground) 14%, transparent)",
+            "background-image": "linear-gradient(90deg, var(--magic-fill), var(--magic-fill))",
+            "background-repeat": "no-repeat",
+            "background-position": "right center",
+            "background-size": "0% 100%",
+            "animation": "none"
+          },
+          ".magic-input[data-status] .magic-input-shadow": {
+            "opacity": "0.75",
+            "transform": "translateY(6px)",
+            "filter": "blur(12px)",
+            "background-color": "transparent",
+            "background-image": "linear-gradient(90deg, var(--magic-fill), var(--magic-fill))",
+            "background-repeat": "no-repeat",
+            "background-position": "right center",
+            "background-size": "0% 100%",
+            "animation": "none"
+          },
+          ".magic-input[data-determinate=\"true\"] .magic-input-edge, .magic-input[data-determinate=\"true\"] .magic-input-shadow": {
+            "background-size": "var(--magic-progress, 0%) 100%"
+          },
+          ".magic-input[data-armed=\"true\"] .magic-input-edge, .magic-input[data-armed=\"true\"] .magic-input-shadow": {
+            "transition": "background-size 250ms ease"
+          },
+          ".magic-input[data-status=\"loading\"]:not([data-determinate=\"true\"]) .magic-input-edge, .magic-input[data-status=\"loading\"]:not([data-determinate=\"true\"]) .magic-input-shadow": {
+            "background-image": "linear-gradient(90deg, transparent, var(--magic-fill), transparent)",
+            "background-size": "45% 100%",
+            "animation": "magic-input-indeterminate 1.2s ease-in-out infinite alternate"
+          },
+          ".magic-input[data-status=\"success\"]": {
+            "--magic-fill": "oklch(0.65 0.17 150)"
+          },
+          ".magic-input[data-status=\"error\"]": {
+            "--magic-fill": "var(--destructive)"
+          },
+          ".magic-input[data-status=\"success\"] .magic-input-edge, .magic-input[data-status=\"error\"] .magic-input-edge, .magic-input[data-status=\"success\"] .magic-input-shadow, .magic-input[data-status=\"error\"] .magic-input-shadow": {
+            "background-color": "var(--primary)",
+            "background-position": "left center",
+            "background-size": "100% 100%",
+            "animation": "magic-input-sweep 400ms ease-out"
+          },
+          ".magic-input[data-status=\"success\"] .magic-input-submit": {
+            "background": "oklch(0.65 0.17 150)",
+            "color": "oklch(1 0 0)"
+          },
+          ".magic-input[data-status=\"error\"] .magic-input-submit": {
+            "background": "var(--destructive)",
+            "color": "oklch(1 0 0)"
+          },
+          ".magic-input-spinner": {
+            "animation": "magic-input-spin 0.8s linear infinite",
+            "transform-origin": "center"
+          },
+          ".magic-input-sr": {
+            "position": "absolute",
+            "width": "1px",
+            "height": "1px",
+            "margin": "-1px",
+            "padding": "0",
+            "overflow": "hidden",
+            "clip": "rect(0, 0, 0, 0)",
+            "white-space": "nowrap",
+            "border": "0"
           },
           ".magic-input-front--sm": {
             "padding": "var(--button-py-sm) var(--button-px-sm)",
@@ -514,7 +610,7 @@
             ".magic-input-front, .magic-input-shadow, .magic-input-edge, .magic-input-submit": {
               "transition": "none"
             },
-            ".magic-input[data-rainbow=\"true\"]:focus-within .magic-input-edge, .magic-input[data-rainbow=\"true\"]:focus-within .magic-input-shadow": {
+            ".magic-input[data-rainbow=\"true\"]:focus-within .magic-input-edge, .magic-input[data-rainbow=\"true\"]:focus-within .magic-input-shadow, .magic-input[data-status] .magic-input-edge, .magic-input[data-status] .magic-input-shadow, .magic-input-spinner": {
               "animation": "none"
             }
           }

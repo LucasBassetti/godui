@@ -5,6 +5,7 @@ import * as React from "react";
 export type MagicInputVariant = "primary" | "secondary";
 export type MagicInputSize = "sm" | "md" | "lg";
 export type MagicInputDepth = "focus" | "always";
+export type MagicInputStatus = "idle" | "loading" | "success" | "error";
 
 export type MagicInputProps = Omit<
   React.InputHTMLAttributes<HTMLInputElement>,
@@ -26,6 +27,16 @@ export type MagicInputProps = Omit<
   onSubmit?: (value: string) => void;
   /** Accessible label for the submit button */
   submitLabel?: string;
+  /**
+   * Submit lifecycle. `loading` runs the progress bar + spinner, `success` /
+   * `error` flash a green / red sweep with a check / X. Fully controlled.
+   */
+  status?: MagicInputStatus;
+  /**
+   * 0–100. With `status="loading"` a value makes the bar determinate; omitting
+   * it makes the bar indeterminate (a segment that bounces end to end).
+   */
+  progress?: number;
 };
 
 const sizeClasses: Record<MagicInputSize, string> = {
@@ -33,6 +44,12 @@ const sizeClasses: Record<MagicInputSize, string> = {
   md: "magic-input-front--md",
   lg: "magic-input-front--lg",
 };
+
+const RING_R = 9;
+const RING_C = 2 * Math.PI * RING_R;
+
+const clampPercent = (value: number) =>
+  Math.max(0, Math.min(100, value));
 
 const ArrowIcon = () => (
   <svg
@@ -51,10 +68,101 @@ const ArrowIcon = () => (
   </svg>
 );
 
+const CheckIcon = () => (
+  <svg
+    viewBox="0 0 24 24"
+    width="1em"
+    height="1em"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={2.5}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M20 6 9 17l-5-5" />
+  </svg>
+);
+
+const XIcon = () => (
+  <svg
+    viewBox="0 0 24 24"
+    width="1em"
+    height="1em"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={2.5}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M18 6 6 18" />
+    <path d="m6 6 12 12" />
+  </svg>
+);
+
+const RingProgress = ({ value }: { value: number }) => (
+  <svg viewBox="0 0 24 24" width="1em" height="1em" aria-hidden="true">
+    <circle
+      cx="12"
+      cy="12"
+      r={RING_R}
+      fill="none"
+      stroke="currentColor"
+      strokeOpacity={0.3}
+      strokeWidth={2.5}
+    />
+    <circle
+      cx="12"
+      cy="12"
+      r={RING_R}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2.5}
+      strokeLinecap="round"
+      strokeDasharray={RING_C}
+      strokeDashoffset={RING_C * (1 - clampPercent(value) / 100)}
+      transform="rotate(-90 12 12)"
+      style={{ transition: "stroke-dashoffset 250ms ease" }}
+    />
+  </svg>
+);
+
+const Spinner = () => (
+  <svg
+    className="magic-input-spinner"
+    viewBox="0 0 24 24"
+    width="1em"
+    height="1em"
+    aria-hidden="true"
+  >
+    <circle
+      cx="12"
+      cy="12"
+      r={RING_R}
+      fill="none"
+      stroke="currentColor"
+      strokeOpacity={0.3}
+      strokeWidth={2.5}
+    />
+    <circle
+      cx="12"
+      cy="12"
+      r={RING_R}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2.5}
+      strokeLinecap="round"
+      strokeDasharray={`${RING_C * 0.28} ${RING_C}`}
+    />
+  </svg>
+);
+
 const MagicInput = React.forwardRef<HTMLInputElement, MagicInputProps>(
   (
     {
       className,
+      style,
       variant = "primary",
       size = "md",
       depth = "focus",
@@ -62,6 +170,8 @@ const MagicInput = React.forwardRef<HTMLInputElement, MagicInputProps>(
       submitButton = false,
       onSubmit,
       submitLabel = "Submit",
+      status = "idle",
+      progress,
       onKeyDown,
       disabled,
       ...props
@@ -72,17 +182,50 @@ const MagicInput = React.forwardRef<HTMLInputElement, MagicInputProps>(
     React.useImperativeHandle(ref, () => innerRef.current as HTMLInputElement);
 
     const showButton = submitButton || onSubmit != null;
+    const isIdle = status === "idle";
+    const isLoading = status === "loading";
+    const isDeterminate = isLoading && progress != null;
+    const clamped = progress != null ? clampPercent(progress) : undefined;
 
     const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
       onKeyDown?.(event);
-      if (onSubmit && event.key === "Enter" && !event.defaultPrevented) {
+      if (
+        isIdle &&
+        onSubmit &&
+        event.key === "Enter" &&
+        !event.defaultPrevented
+      ) {
         onSubmit(event.currentTarget.value);
       }
     };
 
     const handleSubmitClick = () => {
+      if (!isIdle) return;
       onSubmit?.(innerRef.current?.value ?? "");
     };
+
+    // Snap the fill to 0 on entering loading, then arm the smooth transition a
+    // frame later so progress animates without the entry flashing from full.
+    const [armed, setArmed] = React.useState(false);
+    React.useEffect(() => {
+      if (!isLoading) {
+        setArmed(false);
+        return;
+      }
+      setArmed(false);
+      const id = requestAnimationFrame(() => setArmed(true));
+      return () => cancelAnimationFrame(id);
+    }, [isLoading]);
+
+    let buttonContent: React.ReactNode = <ArrowIcon />;
+    if (status === "success") buttonContent = <CheckIcon />;
+    else if (status === "error") buttonContent = <XIcon />;
+    else if (isLoading)
+      buttonContent = isDeterminate ? (
+        <RingProgress value={clamped as number} />
+      ) : (
+        <Spinner />
+      );
 
     return (
       <div
@@ -90,7 +233,15 @@ const MagicInput = React.forwardRef<HTMLInputElement, MagicInputProps>(
         data-depth={depth}
         data-rainbow={rainbow ? "true" : undefined}
         data-submit={showButton ? "true" : undefined}
+        data-status={isIdle ? undefined : status}
+        data-determinate={isDeterminate ? "true" : undefined}
+        data-armed={armed ? "true" : undefined}
         className={`magic-input ${className ?? ""}`}
+        style={
+          clamped != null
+            ? ({ ...style, "--magic-progress": `${clamped}%` } as React.CSSProperties)
+            : style
+        }
       >
         <span className="magic-input-shadow" aria-hidden="true" />
         <span className="magic-input-edge" aria-hidden="true" />
@@ -98,9 +249,28 @@ const MagicInput = React.forwardRef<HTMLInputElement, MagicInputProps>(
           ref={innerRef}
           className={`magic-input-front ${sizeClasses[size]}`}
           disabled={disabled}
+          aria-busy={isLoading || undefined}
           onKeyDown={handleKeyDown}
           {...props}
         />
+        {!isIdle ? (
+          <span
+            className="magic-input-sr"
+            role="progressbar"
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={isDeterminate ? clamped : undefined}
+            aria-valuetext={
+              status === "success"
+                ? "Success"
+                : status === "error"
+                  ? "Error"
+                  : isDeterminate
+                    ? `${clamped}%`
+                    : "Loading"
+            }
+          />
+        ) : null}
         {showButton ? (
           <button
             type={onSubmit ? "button" : "submit"}
@@ -109,7 +279,7 @@ const MagicInput = React.forwardRef<HTMLInputElement, MagicInputProps>(
             disabled={disabled}
             onClick={onSubmit ? handleSubmitClick : undefined}
           >
-            <ArrowIcon />
+            {buttonContent}
           </button>
         ) : null}
       </div>

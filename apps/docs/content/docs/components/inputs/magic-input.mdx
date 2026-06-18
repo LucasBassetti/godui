@@ -117,6 +117,60 @@ export function MagicInputSubmit() {
   </div>
 </ComponentPreview>
 
+## Submit lifecycle
+
+`status` and `progress` are fully controlled. While `status="loading"` the
+rainbow hides, the 3D depth locks in, and a progress bar runs along the bottom —
+determinate when you pass `progress`, otherwise an indeterminate segment bounces
+end to end. The arrow turns into a circular progress / spinner. `success` and
+`error` flash a green / red sweep with a check / X icon.
+
+<ComponentPreview
+  code={`import { MagicInput } from "@/components/godui/magic-input";
+
+export function MagicInputStatus() {
+  return (
+    <div className="flex w-full max-w-xs flex-col gap-6">
+      <MagicInput placeholder="Indeterminate" onSubmit={() => {}} status="loading" />
+      <MagicInput placeholder="Determinate" onSubmit={() => {}} status="loading" progress={60} />
+      <MagicInput placeholder="Success" onSubmit={() => {}} status="success" />
+      <MagicInput placeholder="Error" onSubmit={() => {}} status="error" />
+    </div>
+  );
+}`}
+>
+  <div className="flex w-full max-w-xs flex-col gap-6">
+    <MagicInput placeholder="Indeterminate" onSubmit={() => {}} status="loading" />
+    <MagicInput placeholder="Determinate" onSubmit={() => {}} status="loading" progress={60} />
+    <MagicInput placeholder="Success" onSubmit={() => {}} status="success" />
+    <MagicInput placeholder="Error" onSubmit={() => {}} status="error" />
+  </div>
+</ComponentPreview>
+
+You drive it from your submit handler:
+
+```tsx
+const [status, setStatus] = useState<MagicInputStatus>("idle");
+const [progress, setProgress] = useState(0);
+
+async function handleSubmit(value: string) {
+  setStatus("loading");
+  try {
+    await upload(value, setProgress); // call setProgress(0..100) as it runs
+    setStatus("success");
+  } catch {
+    setStatus("error");
+  }
+  setTimeout(() => setStatus("idle"), 1600);
+}
+
+<MagicInput
+  status={status}
+  progress={status === "loading" ? progress : undefined}
+  onSubmit={handleSubmit}
+/>;
+```
+
 ## Installation
 
 <ComponentInstall name="magic-input" />
@@ -150,3 +204,5 @@ disable the animated rainbow edge.
 | `submitButton` | `boolean` | `false` | Show the arrow submit button (`type="submit"`) |
 | `onSubmit` | `(value: string) => void` | — | Fires with the value on click / Enter; also shows the button |
 | `submitLabel` | `string` | `"Submit"` | Accessible label for the submit button |
+| `status` | `"idle" \| "loading" \| "success" \| "error"` | `"idle"` | Submit lifecycle state |
+| `progress` | `number` | — | 0–100; makes `loading` determinate (omit for indeterminate) |
