@@ -80,6 +80,15 @@ export function ComponentInstall({
   const [item, setItem] = useState<RegistryItem | null>(null);
   const [error, setError] = useState(false);
 
+  // Reset the loaded source when the target item changes. Doing this during
+  // render (rather than in the effect) avoids a cascading-render setState.
+  const [loadedFor, setLoadedFor] = useState(itemName);
+  if (loadedFor !== itemName) {
+    setLoadedFor(itemName);
+    setItem(null);
+    setError(false);
+  }
+
   const cliCommand = useMemo(
     () => `${getExecPrefix(manager)} shadcn@latest add @godui/${itemName}`,
     [manager, itemName],
@@ -88,8 +97,6 @@ export function ComponentInstall({
   // Pull the built registry item so the Manual tab can show the source directly.
   useEffect(() => {
     let active = true;
-    setItem(null);
-    setError(false);
     fetch(`/r/${itemName}.json`)
       .then((res) => {
         if (!res.ok) throw new Error(`status ${res.status}`);
