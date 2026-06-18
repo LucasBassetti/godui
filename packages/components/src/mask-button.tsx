@@ -26,25 +26,48 @@ const MaskButton = React.forwardRef<HTMLButtonElement, MaskButtonProps>(
       mask = "nature",
       variant = "primary",
       size = "md",
+      onKeyDown,
+      onKeyUp,
       ...props
     },
     ref,
-  ) => (
-    <button
-      ref={ref}
-      type="button"
-      data-mask={mask}
-      data-variant={variant}
-      data-size={size}
-      className={`mask-button font-medium ${sizeClasses[size]} ${className ?? ""}`}
-      {...props}
-    >
-      <span className="mask-button-label">{children}</span>
-      <span className="mask-button-fill" aria-hidden="true">
-        {children}
-      </span>
-    </button>
-  ),
+  ) => {
+    const [pressed, setPressed] = React.useState(false);
+
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>) => {
+      if (event.key === "Enter" || event.key === " ") {
+        setPressed(true);
+      }
+      onKeyDown?.(event);
+    };
+
+    const handleKeyUp = (event: React.KeyboardEvent<HTMLButtonElement>) => {
+      if (event.key === "Enter" || event.key === " ") {
+        setPressed(false);
+      }
+      onKeyUp?.(event);
+    };
+
+    return (
+      <button
+        ref={ref}
+        type="button"
+        data-mask={mask}
+        data-variant={variant}
+        data-size={size}
+        data-pressed={pressed ? "true" : undefined}
+        onKeyDown={handleKeyDown}
+        onKeyUp={handleKeyUp}
+        className={`mask-button font-medium ${sizeClasses[size]} ${className ?? ""}`}
+        {...props}
+      >
+        <span className="mask-button-label">{children}</span>
+        <span className="mask-button-fill" aria-hidden="true">
+          {children}
+        </span>
+      </button>
+    );
+  },
 );
 MaskButton.displayName = "MaskButton";
 

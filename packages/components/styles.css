@@ -189,7 +189,8 @@
     user-select: none;
   }
 
-  .magic-button:hover {
+  .magic-button:hover,
+  .magic-button:focus-visible {
     filter: brightness(110%);
     transition: filter 250ms;
   }
@@ -234,12 +235,14 @@
     transition: transform 600ms cubic-bezier(0.3, 0.7, 0.4, 1);
   }
 
-  .magic-button:hover .magic-button-shadow {
+  .magic-button:hover .magic-button-shadow,
+  .magic-button:focus-visible .magic-button-shadow {
     transform: translateY(4px);
     transition: transform 250ms cubic-bezier(0.3, 0.7, 0.4, 1.5);
   }
 
-  .magic-button:active .magic-button-shadow {
+  .magic-button:active .magic-button-shadow,
+  .magic-button[data-pressed="true"] .magic-button-shadow {
     transform: translateY(1px);
     transition: transform 34ms;
   }
@@ -320,12 +323,14 @@
     background: var(--secondary);
   }
 
-  .magic-button:hover .magic-button-front {
+  .magic-button:hover .magic-button-front,
+  .magic-button:focus-visible .magic-button-front {
     transform: translateY(-6px);
     transition: transform 250ms cubic-bezier(0.3, 0.7, 0.4, 1.5);
   }
 
-  .magic-button:active .magic-button-front {
+  .magic-button:active .magic-button-front,
+  .magic-button[data-pressed="true"] .magic-button-front {
     transform: translateY(-2px);
     transition: transform 34ms;
   }
@@ -914,7 +919,8 @@
     line-height: var(--button-leading-lg);
   }
 
-  .progress-fold-button:hover:not(:disabled) .progress-fold-button-front {
+  .progress-fold-button:hover:not(:disabled) .progress-fold-button-front,
+  .progress-fold-button:focus-visible:not(:disabled) .progress-fold-button-front {
     transform: rotateX(35deg);
   }
 
@@ -975,11 +981,22 @@
     white-space: nowrap;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
+    transition: transform 100ms ease;
+  }
+
+  .mask-button:focus:not(:focus-visible) {
+    outline: none;
   }
 
   .mask-button:focus-visible {
     outline: 2px solid var(--ring);
     outline-offset: 4px;
+  }
+
+  /* Pointer press + keyboard activation (Enter/Space) share a press cue */
+  .mask-button:active:not(:disabled),
+  .mask-button[data-pressed="true"]:not(:disabled) {
+    transform: scale(0.97);
   }
 
   .mask-button:disabled {
@@ -1023,7 +1040,8 @@
     mask-size: 2300% 100%;
     animation: mask-button-out 0.7s steps(22) forwards;
   }
-  .mask-button[data-mask="nature"]:hover:not(:disabled) .mask-button-fill {
+  .mask-button[data-mask="nature"]:hover:not(:disabled) .mask-button-fill,
+  .mask-button[data-mask="nature"]:focus-visible:not(:disabled) .mask-button-fill {
     animation: mask-button-in 0.7s steps(22) forwards;
   }
 
@@ -1034,7 +1052,8 @@
     mask-size: 3000% 100%;
     animation: mask-button-out 0.7s steps(29) forwards;
   }
-  .mask-button[data-mask="urban"]:hover:not(:disabled) .mask-button-fill {
+  .mask-button[data-mask="urban"]:hover:not(:disabled) .mask-button-fill,
+  .mask-button[data-mask="urban"]:focus-visible:not(:disabled) .mask-button-fill {
     animation: mask-button-in 0.7s steps(29) forwards;
   }
 
@@ -1045,7 +1064,8 @@
     mask-size: 7100% 100%;
     animation: mask-button-out 0.7s steps(70) forwards;
   }
-  .mask-button[data-mask="forest"]:hover:not(:disabled) .mask-button-fill {
+  .mask-button[data-mask="forest"]:hover:not(:disabled) .mask-button-fill,
+  .mask-button[data-mask="forest"]:focus-visible:not(:disabled) .mask-button-fill {
     animation: mask-button-in 0.7s steps(70) forwards;
   }
 
@@ -1076,7 +1096,8 @@
       -webkit-mask-position: 0 0;
       mask-position: 0 0;
     }
-    .mask-button:hover:not(:disabled) .mask-button-fill {
+    .mask-button:hover:not(:disabled) .mask-button-fill,
+    .mask-button:focus-visible:not(:disabled) .mask-button-fill {
       animation: none;
       -webkit-mask-position: 100% 0;
       mask-position: 100% 0;

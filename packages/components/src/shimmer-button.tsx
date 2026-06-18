@@ -82,12 +82,17 @@ const ShimmerButton = React.forwardRef<HTMLButtonElement, ShimmerButtonProps>(
       type = "button",
       onMouseEnter,
       onMouseLeave,
+      onKeyDown,
+      onKeyUp,
+      onFocus,
+      onBlur,
       ...props
     },
     ref,
   ) => {
     const defaults = variantDefaults[variant];
     const sparkRef = React.useRef<HTMLDivElement>(null);
+    const [pressed, setPressed] = React.useState(false);
 
     const style = {
       "--spread": defaults.shimmerSpread,
@@ -98,18 +103,50 @@ const ShimmerButton = React.forwardRef<HTMLButtonElement, ShimmerButtonProps>(
       "--bg": background ?? defaults.background,
     } as CSSProperties;
 
-    const handleMouseEnter = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const setSparkRate = (rate: number) => {
       sparkRef.current?.getAnimations({ subtree: true }).forEach((a) => {
-        a.playbackRate = 3;
+        a.playbackRate = rate;
       });
+    };
+
+    const handleMouseEnter = (e: React.MouseEvent<HTMLButtonElement>) => {
+      setSparkRate(3);
       onMouseEnter?.(e);
     };
 
     const handleMouseLeave = (e: React.MouseEvent<HTMLButtonElement>) => {
-      sparkRef.current?.getAnimations({ subtree: true }).forEach((a) => {
-        a.playbackRate = 1;
-      });
+      setSparkRate(1);
       onMouseLeave?.(e);
+    };
+
+    // Keyboard focus matches the hover speed-up; ignore non-visible focus
+    // (programmatic / pointer) so it stays a keyboard affordance.
+    const handleFocus = (e: React.FocusEvent<HTMLButtonElement>) => {
+      if (e.target.matches(":focus-visible")) {
+        setSparkRate(3);
+      }
+      onFocus?.(e);
+    };
+
+    const handleBlur = (e: React.FocusEvent<HTMLButtonElement>) => {
+      setSparkRate(1);
+      onBlur?.(e);
+    };
+
+    // Enter fires the native click but never sets :active, so mirror the
+    // pointer press cue while the key is held.
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
+      if (e.key === "Enter" || e.key === " ") {
+        setPressed(true);
+      }
+      onKeyDown?.(e);
+    };
+
+    const handleKeyUp = (e: React.KeyboardEvent<HTMLButtonElement>) => {
+      if (e.key === "Enter" || e.key === " ") {
+        setPressed(false);
+      }
+      onKeyUp?.(e);
     };
 
     return (
@@ -119,10 +156,15 @@ const ShimmerButton = React.forwardRef<HTMLButtonElement, ShimmerButtonProps>(
         data-variant={variant}
         data-size={size}
         data-shimmer={shimmer ? "true" : undefined}
+        data-pressed={pressed ? "true" : undefined}
         style={style}
-        className={`group shimmer-button relative z-0 flex cursor-pointer items-center justify-center overflow-hidden [border-radius:var(--radius)] border whitespace-nowrap [background:var(--bg)] transform-gpu transition-transform duration-300 ease-in-out active:translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${defaults.textClass} ${defaults.borderClass} ${className ?? ""}`}
+        className={`group shimmer-button relative z-0 flex cursor-pointer items-center justify-center overflow-hidden [border-radius:var(--radius)] border whitespace-nowrap [background:var(--bg)] transform-gpu transition-transform duration-300 ease-in-out active:translate-y-px data-[pressed=true]:translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${defaults.textClass} ${defaults.borderClass} ${className ?? ""}`}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
+        onKeyDown={handleKeyDown}
+        onKeyUp={handleKeyUp}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
         {...props}
       >
         <div

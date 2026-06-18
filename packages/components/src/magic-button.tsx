@@ -24,15 +24,36 @@ const MagicButton = React.forwardRef<HTMLButtonElement, MagicButtonProps>(
       size = "md",
       rainbow = true,
       children,
+      onKeyDown,
+      onKeyUp,
       ...props
     },
     ref,
   ) => {
+    const [pressed, setPressed] = React.useState(false);
+
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>) => {
+      if (event.key === "Enter" || event.key === " ") {
+        setPressed(true);
+      }
+      onKeyDown?.(event);
+    };
+
+    const handleKeyUp = (event: React.KeyboardEvent<HTMLButtonElement>) => {
+      if (event.key === "Enter" || event.key === " ") {
+        setPressed(false);
+      }
+      onKeyUp?.(event);
+    };
+
     return (
       <button
         ref={ref}
         data-variant={variant}
         data-rainbow={rainbow ? "true" : undefined}
+        data-pressed={pressed ? "true" : undefined}
+        onKeyDown={handleKeyDown}
+        onKeyUp={handleKeyUp}
         className={`magic-button font-medium ${className ?? ""}`}
         {...props}
       >
