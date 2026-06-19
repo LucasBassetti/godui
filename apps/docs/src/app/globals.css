@@ -406,3 +406,25 @@ body {
     color-mix(in srgb, var(--color-fd-accent) 70%, var(--color-fd-card)) 100%
   );
 }
+
+/* Logo sunglasses: sweep the rainbow gradient left→right once on hover.
+   Gradient uses userSpaceOnUse + spreadMethod="repeat" so translating by one
+   tile width (256 user units) is seamless and rests on the static rainbow. */
+@keyframes godui-glasses-sweep {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(256px);
+  }
+}
+
+#nd-nav a:hover .godui-glasses-gradient {
+  animation: godui-glasses-sweep 0.9s linear;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #nd-nav a:hover .godui-glasses-gradient {
+    animation: none;
+  }
+}
