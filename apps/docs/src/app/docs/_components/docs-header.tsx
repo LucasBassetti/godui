@@ -4,14 +4,18 @@ import { FullSearchTrigger } from "fumadocs-ui/layouts/shared/slots/search-trigg
 import { ThemeSwitch } from "fumadocs-ui/layouts/shared/slots/theme-switch";
 import Link from "fumadocs-core/link";
 import type { ComponentProps } from "react";
+import { cn } from "@/lib/cn";
 import { GoduiLogo } from "./godui-logo";
 
-export function DocsHeader(props: ComponentProps<"header">) {
+export function DocsHeader({ className, ...props }: ComponentProps<"header">) {
   return (
     <header
       id="nd-nav"
       {...props}
-      className="[grid-area:header] sticky top-0 z-40 flex h-14 items-center gap-4 border-b bg-fd-background/80 backdrop-blur-lg px-4"
+      className={cn(
+        "[grid-area:header] sticky top-0 z-40 flex h-14 items-center gap-4 border-b bg-fd-background/80 backdrop-blur-lg px-4",
+        className,
+      )}
     >
       <Link
         href="/"
