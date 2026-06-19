@@ -1,6 +1,6 @@
 ---
 title: Progress Fold Button
-description: A 3D button whose front face folds back on hover and runs a progress bar on click.
+description: A 3D button whose front face folds back to reveal a controlled progress bar while loading.
 ---
 
 import { ProgressFoldButton } from "@godui/components";
@@ -11,21 +11,73 @@ import { ProgressFoldButton } from "@godui/components";
 export function ProgressFoldButtonDemo() {
   return (
     <div className="flex flex-wrap items-center justify-center gap-6">
-      <ProgressFoldButton variant="primary">Hover & click</ProgressFoldButton>
-      <ProgressFoldButton variant="secondary">Hover & click</ProgressFoldButton>
+      <ProgressFoldButton variant="primary">Submit</ProgressFoldButton>
+      <ProgressFoldButton variant="secondary">Submit</ProgressFoldButton>
     </div>
   );
 }`}
 >
   <div className="flex flex-wrap items-center justify-center gap-6">
-    <ProgressFoldButton variant="primary">Hover & click</ProgressFoldButton>
-    <ProgressFoldButton variant="secondary">Hover & click</ProgressFoldButton>
+    <ProgressFoldButton variant="primary">Submit</ProgressFoldButton>
+    <ProgressFoldButton variant="secondary">Submit</ProgressFoldButton>
   </div>
 </ComponentPreview>
 
-The front face folds back on hover, revealing the layers behind it. Clicking
-runs the progress bar animation, which resets when it finishes so it can replay
-on the next click.
+The front face folds back on hover, revealing the layers behind it. Set
+`status="loading"` to hold the fold open and run a progress bar — controlled by
+you, like the Magic Input.
+
+## Loading
+
+`status` and `progress` are fully controlled. While `status="loading"` the front
+face folds open and a progress bar runs behind it — determinate when you pass
+`progress`, otherwise an indeterminate segment sweeps across. Back to `idle` and
+the front folds flat again.
+
+<ComponentPreview
+  code={`import { ProgressFoldButton } from "@/components/godui/progress-fold-button";
+
+export function ProgressFoldButtonLoading() {
+  return (
+    <div className="flex flex-wrap items-center justify-center gap-6">
+      <ProgressFoldButton status="loading">Indeterminate</ProgressFoldButton>
+      <ProgressFoldButton status="loading" progress={60}>
+        Determinate
+      </ProgressFoldButton>
+    </div>
+  );
+}`}
+>
+  <div className="flex flex-wrap items-center justify-center gap-6">
+    <ProgressFoldButton status="loading">Indeterminate</ProgressFoldButton>
+    <ProgressFoldButton status="loading" progress={60}>
+      Determinate
+    </ProgressFoldButton>
+  </div>
+</ComponentPreview>
+
+Wire it up by flipping `status` from your handler:
+
+```tsx
+import * as React from "react";
+import { ProgressFoldButton } from "@/components/godui/progress-fold-button";
+
+export function Example() {
+  const [status, setStatus] = React.useState<"idle" | "loading">("idle");
+
+  const handleClick = async () => {
+    setStatus("loading");
+    await doWork();
+    setStatus("idle");
+  };
+
+  return (
+    <ProgressFoldButton status={status} onClick={handleClick}>
+      Submit
+    </ProgressFoldButton>
+  );
+}
+```
 
 ## Installation
 
@@ -38,8 +90,8 @@ import { ProgressFoldButton } from "@/components/godui/progress-fold-button";
 ```
 
 ```tsx
-<ProgressFoldButton onClick={() => console.log("activated")}>
-  Hover & click
+<ProgressFoldButton status="loading" progress={40}>
+  Submit
 </ProgressFoldButton>
 ```
 
@@ -50,6 +102,9 @@ Accepts all native `<button>` attributes.
 | Prop | Type | Default | Description |
 | ---- | ---- | ------- | ----------- |
 | `variant` | `"primary" \| "secondary"` | `"primary"` | Theme color scheme of the front face |
+| `size` | `"sm" \| "md" \| "lg"` | `"md"` | Button size |
+| `status` | `"idle" \| "loading"` | `"idle"` | Loading lifecycle; `"loading"` folds open and runs the bar |
+| `progress` | `number` | — | 0–100; makes `loading` determinate (omit for indeterminate) |
 | `children` | `ReactNode` | — | Button label |
 | `disabled` | `boolean` | `false` | Disable the button and its animations |
-| `onClick` | `(e) => void` | — | Fires on click; the progress bar runs alongside it |
+| `onClick` | `(e) => void` | — | Fires on click; flip `status` from here to start loading |

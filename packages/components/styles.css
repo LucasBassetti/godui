@@ -1148,6 +1148,11 @@
     transform: rotateX(35deg);
   }
 
+  /* While loading the front holds the fold open, revealing the progress bar. */
+  .progress-fold-button[data-status="loading"] .progress-fold-button-front {
+    transform: rotateX(35deg);
+  }
+
   /* Front face colors and the fold-side tints come from Tailwind utility
      classes on the elements (bg-primary / text-primary-foreground and alpha
      tints like bg-primary/15). Those resolve theme tokens reliably and adapt
@@ -1168,7 +1173,7 @@
     inset: 0;
   }
 
-  /* Progress bar — animates on click via data-active (color via Tailwind) */
+  /* Progress bar — controlled by status / progress (color via Tailwind) */
   .progress-fold-button-bar {
     position: absolute;
     top: 0;
@@ -1177,14 +1182,46 @@
     width: 0;
   }
 
-  .progress-fold-button[data-active="true"] .progress-fold-button-bar {
-    animation: progress-fold-bar 1.2s;
+  /* Determinate: fill to the supplied percentage. The transition is armed one
+     frame after entering loading so the fill grows from 0 instead of flashing. */
+  .progress-fold-button[data-determinate="true"] .progress-fold-button-bar {
+    width: var(--progress-fold-fill, 0%);
+  }
+
+  .progress-fold-button[data-determinate="true"][data-armed="true"]
+    .progress-fold-button-bar {
+    transition: width 0.25s ease;
+  }
+
+  /* Indeterminate: a fixed segment sweeps left→right on a loop. */
+  .progress-fold-button[data-status="loading"]:not([data-determinate="true"])
+    .progress-fold-button-bar {
+    width: 40%;
+    animation: progress-fold-indeterminate 1.2s ease-in-out infinite;
+  }
+
+  /* Visually-hidden live region reporting progress to assistive tech */
+  .progress-fold-button-sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
 
   @media (prefers-reduced-motion: reduce) {
     .progress-fold-button-front,
-    .progress-fold-button[data-active="true"] .progress-fold-button-bar {
+    .progress-fold-button[data-determinate="true"][data-armed="true"]
+      .progress-fold-button-bar {
       transition: none;
+    }
+
+    .progress-fold-button[data-status="loading"]:not([data-determinate="true"])
+      .progress-fold-button-bar {
       animation: none;
     }
   }
@@ -1329,33 +1366,12 @@
   }
 }
 
-@keyframes progress-fold-bar {
+/* Progress fold button: indeterminate segment sweeping left→right */
+@keyframes progress-fold-indeterminate {
   0% {
-    opacity: 1;
-    width: 0;
+    transform: translateX(-100%);
   }
-  10% {
-    opacity: 1;
-    width: 15%;
-  }
-  25% {
-    opacity: 1;
-    width: 25%;
-  }
-  40% {
-    opacity: 1;
-    width: 35%;
-  }
-  55% {
-    opacity: 1;
-    width: 75%;
-  }
-  60% {
-    opacity: 1;
-    width: 100%;
-  }
-  to {
-    opacity: 0;
-    width: 100%;
+  100% {
+    transform: translateX(250%);
   }
 }
