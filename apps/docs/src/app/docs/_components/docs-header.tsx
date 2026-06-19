@@ -1,11 +1,19 @@
 "use client";
 
-import { FullSearchTrigger } from "fumadocs-ui/layouts/shared/slots/search-trigger";
-import { ThemeSwitch } from "fumadocs-ui/layouts/shared/slots/theme-switch";
+import { SidebarTrigger } from "fumadocs-ui/components/sidebar/base";
+import {
+  FullSearchTrigger,
+  SearchTrigger,
+} from "fumadocs-ui/layouts/shared/slots/search-trigger";
 import Link from "fumadocs-core/link";
+import { Menu } from "lucide-react";
 import type { ComponentProps } from "react";
 import { cn } from "@/lib/cn";
 import { GoduiLogo } from "./godui-logo";
+import { ThemeToggle } from "./theme-toggle";
+
+const iconButton =
+  "inline-flex size-9 items-center justify-center rounded-full text-fd-muted-foreground transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground";
 
 export function DocsHeader({ className, ...props }: ComponentProps<"header">) {
   return (
@@ -13,7 +21,7 @@ export function DocsHeader({ className, ...props }: ComponentProps<"header">) {
       id="nd-nav"
       {...props}
       className={cn(
-        "[grid-area:header] sticky top-0 z-40 flex h-14 items-center gap-4 border-b bg-fd-background/80 backdrop-blur-lg px-4",
+        "[grid-area:header] sticky top-0 z-40 flex h-14 items-center gap-2 border-b bg-fd-background/80 px-4 backdrop-blur-lg sm:gap-4",
         className,
       )}
     >
@@ -24,12 +32,25 @@ export function DocsHeader({ className, ...props }: ComponentProps<"header">) {
         <GoduiLogo className="h-10 w-10" width={40} height={40} />
       </Link>
       <div className="flex-1" />
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1 sm:gap-2">
+        {/* Desktop: full search bar */}
         <FullSearchTrigger
           hideIfDisabled
-          className="rounded-full ps-2.5 w-[220px]"
+          className="ps-2.5 w-[220px] max-md:hidden rounded-full"
         />
-        <ThemeSwitch mode="light-dark-system" />
+        {/* Mobile: search icon only */}
+        <SearchTrigger
+          hideIfDisabled
+          className={cn(iconButton, "md:hidden")}
+        />
+        <ThemeToggle />
+        {/* Mobile: open the sidenav drawer */}
+        <SidebarTrigger
+          aria-label="Open menu"
+          className={cn(iconButton, "md:hidden")}
+        >
+          <Menu className="size-5" />
+        </SidebarTrigger>
       </div>
     </header>
   );
