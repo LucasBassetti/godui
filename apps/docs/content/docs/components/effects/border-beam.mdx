@@ -1,0 +1,86 @@
+---
+title: Border Beam
+description: An animated beam of light that travels around the border of its container.
+---
+
+import { BorderBeamDemo } from "@/components/demos/border-beam-demo";
+
+A streak of light rides the border of whatever you put it in. Drop it inside a
+`relative overflow-hidden` element — most often a [shadcn
+`Card`](https://ui.shadcn.com/docs/components/card) — and it traces the rounded
+corners on a loop.
+
+<ComponentPreview
+  code={`import { BorderBeam } from "@/components/godui/border-beam";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+
+export function BorderBeamDemo() {
+  return (
+    <Card className="relative min-h-[200px] w-[350px] overflow-hidden">
+      <CardHeader>
+        <CardTitle>Border Beam</CardTitle>
+        <CardDescription>A beam of light circles the card.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <p className="text-sm text-muted-foreground">
+          Wrap it in a relative, overflow-hidden container.
+        </p>
+      </CardContent>
+      <BorderBeam duration={8} size={70} />
+    </Card>
+  );
+}`}
+>
+  <BorderBeamDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall name="border-beam" />
+
+## Usage
+
+```tsx
+import { BorderBeam } from "@/components/godui/border-beam";
+import { Card } from "@/components/ui/card";
+```
+
+`Card` is shadcn's own component — add it with `npx shadcn@latest add card`.
+`BorderBeam` works inside any `relative overflow-hidden` element.
+
+```tsx
+<Card className="relative overflow-hidden">
+  <BorderBeam duration={8} size={70} />
+</Card>
+```
+
+Keep `size` no larger than half the card's shortest side — a beam wider than the
+card has no straight edge to travel and the corners look pinched. The beam is
+absolutely positioned and fills its nearest positioned ancestor, so
+that parent must be `relative`. Add `overflow-hidden` to keep the corners clean.
+Render two beams with opposite `delay` values for a continuous double chase, or
+set `glow` for a neon echo.
+
+```tsx
+<Card className="relative overflow-hidden">
+  <BorderBeam duration={6} />
+  <BorderBeam duration={6} delay={3} />
+</Card>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `size` | `number` | `60` | Side length (px) of the beam — larger reads as a longer streak. |
+| `duration` | `number` | `6` | Seconds for one full loop around the border. |
+| `delay` | `number` | `0` | Seconds to delay the start of the loop. |
+| `rainbow` | `boolean` | `true` | Use the flowing rainbow gradient (shared with MagicButton). Overrides `colorFrom`/`colorTo`. |
+| `colorFrom` | `string` | `var(--chart-1)` | Leading edge color when `rainbow` is off. |
+| `colorTo` | `string` | `var(--chart-5)` | Mid color when `rainbow` is off. |
+| `borderWidth` | `number` | `1` | Border thickness (px) the beam rides along. |
+| `reverse` | `boolean` | `false` | Travel counter-clockwise. |
+| `initialOffset` | `number` | `0` | Starting position along the border (0–100%). |
+| `glow` | `boolean` | `false` | Render a soft blurred echo behind the beam. |
+
+Also accepts standard `div` attributes (e.g. `className`, `style`).

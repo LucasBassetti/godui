@@ -1,3 +1,4 @@
+export { BorderBeam, type BorderBeamProps } from "./border-beam";
 export {
   ElasticText,
   type ElasticTextMode,

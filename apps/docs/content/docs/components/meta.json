@@ -16,6 +16,8 @@
     "text/text-animate",
     "text/highlighter",
     "---Layout---",
-    "layout/progressive-card-reveal"
+    "layout/progressive-card-reveal",
+    "---Effects---",
+    "effects/border-beam"
   ]
 }
