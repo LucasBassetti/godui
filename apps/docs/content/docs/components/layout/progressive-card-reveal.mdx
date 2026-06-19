@@ -108,6 +108,7 @@ motion is requested.
 | ---- | ---- | ------- | ----------- |
 | `activeIndex` | `number` | — | Index of the expanded card (controlled). |
 | `onActiveChange` | `(index: number) => void` | — | Fired when a collapsed card is activated. |
+| `maxDepth` | `number` | — | Caps how far collapsed cards narrow. Cards more than `maxDepth` steps from the active one all share the width at `maxDepth`. Omit for unbounded funneling. |
 
 Also accepts all `div` attributes (e.g. `className`).
 

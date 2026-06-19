@@ -9,6 +9,12 @@ export type ProgressiveCardRevealProps =
     activeIndex: number;
     /** Fired when a collapsed card is activated. The parent owns the state. */
     onActiveChange?: (index: number) => void;
+    /**
+     * Caps how far a collapsed card narrows. Cards farther than `maxDepth`
+     * steps from the active one all share the width at `maxDepth`. Omit for
+     * unbounded funneling.
+     */
+    maxDepth?: number;
   };
 
 export type ProgressiveCardRevealCardProps = Omit<
@@ -19,19 +25,23 @@ export type ProgressiveCardRevealCardProps = Omit<
 type RevealContextValue = {
   activeIndex: number;
   onActiveChange?: (index: number) => void;
+  maxDepth?: number;
 };
 
 const RevealContext = React.createContext<RevealContextValue | null>(null);
 const CardIndexContext = React.createContext<number | null>(null);
 
-// Size morph (height + position) and corner rounding.
+// Size morph (height + position) and corner rounding. Kept near-critically
+// damped (crit ≈ 2·√stiffness ≈ 35) so width/height settle without overshoot —
+// underdamping makes the moving edges wobble, which reads as a flick on hover.
 const LAYOUT_TRANSITION = {
   type: "spring",
-  stiffness: 260,
-  damping: 30,
+  stiffness: 300,
+  damping: 36,
 } as const;
-// Crossfade between the collapsed and expanded views.
-const FADE_TRANSITION = { duration: 0.18, ease: "easeOut" } as const;
+// Crossfade between the collapsed and expanded views. A touch slower than the
+// layout spring so content settles into the new box instead of popping.
+const FADE_TRANSITION = { duration: 0.22, ease: [0.4, 0, 0.2, 1] } as const;
 const COLLAPSED_RADIUS = 9999;
 const EXPANDED_RADIUS = 20;
 const EXPANDED_WIDTH = "100%";
@@ -40,10 +50,13 @@ const EXPANDED_WIDTH = "100%";
 const COLLAPSED_BASE_WIDTH = 90; // % at distance 1
 const COLLAPSED_WIDTH_STEP = 7; // % narrower per extra step away
 const COLLAPSED_MIN_WIDTH = 60;
+// Hovering a collapsed card nudges it wider to signal it's interactive.
+const HOVER_WIDTH_BOOST = 5;
 
-function collapsedWidth(distance: number) {
-  const width = COLLAPSED_BASE_WIDTH - (distance - 1) * COLLAPSED_WIDTH_STEP;
-  return `${Math.max(width, COLLAPSED_MIN_WIDTH)}%`;
+function collapsedWidth(distance: number, hovered = false) {
+  const base = COLLAPSED_BASE_WIDTH - (distance - 1) * COLLAPSED_WIDTH_STEP;
+  const width = Math.max(base, COLLAPSED_MIN_WIDTH) + (hovered ? HOVER_WIDTH_BOOST : 0);
+  return `${width}%`;
 }
 
 /**
@@ -85,6 +98,7 @@ const Card = React.forwardRef<HTMLDivElement, ProgressiveCardRevealCardProps>(
     const reveal = React.useContext(RevealContext);
     const index = React.useContext(CardIndexContext);
     const reducedMotion = useReducedMotion() ?? false;
+    const [hovered, setHovered] = React.useState(false);
 
     if (reveal === null || index === null) {
       throw new Error(
@@ -94,6 +108,10 @@ const Card = React.forwardRef<HTMLDivElement, ProgressiveCardRevealCardProps>(
 
     const expanded = index === reveal.activeIndex;
     const distance = Math.abs(index - reveal.activeIndex);
+    // Past `maxDepth`, every card shares the width at `maxDepth` instead of
+    // funneling ever narrower.
+    const depth =
+      reveal.maxDepth != null ? Math.min(distance, reveal.maxDepth) : distance;
     const { collapsed, expanded: expandedView } = extractSlots(children);
 
     return (
@@ -102,14 +120,24 @@ const Card = React.forwardRef<HTMLDivElement, ProgressiveCardRevealCardProps>(
         layout={!reducedMotion}
         data-expanded={expanded}
         initial={false}
-        animate={{
-          borderRadius: expanded ? EXPANDED_RADIUS : COLLAPSED_RADIUS,
-        }}
         transition={reducedMotion ? { duration: 0 } : LAYOUT_TRANSITION}
-        // `layout` animates the width/height delta when these change, so the
-        // active card grows wider at the same time the others shrink.
+        // Hover is React state, not `whileHover`. A gesture animation would
+        // take ownership of the `width` motion value and stop syncing from
+        // `style` — so a later activeIndex change (new depth) wouldn't update
+        // the width until you hovered again. Keeping width as a single
+        // state-driven `style` value avoids that stale-width bug; the `layout`
+        // spring animates every change (depth, hover, expand) consistently.
+        onHoverStart={() => setHovered(true)}
+        onHoverEnd={() => setHovered(false)}
+        // borderRadius is set via `style` (not `animate`) on purpose: framer
+        // only applies inverse-scale correction to radius when it's a style
+        // value, so the corners stay crisp instead of warping as the box is
+        // scaled during the layout morph. The value change tweens along with
+        // the layout animation.
         style={{
-          width: expanded ? EXPANDED_WIDTH : collapsedWidth(distance),
+          width: expanded
+            ? EXPANDED_WIDTH
+            : collapsedWidth(depth, hovered && !reducedMotion),
           borderRadius: expanded ? EXPANDED_RADIUS : COLLAPSED_RADIUS,
         }}
         className={`relative overflow-hidden border border-border bg-card text-card-foreground shadow-sm transform-gpu ${className ?? ""}`}
@@ -121,6 +149,9 @@ const Card = React.forwardRef<HTMLDivElement, ProgressiveCardRevealCardProps>(
           {expanded ? (
             <motion.div
               key="expanded"
+              // `layout="position"` keeps the content's own box unscaled while
+              // the parent morphs size, so the text isn't stretched mid-morph.
+              layout={reducedMotion ? false : "position"}
               initial={reducedMotion ? false : { opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -133,9 +164,12 @@ const Card = React.forwardRef<HTMLDivElement, ProgressiveCardRevealCardProps>(
             <motion.button
               key="collapsed"
               type="button"
+              layout={reducedMotion ? false : "position"}
               initial={reducedMotion ? false : { opacity: 0 }}
               animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              // No exit animation: on click the collapsed pill should vanish
+              // instantly so the expanded view isn't crossfaded over a ghost.
+              exit={{ opacity: 0, transition: { duration: 0 } }}
               transition={reducedMotion ? { duration: 0 } : FADE_TRANSITION}
               onClick={() => reveal.onActiveChange?.(index)}
               aria-expanded={false}
@@ -152,10 +186,10 @@ const Card = React.forwardRef<HTMLDivElement, ProgressiveCardRevealCardProps>(
 Card.displayName = "ProgressiveCardReveal.Card";
 
 const Root = React.forwardRef<HTMLDivElement, ProgressiveCardRevealProps>(
-  ({ activeIndex, onActiveChange, children, className, ...props }, ref) => {
+  ({ activeIndex, onActiveChange, maxDepth, children, className, ...props }, ref) => {
     const contextValue = React.useMemo<RevealContextValue>(
-      () => ({ activeIndex, onActiveChange }),
-      [activeIndex, onActiveChange],
+      () => ({ activeIndex, onActiveChange, maxDepth }),
+      [activeIndex, onActiveChange, maxDepth],
     );
 
     // Assign each Card its position so consumers never pass an index manually.

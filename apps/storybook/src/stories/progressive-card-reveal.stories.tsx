@@ -97,13 +97,20 @@ function ExpandedBody({ icon, label, distance, time }: Leg) {
   );
 }
 
-function TravelDemo() {
-  const [active, setActive] = React.useState(4);
+function TravelDemo({
+  initialActive = 4,
+  maxDepth,
+}: {
+  initialActive?: number;
+  maxDepth?: number;
+}) {
+  const [active, setActive] = React.useState(initialActive);
 
   return (
     <ProgressiveCardReveal
       activeIndex={active}
       onActiveChange={setActive}
+      maxDepth={maxDepth}
       className="w-[420px]"
     >
       {legs.map((leg) => (
@@ -123,6 +130,11 @@ function TravelDemo() {
 export const Default: Story = {
   args: { activeIndex: 4 },
   render: () => <TravelDemo />,
+};
+
+export const CappedDepth: Story = {
+  args: { activeIndex: 0, maxDepth: 2 },
+  render: () => <TravelDemo initialActive={0} maxDepth={2} />,
 };
 
 export const FirstActive: Story = {
