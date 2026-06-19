@@ -29,12 +29,15 @@ export type ElasticTextProps = React.HTMLAttributes<HTMLSpanElement> & {
   duration?: number;
   /** Repeat the `auto` sweep. */
   loop?: boolean;
+  /** Start the `auto` sweep only once the text scrolls into view. */
+  startOnView?: boolean;
   /** Pointer influence radius in px (`hover` mode). */
   radius?: number;
 };
 
 const SPRING = { stiffness: 150, damping: 18, mass: 1 } as const;
 const AUTO_SPREAD = 2.5;
+const VIEW_THRESHOLD = 0.3;
 
 type SegmentProps = {
   segment: string;
@@ -114,6 +117,7 @@ const ElasticText = React.forwardRef<HTMLSpanElement, ElasticTextProps>(
       maxWeight = 900,
       duration = 2,
       loop = true,
+      startOnView = true,
       radius = 120,
       ...props
     },
@@ -139,7 +143,10 @@ const ElasticText = React.forwardRef<HTMLSpanElement, ElasticTextProps>(
       [textContent],
     );
 
-    const spotlight = useMotionValue(0);
+    // Start off the left edge so the first paint is uniform normal weight — at
+    // position 0 the leading character would render at max weight (a "big P"
+    // flash) before the sweep effect runs.
+    const spotlight = useMotionValue(-AUTO_SPREAD);
     const pointerX = useMotionValue(0);
     const pointerActive = useMotionValue(0);
     const centersRef = React.useRef<number[]>([]);
@@ -148,24 +155,63 @@ const ElasticText = React.forwardRef<HTMLSpanElement, ElasticTextProps>(
       [],
     );
 
-    // Auto mode: sweep the spotlight back and forth across the characters.
+    // Auto mode: sweep the spotlight across the characters. When `startOnView`
+    // is set, hold off until the text scrolls into view via IntersectionObserver.
     React.useEffect(() => {
       if (reducedMotion || mode !== "auto" || !segments) {
         return;
       }
-      const controls = animate(
-        spotlight,
-        [0, Math.max(segments.length - 1, 1)],
-        {
-          duration,
-          // Infinite: sweep forever. Finite: one sweep out and back to rest.
-          repeat: loop ? Number.POSITIVE_INFINITY : 1,
-          repeatType: "mirror",
-          ease: "easeInOut",
+      const last = Math.max(segments.length - 1, 1);
+      // Rest off the left edge so every character sits at normal weight until
+      // the sweep actually starts (no leading-character flash while waiting).
+      spotlight.set(-AUTO_SPREAD);
+
+      const start = () =>
+        loop
+          ? // Loop: sweep back and forth forever.
+            animate(spotlight, [0, last], {
+              duration,
+              repeat: Number.POSITIVE_INFINITY,
+              repeatType: "mirror",
+              ease: "easeInOut",
+            })
+          : // Once: a single pass that starts and ends off the text (padded by
+            // AUTO_SPREAD on both sides) so the weight settles back to normal
+            // everywhere instead of leaving the leading characters emphasized.
+            animate(spotlight, [-AUTO_SPREAD, last + AUTO_SPREAD], {
+              duration,
+              ease: "easeInOut",
+            });
+
+      const node = containerRef.current;
+      if (
+        !startOnView ||
+        !node ||
+        typeof IntersectionObserver === "undefined"
+      ) {
+        const controls = start();
+        return () => controls.stop();
+      }
+
+      let controls: ReturnType<typeof animate> | undefined;
+      const observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              controls = start();
+              observer.disconnect();
+              break;
+            }
+          }
         },
+        { threshold: VIEW_THRESHOLD },
       );
-      return () => controls.stop();
-    }, [duration, loop, mode, reducedMotion, segments, spotlight]);
+      observer.observe(node);
+      return () => {
+        observer.disconnect();
+        controls?.stop();
+      };
+    }, [duration, loop, mode, reducedMotion, segments, spotlight, startOnView]);
 
     const updateCenters = React.useCallback(() => {
       const container = containerRef.current;

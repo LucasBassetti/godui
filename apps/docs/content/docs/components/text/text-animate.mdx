@@ -77,6 +77,102 @@ import { TextAnimate } from "@/components/godui/text-animate";
 </TextAnimate>
 ```
 
+## Examples
+
+Hit the replay button on any preview to play the animation again.
+
+### Word fade in
+
+<ComponentPreview
+  code={`import { TextAnimate } from "@/components/godui/text-animate";
+
+export function TextAnimateFade() {
+  return (
+    <TextAnimate animation="fadeIn" by="word" className="text-4xl font-semibold tracking-tight">
+      Animate your ideas into reality
+    </TextAnimate>
+  );
+}`}
+>
+  <TextAnimate animation="fadeIn" by="word" className="text-4xl font-semibold tracking-tight">
+    Animate your ideas into reality
+  </TextAnimate>
+</ComponentPreview>
+
+### Character stagger
+
+<ComponentPreview
+  code={`import { TextAnimate } from "@/components/godui/text-animate";
+
+export function TextAnimateChars() {
+  return (
+    <TextAnimate animation="slideUp" by="character" stagger={0.03} className="text-3xl font-medium">
+      Character by character
+    </TextAnimate>
+  );
+}`}
+>
+  <TextAnimate animation="slideUp" by="character" stagger={0.03} className="text-3xl font-medium">
+    Character by character
+  </TextAnimate>
+</ComponentPreview>
+
+### Scale up
+
+<ComponentPreview
+  code={`import { TextAnimate } from "@/components/godui/text-animate";
+
+export function TextAnimateScale() {
+  return (
+    <TextAnimate animation="scaleUp" by="word" className="text-4xl font-semibold tracking-tight">
+      Scale up with spring
+    </TextAnimate>
+  );
+}`}
+>
+  <TextAnimate animation="scaleUp" by="word" className="text-4xl font-semibold tracking-tight">
+    Scale up with spring
+  </TextAnimate>
+</ComponentPreview>
+
+### Slide from the right
+
+<ComponentPreview
+  code={`import { TextAnimate } from "@/components/godui/text-animate";
+
+export function TextAnimateSlide() {
+  return (
+    <TextAnimate animation="slideLeft" by="word" className="text-4xl font-semibold tracking-tight">
+      Slide from the right
+    </TextAnimate>
+  );
+}`}
+>
+  <TextAnimate animation="slideLeft" by="word" className="text-4xl font-semibold tracking-tight">
+    Slide from the right
+  </TextAnimate>
+</ComponentPreview>
+
+### Semantic heading
+
+Render a real `h1` with `as` while keeping the staggered entrance.
+
+<ComponentPreview
+  code={`import { TextAnimate } from "@/components/godui/text-animate";
+
+export function TextAnimateHeading() {
+  return (
+    <TextAnimate as="h1" animation="blurInUp" by="word" className="text-5xl font-bold tracking-tight">
+      Hero headline
+    </TextAnimate>
+  );
+}`}
+>
+  <TextAnimate as="h1" animation="blurInUp" by="word" className="text-5xl font-bold tracking-tight">
+    Hero headline
+  </TextAnimate>
+</ComponentPreview>
+
 ## Props
 
 | Prop | Type | Default | Description |

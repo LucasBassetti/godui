@@ -56,6 +56,139 @@ const [value, setValue] = useState("overview");
 <MagicTab items={items} value={value} onValueChange={setValue} />;
 ```
 
+## Examples
+
+### Secondary
+
+<ComponentPreview
+  code={`import { MagicTab } from "@/components/godui/magic-tab";
+
+const items = [
+  { value: "overview", label: "Overview" },
+  { value: "analytics", label: "Analytics" },
+  { value: "reports", label: "Reports" },
+];
+
+export function MagicTabSecondary() {
+  return <MagicTab items={items} defaultValue="overview" variant="secondary" />;
+}`}
+>
+  <MagicTab
+    items={[
+      { value: "overview", label: "Overview" },
+      { value: "analytics", label: "Analytics" },
+      { value: "reports", label: "Reports" },
+    ]}
+    defaultValue="overview"
+    variant="secondary"
+  />
+</ComponentPreview>
+
+### Without rainbow
+
+<ComponentPreview
+  code={`import { MagicTab } from "@/components/godui/magic-tab";
+
+const items = [
+  { value: "overview", label: "Overview" },
+  { value: "analytics", label: "Analytics" },
+  { value: "reports", label: "Reports" },
+];
+
+export function MagicTabPlain() {
+  return <MagicTab items={items} defaultValue="overview" rainbow={false} />;
+}`}
+>
+  <MagicTab
+    items={[
+      { value: "overview", label: "Overview" },
+      { value: "analytics", label: "Analytics" },
+      { value: "reports", label: "Reports" },
+    ]}
+    defaultValue="overview"
+    rainbow={false}
+  />
+</ComponentPreview>
+
+### Disabled tab
+
+Mark any item `disabled` to skip it.
+
+<ComponentPreview
+  code={`import { MagicTab } from "@/components/godui/magic-tab";
+
+const items = [
+  { value: "overview", label: "Overview" },
+  { value: "analytics", label: "Analytics", disabled: true },
+  { value: "reports", label: "Reports" },
+];
+
+export function MagicTabDisabled() {
+  return <MagicTab items={items} defaultValue="overview" />;
+}`}
+>
+  <MagicTab
+    items={[
+      { value: "overview", label: "Overview" },
+      { value: "analytics", label: "Analytics", disabled: true },
+      { value: "reports", label: "Reports" },
+    ]}
+    defaultValue="overview"
+  />
+</ComponentPreview>
+
+### Sizes
+
+<ComponentPreview
+  code={`import { MagicTab } from "@/components/godui/magic-tab";
+
+const items = [
+  { value: "overview", label: "Overview" },
+  { value: "analytics", label: "Analytics" },
+  { value: "reports", label: "Reports" },
+];
+
+export function MagicTabSizes() {
+  return (
+    <div className="flex flex-col items-center gap-4">
+      <MagicTab items={items} defaultValue="overview" size="sm" />
+      <MagicTab items={items} defaultValue="overview" size="md" />
+      <MagicTab items={items} defaultValue="overview" size="lg" />
+    </div>
+  );
+}`}
+>
+  <div className="flex flex-col items-center gap-4">
+    <MagicTab
+      items={[
+        { value: "overview", label: "Overview" },
+        { value: "analytics", label: "Analytics" },
+        { value: "reports", label: "Reports" },
+      ]}
+      defaultValue="overview"
+      size="sm"
+    />
+    <MagicTab
+      items={[
+        { value: "overview", label: "Overview" },
+        { value: "analytics", label: "Analytics" },
+        { value: "reports", label: "Reports" },
+      ]}
+      defaultValue="overview"
+      size="md"
+    />
+    <MagicTab
+      items={[
+        { value: "overview", label: "Overview" },
+        { value: "analytics", label: "Analytics" },
+        { value: "reports", label: "Reports" },
+      ]}
+      defaultValue="overview"
+      size="lg"
+    />
+  </div>
+</ComponentPreview>
+
 ## Props
 
 | Prop | Type | Default | Description |
