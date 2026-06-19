@@ -50,12 +50,14 @@ const EXPANDED_WIDTH = "100%";
 const COLLAPSED_BASE_WIDTH = 90; // % at distance 1
 const COLLAPSED_WIDTH_STEP = 7; // % narrower per extra step away
 const COLLAPSED_MIN_WIDTH = 60;
-// Hovering a collapsed card nudges it wider to signal it's interactive.
-const HOVER_WIDTH_BOOST = 5;
+// Hovering a collapsed card nudges it up via a transform scale (not a width
+// change) so the content never reflows — a width change would re-lay-out the
+// right-aligned values every spring frame, which reads as a flicker.
+const HOVER_SCALE = 1.03;
 
-function collapsedWidth(distance: number, hovered = false) {
+function collapsedWidth(distance: number) {
   const base = COLLAPSED_BASE_WIDTH - (distance - 1) * COLLAPSED_WIDTH_STEP;
-  const width = Math.max(base, COLLAPSED_MIN_WIDTH) + (hovered ? HOVER_WIDTH_BOOST : 0);
+  const width = Math.max(base, COLLAPSED_MIN_WIDTH);
   return `${width}%`;
 }
 
@@ -98,7 +100,6 @@ const Card = React.forwardRef<HTMLDivElement, ProgressiveCardRevealCardProps>(
     const reveal = React.useContext(RevealContext);
     const index = React.useContext(CardIndexContext);
     const reducedMotion = useReducedMotion() ?? false;
-    const [hovered, setHovered] = React.useState(false);
 
     if (reveal === null || index === null) {
       throw new Error(
@@ -121,23 +122,22 @@ const Card = React.forwardRef<HTMLDivElement, ProgressiveCardRevealCardProps>(
         data-expanded={expanded}
         initial={false}
         transition={reducedMotion ? { duration: 0 } : LAYOUT_TRANSITION}
-        // Hover is React state, not `whileHover`. A gesture animation would
-        // take ownership of the `width` motion value and stop syncing from
-        // `style` — so a later activeIndex change (new depth) wouldn't update
-        // the width until you hovered again. Keeping width as a single
-        // state-driven `style` value avoids that stale-width bug; the `layout`
-        // spring animates every change (depth, hover, expand) consistently.
-        onHoverStart={() => setHovered(true)}
-        onHoverEnd={() => setHovered(false)}
+        // Hover lift is a `whileHover` scale — a transform, so it never reflows
+        // the card's content (a width change would re-lay-out the right-aligned
+        // values every spring frame, which reads as a flicker). Only collapsed
+        // cards lift; the expanded one stays put. Width remains a state-driven
+        // `style` value, so a later activeIndex change (new depth) still updates
+        // it — scale and width are independent, so there's no stale-width bug.
+        whileHover={
+          reducedMotion || expanded ? undefined : { scale: HOVER_SCALE }
+        }
         // borderRadius is set via `style` (not `animate`) on purpose: framer
         // only applies inverse-scale correction to radius when it's a style
         // value, so the corners stay crisp instead of warping as the box is
         // scaled during the layout morph. The value change tweens along with
         // the layout animation.
         style={{
-          width: expanded
-            ? EXPANDED_WIDTH
-            : collapsedWidth(depth, hovered && !reducedMotion),
+          width: expanded ? EXPANDED_WIDTH : collapsedWidth(depth),
           borderRadius: expanded ? EXPANDED_RADIUS : COLLAPSED_RADIUS,
         }}
         className={`relative overflow-hidden border border-border bg-card text-card-foreground shadow-sm transform-gpu ${className ?? ""}`}

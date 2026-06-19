@@ -45,6 +45,54 @@ import { MaskButton } from "@godui/components";
 <MaskButton mask="nature">Hover me</MaskButton>
 ```
 
+## Examples
+
+### Secondary
+
+<ComponentPreview
+  code={`import { MaskButton } from "@godui/components";
+
+export function MaskButtonSecondary() {
+  return <MaskButton mask="nature" variant="secondary">Hover me</MaskButton>;
+}`}
+>
+  <MaskButton mask="nature" variant="secondary">Hover me</MaskButton>
+</ComponentPreview>
+
+### Sizes
+
+<ComponentPreview
+  code={`import { MaskButton } from "@godui/components";
+
+export function MaskButtonSizes() {
+  return (
+    <div className="flex flex-wrap items-center justify-center gap-6">
+      <MaskButton size="sm">Small</MaskButton>
+      <MaskButton size="md">Medium</MaskButton>
+      <MaskButton size="lg">Large</MaskButton>
+    </div>
+  );
+}`}
+>
+  <div className="flex flex-wrap items-center justify-center gap-6">
+    <MaskButton size="sm">Small</MaskButton>
+    <MaskButton size="md">Medium</MaskButton>
+    <MaskButton size="lg">Large</MaskButton>
+  </div>
+</ComponentPreview>
+
+### Disabled
+
+<ComponentPreview
+  code={`import { MaskButton } from "@godui/components";
+
+export function MaskButtonDisabled() {
+  return <MaskButton disabled>Hover me</MaskButton>;
+}`}
+>
+  <MaskButton disabled>Hover me</MaskButton>
+</ComponentPreview>
+
 ## Props
 
 Accepts all native `<button>` attributes.

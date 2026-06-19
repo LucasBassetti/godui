@@ -39,6 +39,56 @@ import { ShimmerButton } from "@/components/godui/shimmer-button";
 <ShimmerButton variant="primary">Click me</ShimmerButton>
 ```
 
+## Examples
+
+### Sizes
+
+<ComponentPreview
+  code={`import { ShimmerButton } from "@/components/godui/shimmer-button";
+
+export function ShimmerButtonSizes() {
+  return (
+    <div className="flex flex-wrap items-center justify-center gap-4">
+      <ShimmerButton size="sm">Small</ShimmerButton>
+      <ShimmerButton size="md">Medium</ShimmerButton>
+      <ShimmerButton size="lg">Large</ShimmerButton>
+    </div>
+  );
+}`}
+>
+  <div className="flex flex-wrap items-center justify-center gap-4">
+    <ShimmerButton size="sm">Small</ShimmerButton>
+    <ShimmerButton size="md">Medium</ShimmerButton>
+    <ShimmerButton size="lg">Large</ShimmerButton>
+  </div>
+</ComponentPreview>
+
+### Without shimmer
+
+Set `shimmer={false}` to keep the button styling without the animated border light.
+
+<ComponentPreview
+  code={`import { ShimmerButton } from "@/components/godui/shimmer-button";
+
+export function ShimmerButtonStatic() {
+  return <ShimmerButton shimmer={false}>No shimmer</ShimmerButton>;
+}`}
+>
+  <ShimmerButton shimmer={false}>No shimmer</ShimmerButton>
+</ComponentPreview>
+
+### Disabled
+
+<ComponentPreview
+  code={`import { ShimmerButton } from "@/components/godui/shimmer-button";
+
+export function ShimmerButtonDisabled() {
+  return <ShimmerButton disabled>Disabled</ShimmerButton>;
+}`}
+>
+  <ShimmerButton disabled>Disabled</ShimmerButton>
+</ComponentPreview>
+
 ## Props
 
 | Prop | Type | Default | Description |

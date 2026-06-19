@@ -95,6 +95,42 @@ import { ProgressFoldButton } from "@/components/godui/progress-fold-button";
 </ProgressFoldButton>
 ```
 
+## Examples
+
+### Sizes
+
+<ComponentPreview
+  code={`import { ProgressFoldButton } from "@/components/godui/progress-fold-button";
+
+export function ProgressFoldButtonSizes() {
+  return (
+    <div className="flex flex-wrap items-center justify-center gap-6">
+      <ProgressFoldButton size="sm">Small</ProgressFoldButton>
+      <ProgressFoldButton size="md">Medium</ProgressFoldButton>
+      <ProgressFoldButton size="lg">Large</ProgressFoldButton>
+    </div>
+  );
+}`}
+>
+  <div className="flex flex-wrap items-center justify-center gap-6">
+    <ProgressFoldButton size="sm">Small</ProgressFoldButton>
+    <ProgressFoldButton size="md">Medium</ProgressFoldButton>
+    <ProgressFoldButton size="lg">Large</ProgressFoldButton>
+  </div>
+</ComponentPreview>
+
+### Disabled
+
+<ComponentPreview
+  code={`import { ProgressFoldButton } from "@/components/godui/progress-fold-button";
+
+export function ProgressFoldButtonDisabled() {
+  return <ProgressFoldButton disabled>Submit</ProgressFoldButton>;
+}`}
+>
+  <ProgressFoldButton disabled>Submit</ProgressFoldButton>
+</ComponentPreview>
+
 ## Props
 
 Accepts all native `<button>` attributes.

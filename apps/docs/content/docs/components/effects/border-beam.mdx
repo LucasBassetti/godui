@@ -3,6 +3,7 @@ title: Border Beam
 description: An animated beam of light that travels around the border of its container.
 ---
 
+import { BorderBeam } from "@godui/components";
 import { BorderBeamDemo } from "@/components/demos/border-beam-demo";
 
 A streak of light rides the border of whatever you put it in. Drop it inside a
@@ -67,6 +68,114 @@ set `glow` for a neon echo.
   <BorderBeam duration={6} delay={3} />
 </Card>
 ```
+
+## Examples
+
+The previews below use a plain `relative overflow-hidden` card so the example is
+self-contained — drop `BorderBeam` into your own `Card` the same way.
+
+### Reverse
+
+Set `reverse` to send the beam counter-clockwise.
+
+<ComponentPreview
+  code={`import { BorderBeam } from "@/components/godui/border-beam";
+
+export function BorderBeamReverse() {
+  return (
+    <div className="relative min-h-[180px] w-[320px] overflow-hidden rounded-xl border border-border bg-card p-6">
+      <p className="text-sm text-muted-foreground">Counter-clockwise beam.</p>
+      <BorderBeam size={70} reverse />
+    </div>
+  );
+}`}
+>
+  <div className="relative min-h-[180px] w-[320px] overflow-hidden rounded-xl border border-border bg-card p-6">
+    <p className="text-sm text-muted-foreground">Counter-clockwise beam.</p>
+    <BorderBeam size={70} reverse />
+  </div>
+</ComponentPreview>
+
+### Glow
+
+`glow` renders a soft blurred echo behind the beam for a neon look.
+
+<ComponentPreview
+  code={`import { BorderBeam } from "@/components/godui/border-beam";
+
+export function BorderBeamGlow() {
+  return (
+    <div className="relative min-h-[180px] w-[320px] overflow-hidden rounded-xl border border-border bg-card p-6">
+      <p className="text-sm text-muted-foreground">Glowing beam.</p>
+      <BorderBeam size={80} glow />
+    </div>
+  );
+}`}
+>
+  <div className="relative min-h-[180px] w-[320px] overflow-hidden rounded-xl border border-border bg-card p-6">
+    <p className="text-sm text-muted-foreground">Glowing beam.</p>
+    <BorderBeam size={80} glow />
+  </div>
+</ComponentPreview>
+
+### Thick colored
+
+Turn `rainbow` off and pass `colorFrom` / `colorTo` to drive your own gradient,
+with a wider `borderWidth`.
+
+<ComponentPreview
+  code={`import { BorderBeam } from "@/components/godui/border-beam";
+
+export function BorderBeamColored() {
+  return (
+    <div className="relative min-h-[180px] w-[320px] overflow-hidden rounded-xl border border-border bg-card p-6">
+      <p className="text-sm text-muted-foreground">Custom gradient, thick border.</p>
+      <BorderBeam
+        size={70}
+        borderWidth={2}
+        rainbow={false}
+        colorFrom="var(--chart-2)"
+        colorTo="var(--chart-4)"
+      />
+    </div>
+  );
+}`}
+>
+  <div className="relative min-h-[180px] w-[320px] overflow-hidden rounded-xl border border-border bg-card p-6">
+    <p className="text-sm text-muted-foreground">Custom gradient, thick border.</p>
+    <BorderBeam
+      size={70}
+      borderWidth={2}
+      rainbow={false}
+      colorFrom="var(--chart-2)"
+      colorTo="var(--chart-4)"
+    />
+  </div>
+</ComponentPreview>
+
+### Dual beams
+
+Render two beams with opposite `delay` values for a continuous double chase.
+
+<ComponentPreview
+  code={`import { BorderBeam } from "@/components/godui/border-beam";
+
+export function BorderBeamDual() {
+  return (
+    <div className="relative min-h-[180px] w-[320px] overflow-hidden rounded-xl border border-border bg-card p-6">
+      <p className="text-sm text-muted-foreground">Two beams chasing each other.</p>
+      <BorderBeam size={70} duration={6} />
+      <BorderBeam size={70} duration={6} delay={3} />
+    </div>
+  );
+}`}
+>
+  <div className="relative min-h-[180px] w-[320px] overflow-hidden rounded-xl border border-border bg-card p-6">
+    <p className="text-sm text-muted-foreground">Two beams chasing each other.</p>
+    <BorderBeam size={70} duration={6} />
+    <BorderBeam size={70} duration={6} delay={3} />
+  </div>
+</ComponentPreview>
 
 ## Props
 

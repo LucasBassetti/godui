@@ -102,6 +102,65 @@ Set `isView` to defer the draw-in animation until the element scrolls into view.
 </Highlighter>
 ```
 
+## Examples
+
+### In a sentence
+
+Drop it around any inline word — the sketch draws over the text in place.
+
+<ComponentPreview
+  code={`import { Highlighter } from "@/components/godui/highlighter";
+
+export function HighlighterSentence() {
+  return (
+    <p className="max-w-md text-xl leading-relaxed">
+      The quick brown <Highlighter action="underline" color="#60a5fa">fox</Highlighter>{" "}
+      jumps over the <Highlighter action="highlight">lazy dog</Highlighter>.
+    </p>
+  );
+}`}
+>
+  <p className="max-w-md text-xl leading-relaxed">The quick brown <Highlighter action="underline" color="#60a5fa">fox</Highlighter> jumps over the <Highlighter action="highlight">lazy dog</Highlighter>.</p>
+</ComponentPreview>
+
+### Tuning the sketch
+
+Push `strokeWidth`, `iterations`, `padding`, and `animationDuration` for a bolder, looser, slower draw.
+
+<ComponentPreview
+  code={`import { Highlighter } from "@/components/godui/highlighter";
+
+export function HighlighterTuned() {
+  return (
+    <p className="text-3xl font-sans">
+      <Highlighter
+        action="box"
+        color="#22d3ee"
+        strokeWidth={2.5}
+        iterations={3}
+        padding={6}
+        animationDuration={900}
+      >
+        Bolder, looser, slower
+      </Highlighter>
+    </p>
+  );
+}`}
+>
+  <p className="text-3xl font-sans">
+    <Highlighter
+      action="box"
+      color="#22d3ee"
+      strokeWidth={2.5}
+      iterations={3}
+      padding={6}
+      animationDuration={900}
+    >
+      Bolder, looser, slower
+    </Highlighter>
+  </p>
+</ComponentPreview>
+
 ## Props
 
 | Prop | Type | Default | Description |

@@ -67,6 +67,48 @@ The weight emphasis follows the pointer while it's over the text.
 </ElasticText>
 ```
 
+## Examples
+
+### Hover
+
+`mode="hover"` ties the weight emphasis to the pointer instead of an automatic spotlight.
+
+<ComponentPreview
+  code={`import { ElasticText } from "@/components/godui/elastic-text";
+
+export function ElasticTextHover() {
+  return (
+    <ElasticText mode="hover" className="text-4xl tracking-tight">
+      Move Your Mouse
+    </ElasticText>
+  );
+}`}
+>
+  <ElasticText mode="hover" className="text-4xl tracking-tight">
+    Move Your Mouse
+  </ElasticText>
+</ComponentPreview>
+
+### Plays once
+
+`loop={false}` runs a single spotlight sweep across the text, then settles back to normal weight. Use the replay button to run it again.
+
+<ComponentPreview
+  code={`import { ElasticText } from "@/components/godui/elastic-text";
+
+export function ElasticTextOnce() {
+  return (
+    <ElasticText loop={false} className="text-4xl tracking-tight">
+      Plays once
+    </ElasticText>
+  );
+}`}
+>
+  <ElasticText loop={false} className="text-4xl tracking-tight">
+    Plays once
+  </ElasticText>
+</ComponentPreview>
+
 ## Props
 
 | Prop | Type | Default | Description |
@@ -77,6 +119,7 @@ The weight emphasis follows the pointer while it's over the text.
 | `maxWeight` | `number` | `900` | Peak (heaviest) weight under the spotlight / pointer |
 | `duration` | `number` | `2` | Seconds for one full `auto` sweep |
 | `loop` | `boolean` | `true` | Repeat the `auto` sweep |
+| `startOnView` | `boolean` | `true` | Start the `auto` sweep only once the text scrolls into view |
 | `radius` | `number` | `120` | Pointer influence radius in px (`hover` mode) |
 
 ## Accessibility

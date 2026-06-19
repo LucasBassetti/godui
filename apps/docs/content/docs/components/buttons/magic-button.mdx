@@ -37,6 +37,64 @@ import { MagicButton } from "@/components/godui/magic-button";
 <MagicButton variant="default">Push me</MagicButton>
 ```
 
+## Examples
+
+### Sizes
+
+<ComponentPreview
+  code={`import { MagicButton } from "@/components/godui/magic-button";
+
+export function MagicButtonSizes() {
+  return (
+    <div className="flex flex-wrap items-center justify-center gap-6">
+      <MagicButton size="sm">Small</MagicButton>
+      <MagicButton size="md">Medium</MagicButton>
+      <MagicButton size="lg">Large</MagicButton>
+    </div>
+  );
+}`}
+>
+  <div className="flex flex-wrap items-center justify-center gap-6">
+    <MagicButton size="sm">Small</MagicButton>
+    <MagicButton size="md">Medium</MagicButton>
+    <MagicButton size="lg">Large</MagicButton>
+  </div>
+</ComponentPreview>
+
+### Without rainbow
+
+Set `rainbow={false}` for a static 3D edge that uses the variant color instead of the animated gradient.
+
+<ComponentPreview
+  code={`import { MagicButton } from "@/components/godui/magic-button";
+
+export function MagicButtonPlain() {
+  return (
+    <div className="flex flex-wrap items-center justify-center gap-6">
+      <MagicButton rainbow={false}>Push me</MagicButton>
+      <MagicButton variant="secondary" rainbow={false}>Push me</MagicButton>
+    </div>
+  );
+}`}
+>
+  <div className="flex flex-wrap items-center justify-center gap-6">
+    <MagicButton rainbow={false}>Push me</MagicButton>
+    <MagicButton variant="secondary" rainbow={false}>Push me</MagicButton>
+  </div>
+</ComponentPreview>
+
+### Disabled
+
+<ComponentPreview
+  code={`import { MagicButton } from "@/components/godui/magic-button";
+
+export function MagicButtonDisabled() {
+  return <MagicButton disabled>Push me</MagicButton>;
+}`}
+>
+  <MagicButton disabled>Push me</MagicButton>
+</ComponentPreview>
+
 ## Props
 
 | Prop | Type | Default | Description |
