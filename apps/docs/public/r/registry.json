@@ -689,7 +689,7 @@
       "name": "progress-fold-button",
       "type": "registry:ui",
       "title": "Progress Fold Button",
-      "description": "A button whose front face folds on hover and runs a progress bar on click.",
+      "description": "A button whose front face folds back to reveal a controlled progress bar while loading.",
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
@@ -699,14 +699,9 @@
         }
       ],
       "css": {
-        "@keyframes progress-fold-bar": {
-          "0%": { "opacity": "1", "width": "0" },
-          "10%": { "opacity": "1", "width": "15%" },
-          "25%": { "opacity": "1", "width": "25%" },
-          "40%": { "opacity": "1", "width": "35%" },
-          "55%": { "opacity": "1", "width": "75%" },
-          "60%": { "opacity": "1", "width": "100%" },
-          "to": { "opacity": "0", "width": "100%" }
+        "@keyframes progress-fold-indeterminate": {
+          "0%": { "transform": "translateX(-100%)" },
+          "100%": { "transform": "translateX(250%)" }
         },
         "@layer components": {
           ".progress-fold-button": {
@@ -769,6 +764,9 @@
           ".progress-fold-button:hover:not(:disabled) .progress-fold-button-front": {
             "transform": "rotateX(35deg)"
           },
+          ".progress-fold-button[data-status=\"loading\"] .progress-fold-button-front": {
+            "transform": "rotateX(35deg)"
+          },
           ".progress-fold-button-layers": {
             "position": "absolute",
             "inset": "0",
@@ -787,12 +785,32 @@
             "height": "100%",
             "width": "0"
           },
-          ".progress-fold-button[data-active=\"true\"] .progress-fold-button-bar": {
-            "animation": "progress-fold-bar 1.2s"
+          ".progress-fold-button[data-determinate=\"true\"] .progress-fold-button-bar": {
+            "width": "var(--progress-fold-fill, 0%)"
+          },
+          ".progress-fold-button[data-determinate=\"true\"][data-armed=\"true\"] .progress-fold-button-bar": {
+            "transition": "width 0.25s ease"
+          },
+          ".progress-fold-button[data-status=\"loading\"]:not([data-determinate=\"true\"]) .progress-fold-button-bar": {
+            "width": "40%",
+            "animation": "progress-fold-indeterminate 1.2s ease-in-out infinite"
+          },
+          ".progress-fold-button-sr": {
+            "position": "absolute",
+            "width": "1px",
+            "height": "1px",
+            "margin": "-1px",
+            "padding": "0",
+            "overflow": "hidden",
+            "clip": "rect(0, 0, 0, 0)",
+            "white-space": "nowrap",
+            "border": "0"
           },
           "@media (prefers-reduced-motion: reduce)": {
-            ".progress-fold-button-front, .progress-fold-button[data-active=\"true\"] .progress-fold-button-bar": {
-              "transition": "none",
+            ".progress-fold-button-front, .progress-fold-button[data-determinate=\"true\"][data-armed=\"true\"] .progress-fold-button-bar": {
+              "transition": "none"
+            },
+            ".progress-fold-button[data-status=\"loading\"]:not([data-determinate=\"true\"]) .progress-fold-button-bar": {
               "animation": "none"
             }
           }

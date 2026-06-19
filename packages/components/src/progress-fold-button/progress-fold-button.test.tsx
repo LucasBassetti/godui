@@ -1,7 +1,6 @@
-import { fireEvent, render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import { render, screen } from "@testing-library/react";
 import { createRef } from "react";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import { ProgressFoldButton } from "./progress-fold-button";
 
 describe("ProgressFoldButton", () => {
@@ -50,19 +49,59 @@ describe("ProgressFoldButton", () => {
     );
   });
 
-  it("sets data-active on click and clears it on the bar animation end", async () => {
-    const onClick = vi.fn();
-    const { container } = render(
-      <ProgressFoldButton onClick={onClick}>A</ProgressFoldButton>,
+  it("is idle by default: no status / progressbar", () => {
+    render(<ProgressFoldButton>A</ProgressFoldButton>);
+    const button = screen.getByRole("button");
+    expect(button).not.toHaveAttribute("data-status");
+    expect(button).not.toHaveAttribute("aria-busy");
+    expect(screen.queryByRole("progressbar")).not.toBeInTheDocument();
+  });
+
+  it("marks loading state with data-status and aria-busy", () => {
+    render(<ProgressFoldButton status="loading">A</ProgressFoldButton>);
+    const button = screen.getByRole("button");
+    expect(button).toHaveAttribute("data-status", "loading");
+    expect(button).toHaveAttribute("aria-busy", "true");
+  });
+
+  it("loading without progress is indeterminate", () => {
+    render(<ProgressFoldButton status="loading">A</ProgressFoldButton>);
+    const button = screen.getByRole("button");
+    expect(button).not.toHaveAttribute("data-determinate");
+    const bar = screen.getByRole("progressbar");
+    expect(bar).toHaveAttribute("aria-valuetext", "Loading");
+    expect(bar).not.toHaveAttribute("aria-valuenow");
+  });
+
+  it("loading with progress is determinate and exposes the value", () => {
+    render(
+      <ProgressFoldButton status="loading" progress={40}>
+        A
+      </ProgressFoldButton>,
     );
     const button = screen.getByRole("button");
-    await userEvent.click(button);
-    expect(onClick).toHaveBeenCalledOnce();
-    expect(button).toHaveAttribute("data-active", "true");
+    expect(button).toHaveAttribute("data-determinate", "true");
+    expect(button.style.getPropertyValue("--progress-fold-fill")).toBe("40%");
+    const bar = screen.getByRole("progressbar");
+    expect(bar).toHaveAttribute("aria-valuenow", "40");
+    expect(bar).toHaveAttribute("aria-valuetext", "40%");
+  });
 
-    const bar = container.querySelector(".progress-fold-button-bar");
-    if (!bar) throw new Error("progress bar not found");
-    fireEvent.animationEnd(bar);
-    expect(button).not.toHaveAttribute("data-active");
+  it("clamps out-of-range progress values", () => {
+    const { rerender } = render(
+      <ProgressFoldButton status="loading" progress={150}>
+        A
+      </ProgressFoldButton>,
+    );
+    let button = screen.getByRole("button");
+    expect(button.style.getPropertyValue("--progress-fold-fill")).toBe("100%");
+
+    rerender(
+      <ProgressFoldButton status="loading" progress={-20}>
+        A
+      </ProgressFoldButton>,
+    );
+    button = screen.getByRole("button");
+    expect(button.style.getPropertyValue("--progress-fold-fill")).toBe("0%");
   });
 });

@@ -2,47 +2,25 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "progress-fold-button",
   "title": "Progress Fold Button",
-  "description": "A button whose front face folds on hover and runs a progress bar on click.",
+  "description": "A button whose front face folds back to reveal a controlled progress bar while loading.",
   "registryDependencies": [
     "@godui/godui-theme"
   ],
   "files": [
     {
       "path": "packages/components/src/progress-fold-button/progress-fold-button.tsx",
-      "content": "\"use client\";\n\nimport * as React from \"react\";\n\nexport type ProgressFoldButtonVariant = \"primary\" | \"secondary\";\nexport type ProgressFoldButtonSize = \"sm\" | \"md\" | \"lg\";\n\nexport type ProgressFoldButtonProps =\n  React.ButtonHTMLAttributes<HTMLButtonElement> & {\n    variant?: ProgressFoldButtonVariant;\n    size?: ProgressFoldButtonSize;\n  };\n\nconst sizeClasses: Record<ProgressFoldButtonSize, string> = {\n  sm: \"progress-fold-button--sm\",\n  md: \"progress-fold-button--md\",\n  lg: \"progress-fold-button--lg\",\n};\n\nconst frontClasses: Record<ProgressFoldButtonVariant, string> = {\n  primary: \"bg-primary text-primary-foreground\",\n  secondary: \"bg-secondary text-secondary-foreground\",\n};\n\n// Fold side: a faint tint at rest (back), a stronger one while the progress\n// bar runs. Alpha utilities blend with the surrounding background so the\n// effect adapts to light and dark themes.\nconst backClasses: Record<ProgressFoldButtonVariant, string> = {\n  primary: \"bg-primary/15\",\n  secondary: \"bg-secondary-foreground/15\",\n};\n\nconst barClasses: Record<ProgressFoldButtonVariant, string> = {\n  primary: \"bg-primary/40\",\n  secondary: \"bg-secondary-foreground/35\",\n};\n\nconst ProgressFoldButton = React.forwardRef<\n  HTMLButtonElement,\n  ProgressFoldButtonProps\n>(\n  (\n    {\n      className,\n      children,\n      onClick,\n      variant = \"primary\",\n      size = \"md\",\n      ...props\n    },\n    ref,\n  ) => {\n    const [active, setActive] = React.useState(false);\n\n    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {\n      setActive(true);\n      onClick?.(event);\n    };\n\n    return (\n      <button\n        ref={ref}\n        type=\"button\"\n        data-variant={variant}\n        data-size={size}\n        data-active={active ? \"true\" : undefined}\n        onClick={handleClick}\n        className={`progress-fold-button font-medium ${sizeClasses[size]} ${className ?? \"\"}`}\n        {...props}\n      >\n        <span className=\"progress-fold-button-layers\" aria-hidden=\"true\">\n          <span\n            className={`progress-fold-button-back ${backClasses[variant]}`}\n          />\n          <span\n            className={`progress-fold-button-bar ${barClasses[variant]}`}\n            onAnimationEnd={() => setActive(false)}\n          />\n        </span>\n        <span className={`progress-fold-button-front ${frontClasses[variant]}`}>\n          {children}\n        </span>\n      </button>\n    );\n  },\n);\nProgressFoldButton.displayName = \"ProgressFoldButton\";\n\nexport { ProgressFoldButton };\n",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\n\nexport type ProgressFoldButtonVariant = \"primary\" | \"secondary\";\nexport type ProgressFoldButtonSize = \"sm\" | \"md\" | \"lg\";\nexport type ProgressFoldButtonStatus = \"idle\" | \"loading\";\n\nexport type ProgressFoldButtonProps =\n  React.ButtonHTMLAttributes<HTMLButtonElement> & {\n    variant?: ProgressFoldButtonVariant;\n    size?: ProgressFoldButtonSize;\n    /**\n     * Loading lifecycle. `loading` folds the front face open and runs the\n     * progress bar behind it. Fully controlled.\n     */\n    status?: ProgressFoldButtonStatus;\n    /**\n     * 0–100. With `status=\"loading\"` a value makes the bar determinate (fills\n     * to that percentage); omitting it makes the bar indeterminate (a segment\n     * sweeps across).\n     */\n    progress?: number;\n  };\n\nconst sizeClasses: Record<ProgressFoldButtonSize, string> = {\n  sm: \"progress-fold-button--sm\",\n  md: \"progress-fold-button--md\",\n  lg: \"progress-fold-button--lg\",\n};\n\nconst frontClasses: Record<ProgressFoldButtonVariant, string> = {\n  primary: \"bg-primary text-primary-foreground\",\n  secondary: \"bg-secondary text-secondary-foreground\",\n};\n\n// Fold side: a faint tint at rest (back), a stronger one while the progress\n// bar runs. Alpha utilities blend with the surrounding background so the\n// effect adapts to light and dark themes.\nconst backClasses: Record<ProgressFoldButtonVariant, string> = {\n  primary: \"bg-primary/15\",\n  secondary: \"bg-secondary-foreground/15\",\n};\n\nconst barClasses: Record<ProgressFoldButtonVariant, string> = {\n  primary: \"bg-primary/40\",\n  secondary: \"bg-secondary-foreground/35\",\n};\n\nconst clampPercent = (value: number) => Math.max(0, Math.min(100, value));\n\nconst ProgressFoldButton = React.forwardRef<\n  HTMLButtonElement,\n  ProgressFoldButtonProps\n>(\n  (\n    {\n      className,\n      style,\n      children,\n      variant = \"primary\",\n      size = \"md\",\n      status = \"idle\",\n      progress,\n      ...props\n    },\n    ref,\n  ) => {\n    const isLoading = status === \"loading\";\n    const isDeterminate = isLoading && progress != null;\n    const clamped = progress != null ? clampPercent(progress) : undefined;\n\n    // Snap the fill to 0 on entering loading, then arm the smooth transition a\n    // frame later so progress animates without the entry flashing from full.\n    const [armed, setArmed] = React.useState(false);\n    React.useEffect(() => {\n      if (!isLoading) {\n        setArmed(false);\n        return;\n      }\n      setArmed(false);\n      const id = requestAnimationFrame(() => setArmed(true));\n      return () => cancelAnimationFrame(id);\n    }, [isLoading]);\n\n    return (\n      <button\n        ref={ref}\n        type=\"button\"\n        data-variant={variant}\n        data-size={size}\n        data-status={isLoading ? \"loading\" : undefined}\n        data-determinate={isDeterminate ? \"true\" : undefined}\n        data-armed={armed ? \"true\" : undefined}\n        aria-busy={isLoading || undefined}\n        className={`progress-fold-button font-medium ${sizeClasses[size]} ${className ?? \"\"}`}\n        style={\n          clamped != null\n            ? ({\n                ...style,\n                \"--progress-fold-fill\": `${clamped}%`,\n              } as React.CSSProperties)\n            : style\n        }\n        {...props}\n      >\n        <span className=\"progress-fold-button-layers\" aria-hidden=\"true\">\n          <span\n            className={`progress-fold-button-back ${backClasses[variant]}`}\n          />\n          <span className={`progress-fold-button-bar ${barClasses[variant]}`} />\n        </span>\n        <span className={`progress-fold-button-front ${frontClasses[variant]}`}>\n          {children}\n        </span>\n        {isLoading ? (\n          <span\n            className=\"progress-fold-button-sr\"\n            role=\"progressbar\"\n            aria-valuemin={0}\n            aria-valuemax={100}\n            aria-valuenow={isDeterminate ? clamped : undefined}\n            aria-valuetext={isDeterminate ? `${clamped}%` : \"Loading\"}\n          />\n        ) : null}\n      </button>\n    );\n  },\n);\nProgressFoldButton.displayName = \"ProgressFoldButton\";\n\nexport { ProgressFoldButton };\n",
       "type": "registry:ui",
       "target": "components/godui/progress-fold-button.tsx"
     }
   ],
   "css": {
-    "@keyframes progress-fold-bar": {
+    "@keyframes progress-fold-indeterminate": {
       "0%": {
-        "opacity": "1",
-        "width": "0"
+        "transform": "translateX(-100%)"
       },
-      "10%": {
-        "opacity": "1",
-        "width": "15%"
-      },
-      "25%": {
-        "opacity": "1",
-        "width": "25%"
-      },
-      "40%": {
-        "opacity": "1",
-        "width": "35%"
-      },
-      "55%": {
-        "opacity": "1",
-        "width": "75%"
-      },
-      "60%": {
-        "opacity": "1",
-        "width": "100%"
-      },
-      "to": {
-        "opacity": "0",
-        "width": "100%"
+      "100%": {
+        "transform": "translateX(250%)"
       }
     },
     "@layer components": {
@@ -106,6 +84,9 @@
       ".progress-fold-button:hover:not(:disabled) .progress-fold-button-front": {
         "transform": "rotateX(35deg)"
       },
+      ".progress-fold-button[data-status=\"loading\"] .progress-fold-button-front": {
+        "transform": "rotateX(35deg)"
+      },
       ".progress-fold-button-layers": {
         "position": "absolute",
         "inset": "0",
@@ -124,12 +105,32 @@
         "height": "100%",
         "width": "0"
       },
-      ".progress-fold-button[data-active=\"true\"] .progress-fold-button-bar": {
-        "animation": "progress-fold-bar 1.2s"
+      ".progress-fold-button[data-determinate=\"true\"] .progress-fold-button-bar": {
+        "width": "var(--progress-fold-fill, 0%)"
+      },
+      ".progress-fold-button[data-determinate=\"true\"][data-armed=\"true\"] .progress-fold-button-bar": {
+        "transition": "width 0.25s ease"
+      },
+      ".progress-fold-button[data-status=\"loading\"]:not([data-determinate=\"true\"]) .progress-fold-button-bar": {
+        "width": "40%",
+        "animation": "progress-fold-indeterminate 1.2s ease-in-out infinite"
+      },
+      ".progress-fold-button-sr": {
+        "position": "absolute",
+        "width": "1px",
+        "height": "1px",
+        "margin": "-1px",
+        "padding": "0",
+        "overflow": "hidden",
+        "clip": "rect(0, 0, 0, 0)",
+        "white-space": "nowrap",
+        "border": "0"
       },
       "@media (prefers-reduced-motion: reduce)": {
-        ".progress-fold-button-front, .progress-fold-button[data-active=\"true\"] .progress-fold-button-bar": {
-          "transition": "none",
+        ".progress-fold-button-front, .progress-fold-button[data-determinate=\"true\"][data-armed=\"true\"] .progress-fold-button-bar": {
+          "transition": "none"
+        },
+        ".progress-fold-button[data-status=\"loading\"]:not([data-determinate=\"true\"]) .progress-fold-button-bar": {
           "animation": "none"
         }
       }
