@@ -1060,6 +1060,21 @@
           "target": "components/godui/highlighter.tsx"
         }
       ]
+    },
+    {
+      "name": "border-beam",
+      "type": "registry:ui",
+      "title": "Border Beam",
+      "description": "An animated beam of light that travels around the border of its container.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "dependencies": ["framer-motion"],
+      "files": [
+        {
+          "path": "packages/components/src/border-beam/border-beam.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/border-beam.tsx"
+        }
+      ]
     }
   ]
 }
