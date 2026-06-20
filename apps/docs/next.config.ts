@@ -7,15 +7,6 @@ const storybookDevOrigin = "http://127.0.0.1:6006";
 
 const nextConfig: NextConfig = {
   transpilePackages: ["@godui/components"],
-  async redirects() {
-    return [
-      {
-        source: "/docs",
-        destination: "/docs/installation",
-        permanent: false,
-      },
-    ];
-  },
   async rewrites() {
     if (process.env.NODE_ENV === "development") {
       return [

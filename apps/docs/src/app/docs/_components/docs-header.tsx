@@ -31,6 +31,14 @@ export function DocsHeader({ className, ...props }: ComponentProps<"header">) {
       >
         <GoduiLogo className="h-10 w-10" width={40} height={40} />
       </Link>
+      <nav className="flex items-center">
+        <Link
+          href="/docs/components"
+          className="font-medium text-fd-muted-foreground text-sm transition-colors hover:text-fd-foreground"
+        >
+          Components
+        </Link>
+      </nav>
       <div className="flex-1" />
       <div className="flex items-center gap-1 sm:gap-2">
         {/* Desktop: full search bar */}

@@ -1,0 +1,43 @@
+---
+title: Introduction
+description: A UI collection of open-source animated components for Design Engineers.
+---
+
+import { Cards, Card } from "fumadocs-ui/components/card";
+import { MagicButton } from "@godui/components";
+
+**GoDUI** is a collection of open-source, animated UI components for Design
+Engineers. Built with **React**, **TypeScript**, **Tailwind CSS v4**, and
+**Motion**, and distributed as a [shadcn](https://ui.shadcn.com) registry — so
+the components are copied straight into your project and you own every line.
+
+<ComponentPreview code={`import { MagicButton } from "@godui/components";
+
+export function Demo() {
+  return <MagicButton size="lg">Get Started</MagicButton>;
+}`}>
+  <MagicButton size="lg">Get Started</MagicButton>
+</ComponentPreview>
+
+## What you get
+
+- **You own the code.** Components are installed into your codebase via the
+  shadcn CLI — not hidden behind a versioned dependency.
+- **Motion-first.** Every component ships with polished, performant animation
+  out of the box.
+- **shadcn-native.** Same install flow as shadcn/ui. If you already use shadcn,
+  just add the `@godui` registry.
+- **Tailwind v4 tokens.** Themed with CSS variables — light and dark modes work
+  with zero extra config.
+- **Type-safe.** Full TypeScript types for every component and its props.
+
+## Next steps
+
+<Cards>
+  <Card href="/docs/installation" title="Installation">
+    Add the `@godui` registry and pull your first component in minutes.
+  </Card>
+  <Card href="/docs/components" title="Components">
+    Browse the full collection of animated components.
+  </Card>
+</Cards>

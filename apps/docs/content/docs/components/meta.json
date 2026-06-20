@@ -2,6 +2,7 @@
   "title": "Components",
   "defaultOpen": true,
   "pages": [
+    "index",
     "---Buttons---",
     "buttons/magic-button",
     "buttons/shimmer-button",
