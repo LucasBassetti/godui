@@ -81,6 +81,8 @@
     --search-kbd-bg: oklch(0.28 0.024 266);
     --search-kbd-fg: oklch(0.86 0.08 266);
     --search-placeholder: oklch(0.62 0.02 266);
+    --search-highlight-bg: oklch(0.38 0.1 266);
+    --search-highlight-fg: oklch(0.97 0.025 266);
 
     /* Theme panel */
     --theme-panel-bg: oklch(0.195 0.026 266);
@@ -218,6 +220,8 @@
   --search-kbd-bg: oklch(0.28 0.024 266);
   --search-kbd-fg: oklch(0.86 0.08 266);
   --search-placeholder: oklch(0.62 0.02 266);
+  --search-highlight-bg: oklch(0.38 0.1 266);
+  --search-highlight-fg: oklch(0.97 0.025 266);
 
   --theme-panel-bg: oklch(0.195 0.026 266);
   --theme-panel-border: oklch(0.28 0.02 266);

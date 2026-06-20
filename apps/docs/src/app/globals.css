@@ -224,6 +224,28 @@ body {
   color: var(--search-fg);
 }
 
+/* Search results — readable inline code pills (match docs prose tokens) */
+.bg-fd-popover code[class~="bg-fd-secondary"] {
+  background: var(--inline-code-bg) !important;
+  color: var(--inline-code-fg) !important;
+  border-color: var(--inline-code-border) !important;
+}
+
+/* Search results — matched-term highlight as a real highlighter mark.
+   Fumadocs renders matches as `text-fd-primary underline`, which is low
+   contrast on the muted code pills. Override with a tinted background +
+   high-contrast text so it reads on plain text and inside code pills. */
+.bg-fd-popover [class~="text-fd-primary"][class~="underline"] {
+  background: var(--search-highlight-bg);
+  color: var(--search-highlight-fg) !important;
+  text-decoration: none;
+  border-radius: 4px;
+  padding: 0 0.1875rem;
+  font-weight: 600;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
 /* Sidebar — no border, blend with page background, stick below header */
 #nd-sidebar {
   border-right: none !important;

@@ -141,6 +141,8 @@
   --search-kbd-bg: oklch(0.965 0.006 266);
   --search-kbd-fg: oklch(0.2 0.036 266);
   --search-placeholder: oklch(0.54 0.022 266);
+  --search-highlight-bg: oklch(0.89 0.085 266);
+  --search-highlight-fg: oklch(0.34 0.13 266);
 
   /* Theme panel */
   --theme-panel-bg: oklch(1 0 0);
