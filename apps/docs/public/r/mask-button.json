@@ -1,0 +1,155 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "mask-button",
+  "title": "Mask Button",
+  "description": "A button whose face wipes away on hover via an animated CSS sprite-sheet mask, revealing the label behind it.",
+  "registryDependencies": [
+    "@godui/godui-theme"
+  ],
+  "files": [
+    {
+      "path": "packages/components/src/mask-button/mask-button.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\n\nexport type MaskButtonMask = \"nature\" | \"urban\" | \"forest\";\nexport type MaskButtonVariant = \"primary\" | \"secondary\";\nexport type MaskButtonSize = \"sm\" | \"md\" | \"lg\";\n\nexport type MaskButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {\n  /** Sprite-sheet mask animated on hover to reveal the label */\n  mask?: MaskButtonMask;\n  /** Color of the masked face */\n  variant?: MaskButtonVariant;\n  size?: MaskButtonSize;\n};\n\nconst sizeClasses: Record<MaskButtonSize, string> = {\n  sm: \"mask-button--sm\",\n  md: \"mask-button--md\",\n  lg: \"mask-button--lg\",\n};\n\nconst MaskButton = React.forwardRef<HTMLButtonElement, MaskButtonProps>(\n  (\n    {\n      className,\n      children,\n      mask = \"nature\",\n      variant = \"primary\",\n      size = \"md\",\n      onKeyDown,\n      onKeyUp,\n      ...props\n    },\n    ref,\n  ) => {\n    const [pressed, setPressed] = React.useState(false);\n\n    const handleKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>) => {\n      if (event.key === \"Enter\" || event.key === \" \") {\n        setPressed(true);\n      }\n      onKeyDown?.(event);\n    };\n\n    const handleKeyUp = (event: React.KeyboardEvent<HTMLButtonElement>) => {\n      if (event.key === \"Enter\" || event.key === \" \") {\n        setPressed(false);\n      }\n      onKeyUp?.(event);\n    };\n\n    return (\n      <button\n        ref={ref}\n        type=\"button\"\n        data-mask={mask}\n        data-variant={variant}\n        data-size={size}\n        data-pressed={pressed ? \"true\" : undefined}\n        onKeyDown={handleKeyDown}\n        onKeyUp={handleKeyUp}\n        className={`mask-button font-medium ${sizeClasses[size]} ${className ?? \"\"}`}\n        {...props}\n      >\n        <span className=\"mask-button-label\">{children}</span>\n        <span className=\"mask-button-fill\" aria-hidden=\"true\">\n          {children}\n        </span>\n      </button>\n    );\n  },\n);\nMaskButton.displayName = \"MaskButton\";\n\nexport { MaskButton };\n",
+      "type": "registry:ui",
+      "target": "components/godui/mask-button.tsx"
+    }
+  ],
+  "css": {
+    "@keyframes mask-button-in": {
+      "from": {
+        "-webkit-mask-position": "0 0",
+        "mask-position": "0 0"
+      },
+      "to": {
+        "-webkit-mask-position": "100% 0",
+        "mask-position": "100% 0"
+      }
+    },
+    "@keyframes mask-button-out": {
+      "from": {
+        "-webkit-mask-position": "100% 0",
+        "mask-position": "100% 0"
+      },
+      "to": {
+        "-webkit-mask-position": "0 0",
+        "mask-position": "0 0"
+      }
+    },
+    "@layer components": {
+      ".mask-button": {
+        "position": "relative",
+        "display": "inline-flex",
+        "align-items": "center",
+        "justify-content": "center",
+        "isolation": "isolate",
+        "overflow": "hidden",
+        "border": "1px solid var(--border)",
+        "background": "var(--background)",
+        "color": "var(--foreground)",
+        "cursor": "pointer",
+        "white-space": "nowrap",
+        "user-select": "none",
+        "-webkit-tap-highlight-color": "transparent",
+        "transition": "transform 100ms ease"
+      },
+      ".mask-button:focus:not(:focus-visible)": {
+        "outline": "none"
+      },
+      ".mask-button:focus-visible": {
+        "outline": "2px solid var(--ring)",
+        "outline-offset": "4px"
+      },
+      ".mask-button:active:not(:disabled), .mask-button[data-pressed=\"true\"]:not(:disabled)": {
+        "transform": "scale(0.97)"
+      },
+      ".mask-button:disabled": {
+        "cursor": "not-allowed",
+        "opacity": "0.5",
+        "pointer-events": "none"
+      },
+      ".mask-button-label": {
+        "position": "relative",
+        "z-index": "0"
+      },
+      ".mask-button-fill": {
+        "position": "absolute",
+        "inset": "0",
+        "z-index": "1",
+        "display": "flex",
+        "align-items": "center",
+        "justify-content": "center",
+        "-webkit-mask-repeat": "no-repeat",
+        "mask-repeat": "no-repeat"
+      },
+      ".mask-button[data-variant=\"primary\"] .mask-button-fill": {
+        "background": "var(--primary)",
+        "color": "var(--primary-foreground)"
+      },
+      ".mask-button[data-variant=\"secondary\"] .mask-button-fill": {
+        "background": "var(--secondary)",
+        "color": "var(--secondary-foreground)"
+      },
+      ".mask-button[data-mask=\"nature\"] .mask-button-fill": {
+        "-webkit-mask-image": "url(\"/masks/mask-nature.png\")",
+        "mask-image": "url(\"/masks/mask-nature.png\")",
+        "-webkit-mask-size": "2300% 100%",
+        "mask-size": "2300% 100%",
+        "animation": "mask-button-out 0.7s steps(22) forwards"
+      },
+      ".mask-button[data-mask=\"nature\"]:hover:not(:disabled) .mask-button-fill, .mask-button[data-mask=\"nature\"]:focus-visible:not(:disabled) .mask-button-fill": {
+        "animation": "mask-button-in 0.7s steps(22) forwards"
+      },
+      ".mask-button[data-mask=\"urban\"] .mask-button-fill": {
+        "-webkit-mask-image": "url(\"/masks/mask-urban.png\")",
+        "mask-image": "url(\"/masks/mask-urban.png\")",
+        "-webkit-mask-size": "3000% 100%",
+        "mask-size": "3000% 100%",
+        "animation": "mask-button-out 0.7s steps(29) forwards"
+      },
+      ".mask-button[data-mask=\"urban\"]:hover:not(:disabled) .mask-button-fill, .mask-button[data-mask=\"urban\"]:focus-visible:not(:disabled) .mask-button-fill": {
+        "animation": "mask-button-in 0.7s steps(29) forwards"
+      },
+      ".mask-button[data-mask=\"forest\"] .mask-button-fill": {
+        "-webkit-mask-image": "url(\"/masks/mask-forest.png\")",
+        "mask-image": "url(\"/masks/mask-forest.png\")",
+        "-webkit-mask-size": "7100% 100%",
+        "mask-size": "7100% 100%",
+        "animation": "mask-button-out 0.7s steps(70) forwards"
+      },
+      ".mask-button[data-mask=\"forest\"]:hover:not(:disabled) .mask-button-fill, .mask-button[data-mask=\"forest\"]:focus-visible:not(:disabled) .mask-button-fill": {
+        "animation": "mask-button-in 0.7s steps(70) forwards"
+      },
+      ".mask-button--sm": {
+        "padding": "var(--button-py-sm) var(--button-px-sm)",
+        "font-size": "var(--button-text-sm)",
+        "line-height": "var(--button-leading-sm)",
+        "border-radius": "var(--button-radius-sm)"
+      },
+      ".mask-button--md": {
+        "padding": "var(--button-py-md) var(--button-px-md)",
+        "font-size": "var(--button-text-md)",
+        "line-height": "var(--button-leading-md)",
+        "border-radius": "var(--button-radius-md)"
+      },
+      ".mask-button--lg": {
+        "padding": "var(--button-py-lg) var(--button-px-lg)",
+        "font-size": "var(--button-text-lg)",
+        "line-height": "var(--button-leading-lg)",
+        "border-radius": "var(--button-radius-lg)"
+      },
+      "@media (prefers-reduced-motion: reduce)": {
+        ".mask-button-fill": {
+          "animation": "none",
+          "-webkit-mask-position": "0 0",
+          "mask-position": "0 0"
+        },
+        ".mask-button:hover:not(:disabled) .mask-button-fill, .mask-button:focus-visible:not(:disabled) .mask-button-fill": {
+          "animation": "none",
+          "-webkit-mask-position": "100% 0",
+          "mask-position": "100% 0"
+        }
+      }
+    }
+  },
+  "type": "registry:ui"
+}

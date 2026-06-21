@@ -13,9 +13,20 @@ type RegistryFile = {
   content: string;
 };
 
+type CssNode = string | { [key: string]: CssNode };
+
 type RegistryItem = {
   dependencies?: string[];
   files?: RegistryFile[];
+  /** CSS-in-JSON block the CLI injects into the user's global stylesheet. */
+  css?: Record<string, CssNode>;
+};
+
+type DownloadAsset = {
+  /** File name shown in the list, e.g. "mask-nature.png". */
+  label: string;
+  /** Public URL to download the asset from. */
+  href: string;
 };
 
 type ComponentInstallProps = {
@@ -23,6 +34,13 @@ type ComponentInstallProps = {
   name?: string;
   /** PascalCase component name; converted to a kebab-case registry item. */
   componentName?: string;
+  /**
+   * Static assets the component needs that can't ship through the registry
+   * (e.g. sprite-sheet images). Rendered as a download step in the Manual tab.
+   */
+  assets?: DownloadAsset[];
+  /** Folder the assets must be saved to, relative to the project root. */
+  assetsTarget?: string;
 };
 
 function toKebabCase(value: string) {
@@ -62,6 +80,22 @@ function getAddPrefix(manager: PackageManager) {
   }
 }
 
+/**
+ * Serialize the registry's CSS-in-JSON block back into a plain CSS string so
+ * Manual-install users can copy it into their global stylesheet (the CLI does
+ * this for them automatically).
+ */
+function cssObjectToString(node: Record<string, CssNode>, depth = 0): string {
+  const pad = "  ".repeat(depth);
+  return Object.entries(node)
+    .map(([key, value]) =>
+      typeof value === "string"
+        ? `${pad}${key}: ${value};`
+        : `${pad}${key} {\n${cssObjectToString(value, depth + 1)}\n${pad}}`,
+    )
+    .join("\n");
+}
+
 function langFromPath(path: string) {
   if (path.endsWith(".tsx")) return "tsx";
   if (path.endsWith(".ts")) return "ts";
@@ -72,6 +106,8 @@ function langFromPath(path: string) {
 export function ComponentInstall({
   name,
   componentName,
+  assets,
+  assetsTarget,
 }: ComponentInstallProps) {
   const itemName =
     name ?? (componentName ? toKebabCase(componentName) : "magic-button");
@@ -124,6 +160,16 @@ export function ComponentInstall({
     "@godui": "${REGISTRY_BASE}/{name}.json"
   }
 }`;
+
+  const cssText = item?.css ? cssObjectToString(item.css) : "";
+  const hasDeps = Boolean(depsCommand);
+  const hasCss = cssText.length > 0;
+  const hasAssets = Boolean(assets && assets.length > 0);
+  let step = 0;
+  const depsStep = hasDeps ? ++step : 0;
+  const copyStep = ++step;
+  const cssStep = hasCss ? ++step : 0;
+  const assetsStep = hasAssets ? ++step : 0;
 
   return (
     <DocsPanel className="my-6">
@@ -182,7 +228,7 @@ export function ComponentInstall({
               {depsCommand ? (
                 <div className="space-y-2">
                   <p className="text-sm font-medium text-fd-foreground">
-                    1. Install dependencies
+                    {depsStep}. Install dependencies
                   </p>
                   <div className="overflow-hidden rounded-xl border border-fd-border bg-fd-card shadow-sm">
                     <div className="flex items-center justify-between gap-3 border-b border-fd-border px-4 py-3">
@@ -207,8 +253,7 @@ export function ComponentInstall({
 
               <div className="space-y-2">
                 <p className="text-sm font-medium text-fd-foreground">
-                  {depsCommand ? "2." : "1."} Copy the component into your
-                  project
+                  {copyStep}. Copy the component into your project
                 </p>
                 {(item.files ?? []).map((file) => (
                   <div key={file.target ?? file.path} className="space-y-1">
@@ -223,6 +268,50 @@ export function ComponentInstall({
                   </div>
                 ))}
               </div>
+
+              {hasCss ? (
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-fd-foreground">
+                    {cssStep}. Add the styles to your global CSS
+                  </p>
+                  <p className="text-sm text-fd-muted-foreground">
+                    Paste these rules into the same stylesheet that imports
+                    Tailwind (e.g. <code>globals.css</code>).
+                  </p>
+                  <DynamicCodeBlock
+                    lang="css"
+                    code={cssText}
+                    codeblock={{ allowCopy: true, className: "my-0" }}
+                  />
+                </div>
+              ) : null}
+
+              {hasAssets ? (
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-fd-foreground">
+                    {assetsStep}. Download the mask assets
+                  </p>
+                  <p className="text-sm text-fd-muted-foreground">
+                    The component&apos;s CSS references these sprite-sheet
+                    images by an absolute path. Download them and save them to{" "}
+                    <code>{assetsTarget ?? "public/masks/"}</code> so the
+                    <code> url(…)</code> references resolve.
+                  </p>
+                  <ul className="space-y-1">
+                    {assets?.map((asset) => (
+                      <li key={asset.href}>
+                        <a
+                          className="font-mono text-sm text-fd-primary underline underline-offset-2"
+                          href={asset.href}
+                          download
+                        >
+                          {asset.label}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
 
               <p className="text-sm text-fd-muted-foreground">
                 Update the import paths to match your project, and make sure the

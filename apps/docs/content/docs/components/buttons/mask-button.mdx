@@ -33,7 +33,19 @@ value uses a different sprite for a distinct transition. Inspired by
 
 ## Installation
 
-<ComponentInstall componentName="MaskButton" />
+The hover transition is driven by three sprite-sheet mask images. The CLI copies
+the component and CSS, but the masks ship as static assets — download them into
+your app's `public/masks/` folder (the Manual tab links them directly).
+
+<ComponentInstall
+  componentName="MaskButton"
+  assetsTarget="public/masks/"
+  assets={[
+    { label: "mask-nature.png", href: "/masks/mask-nature.png" },
+    { label: "mask-urban.png", href: "/masks/mask-urban.png" },
+    { label: "mask-forest.png", href: "/masks/mask-forest.png" },
+  ]}
+/>
 
 ## Usage
 
