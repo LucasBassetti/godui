@@ -6,13 +6,15 @@ import { ElasticText } from "./elastic-text";
 describe("ElasticText", () => {
   it("renders the full text content across its segments", () => {
     const { container } = render(<ElasticText>Hello</ElasticText>);
-    const root = container.querySelector(".elastic-text");
+    const root = container.querySelector("[data-slot='elastic-text']");
     expect(root?.textContent).toBe("Hello");
   });
 
   it("splits the text into one segment per character", () => {
     const { container } = render(<ElasticText>abc</ElasticText>);
-    expect(container.querySelectorAll(".elastic-text-segment")).toHaveLength(3);
+    expect(container.querySelectorAll("[data-elastic-segment]")).toHaveLength(
+      3,
+    );
   });
 
   it("forwards the ref to the root span", () => {
@@ -29,8 +31,7 @@ describe("ElasticText", () => {
     const { container } = render(
       <ElasticText className="custom">Hi</ElasticText>,
     );
-    expect(container.querySelector(".elastic-text")).toHaveClass(
-      "elastic-text",
+    expect(container.querySelector("[data-slot='elastic-text']")).toHaveClass(
       "custom",
     );
   });
@@ -41,17 +42,19 @@ describe("ElasticText", () => {
         <span aria-hidden />
       </ElasticText>,
     );
-    const root = container.querySelector(".elastic-text");
+    const root = container.querySelector("[data-slot='elastic-text']");
     expect(root).not.toBeNull();
-    expect(container.querySelectorAll(".elastic-text-segment")).toHaveLength(0);
+    expect(container.querySelectorAll("[data-elastic-segment]")).toHaveLength(
+      0,
+    );
   });
 
   it("accepts hover mode and still renders the text", () => {
     const { container } = render(
       <ElasticText mode="hover">Hover me</ElasticText>,
     );
-    expect(container.querySelector(".elastic-text")?.textContent).toBe(
-      "Hover me",
-    );
+    expect(
+      container.querySelector("[data-slot='elastic-text']")?.textContent,
+    ).toBe("Hover me");
   });
 });

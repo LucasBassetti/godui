@@ -40,14 +40,14 @@ describe("MagicButton", () => {
     expect(button).not.toHaveAttribute("data-rainbow");
   });
 
-  it("maps size to the front size class", () => {
+  it("maps size to the front face", () => {
     const { container } = render(<MagicButton size="lg">A</MagicButton>);
-    expect(container.querySelector(".magic-button-front--lg")).not.toBeNull();
+    expect(container.querySelector("[data-size='lg']")).not.toBeNull();
   });
 
   it("merges a custom className", () => {
     render(<MagicButton className="custom">A</MagicButton>);
-    expect(screen.getByRole("button")).toHaveClass("magic-button", "custom");
+    expect(screen.getByRole("button")).toHaveClass("custom");
   });
 
   it("fires onClick", async () => {

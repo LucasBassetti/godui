@@ -7,11 +7,16 @@
   "files": [
     {
       "path": "packages/components/src/progress-fold-button/progress-fold-button.tsx",
-      "content": "\"use client\";\n\nimport * as React from \"react\";\n\nexport type ProgressFoldButtonVariant = \"primary\" | \"secondary\";\nexport type ProgressFoldButtonSize = \"sm\" | \"md\" | \"lg\";\nexport type ProgressFoldButtonStatus = \"idle\" | \"loading\";\n\nexport type ProgressFoldButtonProps =\n  React.ButtonHTMLAttributes<HTMLButtonElement> & {\n    variant?: ProgressFoldButtonVariant;\n    size?: ProgressFoldButtonSize;\n    /**\n     * Loading lifecycle. `loading` folds the front face open and runs the\n     * progress bar behind it. Fully controlled.\n     */\n    status?: ProgressFoldButtonStatus;\n    /**\n     * 0–100. With `status=\"loading\"` a value makes the bar determinate (fills\n     * to that percentage); omitting it makes the bar indeterminate (a segment\n     * sweeps across).\n     */\n    progress?: number;\n  };\n\nconst sizeClasses: Record<ProgressFoldButtonSize, string> = {\n  sm: \"progress-fold-button--sm\",\n  md: \"progress-fold-button--md\",\n  lg: \"progress-fold-button--lg\",\n};\n\nconst frontClasses: Record<ProgressFoldButtonVariant, string> = {\n  primary: \"bg-primary text-primary-foreground\",\n  secondary: \"bg-secondary text-secondary-foreground\",\n};\n\n// Fold side: a faint tint at rest (back), a stronger one while the progress\n// bar runs. Alpha utilities blend with the surrounding background so the\n// effect adapts to light and dark themes.\nconst backClasses: Record<ProgressFoldButtonVariant, string> = {\n  primary: \"bg-primary/15\",\n  secondary: \"bg-secondary-foreground/15\",\n};\n\nconst barClasses: Record<ProgressFoldButtonVariant, string> = {\n  primary: \"bg-primary/40\",\n  secondary: \"bg-secondary-foreground/35\",\n};\n\nconst clampPercent = (value: number) => Math.max(0, Math.min(100, value));\n\nconst ProgressFoldButton = React.forwardRef<\n  HTMLButtonElement,\n  ProgressFoldButtonProps\n>(\n  (\n    {\n      className,\n      style,\n      children,\n      variant = \"primary\",\n      size = \"md\",\n      status = \"idle\",\n      progress,\n      ...props\n    },\n    ref,\n  ) => {\n    const isLoading = status === \"loading\";\n    const isDeterminate = isLoading && progress != null;\n    const clamped = progress != null ? clampPercent(progress) : undefined;\n\n    // Snap the fill to 0 on entering loading, then arm the smooth transition a\n    // frame later so progress animates without the entry flashing from full.\n    const [armed, setArmed] = React.useState(false);\n    React.useEffect(() => {\n      if (!isLoading) {\n        setArmed(false);\n        return;\n      }\n      setArmed(false);\n      const id = requestAnimationFrame(() => setArmed(true));\n      return () => cancelAnimationFrame(id);\n    }, [isLoading]);\n\n    return (\n      <button\n        ref={ref}\n        type=\"button\"\n        data-variant={variant}\n        data-size={size}\n        data-status={isLoading ? \"loading\" : undefined}\n        data-determinate={isDeterminate ? \"true\" : undefined}\n        data-armed={armed ? \"true\" : undefined}\n        aria-busy={isLoading || undefined}\n        className={`progress-fold-button font-medium ${sizeClasses[size]} ${className ?? \"\"}`}\n        style={\n          clamped != null\n            ? ({\n                ...style,\n                \"--progress-fold-fill\": `${clamped}%`,\n              } as React.CSSProperties)\n            : style\n        }\n        {...props}\n      >\n        <span className=\"progress-fold-button-layers\" aria-hidden=\"true\">\n          <span\n            className={`progress-fold-button-back ${backClasses[variant]}`}\n          />\n          <span className={`progress-fold-button-bar ${barClasses[variant]}`} />\n        </span>\n        <span className={`progress-fold-button-front ${frontClasses[variant]}`}>\n          {children}\n        </span>\n        {isLoading ? (\n          <span\n            className=\"progress-fold-button-sr\"\n            role=\"progressbar\"\n            aria-valuemin={0}\n            aria-valuemax={100}\n            aria-valuenow={isDeterminate ? clamped : undefined}\n            aria-valuetext={isDeterminate ? `${clamped}%` : \"Loading\"}\n          />\n        ) : null}\n      </button>\n    );\n  },\n);\nProgressFoldButton.displayName = \"ProgressFoldButton\";\n\nexport { ProgressFoldButton };\n",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\n\nexport type ProgressFoldButtonVariant = \"primary\" | \"secondary\";\nexport type ProgressFoldButtonSize = \"sm\" | \"md\" | \"lg\";\nexport type ProgressFoldButtonStatus = \"idle\" | \"loading\";\n\nexport type ProgressFoldButtonProps =\n  React.ButtonHTMLAttributes<HTMLButtonElement> & {\n    variant?: ProgressFoldButtonVariant;\n    size?: ProgressFoldButtonSize;\n    /**\n     * Loading lifecycle. `loading` folds the front face open and runs the\n     * progress bar behind it. Fully controlled.\n     */\n    status?: ProgressFoldButtonStatus;\n    /**\n     * 0–100. With `status=\"loading\"` a value makes the bar determinate (fills\n     * to that percentage); omitting it makes the bar indeterminate (a segment\n     * sweeps across).\n     */\n    progress?: number;\n  };\n\n// `group` drives the fold + progress state from the button's data-* attributes.\nconst BUTTON_BASE =\n  \"group relative inline-flex cursor-pointer select-none whitespace-nowrap border-none p-0 bg-border font-medium [perspective:800px] [transform-style:preserve-3d] [-webkit-tap-highlight-color:transparent] focus-visible:[outline:2px_solid_var(--ring)] focus-visible:[outline-offset:4px] disabled:cursor-not-allowed disabled:opacity-50 disabled:pointer-events-none\";\n\nconst LAYERS_BASE = \"absolute inset-0 -z-[1] overflow-hidden\";\n\n// Folding front face — tilts back on hover / focus / while loading.\nconst FRONT_BASE =\n  \"relative grid w-full place-items-center rounded-[inherit] [transform:rotateX(0deg)] [transform-origin:top_center] [transition:transform_0.2s] group-hover:[transform:rotateX(35deg)] group-focus-visible:[transform:rotateX(35deg)] group-data-[status=loading]:[transform:rotateX(35deg)] motion-reduce:[transition:none]\";\n\n// Progress bar: determinate fills to --progress-fold-fill (transition armed a\n// frame after entering loading); indeterminate sweeps a fixed segment on a loop.\nconst BAR_BASE =\n  \"absolute top-0 left-0 h-full w-0 group-data-[determinate=true]:[width:var(--progress-fold-fill,0%)] group-[&[data-determinate=true][data-armed=true]]:[transition:width_0.25s_ease] group-[&[data-status=loading]:not([data-determinate=true])]:w-[40%] group-[&[data-status=loading]:not([data-determinate=true])]:animate-progress-fold-indeterminate motion-reduce:group-[&[data-determinate=true][data-armed=true]]:[transition:none] motion-reduce:group-[&[data-status=loading]:not([data-determinate=true])]:animate-none\";\n\n// Outer button + clip layer share the per-size radius (--button-radius-*).\nconst radiusClasses: Record<ProgressFoldButtonSize, string> = {\n  sm: \"rounded-[var(--button-radius-sm)]\",\n  md: \"rounded-[var(--button-radius-md)]\",\n  lg: \"rounded-[var(--button-radius-lg)]\",\n};\n\nconst frontSizeClasses: Record<ProgressFoldButtonSize, string> = {\n  sm: \"px-[var(--button-px-sm)] py-[var(--button-py-sm)] text-[length:var(--button-text-sm)] leading-[var(--button-leading-sm)]\",\n  md: \"px-[var(--button-px-md)] py-[var(--button-py-md)] text-[length:var(--button-text-md)] leading-[var(--button-leading-md)]\",\n  lg: \"px-[var(--button-px-lg)] py-[var(--button-py-lg)] text-[length:var(--button-text-lg)] leading-[var(--button-leading-lg)]\",\n};\n\nconst frontClasses: Record<ProgressFoldButtonVariant, string> = {\n  primary: \"bg-primary text-primary-foreground\",\n  secondary: \"bg-secondary text-secondary-foreground\",\n};\n\n// Fold side: a faint tint at rest (back), a stronger one while the progress\n// bar runs. Alpha utilities blend with the surrounding background so the\n// effect adapts to light and dark themes.\nconst backClasses: Record<ProgressFoldButtonVariant, string> = {\n  primary: \"bg-primary/15\",\n  secondary: \"bg-secondary-foreground/15\",\n};\n\nconst barClasses: Record<ProgressFoldButtonVariant, string> = {\n  primary: \"bg-primary/40\",\n  secondary: \"bg-secondary-foreground/35\",\n};\n\nconst clampPercent = (value: number) => Math.max(0, Math.min(100, value));\n\nconst ProgressFoldButton = React.forwardRef<\n  HTMLButtonElement,\n  ProgressFoldButtonProps\n>(\n  (\n    {\n      className,\n      style,\n      children,\n      variant = \"primary\",\n      size = \"md\",\n      status = \"idle\",\n      progress,\n      ...props\n    },\n    ref,\n  ) => {\n    const isLoading = status === \"loading\";\n    const isDeterminate = isLoading && progress != null;\n    const clamped = progress != null ? clampPercent(progress) : undefined;\n\n    // Snap the fill to 0 on entering loading, then arm the smooth transition a\n    // frame later so progress animates without the entry flashing from full.\n    const [armed, setArmed] = React.useState(false);\n    React.useEffect(() => {\n      if (!isLoading) {\n        setArmed(false);\n        return;\n      }\n      setArmed(false);\n      const id = requestAnimationFrame(() => setArmed(true));\n      return () => cancelAnimationFrame(id);\n    }, [isLoading]);\n\n    return (\n      <button\n        ref={ref}\n        type=\"button\"\n        data-variant={variant}\n        data-size={size}\n        data-status={isLoading ? \"loading\" : undefined}\n        data-determinate={isDeterminate ? \"true\" : undefined}\n        data-armed={armed ? \"true\" : undefined}\n        aria-busy={isLoading || undefined}\n        className={`${BUTTON_BASE} ${radiusClasses[size]} ${className ?? \"\"}`}\n        style={\n          clamped != null\n            ? ({\n                ...style,\n                \"--progress-fold-fill\": `${clamped}%`,\n              } as React.CSSProperties)\n            : style\n        }\n        {...props}\n      >\n        <span\n          className={`${LAYERS_BASE} ${radiusClasses[size]}`}\n          aria-hidden=\"true\"\n        >\n          <span className={`absolute inset-0 ${backClasses[variant]}`} />\n          <span className={`${BAR_BASE} ${barClasses[variant]}`} />\n        </span>\n        <span\n          data-slot=\"progress-fold-front\"\n          className={`${FRONT_BASE} ${frontSizeClasses[size]} ${frontClasses[variant]}`}\n        >\n          {children}\n        </span>\n        {isLoading ? (\n          <span\n            className=\"sr-only\"\n            role=\"progressbar\"\n            aria-valuemin={0}\n            aria-valuemax={100}\n            aria-valuenow={isDeterminate ? clamped : undefined}\n            aria-valuetext={isDeterminate ? `${clamped}%` : \"Loading\"}\n          />\n        ) : null}\n      </button>\n    );\n  },\n);\nProgressFoldButton.displayName = \"ProgressFoldButton\";\n\nexport { ProgressFoldButton };\n",
       "type": "registry:ui",
       "target": "components/godui/progress-fold-button.tsx"
     }
   ],
+  "cssVars": {
+    "theme": {
+      "animate-progress-fold-indeterminate": "progress-fold-indeterminate 1.2s ease-in-out infinite"
+    }
+  },
   "css": {
     "@keyframes progress-fold-indeterminate": {
       "0%": {
@@ -19,118 +24,6 @@
       },
       "100%": {
         "transform": "translateX(250%)"
-      }
-    },
-    "@layer components": {
-      ".progress-fold-button": {
-        "position": "relative",
-        "display": "inline-flex",
-        "padding": "0",
-        "border": "none",
-        "border-radius": "var(--radius-lg)",
-        "background": "var(--color-border)",
-        "cursor": "pointer",
-        "white-space": "nowrap",
-        "perspective": "800px",
-        "transform-style": "preserve-3d",
-        "user-select": "none",
-        "-webkit-tap-highlight-color": "transparent"
-      },
-      ".progress-fold-button:focus-visible": {
-        "outline": "2px solid var(--ring)",
-        "outline-offset": "4px"
-      },
-      ".progress-fold-button:disabled": {
-        "cursor": "not-allowed",
-        "opacity": "0.5",
-        "pointer-events": "none"
-      },
-      ".progress-fold-button-front": {
-        "position": "relative",
-        "display": "grid",
-        "place-items": "center",
-        "width": "100%",
-        "border-radius": "inherit",
-        "transform": "rotateX(0deg)",
-        "transform-origin": "top center",
-        "transition": "transform 0.2s"
-      },
-      ".progress-fold-button--sm, .progress-fold-button--sm .progress-fold-button-layers": {
-        "border-radius": "var(--button-radius-sm)"
-      },
-      ".progress-fold-button--sm .progress-fold-button-front": {
-        "padding": "var(--button-py-sm) var(--button-px-sm)",
-        "font-size": "var(--button-text-sm)",
-        "line-height": "var(--button-leading-sm)"
-      },
-      ".progress-fold-button--md, .progress-fold-button--md .progress-fold-button-layers": {
-        "border-radius": "var(--button-radius-md)"
-      },
-      ".progress-fold-button--md .progress-fold-button-front": {
-        "padding": "var(--button-py-md) var(--button-px-md)",
-        "font-size": "var(--button-text-md)",
-        "line-height": "var(--button-leading-md)"
-      },
-      ".progress-fold-button--lg, .progress-fold-button--lg .progress-fold-button-layers": {
-        "border-radius": "var(--button-radius-lg)"
-      },
-      ".progress-fold-button--lg .progress-fold-button-front": {
-        "padding": "var(--button-py-lg) var(--button-px-lg)",
-        "font-size": "var(--button-text-lg)",
-        "line-height": "var(--button-leading-lg)"
-      },
-      ".progress-fold-button:hover:not(:disabled) .progress-fold-button-front": {
-        "transform": "rotateX(35deg)"
-      },
-      ".progress-fold-button[data-status=\"loading\"] .progress-fold-button-front": {
-        "transform": "rotateX(35deg)"
-      },
-      ".progress-fold-button-layers": {
-        "position": "absolute",
-        "inset": "0",
-        "z-index": "-1",
-        "overflow": "hidden",
-        "border-radius": "var(--radius-lg)"
-      },
-      ".progress-fold-button-back": {
-        "position": "absolute",
-        "inset": "0"
-      },
-      ".progress-fold-button-bar": {
-        "position": "absolute",
-        "top": "0",
-        "left": "0",
-        "height": "100%",
-        "width": "0"
-      },
-      ".progress-fold-button[data-determinate=\"true\"] .progress-fold-button-bar": {
-        "width": "var(--progress-fold-fill, 0%)"
-      },
-      ".progress-fold-button[data-determinate=\"true\"][data-armed=\"true\"] .progress-fold-button-bar": {
-        "transition": "width 0.25s ease"
-      },
-      ".progress-fold-button[data-status=\"loading\"]:not([data-determinate=\"true\"]) .progress-fold-button-bar": {
-        "width": "40%",
-        "animation": "progress-fold-indeterminate 1.2s ease-in-out infinite"
-      },
-      ".progress-fold-button-sr": {
-        "position": "absolute",
-        "width": "1px",
-        "height": "1px",
-        "margin": "-1px",
-        "padding": "0",
-        "overflow": "hidden",
-        "clip": "rect(0, 0, 0, 0)",
-        "white-space": "nowrap",
-        "border": "0"
-      },
-      "@media (prefers-reduced-motion: reduce)": {
-        ".progress-fold-button-front, .progress-fold-button[data-determinate=\"true\"][data-armed=\"true\"] .progress-fold-button-bar": {
-          "transition": "none"
-        },
-        ".progress-fold-button[data-status=\"loading\"]:not([data-determinate=\"true\"]) .progress-fold-button-bar": {
-          "animation": "none"
-        }
       }
     }
   },

@@ -24,13 +24,23 @@ export type ShimmerButtonProps =
     background?: string;
   };
 
-// Padding and font-size come from the shared button size scale via
-// `.shimmer-button[data-size="…"]` rules in styles.css.
 const radiusBySize: Record<ShimmerButtonSize, string> = {
   sm: "var(--button-radius-sm)",
   md: "var(--button-radius-md)",
   lg: "var(--button-radius-lg)",
 };
+
+// Padding / font-size from the shared button size scale (--button-* tokens).
+const sizeClasses: Record<ShimmerButtonSize, string> = {
+  sm: "px-[var(--button-px-sm)] py-[var(--button-py-sm)] text-[length:var(--button-text-sm)] leading-[var(--button-leading-sm)]",
+  md: "px-[var(--button-px-md)] py-[var(--button-py-md)] text-[length:var(--button-text-md)] leading-[var(--button-leading-md)]",
+  lg: "px-[var(--button-px-lg)] py-[var(--button-py-lg)] text-[length:var(--button-text-lg)] leading-[var(--button-leading-lg)]",
+};
+
+// Decorative layers hide when shimmer is off or the button is disabled —
+// replaces the `.shimmer-button:not([data-shimmer]) .layer` descendant rules.
+const HIDDEN_WHEN_OFF =
+  "group-[&:not([data-shimmer=true])]:hidden group-disabled:hidden";
 
 const variantDefaults: Record<
   ShimmerButtonVariant,
@@ -158,7 +168,7 @@ const ShimmerButton = React.forwardRef<HTMLButtonElement, ShimmerButtonProps>(
         data-shimmer={shimmer ? "true" : undefined}
         data-pressed={pressed ? "true" : undefined}
         style={style}
-        className={`group shimmer-button relative z-0 flex cursor-pointer items-center justify-center overflow-hidden [border-radius:var(--radius)] border whitespace-nowrap [background:var(--bg)] transform-gpu transition-transform duration-300 ease-in-out active:translate-y-px data-[pressed=true]:translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${defaults.textClass} ${defaults.borderClass} ${className ?? ""}`}
+        className={`group relative z-0 flex cursor-pointer items-center justify-center overflow-hidden [border-radius:var(--radius)] border whitespace-nowrap [background:var(--bg)] transform-gpu transition-transform duration-300 ease-in-out active:translate-y-px data-[pressed=true]:translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${sizeClasses[size]} ${defaults.textClass} ${defaults.borderClass} ${className ?? ""}`}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         onKeyDown={handleKeyDown}
@@ -169,7 +179,7 @@ const ShimmerButton = React.forwardRef<HTMLButtonElement, ShimmerButtonProps>(
       >
         <div
           ref={sparkRef}
-          className="shimmer-button-spark absolute inset-0 -z-30 overflow-visible blur-[2px] [container-type:size]"
+          className={`absolute inset-0 -z-30 overflow-visible blur-[2px] group-data-[variant=primary]:blur-[1px] [container-type:size] ${HIDDEN_WHEN_OFF}`}
           aria-hidden="true"
         >
           <div className="animate-shimmer-slide absolute inset-0 aspect-square h-[100cqh] rounded-none [mask:none]">
@@ -179,10 +189,13 @@ const ShimmerButton = React.forwardRef<HTMLButtonElement, ShimmerButtonProps>(
 
         <span className="relative z-10">{children}</span>
 
-        <div className="shimmer-button-highlight" aria-hidden="true" />
+        <div
+          className={`pointer-events-none absolute inset-0 rounded-[inherit] [transition:box-shadow_300ms_ease-in-out] ${HIDDEN_WHEN_OFF}`}
+          aria-hidden="true"
+        />
 
         <div
-          className="shimmer-button-backdrop absolute -z-20 [inset:var(--cut)] [border-radius:var(--radius)] [background:var(--bg)]"
+          className={`absolute -z-20 [inset:var(--cut)] [border-radius:var(--radius)] [background:var(--bg)] ${HIDDEN_WHEN_OFF}`}
           aria-hidden="true"
         />
       </button>

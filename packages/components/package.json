@@ -11,7 +11,6 @@
     },
     "./styles.css": "./styles.css",
     "./fonts/vite.css": "./fonts/vite.css",
-    "./fonts/variable-text.css": "./fonts/variable-text.css",
     "./fonts/next": {
       "types": "./fonts/next.ts",
       "default": "./fonts/next.ts"
@@ -37,7 +36,6 @@
     "react": "^18 || ^19"
   },
   "dependencies": {
-    "@fontsource-variable/roboto-flex": "^5.2.8",
     "rough-notation": "^0.5.1"
   },
   "peerDependenciesMeta": {

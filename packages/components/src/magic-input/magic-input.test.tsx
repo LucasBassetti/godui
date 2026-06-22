@@ -24,15 +24,15 @@ describe("MagicInput", () => {
     const { container } = render(
       <MagicInput variant="secondary" depth="always" rainbow={false} />,
     );
-    const wrapper = container.querySelector(".magic-input");
+    const wrapper = container.querySelector("[data-slot='magic-input']");
     expect(wrapper).toHaveAttribute("data-variant", "secondary");
     expect(wrapper).toHaveAttribute("data-depth", "always");
     expect(wrapper).not.toHaveAttribute("data-rainbow");
   });
 
-  it("maps size to the front size class", () => {
+  it("maps size to the front face", () => {
     const { container } = render(<MagicInput size="sm" />);
-    expect(container.querySelector(".magic-input-front--sm")).not.toBeNull();
+    expect(container.querySelector("input[data-size='sm']")).not.toBeNull();
   });
 
   it("lets the user type", async () => {
@@ -44,10 +44,9 @@ describe("MagicInput", () => {
 
   it("shows a submit button when onSubmit is provided", () => {
     const { container } = render(<MagicInput onSubmit={vi.fn()} />);
-    expect(container.querySelector(".magic-input")).toHaveAttribute(
-      "data-submit",
-      "true",
-    );
+    expect(
+      container.querySelector("[data-slot='magic-input']"),
+    ).toHaveAttribute("data-submit", "true");
     expect(screen.getByRole("button", { name: "Submit" })).toBeInTheDocument();
   });
 

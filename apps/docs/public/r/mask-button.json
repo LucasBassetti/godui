@@ -7,11 +7,21 @@
   "files": [
     {
       "path": "packages/components/src/mask-button/mask-button.tsx",
-      "content": "\"use client\";\n\nimport * as React from \"react\";\n\nexport type MaskButtonMask = \"nature\" | \"urban\" | \"forest\";\nexport type MaskButtonVariant = \"primary\" | \"secondary\";\nexport type MaskButtonSize = \"sm\" | \"md\" | \"lg\";\n\nexport type MaskButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {\n  /** Sprite-sheet mask animated on hover to reveal the label */\n  mask?: MaskButtonMask;\n  /** Color of the masked face */\n  variant?: MaskButtonVariant;\n  size?: MaskButtonSize;\n};\n\nconst sizeClasses: Record<MaskButtonSize, string> = {\n  sm: \"mask-button--sm\",\n  md: \"mask-button--md\",\n  lg: \"mask-button--lg\",\n};\n\nconst MaskButton = React.forwardRef<HTMLButtonElement, MaskButtonProps>(\n  (\n    {\n      className,\n      children,\n      mask = \"nature\",\n      variant = \"primary\",\n      size = \"md\",\n      onKeyDown,\n      onKeyUp,\n      ...props\n    },\n    ref,\n  ) => {\n    const [pressed, setPressed] = React.useState(false);\n\n    const handleKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>) => {\n      if (event.key === \"Enter\" || event.key === \" \") {\n        setPressed(true);\n      }\n      onKeyDown?.(event);\n    };\n\n    const handleKeyUp = (event: React.KeyboardEvent<HTMLButtonElement>) => {\n      if (event.key === \"Enter\" || event.key === \" \") {\n        setPressed(false);\n      }\n      onKeyUp?.(event);\n    };\n\n    return (\n      <button\n        ref={ref}\n        type=\"button\"\n        data-mask={mask}\n        data-variant={variant}\n        data-size={size}\n        data-pressed={pressed ? \"true\" : undefined}\n        onKeyDown={handleKeyDown}\n        onKeyUp={handleKeyUp}\n        className={`mask-button font-medium ${sizeClasses[size]} ${className ?? \"\"}`}\n        {...props}\n      >\n        <span className=\"mask-button-label\">{children}</span>\n        <span className=\"mask-button-fill\" aria-hidden=\"true\">\n          {children}\n        </span>\n      </button>\n    );\n  },\n);\nMaskButton.displayName = \"MaskButton\";\n\nexport { MaskButton };\n",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\n\nexport type MaskButtonMask = \"nature\" | \"urban\" | \"forest\";\nexport type MaskButtonVariant = \"primary\" | \"secondary\";\nexport type MaskButtonSize = \"sm\" | \"md\" | \"lg\";\n\nexport type MaskButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {\n  /** Sprite-sheet mask animated on hover to reveal the label */\n  mask?: MaskButtonMask;\n  /** Color of the masked face */\n  variant?: MaskButtonVariant;\n  size?: MaskButtonSize;\n};\n\n// Resolve the sprite sheets through the bundler. `new URL(..., import.meta.url)`\n// returns a string URL in both Vite (Storybook) and Webpack/Turbopack (Next),\n// avoiding the StaticImageData object a bare `import` yields under Next.\nconst MASK_ASSETS: Record<MaskButtonMask, string> = {\n  nature: new URL(\"../assets/mask-nature.png\", import.meta.url).href,\n  urban: new URL(\"../assets/mask-urban.png\", import.meta.url).href,\n  forest: new URL(\"../assets/mask-forest.png\", import.meta.url).href,\n};\n\n// Per-mask sprite geometry + flipbook step counts (static so the scanner can\n// see the class names). `out` plays at rest, `in` on hover / focus-visible.\nconst maskConfig: Record<\n  MaskButtonMask,\n  { sizeClass: string; rest: string; hover: string }\n> = {\n  nature: {\n    sizeClass: \"[mask-size:2300%_100%] [-webkit-mask-size:2300%_100%]\",\n    rest: \"animate-mask-nature-out\",\n    hover:\n      \"group-hover:animate-mask-nature-in group-focus-visible:animate-mask-nature-in\",\n  },\n  urban: {\n    sizeClass: \"[mask-size:3000%_100%] [-webkit-mask-size:3000%_100%]\",\n    rest: \"animate-mask-urban-out\",\n    hover:\n      \"group-hover:animate-mask-urban-in group-focus-visible:animate-mask-urban-in\",\n  },\n  forest: {\n    sizeClass: \"[mask-size:7100%_100%] [-webkit-mask-size:7100%_100%]\",\n    rest: \"animate-mask-forest-out\",\n    hover:\n      \"group-hover:animate-mask-forest-in group-focus-visible:animate-mask-forest-in\",\n  },\n};\n\n// Reduced motion: drop the flipbook, keep a static rest→hover position swap.\nconst REDUCED_MOTION_FILL =\n  \"motion-reduce:animate-none motion-reduce:group-hover:animate-none motion-reduce:group-focus-visible:animate-none motion-reduce:[mask-position:0_0] motion-reduce:[-webkit-mask-position:0_0] motion-reduce:group-hover:[mask-position:100%_0] motion-reduce:group-hover:[-webkit-mask-position:100%_0] motion-reduce:group-focus-visible:[mask-position:100%_0] motion-reduce:group-focus-visible:[-webkit-mask-position:100%_0]\";\n\nconst fillVariant: Record<MaskButtonVariant, string> = {\n  primary: \"bg-primary text-primary-foreground\",\n  secondary: \"bg-secondary text-secondary-foreground\",\n};\n\nconst sizeClasses: Record<MaskButtonSize, string> = {\n  sm: \"px-[var(--button-px-sm)] py-[var(--button-py-sm)] text-[length:var(--button-text-sm)] leading-[var(--button-leading-sm)] rounded-[var(--button-radius-sm)]\",\n  md: \"px-[var(--button-px-md)] py-[var(--button-py-md)] text-[length:var(--button-text-md)] leading-[var(--button-leading-md)] rounded-[var(--button-radius-md)]\",\n  lg: \"px-[var(--button-px-lg)] py-[var(--button-py-lg)] text-[length:var(--button-text-lg)] leading-[var(--button-leading-lg)] rounded-[var(--button-radius-lg)]\",\n};\n\nconst BUTTON_CLASS =\n  \"group relative isolate inline-flex cursor-pointer items-center justify-center overflow-hidden border border-border bg-background font-medium text-foreground whitespace-nowrap select-none outline-none [-webkit-tap-highlight-color:transparent] [transition:transform_100ms_ease] focus-visible:[outline:2px_solid_var(--ring)] focus-visible:[outline-offset:4px] enabled:active:scale-[0.96] enabled:data-[pressed=true]:scale-[0.96] disabled:cursor-not-allowed disabled:opacity-50 disabled:pointer-events-none\";\n\nconst FILL_BASE =\n  \"absolute inset-0 z-[1] flex items-center justify-center [mask-repeat:no-repeat] [-webkit-mask-repeat:no-repeat] [mask-image:var(--mask-img)] [-webkit-mask-image:var(--mask-img)]\";\n\nconst MaskButton = React.forwardRef<HTMLButtonElement, MaskButtonProps>(\n  (\n    {\n      className,\n      children,\n      mask = \"nature\",\n      variant = \"primary\",\n      size = \"md\",\n      onKeyDown,\n      onKeyUp,\n      ...props\n    },\n    ref,\n  ) => {\n    const [pressed, setPressed] = React.useState(false);\n\n    const handleKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>) => {\n      if (event.key === \"Enter\" || event.key === \" \") {\n        setPressed(true);\n      }\n      onKeyDown?.(event);\n    };\n\n    const handleKeyUp = (event: React.KeyboardEvent<HTMLButtonElement>) => {\n      if (event.key === \"Enter\" || event.key === \" \") {\n        setPressed(false);\n      }\n      onKeyUp?.(event);\n    };\n\n    const cfg = maskConfig[mask];\n\n    return (\n      <button\n        ref={ref}\n        type=\"button\"\n        data-mask={mask}\n        data-variant={variant}\n        data-size={size}\n        data-pressed={pressed ? \"true\" : undefined}\n        onKeyDown={handleKeyDown}\n        onKeyUp={handleKeyUp}\n        className={`${BUTTON_CLASS} ${sizeClasses[size]} ${className ?? \"\"}`}\n        {...props}\n      >\n        <span className=\"relative z-0\">{children}</span>\n        <span\n          className={`${FILL_BASE} ${fillVariant[variant]} ${cfg.sizeClass} ${cfg.rest} ${cfg.hover} ${REDUCED_MOTION_FILL}`}\n          style={\n            {\n              \"--mask-img\": `url(\"${MASK_ASSETS[mask]}\")`,\n            } as React.CSSProperties\n          }\n          aria-hidden=\"true\"\n        >\n          {children}\n        </span>\n      </button>\n    );\n  },\n);\nMaskButton.displayName = \"MaskButton\";\n\nexport { MaskButton };\n",
       "type": "registry:ui",
       "target": "components/godui/mask-button.tsx"
     }
   ],
+  "cssVars": {
+    "theme": {
+      "animate-mask-nature-in": "mask-button-in 0.7s steps(22) forwards",
+      "animate-mask-nature-out": "mask-button-out 0.7s steps(22) forwards",
+      "animate-mask-urban-in": "mask-button-in 0.7s steps(29) forwards",
+      "animate-mask-urban-out": "mask-button-out 0.7s steps(29) forwards",
+      "animate-mask-forest-in": "mask-button-in 0.7s steps(70) forwards",
+      "animate-mask-forest-out": "mask-button-out 0.7s steps(70) forwards"
+    }
+  },
   "css": {
     "@keyframes mask-button-in": {
       "from": {
@@ -31,121 +41,6 @@
       "to": {
         "-webkit-mask-position": "0 0",
         "mask-position": "0 0"
-      }
-    },
-    "@layer components": {
-      ".mask-button": {
-        "position": "relative",
-        "display": "inline-flex",
-        "align-items": "center",
-        "justify-content": "center",
-        "isolation": "isolate",
-        "overflow": "hidden",
-        "border": "1px solid var(--border)",
-        "background": "var(--background)",
-        "color": "var(--foreground)",
-        "cursor": "pointer",
-        "white-space": "nowrap",
-        "user-select": "none",
-        "-webkit-tap-highlight-color": "transparent",
-        "transition": "transform 100ms ease"
-      },
-      ".mask-button:focus:not(:focus-visible)": {
-        "outline": "none"
-      },
-      ".mask-button:focus-visible": {
-        "outline": "2px solid var(--ring)",
-        "outline-offset": "4px"
-      },
-      ".mask-button:active:not(:disabled), .mask-button[data-pressed=\"true\"]:not(:disabled)": {
-        "transform": "scale(0.97)"
-      },
-      ".mask-button:disabled": {
-        "cursor": "not-allowed",
-        "opacity": "0.5",
-        "pointer-events": "none"
-      },
-      ".mask-button-label": {
-        "position": "relative",
-        "z-index": "0"
-      },
-      ".mask-button-fill": {
-        "position": "absolute",
-        "inset": "0",
-        "z-index": "1",
-        "display": "flex",
-        "align-items": "center",
-        "justify-content": "center",
-        "-webkit-mask-repeat": "no-repeat",
-        "mask-repeat": "no-repeat"
-      },
-      ".mask-button[data-variant=\"primary\"] .mask-button-fill": {
-        "background": "var(--primary)",
-        "color": "var(--primary-foreground)"
-      },
-      ".mask-button[data-variant=\"secondary\"] .mask-button-fill": {
-        "background": "var(--secondary)",
-        "color": "var(--secondary-foreground)"
-      },
-      ".mask-button[data-mask=\"nature\"] .mask-button-fill": {
-        "-webkit-mask-image": "url(\"/masks/mask-nature.png\")",
-        "mask-image": "url(\"/masks/mask-nature.png\")",
-        "-webkit-mask-size": "2300% 100%",
-        "mask-size": "2300% 100%",
-        "animation": "mask-button-out 0.7s steps(22) forwards"
-      },
-      ".mask-button[data-mask=\"nature\"]:hover:not(:disabled) .mask-button-fill, .mask-button[data-mask=\"nature\"]:focus-visible:not(:disabled) .mask-button-fill": {
-        "animation": "mask-button-in 0.7s steps(22) forwards"
-      },
-      ".mask-button[data-mask=\"urban\"] .mask-button-fill": {
-        "-webkit-mask-image": "url(\"/masks/mask-urban.png\")",
-        "mask-image": "url(\"/masks/mask-urban.png\")",
-        "-webkit-mask-size": "3000% 100%",
-        "mask-size": "3000% 100%",
-        "animation": "mask-button-out 0.7s steps(29) forwards"
-      },
-      ".mask-button[data-mask=\"urban\"]:hover:not(:disabled) .mask-button-fill, .mask-button[data-mask=\"urban\"]:focus-visible:not(:disabled) .mask-button-fill": {
-        "animation": "mask-button-in 0.7s steps(29) forwards"
-      },
-      ".mask-button[data-mask=\"forest\"] .mask-button-fill": {
-        "-webkit-mask-image": "url(\"/masks/mask-forest.png\")",
-        "mask-image": "url(\"/masks/mask-forest.png\")",
-        "-webkit-mask-size": "7100% 100%",
-        "mask-size": "7100% 100%",
-        "animation": "mask-button-out 0.7s steps(70) forwards"
-      },
-      ".mask-button[data-mask=\"forest\"]:hover:not(:disabled) .mask-button-fill, .mask-button[data-mask=\"forest\"]:focus-visible:not(:disabled) .mask-button-fill": {
-        "animation": "mask-button-in 0.7s steps(70) forwards"
-      },
-      ".mask-button--sm": {
-        "padding": "var(--button-py-sm) var(--button-px-sm)",
-        "font-size": "var(--button-text-sm)",
-        "line-height": "var(--button-leading-sm)",
-        "border-radius": "var(--button-radius-sm)"
-      },
-      ".mask-button--md": {
-        "padding": "var(--button-py-md) var(--button-px-md)",
-        "font-size": "var(--button-text-md)",
-        "line-height": "var(--button-leading-md)",
-        "border-radius": "var(--button-radius-md)"
-      },
-      ".mask-button--lg": {
-        "padding": "var(--button-py-lg) var(--button-px-lg)",
-        "font-size": "var(--button-text-lg)",
-        "line-height": "var(--button-leading-lg)",
-        "border-radius": "var(--button-radius-lg)"
-      },
-      "@media (prefers-reduced-motion: reduce)": {
-        ".mask-button-fill": {
-          "animation": "none",
-          "-webkit-mask-position": "0 0",
-          "mask-position": "0 0"
-        },
-        ".mask-button:hover:not(:disabled) .mask-button-fill, .mask-button:focus-visible:not(:disabled) .mask-button-fill": {
-          "animation": "none",
-          "-webkit-mask-position": "100% 0",
-          "mask-position": "100% 0"
-        }
       }
     }
   },

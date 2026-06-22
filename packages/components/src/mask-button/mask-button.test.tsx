@@ -40,12 +40,11 @@ describe("MaskButton", () => {
     expect(button).toHaveAttribute("data-mask", "forest");
     expect(button).toHaveAttribute("data-variant", "secondary");
     expect(button).toHaveAttribute("data-size", "lg");
-    expect(button).toHaveClass("mask-button--lg");
   });
 
   it("merges a custom className", () => {
     render(<MaskButton className="custom">A</MaskButton>);
-    expect(screen.getByRole("button")).toHaveClass("mask-button", "custom");
+    expect(screen.getByRole("button")).toHaveClass("custom");
   });
 
   it("fires onClick", async () => {
