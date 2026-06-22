@@ -1,4 +1,25 @@
 {
   "title": "GoDUI",
-  "pages": ["index", "installation", "components"]
+  "pages": [
+    "---Getting Started---",
+    "index",
+    "installation",
+    "---Buttons---",
+    "components/buttons/magic-button",
+    "components/buttons/shimmer-button",
+    "components/buttons/progress-fold-button",
+    "components/buttons/mask-button",
+    "---Navigation---",
+    "components/navigation/magic-tab",
+    "---Inputs---",
+    "components/inputs/magic-input",
+    "---Text---",
+    "components/text/elastic-text",
+    "components/text/text-animate",
+    "components/text/highlighter",
+    "---Layout---",
+    "components/layout/progressive-card-reveal",
+    "---Effects---",
+    "components/effects/border-beam"
+  ]
 }
