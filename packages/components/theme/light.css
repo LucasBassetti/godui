@@ -16,11 +16,11 @@
   --primary-foreground: oklch(1 0 0);
 
   /* Heavenly Gold */
-  --secondary: oklch(0.97 0.04 90);
+  --secondary: oklch(0.97 0.038 90);
   --secondary-foreground: oklch(0.42 0.09 80);
 
   /* Celestial Accent */
-  --accent: oklch(0.965 0.025 266);
+  --accent: oklch(0.965 0.016 266);
   --accent-foreground: oklch(0.46 0.155 266);
 
   /* Neutral */
@@ -49,7 +49,7 @@
   --sidebar-primary: oklch(0.55 0.19 266);
   --sidebar-primary-foreground: oklch(1 0 0);
 
-  --sidebar-accent: oklch(0.97 0.018 266);
+  --sidebar-accent: oklch(0.97 0.014 266);
   --sidebar-accent-foreground: oklch(0.46 0.155 266);
 
   --sidebar-border: oklch(0.925 0.01 266);
@@ -120,12 +120,12 @@
   --syntax-punctuation: oklch(0.54 0.022 266);
   --syntax-keyword: oklch(0.52 0.19 302);
   --syntax-property: oklch(0.56 0.11 90);
-  --syntax-string: oklch(0.52 0.13 168);
+  --syntax-string: oklch(0.52 0.106 168);
   --syntax-comment: oklch(0.63 0.016 266);
-  --syntax-number: oklch(0.54 0.13 235);
+  --syntax-number: oklch(0.54 0.115 235);
 
   /* Inline code */
-  --inline-code-bg: oklch(0.955 0.028 266);
+  --inline-code-bg: oklch(0.955 0.021 266);
   --inline-code-fg: oklch(0.46 0.165 266);
   --inline-code-border: oklch(0.82 0.07 266);
 
@@ -141,14 +141,14 @@
   --search-kbd-bg: oklch(0.965 0.006 266);
   --search-kbd-fg: oklch(0.2 0.036 266);
   --search-placeholder: oklch(0.54 0.022 266);
-  --search-highlight-bg: oklch(0.89 0.085 266);
+  --search-highlight-bg: oklch(0.89 0.053 266);
   --search-highlight-fg: oklch(0.34 0.13 266);
 
   /* Theme panel */
   --theme-panel-bg: oklch(1 0 0);
   --theme-panel-border: oklch(0.89 0.011 266);
   --theme-panel-fg: oklch(0.4 0.022 266);
-  --theme-panel-active-bg: oklch(0.955 0.028 266);
+  --theme-panel-active-bg: oklch(0.955 0.021 266);
   --theme-panel-active-fg: oklch(0.46 0.165 266);
 
   /* Z-index */
@@ -202,4 +202,20 @@
   --rainbow-5: oklch(0.8 0.13 90);
 
   --rainbow-speed: 2s;
+}
+
+/* Wide-gamut (P3) displays — restore the fuller chroma these tokens were
+   authored with; the sRGB-clamped values above remain the fallback. */
+@media (color-gamut: p3) {
+  :root,
+  .light {
+    --secondary: oklch(0.97 0.04 90);
+    --accent: oklch(0.965 0.018 266);
+    --sidebar-accent: oklch(0.97 0.016 266);
+    --inline-code-bg: oklch(0.955 0.023 266);
+    --theme-panel-active-bg: oklch(0.955 0.023 266);
+    --search-highlight-bg: oklch(0.89 0.058 266);
+    --syntax-string: oklch(0.52 0.13 168);
+    --syntax-number: oklch(0.54 0.13 235);
+  }
 }

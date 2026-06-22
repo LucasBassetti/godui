@@ -1257,7 +1257,7 @@
   /* Pointer press + keyboard activation (Enter/Space) share a press cue */
   .mask-button:active:not(:disabled),
   .mask-button[data-pressed="true"]:not(:disabled) {
-    transform: scale(0.97);
+    transform: scale(0.96);
   }
 
   .mask-button:disabled {
