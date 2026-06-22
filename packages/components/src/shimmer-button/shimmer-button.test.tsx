@@ -44,11 +44,7 @@ describe("ShimmerButton", () => {
   it("applies variant text class and custom className", () => {
     render(<ShimmerButton className="custom">A</ShimmerButton>);
     const button = screen.getByRole("button");
-    expect(button).toHaveClass(
-      "shimmer-button",
-      "text-primary-foreground",
-      "custom",
-    );
+    expect(button).toHaveClass("text-primary-foreground", "custom");
   });
 
   it("exposes shimmer CSS custom properties via style", () => {

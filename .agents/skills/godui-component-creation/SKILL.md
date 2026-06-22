@@ -14,7 +14,8 @@ Follow this workflow when adding a component to `@godui/components`.
 | Component | `packages/components/src/{name}.tsx` |
 | Export | `packages/components/src/index.ts` |
 | Tailwind scan | `packages/components/styles.css` → `@source "./src"` |
-| Complex CSS | `packages/components/styles.css` → `@layer components` |
+| Keyframes (dev) | `packages/components/styles.css` → `@keyframes` (+ `--animate-*` in `@theme`) |
+| Keyframes (dist) | the component's own `registry.json` entry → `cssVars.theme` (token) + `css` (`@keyframes`) — **not** the shared `godui-theme` |
 | Storybook | `apps/storybook/src/stories/{name}.stories.tsx` |
 | Docs | `apps/docs/content/docs/components/{category}/{name}.mdx` |
 | Nav | `apps/docs/content/docs/components/meta.json` |
@@ -80,19 +81,21 @@ Consuming apps also scan explicitly:
 
 If utilities like `bg-primary` render unstyled, verify `@source "./src"` exists and restart the dev server. Both apps already depend on `@godui/components` via `workspace:*` and it is in the docs `transpilePackages` — no `pnpm install` needed for a new component in the shared package.
 
-## 3. Choose a styling approach
+## 3. Styling approach — inline Tailwind only
 
-**Tailwind utilities** (Button, Typography): classes in `.tsx`, scanned via `@source "./src"`.
+**Author all component styles as inline Tailwind utilities in the `.tsx`.** Do **not** create CSS files or add `@layer components` blocks. `styles.css` is the Tailwind **entry only** (`@import`, `@theme`, `@custom-variant`, `@keyframes`).
 
-**CSS components layer** (MagicButton): static class names + rules in `styles.css`:
+Express CSS-heavy designs (3D buttons, sprite masks, gradients, state machines) with utilities + arbitrary values rather than a stylesheet:
 
-```css
-@layer components {
-  .three-d-button { /* layered 3D styles */ }
-}
-```
+- **`group` / `peer`** on the parent + `group-hover:` / `group-focus-visible:` / `group-active:` on children — replaces `.parent:hover .child` descendant selectors.
+- **`group-data-[variant=default]:` / `data-[status=loading]:`** — replaces `[data-variant="x"]` state selectors. Keep the `data-*` attributes on the element.
+- **`has-[…]:`, `placeholder:`, `motion-reduce:`, `focus-within:`** — replace `:has()`, `::placeholder`, `prefers-reduced-motion`, `:focus-within`.
+- **Arbitrary properties** `[background:linear-gradient(...)]`, `[mask-image:var(--mask)]`, `[perspective:800px]`, `[transform:rotateX(35deg)]` — for `color-mix` gradients, sprite masks, 3D. Asset URLs: `import` the asset and pass it through an inline `style={{ "--mask": \`url(\${asset})\` }}` CSS var.
+- **Size scales** stay token-driven: `px-[var(--button-px-md)] text-[length:var(--button-text-md)]` (the `--button-*` tokens live in `@theme`). Map size → static utility strings in a `Record`.
+- **Animations** use `animate-<name>` utilities backed by a `--animate-*` token (never a `${var}` nested in an arbitrary value — the scanner can't resolve it). A component's `@keyframes` + token live in **two** spots: `styles.css` (`@keyframes` + `@theme`, so Storybook/docs render) **and** the component's own `registry.json` entry (`cssVars.theme` token + `css` `@keyframes`). Keep them out of the shared `godui-theme` entry so installing one component pulls only its own animations; shared keyframes repeat per entry (the CLI dedupes on install).
+- **Never `transition: all`** — specify exact properties (`transition-transform`, `[transition:filter_600ms]`).
 
-Reference the class from the component with a static string: `className="three-d-button"`. Do not mix approaches unnecessarily. Use CSS layer only when utilities cannot express the design.
+Only `@keyframes` and the `@theme` token layer belong in CSS. Everything visual is a utility class on the element.
 
 ## 4. Storybook story
 
@@ -179,6 +182,7 @@ Add the slug to `apps/docs/content/docs/components/meta.json`. Slugs are `catego
 
 - **NEVER** construct Tailwind class names dynamically (`grid-cols-${n}`) — map to static strings; the scanner can't see interpolated classes.
 - **NEVER** skip `@source "./src"` in `styles.css`.
+- **NEVER** create a CSS file or add `@layer components` rules for a component — use inline Tailwind utilities (see §3). Only `@keyframes` + the `@theme` token layer live in `styles.css`.
 - **NEVER** skip `React.forwardRef` — components must forward refs for composition.
 - **NEVER** add `"use client"` unless hooks/client APIs are used.
 - **NEVER** use arbitrary z-index — use the scale: `z-base`, `z-raised`, `z-overlay`, `z-sticky`, `z-popover`, `z-modal`, `z-toast`.
@@ -198,7 +202,7 @@ Add the slug to `apps/docs/content/docs/components/meta.json`. Slugs are `catego
 - [ ] `packages/components/src/{name}.tsx` with `forwardRef`
 - [ ] Exported (component + prop/variant types) from `index.ts`
 - [ ] `@source "./src"` in `styles.css`
-- [ ] Complex CSS (if any) in `@layer components`
+- [ ] Styles authored as inline Tailwind utilities — no CSS file / no `@layer components` (only `@keyframes` + `@theme` may touch `styles.css`)
 - [ ] Storybook story with `tags: ["autodocs"]`
 - [ ] Docs MDX under `components/{category}/` with ComponentPreview + ComponentInstall
 - [ ] Added to `components/meta.json` as `category/name`

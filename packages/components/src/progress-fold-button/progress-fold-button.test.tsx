@@ -35,18 +35,15 @@ describe("ProgressFoldButton", () => {
     );
     const button = screen.getByRole("button");
     expect(button).toHaveAttribute("data-variant", "secondary");
-    expect(button).toHaveClass("progress-fold-button--lg");
-    expect(container.querySelector(".progress-fold-button-front")).toHaveClass(
-      "bg-secondary",
-    );
+    expect(button).toHaveAttribute("data-size", "lg");
+    expect(
+      container.querySelector("[data-slot='progress-fold-front']"),
+    ).toHaveClass("bg-secondary");
   });
 
   it("merges a custom className", () => {
     render(<ProgressFoldButton className="custom">A</ProgressFoldButton>);
-    expect(screen.getByRole("button")).toHaveClass(
-      "progress-fold-button",
-      "custom",
-    );
+    expect(screen.getByRole("button")).toHaveClass("custom");
   });
 
   it("is idle by default: no status / progressbar", () => {

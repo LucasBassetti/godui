@@ -148,13 +148,13 @@ describe("MagicTab", () => {
     );
   });
 
-  it("maps size to the front size class", () => {
+  it("maps size to the front face", () => {
     const { container } = render(<MagicTab items={items} size="lg" />);
-    expect(container.querySelector(".magic-tab-front--lg")).not.toBeNull();
+    expect(container.querySelector("[data-size='lg']")).not.toBeNull();
   });
 
   it("merges a custom className", () => {
     render(<MagicTab items={items} className="custom" />);
-    expect(screen.getByRole("tablist")).toHaveClass("magic-tab", "custom");
+    expect(screen.getByRole("tablist")).toHaveClass("custom");
   });
 });

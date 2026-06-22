@@ -39,10 +39,30 @@ export type MagicInputProps = Omit<
   progress?: number;
 };
 
-const sizeClasses: Record<MagicInputSize, string> = {
-  sm: "magic-input-front--sm",
-  md: "magic-input-front--md",
-  lg: "magic-input-front--lg",
+// Input size + padding. With a submit button the right padding grows to clear
+// it. Two static records (the scanner can't see interpolated class names).
+const frontSize: Record<MagicInputSize, string> = {
+  sm: "py-[var(--button-py-sm)] pl-[var(--button-px-sm)] pr-[var(--button-px-sm)] text-[length:var(--button-text-sm)] leading-[var(--button-leading-sm)]",
+  md: "py-[var(--button-py-md)] pl-[var(--button-px-md)] pr-[var(--button-px-md)] text-[length:var(--button-text-md)] leading-[var(--button-leading-md)]",
+  lg: "py-[var(--button-py-lg)] pl-[var(--button-px-lg)] pr-[var(--button-px-lg)] text-[length:var(--button-text-lg)] leading-[var(--button-leading-lg)]",
+};
+
+const frontSizeWithButton: Record<MagicInputSize, string> = {
+  sm: "py-[var(--button-py-sm)] pl-[var(--button-px-sm)] pr-[2.5rem] text-[length:var(--button-text-sm)] leading-[var(--button-leading-sm)]",
+  md: "py-[var(--button-py-md)] pl-[var(--button-px-md)] pr-[3rem] text-[length:var(--button-text-md)] leading-[var(--button-leading-md)]",
+  lg: "py-[var(--button-py-lg)] pl-[var(--button-px-lg)] pr-[3.75rem] text-[length:var(--button-text-lg)] leading-[var(--button-leading-lg)]",
+};
+
+// Full literal (no interpolation): Tailwind's scanner can't resolve a `${var}`
+// nested inside an arbitrary value, so the rainbow fill must be written out.
+const RAINBOW_FOCUS_FILL =
+  "group-focus-within:[background-image:linear-gradient(90deg,var(--rainbow-1),var(--rainbow-5),var(--rainbow-3),var(--rainbow-4),var(--rainbow-2))] group-focus-within:[background-size:200%_100%] group-focus-within:animate-magic-rainbow motion-reduce:group-focus-within:animate-none";
+
+const edgeVariant: Record<MagicInputVariant, string> = {
+  primary:
+    "[background:linear-gradient(to_left,color-mix(in_srgb,var(--primary)_50%,black)_0%,color-mix(in_srgb,var(--primary)_75%,black)_8%,color-mix(in_srgb,var(--primary)_75%,black)_92%,color-mix(in_srgb,var(--primary)_50%,black)_100%)]",
+  secondary:
+    "[background:linear-gradient(to_left,color-mix(in_srgb,var(--secondary)_50%,black)_0%,color-mix(in_srgb,var(--secondary)_75%,black)_8%,color-mix(in_srgb,var(--secondary)_75%,black)_92%,color-mix(in_srgb,var(--secondary)_50%,black)_100%)]",
 };
 
 const RING_R = 9;
@@ -129,7 +149,7 @@ const RingProgress = ({ value }: { value: number }) => (
 
 const Spinner = () => (
   <svg
-    className="magic-input-spinner"
+    className="animate-magic-input-spin [transform-origin:center] motion-reduce:animate-none"
     viewBox="0 0 24 24"
     width="1em"
     height="1em"
@@ -221,8 +241,97 @@ const MagicInput = React.forwardRef<HTMLInputElement, MagicInputProps>(
     // looking (3D + animation stay): readOnly instead of disabled.
     const lock = readOnly || isLoading || status === "success";
 
+    const hasStatus = !isIdle;
+    const isSuccess = status === "success";
+
+    // Edge + shadow double as the progress bar while a status is active. The
+    // fill colour (--magic-fill) and the position/size/animation depend on the
+    // sub-status; all of it is render-known, so it's resolved here.
+    const magicFill = isSuccess
+      ? "oklch(0.65 0.17 150)"
+      : status === "error"
+        ? "var(--destructive)"
+        : "var(--primary)";
+
+    const statusFill =
+      isLoading && isDeterminate
+        ? "[background-position:right_center] [background-size:var(--magic-progress,0%)_100%]"
+        : isLoading
+          ? "[background-image:linear-gradient(90deg,transparent,var(--magic-fill),transparent)] [background-position:right_center] [background-size:45%_100%] animate-magic-input-indeterminate"
+          : "[background-color:var(--primary)] [background-position:left_center] [background-size:100%_100%] animate-magic-input-sweep";
+
+    let shadowClass: string;
+    let edgeClass: string;
+    if (disabled) {
+      shadowClass = "hidden";
+      edgeClass = "hidden";
+    } else if (hasStatus) {
+      const fillTransition = armed
+        ? "[transition:background-size_250ms_ease]"
+        : "[transition:transform_600ms_cubic-bezier(0.3,0.7,0.4,1),opacity_250ms_ease]";
+      shadowClass = `absolute inset-0 rounded-xl translate-y-[6px] opacity-75 blur-[12px] [background-color:transparent] [background-image:linear-gradient(90deg,var(--magic-fill),var(--magic-fill))] bg-no-repeat will-change-transform motion-reduce:[transition:none] motion-reduce:animate-none ${fillTransition} ${statusFill}`;
+      const edgeTransition = armed
+        ? "[transition:background-size_250ms_ease]"
+        : "[transition:opacity_250ms_ease]";
+      edgeClass = `absolute inset-0 rounded-xl opacity-100 [background-color:color-mix(in_srgb,var(--foreground)_14%,transparent)] [background-image:linear-gradient(90deg,var(--magic-fill),var(--magic-fill))] bg-no-repeat motion-reduce:[transition:none] motion-reduce:animate-none ${edgeTransition} ${statusFill}`;
+    } else {
+      // Idle: depth controls the resting 3D; focus-within reveals/deepens it;
+      // rainbow swaps the edge + shadow fill while focused.
+      const shadowDepth =
+        depth === "always"
+          ? "opacity-100 translate-y-[4px] group-focus-within:translate-y-[6px]"
+          : "opacity-0 translate-y-0 group-focus-within:translate-y-[4px]";
+      const shadowFocusOpacity =
+        rainbow || depth === "always" ? "" : "group-focus-within:opacity-100";
+      const shadowRainbow = rainbow
+        ? `${RAINBOW_FOCUS_FILL} group-focus-within:blur-[12px] group-focus-within:opacity-70`
+        : "";
+      shadowClass = `absolute inset-0 rounded-xl bg-[hsl(0deg_0%_0%_/_0.25)] blur-[4px] will-change-transform [transition:transform_600ms_cubic-bezier(0.3,0.7,0.4,1),opacity_250ms_ease] motion-reduce:[transition:none] motion-reduce:[animation:none] ${shadowDepth} ${shadowFocusOpacity} ${shadowRainbow}`;
+
+      const edgeOpacity =
+        depth === "always"
+          ? "opacity-100"
+          : "opacity-0 group-focus-within:opacity-100";
+      const edgeRainbow = rainbow ? RAINBOW_FOCUS_FILL : "";
+      edgeClass = `absolute inset-0 rounded-xl [transition:opacity_250ms_ease] motion-reduce:[transition:none] motion-reduce:[animation:none] ${edgeOpacity} ${edgeVariant[variant]} ${edgeRainbow}`;
+    }
+
+    const frontTransform = disabled
+      ? "translate-y-0"
+      : hasStatus
+        ? "-translate-y-[4px]"
+        : depth === "always"
+          ? "-translate-y-[4px] group-focus-within:-translate-y-[6px] group-focus-within:[transition:transform_250ms_cubic-bezier(0.3,0.7,0.4,1.5)]"
+          : "translate-y-0 group-focus-within:-translate-y-[4px] group-focus-within:[transition:transform_250ms_cubic-bezier(0.3,0.7,0.4,1.5)]";
+    const frontText =
+      isLoading || isSuccess
+        ? "[color:color-mix(in_srgb,var(--foreground)_45%,transparent)] placeholder:[color:color-mix(in_srgb,var(--muted-foreground)_55%,transparent)]"
+        : "text-foreground placeholder:text-muted-foreground";
+    const frontClass = `relative block w-full box-border rounded-xl border border-border bg-background outline-none [font:inherit] will-change-transform [transition:transform_600ms_cubic-bezier(0.3,0.7,0.4,1)] motion-reduce:[transition:none] group-focus-within:border-transparent disabled:cursor-not-allowed disabled:opacity-50 ${frontText} ${frontTransform} ${(showButton ? frontSizeWithButton : frontSize)[size]}`;
+
+    const submitColor = isSuccess
+      ? "[background:oklch(0.65_0.17_150)] text-[oklch(1_0_0)]"
+      : status === "error"
+        ? "[background:var(--destructive)] text-[oklch(1_0_0)]"
+        : "bg-primary text-primary-foreground";
+    const submitTransform = hasStatus
+      ? "-translate-y-[4px]"
+      : depth === "always"
+        ? "-translate-y-[4px] group-focus-within:-translate-y-[6px] group-focus-within:[transition:transform_250ms_cubic-bezier(0.3,0.7,0.4,1.5)]"
+        : "translate-y-0 group-focus-within:-translate-y-[4px] group-focus-within:[transition:transform_250ms_cubic-bezier(0.3,0.7,0.4,1.5)]";
+    const submitClass = `absolute top-[6px] right-[6px] bottom-[6px] z-[1] inline-flex aspect-square cursor-pointer items-center justify-center rounded-[calc(var(--radius-xl)-6px)] border-none p-0 text-[1.125rem] leading-none [transition:transform_600ms_cubic-bezier(0.3,0.7,0.4,1),filter_200ms_ease] [-webkit-tap-highlight-color:transparent] hover:brightness-110 active:brightness-95 focus-visible:[outline:2px_solid_var(--ring)] focus-visible:[outline-offset:2px] disabled:cursor-not-allowed disabled:opacity-50 motion-reduce:[transition:none] ${submitColor} ${submitTransform}`;
+
+    // Morphing icons: all four stacked, the active one cross-fades + scales in.
+    const ICON_BASE =
+      "absolute inset-0 grid place-items-center [transition:opacity_220ms_ease,transform_220ms_cubic-bezier(0.3,0.7,0.4,1.4)] motion-reduce:[transition:none]";
+    const iconClass = (active: boolean) =>
+      active
+        ? `${ICON_BASE} opacity-100 [transform:scale(1)_rotate(0deg)]`
+        : `${ICON_BASE} opacity-0 [transform:scale(0.4)_rotate(-35deg)]`;
+
     return (
       <div
+        data-slot="magic-input"
         data-variant={variant}
         data-depth={depth}
         data-rainbow={rainbow ? "true" : undefined}
@@ -230,21 +339,21 @@ const MagicInput = React.forwardRef<HTMLInputElement, MagicInputProps>(
         data-status={isIdle ? undefined : status}
         data-determinate={isDeterminate ? "true" : undefined}
         data-armed={armed ? "true" : undefined}
-        className={`magic-input ${className ?? ""}`}
+        className={`group relative inline-block rounded-xl [-webkit-tap-highlight-color:transparent] ${disabled ? "cursor-not-allowed" : ""} ${className ?? ""}`}
         style={
-          clamped != null
-            ? ({
-                ...style,
-                "--magic-progress": `${clamped}%`,
-              } as React.CSSProperties)
-            : style
+          {
+            ...style,
+            ...(clamped != null ? { "--magic-progress": `${clamped}%` } : {}),
+            ...(hasStatus ? { "--magic-fill": magicFill } : {}),
+          } as React.CSSProperties
         }
       >
-        <span className="magic-input-shadow" aria-hidden="true" />
-        <span className="magic-input-edge" aria-hidden="true" />
+        <span className={shadowClass} aria-hidden="true" />
+        <span className={edgeClass} aria-hidden="true" />
         <input
           ref={innerRef}
-          className={`magic-input-front ${sizeClasses[size]}`}
+          data-size={size}
+          className={frontClass}
           disabled={disabled}
           readOnly={lock}
           aria-busy={isLoading || undefined}
@@ -253,7 +362,7 @@ const MagicInput = React.forwardRef<HTMLInputElement, MagicInputProps>(
         />
         {!isIdle ? (
           <span
-            className="magic-input-sr"
+            className="sr-only"
             role="progressbar"
             aria-valuemin={0}
             aria-valuemax={100}
@@ -272,23 +381,15 @@ const MagicInput = React.forwardRef<HTMLInputElement, MagicInputProps>(
         {showButton ? (
           <button
             type={onSubmit ? "button" : "submit"}
-            className="magic-input-submit"
+            className={submitClass}
             aria-label={submitLabel}
             disabled={disabled}
             onClick={onSubmit ? handleSubmitClick : undefined}
           >
-            <span
-              className="magic-input-icon"
-              data-icon="arrow"
-              aria-hidden="true"
-            >
+            <span className={iconClass(isIdle)} data-icon="arrow" aria-hidden>
               <ArrowIcon />
             </span>
-            <span
-              className="magic-input-icon"
-              data-icon="ring"
-              aria-hidden="true"
-            >
+            <span className={iconClass(isLoading)} data-icon="ring" aria-hidden>
               {isLoading && !isDeterminate ? (
                 <Spinner />
               ) : (
@@ -296,13 +397,17 @@ const MagicInput = React.forwardRef<HTMLInputElement, MagicInputProps>(
               )}
             </span>
             <span
-              className="magic-input-icon"
+              className={iconClass(isSuccess)}
               data-icon="check"
-              aria-hidden="true"
+              aria-hidden
             >
               <CheckIcon />
             </span>
-            <span className="magic-input-icon" data-icon="x" aria-hidden="true">
+            <span
+              className={iconClass(status === "error")}
+              data-icon="x"
+              aria-hidden
+            >
               <XIcon />
             </span>
           </button>

@@ -25,13 +25,10 @@ export function ElasticTextDemo() {
 
 <ComponentInstall componentName="ElasticText" />
 
-ElasticText renders with the [Roboto Flex](https://fonts.google.com/specimen/Roboto+Flex)
-variable font for a smooth weight axis. The CLI installs
-`@fontsource-variable/roboto-flex` for you — import it once in your app entry:
-
-```ts
-import "@fontsource-variable/roboto-flex/standard.css";
-```
+ElasticText animates the `wght` axis of your theme's sans font (`--font-sans`).
+With a variable font like [Geist](https://vercel.com/font) the weight sweeps
+smoothly; on a non-variable font it steps to the nearest available weight. No
+extra font dependency required.
 
 ## Usage
 

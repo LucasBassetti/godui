@@ -23,10 +23,32 @@ export type ProgressFoldButtonProps =
     progress?: number;
   };
 
-const sizeClasses: Record<ProgressFoldButtonSize, string> = {
-  sm: "progress-fold-button--sm",
-  md: "progress-fold-button--md",
-  lg: "progress-fold-button--lg",
+// `group` drives the fold + progress state from the button's data-* attributes.
+const BUTTON_BASE =
+  "group relative inline-flex cursor-pointer select-none whitespace-nowrap border-none p-0 bg-border font-medium [perspective:800px] [transform-style:preserve-3d] [-webkit-tap-highlight-color:transparent] focus-visible:[outline:2px_solid_var(--ring)] focus-visible:[outline-offset:4px] disabled:cursor-not-allowed disabled:opacity-50 disabled:pointer-events-none";
+
+const LAYERS_BASE = "absolute inset-0 -z-[1] overflow-hidden";
+
+// Folding front face — tilts back on hover / focus / while loading.
+const FRONT_BASE =
+  "relative grid w-full place-items-center rounded-[inherit] [transform:rotateX(0deg)] [transform-origin:top_center] [transition:transform_0.2s] group-hover:[transform:rotateX(35deg)] group-focus-visible:[transform:rotateX(35deg)] group-data-[status=loading]:[transform:rotateX(35deg)] motion-reduce:[transition:none]";
+
+// Progress bar: determinate fills to --progress-fold-fill (transition armed a
+// frame after entering loading); indeterminate sweeps a fixed segment on a loop.
+const BAR_BASE =
+  "absolute top-0 left-0 h-full w-0 group-data-[determinate=true]:[width:var(--progress-fold-fill,0%)] group-[&[data-determinate=true][data-armed=true]]:[transition:width_0.25s_ease] group-[&[data-status=loading]:not([data-determinate=true])]:w-[40%] group-[&[data-status=loading]:not([data-determinate=true])]:animate-progress-fold-indeterminate motion-reduce:group-[&[data-determinate=true][data-armed=true]]:[transition:none] motion-reduce:group-[&[data-status=loading]:not([data-determinate=true])]:animate-none";
+
+// Outer button + clip layer share the per-size radius (--button-radius-*).
+const radiusClasses: Record<ProgressFoldButtonSize, string> = {
+  sm: "rounded-[var(--button-radius-sm)]",
+  md: "rounded-[var(--button-radius-md)]",
+  lg: "rounded-[var(--button-radius-lg)]",
+};
+
+const frontSizeClasses: Record<ProgressFoldButtonSize, string> = {
+  sm: "px-[var(--button-px-sm)] py-[var(--button-py-sm)] text-[length:var(--button-text-sm)] leading-[var(--button-leading-sm)]",
+  md: "px-[var(--button-px-md)] py-[var(--button-py-md)] text-[length:var(--button-text-md)] leading-[var(--button-leading-md)]",
+  lg: "px-[var(--button-px-lg)] py-[var(--button-py-lg)] text-[length:var(--button-text-lg)] leading-[var(--button-leading-lg)]",
 };
 
 const frontClasses: Record<ProgressFoldButtonVariant, string> = {
@@ -93,7 +115,7 @@ const ProgressFoldButton = React.forwardRef<
         data-determinate={isDeterminate ? "true" : undefined}
         data-armed={armed ? "true" : undefined}
         aria-busy={isLoading || undefined}
-        className={`progress-fold-button font-medium ${sizeClasses[size]} ${className ?? ""}`}
+        className={`${BUTTON_BASE} ${radiusClasses[size]} ${className ?? ""}`}
         style={
           clamped != null
             ? ({
@@ -104,18 +126,22 @@ const ProgressFoldButton = React.forwardRef<
         }
         {...props}
       >
-        <span className="progress-fold-button-layers" aria-hidden="true">
-          <span
-            className={`progress-fold-button-back ${backClasses[variant]}`}
-          />
-          <span className={`progress-fold-button-bar ${barClasses[variant]}`} />
+        <span
+          className={`${LAYERS_BASE} ${radiusClasses[size]}`}
+          aria-hidden="true"
+        >
+          <span className={`absolute inset-0 ${backClasses[variant]}`} />
+          <span className={`${BAR_BASE} ${barClasses[variant]}`} />
         </span>
-        <span className={`progress-fold-button-front ${frontClasses[variant]}`}>
+        <span
+          data-slot="progress-fold-front"
+          className={`${FRONT_BASE} ${frontSizeClasses[size]} ${frontClasses[variant]}`}
+        >
           {children}
         </span>
         {isLoading ? (
           <span
-            className="progress-fold-button-sr"
+            className="sr-only"
             role="progressbar"
             aria-valuemin={0}
             aria-valuemax={100}

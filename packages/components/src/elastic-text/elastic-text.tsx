@@ -39,6 +39,13 @@ const SPRING = { stiffness: 150, damping: 18, mass: 1 } as const;
 const AUTO_SPREAD = 2.5;
 const VIEW_THRESHOLD = 0.3;
 
+// Uses the theme sans font (Geist is a variable font with a `wght` axis); on a
+// non-variable font the weight steps to the nearest available cut.
+const CONTAINER_CLASS =
+  "inline-block font-sans leading-[1.1] text-inherit [font-optical-sizing:auto] [font-variation-settings:'wght'_400]";
+const SEGMENT_CLASS =
+  "inline-block whitespace-pre [font-variation-settings:'wght'_var(--et-wght,400)] [will-change:font-variation-settings] motion-reduce:[will-change:auto]";
+
 type SegmentProps = {
   segment: string;
   index: number;
@@ -88,7 +95,8 @@ function Segment({
   if (reducedMotion) {
     return (
       <span
-        className="elastic-text-segment"
+        className={SEGMENT_CLASS}
+        data-elastic-segment=""
         style={{ "--et-wght": minWeight } as React.CSSProperties}
       >
         {segment}
@@ -98,7 +106,8 @@ function Segment({
 
   return (
     <motion.span
-      className="elastic-text-segment"
+      className={SEGMENT_CLASS}
+      data-elastic-segment=""
       style={{ "--et-wght": weight } as React.CSSProperties}
       aria-hidden={segment.trim() === "" ? true : undefined}
     >
@@ -218,7 +227,7 @@ const ElasticText = React.forwardRef<HTMLSpanElement, ElasticTextProps>(
       if (!container) {
         return;
       }
-      const spans = container.querySelectorAll(".elastic-text-segment");
+      const spans = container.querySelectorAll("[data-elastic-segment]");
       centersRef.current = Array.from(spans).map((span) => {
         const rect = span.getBoundingClientRect();
         return rect.left + rect.width / 2;
@@ -261,7 +270,8 @@ const ElasticText = React.forwardRef<HTMLSpanElement, ElasticTextProps>(
       return (
         <span
           ref={mergedRef}
-          className={`elastic-text ${className ?? ""}`}
+          data-slot="elastic-text"
+          className={`${CONTAINER_CLASS} ${className ?? ""}`}
           style={{ "--et-wght": minWeight } as React.CSSProperties}
           {...props}
         >
@@ -273,7 +283,8 @@ const ElasticText = React.forwardRef<HTMLSpanElement, ElasticTextProps>(
     return (
       <span
         ref={mergedRef}
-        className={`elastic-text ${className ?? ""}`}
+        data-slot="elastic-text"
+        className={`${CONTAINER_CLASS} ${className ?? ""}`}
         {...interactionProps}
         {...props}
       >

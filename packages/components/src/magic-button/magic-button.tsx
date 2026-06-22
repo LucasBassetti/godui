@@ -12,10 +12,42 @@ export type MagicButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   rainbow?: boolean;
 };
 
-const sizeClasses: Record<MagicButtonSize, string> = {
-  sm: "magic-button-front--sm",
-  md: "magic-button-front--md",
-  lg: "magic-button-front--lg",
+// 3D push button: a static shadow + edge sit behind a front face that lifts on
+// hover and dips on press. `group-*` variants drive the layered motion from the
+// button's interaction state; variant/rainbow colors are resolved per-render.
+const BUTTON_CLASS =
+  "group relative cursor-pointer select-none border-none bg-transparent p-0 font-medium [outline-offset:4px] [-webkit-tap-highlight-color:transparent] [transition:filter_600ms] hover:brightness-110 hover:[transition:filter_250ms] focus:outline-none focus-visible:brightness-110 focus-visible:[transition:filter_250ms] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 disabled:filter-none";
+
+const SHADOW_BASE =
+  "absolute inset-0 rounded-xl translate-y-[2px] will-change-transform [transition:transform_600ms_cubic-bezier(0.3,0.7,0.4,1)] group-hover:translate-y-[4px] group-hover:[transition:transform_250ms_cubic-bezier(0.3,0.7,0.4,1.5)] group-focus-visible:translate-y-[4px] group-focus-visible:[transition:transform_250ms_cubic-bezier(0.3,0.7,0.4,1.5)] group-active:translate-y-[1px] group-active:[transition:transform_34ms] group-data-[pressed=true]:translate-y-[1px] group-data-[pressed=true]:[transition:transform_34ms] group-disabled:hidden";
+
+const EDGE_BASE = "absolute inset-0 rounded-xl group-disabled:hidden";
+
+const FRONT_BASE =
+  "relative block rounded-xl will-change-transform -translate-y-[4px] [transition:transform_600ms_cubic-bezier(0.3,0.7,0.4,1)] group-hover:-translate-y-[6px] group-hover:[transition:transform_250ms_cubic-bezier(0.3,0.7,0.4,1.5)] group-focus-visible:-translate-y-[6px] group-focus-visible:[transition:transform_250ms_cubic-bezier(0.3,0.7,0.4,1.5)] group-active:-translate-y-[2px] group-active:[transition:transform_34ms] group-data-[pressed=true]:-translate-y-[2px] group-data-[pressed=true]:[transition:transform_34ms] group-disabled:translate-y-0 group-disabled:[transition:none]";
+
+const RAINBOW_FILL =
+  "[background-image:linear-gradient(90deg,var(--rainbow-1),var(--rainbow-5),var(--rainbow-3),var(--rainbow-4),var(--rainbow-2))] [background-size:200%_100%] animate-magic-rainbow";
+
+const SOLID_SHADOW = "bg-[hsl(0deg_0%_0%_/_0.25)] blur-[4px]";
+const RAINBOW_SHADOW = `${RAINBOW_FILL} blur-[12px] opacity-70`;
+
+const edgeBg: Record<MagicButtonVariant, string> = {
+  default:
+    "[background:linear-gradient(to_left,color-mix(in_srgb,var(--primary)_50%,black)_0%,color-mix(in_srgb,var(--primary)_75%,black)_8%,color-mix(in_srgb,var(--primary)_75%,black)_92%,color-mix(in_srgb,var(--primary)_50%,black)_100%)]",
+  secondary:
+    "[background:linear-gradient(to_left,color-mix(in_srgb,var(--secondary)_50%,black)_0%,color-mix(in_srgb,var(--secondary)_75%,black)_8%,color-mix(in_srgb,var(--secondary)_75%,black)_92%,color-mix(in_srgb,var(--secondary)_50%,black)_100%)]",
+};
+
+const frontVariant: Record<MagicButtonVariant, string> = {
+  default: "bg-primary text-primary-foreground",
+  secondary: "bg-secondary text-secondary-foreground",
+};
+
+const frontSize: Record<MagicButtonSize, string> = {
+  sm: "px-[var(--button-px-sm)] py-[var(--button-py-sm)] text-[length:var(--button-text-sm)] leading-[var(--button-leading-sm)]",
+  md: "px-[var(--button-px-md)] py-[var(--button-py-md)] text-[length:var(--button-text-md)] leading-[var(--button-leading-md)]",
+  lg: "px-[var(--button-px-lg)] py-[var(--button-py-lg)] text-[length:var(--button-text-lg)] leading-[var(--button-leading-lg)]",
 };
 
 const MagicButton = React.forwardRef<HTMLButtonElement, MagicButtonProps>(
@@ -56,12 +88,21 @@ const MagicButton = React.forwardRef<HTMLButtonElement, MagicButtonProps>(
         data-pressed={pressed ? "true" : undefined}
         onKeyDown={handleKeyDown}
         onKeyUp={handleKeyUp}
-        className={`magic-button font-medium ${className ?? ""}`}
+        className={`${BUTTON_CLASS} ${className ?? ""}`}
         {...props}
       >
-        <span className="magic-button-shadow" aria-hidden="true" />
-        <span className="magic-button-edge" aria-hidden="true" />
-        <span className={`magic-button-front ${sizeClasses[size]}`}>
+        <span
+          className={`${SHADOW_BASE} ${rainbow ? RAINBOW_SHADOW : SOLID_SHADOW}`}
+          aria-hidden="true"
+        />
+        <span
+          className={`${EDGE_BASE} ${rainbow ? RAINBOW_FILL : edgeBg[variant]}`}
+          aria-hidden="true"
+        />
+        <span
+          data-size={size}
+          className={`${FRONT_BASE} ${frontVariant[variant]} ${frontSize[size]}`}
+        >
           {children}
         </span>
       </button>
