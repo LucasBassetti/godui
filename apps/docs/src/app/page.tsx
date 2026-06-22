@@ -43,7 +43,7 @@ export default function Home() {
           WebkitMaskComposite: "source-in",
         }}
       />
-      <DocsHeader className="border-transparent" />
+      <DocsHeader className="border-transparent" showSidebarTrigger={false} />
       <section className="relative z-10 flex flex-1 flex-col items-center justify-center gap-8 px-4 text-center">
         <h1 className="max-w-3xl text-balance font-semibold text-4xl text-fd-foreground tracking-tight sm:text-5xl md:text-6xl">
           UI collection for Design Engineers

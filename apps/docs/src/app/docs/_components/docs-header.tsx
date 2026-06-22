@@ -15,7 +15,11 @@ import { ThemeToggle } from "./theme-toggle";
 const iconButton =
   "inline-flex size-9 items-center justify-center rounded-full text-fd-muted-foreground transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground";
 
-export function DocsHeader({ className, ...props }: ComponentProps<"header">) {
+export function DocsHeader({
+  className,
+  showSidebarTrigger = true,
+  ...props
+}: ComponentProps<"header"> & { showSidebarTrigger?: boolean }) {
   return (
     <header
       id="nd-nav"
@@ -52,13 +56,16 @@ export function DocsHeader({ className, ...props }: ComponentProps<"header">) {
           className={cn(iconButton, "md:hidden")}
         />
         <ThemeToggle />
-        {/* Mobile: open the sidenav drawer */}
-        <SidebarTrigger
-          aria-label="Open menu"
-          className={cn(iconButton, "md:hidden")}
-        >
-          <Menu className="size-5" />
-        </SidebarTrigger>
+        {/* Mobile: open the sidenav drawer (only when inside DocsLayout, which
+            provides SidebarContext — the home page has no sidebar) */}
+        {showSidebarTrigger ? (
+          <SidebarTrigger
+            aria-label="Open menu"
+            className={cn(iconButton, "md:hidden")}
+          >
+            <Menu className="size-5" />
+          </SidebarTrigger>
+        ) : null}
       </div>
     </header>
   );
