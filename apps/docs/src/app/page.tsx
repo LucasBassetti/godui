@@ -57,10 +57,7 @@ export default function Home() {
           . Beautiful motion, built for{" "}
           <span className="font-semibold text-fd-foreground">shadcn/ui</span>.
         </p>
-        <MagicButton
-          size="lg"
-          onClick={() => router.push("/docs/installation")}
-        >
+        <MagicButton size="lg" onClick={() => router.push("/docs/components")}>
           Browse Components
         </MagicButton>
       </section>
