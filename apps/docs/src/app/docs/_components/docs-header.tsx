@@ -9,6 +9,7 @@ import {
 import { Menu } from "lucide-react";
 import type { ComponentProps } from "react";
 import { cn } from "@/lib/cn";
+import { GitHubStars } from "./github-stars";
 import { GoduiLogo } from "./godui-logo";
 import { ThemeToggle } from "./theme-toggle";
 
@@ -52,6 +53,7 @@ export function DocsHeader({
         />
         {/* Mobile: search icon only */}
         <SearchTrigger hideIfDisabled className={cn(iconButton, "md:hidden")} />
+        <GitHubStars />
         <ThemeToggle />
         {/* Mobile: open the sidenav drawer (only when inside DocsLayout, which
             provides SidebarContext — the home page has no sidebar) */}
