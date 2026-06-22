@@ -39,7 +39,7 @@ const defaultContainerVariants: Variants = {
   },
 };
 
-const defaultItemVariants: Variants = {
+const _defaultItemVariants: Variants = {
   hidden: { opacity: 0 },
   show: { opacity: 1 },
   exit: { opacity: 0 },
@@ -267,7 +267,6 @@ export function splitTextAnimate(
     case "line":
       raw = normalized.split("\n");
       break;
-    case "text":
     default:
       raw = [normalized];
       break;

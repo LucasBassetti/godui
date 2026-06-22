@@ -1,7 +1,7 @@
 "use client";
 
-import { cn } from "@/lib/cn";
 import { useCallback, useState } from "react";
+import { cn } from "@/lib/cn";
 
 type CopyButtonProps = {
   value: string;
@@ -29,7 +29,7 @@ export function CopyButton({ value, className }: CopyButtonProps) {
     >
       {copied ? (
         <svg
-          aria-hidden
+          aria-hidden="true"
           viewBox="0 0 24 24"
           className="size-4"
           fill="none"
@@ -40,7 +40,7 @@ export function CopyButton({ value, className }: CopyButtonProps) {
         </svg>
       ) : (
         <svg
-          aria-hidden
+          aria-hidden="true"
           viewBox="0 0 24 24"
           className="size-4"
           fill="none"

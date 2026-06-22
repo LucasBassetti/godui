@@ -3,13 +3,8 @@
   "name": "highlighter",
   "title": "Highlighter",
   "description": "Hand-drawn rough-notation annotations (highlight, underline, box, circle) over text.",
-  "dependencies": [
-    "framer-motion",
-    "rough-notation"
-  ],
-  "registryDependencies": [
-    "@godui/godui-theme"
-  ],
+  "dependencies": ["framer-motion", "rough-notation"],
+  "registryDependencies": ["@godui/godui-theme"],
   "files": [
     {
       "path": "packages/components/src/highlighter/highlighter.tsx",

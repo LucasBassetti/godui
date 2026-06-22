@@ -8,7 +8,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getMDXComponents } from "@/components/mdx";
 import { source } from "@/lib/source";
-import { type Crumb, Breadcrumbs } from "../_components/breadcrumbs";
+import { Breadcrumbs, type Crumb } from "../_components/breadcrumbs";
 
 export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
   const params = await props.params;
@@ -18,7 +18,9 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
   const MDX = page.data.body;
 
   const slug = params.slug ?? [];
-  const crumbs: Crumb[] = [{ name: "Docs", url: slug.length ? "/docs" : undefined }];
+  const crumbs: Crumb[] = [
+    { name: "Docs", url: slug.length ? "/docs" : undefined },
+  ];
   if (slug[0] === "components") {
     const atComponentsRoot = slug.length === 1;
     crumbs.push({

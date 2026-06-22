@@ -1,9 +1,16 @@
 import type { Preview } from "@storybook/react";
+import {
+  GLOBALS_UPDATED,
+  UPDATE_GLOBALS,
+} from "storybook/internal/core-events";
 import { addons } from "storybook/preview-api";
-import { GLOBALS_UPDATED, UPDATE_GLOBALS } from "storybook/internal/core-events";
 import "../src/tailwind.css";
+import {
+  getThemeFromGlobals,
+  THEME_BACKGROUNDS,
+  type ThemeMode,
+} from "./theme";
 import { withThemeScope } from "./theme-decorator";
-import { getThemeFromGlobals, THEME_BACKGROUNDS, type ThemeMode } from "./theme";
 
 function syncThemeGlobals(globals: Record<string, unknown>) {
   const theme = getThemeFromGlobals(globals);

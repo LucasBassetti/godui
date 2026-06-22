@@ -91,7 +91,8 @@ export const Success: Story = {
   } satisfies MagicInputProps,
 };
 
-export const Error: Story = {
+export const ErrorState: Story = {
+  name: "Error",
   args: {
     placeholder: "Failed",
     onSubmit: () => {},

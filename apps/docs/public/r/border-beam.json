@@ -3,12 +3,8 @@
   "name": "border-beam",
   "title": "Border Beam",
   "description": "An animated beam of light that travels around the border of its container.",
-  "dependencies": [
-    "framer-motion"
-  ],
-  "registryDependencies": [
-    "@godui/godui-theme"
-  ],
+  "dependencies": ["framer-motion"],
+  "registryDependencies": ["@godui/godui-theme"],
   "files": [
     {
       "path": "packages/components/src/border-beam/border-beam.tsx",

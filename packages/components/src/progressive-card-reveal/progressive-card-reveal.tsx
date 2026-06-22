@@ -186,7 +186,10 @@ const Card = React.forwardRef<HTMLDivElement, ProgressiveCardRevealCardProps>(
 Card.displayName = "ProgressiveCardReveal.Card";
 
 const Root = React.forwardRef<HTMLDivElement, ProgressiveCardRevealProps>(
-  ({ activeIndex, onActiveChange, maxDepth, children, className, ...props }, ref) => {
+  (
+    { activeIndex, onActiveChange, maxDepth, children, className, ...props },
+    ref,
+  ) => {
     const contextValue = React.useMemo<RevealContextValue>(
       () => ({ activeIndex, onActiveChange, maxDepth }),
       [activeIndex, onActiveChange, maxDepth],

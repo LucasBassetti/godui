@@ -3,9 +3,7 @@
   "name": "progress-fold-button",
   "title": "Progress Fold Button",
   "description": "A button whose front face folds back to reveal a controlled progress bar while loading.",
-  "registryDependencies": [
-    "@godui/godui-theme"
-  ],
+  "registryDependencies": ["@godui/godui-theme"],
   "files": [
     {
       "path": "packages/components/src/progress-fold-button/progress-fold-button.tsx",

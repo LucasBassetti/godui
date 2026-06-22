@@ -3,9 +3,7 @@
   "name": "magic-button",
   "title": "Magic Button",
   "description": "A tactile 3D push button with an animated rainbow edge and shadow.",
-  "registryDependencies": [
-    "@godui/godui-theme"
-  ],
+  "registryDependencies": ["@godui/godui-theme"],
   "files": [
     {
       "path": "packages/components/src/magic-button/magic-button.tsx",

@@ -3,9 +3,7 @@
   "name": "shimmer-button",
   "title": "Shimmer Button",
   "description": "A button with an animated shimmering border light that speeds up on hover.",
-  "registryDependencies": [
-    "@godui/godui-theme"
-  ],
+  "registryDependencies": ["@godui/godui-theme"],
   "files": [
     {
       "path": "packages/components/src/shimmer-button/shimmer-button.tsx",

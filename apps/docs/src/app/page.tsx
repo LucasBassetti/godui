@@ -52,9 +52,9 @@ export default function Home() {
           Collection of open-source animated components built with{" "}
           <span className="font-semibold text-fd-foreground">React</span>,{" "}
           <span className="font-semibold text-fd-foreground">TypeScript</span>,{" "}
-          <span className="font-semibold text-fd-foreground">Tailwind CSS</span>,
-          and <span className="font-semibold text-fd-foreground">Motion</span>.
-          Beautiful motion, built for{" "}
+          <span className="font-semibold text-fd-foreground">Tailwind CSS</span>
+          , and <span className="font-semibold text-fd-foreground">Motion</span>
+          . Beautiful motion, built for{" "}
           <span className="font-semibold text-fd-foreground">shadcn/ui</span>.
         </p>
         <MagicButton

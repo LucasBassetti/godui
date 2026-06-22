@@ -62,7 +62,14 @@ export const WithoutShimmer: Story = {
 
 export const Variants: Story = {
   render: () => (
-    <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 16 }}>
+    <div
+      style={{
+        display: "flex",
+        flexWrap: "wrap",
+        alignItems: "center",
+        gap: 16,
+      }}
+    >
       <ShimmerButton variant="primary">Primary</ShimmerButton>
       <ShimmerButton variant="secondary">Secondary</ShimmerButton>
       <ShimmerButton variant="outline">Outline</ShimmerButton>

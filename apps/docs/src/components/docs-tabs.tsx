@@ -1,7 +1,7 @@
 "use client";
 
-import { cn } from "@/lib/cn";
 import type { ReactNode } from "react";
+import { cn } from "@/lib/cn";
 
 type DocsTabsProps = {
   tabs: Array<{ value: string; label: string }>;
@@ -10,12 +10,7 @@ type DocsTabsProps = {
   className?: string;
 };
 
-export function DocsTabs({
-  tabs,
-  value,
-  onChange,
-  className,
-}: DocsTabsProps) {
+export function DocsTabs({ tabs, value, onChange, className }: DocsTabsProps) {
   return (
     <div className={cn("flex gap-6 border-b border-fd-border", className)}>
       {tabs.map((tab) => (

@@ -90,7 +90,8 @@
   --z-index-modal: var(--z-modal);
   --z-index-toast: var(--z-toast);
 
-  --animate-shimmer-slide: shimmer-slide var(--speed) ease-in-out infinite alternate;
+  --animate-shimmer-slide: shimmer-slide var(--speed) ease-in-out infinite
+    alternate;
   --animate-spin-around: spin-around calc(var(--speed) * 2) infinite linear;
 }
 
@@ -439,8 +440,7 @@
   }
 
   /* rainbow — only on the selected tab's edge + shadow */
-  .magic-tab[data-rainbow="true"]
-    .magic-tab-item[data-selected="true"]
+  .magic-tab[data-rainbow="true"] .magic-tab-item[data-selected="true"]
     .magic-tab-edge {
     background: linear-gradient(
       90deg,
@@ -505,8 +505,9 @@
   }
 
   /* unselected hover — flat preview of the selected color, no 3D lift */
-  .magic-tab[data-variant="default"]
-    .magic-tab-item:not([data-selected="true"]):hover
+  .magic-tab[data-variant="default"] .magic-tab-item:not(
+      [data-selected="true"]
+    ):hover
     .magic-tab-front,
   .magic-tab[data-variant="default"]
     .magic-tab-item:not([data-selected="true"]):focus-visible
@@ -691,7 +692,7 @@
 
   /* rainbow — only while focused */
   .magic-input[data-rainbow="true"]:not([data-status]):focus-within
-    .magic-input-edge {
+  .magic-input-edge {
     background: linear-gradient(
       90deg,
       var(--rainbow-1),
@@ -892,7 +893,7 @@
 
   /* indeterminate — a single-color segment slides end to end */
   .magic-input[data-status="loading"]:not([data-determinate="true"])
-    .magic-input-edge,
+  .magic-input-edge,
   .magic-input[data-status="loading"]:not([data-determinate="true"])
     .magic-input-shadow {
     background-image: linear-gradient(
@@ -1028,7 +1029,6 @@
     transition: box-shadow 300ms ease-in-out;
   }
 
-
   .shimmer-button:not([data-shimmer="true"]) .shimmer-button-spark,
   .shimmer-button:not([data-shimmer="true"]) .shimmer-button-highlight,
   .shimmer-button:not([data-shimmer="true"]) .shimmer-button-backdrop,
@@ -1144,7 +1144,8 @@
   }
 
   .progress-fold-button:hover:not(:disabled) .progress-fold-button-front,
-  .progress-fold-button:focus-visible:not(:disabled) .progress-fold-button-front {
+  .progress-fold-button:focus-visible:not(:disabled)
+    .progress-fold-button-front {
     transform: rotateX(35deg);
   }
 
@@ -1195,7 +1196,7 @@
 
   /* Indeterminate: a fixed segment sweeps left→right on a loop. */
   .progress-fold-button[data-status="loading"]:not([data-determinate="true"])
-    .progress-fold-button-bar {
+  .progress-fold-button-bar {
     width: 40%;
     animation: progress-fold-indeterminate 1.2s ease-in-out infinite;
   }
@@ -1302,7 +1303,8 @@
     animation: mask-button-out 0.7s steps(22) forwards;
   }
   .mask-button[data-mask="nature"]:hover:not(:disabled) .mask-button-fill,
-  .mask-button[data-mask="nature"]:focus-visible:not(:disabled) .mask-button-fill {
+  .mask-button[data-mask="nature"]:focus-visible:not(:disabled)
+    .mask-button-fill {
     animation: mask-button-in 0.7s steps(22) forwards;
   }
 
@@ -1314,7 +1316,8 @@
     animation: mask-button-out 0.7s steps(29) forwards;
   }
   .mask-button[data-mask="urban"]:hover:not(:disabled) .mask-button-fill,
-  .mask-button[data-mask="urban"]:focus-visible:not(:disabled) .mask-button-fill {
+  .mask-button[data-mask="urban"]:focus-visible:not(:disabled)
+    .mask-button-fill {
     animation: mask-button-in 0.7s steps(29) forwards;
   }
 
@@ -1326,7 +1329,8 @@
     animation: mask-button-out 0.7s steps(70) forwards;
   }
   .mask-button[data-mask="forest"]:hover:not(:disabled) .mask-button-fill,
-  .mask-button[data-mask="forest"]:focus-visible:not(:disabled) .mask-button-fill {
+  .mask-button[data-mask="forest"]:focus-visible:not(:disabled)
+    .mask-button-fill {
     animation: mask-button-in 0.7s steps(70) forwards;
   }
 

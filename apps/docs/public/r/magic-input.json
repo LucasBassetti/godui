@@ -3,9 +3,7 @@
   "name": "magic-input",
   "title": "Magic Input",
   "description": "A 3D layered text input that lifts on focus with an optional rainbow edge animation.",
-  "registryDependencies": [
-    "@godui/godui-theme"
-  ],
+  "registryDependencies": ["@godui/godui-theme"],
   "files": [
     {
       "path": "packages/components/src/magic-input/magic-input.tsx",

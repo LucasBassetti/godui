@@ -18,7 +18,9 @@ export function Breadcrumbs({ crumbs }: { crumbs: Crumb[] }) {
 
         return (
           <Fragment key={crumb.name}>
-            {i > 0 && <ChevronRight className="size-3.5 shrink-0" aria-hidden />}
+            {i > 0 && (
+              <ChevronRight className="size-3.5 shrink-0" aria-hidden />
+            )}
             {crumb.url && !isLast ? (
               <Link
                 href={crumb.url}

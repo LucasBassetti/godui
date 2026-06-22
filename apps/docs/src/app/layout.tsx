@@ -1,5 +1,5 @@
-import { RootProvider } from "fumadocs-ui/provider/next";
 import { GeistMono, GeistSans } from "@godui/components/fonts/next";
+import { RootProvider } from "fumadocs-ui/provider/next";
 import type { Metadata } from "next";
 import "./globals.css";
 

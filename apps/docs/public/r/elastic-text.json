@@ -3,13 +3,8 @@
   "name": "elastic-text",
   "title": "Elastic Text",
   "description": "Variable-font text whose weight springs up under an automatic spotlight or the pointer.",
-  "dependencies": [
-    "framer-motion",
-    "@fontsource-variable/roboto-flex"
-  ],
-  "registryDependencies": [
-    "@godui/godui-theme"
-  ],
+  "dependencies": ["framer-motion", "@fontsource-variable/roboto-flex"],
+  "registryDependencies": ["@godui/godui-theme"],
   "files": [
     {
       "path": "packages/components/src/elastic-text/elastic-text.tsx",

@@ -1,11 +1,11 @@
 "use client";
 
+import Link from "fumadocs-core/link";
 import { SidebarTrigger } from "fumadocs-ui/components/sidebar/base";
 import {
   FullSearchTrigger,
   SearchTrigger,
 } from "fumadocs-ui/layouts/shared/slots/search-trigger";
-import Link from "fumadocs-core/link";
 import { Menu } from "lucide-react";
 import type { ComponentProps } from "react";
 import { cn } from "@/lib/cn";
@@ -51,10 +51,7 @@ export function DocsHeader({
           className="ps-2.5 w-[220px] max-md:hidden rounded-full"
         />
         {/* Mobile: search icon only */}
-        <SearchTrigger
-          hideIfDisabled
-          className={cn(iconButton, "md:hidden")}
-        />
+        <SearchTrigger hideIfDisabled className={cn(iconButton, "md:hidden")} />
         <ThemeToggle />
         {/* Mobile: open the sidenav drawer (only when inside DocsLayout, which
             provides SidebarContext — the home page has no sidebar) */}

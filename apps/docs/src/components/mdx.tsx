@@ -1,8 +1,8 @@
-import { ComponentInstall } from "@/components/component-install";
-import { ComponentPreview } from "@/components/component-preview";
 import defaultMdxComponents from "fumadocs-ui/mdx";
 import type { MDXComponents } from "mdx/types";
 import type { ComponentProps } from "react";
+import { ComponentInstall } from "@/components/component-install";
+import { ComponentPreview } from "@/components/component-preview";
 
 function Table(props: ComponentProps<"table">) {
   return (

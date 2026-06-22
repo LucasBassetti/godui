@@ -1,15 +1,10 @@
-import * as prettier from "prettier/standalone";
 import * as parserBabel from "prettier/plugins/babel";
 import * as parserEstree from "prettier/plugins/estree";
 import * as parserPostcss from "prettier/plugins/postcss";
 import * as parserTypeScript from "prettier/plugins/typescript";
+import * as prettier from "prettier/standalone";
 
-const plugins = [
-  parserEstree,
-  parserBabel,
-  parserTypeScript,
-  parserPostcss,
-];
+const plugins = [parserEstree, parserBabel, parserTypeScript, parserPostcss];
 
 const parserByLang: Record<string, string> = {
   tsx: "typescript",

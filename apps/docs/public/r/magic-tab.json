@@ -3,9 +3,7 @@
   "name": "magic-tab",
   "title": "Magic Tab",
   "description": "A segmented tab bar where the selected option lifts into a 3D button with an optional rainbow edge.",
-  "registryDependencies": [
-    "@godui/godui-theme"
-  ],
+  "registryDependencies": ["@godui/godui-theme"],
   "files": [
     {
       "path": "packages/components/src/magic-tab/magic-tab.tsx",

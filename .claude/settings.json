@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "statusMessage": "registry.json changed — rebuilding registry",
+            "timeout": 180,
+            "command": "f=$(jq -r '.tool_input.file_path // empty'); echo \"$f\" | grep -q 'registry\\.json' && (cd \"$CLAUDE_PROJECT_DIR\" && pnpm -s build:registry) 2>/dev/null || true"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "Bash(git commit*)",
+            "statusMessage": "Running Biome + Vitest before commit",
+            "timeout": 600,
+            "command": "cmd=$(jq -r '.tool_input.command // \"\"'); echo \"$cmd\" | grep -qE '(^|[;&|]) *git +commit' || exit 0; cd \"$CLAUDE_PROJECT_DIR\" || exit 0; if pnpm -s check && pnpm -s test; then exit 0; else echo 'Commit blocked: pnpm check or test failed. Fix, then retry the commit.' >&2; exit 2; fi"
+          }
+        ]
+      }
+    ]
+  }
+}

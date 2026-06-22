@@ -3,9 +3,7 @@
   "name": "mask-button",
   "title": "Mask Button",
   "description": "A button whose face wipes away on hover via an animated CSS sprite-sheet mask, revealing the label behind it.",
-  "registryDependencies": [
-    "@godui/godui-theme"
-  ],
+  "registryDependencies": ["@godui/godui-theme"],
   "files": [
     {
       "path": "packages/components/src/mask-button/mask-button.tsx",
