@@ -268,8 +268,8 @@ const MagicInput = React.forwardRef<HTMLInputElement, MagicInputProps>(
     } else if (hasStatus) {
       const fillTransition = armed
         ? "[transition:background-size_250ms_ease]"
-        : "[transition:transform_600ms_cubic-bezier(0.3,0.7,0.4,1),opacity_250ms_ease]";
-      shadowClass = `absolute inset-0 rounded-xl translate-y-[6px] opacity-75 blur-[12px] [background-color:transparent] [background-image:linear-gradient(90deg,var(--magic-fill),var(--magic-fill))] bg-no-repeat will-change-transform motion-reduce:[transition:none] motion-reduce:animate-none ${fillTransition} ${statusFill}`;
+        : "[transition:translate_600ms_cubic-bezier(0.3,0.7,0.4,1),opacity_250ms_ease]";
+      shadowClass = `absolute inset-0 rounded-xl translate-y-[6px] opacity-75 blur-[12px] [background-color:transparent] [background-image:linear-gradient(90deg,var(--magic-fill),var(--magic-fill))] bg-no-repeat [will-change:translate] motion-reduce:[transition:none] motion-reduce:animate-none ${fillTransition} ${statusFill}`;
       const edgeTransition = armed
         ? "[transition:background-size_250ms_ease]"
         : "[transition:opacity_250ms_ease]";
@@ -286,7 +286,7 @@ const MagicInput = React.forwardRef<HTMLInputElement, MagicInputProps>(
       const shadowRainbow = rainbow
         ? `${RAINBOW_FOCUS_FILL} group-focus-within:blur-[12px] group-focus-within:opacity-70`
         : "";
-      shadowClass = `absolute inset-0 rounded-xl bg-[hsl(0deg_0%_0%_/_0.25)] blur-[4px] will-change-transform [transition:transform_600ms_cubic-bezier(0.3,0.7,0.4,1),opacity_250ms_ease] motion-reduce:[transition:none] motion-reduce:[animation:none] ${shadowDepth} ${shadowFocusOpacity} ${shadowRainbow}`;
+      shadowClass = `absolute inset-0 rounded-xl bg-[hsl(0deg_0%_0%_/_0.25)] blur-[4px] [will-change:translate] [transition:translate_600ms_cubic-bezier(0.3,0.7,0.4,1),opacity_250ms_ease] motion-reduce:[transition:none] motion-reduce:[animation:none] ${shadowDepth} ${shadowFocusOpacity} ${shadowRainbow}`;
 
       const edgeOpacity =
         depth === "always"
@@ -301,13 +301,13 @@ const MagicInput = React.forwardRef<HTMLInputElement, MagicInputProps>(
       : hasStatus
         ? "-translate-y-[4px]"
         : depth === "always"
-          ? "-translate-y-[4px] group-focus-within:-translate-y-[6px] group-focus-within:[transition:transform_250ms_cubic-bezier(0.3,0.7,0.4,1.5)]"
-          : "translate-y-0 group-focus-within:-translate-y-[4px] group-focus-within:[transition:transform_250ms_cubic-bezier(0.3,0.7,0.4,1.5)]";
+          ? "-translate-y-[4px] group-focus-within:-translate-y-[6px] group-focus-within:[transition:translate_250ms_cubic-bezier(0.3,0.7,0.4,1.5)]"
+          : "translate-y-0 group-focus-within:-translate-y-[4px] group-focus-within:[transition:translate_250ms_cubic-bezier(0.3,0.7,0.4,1.5)]";
     const frontText =
       isLoading || isSuccess
         ? "[color:color-mix(in_srgb,var(--foreground)_45%,transparent)] placeholder:[color:color-mix(in_srgb,var(--muted-foreground)_55%,transparent)]"
         : "text-foreground placeholder:text-muted-foreground";
-    const frontClass = `relative block w-full box-border rounded-xl border border-border bg-background outline-none [font:inherit] will-change-transform [transition:transform_600ms_cubic-bezier(0.3,0.7,0.4,1)] motion-reduce:[transition:none] group-focus-within:border-transparent disabled:cursor-not-allowed disabled:opacity-50 ${frontText} ${frontTransform} ${(showButton ? frontSizeWithButton : frontSize)[size]}`;
+    const frontClass = `relative block w-full box-border rounded-xl border border-border bg-background outline-none [font:inherit] [will-change:translate] [transition:translate_600ms_cubic-bezier(0.3,0.7,0.4,1)] motion-reduce:[transition:none] group-focus-within:border-transparent disabled:cursor-not-allowed disabled:opacity-50 ${frontText} ${frontTransform} ${(showButton ? frontSizeWithButton : frontSize)[size]}`;
 
     const submitColor = isSuccess
       ? "[background:oklch(0.65_0.17_150)] text-[oklch(1_0_0)]"
@@ -317,9 +317,9 @@ const MagicInput = React.forwardRef<HTMLInputElement, MagicInputProps>(
     const submitTransform = hasStatus
       ? "-translate-y-[4px]"
       : depth === "always"
-        ? "-translate-y-[4px] group-focus-within:-translate-y-[6px] group-focus-within:[transition:transform_250ms_cubic-bezier(0.3,0.7,0.4,1.5)]"
-        : "translate-y-0 group-focus-within:-translate-y-[4px] group-focus-within:[transition:transform_250ms_cubic-bezier(0.3,0.7,0.4,1.5)]";
-    const submitClass = `absolute top-[6px] right-[6px] bottom-[6px] z-[1] inline-flex aspect-square cursor-pointer items-center justify-center rounded-[calc(var(--radius-xl)-6px)] border-none p-0 text-[1.125rem] leading-none [transition:transform_600ms_cubic-bezier(0.3,0.7,0.4,1),filter_200ms_ease] [-webkit-tap-highlight-color:transparent] hover:brightness-110 active:brightness-95 focus-visible:[outline:2px_solid_var(--ring)] focus-visible:[outline-offset:2px] disabled:cursor-not-allowed disabled:opacity-50 motion-reduce:[transition:none] ${submitColor} ${submitTransform}`;
+        ? "-translate-y-[4px] group-focus-within:-translate-y-[6px] group-focus-within:[transition:translate_250ms_cubic-bezier(0.3,0.7,0.4,1.5)]"
+        : "translate-y-0 group-focus-within:-translate-y-[4px] group-focus-within:[transition:translate_250ms_cubic-bezier(0.3,0.7,0.4,1.5)]";
+    const submitClass = `absolute top-[6px] right-[6px] bottom-[6px] z-[1] inline-flex aspect-square cursor-pointer items-center justify-center rounded-[calc(var(--radius-xl)-6px)] border-none p-0 text-[1.125rem] leading-none [transition:translate_600ms_cubic-bezier(0.3,0.7,0.4,1),filter_200ms_ease] [-webkit-tap-highlight-color:transparent] hover:brightness-110 active:brightness-95 focus-visible:[outline:2px_solid_var(--ring)] focus-visible:[outline-offset:2px] disabled:cursor-not-allowed disabled:opacity-50 motion-reduce:[transition:none] ${submitColor} ${submitTransform}`;
 
     // Morphing icons: all four stacked, the active one cross-fades + scales in.
     const ICON_BASE =

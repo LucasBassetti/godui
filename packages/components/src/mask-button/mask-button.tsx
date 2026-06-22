@@ -65,7 +65,7 @@ const sizeClasses: Record<MaskButtonSize, string> = {
 };
 
 const BUTTON_CLASS =
-  "group relative isolate inline-flex cursor-pointer items-center justify-center overflow-hidden border border-border bg-background font-medium text-foreground whitespace-nowrap select-none outline-none [-webkit-tap-highlight-color:transparent] [transition:transform_100ms_ease] focus-visible:[outline:2px_solid_var(--ring)] focus-visible:[outline-offset:4px] enabled:active:scale-[0.96] enabled:data-[pressed=true]:scale-[0.96] disabled:cursor-not-allowed disabled:opacity-50 disabled:pointer-events-none";
+  "group relative isolate inline-flex cursor-pointer items-center justify-center overflow-hidden border border-border bg-background font-medium text-foreground whitespace-nowrap select-none outline-none [-webkit-tap-highlight-color:transparent] [transition:scale_100ms_ease] focus-visible:[outline:2px_solid_var(--ring)] focus-visible:[outline-offset:4px] enabled:active:scale-[0.96] enabled:data-[pressed=true]:scale-[0.96] disabled:cursor-not-allowed disabled:opacity-50 disabled:pointer-events-none";
 
 const FILL_BASE =
   "absolute inset-0 z-[1] flex items-center justify-center [mask-repeat:no-repeat] [-webkit-mask-repeat:no-repeat] [mask-image:var(--mask-img)] [-webkit-mask-image:var(--mask-img)]";
