@@ -91,6 +91,24 @@ body {
   padding: 0.5rem 0.875rem 0.25rem;
 }
 
+/* Denser nav — flat sections, more items visible without scrolling.
+   Tighten per-item padding (fumadocs ships p-2) and the gap above each
+   section title (fumadocs ships mt-6 on separators). */
+#nd-sidebar a.p-2 {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+
+#nd-sidebar p.mt-6 {
+  margin-top: 1rem;
+  margin-bottom: 0.25rem;
+}
+
+/* First section title sits flush with the top of the nav. */
+#nd-sidebar p.mt-6:first-child {
+  margin-top: 0;
+}
+
 /* Component preview canvas */
 .component-preview-frame {
   box-shadow: none;
