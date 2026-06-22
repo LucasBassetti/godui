@@ -45,14 +45,14 @@ const EDGE_BASE =
   "absolute inset-0 rounded-xl [transition:opacity_250ms_ease] motion-reduce:[transition:none]";
 
 const SHADOW_BASE =
-  "absolute inset-0 rounded-xl translate-y-[2px] will-change-transform [transition:transform_600ms_cubic-bezier(0.3,0.7,0.4,1),opacity_250ms_ease] motion-reduce:[transition:none]";
+  "absolute inset-0 rounded-xl translate-y-[2px] [will-change:translate] [transition:translate_600ms_cubic-bezier(0.3,0.7,0.4,1),opacity_250ms_ease] motion-reduce:[transition:none]";
 
 // Resting transform AND colors are kept out of the base: the selected state
 // sets its own (`-translate-y-[4px]`, `bg-primary`, …) and a same-specificity
 // resting utility (`translate-y-0`, `bg-transparent`) would win the cascade —
 // leaving the selected tab flat and transparent (rainbow edge showing through).
 const FRONT_BASE =
-  "relative block rounded-xl will-change-transform [transition:transform_600ms_cubic-bezier(0.3,0.7,0.4,1),color_250ms_ease,background_250ms_ease] motion-reduce:[transition:none]";
+  "relative block rounded-xl [will-change:translate] [transition:translate_600ms_cubic-bezier(0.3,0.7,0.4,1),color_250ms_ease,background_250ms_ease] motion-reduce:[transition:none]";
 
 const RAINBOW_FILL =
   "[background-image:linear-gradient(90deg,var(--rainbow-1),var(--rainbow-5),var(--rainbow-3),var(--rainbow-4),var(--rainbow-2))] [background-size:200%_100%] animate-magic-rainbow motion-reduce:animate-none";
@@ -219,7 +219,7 @@ const MagicTab = React.forwardRef<HTMLDivElement, MagicTabProps>(
               : "opacity-100"
             : "opacity-0";
           const shadowLift = selected
-            ? "group-focus-visible:translate-y-[4px] group-focus-visible:[transition:transform_250ms_cubic-bezier(0.3,0.7,0.4,1.5)]"
+            ? "group-focus-visible:translate-y-[4px] group-focus-visible:[transition:translate_250ms_cubic-bezier(0.3,0.7,0.4,1.5)]"
             : "";
 
           const edgeFill = selected
@@ -227,7 +227,7 @@ const MagicTab = React.forwardRef<HTMLDivElement, MagicTabProps>(
             : "opacity-0";
 
           const frontState = selected
-            ? `-translate-y-[4px] ${frontVariantSelected[variant]} group-focus-visible:-translate-y-[6px] group-focus-visible:[transition:transform_250ms_cubic-bezier(0.3,0.7,0.4,1.5)]`
+            ? `-translate-y-[4px] ${frontVariantSelected[variant]} group-focus-visible:-translate-y-[6px] group-focus-visible:[transition:translate_250ms_cubic-bezier(0.3,0.7,0.4,1.5)]`
             : `bg-transparent text-muted-foreground ${frontVariantPreview[variant]}`;
 
           return (
