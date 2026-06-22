@@ -33,23 +33,28 @@ function GitHubIcon(props: ComponentProps<"svg">) {
  * fetched client-side and cached in localStorage (1h TTL) to avoid hitting the
  * GitHub API rate limit on every page load.
  */
+function readCache(): { count: number; ts: number } | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const cached = localStorage.getItem(CACHE_KEY);
+    return cached
+      ? (JSON.parse(cached) as { count: number; ts: number })
+      : null;
+  } catch {
+    return null; // malformed cache
+  }
+}
+
 export function GitHubStars({ className, ...props }: ComponentProps<"a">) {
-  const [stars, setStars] = useState<number | null>(null);
+  // Seed from cache during render so we don't setState synchronously in the
+  // effect (react-hooks/set-state-in-effect). The effect only refreshes.
+  const [stars, setStars] = useState<number | null>(
+    () => readCache()?.count ?? null,
+  );
 
   useEffect(() => {
-    const cached = localStorage.getItem(CACHE_KEY);
-    if (cached) {
-      try {
-        const { count, ts } = JSON.parse(cached) as {
-          count: number;
-          ts: number;
-        };
-        setStars(count);
-        if (Date.now() - ts < CACHE_TTL) return;
-      } catch {
-        // ignore malformed cache
-      }
-    }
+    const cached = readCache();
+    if (cached && Date.now() - cached.ts < CACHE_TTL) return;
 
     let active = true;
     fetch(`https://api.github.com/repos/${REPO}`)
@@ -86,7 +91,9 @@ export function GitHubStars({ className, ...props }: ComponentProps<"a">) {
     >
       <GitHubIcon className="size-4" />
       {stars !== null ? (
-        <span className="tabular-nums">{stars.toLocaleString("en-US")}</span>
+        <span className="tabular-nums" suppressHydrationWarning>
+          {stars.toLocaleString("en-US")}
+        </span>
       ) : null}
     </a>
   );
