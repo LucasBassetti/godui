@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "GoDUI",
+  title: "GodUI",
   description: "A design system and component library",
 };
 

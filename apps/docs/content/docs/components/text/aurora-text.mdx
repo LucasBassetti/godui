@@ -1,0 +1,73 @@
+---
+title: Aurora Text
+description: Gradient text with a rainbow aurora that drifts across the letters.
+---
+
+import { AuroraText } from "@godui/components";
+
+<ComponentPreview
+  code={`import { AuroraText } from "@/components/godui/aurora-text";
+
+export function AuroraTextDemo() {
+  return (
+    <h1 className="text-6xl font-bold tracking-tight">
+      Ship <AuroraText>beautiful</AuroraText> UI
+    </h1>
+  );
+}`}
+>
+  <h1 className="text-6xl font-bold tracking-tight">
+    Ship <AuroraText>beautiful</AuroraText> UI
+  </h1>
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="AuroraText" />
+
+AuroraText clips an animated gradient to the text via `background-clip: text`.
+The animation is CSS-only and respects `prefers-reduced-motion` — no font or
+JavaScript animation dependency required.
+
+## Usage
+
+```tsx
+import { AuroraText } from "@/components/godui/aurora-text";
+```
+
+`AuroraText` is an inline `<span>`, so it inherits the surrounding font size and
+weight. Wrap it inside a heading and style that parent:
+
+```tsx
+<h1 className="text-6xl font-bold tracking-tight">
+  Ship <AuroraText>beautiful</AuroraText> UI
+</h1>
+```
+
+### Custom colors
+
+Pass any list of CSS colors. The aurora loops back to the first stop for a
+seamless cycle, so two or three colors are enough.
+
+```tsx
+<AuroraText colors={["#ff512f", "#dd2476", "#ff512f"]}>Sunset</AuroraText>
+```
+
+### Speed
+
+`speed` is a multiplier — `1` is roughly a 10s cycle, higher is faster.
+
+```tsx
+<AuroraText speed={3}>Lightspeed</AuroraText>
+```
+
+## Props
+
+| Prop       | Type       | Default            | Description                                              |
+| ---------- | ---------- | ------------------ | -------------------------------------------------------- |
+| `children` | `ReactNode`| —                  | Text to render with the aurora gradient.                 |
+| `colors`   | `string[]` | Rainbow spectrum   | Gradient stops the aurora cycles through.                |
+| `speed`    | `number`   | `1`                | Speed multiplier; `1` ≈ 10s per cycle, higher is faster. |
+
+`AuroraText` also forwards every standard `<span>` attribute (`className`,
+`style`, `id`, …) to the root element.

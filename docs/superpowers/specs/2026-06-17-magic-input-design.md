@@ -58,7 +58,7 @@ mirroring the `.magic-button*` rules. Sizes reuse the shared `--button-py-*`,
 `--button-px-*`, `--button-text-*`, `--button-leading-*` tokens. Radius via
 `--radius-xl`. All theme colors via Tailwind tokens / CSS vars already defined.
 
-## Surrounding work (GoDUI conventions)
+## Surrounding work (GodUI conventions)
 
 - Export from `packages/components/src/index.ts`.
 - Storybook story: `apps/storybook/src/stories/magic-input.stories.tsx`

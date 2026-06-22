@@ -1,3 +1,4 @@
+export { AuroraText, type AuroraTextProps } from "./aurora-text";
 export { BorderBeam, type BorderBeamProps } from "./border-beam";
 export {
   ElasticText,

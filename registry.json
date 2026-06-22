@@ -6,8 +6,8 @@
     {
       "name": "godui-theme",
       "type": "registry:theme",
-      "title": "GoDUI Theme",
-      "description": "Celestial Sapphire design tokens (OKLCH) — colors, radius, fonts, shadows, button scale, and rainbow tokens shared by all GoDUI components.",
+      "title": "GodUI Theme",
+      "description": "Celestial Sapphire design tokens (OKLCH) — colors, radius, fonts, shadows, button scale, and rainbow tokens shared by all GodUI components.",
       "cssVars": {
         "theme": {
           "font-sans": "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif",
@@ -386,6 +386,38 @@
           "target": "components/godui/progressive-card-reveal.tsx"
         }
       ]
+    },
+    {
+      "name": "aurora-text",
+      "type": "registry:ui",
+      "title": "Aurora Text",
+      "description": "Gradient text with a rainbow aurora that drifts across the letters.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/aurora-text/aurora-text.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/aurora-text.tsx"
+        }
+      ],
+      "cssVars": {
+        "theme": {
+          "animate-aurora-text": "aurora-text var(--aurora-text-speed, 10s) infinite linear"
+        }
+      },
+      "css": {
+        "@keyframes aurora-text": {
+          "0%": {
+            "background-position": "0% 50%"
+          },
+          "50%": {
+            "background-position": "100% 50%"
+          },
+          "100%": {
+            "background-position": "0% 50%"
+          }
+        }
+      }
     },
     {
       "name": "elastic-text",

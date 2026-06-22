@@ -1,0 +1,34 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "aurora-text",
+  "title": "Aurora Text",
+  "description": "Gradient text with a rainbow aurora that drifts across the letters.",
+  "registryDependencies": ["@godui/godui-theme"],
+  "files": [
+    {
+      "path": "packages/components/src/aurora-text/aurora-text.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\n\nexport type AuroraTextProps = React.HTMLAttributes<HTMLSpanElement> & {\n  children: React.ReactNode;\n  /** Gradient stops the aurora cycles through. Defaults to a rainbow spectrum. */\n  colors?: string[];\n  /** Speed multiplier — `1` ≈ 10s per cycle, higher is faster. */\n  speed?: number;\n};\n\n// Full-spectrum rainbow, looped back to the first stop for a seamless cycle.\nconst RAINBOW_COLORS = [\n  \"#ff2d55\",\n  \"#ff9500\",\n  \"#ffd60a\",\n  \"#34c759\",\n  \"#00c7be\",\n  \"#0a84ff\",\n  \"#5e5ce6\",\n  \"#bf5af2\",\n];\n\nconst AuroraText = React.forwardRef<HTMLSpanElement, AuroraTextProps>(\n  (\n    {\n      children,\n      className,\n      colors = RAINBOW_COLORS,\n      speed = 1,\n      style,\n      ...props\n    },\n    ref,\n  ) => {\n    const stops = [...colors, colors[0]].join(\", \");\n\n    return (\n      <span\n        ref={ref}\n        data-slot=\"aurora-text\"\n        className={`relative inline-block ${className ?? \"\"}`}\n        {...props}\n      >\n        <span className=\"sr-only\">{children}</span>\n        <span\n          aria-hidden=\"true\"\n          className=\"animate-aurora-text bg-[length:200%_auto] bg-clip-text text-transparent motion-reduce:animate-none\"\n          style={\n            {\n              backgroundImage: `linear-gradient(135deg, ${stops})`,\n              \"--aurora-text-speed\": `${10 / speed}s`,\n              ...style,\n            } as React.CSSProperties\n          }\n        >\n          {children}\n        </span>\n      </span>\n    );\n  },\n);\nAuroraText.displayName = \"AuroraText\";\n\nexport { AuroraText };\n",
+      "type": "registry:ui",
+      "target": "components/godui/aurora-text.tsx"
+    }
+  ],
+  "cssVars": {
+    "theme": {
+      "animate-aurora-text": "aurora-text var(--aurora-text-speed, 10s) infinite linear"
+    }
+  },
+  "css": {
+    "@keyframes aurora-text": {
+      "0%": {
+        "background-position": "0% 50%"
+      },
+      "50%": {
+        "background-position": "100% 50%"
+      },
+      "100%": {
+        "background-position": "0% 50%"
+      }
+    }
+  },
+  "type": "registry:ui"
+}

@@ -315,7 +315,7 @@ export function ComponentInstall({
 
               <p className="text-sm text-fd-muted-foreground">
                 Update the import paths to match your project, and make sure the
-                GoDUI theme tokens are present (install any component via the
+                GodUI theme tokens are present (install any component via the
                 CLI once, or add <code>@godui/godui-theme</code>).
               </p>
             </>

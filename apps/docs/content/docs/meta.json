@@ -1,5 +1,5 @@
 {
-  "title": "GoDUI",
+  "title": "GodUI",
   "pages": [
     "---Getting Started---",
     "index",
@@ -14,6 +14,7 @@
     "---Inputs---",
     "components/inputs/magic-input",
     "---Text---",
+    "components/text/aurora-text",
     "components/text/elastic-text",
     "components/text/text-animate",
     "components/text/highlighter",

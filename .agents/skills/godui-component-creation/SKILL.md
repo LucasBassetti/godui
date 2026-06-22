@@ -1,9 +1,9 @@
 ---
 name: godui-component-creation
-description: Create new components for the GoDUI design system in @godui/components. Use when adding a component, fixing missing Tailwind styles on components, wiring Storybook stories, or writing docs pages with ComponentPreview and ComponentInstall.
+description: Create new components for the GodUI design system in @godui/components. Use when adding a component, fixing missing Tailwind styles on components, wiring Storybook stories, or writing docs pages with ComponentPreview and ComponentInstall.
 ---
 
-# GoDUI Component Creation
+# GodUI Component Creation
 
 Follow this workflow when adding a component to `@godui/components`.
 

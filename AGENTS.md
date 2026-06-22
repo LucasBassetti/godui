@@ -1,6 +1,6 @@
-# GoDUI — Agent Rules
+# GodUI — Agent Rules
 
-GoDUI is a design system monorepo (**pnpm + Turbo**): `@godui/components` (`packages/components`), docs (`apps/docs`, Next.js + Fumadocs), and Storybook (`apps/storybook`).
+GodUI is a design system monorepo (**pnpm + Turbo**): `@godui/components` (`packages/components`), docs (`apps/docs`, Next.js + Fumadocs), and Storybook (`apps/storybook`).
 
 Skills live in `.agents/skills/` (`.claude/skills` and `.cursor/skills` symlink to it). Read the relevant SKILL.md **before** starting the matching task.
 

@@ -4,7 +4,7 @@ type GoduiLogoProps = Omit<ComponentProps<"svg">, "viewBox"> & {
   alt?: string;
 };
 
-export function GoduiLogo({ alt = "GoDUI", ...props }: GoduiLogoProps) {
+export function GoduiLogo({ alt = "GodUI", ...props }: GoduiLogoProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

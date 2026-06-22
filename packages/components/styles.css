@@ -94,6 +94,9 @@
     alternate;
   --animate-spin-around: spin-around calc(var(--speed) * 2) infinite linear;
 
+  --animate-aurora-text: aurora-text var(--aurora-text-speed, 10s) infinite
+    linear;
+
   --animate-magic-rainbow: magic-rainbow var(--rainbow-speed, 2s) infinite
     linear;
   --animate-magic-input-indeterminate: magic-input-indeterminate 1.2s
@@ -132,6 +135,19 @@
   }
   100% {
     transform: translateZ(0) rotate(360deg);
+  }
+}
+
+/* Aurora text: gradient drifts back and forth across the clipped text */
+@keyframes aurora-text {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
   }
 }
 

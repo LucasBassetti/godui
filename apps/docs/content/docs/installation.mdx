@@ -1,9 +1,9 @@
 ---
 title: Installation
-description: Install GoDUI components with the shadcn CLI.
+description: Install GodUI components with the shadcn CLI.
 ---
 
-GoDUI is a design system built with Tailwind CSS v4 and React, distributed as a
+GodUI is a design system built with Tailwind CSS v4 and React, distributed as a
 [shadcn](https://ui.shadcn.com) registry. Components are copied straight into
 your project — you own the source.
 
@@ -19,7 +19,7 @@ Run the `init` command to create a new project or to set up an existing one:
 pnpm dlx shadcn@latest init
 ```
 
-## 2. Add the GoDUI registry
+## 2. Add the GodUI registry
 
 Add the `@godui` namespace to the `registries` field of your
 `components.json` (one-time setup):
@@ -34,13 +34,13 @@ Add the `@godui` namespace to the `registries` field of your
 
 ## 3. Add components
 
-You can now add any GoDUI component by name:
+You can now add any GodUI component by name:
 
 ```bash
 pnpm dlx shadcn@latest add @godui/magic-button
 ```
 
-This copies the component into `components/godui/` and merges the GoDUI theme
+This copies the component into `components/godui/` and merges the GodUI theme
 tokens and component styles into your global stylesheet automatically.
 
 > Prefer zero configuration? Skip step 2 and install with the full registry URL:
@@ -48,7 +48,7 @@ tokens and component styles into your global stylesheet automatically.
 
 ## Typography (bring your own font)
 
-GoDUI is font-agnostic. The theme ships a neutral system font stack as the
+GodUI is font-agnostic. The theme ships a neutral system font stack as the
 default, so components look right with zero setup. To use any font, override
 `--font-sans` (and optionally `--font-mono` / `--font-serif`) in your global
 stylesheet — everything inherits it.
@@ -59,7 +59,7 @@ stylesheet — everything inherits it.
 }
 ```
 
-### Optional: Geist (the GoDUI brand font)
+### Optional: Geist (the GodUI brand font)
 
 The docs site uses [Geist](https://vercel.com/font). To match it in a Next.js
 app, install `geist` and point `--font-sans` / `--font-mono` at its variables:

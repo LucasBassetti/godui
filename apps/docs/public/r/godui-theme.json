@@ -1,8 +1,8 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "godui-theme",
-  "title": "GoDUI Theme",
-  "description": "Celestial Sapphire design tokens (OKLCH) — colors, radius, fonts, shadows, button scale, and rainbow tokens shared by all GoDUI components.",
+  "title": "GodUI Theme",
+  "description": "Celestial Sapphire design tokens (OKLCH) — colors, radius, fonts, shadows, button scale, and rainbow tokens shared by all GodUI components.",
   "cssVars": {
     "theme": {
       "font-sans": "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif",
