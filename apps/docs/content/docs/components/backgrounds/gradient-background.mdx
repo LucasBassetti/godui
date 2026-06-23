@@ -1,66 +1,39 @@
 ---
 title: Gradient Background
-description: Full-bleed gradient backgrounds — radial glows, aurora washes, and depth fades — selectable by variant.
+description: Full-bleed gradient backgrounds — radial glows, aurora washes, and depth fades.
 ---
 
-import { GradientBackground } from "@godui/components";
+A full-bleed gradient layer. Drop it as the first child of a `relative overflow-hidden`
+container and your content sits above it. Pick a look below — 48 gradients ported from
+[PatternCraft](https://patterncraft.fun). The component itself just takes `background`,
+`backgroundImage`, and `backgroundSize`; the picker fills them in.
 
-A full-bleed gradient layer. Drop it as the first child of a `relative
-overflow-hidden` container and your content sits above it. Pick a look with the
-`variant` prop — 48 gradients ported from
-[PatternCraft](https://patterncraft.fun).
-
-<ComponentPreview
-  code={`import { GradientBackground } from "@/components/godui/gradient-background";
-
-export function GradientBackgroundDemo() {
-  return (
-    <div className="relative flex min-h-[320px] w-full items-center justify-center overflow-hidden rounded-xl border">
-      <GradientBackground variant="dark-radial-glow" />
-      <p className="relative z-10 text-sm font-medium text-white">
-        Your content sits above the background.
-      </p>
-    </div>
-  );
-}`}
->
-  <div className="relative flex min-h-[320px] w-full items-center justify-center overflow-hidden rounded-xl border border-border">
-    <GradientBackground variant="dark-radial-glow" />
-    <p className="relative z-raised text-sm font-medium text-white">Your content sits above the background.</p>
-  </div>
-</ComponentPreview>
-
-## Installation
-
-<ComponentInstall name="gradient-background" />
+<BackgroundShowcase component="gradient" />
 
 ## Usage
 
 ```tsx
 import { GradientBackground } from "@/components/godui/gradient-background";
-```
 
-The component renders an `absolute inset-0` layer at `z-base`. Place it inside a
-positioned, clipped container and keep your content at `z-raised` or higher:
-
-```tsx
 <div className="relative overflow-hidden">
-  <GradientBackground variant="aurora-waves" />
+  <GradientBackground />
   <YourContent />
 </div>
 ```
 
-Every pattern id is available from the `gradientBackgroundVariants` array if you
-want to build a picker:
+Install a specific variant straight from the CLI (the chosen variant's CSS is baked into the
+file):
 
-```tsx
-import { gradientBackgroundVariants } from "@godui/components";
+```bash
+pnpm dlx shadcn@latest add "https://godui.design/r/gradient-background.json?variant=aurora-waves"
 ```
 
 ## Props
 
 | Prop | Type | Default | Description |
 | ---- | ---- | ------- | ----------- |
-| `variant` | `GradientBackgroundVariant` | `"dark-radial-glow"` | One of 48 gradient pattern ids (e.g. `"aurora-waves"`, `"blue-radial-glow"`, `"crimson-shadow-glow"`). See the [Storybook gallery](https://godui.design) or `gradientBackgroundVariants` for the full set. |
+| `background` | `string` | default variant | CSS `background` shorthand |
+| `backgroundImage` | `string` | default variant | CSS `background-image` (gradients, masks) |
+| `backgroundSize` | `string` | default variant | CSS `background-size` |
 
 All other `div` attributes (`className`, `style`, …) are forwarded to the layer.

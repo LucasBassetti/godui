@@ -1,65 +1,39 @@
 ---
 title: Decorative Background
-description: Full-bleed decorative backgrounds — radial and corner gradient washes — selectable by variant.
+description: Full-bleed decorative backgrounds — radial and corner gradient washes.
 ---
 
-import { DecorativeBackground } from "@godui/components";
+A full-bleed decorative wash. Drop it as the first child of a `relative overflow-hidden`
+container and your content sits above it. Pick a look below — 44 patterns ported from
+[PatternCraft](https://patterncraft.fun). The component itself just takes `background`,
+`backgroundImage`, and `backgroundSize`; the picker fills them in.
 
-A full-bleed decorative wash — soft radial and corner gradients. Drop it as the
-first child of a `relative overflow-hidden` container and your content sits
-above it. Pick a look with the `variant` prop — 44 patterns ported from
-[PatternCraft](https://patterncraft.fun).
-
-<ComponentPreview
-  code={`import { DecorativeBackground } from "@/components/godui/decorative-background";
-
-export function DecorativeBackgroundDemo() {
-  return (
-    <div className="relative flex min-h-[320px] w-full items-center justify-center overflow-hidden rounded-xl border">
-      <DecorativeBackground variant="top-gradient-radial" />
-      <p className="relative z-10 text-sm font-medium">
-        Your content sits above the background.
-      </p>
-    </div>
-  );
-}`}
->
-  <div className="relative flex min-h-[320px] w-full items-center justify-center overflow-hidden rounded-xl border border-border">
-    <DecorativeBackground variant="top-gradient-radial" />
-    <p className="relative z-raised text-sm font-medium text-foreground">Your content sits above the background.</p>
-  </div>
-</ComponentPreview>
-
-## Installation
-
-<ComponentInstall name="decorative-background" />
+<BackgroundShowcase component="decorative" />
 
 ## Usage
 
 ```tsx
 import { DecorativeBackground } from "@/components/godui/decorative-background";
-```
 
-The component renders an `absolute inset-0` layer at `z-base`. Place it inside a
-positioned, clipped container and keep your content at `z-raised` or higher:
-
-```tsx
 <div className="relative overflow-hidden">
-  <DecorativeBackground variant="top-gradient-radial" />
+  <DecorativeBackground />
   <YourContent />
 </div>
 ```
 
-Every pattern id is available from the `decorativeBackgroundVariants` array:
+Install a specific variant straight from the CLI (the chosen variant's CSS is baked into the
+file):
 
-```tsx
-import { decorativeBackgroundVariants } from "@godui/components";
+```bash
+pnpm dlx shadcn@latest add "https://godui.design/r/decorative-background.json?variant=bottom-gradient-radial"
 ```
 
 ## Props
 
 | Prop | Type | Default | Description |
 | ---- | ---- | ------- | ----------- |
-| `variant` | `DecorativeBackgroundVariant` | `"top-gradient-radial"` | One of 44 decorative pattern ids (e.g. `"bottom-gradient-radial"`, `"purple-corner-grid"`). See the [Storybook gallery](https://godui.design) or `decorativeBackgroundVariants` for the full set. |
+| `background` | `string` | default variant | CSS `background` shorthand |
+| `backgroundImage` | `string` | default variant | CSS `background-image` |
+| `backgroundSize` | `string` | default variant | CSS `background-size` |
 
 All other `div` attributes (`className`, `style`, …) are forwarded to the layer.

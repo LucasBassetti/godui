@@ -1,67 +1,39 @@
 ---
 title: Geometric Background
-description: Full-bleed geometric backgrounds — grids, dashed grids, diagonal crosses, and masked fades — selectable by variant.
+description: Full-bleed geometric backgrounds — grids, dashed grids, diagonal crosses, and masked fades.
 ---
 
-import { GeometricBackground } from "@godui/components";
+A full-bleed geometric layer. Drop it as the first child of a `relative overflow-hidden`
+container and your content sits above it. Pick a look below — 99 patterns ported from
+[PatternCraft](https://patterncraft.fun). The component itself just takes `background`,
+`backgroundImage`, and `backgroundSize`; the picker fills them in.
 
-A full-bleed geometric layer — grids, dashed grids, diagonal crosses and
-mask-faded variants. Drop it as the first child of a `relative overflow-hidden`
-container and your content sits above it. Pick a look with the `variant` prop —
-99 patterns ported from [PatternCraft](https://patterncraft.fun).
-
-<ComponentPreview
-  code={`import { GeometricBackground } from "@/components/godui/geometric-background";
-
-export function GeometricBackgroundDemo() {
-  return (
-    <div className="relative flex min-h-[320px] w-full items-center justify-center overflow-hidden rounded-xl border">
-      <GeometricBackground variant="purple-gradient-grid-right" />
-      <p className="relative z-10 text-sm font-medium">
-        Your content sits above the background.
-      </p>
-    </div>
-  );
-}`}
->
-  <div className="relative flex min-h-[320px] w-full items-center justify-center overflow-hidden rounded-xl border border-border">
-    <GeometricBackground variant="purple-gradient-grid-right" />
-    <p className="relative z-raised text-sm font-medium text-foreground">Your content sits above the background.</p>
-  </div>
-</ComponentPreview>
-
-## Installation
-
-<ComponentInstall name="geometric-background" />
+<BackgroundShowcase component="geometric" />
 
 ## Usage
 
 ```tsx
 import { GeometricBackground } from "@/components/godui/geometric-background";
-```
 
-The component renders an `absolute inset-0` layer at `z-base`. Place it inside a
-positioned, clipped container and keep your content at `z-raised` or higher:
-
-```tsx
 <div className="relative overflow-hidden">
-  <GeometricBackground variant="diagonal-cross-grid" />
+  <GeometricBackground />
   <YourContent />
 </div>
 ```
 
-Masked variants (e.g. `left-masked-basic-grid`) ship both `maskImage` and
-`WebkitMaskImage`, so the fade works in Chromium and Safari. Every pattern id is
-available from the `geometricBackgroundVariants` array:
+Install a specific variant straight from the CLI (the chosen variant's CSS is baked into the
+file):
 
-```tsx
-import { geometricBackgroundVariants } from "@godui/components";
+```bash
+pnpm dlx shadcn@latest add "https://godui.design/r/geometric-background.json?variant=purple-gradient-grid-left"
 ```
 
 ## Props
 
 | Prop | Type | Default | Description |
 | ---- | ---- | ------- | ----------- |
-| `variant` | `GeometricBackgroundVariant` | `"purple-gradient-grid-right"` | One of 99 geometric pattern ids (e.g. `"diagonal-cross-grid"`, `"dashed-grid-light"`, `"left-masked-basic-grid"`). See the [Storybook gallery](https://godui.design) or `geometricBackgroundVariants` for the full set. |
+| `background` | `string` | default variant | CSS `background` shorthand |
+| `backgroundImage` | `string` | default variant | CSS `background-image` (gradients, grids, masks) |
+| `backgroundSize` | `string` | default variant | CSS `background-size` |
 
 All other `div` attributes (`className`, `style`, …) are forwarded to the layer.

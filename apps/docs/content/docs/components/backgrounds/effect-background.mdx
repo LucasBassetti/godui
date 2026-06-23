@@ -1,65 +1,39 @@
 ---
 title: Effect Background
-description: Full-bleed effect backgrounds — radial glows, aurora dreams, and soft pastel washes — selectable by variant.
+description: Full-bleed effect backgrounds — radial glows, aurora dreams, and soft pastel washes.
 ---
 
-import { EffectBackground } from "@godui/components";
+A full-bleed atmospheric layer. Drop it as the first child of a `relative overflow-hidden`
+container and your content sits above it. Pick a look below — 66 patterns ported from
+[PatternCraft](https://patterncraft.fun). The component itself just takes `background`,
+`backgroundImage`, and `backgroundSize`; the picker fills them in.
 
-A full-bleed atmospheric layer — radial glows, aurora dreams and soft pastel
-washes. Drop it as the first child of a `relative overflow-hidden` container and
-your content sits above it. Pick a look with the `variant` prop — 66 patterns
-ported from [PatternCraft](https://patterncraft.fun).
-
-<ComponentPreview
-  code={`import { EffectBackground } from "@/components/godui/effect-background";
-
-export function EffectBackgroundDemo() {
-  return (
-    <div className="relative flex min-h-[320px] w-full items-center justify-center overflow-hidden rounded-xl border">
-      <EffectBackground variant="aurora-dream-corner-whispers" />
-      <p className="relative z-10 text-sm font-medium">
-        Your content sits above the background.
-      </p>
-    </div>
-  );
-}`}
->
-  <div className="relative flex min-h-[320px] w-full items-center justify-center overflow-hidden rounded-xl border border-border">
-    <EffectBackground variant="aurora-dream-corner-whispers" />
-    <p className="relative z-raised text-sm font-medium text-foreground">Your content sits above the background.</p>
-  </div>
-</ComponentPreview>
-
-## Installation
-
-<ComponentInstall name="effect-background" />
+<BackgroundShowcase component="effect" />
 
 ## Usage
 
 ```tsx
 import { EffectBackground } from "@/components/godui/effect-background";
-```
 
-The component renders an `absolute inset-0` layer at `z-base`. Place it inside a
-positioned, clipped container and keep your content at `z-raised` or higher:
-
-```tsx
 <div className="relative overflow-hidden">
-  <EffectBackground variant="aurora-dream-soft-harmony" />
+  <EffectBackground />
   <YourContent />
 </div>
 ```
 
-Every pattern id is available from the `effectBackgroundVariants` array:
+Install a specific variant straight from the CLI (the chosen variant's CSS is baked into the
+file):
 
-```tsx
-import { effectBackgroundVariants } from "@godui/components";
+```bash
+pnpm dlx shadcn@latest add "https://godui.design/r/effect-background.json?variant=aurora-dream-soft-harmony"
 ```
 
 ## Props
 
 | Prop | Type | Default | Description |
 | ---- | ---- | ------- | ----------- |
-| `variant` | `EffectBackgroundVariant` | `"aurora-dream-corner-whispers"` | One of 66 effect pattern ids (e.g. `"aurora-dream-soft-harmony"`, `"purple-radial-glow"`, `"cotton-candy-sky"`). See the [Storybook gallery](https://godui.design) or `effectBackgroundVariants` for the full set. |
+| `background` | `string` | default variant | CSS `background` shorthand |
+| `backgroundImage` | `string` | default variant | CSS `background-image` |
+| `backgroundSize` | `string` | default variant | CSS `background-size` |
 
 All other `div` attributes (`className`, `style`, …) are forwarded to the layer.
