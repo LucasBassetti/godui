@@ -13,7 +13,8 @@
       "!!**/.turbo",
       "!!**/storybook-static",
       "!!**/public/design-system",
-      "!!**/scripts/vendor"
+      "!!**/scripts/vendor",
+      "!!**/*.source.ts"
     ]
   },
   "formatter": {

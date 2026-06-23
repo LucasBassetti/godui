@@ -1,6 +1,10 @@
 export {
   EffectBackground,
   type EffectBackgroundProps,
-  type EffectBackgroundVariant,
-  effectBackgroundVariants,
 } from "./effect-background";
+export {
+  type EffectBackgroundVariant,
+  effectBackgroundPresets,
+  effectBackgroundVariants,
+} from "./effect-background.presets";
+export { effectBackgroundSource } from "./effect-background.source";

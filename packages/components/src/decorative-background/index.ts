@@ -1,6 +1,10 @@
 export {
   DecorativeBackground,
   type DecorativeBackgroundProps,
-  type DecorativeBackgroundVariant,
-  decorativeBackgroundVariants,
 } from "./decorative-background";
+export {
+  type DecorativeBackgroundVariant,
+  decorativeBackgroundPresets,
+  decorativeBackgroundVariants,
+} from "./decorative-background.presets";
+export { decorativeBackgroundSource } from "./decorative-background.source";

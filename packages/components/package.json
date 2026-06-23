@@ -26,7 +26,7 @@
   ],
   "scripts": {
     "build": "echo 'skip'",
-    "generate:backgrounds": "node scripts/generate-backgrounds.mjs && pnpm exec biome check --write src/gradient-background src/geometric-background src/decorative-background src/effect-background",
+    "generate:backgrounds": "node scripts/generate-backgrounds.mjs",
     "lint": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
     "test:watch": "vitest"

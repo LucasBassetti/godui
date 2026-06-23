@@ -1,6 +1,10 @@
 export {
   GeometricBackground,
   type GeometricBackgroundProps,
-  type GeometricBackgroundVariant,
-  geometricBackgroundVariants,
 } from "./geometric-background";
+export {
+  type GeometricBackgroundVariant,
+  geometricBackgroundPresets,
+  geometricBackgroundVariants,
+} from "./geometric-background.presets";
+export { geometricBackgroundSource } from "./geometric-background.source";
