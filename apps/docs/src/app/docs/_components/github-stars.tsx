@@ -90,11 +90,9 @@ export function GitHubStars({ className, ...props }: ComponentProps<"a">) {
       {...props}
     >
       <GitHubIcon className="size-4" />
-      {stars !== null ? (
-        <span className="tabular-nums" suppressHydrationWarning>
-          {stars.toLocaleString("en-US")}
-        </span>
-      ) : null}
+      <span className="tabular-nums empty:hidden" suppressHydrationWarning>
+        {stars !== null ? stars.toLocaleString("en-US") : ""}
+      </span>
     </a>
   );
 }

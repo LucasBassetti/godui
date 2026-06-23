@@ -1,10 +1,34 @@
 export { AuroraText, type AuroraTextProps } from "./aurora-text";
 export { BorderBeam, type BorderBeamProps } from "./border-beam";
 export {
+  DecorativeBackground,
+  type DecorativeBackgroundProps,
+  type DecorativeBackgroundVariant,
+  decorativeBackgroundVariants,
+} from "./decorative-background";
+export {
+  EffectBackground,
+  type EffectBackgroundProps,
+  type EffectBackgroundVariant,
+  effectBackgroundVariants,
+} from "./effect-background";
+export {
   ElasticText,
   type ElasticTextMode,
   type ElasticTextProps,
 } from "./elastic-text";
+export {
+  GeometricBackground,
+  type GeometricBackgroundProps,
+  type GeometricBackgroundVariant,
+  geometricBackgroundVariants,
+} from "./geometric-background";
+export {
+  GradientBackground,
+  type GradientBackgroundProps,
+  type GradientBackgroundVariant,
+  gradientBackgroundVariants,
+} from "./gradient-background";
 export {
   Highlighter,
   type HighlighterAction,

@@ -493,6 +493,62 @@
           "target": "components/godui/border-beam.tsx"
         }
       ]
+    },
+    {
+      "name": "gradient-background",
+      "type": "registry:ui",
+      "title": "Gradient Background",
+      "description": "Full-bleed gradient backgrounds — radial glows, aurora washes, and depth fades — selectable by variant.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/gradient-background/gradient-background.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/gradient-background.tsx"
+        }
+      ]
+    },
+    {
+      "name": "geometric-background",
+      "type": "registry:ui",
+      "title": "Geometric Background",
+      "description": "Full-bleed geometric backgrounds — grids, dashed grids, diagonal crosses, and masked fades — selectable by variant.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/geometric-background/geometric-background.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/geometric-background.tsx"
+        }
+      ]
+    },
+    {
+      "name": "decorative-background",
+      "type": "registry:ui",
+      "title": "Decorative Background",
+      "description": "Full-bleed decorative backgrounds — radial and corner gradient washes — selectable by variant.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/decorative-background/decorative-background.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/decorative-background.tsx"
+        }
+      ]
+    },
+    {
+      "name": "effect-background",
+      "type": "registry:ui",
+      "title": "Effect Background",
+      "description": "Full-bleed effect backgrounds — radial glows, aurora dreams, and soft pastel washes — selectable by variant.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/effect-background/effect-background.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/effect-background.tsx"
+        }
+      ]
     }
   ]
 }

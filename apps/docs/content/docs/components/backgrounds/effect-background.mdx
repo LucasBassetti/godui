@@ -1,0 +1,65 @@
+---
+title: Effect Background
+description: Full-bleed effect backgrounds — radial glows, aurora dreams, and soft pastel washes — selectable by variant.
+---
+
+import { EffectBackground } from "@godui/components";
+
+A full-bleed atmospheric layer — radial glows, aurora dreams and soft pastel
+washes. Drop it as the first child of a `relative overflow-hidden` container and
+your content sits above it. Pick a look with the `variant` prop — 66 patterns
+ported from [PatternCraft](https://patterncraft.fun).
+
+<ComponentPreview
+  code={`import { EffectBackground } from "@/components/godui/effect-background";
+
+export function EffectBackgroundDemo() {
+  return (
+    <div className="relative flex min-h-[320px] w-full items-center justify-center overflow-hidden rounded-xl border">
+      <EffectBackground variant="aurora-dream-corner-whispers" />
+      <p className="relative z-10 text-sm font-medium">
+        Your content sits above the background.
+      </p>
+    </div>
+  );
+}`}
+>
+  <div className="relative flex min-h-[320px] w-full items-center justify-center overflow-hidden rounded-xl border border-border">
+    <EffectBackground variant="aurora-dream-corner-whispers" />
+    <p className="relative z-raised text-sm font-medium text-foreground">Your content sits above the background.</p>
+  </div>
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall name="effect-background" />
+
+## Usage
+
+```tsx
+import { EffectBackground } from "@/components/godui/effect-background";
+```
+
+The component renders an `absolute inset-0` layer at `z-base`. Place it inside a
+positioned, clipped container and keep your content at `z-raised` or higher:
+
+```tsx
+<div className="relative overflow-hidden">
+  <EffectBackground variant="aurora-dream-soft-harmony" />
+  <YourContent />
+</div>
+```
+
+Every pattern id is available from the `effectBackgroundVariants` array:
+
+```tsx
+import { effectBackgroundVariants } from "@godui/components";
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `variant` | `EffectBackgroundVariant` | `"aurora-dream-corner-whispers"` | One of 66 effect pattern ids (e.g. `"aurora-dream-soft-harmony"`, `"purple-radial-glow"`, `"cotton-candy-sky"`). See the [Storybook gallery](https://godui.design) or `effectBackgroundVariants` for the full set. |
+
+All other `div` attributes (`className`, `style`, …) are forwarded to the layer.

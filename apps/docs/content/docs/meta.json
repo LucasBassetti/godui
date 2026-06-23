@@ -21,6 +21,11 @@
     "---Layout---",
     "components/layout/progressive-card-reveal",
     "---Effects---",
-    "components/effects/border-beam"
+    "components/effects/border-beam",
+    "---Backgrounds---",
+    "components/backgrounds/gradient-background",
+    "components/backgrounds/geometric-background",
+    "components/backgrounds/decorative-background",
+    "components/backgrounds/effect-background"
   ]
 }
