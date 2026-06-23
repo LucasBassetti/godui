@@ -176,6 +176,16 @@ hydration error. **Keep text inline on the same line as its tag:**
 This is render-only (the live children), so `eslint` / `biome` won't catch it — it only
 shows in `docs:dev`. Same trap applies to any block tag with multi-line bare text.
 
+**Parameterized installs (e.g. a background variant baked into the file).** A component
+whose install should bake a choice is served by the dynamic route
+`apps/docs/src/app/r/[item]/route.ts` (wrapping `@godui/components/registry`) via a
+`?variant=` query param — **not** by `shadcn build`. Such items are removed from
+`registry.json` so the route owns `/r/{name}.json`, the generated component carries its
+overridable defaults inside `// @default-props:start/end` markers (the route swaps that
+block), and the install command is the full-URL form
+`shadcn add "https://godui.design/r/{name}.json?variant=…"`. The interactive picker lives in
+`apps/docs/src/components/background-showcase.tsx`.
+
 **Nav is driven by one root file: `apps/docs/content/docs/meta.json`** (not a per-folder
 `meta.json`, and there is **no** Fumadocs folder auto-nav here — a page absent from this
 file simply won't appear in the sidebar). Slugs are the full path from `docs/`, i.e.
