@@ -4,12 +4,14 @@ export {
   DecorativeBackground,
   type DecorativeBackgroundProps,
   type DecorativeBackgroundVariant,
+  decorativeBackgroundPresets,
   decorativeBackgroundVariants,
 } from "./decorative-background";
 export {
   EffectBackground,
   type EffectBackgroundProps,
   type EffectBackgroundVariant,
+  effectBackgroundPresets,
   effectBackgroundVariants,
 } from "./effect-background";
 export {
@@ -21,12 +23,14 @@ export {
   GeometricBackground,
   type GeometricBackgroundProps,
   type GeometricBackgroundVariant,
+  geometricBackgroundPresets,
   geometricBackgroundVariants,
 } from "./geometric-background";
 export {
   GradientBackground,
   type GradientBackgroundProps,
   type GradientBackgroundVariant,
+  gradientBackgroundPresets,
   gradientBackgroundVariants,
 } from "./gradient-background";
 export {
