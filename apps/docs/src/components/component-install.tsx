@@ -35,6 +35,12 @@ type ComponentInstallProps = {
   /** PascalCase component name; converted to a kebab-case registry item. */
   componentName?: string;
   /**
+   * Registry variant to bake into the install (e.g. a background pattern id).
+   * When set, the command + Manual source use the full-URL `?variant=` form
+   * served by the dynamic registry route, and the namespace note is hidden.
+   */
+  variant?: string;
+  /**
    * Static assets the component needs that can't ship through the registry
    * (e.g. sprite-sheet images). Rendered as a download step in the Manual tab.
    */
@@ -106,34 +112,41 @@ function langFromPath(path: string) {
 export function ComponentInstall({
   name,
   componentName,
+  variant,
   assets,
   assetsTarget,
 }: ComponentInstallProps) {
   const itemName =
     name ?? (componentName ? toKebabCase(componentName) : "magic-button");
+  const query = variant ? `?variant=${variant}` : "";
   const [tab, setTab] = useState("cli");
   const [manager, setManager] = useState<PackageManager>("pnpm");
   const [item, setItem] = useState<RegistryItem | null>(null);
   const [error, setError] = useState(false);
 
-  // Reset the loaded source when the target item changes. Doing this during
-  // render (rather than in the effect) avoids a cascading-render setState.
-  const [loadedFor, setLoadedFor] = useState(itemName);
-  if (loadedFor !== itemName) {
-    setLoadedFor(itemName);
+  // Reset the loaded source when the target item (name + variant) changes.
+  // Doing this during render (rather than in the effect) avoids a
+  // cascading-render setState.
+  const loadKey = `${itemName}${query}`;
+  const [loadedFor, setLoadedFor] = useState(loadKey);
+  if (loadedFor !== loadKey) {
+    setLoadedFor(loadKey);
     setItem(null);
     setError(false);
   }
 
   const cliCommand = useMemo(
-    () => `${getExecPrefix(manager)} shadcn@latest add @godui/${itemName}`,
-    [manager, itemName],
+    () =>
+      variant
+        ? `${getExecPrefix(manager)} shadcn@latest add "${REGISTRY_BASE}/${itemName}.json${query}"`
+        : `${getExecPrefix(manager)} shadcn@latest add @godui/${itemName}`,
+    [manager, itemName, variant, query],
   );
 
   // Pull the built registry item so the Manual tab can show the source directly.
   useEffect(() => {
     let active = true;
-    fetch(`/r/${itemName}.json`)
+    fetch(`/r/${itemName}.json${query}`)
       .then((res) => {
         if (!res.ok) throw new Error(`status ${res.status}`);
         return res.json();
@@ -147,7 +160,7 @@ export function ComponentInstall({
     return () => {
       active = false;
     };
-  }, [itemName]);
+  }, [itemName, query]);
 
   const dependencies = item?.dependencies ?? [];
   const depsCommand =
@@ -197,15 +210,19 @@ export function ComponentInstall({
               <code>{cliCommand}</code>
             </pre>
           </div>
-          <p className="text-sm text-fd-muted-foreground">
-            Requires the <code>@godui</code> namespace in your{" "}
-            <code>components.json</code> (one-time setup):
-          </p>
-          <DynamicCodeBlock
-            lang="json"
-            code={registryConfig}
-            codeblock={{ allowCopy: true, className: "my-0" }}
-          />
+          {variant ? null : (
+            <>
+              <p className="text-sm text-fd-muted-foreground">
+                Requires the <code>@godui</code> namespace in your{" "}
+                <code>components.json</code> (one-time setup):
+              </p>
+              <DynamicCodeBlock
+                lang="json"
+                code={registryConfig}
+                codeblock={{ allowCopy: true, className: "my-0" }}
+              />
+            </>
+          )}
         </div>
       ) : (
         <div className="mt-4 space-y-4">

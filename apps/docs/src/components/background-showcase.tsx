@@ -15,10 +15,9 @@ import {
   gradientBackgroundVariants,
 } from "@godui/components";
 import { type ComponentType, useState } from "react";
+import { ComponentInstall } from "@/components/component-install";
 import { CopyButton } from "@/components/copy-button";
 import { cn } from "@/lib/cn";
-
-const REGISTRY_BASE = "https://godui.design/r";
 
 type Preset = {
   background?: string;
@@ -84,12 +83,12 @@ export function BackgroundShowcase({ component }: { component: Key }) {
   const usage = `import { ${set.component} } from "@/components/godui/${set.name}";
 
 <${set.component}\n${propLines(preset)}\n/>`;
-  const install = `pnpm dlx shadcn@latest add "${REGISTRY_BASE}/${set.name}.json?variant=${selected}"`;
 
   return (
     <div className="not-prose my-8 flex flex-col gap-4">
-      {/* horizontal variant picker */}
-      <div className="flex gap-2 overflow-x-auto pb-2">
+      {/* horizontal variant picker — p-2 leaves room for the selected ring,
+          which the overflow-x-auto row would otherwise clip */}
+      <div className="flex gap-2 overflow-x-auto p-2">
         {set.variants.map((variant) => (
           <button
             key={variant}
@@ -98,9 +97,9 @@ export function BackgroundShowcase({ component }: { component: Key }) {
             aria-pressed={variant === selected}
             title={variant}
             className={cn(
-              "relative h-12 w-16 shrink-0 overflow-hidden rounded-md border transition-colors",
+              "relative h-12 w-16 shrink-0 overflow-hidden rounded-md border transition",
               variant === selected
-                ? "border-fd-primary ring-2 ring-fd-primary"
+                ? "border-fd-primary ring-2 ring-fd-primary ring-offset-2 ring-offset-fd-background"
                 : "border-fd-border hover:border-fd-primary/50",
             )}
           >
@@ -117,11 +116,9 @@ export function BackgroundShowcase({ component }: { component: Key }) {
         </span>
       </div>
 
-      {/* install command */}
-      <div className="flex items-center justify-between gap-2 rounded-lg border border-fd-border bg-fd-muted/40 px-3 py-2 font-mono text-xs">
-        <code className="overflow-x-auto whitespace-nowrap">{install}</code>
-        <CopyButton value={install} />
-      </div>
+      {/* install — same tabbed pattern as every component, with the selected
+          variant baked into the command + Manual source */}
+      <ComponentInstall name={set.name} variant={selected} />
 
       {/* usage snippet */}
       <div className="relative rounded-lg border border-fd-border bg-fd-muted/40 p-3">
