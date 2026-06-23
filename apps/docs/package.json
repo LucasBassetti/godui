@@ -4,13 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
+    "build": "next build --turbopack && node scripts/aeo-postbuild.mjs",
     "start": "next start",
     "lint": "eslint",
     "postinstall": "fumadocs-mdx"
   },
   "dependencies": {
     "@godui/components": "workspace:*",
+    "aeo.js": "^0.0.14",
     "framer-motion": "^12.40.0",
     "fumadocs-core": "16.10.2",
     "fumadocs-mdx": "15.0.12",
