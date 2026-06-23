@@ -1,6 +1,7 @@
 import defaultMdxComponents from "fumadocs-ui/mdx";
 import type { MDXComponents } from "mdx/types";
 import type { ComponentProps } from "react";
+import { BackgroundShowcase } from "@/components/background-showcase";
 import { ComponentInstall } from "@/components/component-install";
 import { ComponentPreview } from "@/components/component-preview";
 
@@ -18,6 +19,7 @@ export function getMDXComponents(components?: MDXComponents) {
     table: Table,
     ComponentPreview,
     ComponentInstall,
+    BackgroundShowcase,
     ...components,
   } satisfies MDXComponents;
 }
