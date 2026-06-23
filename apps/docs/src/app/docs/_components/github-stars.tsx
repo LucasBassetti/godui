@@ -1,11 +1,19 @@
 "use client";
 
-import { type ComponentProps, useEffect, useState } from "react";
+import {
+  type ComponentProps,
+  useEffect,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import { cn } from "@/lib/cn";
 
 const REPO = "LucasBassetti/godui";
 const CACHE_KEY = "godui:gh-stars";
 const CACHE_TTL = 60 * 60 * 1000; // 1h
+
+// No external store to subscribe to — the cache only changes via this component.
+const noopSubscribe = () => () => {};
 
 function GitHubIcon(props: ComponentProps<"svg">) {
   return (
@@ -45,24 +53,41 @@ function readCache(): { count: number; ts: number } | null {
   }
 }
 
+// Fresh, valid cached count, or null. Used as the client snapshot.
+function readFreshCount(): number | null {
+  const cached = readCache();
+  return cached &&
+    Number.isFinite(cached.count) &&
+    Date.now() - cached.ts < CACHE_TTL
+    ? cached.count
+    : null;
+}
+
 export function GitHubStars({ className, ...props }: ComponentProps<"a">) {
-  // Seed from cache during render so we don't setState synchronously in the
-  // effect (react-hooks/set-state-in-effect). The effect only refreshes.
-  const [stars, setStars] = useState<number | null>(
-    () => readCache()?.count ?? null,
+  // Read the cached count without a hydration mismatch: the server snapshot is
+  // null (matches SSR), then React swaps in the client snapshot after hydration.
+  // A previous render-seed + suppressHydrationWarning froze the value to the
+  // server's empty render whenever the cache was fresh — this avoids that.
+  const cached = useSyncExternalStore(
+    noopSubscribe,
+    readFreshCount,
+    () => null,
   );
+  const [fetched, setFetched] = useState<number | null>(null);
+  const stars = fetched ?? cached;
 
   useEffect(() => {
-    const cached = readCache();
-    if (cached && Date.now() - cached.ts < CACHE_TTL) return;
+    if (cached !== null) return; // fresh cache already shown
 
     let active = true;
     fetch(`https://api.github.com/repos/${REPO}`)
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
-        if (!active || !data) return;
+        if (!active || !data || typeof data.stargazers_count !== "number") {
+          return;
+        }
         const count = data.stargazers_count as number;
-        setStars(count);
+        setFetched(count);
         localStorage.setItem(
           CACHE_KEY,
           JSON.stringify({ count, ts: Date.now() }),
@@ -75,7 +100,7 @@ export function GitHubStars({ className, ...props }: ComponentProps<"a">) {
     return () => {
       active = false;
     };
-  }, []);
+  }, [cached]);
 
   return (
     <a
@@ -90,9 +115,9 @@ export function GitHubStars({ className, ...props }: ComponentProps<"a">) {
       {...props}
     >
       <GitHubIcon className="size-4" />
-      <span className="tabular-nums empty:hidden" suppressHydrationWarning>
-        {stars !== null ? stars.toLocaleString("en-US") : ""}
-      </span>
+      {stars !== null ? (
+        <span className="tabular-nums">{stars.toLocaleString("en-US")}</span>
+      ) : null}
     </a>
   );
 }
