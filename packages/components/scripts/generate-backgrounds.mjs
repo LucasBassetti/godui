@@ -86,16 +86,28 @@ ${defaultPropsBlock(defaultPreset)}
       ...props
     },
     ref,
-  ) => (
-    <div
-      ref={ref}
-      data-slot="${dir}"
-      aria-hidden="true"
-      className={\`absolute inset-0 z-base \${className ?? ""}\`}
-      style={{ background, backgroundImage, backgroundSize, ...style }}
-      {...props}
-    />
-  ),
+  ) => {
+    // \`background\` is a CSS shorthand; mixing it with the longhand
+    // backgroundImage/backgroundSize in one style object triggers React's
+    // shorthand/longhand warning. When a longhand is present, \`background\`
+    // is the color layer — apply it as backgroundColor instead.
+    const hasLonghand =
+      backgroundImage !== undefined || backgroundSize !== undefined;
+    return (
+      <div
+        ref={ref}
+        data-slot="${dir}"
+        aria-hidden="true"
+        className={\`absolute inset-0 z-base \${className ?? ""}\`}
+        style={
+          hasLonghand
+            ? { backgroundColor: background, backgroundImage, backgroundSize, ...style }
+            : { background, ...style }
+        }
+        {...props}
+      />
+    );
+  },
 );
 ${component}.displayName = ${JSON.stringify(component)};
 
