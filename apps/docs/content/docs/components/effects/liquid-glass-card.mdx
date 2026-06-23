@@ -1,0 +1,90 @@
+---
+title: Liquid Glass Card
+description: A glass panel that refracts the content behind it with a mouse-tracked specular highlight.
+---
+
+import { LiquidGlassCard } from "@godui/components";
+
+<ComponentPreview
+  code={`import { LiquidGlassCard } from "@/components/godui/liquid-glass-card";
+
+export function LiquidGlassCardDemo() {
+  return (
+    <div className="relative flex min-h-[360px] items-center justify-center overflow-hidden rounded-xl bg-cover bg-center" style={{ backgroundImage: "url(/glass-bg.webp)" }}>
+      <LiquidGlassCard className="w-72 p-8">
+        <h3 className="text-xl font-semibold text-white drop-shadow">Liquid Glass</h3>
+        <p className="mt-2 text-sm text-white/80">Move your cursor across the panel.</p>
+      </LiquidGlassCard>
+    </div>
+  );
+}`}
+>
+  <div className="relative -m-10 flex min-h-[360px] w-[calc(100%+5rem)] items-center justify-center overflow-hidden rounded-xl bg-cover bg-center" style={{ backgroundImage: "url(/glass-bg.webp)" }}>
+    <LiquidGlassCard className="w-72 p-8">
+      <h3 className="text-xl font-semibold text-white drop-shadow">Liquid Glass</h3>
+      <p className="mt-2 text-sm text-white/80">Move your cursor across the panel.</p>
+    </LiquidGlassCard>
+  </div>
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="LiquidGlassCard" />
+
+`LiquidGlassCard` wraps any content in a glass panel that refracts the live DOM
+behind it. It builds a per-instance SVG displacement map sized to the panel and
+applies it through `backdrop-filter`, running the displacement at three scales to
+fringe color at the edges (chromatic aberration). A radial highlight tracks the
+pointer and fades out when it leaves.
+
+True refraction requires `backdrop-filter: url()` (Chrome and Edge). In browsers
+without it the card gracefully falls back to a plain frosted blur, so it never
+renders as a broken transparent box.
+
+For a circular lens that follows the cursor over arbitrary content, see
+[Liquid Glass Lens](/docs/components/effects/liquid-glass-lens).
+
+## Usage
+
+```tsx
+import { LiquidGlassCard } from "@/components/godui/liquid-glass-card";
+```
+
+Place it over any colorful or detailed backdrop — the more there is behind it,
+the more the refraction reads:
+
+```tsx
+<div className="relative">
+  {/* ...page content / image background... */}
+  <LiquidGlassCard className="w-80 p-8">
+    <h3 className="text-xl font-semibold">Frosted panel</h3>
+    <p>Your content sits crisply above the glass.</p>
+  </LiquidGlassCard>
+</div>
+```
+
+### Tuning the optics
+
+Push `strength` and `dispersion` up for a heavier, more prismatic lens, or down
+for a subtle pane of frost.
+
+```tsx
+<LiquidGlassCard strength={100} dispersion={0.3} blur={4} sheen={0.7}>
+  Deep refraction
+</LiquidGlassCard>
+```
+
+## Props
+
+| Prop         | Type     | Default                 | Description                                                  |
+| ------------ | -------- | ----------------------- | ----------------------------------------------------------- |
+| `radius`     | `number` | `28`                    | Corner radius in px.                                        |
+| `blur`       | `number` | `2`                     | Frost (backdrop blur) in px.                                |
+| `strength`   | `number` | `60`                    | Refraction displacement scale — how hard the edges bend.    |
+| `dispersion` | `number` | `0.15`                  | Chromatic aberration, `0`–`1`. Splits the R/G/B refraction. |
+| `saturation` | `number` | `1.6`                   | Backdrop saturation multiplier.                             |
+| `tint`       | `string` | `rgba(255,255,255,.08)` | Glass tint color.                                           |
+| `sheen`      | `number` | `0.5`                   | Specular highlight intensity, `0`–`1`.                      |
+
+`LiquidGlassCard` also forwards every standard `<div>` attribute (`className`,
+`style`, `id`, …) to the root element.
