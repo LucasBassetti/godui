@@ -9,6 +9,10 @@
       "types": "./src/index.ts",
       "default": "./src/index.ts"
     },
+    "./registry": {
+      "types": "./src/lib/background-registry.ts",
+      "default": "./src/lib/background-registry.ts"
+    },
     "./styles.css": "./styles.css",
     "./fonts/vite.css": "./fonts/vite.css",
     "./fonts/next": {
