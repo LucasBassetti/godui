@@ -14,6 +14,16 @@ build
 apps/docs/public/design-system
 storybook-static
 
+# aeo.js generated AEO files
+apps/docs/public/robots.txt
+apps/docs/public/sitemap.xml
+apps/docs/public/llms.txt
+apps/docs/public/llms-full.txt
+apps/docs/public/docs.json
+apps/docs/public/ai-index.json
+apps/docs/public/schema.json
+apps/docs/public/**/*.md
+
 # Debug / env
 .env*.local
 npm-debug.log*
