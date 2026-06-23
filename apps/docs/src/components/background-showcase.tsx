@@ -16,7 +16,6 @@ import {
 } from "@godui/components";
 import { type ComponentType, useState } from "react";
 import { ComponentInstall } from "@/components/component-install";
-import { CopyButton } from "@/components/copy-button";
 import { cn } from "@/lib/cn";
 
 type Preset = {
@@ -67,22 +66,11 @@ const SETS: Record<
   },
 };
 
-function propLines(preset: Preset): string {
-  return (["background", "backgroundImage", "backgroundSize"] as const)
-    .filter((k) => preset[k] !== undefined)
-    .map((k) => `  ${k}={${JSON.stringify(preset[k])}}`)
-    .join("\n");
-}
-
 export function BackgroundShowcase({ component }: { component: Key }) {
   const set = SETS[component];
   const [selected, setSelected] = useState(set.variants[0]);
   const preset = set.presets[selected];
   const Bg = set.Component;
-
-  const usage = `import { ${set.component} } from "@/components/godui/${set.name}";
-
-<${set.component}\n${propLines(preset)}\n/>`;
 
   return (
     <div className="not-prose my-8 flex flex-col gap-4">
@@ -119,16 +107,6 @@ export function BackgroundShowcase({ component }: { component: Key }) {
       {/* install — same tabbed pattern as every component, with the selected
           variant baked into the command + Manual source */}
       <ComponentInstall name={set.name} variant={selected} />
-
-      {/* usage snippet */}
-      <div className="relative rounded-lg border border-fd-border bg-fd-muted/40 p-3">
-        <pre className="overflow-x-auto font-mono text-xs">
-          <code>{usage}</code>
-        </pre>
-        <span className="absolute top-2 right-2">
-          <CopyButton value={usage} />
-        </span>
-      </div>
     </div>
   );
 }
