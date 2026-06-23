@@ -18,9 +18,6 @@ const meta: Meta<ShowcaseArgs> = {
   parameters: { layout: "fullscreen" },
   argTypes: {
     variant: { control: "select", options: geometricBackgroundVariants },
-    background: { table: { disable: true } },
-    backgroundImage: { table: { disable: true } },
-    backgroundSize: { table: { disable: true } },
   },
   args: { variant: geometricBackgroundVariants[0] },
 };
@@ -31,7 +28,7 @@ type Story = StoryObj<ShowcaseArgs>;
 export const Default: Story = {
   render: ({ variant }) => (
     <div className="relative flex min-h-[420px] w-full items-center justify-center overflow-hidden">
-      <GeometricBackground {...geometricBackgroundPresets[variant]} />
+      <GeometricBackground style={geometricBackgroundPresets[variant]} />
       <p className="relative z-raised rounded-lg bg-background/70 px-4 py-2 text-sm font-medium text-foreground backdrop-blur">
         {variant}
       </p>
@@ -47,7 +44,7 @@ export const Gallery: Story = {
           key={variant}
           className="relative flex h-40 items-end overflow-hidden rounded-lg border border-border"
         >
-          <GeometricBackground {...geometricBackgroundPresets[variant]} />
+          <GeometricBackground style={geometricBackgroundPresets[variant]} />
           <span className="relative z-raised w-full truncate bg-background/70 px-2 py-1 text-xs text-foreground backdrop-blur">
             {variant}
           </span>

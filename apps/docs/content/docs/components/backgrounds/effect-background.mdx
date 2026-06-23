@@ -23,10 +23,12 @@ import { EffectBackground } from "@/components/godui/effect-background";
 
 ## Props
 
-| Prop | Type | Default | Description |
-| ---- | ---- | ------- | ----------- |
-| `background` | `string` | default variant | CSS `background` shorthand |
-| `backgroundImage` | `string` | default variant | CSS `background-image` |
-| `backgroundSize` | `string` | default variant | CSS `background-size` |
+The component bakes the selected variant's full style. It takes no custom props —
+just the standard `div` attributes.
 
-All other `div` attributes (`className`, `style`, …) are forwarded to the layer.
+| Prop | Type | Description |
+| ---- | ---- | ----------- |
+| `style` | `CSSProperties` | Supply your own background. Setting any background key (`background`, `backgroundImage`, `backgroundColor`, …) replaces the baked default entirely. |
+| `className` | `string` | Extra classes on the layer (it is `absolute inset-0 z-base`). |
+
+All other `div` attributes are forwarded.

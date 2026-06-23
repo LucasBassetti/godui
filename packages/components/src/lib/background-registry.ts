@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import {
   decorativeBackgroundPresets,
   decorativeBackgroundSource,
@@ -15,20 +16,12 @@ import {
   gradientBackgroundSource,
 } from "../gradient-background";
 
-type Preset = {
-  background?: string;
-  backgroundImage?: string;
-  backgroundSize?: string;
-};
-
 type Entry = {
   source: string;
-  presets: Record<string, Preset>;
+  presets: Record<string, CSSProperties>;
   defaultVariant: string;
   title: string;
 };
-
-const KEYS = ["background", "backgroundImage", "backgroundSize"] as const;
 
 const REGISTRY: Record<string, Entry> = {
   "gradient-background": {
@@ -59,12 +52,13 @@ const REGISTRY: Record<string, Entry> = {
 
 export const BACKGROUND_ITEMS = Object.keys(REGISTRY);
 
-function block(preset: Preset): string {
-  return KEYS.map((k) =>
-    preset[k] !== undefined
-      ? `      ${k} = ${JSON.stringify(preset[k])},`
-      : `      ${k},`,
-  ).join("\n");
+// The component's `baseStyle` block sits between these markers, indented two
+// spaces (inside the object literal). Re-serialize a variant's style the same
+// way so a swapped block matches the surrounding format.
+function styleBlock(style: CSSProperties): string {
+  return Object.entries(style)
+    .map(([k, v]) => `  ${k}: ${JSON.stringify(v)},`)
+    .join("\n");
 }
 
 export function buildBackgroundFileContent(
@@ -75,10 +69,11 @@ export function buildBackgroundFileContent(
   if (!entry) return null;
   const id =
     variant && variant in entry.presets ? variant : entry.defaultVariant;
-  const preset = entry.presets[id];
+  // The committed source already bakes the default variant.
+  if (id === entry.defaultVariant) return entry.source;
   return entry.source.replace(
     /\/\/ @default-props:start[\s\S]*?\/\/ @default-props:end/,
-    `// @default-props:start\n${block(preset)}\n      // @default-props:end`,
+    `// @default-props:start\n${styleBlock(entry.presets[id])}\n  // @default-props:end`,
   );
 }
 

@@ -14,15 +14,9 @@ import {
   gradientBackgroundPresets,
   gradientBackgroundVariants,
 } from "@godui/components";
-import { type ComponentType, useState } from "react";
+import { type ComponentType, type CSSProperties, useState } from "react";
 import { ComponentInstall } from "@/components/component-install";
 import { cn } from "@/lib/cn";
-
-type Preset = {
-  background?: string;
-  backgroundImage?: string;
-  backgroundSize?: string;
-};
 
 type Key = "gradient" | "geometric" | "decorative" | "effect";
 
@@ -31,9 +25,9 @@ const SETS: Record<
   {
     name: string;
     component: string;
-    Component: ComponentType<Preset & { className?: string }>;
+    Component: ComponentType<{ style?: CSSProperties; className?: string }>;
     variants: readonly string[];
-    presets: Record<string, Preset>;
+    presets: Record<string, CSSProperties>;
   }
 > = {
   gradient: {
@@ -72,6 +66,10 @@ export function BackgroundShowcase({ component }: { component: Key }) {
   const preset = set.presets[selected];
   const Bg = set.Component;
 
+  // Geometric grids/dashes look like flat colour in a tiny swatch (you only see
+  // one cell). Render them into a larger, scaled-down box so several tiles show.
+  const dense = component === "geometric";
+
   return (
     <div className="not-prose my-8 flex flex-col gap-4">
       {/* horizontal variant picker — p-2 leaves room for the selected ring,
@@ -91,14 +89,20 @@ export function BackgroundShowcase({ component }: { component: Key }) {
                 : "border-fd-border hover:border-fd-primary/50",
             )}
           >
-            <Bg {...set.presets[variant]} />
+            {dense ? (
+              <span className="absolute top-0 left-0 h-[250%] w-[250%] origin-top-left scale-[0.4]">
+                <Bg style={set.presets[variant]} />
+              </span>
+            ) : (
+              <Bg style={set.presets[variant]} />
+            )}
           </button>
         ))}
       </div>
 
       {/* live preview */}
       <div className="relative flex min-h-[320px] w-full items-center justify-center overflow-hidden rounded-xl border border-fd-border">
-        <Bg {...preset} />
+        <Bg style={preset} />
         <span className="relative z-10 rounded-md bg-fd-background/70 px-3 py-1 text-sm backdrop-blur">
           {selected}
         </span>
