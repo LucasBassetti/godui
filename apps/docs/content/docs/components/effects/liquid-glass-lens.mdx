@@ -1,0 +1,78 @@
+---
+title: Liquid Glass Lens
+description: A circular glass lens that floats over your content and follows the cursor, refracting everything beneath it.
+---
+
+import { LiquidGlassLens } from "@godui/components";
+
+<ComponentPreview
+  code={`import { LiquidGlassLens } from "@/components/godui/liquid-glass-lens";
+
+export function LiquidGlassLensDemo() {
+  return (
+    <div className="relative flex min-h-[360px] items-center justify-center overflow-hidden rounded-xl bg-cover bg-center" style={{ backgroundImage: "url(/glass-bg.webp)" }}>
+      <h2 className="pointer-events-none select-none text-5xl font-bold tracking-tight text-white drop-shadow">
+        Liquid Glass
+      </h2>
+      <LiquidGlassLens size={200} strength={80} />
+    </div>
+  );
+}`}
+>
+  <div className="relative -m-10 flex min-h-[360px] w-[calc(100%+5rem)] items-center justify-center overflow-hidden rounded-xl bg-cover bg-center" style={{ backgroundImage: "url(/glass-bg.webp)" }}>
+    <h2 className="pointer-events-none select-none text-5xl font-bold tracking-tight text-white drop-shadow">Liquid Glass</h2>
+    <LiquidGlassLens size={200} strength={80} />
+  </div>
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="LiquidGlassLens" />
+
+`LiquidGlassLens` is a circular glass disc that floats over its parent's content
+and tracks the cursor, refracting everything beneath it through a converging SVG
+displacement map. It only appears while the pointer is over the parent and fades
+out on leave. It is `pointer-events-none`, so it never blocks clicks.
+
+True refraction requires `backdrop-filter: url()` (Chrome and Edge). In browsers
+without it the lens gracefully falls back to a plain frosted blur.
+
+For a static glass panel that wraps your own content, see
+[Liquid Glass Card](/docs/components/effects/liquid-glass-card).
+
+## Usage
+
+The parent must be positioned (`relative`). Drop the lens in as a sibling of the
+content you want it to roam over:
+
+```tsx
+import { LiquidGlassLens } from "@/components/godui/liquid-glass-lens";
+
+<div className="relative">
+  {/* ...images, text, any page content... */}
+  <LiquidGlassLens size={200} />
+</div>
+```
+
+### Sizing
+
+`size` is the lens diameter in px. Bump `strength` for a stronger magnify.
+
+```tsx
+<LiquidGlassLens size={260} strength={110} dispersion={0.25} />
+```
+
+## Props
+
+| Prop         | Type     | Default                 | Description                                                  |
+| ------------ | -------- | ----------------------- | ----------------------------------------------------------- |
+| `size`       | `number` | `160`                   | Diameter of the circular lens in px.                       |
+| `blur`       | `number` | `2`                     | Frost (backdrop blur) in px.                                |
+| `strength`   | `number` | `80`                    | Refraction displacement scale — how hard the lens bends.    |
+| `dispersion` | `number` | `0.15`                  | Chromatic aberration, `0`–`1`. Splits the R/G/B refraction. |
+| `saturation` | `number` | `1.6`                   | Backdrop saturation multiplier.                             |
+| `tint`       | `string` | `rgba(255,255,255,.08)` | Glass tint color.                                           |
+| `sheen`      | `number` | `0.5`                   | Specular highlight intensity, `0`–`1`.                      |
+
+`LiquidGlassLens` also forwards every standard `<div>` attribute (`className`,
+`style`, `id`, …) to the root element.

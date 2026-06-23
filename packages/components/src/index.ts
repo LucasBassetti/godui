@@ -39,6 +39,12 @@ export {
   type HighlighterProps,
 } from "./highlighter";
 export {
+  LiquidGlassCard,
+  type LiquidGlassCardProps,
+  LiquidGlassLens,
+  type LiquidGlassLensProps,
+} from "./liquid-glass";
+export {
   MagicButton,
   type MagicButtonProps,
   type MagicButtonSize,

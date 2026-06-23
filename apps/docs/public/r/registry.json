@@ -493,6 +493,44 @@
           "target": "components/godui/border-beam.tsx"
         }
       ]
+    },
+    {
+      "name": "liquid-glass-card",
+      "type": "registry:ui",
+      "title": "Liquid Glass Card",
+      "description": "A glass panel that refracts the content behind it with a mouse-tracked specular highlight.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/liquid-glass/liquid-glass-card.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/liquid-glass-card.tsx"
+        },
+        {
+          "path": "packages/components/src/liquid-glass/liquid-glass-utils.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/liquid-glass-utils.tsx"
+        }
+      ]
+    },
+    {
+      "name": "liquid-glass-lens",
+      "type": "registry:ui",
+      "title": "Liquid Glass Lens",
+      "description": "A circular glass lens that floats over your content and follows the cursor, refracting everything beneath it.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/liquid-glass/liquid-glass-lens.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/liquid-glass-lens.tsx"
+        },
+        {
+          "path": "packages/components/src/liquid-glass/liquid-glass-utils.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/liquid-glass-utils.tsx"
+        }
+      ]
     }
   ]
 }

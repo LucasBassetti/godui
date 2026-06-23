@@ -22,6 +22,8 @@
     "components/layout/progressive-card-reveal",
     "---Effects---",
     "components/effects/border-beam",
+    "components/effects/liquid-glass-card",
+    "components/effects/liquid-glass-lens",
     "---Backgrounds---",
     "components/backgrounds/gradient-background",
     "components/backgrounds/geometric-background",
