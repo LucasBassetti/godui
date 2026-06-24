@@ -9,6 +9,7 @@ import { notFound } from "next/navigation";
 import { getMDXComponents } from "@/components/mdx";
 import { source } from "@/lib/source";
 import { Breadcrumbs, type Crumb } from "../_components/breadcrumbs";
+import { TocCta } from "../_components/toc-cta";
 
 export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
   const params = await props.params;
@@ -37,10 +38,15 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
       toc={page.data.toc}
       full={page.data.full}
       breadcrumb={{ enabled: false }}
+      tableOfContent={{ footer: <TocCta /> }}
+      tableOfContentPopover={{ footer: <TocCta /> }}
     >
       <Breadcrumbs crumbs={crumbs} />
-      <DocsTitle>{page.data.title}</DocsTitle>
-      <DocsDescription>{page.data.description}</DocsDescription>
+      <DocsTitle className="docs-title">{page.data.title}</DocsTitle>
+      <DocsDescription className="docs-lead">
+        {page.data.description}
+      </DocsDescription>
+      <hr className="docs-lead-divider" />
       <DocsBody>
         <MDX components={getMDXComponents()} />
       </DocsBody>

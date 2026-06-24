@@ -49,7 +49,7 @@ export function DocsHeader({
         {/* Desktop: full search bar */}
         <FullSearchTrigger
           hideIfDisabled
-          className="ps-2.5 w-[220px] max-md:hidden rounded-full"
+          className="ps-2.5 w-[220px] max-md:hidden rounded-[11px]"
         />
         {/* Mobile: search icon only */}
         <SearchTrigger hideIfDisabled className={cn(iconButton, "md:hidden")} />

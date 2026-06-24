@@ -49,6 +49,24 @@ type ComponentInstallProps = {
   assetsTarget?: string;
 };
 
+function TerminalIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      className="size-[15px] shrink-0 text-fd-muted-foreground"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="m4 17 6-6-6-6" />
+      <path d="M12 19h8" />
+    </svg>
+  );
+}
+
 function toKebabCase(value: string) {
   return value
     .replace(/([a-z0-9])([A-Z])/g, "$1-$2")
@@ -206,9 +224,12 @@ export function ComponentInstall({
               />
               <CopyButton value={cliCommand} />
             </div>
-            <pre className="overflow-x-auto px-4 py-4 font-mono text-sm text-fd-foreground">
-              <code>{cliCommand}</code>
-            </pre>
+            <div className="flex items-center gap-3 px-4 py-4">
+              <TerminalIcon />
+              <pre className="overflow-x-auto font-mono text-sm text-fd-foreground">
+                <code>{cliCommand}</code>
+              </pre>
+            </div>
           </div>
           {variant ? null : (
             <>
@@ -261,9 +282,12 @@ export function ComponentInstall({
                       />
                       <CopyButton value={depsCommand} />
                     </div>
-                    <pre className="overflow-x-auto px-4 py-4 font-mono text-sm text-fd-foreground">
-                      <code>{depsCommand}</code>
-                    </pre>
+                    <div className="flex items-center gap-3 px-4 py-4">
+                      <TerminalIcon />
+                      <pre className="overflow-x-auto font-mono text-sm text-fd-foreground">
+                        <code>{depsCommand}</code>
+                      </pre>
+                    </div>
                   </div>
                 </div>
               ) : null}

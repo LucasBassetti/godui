@@ -96,6 +96,9 @@ body {
 #nd-sidebar a.p-2 {
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
+  /* Subtle 9px corners on the hover/active pill (Fumadocs' rounded-lg resolves
+     much larger via the GodUI --radius-lg token). */
+  border-radius: 9px;
 }
 
 #nd-sidebar p.mt-6 {
@@ -108,19 +111,96 @@ body {
   margin-top: 0;
 }
 
-/* Component preview canvas */
-.component-preview-frame {
-  box-shadow: none;
+/* Group labels — uppercase, letter-spaced, with a rainbow dot marker whose
+   color cycles --rainbow-1..5 by group order (separators are <p>, the only
+   <p> children of the nav list, so nth-of-type counts groups). */
+#nd-sidebar p.mt-6 {
+  font-size: 0.6875rem;
+  font-weight: 650;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-fd-muted-foreground);
 }
 
-.component-preview-frame .component-preview-code,
-.component-preview-frame .shiki {
+#nd-sidebar p.mt-6::before {
+  content: "";
+  flex: none;
+  width: 5px;
+  height: 5px;
+  border-radius: 99px;
+  background: var(--color-fd-muted-foreground);
+}
+
+#nd-sidebar p.mt-6:nth-of-type(5n + 1)::before {
+  background: var(--rainbow-1);
+}
+#nd-sidebar p.mt-6:nth-of-type(5n + 2)::before {
+  background: var(--rainbow-2);
+}
+#nd-sidebar p.mt-6:nth-of-type(5n + 3)::before {
+  background: var(--rainbow-3);
+}
+#nd-sidebar p.mt-6:nth-of-type(5n + 4)::before {
+  background: var(--rainbow-4);
+}
+#nd-sidebar p.mt-6:nth-of-type(5n + 5)::before {
+  background: var(--rainbow-5);
+}
+
+/* Active link — keep Fumadocs' primary/10 pill, add a rainbow edge indicator
+   pinned to the sidebar's left gutter. Items are position:relative. */
+#nd-sidebar a[data-active="true"] {
+  font-weight: 550;
+}
+
+#nd-sidebar a[data-active="true"]::before {
+  content: "";
+  position: absolute;
+  left: -0.875rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 18px;
+  border-radius: 0 3px 3px 0;
+  background: linear-gradient(
+    var(--rainbow-1),
+    var(--rainbow-3),
+    var(--rainbow-5)
+  );
+}
+
+/* Content header — larger title, muted lead, thin divider before the body. */
+h1.docs-title {
+  font-size: 2.5rem;
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+  font-weight: 700;
+}
+
+p.docs-lead {
+  font-size: 1.1875rem;
+  line-height: 1.55;
+  color: var(--color-fd-muted-foreground);
+  text-wrap: pretty;
+}
+
+hr.docs-lead-divider {
+  height: 1px;
+  border: 0;
+  background: var(--color-fd-border);
+  margin: 2rem 0 0;
+}
+
+/* Component preview — seamless code block inside the card */
+.component-preview .component-preview-code,
+.component-preview .shiki {
   box-shadow: none !important;
   border: 0 !important;
   border-radius: 0 !important;
   margin: 0 !important;
 }
 
+/* Dotted-grid demo stage with a radial fade toward the page background. */
 .component-preview-canvas {
   background-color: var(--color-fd-background);
   background-image: radial-gradient(
@@ -128,6 +208,23 @@ body {
     transparent 1px
   );
   background-size: 16px 16px;
+}
+
+.component-preview-canvas::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    120% 120% at 50% 0%,
+    transparent 60%,
+    color-mix(in srgb, var(--color-fd-background) 55%, transparent)
+  );
+}
+
+.component-preview-canvas > * {
+  position: relative;
+  z-index: 1;
 }
 
 .component-install-cli pre {
@@ -287,9 +384,9 @@ body {
   -webkit-box-decoration-break: clone;
 }
 
-/* Sidebar — no border, blend with page background, stick below header */
+/* Sidebar — right divider, blend with page background, stick below header */
 #nd-sidebar {
-  border-right: none !important;
+  border-right: 1px solid var(--color-fd-border) !important;
   background: var(--color-fd-background) !important;
   position: sticky !important;
   top: var(--fd-nav-height, 3.5rem) !important;
@@ -529,4 +626,13 @@ body {
   #nd-nav a:hover .godui-glasses-gradient {
     animation: none;
   }
+}
+
+/* "Built with GodUI" TOC card — subtle primary-tinted gradient surface. */
+.toc-cta {
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--color-fd-primary) 8%, var(--color-fd-card)),
+    var(--color-fd-card)
+  );
 }
