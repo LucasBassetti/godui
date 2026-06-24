@@ -1,0 +1,150 @@
+---
+title: Pixel Grid
+description: A grid of squares that flicker their opacity — as an automatic animated background, or revealed only under the cursor.
+---
+
+import { PixelGrid } from "@godui/components";
+
+A field of small squares that flicker their opacity on a loop. It has two modes.
+With `interactive={false}` the whole field flickers on its own — an automatic
+animated background. With `interactive`, only the squares within
+`interactionRadius` of the cursor animate; the rest are hidden or held at a
+static dim, depending on `cursorReveal`. Drop it as the first child of a
+`relative overflow-hidden` container; your content sits above it. The square
+color defaults to the `--color-foreground` theme token and re-resolves on theme
+change, so it tracks light and dark automatically.
+
+<ComponentPreview
+  code={`import { PixelGrid } from "@/components/godui/pixel-grid";
+
+export function PixelGridDemo() {
+  return (
+    <div className="relative min-h-[320px] w-full overflow-hidden rounded-xl border border-border bg-background">
+      <PixelGrid interactive={false} />
+    </div>
+  );
+}`}
+>
+  <PixelGrid interactive={false} />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall name="pixel-grid" />
+
+## Usage
+
+```tsx
+import { PixelGrid } from "@/components/godui/pixel-grid";
+```
+
+`PixelGrid` is absolutely positioned and fills its nearest positioned ancestor,
+so that parent must be `relative`. Add `overflow-hidden` to keep the edges clean.
+
+```tsx
+<div className="relative overflow-hidden">
+  <PixelGrid interactive={false} />
+</div>
+```
+
+## Examples
+
+### Cursor reveal
+
+Set `interactive` so only the squares within `interactionRadius` of the cursor
+animate. With the default `cursorReveal="hidden"`, the rest stay invisible — a
+spotlight that follows the pointer.
+
+<ComponentPreview
+  code={`import { PixelGrid } from "@/components/godui/pixel-grid";
+
+export function PixelGridCursor() {
+  return (
+    <div className="relative flex min-h-[240px] w-full items-center justify-center overflow-hidden rounded-xl border border-border bg-background">
+      <PixelGrid interactive />
+      <p className="relative z-10 text-sm font-medium text-foreground">Move your cursor across the grid</p>
+    </div>
+  );
+}`}
+>
+  <PixelGrid interactive />
+  <p className="relative z-10 text-sm font-medium text-foreground">Move your cursor across the grid</p>
+</ComponentPreview>
+
+### Cursor reveal over a dim field
+
+`cursorReveal="dim"` keeps the squares outside the radius visible at a static low
+opacity, so the cursor lights up an already-present grid.
+
+<ComponentPreview
+  code={`import { PixelGrid } from "@/components/godui/pixel-grid";
+
+export function PixelGridCursorDim() {
+  return (
+    <div className="relative flex min-h-[240px] w-full items-center justify-center overflow-hidden rounded-xl border border-border bg-background">
+      <PixelGrid interactive cursorReveal="dim" />
+      <p className="relative z-10 text-sm font-medium text-foreground">Move your cursor across the grid</p>
+    </div>
+  );
+}`}
+>
+  <PixelGrid interactive cursorReveal="dim" />
+  <p className="relative z-10 text-sm font-medium text-foreground">Move your cursor across the grid</p>
+</ComponentPreview>
+
+### Custom color
+
+Pass any CSS color string to `color` to override the theme token.
+
+<ComponentPreview
+  code={`import { PixelGrid } from "@/components/godui/pixel-grid";
+
+export function PixelGridColored() {
+  return (
+    <div className="relative min-h-[240px] w-full overflow-hidden rounded-xl border border-border bg-background">
+      <PixelGrid interactive={false} color="oklch(0.7 0.18 280)" maxOpacity={0.5} />
+    </div>
+  );
+}`}
+>
+  <PixelGrid interactive={false} color="oklch(0.7 0.18 280)" maxOpacity={0.5} />
+</ComponentPreview>
+
+### Dense grid
+
+Smaller `squareSize` and `gridGap` pack the field tighter.
+
+<ComponentPreview
+  code={`import { PixelGrid } from "@/components/godui/pixel-grid";
+
+export function PixelGridDense() {
+  return (
+    <div className="relative min-h-[240px] w-full overflow-hidden rounded-xl border border-border bg-background">
+      <PixelGrid interactive={false} squareSize={2} gridGap={2} flickerChance={0.2} maxOpacity={0.4} />
+    </div>
+  );
+}`}
+>
+  <PixelGrid interactive={false} squareSize={2} gridGap={2} flickerChance={0.2} maxOpacity={0.4} />
+</ComponentPreview>
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `squareSize` | `number` | `4` | Side length (px) of each square. |
+| `gridGap` | `number` | `6` | Gap (px) between squares. |
+| `flickerChance` | `number` | `0.3` | Per-second probability a square re-rolls its opacity. |
+| `color` | `string` | `--color-foreground` | Square color, any CSS color string. Defaults to the theme token. |
+| `maxOpacity` | `number` | `0.3` | Upper bound on square opacity (0–1). |
+| `interactive` | `boolean` | `true` | `false` flickers the whole field automatically; `true` animates only squares within the cursor radius. |
+| `interactionRadius` | `number` | `120` | Radius (px) of the cursor reveal. |
+| `interactionStrength` | `number` | `1` | How strongly the cursor reveals squares within the radius (0–1). |
+| `cursorReveal` | `"hidden" \| "dim"` | `"hidden"` | How squares outside the radius render in interactive mode — invisible, or a static dim. |
+| `width` | `number` | — | Fixed width (px). Defaults to filling the parent. |
+| `height` | `number` | — | Fixed height (px). Defaults to filling the parent. |
+
+Also accepts standard `div` attributes (e.g. `className`, `style`).
+
+Honors `prefers-reduced-motion`: the flicker animation pauses and a single static
+frame is drawn instead.

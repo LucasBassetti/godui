@@ -24,10 +24,10 @@
     "components/effects/border-beam",
     "components/effects/liquid-glass-card",
     "components/effects/liquid-glass-lens",
-    "---Backgrounds---",
     "components/backgrounds/gradient-background",
     "components/backgrounds/geometric-background",
     "components/backgrounds/decorative-background",
-    "components/backgrounds/effect-background"
+    "components/backgrounds/effect-background",
+    "components/backgrounds/pixel-grid"
   ]
 }

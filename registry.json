@@ -531,6 +531,20 @@
           "target": "components/godui/liquid-glass-utils.tsx"
         }
       ]
+    },
+    {
+      "name": "pixel-grid",
+      "type": "registry:ui",
+      "title": "Pixel Grid",
+      "description": "A grid of flickering squares with an optional cursor spotlight that lights up nearby pixels.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/pixel-grid/pixel-grid.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/pixel-grid.tsx"
+        }
+      ]
     }
   ]
 }
