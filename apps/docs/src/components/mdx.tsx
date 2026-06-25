@@ -4,6 +4,7 @@ import type { ComponentProps } from "react";
 import { BackgroundShowcase } from "@/components/background-showcase";
 import { ComponentInstall } from "@/components/component-install";
 import { ComponentPreview } from "@/components/component-preview";
+import { MCPInstall } from "@/components/mcp-install";
 
 function Table(props: ComponentProps<"table">) {
   return (
@@ -19,6 +20,7 @@ export function getMDXComponents(components?: MDXComponents) {
     table: Table,
     ComponentPreview,
     ComponentInstall,
+    MCPInstall,
     BackgroundShowcase,
     ...components,
   } satisfies MDXComponents;

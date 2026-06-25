@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "build": "turbo build",
-    "build:registry": "shadcn build --output apps/docs/public/r",
+    "build:registry": "shadcn build --output apps/docs/public/r && node apps/docs/scripts/generate-mcp-index.mjs",
     "dev": "turbo dev",
     "dev:portless": "portless",
     "lint": "turbo lint",

@@ -1,0 +1,52 @@
+---
+title: MCP Server
+description: Use GodUI from your AI IDE — discover and install components by description.
+---
+
+GodUI ships an [MCP](https://modelcontextprotocol.io) server so AI coding agents
+(Cursor, Windsurf, Claude, Cline, Roo-Cline, …) can browse the GodUI catalog and
+install components straight into your project. Add it once, then just ask for the
+component you want in plain language.
+
+## Installation
+
+Use the **CLI** to write the config automatically, or add it **Manually**.
+
+<MCPInstall />
+
+The server runs locally over `stdio` via `npx` — no API key, no account. The CLI
+installs into your editor's MCP config; with Manual you paste the block into it
+yourself.
+
+## Usage
+
+Ask your IDE to use any GodUI component:
+
+- "Add a GodUI magic button"
+- "Add a marquee of logos"
+- "Add an animated gradient background"
+- "Add a number ticker that counts to 1000"
+
+The agent finds the right component, then installs it with the
+[shadcn CLI](/docs/installation) — copying the source into your project so you
+own it.
+
+## Tools
+
+The server exposes three tools:
+
+| Tool | What it does |
+| --- | --- |
+| `list_components` | List the full catalog, optionally filtered by category. |
+| `search_components` | Find components by what they do (natural language). |
+| `get_component` | Fetch one component's install command and full source. |
+
+## How it works
+
+The server fetches the live registry at `https://godui.design/r`, so it always
+serves the latest components — no upgrade needed when GodUI ships something new.
+Point it at a local registry for development by setting `GODUI_REGISTRY_URL`:
+
+```bash
+GODUI_REGISTRY_URL=http://localhost:3000/r npx @godui/mcp@latest
+```

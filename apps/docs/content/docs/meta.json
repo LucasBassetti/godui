@@ -4,6 +4,7 @@
     "---Getting Started---",
     "index",
     "installation",
+    "mcp",
     "---Buttons---",
     "components/buttons/magic-button",
     "components/buttons/shimmer-button",
