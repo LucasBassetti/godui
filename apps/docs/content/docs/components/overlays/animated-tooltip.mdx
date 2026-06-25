@@ -1,0 +1,73 @@
+---
+title: Animated Tooltip
+description: A tooltip that springs in and tilts in 3D as the pointer moves across its trigger.
+---
+
+import { AnimatedTooltipDemo } from "@/components/demos/animated-tooltip-demo";
+
+<ComponentPreview
+  code={`import { AnimatedTooltip } from "@/components/godui/animated-tooltip";
+
+const team = [
+  { name: "Ada Lovelace", role: "Design Engineer", initials: "AL", gradient: "from-indigo-500 to-violet-500" },
+  { name: "Grace Hopper", role: "Staff Engineer", initials: "GH", gradient: "from-rose-500 to-orange-500" },
+  { name: "Alan Turing", role: "Founder", initials: "AT", gradient: "from-emerald-500 to-teal-500" },
+];
+
+export function TeamStack() {
+  return (
+    <div className="flex">
+      {team.map((m) => (
+        <AnimatedTooltip
+          key={m.name}
+          className="-ml-3 first:ml-0"
+          content={<span className="flex flex-col"><span className="font-semibold">{m.name}</span><span className="text-background/70">{m.role}</span></span>}
+        >
+          <span className={\`flex size-12 items-center justify-center rounded-full bg-gradient-to-br \${m.gradient} text-sm font-semibold text-white ring-2 ring-background\`}>
+            {m.initials}
+          </span>
+        </AnimatedTooltip>
+      ))}
+    </div>
+  );
+}`}
+>
+  <AnimatedTooltipDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="AnimatedTooltip" />
+
+`AnimatedTooltip` wraps any trigger. On hover or focus the tooltip springs in and
+tilts toward the pointer in 3D, following the cursor across the trigger.
+
+## Usage
+
+```tsx
+import { AnimatedTooltip } from "@/components/godui/animated-tooltip";
+```
+
+```tsx
+<AnimatedTooltip content="Design Engineer">
+  <button>Hover me</button>
+</AnimatedTooltip>
+```
+
+### Side
+
+```tsx
+<AnimatedTooltip content="Below" side="bottom">
+  <Avatar />
+</AnimatedTooltip>
+```
+
+## Props
+
+| Prop      | Type                 | Default | Description                                  |
+| --------- | -------------------- | ------- | -------------------------------------------- |
+| `content` | `ReactNode`          | —       | Tooltip content shown on hover / focus.      |
+| `side`    | `"top" \| "bottom"`  | `"top"` | Which side of the trigger the tooltip shows. |
+| `children`| `ReactNode`          | —       | The trigger the tooltip is attached to.      |
+
+`AnimatedTooltip` also forwards every standard `<span>` attribute to the root element.

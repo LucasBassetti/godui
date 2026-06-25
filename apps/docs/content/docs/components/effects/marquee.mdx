@@ -1,0 +1,120 @@
+---
+title: Marquee
+description: An infinite, seamless scrolling row or column of content that pauses on hover.
+---
+
+import { Marquee } from "@godui/components";
+import { MarqueeDemo } from "@/components/demos/marquee-demo";
+
+<ComponentPreview
+  code={`import { Marquee } from "@/components/godui/marquee";
+
+const logos = ["Northwind", "Globex", "Acme", "Initech", "Hooli", "Stark", "Umbra", "Vertex"];
+
+export function MarqueeDemo() {
+  return (
+    <div className="py-4">
+      <p className="mb-6 text-center text-sm font-medium uppercase tracking-wide text-muted-foreground">Trusted by fast-moving teams</p>
+      <Marquee speed={28}>
+        {logos.map((name) => (
+          <span key={name} className="px-2 text-lg font-semibold tracking-tight text-muted-foreground transition-colors hover:text-foreground">{name}</span>
+        ))}
+      </Marquee>
+    </div>
+  );
+}`}
+>
+  <MarqueeDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="Marquee" />
+
+`Marquee` duplicates its children into a seamless looping track. The animation is
+pure CSS, so it stays smooth even with many items, and respects
+`prefers-reduced-motion`.
+
+## Usage
+
+```tsx
+import { Marquee } from "@/components/godui/marquee";
+```
+
+```tsx
+<Marquee>
+  {items.map((item) => (
+    <Card key={item.id} {...item} />
+  ))}
+</Marquee>
+```
+
+### Direction
+
+`"left"` / `"right"` scroll horizontally; `"up"` / `"down"` scroll vertically (give
+the marquee a fixed height).
+
+```tsx
+<Marquee direction="right" />
+<Marquee direction="up" className="h-96" />
+```
+
+### Speed
+
+`speed` is the loop duration in seconds — higher is slower.
+
+```tsx
+<Marquee speed={15} />
+```
+
+## Examples
+
+### Reverse direction
+
+<ComponentPreview
+  code={`<Marquee direction="right" speed={26}>
+  {["Design", "Engineering", "Motion", "Craft", "Detail", "Systems"].map((t) => (
+    <span key={t} className="px-4 text-lg font-semibold text-muted-foreground">{t}</span>
+  ))}
+</Marquee>`}
+>
+  <Marquee direction="right" speed={26}>
+    {["Design", "Engineering", "Motion", "Craft", "Detail", "Systems"].map((t) => (
+      <span key={t} className="px-4 text-lg font-semibold text-muted-foreground">{t}</span>
+    ))}
+  </Marquee>
+</ComponentPreview>
+
+### Vertical
+
+Give a vertical marquee a fixed height; it scrolls along the column.
+
+<ComponentPreview
+  code={`<div className="flex h-64 justify-center">
+  <Marquee direction="up" speed={18} className="h-full">
+    {reviews.map((r) => (
+      <div key={r} className="w-56 rounded-xl border border-border bg-card p-4 text-sm text-muted-foreground shadow-sm">{r}</div>
+    ))}
+  </Marquee>
+</div>`}
+>
+  <div className="flex h-64 justify-center">
+    <Marquee direction="up" speed={18} className="h-full">
+      {["Smoothest UI all year", "Spring physics done right", "It just worked", "Feels premium", "Shipped in a day"].map((r) => (
+        <div key={r} className="w-56 rounded-xl border border-border bg-card p-4 text-sm text-muted-foreground shadow-sm">{r}</div>
+      ))}
+    </Marquee>
+  </div>
+</ComponentPreview>
+
+## Props
+
+| Prop           | Type                                     | Default  | Description                                          |
+| -------------- | ---------------------------------------- | -------- | --------------------------------------------------- |
+| `direction`    | `"left" \| "right" \| "up" \| "down"`    | `"left"` | Scroll direction.                                   |
+| `speed`        | `number`                                 | `40`     | Loop duration in seconds — higher is slower.        |
+| `pauseOnHover` | `boolean`                                | `true`   | Pause while the pointer is over the marquee.        |
+| `fade`         | `boolean`                                | `true`   | Fade the leading and trailing edges.                |
+| `repeat`       | `number`                                 | `4`      | Times the children are duplicated to fill the track.|
+
+`Marquee` also forwards every standard `<div>` attribute to the root element.

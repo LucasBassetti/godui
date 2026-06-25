@@ -1,5 +1,27 @@
+export {
+  AnimatedTestimonials,
+  type AnimatedTestimonialsProps,
+  type Testimonial,
+} from "./animated-testimonials";
+export {
+  AnimatedTooltip,
+  type AnimatedTooltipProps,
+  type AnimatedTooltipSide,
+} from "./animated-tooltip";
 export { AuroraText, type AuroraTextProps } from "./aurora-text";
+export {
+  BentoCard,
+  type BentoCardProps,
+  BentoGrid,
+  type BentoGridProps,
+} from "./bento-grid";
 export { BorderBeam, type BorderBeamProps } from "./border-beam";
+export {
+  type CommandGroup,
+  type CommandItem,
+  CommandPalette,
+  type CommandPaletteProps,
+} from "./command-palette";
 export {
   DecorativeBackground,
   type DecorativeBackgroundProps,
@@ -7,6 +29,13 @@ export {
   decorativeBackgroundPresets,
   decorativeBackgroundVariants,
 } from "./decorative-background";
+export {
+  Dock,
+  DockItem,
+  type DockItemProps,
+  type DockProps,
+} from "./dock";
+export { Drawer, type DrawerProps, type DrawerSide } from "./drawer";
 export {
   EffectBackground,
   type EffectBackgroundProps,
@@ -66,6 +95,11 @@ export {
   type MagicTabVariant,
 } from "./magic-tab";
 export {
+  Marquee,
+  type MarqueeDirection,
+  type MarqueeProps,
+} from "./marquee";
+export {
   MaskButton,
   type MaskButtonMask,
   type MaskButtonProps,
@@ -89,11 +123,20 @@ export {
   type ProgressiveCardRevealProps,
 } from "./progressive-card-reveal";
 export {
+  ScrollReveal,
+  type ScrollRevealDirection,
+  type ScrollRevealProps,
+} from "./scroll-reveal";
+export {
   ShimmerButton,
   type ShimmerButtonProps,
   type ShimmerButtonSize,
   type ShimmerButtonVariant,
 } from "./shimmer-button";
+export {
+  SpotlightCard,
+  type SpotlightCardProps,
+} from "./spotlight-card";
 export {
   TextAnimate,
   type TextAnimateBy,
@@ -101,3 +144,12 @@ export {
   type TextAnimatePreset,
   type TextAnimateProps,
 } from "./text-animate";
+export {
+  type ToastAction,
+  type ToastOptions,
+  type ToastPosition,
+  ToastProvider,
+  type ToastProviderProps,
+  type ToastVariant,
+  toast,
+} from "./toast";
