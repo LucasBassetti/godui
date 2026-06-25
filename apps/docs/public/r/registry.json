@@ -373,6 +373,21 @@
       }
     },
     {
+      "name": "magnetic-button",
+      "type": "registry:ui",
+      "title": "Magnetic Button",
+      "description": "A button whose content is magnetically pulled toward the cursor within a sensor range, springing back on exit.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/magnetic-button/magnetic-button.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/magnetic-button.tsx"
+        }
+      ]
+    },
+    {
       "name": "progressive-card-reveal",
       "type": "registry:ui",
       "title": "Progressive Card Reveal",
@@ -515,12 +530,20 @@
       },
       "css": {
         "@keyframes marquee": {
-          "from": { "transform": "translateX(0)" },
-          "to": { "transform": "translateX(calc(-100% - var(--gap)))" }
+          "from": {
+            "transform": "translateX(0)"
+          },
+          "to": {
+            "transform": "translateX(calc(-100% - var(--gap)))"
+          }
         },
         "@keyframes marquee-vertical": {
-          "from": { "transform": "translateY(0)" },
-          "to": { "transform": "translateY(calc(-100% - var(--gap)))" }
+          "from": {
+            "transform": "translateY(0)"
+          },
+          "to": {
+            "transform": "translateY(calc(-100% - var(--gap)))"
+          }
         }
       }
     },
@@ -722,6 +745,141 @@
           "path": "packages/components/src/pixel-grid/pixel-grid.tsx",
           "type": "registry:ui",
           "target": "components/godui/pixel-grid.tsx"
+        }
+      ]
+    },
+    {
+      "name": "dynamic-island",
+      "type": "registry:ui",
+      "title": "Dynamic Island",
+      "description": "An Apple-inspired pill that springs between size presets while its content cross-fades.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/dynamic-island/dynamic-island.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/dynamic-island.tsx"
+        }
+      ]
+    },
+    {
+      "name": "tilt-card",
+      "type": "registry:ui",
+      "title": "Tilt Card",
+      "description": "A card that tilts in 3D toward the pointer with parallax depth and a specular glare.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/tilt-card/tilt-card.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/tilt-card.tsx"
+        }
+      ]
+    },
+    {
+      "name": "animated-beam",
+      "type": "registry:ui",
+      "title": "Animated Beam",
+      "description": "An animated gradient beam that travels along a path connecting two separate nodes.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/animated-beam/animated-beam.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/animated-beam.tsx"
+        }
+      ]
+    },
+    {
+      "name": "globe",
+      "type": "registry:ui",
+      "title": "Globe",
+      "description": "A draggable, auto-rotating WebGL globe with glowing location markers.",
+      "dependencies": ["cobe"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/globe/globe.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/globe.tsx"
+        }
+      ]
+    },
+    {
+      "name": "orbiting-circles",
+      "type": "registry:ui",
+      "title": "Orbiting Circles",
+      "description": "Icons that orbit a center point on a configurable ring, staying upright as they travel.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/orbiting-circles/orbiting-circles.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/orbiting-circles.tsx"
+        }
+      ]
+    },
+    {
+      "name": "theme-toggle",
+      "type": "registry:ui",
+      "title": "Theme Toggle",
+      "description": "A dark/light switch that reveals the new theme with a circular wipe from the click origin.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/theme-toggle/theme-toggle.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/theme-toggle.tsx"
+        }
+      ]
+    },
+    {
+      "name": "sparkles",
+      "type": "registry:ui",
+      "title": "Sparkles",
+      "description": "A canvas field of twinkling particles rendered behind its content.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/sparkles/sparkles.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/sparkles.tsx"
+        }
+      ]
+    },
+    {
+      "name": "lamp",
+      "type": "registry:ui",
+      "title": "Lamp",
+      "description": "A conic-gradient lamp that ignites and reveals a headline as it scrolls into view.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/lamp/lamp.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/lamp.tsx"
+        }
+      ]
+    },
+    {
+      "name": "confetti",
+      "type": "registry:ui",
+      "title": "Confetti",
+      "description": "A physics-based confetti burst with an imperative fire API for celebratory moments.",
+      "dependencies": ["canvas-confetti"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/confetti/confetti.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/confetti.tsx"
         }
       ]
     }

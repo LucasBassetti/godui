@@ -1,0 +1,103 @@
+---
+title: Animated Beam
+description: An animated gradient beam that travels along a path connecting two separate nodes.
+---
+
+import { AnimatedBeamDemo } from "@/components/demos/animated-beam-demo";
+import { AnimatedBeamPipelineDemo } from "@/components/demos/animated-beam-pipeline-demo";
+import { AnimatedBeamSyncDemo } from "@/components/demos/animated-beam-sync-demo";
+
+<ComponentPreview
+  code={`import { AnimatedBeam } from "@/components/godui/animated-beam";
+import { useRef } from "react";
+
+export function AnimatedBeamDemo() {
+  const containerRef = useRef(null);
+  const fromRef = useRef(null);
+  const toRef = useRef(null);
+  return (
+    <div ref={containerRef} className="relative flex items-center justify-between">
+      <div ref={fromRef} className="size-12 rounded-full bg-card" />
+      <div ref={toRef} className="size-16 rounded-full bg-primary" />
+      <AnimatedBeam containerRef={containerRef} fromRef={fromRef} toRef={toRef} />
+    </div>
+  );
+}`}
+>
+  <AnimatedBeamDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="AnimatedBeam" />
+
+`AnimatedBeam` renders an absolutely-positioned SVG over a container and draws a
+quadratic path between two child refs, measured live with a `ResizeObserver` and
+on window resize. A travelling gradient animates along the path. Mount it as the
+last child of a `relative` container that also holds `fromRef` and `toRef`.
+
+## Usage
+
+```tsx
+import { AnimatedBeam } from "@/components/godui/animated-beam";
+
+const containerRef = useRef(null);
+const fromRef = useRef(null);
+const toRef = useRef(null);
+```
+
+```tsx
+<div ref={containerRef} className="relative">
+  <div ref={fromRef} />
+  <div ref={toRef} />
+  <AnimatedBeam containerRef={containerRef} fromRef={fromRef} toRef={toRef} curvature={50} />
+</div>
+```
+
+## Examples
+
+### Dotted data pipeline
+
+Set `pathDashArray` for a dotted or dashed resting line. Here each stage connects
+with a dotted track (`"0.1 8"` with the round cap renders as dots), and staggered
+`delay`s send the beam flowing from stage to stage.
+
+<ComponentPreview
+  code={`const beam = { containerRef, pathDashArray: "0.1 8", duration: 4 };
+
+<AnimatedBeam {...beam} fromRef={clientRef} toRef={edgeRef} delay={0} />
+<AnimatedBeam {...beam} fromRef={edgeRef} toRef={computeRef} delay={0.6} />
+<AnimatedBeam {...beam} fromRef={computeRef} toRef={dbRef} delay={1.2} />`}
+>
+  <AnimatedBeamPipelineDemo />
+</ComponentPreview>
+
+### Bidirectional sync
+
+Stack two dashed beams with opposite `curvature` — and `reverse` on one — for a
+continuous two-way connection.
+
+<ComponentPreview
+  code={`<AnimatedBeam containerRef={containerRef} fromRef={deviceRef} toRef={cloudRef} curvature={36} pathDashArray="4 5" />
+<AnimatedBeam containerRef={containerRef} fromRef={deviceRef} toRef={cloudRef} curvature={-36} delay={1.5} reverse pathDashArray="4 5" />`}
+>
+  <AnimatedBeamSyncDemo />
+</ComponentPreview>
+
+## Props
+
+| Prop                 | Type                  | Default     | Description                                  |
+| -------------------- | --------------------- | ----------- | -------------------------------------------- |
+| `containerRef`       | `RefObject<HTMLElement>` | —        | Element the SVG overlays.                    |
+| `fromRef`            | `RefObject<HTMLElement>` | —        | Element the beam starts from.                |
+| `toRef`              | `RefObject<HTMLElement>` | —        | Element the beam ends at.                    |
+| `curvature`          | `number`              | `0`         | Bow of the curve in pixels.                  |
+| `reverse`            | `boolean`             | `false`     | Animate from end toward start.               |
+| `duration`           | `number`              | `3`         | Seconds for one travel of the gradient.      |
+| `delay`              | `number`              | `0`         | Delay before the first travel, in seconds.   |
+| `pathColor`          | `string`              | `var(--border)` | Color of the static resting path.        |
+| `pathWidth`          | `number`              | `2`         | Width of the path in pixels.                 |
+| `pathOpacity`        | `number`              | `0.2`       | Opacity of the static resting path.          |
+| `pathDashArray`      | `string`              | —           | `stroke-dasharray` for the resting path (`"4 5"` dashes, `"0.1 8"` dots). |
+| `gradientStartColor` | `string`              | `var(--primary)` | Leading color of the travelling gradient.|
+| `gradientStopColor`  | `string`              | —           | Trailing color of the travelling gradient.   |

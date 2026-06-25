@@ -1,0 +1,70 @@
+---
+title: Tilt Card
+description: A card that tilts in 3D toward the pointer with parallax depth and a specular glare.
+---
+
+import { TiltCard } from "@godui/components";
+import { TiltCardDemo } from "@/components/demos/tilt-card-demo";
+
+<ComponentPreview
+  code={`import { TiltCard } from "@/components/godui/tilt-card";
+
+export function TiltCardDemo() {
+  return (
+    <TiltCard className="w-72 p-6">
+      <h3 className="text-lg font-semibold text-foreground">Designed in 3D</h3>
+      <p className="mt-2 text-sm text-muted-foreground">Move your pointer across the card — it tilts toward you with parallax depth and a glare that tracks the cursor.</p>
+    </TiltCard>
+  );
+}`}
+>
+  <TiltCardDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="TiltCard" />
+
+The pointer position is normalized over the card and spring-mapped to `rotateX`
+and `rotateY` on a `perspective` container. The content layer floats toward the
+viewer by `depth` for parallax, and a radial glare follows the cursor. It eases
+back to flat on leave, and renders as a plain static card under
+`prefers-reduced-motion`.
+
+## Usage
+
+```tsx
+import { TiltCard } from "@/components/godui/tilt-card";
+```
+
+```tsx
+<TiltCard className="w-72 p-6">
+  <h3>Title</h3>
+  <p>Body copy</p>
+</TiltCard>
+```
+
+### Stronger tilt and depth
+
+<ComponentPreview
+  code={`<TiltCard maxTilt={22} depth={70} className="w-72 p-6">
+  <h3 className="text-lg font-semibold text-foreground">Deeper parallax</h3>
+  <p className="mt-2 text-sm text-muted-foreground">Crank maxTilt and depth for a more dramatic effect.</p>
+</TiltCard>`}
+>
+  <TiltCard maxTilt={22} depth={70} className="w-72 p-6">
+    <h3 className="text-lg font-semibold text-foreground">Deeper parallax</h3>
+    <p className="mt-2 text-sm text-muted-foreground">Crank maxTilt and depth for a more dramatic effect.</p>
+  </TiltCard>
+</ComponentPreview>
+
+## Props
+
+| Prop      | Type      | Default | Description                                          |
+| --------- | --------- | ------- | ---------------------------------------------------- |
+| `maxTilt` | `number`  | `12`    | Maximum tilt in degrees toward the pointer.          |
+| `scale`   | `number`  | `1.03`  | Hover scale applied to the whole card.               |
+| `depth`   | `number`  | `40`    | Float the content layer toward the viewer (px).      |
+| `glare`   | `boolean` | `true`  | Render a specular glare that follows the pointer.    |
+
+`TiltCard` also forwards every standard `<div>` attribute to the root element.

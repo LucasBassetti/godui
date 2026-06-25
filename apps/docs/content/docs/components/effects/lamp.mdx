@@ -1,0 +1,60 @@
+---
+title: Lamp
+description: A conic-gradient lamp that ignites and reveals a headline as it scrolls into view.
+---
+
+import { Lamp } from "@godui/components";
+import { LampDemo } from "@/components/demos/lamp-demo";
+
+<ComponentPreview
+  code={`import { Lamp } from "@/components/godui/lamp";
+
+export function LampDemo() {
+  return (
+    <Lamp>
+      <h2 className="text-3xl font-semibold tracking-tight text-foreground md:text-4xl">Build something the world remembers</h2>
+    </Lamp>
+  );
+}`}
+>
+  <LampDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="Lamp" />
+
+Two mirrored conic gradients widen and brighten from a center seam while a glow
+blooms beneath them. The children rise into the light in sync. Everything runs on
+`whileInView`, so the lamp ignites once as the section scrolls into view — and
+renders fully lit immediately under `prefers-reduced-motion`.
+
+## Usage
+
+```tsx
+import { Lamp } from "@/components/godui/lamp";
+```
+
+```tsx
+<Lamp>
+  <h2 className="text-4xl font-semibold">Your headline</h2>
+</Lamp>
+```
+
+### Custom color
+
+`color` accepts any CSS color and drives both cones and the glow.
+
+```tsx
+<Lamp color="oklch(0.7 0.2 320)">
+  <h2 className="text-4xl font-semibold">Violet light</h2>
+</Lamp>
+```
+
+## Props
+
+| Prop    | Type     | Default       | Description                              |
+| ------- | -------- | ------------- | ---------------------------------------- |
+| `color` | `string` | `var(--primary)` | Accent color of the light.            |
+
+`Lamp` also forwards every standard `<div>` attribute to the root element.

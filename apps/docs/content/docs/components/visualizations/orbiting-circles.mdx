@@ -1,0 +1,98 @@
+---
+title: Orbiting Circles
+description: Icons that orbit a center point on a configurable ring, staying upright as they travel.
+---
+
+import { OrbitingCircles } from "@godui/components";
+import { OrbitingCirclesDemo } from "@/components/demos/orbiting-circles-demo";
+
+<ComponentPreview
+  code={`import { OrbitingCircles } from "@/components/godui/orbiting-circles";
+
+export function OrbitingCirclesDemo() {
+  return (
+    <div className="relative flex h-[360px] w-full items-center justify-center">
+      <span className="z-10 rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground">GodUI</span>
+      <OrbitingCircles className="absolute" radius={70} duration={18} iconSize={36}>
+        <Chip>A</Chip>
+        <Chip>B</Chip>
+        <Chip>C</Chip>
+      </OrbitingCircles>
+      <OrbitingCircles className="absolute" radius={130} duration={28} iconSize={40} reverse>
+        <Chip>D</Chip>
+        <Chip>E</Chip>
+        <Chip>F</Chip>
+        <Chip>G</Chip>
+      </OrbitingCircles>
+    </div>
+  );
+}`}
+>
+  <OrbitingCirclesDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="OrbitingCircles" />
+
+Children are spread evenly around a ring of `radius`. A single ring animation
+carries every slot in lockstep while each slot counter-rotates so its content
+stays upright. The orbit pauses entirely under `prefers-reduced-motion`.
+
+## Usage
+
+```tsx
+import { OrbitingCircles } from "@/components/godui/orbiting-circles";
+```
+
+```tsx
+<OrbitingCircles radius={120} duration={20}>
+  <Icon />
+  <Icon />
+  <Icon />
+</OrbitingCircles>
+```
+
+### Reversed inner ring
+
+Stack two rings with different `radius`, `duration`, and `reverse` for a layered
+ecosystem diagram.
+
+<ComponentPreview
+  code={`<div className="relative flex h-80 w-full items-center justify-center">
+  <OrbitingCircles className="absolute" radius={60} duration={14}>
+    <Chip>1</Chip>
+    <Chip>2</Chip>
+  </OrbitingCircles>
+  <OrbitingCircles className="absolute" radius={120} duration={24} reverse>
+    <Chip>3</Chip>
+    <Chip>4</Chip>
+    <Chip>5</Chip>
+  </OrbitingCircles>
+</div>`}
+>
+  <div className="relative flex h-80 w-full items-center justify-center">
+    <OrbitingCircles className="absolute" radius={60} duration={14}>
+      <span className="flex size-full items-center justify-center rounded-full border border-border bg-card text-sm font-semibold text-foreground">1</span>
+      <span className="flex size-full items-center justify-center rounded-full border border-border bg-card text-sm font-semibold text-foreground">2</span>
+    </OrbitingCircles>
+    <OrbitingCircles className="absolute" radius={120} duration={24} reverse>
+      <span className="flex size-full items-center justify-center rounded-full border border-border bg-card text-sm font-semibold text-foreground">3</span>
+      <span className="flex size-full items-center justify-center rounded-full border border-border bg-card text-sm font-semibold text-foreground">4</span>
+      <span className="flex size-full items-center justify-center rounded-full border border-border bg-card text-sm font-semibold text-foreground">5</span>
+    </OrbitingCircles>
+  </div>
+</ComponentPreview>
+
+## Props
+
+| Prop       | Type      | Default | Description                                  |
+| ---------- | --------- | ------- | -------------------------------------------- |
+| `radius`   | `number`  | `120`   | Orbit radius in pixels.                      |
+| `duration` | `number`  | `20`    | Seconds per full revolution.                 |
+| `delay`    | `number`  | `0`     | Delay before the orbit starts, in seconds.   |
+| `reverse`  | `boolean` | `false` | Reverse the orbit direction.                 |
+| `showPath` | `boolean` | `true`  | Render the faint circular track.             |
+| `iconSize` | `number`  | `40`    | Size of each orbiting slot in pixels.        |
+
+`OrbitingCircles` also forwards every standard `<div>` attribute to the root element.
