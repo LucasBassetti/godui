@@ -1,0 +1,69 @@
+---
+title: Animated Testimonials
+description: A testimonial carousel with a shuffling image stack and crossfading quotes.
+---
+
+import { AnimatedTestimonials } from "@godui/components";
+
+export const demoTestimonials = [
+  {
+    quote: "GodUI shipped the smoothest interactions I've put in production this year.",
+    name: "Ada Lovelace",
+    role: "Design Engineer, Analytical",
+    src: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&q=80",
+  },
+  {
+    quote: "Spring physics out of the box. Everything just feels expensive.",
+    name: "Grace Hopper",
+    role: "Staff Engineer, Compiler Co.",
+    src: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=600&q=80",
+  },
+];
+
+<ComponentPreview
+  code={`import { AnimatedTestimonials } from "@/components/godui/animated-testimonials";
+
+const testimonials = [
+  { quote: "GodUI shipped the smoothest interactions this year.", name: "Ada Lovelace", role: "Design Engineer", src: "/ada.jpg" },
+  { quote: "Spring physics out of the box. Feels expensive.", name: "Grace Hopper", role: "Staff Engineer", src: "/grace.jpg" },
+];
+
+export function AnimatedTestimonialsDemo() {
+  return <AnimatedTestimonials testimonials={testimonials} />;
+}`}
+>
+  <AnimatedTestimonials testimonials={demoTestimonials} />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="AnimatedTestimonials" />
+
+`AnimatedTestimonials` shuffles a stack of portraits while the quote reveals
+word-by-word and the name crossfades. It autoplays and exposes manual controls.
+
+## Usage
+
+```tsx
+import { AnimatedTestimonials } from "@/components/godui/animated-testimonials";
+```
+
+```tsx
+const testimonials = [
+  { quote: "…", name: "Ada Lovelace", role: "Design Engineer", src: "/ada.jpg" },
+  { quote: "…", name: "Grace Hopper", role: "Staff Engineer", src: "/grace.jpg" },
+];
+
+<AnimatedTestimonials testimonials={testimonials} interval={6000} />;
+```
+
+## Props
+
+| Prop           | Type             | Default | Description                            |
+| -------------- | ---------------- | ------- | -------------------------------------- |
+| `testimonials` | `Testimonial[]`  | —       | Testimonials to cycle through.         |
+| `autoplay`     | `boolean`        | `true`  | Advance automatically.                 |
+| `interval`     | `number`         | `5000`  | Autoplay interval in milliseconds.     |
+
+Each `Testimonial` is `{ quote, name, role, src }`. The component also forwards every
+standard `<div>` attribute to the root element.

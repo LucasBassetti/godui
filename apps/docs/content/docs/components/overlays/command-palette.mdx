@@ -1,0 +1,79 @@
+---
+title: Command Palette
+description: A ⌘K command menu with fuzzy filtering, keyboard navigation, and spring enter / exit.
+---
+
+import { CommandPaletteDemo } from "@/components/demos/command-palette-demo";
+
+<ComponentPreview
+  code={`"use client";
+import { CommandPalette } from "@/components/godui/command-palette";
+import { useState } from "react";
+
+const groups = [
+  { heading: "Navigation", items: [
+    { id: "home", label: "Go to Home", shortcut: "G H", icon: "⌂" },
+    { id: "docs", label: "Search Docs", shortcut: "G D", icon: "⌕" },
+  ] },
+  { heading: "Actions", items: [
+    { id: "new", label: "Create New File", shortcut: "⌘N", icon: "＋" },
+    { id: "theme", label: "Toggle Theme", icon: "◐", keywords: ["dark", "light"] },
+  ] },
+];
+
+export function CommandPaletteDemo() {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <button onClick={() => setOpen(true)} className="rounded-lg border border-border bg-card px-4 py-2 text-sm font-medium text-foreground shadow-sm">Open command palette ⌘K</button>
+      <CommandPalette open={open} onOpenChange={setOpen} groups={groups} />
+    </>
+  );
+}`}
+>
+  <CommandPaletteDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="CommandPalette" />
+
+`CommandPalette` is a controlled, portalled ⌘K menu. It filters as you type, moves the
+active highlight with a spring (`layoutId`), and supports `↑` `↓` to navigate, `Enter`
+to select, and `Escape` to close. With `enableShortcut` it toggles on ⌘K / Ctrl+K.
+
+## Usage
+
+```tsx
+"use client";
+import { CommandPalette } from "@/components/godui/command-palette";
+import { useState } from "react";
+
+const groups = [
+  {
+    heading: "Navigation",
+    items: [
+      { id: "home", label: "Go to Home", shortcut: "G H", onSelect: () => navigate("/") },
+      { id: "docs", label: "Search Docs", keywords: ["help"] },
+    ],
+  },
+];
+
+export function Example() {
+  const [open, setOpen] = useState(false);
+  return <CommandPalette open={open} onOpenChange={setOpen} groups={groups} />;
+}
+```
+
+## Props
+
+| Prop             | Type                       | Default                            | Description                          |
+| ---------------- | -------------------------- | ---------------------------------- | ------------------------------------ |
+| `open`           | `boolean`                  | —                                  | Controlled open state.               |
+| `onOpenChange`   | `(open: boolean) => void`  | —                                  | Called when the palette opens/closes.|
+| `groups`         | `CommandGroup[]`           | —                                  | Grouped commands to show.            |
+| `placeholder`    | `string`                   | `"Type a command or search…"`      | Input placeholder.                   |
+| `enableShortcut` | `boolean`                  | `true`                             | Toggle with ⌘K / Ctrl+K.             |
+
+A `CommandItem` is `{ id, label, icon?, shortcut?, keywords?, onSelect? }`; a
+`CommandGroup` is `{ heading?, items }`.

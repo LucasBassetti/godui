@@ -495,6 +495,170 @@
       ]
     },
     {
+      "name": "marquee",
+      "type": "registry:ui",
+      "title": "Marquee",
+      "description": "An infinite, seamless scrolling row or column of content that pauses on hover.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/marquee/marquee.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/marquee.tsx"
+        }
+      ],
+      "cssVars": {
+        "theme": {
+          "animate-marquee": "marquee var(--duration, 40s) linear infinite",
+          "animate-marquee-vertical": "marquee-vertical var(--duration, 40s) linear infinite"
+        }
+      },
+      "css": {
+        "@keyframes marquee": {
+          "from": { "transform": "translateX(0)" },
+          "to": { "transform": "translateX(calc(-100% - var(--gap)))" }
+        },
+        "@keyframes marquee-vertical": {
+          "from": { "transform": "translateY(0)" },
+          "to": { "transform": "translateY(calc(-100% - var(--gap)))" }
+        }
+      }
+    },
+    {
+      "name": "command-palette",
+      "type": "registry:ui",
+      "title": "Command Palette",
+      "description": "A ⌘K command menu with fuzzy filtering, keyboard navigation, and a spring-tracked active highlight.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "dependencies": ["framer-motion"],
+      "files": [
+        {
+          "path": "packages/components/src/command-palette/command-palette.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/command-palette.tsx"
+        }
+      ]
+    },
+    {
+      "name": "toast",
+      "type": "registry:ui",
+      "title": "Toast",
+      "description": "Stacked, swipe-dismissible toasts with an imperative toast() API and auto-dismiss.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "dependencies": ["framer-motion"],
+      "files": [
+        {
+          "path": "packages/components/src/toast/toast.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/toast.tsx"
+        }
+      ]
+    },
+    {
+      "name": "drawer",
+      "type": "registry:ui",
+      "title": "Drawer",
+      "description": "A draggable bottom or side sheet with rubber-band physics, flick-to-dismiss, scrim, and scroll lock.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "dependencies": ["framer-motion"],
+      "files": [
+        {
+          "path": "packages/components/src/drawer/drawer.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/drawer.tsx"
+        }
+      ]
+    },
+    {
+      "name": "animated-testimonials",
+      "type": "registry:ui",
+      "title": "Animated Testimonials",
+      "description": "A testimonial carousel with a shuffling image stack, word-by-word quote reveal, and autoplay.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "dependencies": ["framer-motion"],
+      "files": [
+        {
+          "path": "packages/components/src/animated-testimonials/animated-testimonials.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/animated-testimonials.tsx"
+        }
+      ]
+    },
+    {
+      "name": "dock",
+      "type": "registry:ui",
+      "title": "Dock",
+      "description": "A macOS-style dock whose items magnify with spring physics as the pointer moves across them.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "dependencies": ["framer-motion"],
+      "files": [
+        {
+          "path": "packages/components/src/dock/dock.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/dock.tsx"
+        }
+      ]
+    },
+    {
+      "name": "animated-tooltip",
+      "type": "registry:ui",
+      "title": "Animated Tooltip",
+      "description": "A tooltip that springs in and tilts in 3D as the pointer moves across its trigger.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "dependencies": ["framer-motion"],
+      "files": [
+        {
+          "path": "packages/components/src/animated-tooltip/animated-tooltip.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/animated-tooltip.tsx"
+        }
+      ]
+    },
+    {
+      "name": "bento-grid",
+      "type": "registry:ui",
+      "title": "Bento Grid",
+      "description": "A modular bento layout of mixed-size cards that stagger in on scroll and lift with a spotlight on hover.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "dependencies": ["framer-motion"],
+      "files": [
+        {
+          "path": "packages/components/src/bento-grid/bento-grid.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/bento-grid.tsx"
+        }
+      ]
+    },
+    {
+      "name": "scroll-reveal",
+      "type": "registry:ui",
+      "title": "Scroll Reveal",
+      "description": "Reveals its children with a spring as they scroll into view, with optional scroll-velocity skew.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "dependencies": ["framer-motion"],
+      "files": [
+        {
+          "path": "packages/components/src/scroll-reveal/scroll-reveal.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/scroll-reveal.tsx"
+        }
+      ]
+    },
+    {
+      "name": "spotlight-card",
+      "type": "registry:ui",
+      "title": "Spotlight Card",
+      "description": "A card with a radial spotlight glow that follows the pointer, optionally lighting the border.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/spotlight-card/spotlight-card.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/spotlight-card.tsx"
+        }
+      ]
+    },
+    {
       "name": "border-beam",
       "type": "registry:ui",
       "title": "Border Beam",

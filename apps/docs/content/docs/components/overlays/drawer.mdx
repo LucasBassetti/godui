@@ -1,0 +1,84 @@
+---
+title: Drawer
+description: A draggable bottom sheet with rubber-band physics, snap points, and flick-to-dismiss.
+---
+
+import { DrawerDemo } from "@/components/demos/drawer-demo";
+import { DrawerBottomDemo } from "@/components/demos/drawer-bottom-demo";
+
+<ComponentPreview
+  code={`"use client";
+import { Drawer } from "@/components/godui/drawer";
+import { useState } from "react";
+
+export function CartDrawer({ lines, total }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <button onClick={() => setOpen(true)} className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground">Cart</button>
+      <Drawer open={open} onOpenChange={setOpen} side="right" title="Your cart">
+        <ul className="space-y-3">
+          {lines.map((item) => (
+            <li key={item.id} className="flex justify-between text-sm">
+              <span>{item.name}</span>
+              <span className="tabular-nums">{item.price}</span>
+            </li>
+          ))}
+        </ul>
+        <button onClick={() => setOpen(false)} className="mt-4 w-full rounded-lg bg-primary py-2.5 text-sm font-semibold text-primary-foreground">Checkout · {total}</button>
+      </Drawer>
+    </>
+  );
+}`}
+>
+  <DrawerDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="Drawer" />
+
+`Drawer` is a controlled, portalled sheet. Drag the handle down (or flick) past the
+threshold to dismiss; it also closes on scrim click and `Escape`, and locks body
+scroll while open. Use `side="right"` for a side panel.
+
+## Usage
+
+```tsx
+"use client";
+import { Drawer } from "@/components/godui/drawer";
+import { useState } from "react";
+
+export function Example() {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <button onClick={() => setOpen(true)}>Open</button>
+      <Drawer open={open} onOpenChange={setOpen} side="right" title="Settings">
+        <p>Drawer content</p>
+      </Drawer>
+    </>
+  );
+}
+```
+
+## Examples
+
+### Bottom sheet
+
+Set `side="bottom"` for a mobile-style sheet — drag the handle (or flick) down to
+dismiss. Great for share menus, quick actions, and confirmations.
+
+<ComponentPreview code={`<Drawer open={open} onOpenChange={setOpen} side="bottom" title="Share">…</Drawer>`}>
+  <DrawerBottomDemo />
+</ComponentPreview>
+
+## Props
+
+| Prop           | Type                       | Default    | Description                              |
+| -------------- | -------------------------- | ---------- | ---------------------------------------- |
+| `open`         | `boolean`                  | —          | Controlled open state.                   |
+| `onOpenChange` | `(open: boolean) => void`  | —          | Called when the drawer opens or closes.  |
+| `side`         | `"bottom" \| "right"`      | `"bottom"` | Side the drawer slides in from.          |
+| `title`        | `ReactNode`                | —          | Accessible title rendered at the top.    |
+| `className`    | `string`                   | —          | Extra classes for the panel.             |

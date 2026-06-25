@@ -1,0 +1,150 @@
+---
+title: Spotlight Card
+description: A card with a radial spotlight glow that follows the pointer, optionally lighting the border.
+---
+
+import { SpotlightCard } from "@godui/components";
+import { SpotlightCardDemo } from "@/components/demos/spotlight-card-demo";
+
+<ComponentPreview
+  code={`import { SpotlightCard } from "@/components/godui/spotlight-card";
+import { Check } from "lucide-react";
+
+const features = ["Unlimited projects", "Priority support", "1M events / mo", "SSO & audit logs"];
+
+export function PricingCard() {
+  return (
+    <SpotlightCard className="flex max-w-xs flex-col p-6">
+      <h3 className="text-sm font-semibold text-foreground">Pro</h3>
+      <div className="mt-2 flex items-baseline gap-1">
+        <span className="text-3xl font-semibold tabular-nums text-foreground">$24</span>
+        <span className="text-sm text-muted-foreground">/mo</span>
+      </div>
+      <ul className="mt-5 space-y-2.5">
+        {features.map((f) => (
+          <li key={f} className="flex items-center gap-2 text-sm text-foreground">
+            <Check className="size-4 text-primary" strokeWidth={2.5} />
+            {f}
+          </li>
+        ))}
+      </ul>
+      <button className="mt-6 w-full rounded-lg bg-primary py-2 text-sm font-semibold text-primary-foreground">Start free trial</button>
+    </SpotlightCard>
+  );
+}`}
+>
+  <SpotlightCardDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="SpotlightCard" />
+
+`SpotlightCard` writes the pointer position to CSS variables on each move — no React
+re-render — and reveals a radial gradient that fades in on hover. The border highlight
+is the same gradient masked to the 1px ring.
+
+## Usage
+
+```tsx
+import { SpotlightCard } from "@/components/godui/spotlight-card";
+```
+
+```tsx
+<SpotlightCard className="p-8">
+  <h3>Title</h3>
+  <p>Body copy</p>
+</SpotlightCard>
+```
+
+### Custom glow
+
+`glowColor` accepts any CSS color; `radius` controls the spotlight size in pixels.
+
+```tsx
+<SpotlightCard glowColor="color-mix(in oklch, oklch(0.7 0.2 320) 50%, transparent)" radius={250} />
+```
+
+### Without a border glow
+
+```tsx
+<SpotlightCard border={false} />
+```
+
+## Examples
+
+### Single card
+
+A standalone surface — move the pointer across it to see the glow track and the
+border light up.
+
+<ComponentPreview
+  code={`<SpotlightCard className="max-w-sm p-8">
+  <h3 className="text-lg font-semibold text-foreground">Pointer-aware surface</h3>
+  <p className="mt-2 text-sm text-muted-foreground">A soft radial glow follows the cursor and lights the 1px border.</p>
+</SpotlightCard>`}
+>
+  <SpotlightCard className="max-w-sm p-8">
+    <h3 className="text-lg font-semibold text-foreground">Pointer-aware surface</h3>
+    <p className="mt-2 text-sm text-muted-foreground">A soft radial glow follows the cursor and lights the 1px border.</p>
+  </SpotlightCard>
+</ComponentPreview>
+
+### Custom glow color
+
+<ComponentPreview
+  code={`<SpotlightCard
+  glowColor="color-mix(in oklch, oklch(0.7 0.2 320) 45%, transparent)"
+  radius={240}
+  className="max-w-sm p-8"
+>
+  <h3 className="text-lg font-semibold text-foreground">Any color you like</h3>
+  <p className="mt-2 text-sm text-muted-foreground">Pass any CSS color through glowColor.</p>
+</SpotlightCard>`}
+>
+  <SpotlightCard
+    glowColor="color-mix(in oklch, oklch(0.7 0.2 320) 45%, transparent)"
+    radius={240}
+    className="max-w-sm p-8"
+  >
+    <h3 className="text-lg font-semibold text-foreground">Any color you like</h3>
+    <p className="mt-2 text-sm text-muted-foreground">Pass any CSS color through glowColor.</p>
+  </SpotlightCard>
+</ComponentPreview>
+
+### Border glow
+
+With `border` enabled (the default), the same gradient is masked to the 1px ring,
+so the border itself lights up where the pointer is closest. Move along the edges.
+
+<ComponentPreview
+  code={`<SpotlightCard
+  border
+  radius={300}
+  glowColor="color-mix(in oklch, var(--primary) 60%, transparent)"
+  className="max-w-sm p-8"
+>
+  <h3 className="text-lg font-semibold text-foreground">Trace the edge</h3>
+  <p className="mt-2 text-sm text-muted-foreground">The border brightens where the pointer is closest, then fades behind it.</p>
+</SpotlightCard>`}
+>
+  <SpotlightCard
+    border
+    radius={300}
+    glowColor="color-mix(in oklch, var(--primary) 60%, transparent)"
+    className="max-w-sm p-8"
+  >
+    <h3 className="text-lg font-semibold text-foreground">Trace the edge</h3>
+    <p className="mt-2 text-sm text-muted-foreground">The border brightens where the pointer is closest, then fades behind it.</p>
+  </SpotlightCard>
+</ComponentPreview>
+
+## Props
+
+| Prop        | Type      | Default                                                 | Description                              |
+| ----------- | --------- | ------------------------------------------------------- | ---------------------------------------- |
+| `glowColor` | `string`  | `color-mix(in oklch, var(--primary) 40%, transparent)`  | Color of the spotlight glow.             |
+| `radius`    | `number`  | `350`                                                   | Spotlight radius in pixels.              |
+| `border`    | `boolean` | `true`                                                  | Also light the card border on move.      |
+
+`SpotlightCard` also forwards every standard `<div>` attribute to the root element.

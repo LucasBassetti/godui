@@ -1,0 +1,79 @@
+---
+title: Toast
+description: Stacked, swipe-dismissible toasts with an imperative toast() API.
+---
+
+import { ToastDemo } from "@/components/demos/toast-demo";
+
+<ComponentPreview
+  code={`"use client";
+import { ToastProvider, toast } from "@/components/godui/toast";
+
+export function ToastDemo() {
+  return (
+    <div>
+      <button onClick={() => toast({ title: "Event created", description: "Friday at 5pm" })} className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground">Show toast</button>
+      <ToastProvider />
+    </div>
+  );
+}`}
+>
+  <ToastDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="Toast" />
+
+Render a single `<ToastProvider />` near the root of your app, then call `toast()`
+from anywhere. Toasts spring in, auto-dismiss, pause on hover, and can be swiped away.
+
+## Usage
+
+```tsx
+// app/layout.tsx
+import { ToastProvider } from "@/components/godui/toast";
+
+export default function RootLayout({ children }) {
+  return (
+    <body>
+      {children}
+      <ToastProvider position="bottom-right" />
+    </body>
+  );
+}
+```
+
+```tsx
+"use client";
+import { toast } from "@/components/godui/toast";
+
+toast({ title: "Event created", description: "Friday at 5pm" });
+toast.success({ title: "Saved" });
+toast.error({ title: "Something went wrong" });
+```
+
+### With an action
+
+```tsx
+toast({
+  title: "Deleted file",
+  description: "report.pdf",
+  action: { label: "Undo", onClick: restore },
+});
+```
+
+## API
+
+### `ToastProvider`
+
+| Prop       | Type            | Default          | Description                       |
+| ---------- | --------------- | ---------------- | --------------------------------- |
+| `position` | `ToastPosition` | `"bottom-right"` | Corner the stack is anchored to.  |
+| `duration` | `number`        | `4000`           | Default auto-dismiss delay in ms. |
+
+### `toast(options)`
+
+Returns the toast `id`. `toast.success` and `toast.error` set the variant;
+`toast.dismiss(id)` removes one early. `options` is
+`{ title?, description?, variant?, duration?, action? }`.

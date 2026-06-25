@@ -1,0 +1,84 @@
+---
+title: Dock
+description: A macOS-style dock whose items magnify with spring physics as the pointer moves across them.
+---
+
+import { DockDemo } from "@/components/demos/dock-demo";
+
+<ComponentPreview
+  code={`import { Dock, DockItem } from "@/components/godui/dock";
+import { Home, Search, Folder, Mail, Calendar, Settings } from "lucide-react";
+
+const items = [
+  { label: "Home", color: "text-indigo-500", Icon: Home },
+  { label: "Search", color: "text-emerald-500", Icon: Search },
+  { label: "Files", color: "text-amber-500", Icon: Folder },
+  { label: "Mail", color: "text-sky-500", Icon: Mail },
+  { label: "Calendar", color: "text-rose-500", Icon: Calendar },
+  { label: "Settings", color: "text-zinc-500", Icon: Settings },
+];
+
+export function DockDemo() {
+  return (
+    <Dock>
+      {items.map(({ label, color, Icon }) => (
+        <DockItem key={label} label={label}>
+          <Icon className={\`size-1/2 \${color}\`} strokeWidth={2} />
+        </DockItem>
+      ))}
+    </Dock>
+  );
+}`}
+>
+  <DockDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="Dock" />
+
+`Dock` tracks the pointer and magnifies each `DockItem` based on its distance from the
+cursor, using a spring (`mass 0.1`, `stiffness 170`, `damping 12`) so neighbors ripple
+smoothly. Labels appear above the hovered item.
+
+## Usage
+
+```tsx
+import { Dock, DockItem } from "@/components/godui/dock";
+```
+
+```tsx
+<Dock>
+  <DockItem label="Home">
+    <HomeIcon />
+  </DockItem>
+  <DockItem label="Search">
+    <SearchIcon />
+  </DockItem>
+</Dock>
+```
+
+### Tuning the magnification
+
+```tsx
+<Dock baseSize={44} magnification={96} distance={180} />
+```
+
+## Props
+
+### Dock
+
+| Prop            | Type     | Default | Description                                          |
+| --------------- | -------- | ------- | ---------------------------------------------------- |
+| `baseSize`      | `number` | `44`    | Resting size of each item in pixels.                 |
+| `magnification` | `number` | `72`    | Maximum magnified size in pixels at the pointer.     |
+| `distance`      | `number` | `140`   | Pointer distance over which items are affected.      |
+
+### DockItem
+
+| Prop    | Type        | Default | Description                            |
+| ------- | ----------- | ------- | -------------------------------------- |
+| `label` | `ReactNode` | —       | Label shown above the item on hover.   |
+
+Both components forward every standard `<div>` attribute to their root element.
+`DockItem` must be rendered inside a `Dock`.

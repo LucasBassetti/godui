@@ -1,0 +1,89 @@
+---
+title: Bento Grid
+description: A modular bento layout of mixed-size cards that stagger in on scroll and lift with a spotlight on hover.
+---
+
+import { BentoGridDemo } from "@/components/demos/bento-grid-demo";
+
+<ComponentPreview
+  code={`import { BentoGrid, BentoCard } from "@/components/godui/bento-grid";
+import { Sparkles, Activity, ShieldCheck, Globe2 } from "lucide-react";
+
+const iconWrap = "inline-flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary";
+
+export function BentoGridDemo() {
+  return (
+    <BentoGrid className="max-w-4xl">
+      <BentoCard
+        colSpan={2}
+        icon={<span className={iconWrap}><Sparkles className="size-5" /></span>}
+        title="Interfaces that feel alive"
+        description="Spring-driven motion and pixel-tuned details, ready to drop in."
+      />
+      <BentoCard
+        rowSpan={2}
+        icon={<span className={iconWrap}><Activity className="size-5" /></span>}
+        title="Realtime analytics"
+        description="Every interaction streamed and charted as it happens."
+      />
+      <BentoCard
+        icon={<span className={iconWrap}><ShieldCheck className="size-5" /></span>}
+        title="Enterprise-grade"
+        description="SOC 2 Type II, SSO, and audit logs out of the box."
+      />
+      <BentoCard
+        icon={<span className={iconWrap}><Globe2 className="size-5" /></span>}
+        title="120ms p95 globally"
+        description="Served from 35 edge regions, close to every user."
+      />
+    </BentoGrid>
+  );
+}`}
+>
+  <BentoGridDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="BentoGrid" />
+
+`BentoGrid` lays out `BentoCard`s in a responsive grid. Cards stagger in with a spring
+as the grid scrolls into view, lift on hover, and reveal a pointer-tracked spotlight.
+
+## Usage
+
+```tsx
+import { BentoGrid, BentoCard } from "@/components/godui/bento-grid";
+```
+
+```tsx
+<BentoGrid columns={3}>
+  <BentoCard colSpan={2} title="Wide" description="…" />
+  <BentoCard rowSpan={2} title="Tall" description="…" />
+  <BentoCard title="Default" description="…" />
+</BentoGrid>
+```
+
+Pass `icon`, `title`, `description`, and `cta` for the built-in layout, or drop in your
+own `children` for full control.
+
+## Props
+
+### BentoGrid
+
+| Prop      | Type            | Default | Description                          |
+| --------- | --------------- | ------- | ------------------------------------ |
+| `columns` | `2 \| 3 \| 4`   | `3`     | Number of columns on large screens.  |
+
+### BentoCard
+
+| Prop          | Type           | Default | Description                              |
+| ------------- | -------------- | ------- | ---------------------------------------- |
+| `colSpan`     | `1 \| 2 \| 3`  | `1`     | Columns the card spans on large screens. |
+| `rowSpan`     | `1 \| 2`       | `1`     | Rows the card spans on large screens.    |
+| `icon`        | `ReactNode`    | —       | Leading icon / media.                    |
+| `title`       | `ReactNode`    | —       | Card heading.                            |
+| `description` | `ReactNode`    | —       | Supporting copy.                         |
+| `cta`         | `ReactNode`    | —       | Call-to-action pinned to the bottom.     |
+
+Both components forward every standard `<div>` attribute to their root element.

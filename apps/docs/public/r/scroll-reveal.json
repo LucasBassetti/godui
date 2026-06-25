@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "scroll-reveal",
+  "title": "Scroll Reveal",
+  "description": "Reveals its children with a spring as they scroll into view, with optional scroll-velocity skew.",
+  "dependencies": ["framer-motion"],
+  "registryDependencies": ["@godui/godui-theme"],
+  "files": [
+    {
+      "path": "packages/components/src/scroll-reveal/scroll-reveal.tsx",
+      "content": "\"use client\";\n\nimport {\n  motion,\n  useInView,\n  useReducedMotion,\n  useScroll,\n  useSpring,\n  useTransform,\n  useVelocity,\n} from \"framer-motion\";\nimport * as React from \"react\";\n\nexport type ScrollRevealDirection = \"up\" | \"down\" | \"left\" | \"right\";\n\nexport type ScrollRevealProps = React.HTMLAttributes<HTMLDivElement> & {\n  /** Direction the content travels in from. */\n  direction?: ScrollRevealDirection;\n  /** Travel distance in pixels before settling. */\n  distance?: number;\n  /** Blur the content in as it reveals. */\n  blur?: boolean;\n  /** Delay in seconds before the reveal starts once in view. */\n  delay?: number;\n  /** Reveal only the first time it enters the viewport. */\n  once?: boolean;\n  /** Skew the content by scroll velocity for a fluid, reactive feel. */\n  velocitySkew?: boolean;\n};\n\nconst OFFSET: Record<ScrollRevealDirection, { x: number; y: number }> = {\n  up: { x: 0, y: 1 },\n  down: { x: 0, y: -1 },\n  left: { x: 1, y: 0 },\n  right: { x: -1, y: 0 },\n};\n\nconst ScrollReveal = React.forwardRef<HTMLDivElement, ScrollRevealProps>(\n  (\n    {\n      direction = \"up\",\n      distance = 40,\n      blur = true,\n      delay = 0,\n      once = true,\n      velocitySkew = false,\n      className,\n      style,\n      children,\n      ...props\n    },\n    forwardedRef,\n  ) => {\n    const ref = React.useRef<HTMLDivElement>(null);\n    React.useImperativeHandle(\n      forwardedRef,\n      () => ref.current as HTMLDivElement,\n    );\n\n    const reduceMotion = useReducedMotion();\n    const isInView = useInView(ref, { once, amount: 0.3 });\n\n    const { scrollY } = useScroll();\n    const scrollVelocity = useVelocity(scrollY);\n    const smoothVelocity = useSpring(scrollVelocity, {\n      damping: 50,\n      stiffness: 400,\n    });\n    const skew = useTransform(smoothVelocity, [-2000, 0, 2000], [6, 0, -6], {\n      clamp: true,\n    });\n\n    const offset = OFFSET[direction];\n    const hidden = reduceMotion\n      ? { opacity: 0 }\n      : {\n          opacity: 0,\n          x: offset.x * distance,\n          y: offset.y * distance,\n          filter: blur ? \"blur(10px)\" : \"blur(0px)\",\n        };\n    const visible = reduceMotion\n      ? { opacity: 1 }\n      : { opacity: 1, x: 0, y: 0, filter: \"blur(0px)\" };\n\n    return (\n      <motion.div\n        ref={ref}\n        data-slot=\"scroll-reveal\"\n        className={className}\n        style={\n          velocitySkew && !reduceMotion ? { skewY: skew, ...style } : style\n        }\n        initial={hidden}\n        animate={isInView ? visible : hidden}\n        transition={{\n          type: \"spring\",\n          damping: 24,\n          stiffness: 180,\n          delay,\n        }}\n        {...(props as React.ComponentProps<typeof motion.div>)}\n      >\n        {children}\n      </motion.div>\n    );\n  },\n);\nScrollReveal.displayName = \"ScrollReveal\";\n\nexport { ScrollReveal };\n",
+      "type": "registry:ui",
+      "target": "components/godui/scroll-reveal.tsx"
+    }
+  ],
+  "type": "registry:ui"
+}

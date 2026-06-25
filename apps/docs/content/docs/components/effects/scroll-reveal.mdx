@@ -1,0 +1,115 @@
+---
+title: Scroll Reveal
+description: Reveals its children with a spring as they scroll into view, with optional velocity skew.
+---
+
+import { ScrollReveal } from "@godui/components";
+
+<ComponentPreview
+  code={`import { ScrollReveal } from "@/components/godui/scroll-reveal";
+
+export function ScrollRevealDemo() {
+  return (
+    <ScrollReveal>
+      <div className="rounded-xl border border-border bg-card p-8 text-lg font-semibold text-foreground shadow-sm">I reveal on scroll</div>
+    </ScrollReveal>
+  );
+}`}
+>
+  <ScrollReveal>
+    <div className="rounded-xl border border-border bg-card p-8 text-lg font-semibold text-foreground shadow-sm">I reveal on scroll</div>
+  </ScrollReveal>
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="ScrollReveal" />
+
+`ScrollReveal` springs its children in from a direction once they scroll into view.
+It respects `prefers-reduced-motion` (fading only, no travel) and can optionally skew
+with scroll velocity for a fluid feel.
+
+## Usage
+
+```tsx
+import { ScrollReveal } from "@/components/godui/scroll-reveal";
+```
+
+```tsx
+<ScrollReveal>
+  <Card />
+</ScrollReveal>
+```
+
+### Direction & distance
+
+```tsx
+<ScrollReveal direction="left" distance={80} />
+```
+
+### Velocity skew
+
+```tsx
+<ScrollReveal velocitySkew>
+  <Section />
+</ScrollReveal>
+```
+
+### Stagger
+
+Use `delay` on adjacent reveals to stagger them.
+
+```tsx
+<ScrollReveal delay={0} />
+<ScrollReveal delay={0.1} />
+<ScrollReveal delay={0.2} />
+```
+
+## Examples
+
+### Staggered grid
+
+Reveal a set of cards in sequence as the group scrolls into view.
+
+<ComponentPreview
+  code={`<div className="grid grid-cols-3 gap-3">
+  {items.map((item, i) => (
+    <ScrollReveal key={item} delay={i * 0.1}>
+      <div className="rounded-xl border border-border bg-card p-5 text-sm font-medium text-foreground shadow-sm">{item}</div>
+    </ScrollReveal>
+  ))}
+</div>`}
+>
+  <div className="grid grid-cols-3 gap-3">
+    {["Plan", "Build", "Ship", "Measure", "Iterate", "Scale"].map((item, i) => (
+      <ScrollReveal key={item} delay={i * 0.1}>
+        <div className="rounded-xl border border-border bg-card p-5 text-sm font-medium text-foreground shadow-sm">{item}</div>
+      </ScrollReveal>
+    ))}
+  </div>
+</ComponentPreview>
+
+### From the left, no blur
+
+<ComponentPreview
+  code={`<ScrollReveal direction="left" distance={80} blur={false}>
+  <div className="rounded-xl border border-border bg-card p-8 text-lg font-semibold text-foreground shadow-sm">Slides in from the left</div>
+</ScrollReveal>`}
+>
+  <ScrollReveal direction="left" distance={80} blur={false}>
+    <div className="rounded-xl border border-border bg-card p-8 text-lg font-semibold text-foreground shadow-sm">Slides in from the left</div>
+  </ScrollReveal>
+</ComponentPreview>
+
+## Props
+
+| Prop           | Type                                     | Default | Description                                          |
+| -------------- | ---------------------------------------- | ------- | ---------------------------------------------------- |
+| `direction`    | `"up" \| "down" \| "left" \| "right"`    | `"up"`  | Direction the content travels in from.               |
+| `distance`     | `number`                                 | `40`    | Travel distance in pixels.                           |
+| `blur`         | `boolean`                                | `true`  | Blur the content in as it reveals.                   |
+| `delay`        | `number`                                 | `0`     | Delay in seconds before the reveal starts.           |
+| `once`         | `boolean`                                | `true`  | Reveal only the first time it enters the viewport.   |
+| `velocitySkew` | `boolean`                                | `false` | Skew the content by scroll velocity.                 |
+
+`ScrollReveal` also forwards every standard `<div>` attribute to the root element.

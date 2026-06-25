@@ -1,0 +1,40 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "marquee",
+  "title": "Marquee",
+  "description": "An infinite, seamless scrolling row or column of content that pauses on hover.",
+  "registryDependencies": ["@godui/godui-theme"],
+  "files": [
+    {
+      "path": "packages/components/src/marquee/marquee.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\n\nexport type MarqueeDirection = \"left\" | \"right\" | \"up\" | \"down\";\n\nexport type MarqueeProps = React.HTMLAttributes<HTMLDivElement> & {\n  /** Scroll direction. Horizontal: `\"left\"` / `\"right\"`; vertical: `\"up\"` / `\"down\"`. */\n  direction?: MarqueeDirection;\n  /** Loop duration in seconds — higher is slower. */\n  speed?: number;\n  /** Pause the animation while the pointer is over the marquee. */\n  pauseOnHover?: boolean;\n  /** Fade the leading and trailing edges into the background. */\n  fade?: boolean;\n  /** Number of times the children are duplicated to fill the track seamlessly. */\n  repeat?: number;\n};\n\nconst ROOT_BASE =\n  \"group flex overflow-hidden p-2 [--gap:1rem] [gap:var(--gap)]\";\n\nconst TRACK_BASE =\n  \"flex shrink-0 justify-around [gap:var(--gap)] [animation-play-state:running] motion-reduce:animate-none\";\n\nconst Marquee = React.forwardRef<HTMLDivElement, MarqueeProps>(\n  (\n    {\n      direction = \"left\",\n      speed = 40,\n      pauseOnHover = true,\n      fade = true,\n      repeat = 4,\n      className,\n      style,\n      children,\n      ...props\n    },\n    ref,\n  ) => {\n    const vertical = direction === \"up\" || direction === \"down\";\n    const reverse = direction === \"right\" || direction === \"down\";\n\n    const trackClass = [\n      TRACK_BASE,\n      vertical\n        ? \"flex-col animate-marquee-vertical\"\n        : \"flex-row animate-marquee\",\n      reverse ? \"[animation-direction:reverse]\" : \"\",\n      pauseOnHover ? \"group-hover:[animation-play-state:paused]\" : \"\",\n    ]\n      .filter(Boolean)\n      .join(\" \");\n\n    const fadeClass = fade\n      ? vertical\n        ? \"[mask-image:linear-gradient(to_bottom,transparent,black_12%,black_88%,transparent)] [-webkit-mask-image:linear-gradient(to_bottom,transparent,black_12%,black_88%,transparent)]\"\n        : \"[mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]\"\n      : \"\";\n\n    return (\n      <div\n        ref={ref}\n        data-slot=\"marquee\"\n        className={`${ROOT_BASE} ${vertical ? \"flex-col\" : \"flex-row\"} ${fadeClass} ${className ?? \"\"}`}\n        style={{ [\"--duration\" as string]: `${speed}s`, ...style }}\n        {...props}\n      >\n        {Array.from({ length: Math.max(2, repeat) }, (_, i) => (\n          // biome-ignore lint/suspicious/noArrayIndexKey: duplicated tracks are identical and static\n          <div key={i} aria-hidden={i > 0} className={trackClass}>\n            {children}\n          </div>\n        ))}\n      </div>\n    );\n  },\n);\nMarquee.displayName = \"Marquee\";\n\nexport { Marquee };\n",
+      "type": "registry:ui",
+      "target": "components/godui/marquee.tsx"
+    }
+  ],
+  "cssVars": {
+    "theme": {
+      "animate-marquee": "marquee var(--duration, 40s) linear infinite",
+      "animate-marquee-vertical": "marquee-vertical var(--duration, 40s) linear infinite"
+    }
+  },
+  "css": {
+    "@keyframes marquee": {
+      "from": {
+        "transform": "translateX(0)"
+      },
+      "to": {
+        "transform": "translateX(calc(-100% - var(--gap)))"
+      }
+    },
+    "@keyframes marquee-vertical": {
+      "from": {
+        "transform": "translateY(0)"
+      },
+      "to": {
+        "transform": "translateY(calc(-100% - var(--gap)))"
+      }
+    }
+  },
+  "type": "registry:ui"
+}
