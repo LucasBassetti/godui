@@ -645,6 +645,24 @@ hr.docs-lead-divider {
   }
 }
 
+/* Mobile sidebar drawer: swap fumadocs' default panel-toggle icon on the
+   close trigger for a proper close (X) icon. The drawer markup is owned by
+   fumadocs, so we mask the lucide panel-left glyph rather than fork the slot. */
+:root {
+  --godui-close-icon: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='%23000'%20stroke-width='2.5'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M18%206%206%2018'/%3E%3Cpath%20d='m6%206%2012%2012'/%3E%3C/svg%3E");
+}
+#nd-sidebar-mobile button:has(> .lucide-panel-left) > .lucide-panel-left {
+  display: none;
+}
+#nd-sidebar-mobile button:has(> .lucide-panel-left)::before {
+  content: "";
+  width: 1.25rem;
+  height: 1.25rem;
+  background: currentColor;
+  -webkit-mask: var(--godui-close-icon) center / contain no-repeat;
+  mask: var(--godui-close-icon) center / contain no-repeat;
+}
+
 /* "Built with GodUI" TOC card — subtle primary-tinted gradient surface. */
 .toc-cta {
   background: linear-gradient(

@@ -3,6 +3,7 @@ import type { CSSProperties } from "react";
 import { baseOptions } from "@/lib/layout.shared";
 import { source } from "@/lib/source";
 import { DocsHeader } from "./_components/docs-header";
+import { MobileMenu } from "./_components/mobile-menu";
 import { NullNavTitle } from "./_components/null-nav-title";
 
 const docsLayoutStyle = {
@@ -26,6 +27,7 @@ export default function Layout({ children }: LayoutProps<"/docs">) {
         style: docsLayoutStyle,
       }}
       sidebar={{ collapsible: false, className: "!items-start" }}
+      links={[{ type: "custom", on: "menu", children: <MobileMenu /> }]}
       slots={{
         header: DocsHeader,
         navTitle: NullNavTitle,

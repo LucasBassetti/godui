@@ -16,6 +16,8 @@ import { ThemeToggle } from "./theme-toggle";
 const iconButton =
   "inline-flex size-9 items-center justify-center rounded-full text-fd-muted-foreground transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground";
 
+export const ANIMATED_ICONS_URL = "https://svg-animated-icons.vercel.app/";
+
 export function DocsHeader({
   className,
   showSidebarTrigger = true,
@@ -36,13 +38,23 @@ export function DocsHeader({
       >
         <GoduiLogo className="h-10 w-10" width={40} height={40} />
       </Link>
-      <nav className="flex items-center">
+      {/* Desktop nav links. On mobile these live in the sidebar drawer's
+          "Menu" section instead (see MobileMenu). */}
+      <nav className="flex items-center gap-4 max-md:hidden">
         <Link
           href="/docs/components"
           className="font-medium text-fd-muted-foreground text-sm transition-colors hover:text-fd-foreground"
         >
           Components
         </Link>
+        <a
+          href={ANIMATED_ICONS_URL}
+          target="_blank"
+          rel="noreferrer"
+          className="font-medium text-fd-muted-foreground text-sm transition-colors hover:text-fd-foreground"
+        >
+          Animated Icons
+        </a>
       </nav>
       <div className="flex-1" />
       <div className="flex items-center gap-1 sm:gap-2">
