@@ -1,0 +1,65 @@
+---
+title: Scroll Progress
+description: A spring-smoothed reading indicator — a pinned top bar or a fading back-to-top ring.
+---
+
+import { ScrollProgressCircleDemo, ScrollProgressDemo } from "@/components/demos/scroll-progress-demo";
+
+The `bar` variant pins a progress line to the top of the page and fills as the
+reader scrolls. Leave `container` unset to track the whole page, or pass a ref
+to track a scrollable element (as the preview below does).
+
+<ComponentPreview
+  code={`import { ScrollProgress } from "@/components/godui/scroll-progress";
+
+// Whole-page reading bar
+export function ScrollProgressDemo() {
+  return <ScrollProgress />;
+}`}
+>
+  <ScrollProgressDemo />
+</ComponentPreview>
+
+## Circle variant
+
+`variant="circle"` renders a circular progress ring that fades in past
+`showAfter` and scrolls back to top on click.
+
+<ComponentPreview
+  code={`import { ScrollProgress } from "@/components/godui/scroll-progress";
+
+export function ScrollProgressCircle() {
+  return <ScrollProgress variant="circle" showAfter={0.05} />;
+}`}
+>
+  <ScrollProgressCircleDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall name="scroll-progress" />
+
+## Usage
+
+```tsx
+import { ScrollProgress } from "@godui/components";
+
+// Whole-page reading bar
+<ScrollProgress />;
+
+// Track a specific section
+const ref = useRef<HTMLElement>(null);
+<ScrollProgress target={ref} />;
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `variant` | `"bar" \| "circle"` | `"bar"` | Progress style. |
+| `container` | `RefObject<HTMLElement>` | — | Track a scrollable element and pin within it. |
+| `target` | `RefObject<HTMLElement>` | — | Track a target's progress through the viewport. |
+| `height` | `number` | `3` | Bar thickness in px. |
+| `size` | `number` | `44` | Ring diameter in px. |
+| `showAfter` | `number` | `0.05` | Reveal the ring past this fraction. |
+| `position` | `"bottom-right" \| "bottom-left"` | `"bottom-right"` | Corner the ring docks to. |

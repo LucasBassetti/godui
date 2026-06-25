@@ -1,0 +1,63 @@
+---
+title: Floating Toolbar
+description: A context toolbar that springs into view with magnetic, morphing action buttons.
+---
+
+import { FloatingToolbar } from "@godui/components";
+
+export const icon = (d) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="size-[18px]" aria-hidden="true"><path d={d} /></svg>
+);
+
+export const toolbarActions = [
+  { icon: icon("M6 12h12M6 6h12M6 18h12"), label: "Align", active: true },
+  { icon: icon("M4 7V4h16v3M9 20h6M12 4v16"), label: "Text" },
+  { icon: icon("M21 15l-5-5L5 21"), label: "Image" },
+  { icon: icon("M3 6h18M3 12h18M3 18h18"), label: "List" },
+];
+
+<ComponentPreview
+  code={`import { FloatingToolbar } from "@/components/godui/floating-toolbar";
+
+export function FloatingToolbarDemo() {
+  return (
+    <FloatingToolbar
+      open
+      actions={[
+        { icon: <AlignIcon />, label: "Align", active: true },
+        { icon: <TextIcon />, label: "Text" },
+        { icon: <ImageIcon />, label: "Image" },
+      ]}
+    />
+  );
+}`}
+>
+  <FloatingToolbar open actions={toolbarActions} />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall name="floating-toolbar" />
+
+## Usage
+
+Drive `open` from a selection or hover state to spring the toolbar in and out.
+
+```tsx
+import { FloatingToolbar } from "@godui/components";
+
+const [open, setOpen] = useState(false);
+
+<FloatingToolbar
+  open={open}
+  actions={[{ icon: <BoldIcon />, label: "Bold", onClick: bold }]}
+/>;
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `actions` | `ToolbarAction[]` | — | `{ icon, label, onClick?, active?, disabled? }`. |
+| `open` | `boolean` | `true` | Mount/unmount with a spring entrance. |
+| `children` | `ReactNode` | — | Trailing content (dividers, extra controls). |

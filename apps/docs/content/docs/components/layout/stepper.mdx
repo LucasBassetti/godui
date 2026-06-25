@@ -1,0 +1,98 @@
+---
+title: Stepper
+description: A step indicator with a spring-filled progress line and a number-to-checkmark morph.
+---
+
+import { Stepper } from "@godui/components";
+import { StepperInteractiveDemo } from "@/components/demos/stepper-demo";
+
+export const onboarding = [
+  { label: "Account", description: "Email & password" },
+  { label: "Profile", description: "Name & avatar" },
+  { label: "Workspace", description: "Invite your team" },
+  { label: "Done", description: "All set" },
+];
+
+<ComponentPreview
+  code={`import { Stepper } from "@/components/godui/stepper";
+
+const steps = [
+  { label: "Account", description: "Email & password" },
+  { label: "Profile", description: "Name & avatar" },
+  { label: "Done", description: "All set" },
+];
+
+export function StepperDemo() {
+  return <Stepper steps={steps} active={1} />;
+}`}
+>
+  <div className="w-full max-w-xl">
+    <Stepper steps={onboarding} active={1} />
+  </div>
+</ComponentPreview>
+
+## Interactive
+
+Drive `active` from state to walk through the steps — the line fills and each
+completed step morphs its number into a checkmark.
+
+<ComponentPreview
+  code={`import { useState } from "react";
+import { Stepper } from "@/components/godui/stepper";
+
+export function StepperInteractive() {
+  const [active, setActive] = useState(1);
+  return (
+    <div className="flex flex-col items-center gap-8">
+      <Stepper steps={steps} active={active} />
+      <div className="flex gap-3">
+        <button onClick={() => setActive((s) => Math.max(0, s - 1))}>Back</button>
+        <button onClick={() => setActive((s) => Math.min(steps.length, s + 1))}>
+          Next
+        </button>
+      </div>
+    </div>
+  );
+}`}
+>
+  <StepperInteractiveDemo />
+</ComponentPreview>
+
+## Vertical
+
+<ComponentPreview
+  code={`import { Stepper } from "@/components/godui/stepper";
+
+export function StepperVertical() {
+  return <Stepper steps={steps} active={2} orientation="vertical" />;
+}`}
+>
+  <Stepper steps={onboarding} active={2} orientation="vertical" />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall name="stepper" />
+
+## Usage
+
+```tsx
+import { Stepper } from "@godui/components";
+
+<Stepper
+  active={current}
+  steps={[
+    { label: "Account" },
+    { label: "Profile" },
+    { label: "Done" },
+  ]}
+/>;
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `steps` | `Step[]` | — | `{ label, description? }`. |
+| `active` | `number` | — | Zero-based current step; earlier steps render complete. |
+| `orientation` | `"horizontal" \| "vertical"` | `"horizontal"` | Layout direction. |

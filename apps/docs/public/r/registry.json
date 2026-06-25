@@ -882,6 +882,140 @@
           "target": "components/godui/confetti.tsx"
         }
       ]
+    },
+    {
+      "name": "otp-input",
+      "type": "registry:ui",
+      "title": "OTP Input",
+      "description": "A segmented one-time-code input with auto-advance, paste-to-fill, a traveling caret, and error shake.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/otp-input/otp-input.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/otp-input.tsx"
+        }
+      ]
+    },
+    {
+      "name": "avatar-group",
+      "type": "registry:ui",
+      "title": "Avatar Group",
+      "description": "Overlapping avatars that fan apart on hover, with a +N overflow chip.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/avatar-group/avatar-group.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/avatar-group.tsx"
+        }
+      ]
+    },
+    {
+      "name": "scroll-progress",
+      "type": "registry:ui",
+      "title": "Scroll Progress",
+      "description": "A spring-smoothed reading indicator — a pinned top bar or a fading back-to-top ring.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/scroll-progress/scroll-progress.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/scroll-progress.tsx"
+        }
+      ]
+    },
+    {
+      "name": "image-compare",
+      "type": "registry:ui",
+      "title": "Image Compare",
+      "description": "A draggable before/after slider with clip-path reveal, keyboard support, and a pulsing handle hint.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/image-compare/image-compare.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/image-compare.tsx"
+        }
+      ]
+    },
+    {
+      "name": "segmented-control",
+      "type": "registry:ui",
+      "title": "Segmented Control",
+      "description": "An iOS-style selector with a sliding pill that springs between options.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/segmented-control/segmented-control.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/segmented-control.tsx"
+        }
+      ]
+    },
+    {
+      "name": "accordion",
+      "type": "registry:ui",
+      "title": "Accordion",
+      "description": "A disclosure list with spring height animation, rotating chevrons, and single or multiple open modes.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/accordion/accordion.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/accordion.tsx"
+        }
+      ]
+    },
+    {
+      "name": "switch",
+      "type": "registry:ui",
+      "title": "Switch",
+      "description": "An Apple-grade toggle with a spring thumb you can drag, and a track that crossfades.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/switch/switch.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/switch.tsx"
+        }
+      ]
+    },
+    {
+      "name": "floating-toolbar",
+      "type": "registry:ui",
+      "title": "Floating Toolbar",
+      "description": "A context toolbar that springs into view with magnetic, morphing action buttons.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/floating-toolbar/floating-toolbar.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/floating-toolbar.tsx"
+        }
+      ]
+    },
+    {
+      "name": "stepper",
+      "type": "registry:ui",
+      "title": "Stepper",
+      "description": "A step indicator with a spring-filled progress line and a number-to-checkmark morph.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/stepper/stepper.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/stepper.tsx"
+        }
+      ]
     }
   ]
 }

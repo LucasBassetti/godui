@@ -1,8 +1,17 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "generatedAt": "2026-06-25T20:24:19.294Z",
+  "generatedAt": "2026-06-25T21:31:50.292Z",
   "components": [
+    {
+      "name": "accordion",
+      "title": "Accordion",
+      "description": "A disclosure list with spring height animation, rotating chevrons, and single or multiple open modes.",
+      "category": "Layout",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/accordion"
+    },
     {
       "name": "animated-beam",
       "title": "Animated Beam",
@@ -38,6 +47,15 @@
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add @godui/aurora-text"
+    },
+    {
+      "name": "avatar-group",
+      "title": "Avatar Group",
+      "description": "Overlapping avatars that fan apart on hover, with a +N overflow chip.",
+      "category": "Layout",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/avatar-group"
     },
     {
       "name": "bento-grid",
@@ -112,6 +130,15 @@
       "install": "npx shadcn@latest add @godui/elastic-text"
     },
     {
+      "name": "floating-toolbar",
+      "title": "Floating Toolbar",
+      "description": "A context toolbar that springs into view with magnetic, morphing action buttons.",
+      "category": "Overlays",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/floating-toolbar"
+    },
+    {
       "name": "globe",
       "title": "Globe",
       "description": "A draggable, auto-rotating WebGL globe with glowing location markers.",
@@ -128,6 +155,15 @@
       "dependencies": ["framer-motion", "rough-notation"],
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add @godui/highlighter"
+    },
+    {
+      "name": "image-compare",
+      "title": "Image Compare",
+      "description": "A draggable before/after slider with clip-path reveal, keyboard support, and a pulsing handle hint.",
+      "category": "Layout",
+      "dependencies": [],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/image-compare"
     },
     {
       "name": "lamp",
@@ -229,6 +265,15 @@
       "install": "npx shadcn@latest add @godui/orbiting-circles"
     },
     {
+      "name": "otp-input",
+      "title": "OTP Input",
+      "description": "A segmented one-time-code input with auto-advance, paste-to-fill, a traveling caret, and error shake.",
+      "category": "Inputs",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/otp-input"
+    },
+    {
       "name": "pixel-grid",
       "title": "Pixel Grid",
       "description": "A grid of flickering squares with an optional cursor spotlight that lights up nearby pixels.",
@@ -256,6 +301,15 @@
       "install": "npx shadcn@latest add @godui/progressive-card-reveal"
     },
     {
+      "name": "scroll-progress",
+      "title": "Scroll Progress",
+      "description": "A spring-smoothed reading indicator — a pinned top bar or a fading back-to-top ring.",
+      "category": "Effects",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/scroll-progress"
+    },
+    {
       "name": "scroll-reveal",
       "title": "Scroll Reveal",
       "description": "Reveals its children with a spring as they scroll into view, with optional scroll-velocity skew.",
@@ -263,6 +317,15 @@
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add @godui/scroll-reveal"
+    },
+    {
+      "name": "segmented-control",
+      "title": "Segmented Control",
+      "description": "An iOS-style selector with a sliding pill that springs between options.",
+      "category": "Controls",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/segmented-control"
     },
     {
       "name": "shimmer-button",
@@ -290,6 +353,24 @@
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add @godui/spotlight-card"
+    },
+    {
+      "name": "stepper",
+      "title": "Stepper",
+      "description": "A step indicator with a spring-filled progress line and a number-to-checkmark morph.",
+      "category": "Layout",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/stepper"
+    },
+    {
+      "name": "switch",
+      "title": "Switch",
+      "description": "An Apple-grade toggle with a spring thumb you can drag, and a track that crossfades.",
+      "category": "Controls",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/switch"
     },
     {
       "name": "text-animate",

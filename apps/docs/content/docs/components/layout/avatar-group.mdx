@@ -1,0 +1,80 @@
+---
+title: Avatar Group
+description: Overlapping avatars that fan apart on hover, with a +N overflow chip.
+---
+
+import { AvatarGroup } from "@godui/components";
+
+export const people = [
+  { src: "https://i.pravatar.cc/80?img=1", alt: "Ada" },
+  { src: "https://i.pravatar.cc/80?img=2", alt: "Carl" },
+  { src: "https://i.pravatar.cc/80?img=3", alt: "Eve" },
+  { src: "https://i.pravatar.cc/80?img=4", alt: "Gus" },
+  { src: "https://i.pravatar.cc/80?img=5", alt: "Ivy" },
+  { src: "https://i.pravatar.cc/80?img=6", alt: "Jo" },
+];
+
+<ComponentPreview
+  code={`import { AvatarGroup } from "@/components/godui/avatar-group";
+
+const people = [
+  { src: "/avatars/1.png", alt: "Ada" },
+  { src: "/avatars/2.png", alt: "Carl" },
+  { src: "/avatars/3.png", alt: "Eve" },
+  { src: "/avatars/4.png", alt: "Gus" },
+  { src: "/avatars/5.png", alt: "Ivy" },
+  { src: "/avatars/6.png", alt: "Jo" },
+];
+
+export function AvatarGroupDemo() {
+  return <AvatarGroup avatars={people} max={4} />;
+}`}
+>
+  <AvatarGroup avatars={people} max={4} />
+</ComponentPreview>
+
+## Sizes
+
+<ComponentPreview
+  code={`import { AvatarGroup } from "@/components/godui/avatar-group";
+
+export function AvatarGroupSizes() {
+  return (
+    <div className="flex flex-col items-center gap-6">
+      <AvatarGroup avatars={people} max={4} size="sm" />
+      <AvatarGroup avatars={people} max={4} size="md" />
+      <AvatarGroup avatars={people} max={4} size="lg" />
+    </div>
+  );
+}`}
+>
+  <div className="flex flex-col items-center gap-6">
+    <AvatarGroup avatars={people} max={4} size="sm" />
+    <AvatarGroup avatars={people} max={4} size="md" />
+    <AvatarGroup avatars={people} max={4} size="lg" />
+  </div>
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall name="avatar-group" />
+
+## Usage
+
+```tsx
+import { AvatarGroup } from "@godui/components";
+
+<AvatarGroup
+  avatars={[{ src: "/a.png", alt: "Ada" }, { fallback: "JO", alt: "Jo" }]}
+  max={4}
+/>;
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `avatars` | `Avatar[]` | — | List of `{ src?, alt?, fallback?, href? }`. |
+| `max` | `number` | `4` | Max shown before the `+N` chip. |
+| `size` | `"sm" \| "md" \| "lg"` | `"md"` | Avatar size. |
+| `spreadOnHover` | `boolean` | `true` | Fan the stack apart on hover. |

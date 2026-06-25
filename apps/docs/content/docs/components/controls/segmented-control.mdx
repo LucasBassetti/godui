@@ -1,0 +1,81 @@
+---
+title: Segmented Control
+description: An iOS-style selector with a sliding pill that springs between options.
+---
+
+import { SegmentedControl } from "@godui/components";
+
+export const viewOptions = [
+  { label: "Day", value: "day" },
+  { label: "Week", value: "week" },
+  { label: "Month", value: "month" },
+];
+
+<ComponentPreview
+  code={`import { SegmentedControl } from "@/components/godui/segmented-control";
+
+const options = [
+  { label: "Day", value: "day" },
+  { label: "Week", value: "week" },
+  { label: "Month", value: "month" },
+];
+
+export function SegmentedControlDemo() {
+  return <SegmentedControl options={options} defaultValue="week" />;
+}`}
+>
+  <SegmentedControl options={viewOptions} defaultValue="week" />
+</ComponentPreview>
+
+## Sizes
+
+<ComponentPreview
+  code={`import { SegmentedControl } from "@/components/godui/segmented-control";
+
+export function SegmentedControlSizes() {
+  return (
+    <div className="flex flex-col items-center gap-4">
+      <SegmentedControl options={options} size="sm" />
+      <SegmentedControl options={options} size="md" />
+      <SegmentedControl options={options} size="lg" />
+    </div>
+  );
+}`}
+>
+  <div className="flex flex-col items-center gap-4">
+    <SegmentedControl options={viewOptions} size="sm" />
+    <SegmentedControl options={viewOptions} size="md" />
+    <SegmentedControl options={viewOptions} size="lg" />
+  </div>
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall name="segmented-control" />
+
+## Usage
+
+```tsx
+import { SegmentedControl } from "@godui/components";
+
+const [view, setView] = useState("week");
+
+<SegmentedControl
+  options={[
+    { label: "Day", value: "day" },
+    { label: "Week", value: "week" },
+  ]}
+  value={view}
+  onChange={setView}
+/>;
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `options` | `SegmentedOption[]` | — | `{ label, value, icon?, disabled? }`. |
+| `value` | `string` | — | Controlled value. |
+| `defaultValue` | `string` | first option | Uncontrolled value. |
+| `size` | `"sm" \| "md" \| "lg"` | `"md"` | Control size. |
+| `onChange` | `(value: string) => void` | — | Fires on selection. |
