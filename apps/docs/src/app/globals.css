@@ -628,6 +628,22 @@ hr.docs-lead-divider {
   }
 }
 
+/* Copy button: pop the icon in when it swaps to the success check mark. */
+@keyframes godui-tool-pop {
+  0% {
+    transform: scale(0.3) rotate(-18deg);
+    opacity: 0;
+  }
+  55% {
+    transform: scale(1.22) rotate(4deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
 /* "Built with GodUI" TOC card — subtle primary-tinted gradient surface. */
 .toc-cta {
   background: linear-gradient(
