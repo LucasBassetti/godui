@@ -480,6 +480,21 @@
       ]
     },
     {
+      "name": "number-ticker",
+      "type": "registry:ui",
+      "title": "Number Ticker",
+      "description": "Animates a number to its target value with spring physics when scrolled into view.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "dependencies": ["framer-motion"],
+      "files": [
+        {
+          "path": "packages/components/src/number-ticker/number-ticker.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/number-ticker.tsx"
+        }
+      ]
+    },
+    {
       "name": "border-beam",
       "type": "registry:ui",
       "title": "Border Beam",

@@ -1,0 +1,75 @@
+---
+title: Number Ticker
+description: Animates a number to its target value with spring physics when scrolled into view.
+---
+
+import { NumberTicker } from "@godui/components";
+
+<ComponentPreview
+  code={`import { NumberTicker } from "@/components/godui/number-ticker";
+
+export function NumberTickerDemo() {
+  return (
+    <NumberTicker value={100} className="text-6xl font-bold tracking-tight" />
+  );
+}`}
+>
+  <NumberTicker value={100} className="text-6xl font-bold tracking-tight" />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="NumberTicker" />
+
+`NumberTicker` animates only once, when it scrolls into view. It renders
+`tabular-nums` so the width stays stable while the digits change.
+
+## Usage
+
+```tsx
+import { NumberTicker } from "@/components/godui/number-ticker";
+```
+
+`NumberTicker` is an inline `<span>` that inherits the surrounding font size,
+weight, and color. Style the element directly:
+
+```tsx
+<NumberTicker value={100} className="text-6xl font-bold tracking-tight" />
+```
+
+### Decimal places
+
+```tsx
+<NumberTicker value={1984.42} decimalPlaces={2} />
+```
+
+### Count down
+
+Set `direction="down"` to count from `value` to `startValue`.
+
+```tsx
+<NumberTicker value={100} direction="down" />
+```
+
+### Delay
+
+`delay` is in seconds and starts once the element is in view.
+
+```tsx
+<NumberTicker value={5000} delay={0.5} />
+```
+
+## Props
+
+| Prop            | Type              | Default | Description                                                        |
+| --------------- | ----------------- | ------- | ------------------------------------------------------------------ |
+| `value`         | `number`          | —       | Target value the ticker animates to (or from, when counting down). |
+| `startValue`    | `number`          | `0`     | Value the counter starts at.                                       |
+| `direction`     | `"up" \| "down"`  | `"up"`  | `"up"` counts toward `value`; `"down"` counts from `value`.        |
+| `delay`         | `number`          | `0`     | Delay in seconds before the animation begins once in view.         |
+| `decimalPlaces` | `number`          | `0`     | Number of decimal places to render.                                |
+| `damping`       | `number`          | `60`    | Spring damping — higher is less bouncy.                            |
+| `stiffness`     | `number`          | `100`   | Spring stiffness — higher is faster.                               |
+
+`NumberTicker` also forwards every standard `<span>` attribute (`className`,
+`style`, `id`, …) to the root element.

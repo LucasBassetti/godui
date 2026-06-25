@@ -96,6 +96,7 @@ body {
 #nd-sidebar a.p-2 {
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
+  font-size: 0.8125rem;
   /* Subtle 9px corners on the hover/active pill (Fumadocs' rounded-lg resolves
      much larger via the GodUI --radius-lg token). */
   border-radius: 9px;

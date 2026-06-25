@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "number-ticker",
+  "title": "Number Ticker",
+  "description": "Animates a number to its target value with spring physics when scrolled into view.",
+  "dependencies": ["framer-motion"],
+  "registryDependencies": ["@godui/godui-theme"],
+  "files": [
+    {
+      "path": "packages/components/src/number-ticker/number-ticker.tsx",
+      "content": "\"use client\";\n\nimport {\n  useInView,\n  useMotionValue,\n  useSpring,\n} from \"framer-motion\";\nimport * as React from \"react\";\n\nexport type NumberTickerProps = Omit<\n  React.HTMLAttributes<HTMLSpanElement>,\n  \"children\"\n> & {\n  /** Target value the ticker animates to (or from, when `direction` is `\"down\"`). */\n  value: number;\n  /** Value the counter starts at. Defaults to `0`. */\n  startValue?: number;\n  /** `\"up\"` counts toward `value`, `\"down\"` counts from `value` to `startValue`. */\n  direction?: \"up\" | \"down\";\n  /** Delay in seconds before the animation begins once in view. */\n  delay?: number;\n  /** Number of decimal places to render. */\n  decimalPlaces?: number;\n  /** Spring damping — higher is less bouncy. */\n  damping?: number;\n  /** Spring stiffness — higher is faster. */\n  stiffness?: number;\n};\n\nconst NumberTicker = React.forwardRef<HTMLSpanElement, NumberTickerProps>(\n  (\n    {\n      value,\n      startValue = 0,\n      direction = \"up\",\n      delay = 0,\n      decimalPlaces = 0,\n      damping = 60,\n      stiffness = 100,\n      className,\n      ...props\n    },\n    forwardedRef,\n  ) => {\n    const ref = React.useRef<HTMLSpanElement>(null);\n    const motionValue = useMotionValue(direction === \"down\" ? value : startValue);\n    const springValue = useSpring(motionValue, { damping, stiffness });\n    const isInView = useInView(ref, { once: true, margin: \"0px\" });\n\n    React.useImperativeHandle(\n      forwardedRef,\n      () => ref.current as HTMLSpanElement,\n    );\n\n    React.useEffect(() => {\n      if (!isInView) return;\n\n      const timer = setTimeout(() => {\n        motionValue.set(direction === \"down\" ? startValue : value);\n      }, delay * 1000);\n\n      return () => clearTimeout(timer);\n    }, [motionValue, isInView, delay, value, direction, startValue]);\n\n    React.useEffect(\n      () =>\n        springValue.on(\"change\", (latest) => {\n          if (ref.current) {\n            ref.current.textContent = Intl.NumberFormat(\"en-US\", {\n              minimumFractionDigits: decimalPlaces,\n              maximumFractionDigits: decimalPlaces,\n            }).format(Number(latest.toFixed(decimalPlaces)));\n          }\n        }),\n      [springValue, decimalPlaces],\n    );\n\n    return (\n      <span\n        ref={ref}\n        data-slot=\"number-ticker\"\n        className={`inline-block tabular-nums tracking-wider text-foreground ${className ?? \"\"}`}\n        {...props}\n      >\n        {Intl.NumberFormat(\"en-US\", {\n          minimumFractionDigits: decimalPlaces,\n          maximumFractionDigits: decimalPlaces,\n        }).format(direction === \"down\" ? value : startValue)}\n      </span>\n    );\n  },\n);\nNumberTicker.displayName = \"NumberTicker\";\n\nexport { NumberTicker };\n",
+      "type": "registry:ui",
+      "target": "components/godui/number-ticker.tsx"
+    }
+  ],
+  "type": "registry:ui"
+}

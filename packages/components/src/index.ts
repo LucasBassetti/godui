@@ -72,6 +72,10 @@ export {
   type MaskButtonSize,
   type MaskButtonVariant,
 } from "./mask-button";
+export {
+  NumberTicker,
+  type NumberTickerProps,
+} from "./number-ticker";
 export { PixelGrid, type PixelGridProps } from "./pixel-grid";
 export {
   ProgressFoldButton,

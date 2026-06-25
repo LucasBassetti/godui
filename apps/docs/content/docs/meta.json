@@ -18,6 +18,7 @@
     "components/text/elastic-text",
     "components/text/text-animate",
     "components/text/highlighter",
+    "components/text/number-ticker",
     "---Layout---",
     "components/layout/progressive-card-reveal",
     "---Effects---",
