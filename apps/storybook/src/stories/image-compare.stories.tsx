@@ -6,19 +6,19 @@ const meta = {
   component: ImageCompare,
   tags: ["autodocs"],
   parameters: { layout: "centered" },
+  args: {
+    before: <img src="https://picsum.photos/id/1015/800/600" alt="Color" />,
+    after: (
+      <img
+        src="https://picsum.photos/id/1015/800/600"
+        alt="Black and white"
+        className="grayscale"
+      />
+    ),
+  },
   render: (args) => (
     <div style={{ width: 420, aspectRatio: "4 / 3" }}>
-      <ImageCompare
-        {...args}
-        before={<img src="https://picsum.photos/id/1015/800/600" alt="Color" />}
-        after={
-          <img
-            src="https://picsum.photos/id/1015/800/600"
-            alt="Black and white"
-            className="grayscale"
-          />
-        }
-      />
+      <ImageCompare {...args} />
     </div>
   ),
 } satisfies Meta<typeof ImageCompare>;

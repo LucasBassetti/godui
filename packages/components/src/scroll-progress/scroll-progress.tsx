@@ -14,9 +14,9 @@ export type ScrollProgressProps = React.HTMLAttributes<HTMLDivElement> & {
   /** `bar` pins a progress line; `circle` shows a fading back-to-top ring. */
   variant?: "bar" | "circle";
   /** Track a scrollable element instead of the page (pins within it). */
-  container?: React.RefObject<HTMLElement>;
+  container?: React.RefObject<HTMLElement | null>;
   /** Track scroll of a target element relative to the viewport. */
-  target?: React.RefObject<HTMLElement>;
+  target?: React.RefObject<HTMLElement | null>;
   /** Bar thickness in px (bar variant). */
   height?: number;
   /** Ring diameter in px (circle variant). */
@@ -47,9 +47,12 @@ const ScrollProgress = React.forwardRef<HTMLDivElement, ScrollProgressProps>(
     const reduceMotion = useReducedMotion();
     const { scrollYProgress } = useScroll(
       container
-        ? { container }
+        ? { container: container as React.RefObject<HTMLElement> }
         : target
-          ? { target, offset: ["start start", "end end"] }
+          ? {
+              target: target as React.RefObject<HTMLElement>,
+              offset: ["start start", "end end"],
+            }
           : undefined,
     );
     const progress = useSpring(
