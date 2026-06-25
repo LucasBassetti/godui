@@ -1,8 +1,9 @@
 "use client";
 
 import { MagicButton } from "@godui/components";
+import { ChevronDown } from "lucide-react";
 import { useRouter } from "next/navigation";
-import type { ReactNode } from "react";
+import { type ReactNode, useState } from "react";
 import { DocsHeader } from "./docs/_components/docs-header";
 
 const SITE_URL = "https://godui.design";
@@ -81,8 +82,13 @@ const structuredData = {
   ],
 };
 
+// Shared easing for the accordion: a fast-out, settle-in curve. One curve for
+// height, chevron, and content keeps the motion reading as a single gesture.
+const FAQ_EASE = "cubic-bezier(0.22, 1, 0.36, 1)";
+
 export default function Home() {
   const router = useRouter();
+  const [openFaq, setOpenFaq] = useState<string | null>(FAQ_ITEMS[0].question);
 
   return (
     <main className="relative flex min-h-svh flex-col">
@@ -157,21 +163,60 @@ export default function Home() {
         <h2 className="mb-8 text-center font-semibold text-2xl text-fd-foreground tracking-tight sm:text-3xl">
           Frequently asked questions
         </h2>
-        <dl className="flex flex-col gap-6">
-          {FAQ_ITEMS.map((item) => (
-            <div
-              key={item.question}
-              className="rounded-xl border bg-fd-card/50 p-5"
-            >
-              <dt className="font-medium text-fd-foreground">
-                {item.question}
-              </dt>
-              <dd className="mt-2 text-fd-muted-foreground text-sm">
-                {item.answer}
-              </dd>
-            </div>
-          ))}
-        </dl>
+        <div className="flex flex-col gap-3">
+          {FAQ_ITEMS.map((item) => {
+            const open = openFaq === item.question;
+            const panelId = `faq-panel-${item.question.replace(/\W+/g, "-")}`;
+            return (
+              <div
+                key={item.question}
+                className="overflow-hidden rounded-xl border bg-fd-card/50"
+              >
+                <button
+                  type="button"
+                  aria-expanded={open}
+                  aria-controls={panelId}
+                  onClick={() => setOpenFaq(open ? null : item.question)}
+                  className="flex w-full cursor-pointer items-center justify-between gap-4 px-5 py-4 text-start font-medium text-fd-foreground transition-colors duration-200 hover:bg-fd-accent/30"
+                >
+                  <span>{item.question}</span>
+                  {/* TW v4 emits `rotate` as its own property, so animate that
+                      longhand — `transition-transform` would never fire. */}
+                  <ChevronDown
+                    className="size-4 shrink-0 text-fd-muted-foreground transition-[rotate] duration-300 will-change-transform motion-reduce:transition-none"
+                    style={{
+                      rotate: open ? "180deg" : "0deg",
+                      transitionTimingFunction: FAQ_EASE,
+                    }}
+                  />
+                </button>
+                {/* grid 0fr→1fr animates height while keeping the answer in the
+                    DOM at all times — required for the FAQ to stay crawlable. */}
+                <div
+                  id={panelId}
+                  className="grid transition-[grid-template-rows] duration-300 motion-reduce:transition-none"
+                  style={{
+                    gridTemplateRows: open ? "1fr" : "0fr",
+                    transitionTimingFunction: FAQ_EASE,
+                  }}
+                >
+                  <div className="overflow-hidden">
+                    <div
+                      className="px-5 pb-5 text-fd-muted-foreground text-sm transition-[opacity,translate] duration-300 motion-reduce:transition-none"
+                      style={{
+                        opacity: open ? 1 : 0,
+                        translate: open ? "0 0" : "0 -0.25rem",
+                        transitionTimingFunction: FAQ_EASE,
+                      }}
+                    >
+                      {item.answer}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </section>
       <script
         type="application/ld+json"
