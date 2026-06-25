@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "confetti",
+  "title": "Confetti",
+  "description": "A physics-based confetti burst with an imperative fire API for celebratory moments.",
+  "dependencies": ["canvas-confetti"],
+  "registryDependencies": ["@godui/godui-theme"],
+  "files": [
+    {
+      "path": "packages/components/src/confetti/confetti.tsx",
+      "content": "\"use client\";\n\nimport canvasConfetti, {\n  type Options as ConfettiOptions,\n} from \"canvas-confetti\";\nimport * as React from \"react\";\n\nexport type { ConfettiOptions };\n\nexport type ConfettiHandle = {\n  /** Fire a burst. Options override the component defaults. */\n  fire: (options?: ConfettiOptions) => void;\n};\n\nexport type ConfettiButtonProps =\n  React.ButtonHTMLAttributes<HTMLButtonElement> & {\n    /** Confetti options applied to the burst on click. */\n    options?: ConfettiOptions;\n  };\n\nconst DEFAULTS: ConfettiOptions = {\n  spread: 70,\n  startVelocity: 45,\n  particleCount: 120,\n  origin: { y: 0.7 },\n};\n\n/**\n * Imperative confetti. Hold a ref and call `ref.current.fire()` — mirrors the\n * `toast()` ergonomics already used across GodUI.\n */\nconst Confetti = React.forwardRef<\n  ConfettiHandle,\n  { options?: ConfettiOptions }\n>(({ options }, ref) => {\n  React.useImperativeHandle(\n    ref,\n    () => ({\n      fire: (override?: ConfettiOptions) => {\n        canvasConfetti({ ...DEFAULTS, ...options, ...override });\n      },\n    }),\n    [options],\n  );\n  return null;\n});\nConfetti.displayName = \"Confetti\";\n\n/** Convenience trigger: bursts from the button's position on click. */\nconst ConfettiButton = React.forwardRef<HTMLButtonElement, ConfettiButtonProps>(\n  ({ options, onClick, children, ...props }, ref) => {\n    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {\n      const rect = e.currentTarget.getBoundingClientRect();\n      const x = (rect.left + rect.width / 2) / window.innerWidth;\n      const y = (rect.top + rect.height / 2) / window.innerHeight;\n      canvasConfetti({ ...DEFAULTS, origin: { x, y }, ...options });\n      onClick?.(e);\n    };\n\n    return (\n      <button\n        ref={ref}\n        type=\"button\"\n        data-slot=\"confetti-button\"\n        onClick={handleClick}\n        {...props}\n      >\n        {children}\n      </button>\n    );\n  },\n);\nConfettiButton.displayName = \"ConfettiButton\";\n\n/** Direct imperative API for non-React call sites. */\nfunction confetti(options?: ConfettiOptions) {\n  canvasConfetti({ ...DEFAULTS, ...options });\n}\n\nexport { Confetti, ConfettiButton, confetti };\n",
+      "type": "registry:ui",
+      "target": "components/godui/confetti.tsx"
+    }
+  ],
+  "type": "registry:ui"
+}

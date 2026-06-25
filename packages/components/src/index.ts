@@ -1,3 +1,4 @@
+export { AnimatedBeam, type AnimatedBeamProps } from "./animated-beam";
 export {
   AnimatedTestimonials,
   type AnimatedTestimonialsProps,
@@ -23,6 +24,14 @@ export {
   type CommandPaletteProps,
 } from "./command-palette";
 export {
+  Confetti,
+  ConfettiButton,
+  type ConfettiButtonProps,
+  type ConfettiHandle,
+  type ConfettiOptions,
+  confetti,
+} from "./confetti";
+export {
   DecorativeBackground,
   type DecorativeBackgroundProps,
   type DecorativeBackgroundVariant,
@@ -36,6 +45,11 @@ export {
   type DockProps,
 } from "./dock";
 export { Drawer, type DrawerProps, type DrawerSide } from "./drawer";
+export {
+  DynamicIsland,
+  type DynamicIslandProps,
+  type DynamicIslandSize,
+} from "./dynamic-island";
 export {
   EffectBackground,
   type EffectBackgroundProps,
@@ -55,6 +69,7 @@ export {
   geometricBackgroundPresets,
   geometricBackgroundVariants,
 } from "./geometric-background";
+export { Globe, type GlobeProps } from "./globe";
 export {
   GradientBackground,
   type GradientBackgroundProps,
@@ -67,6 +82,7 @@ export {
   type HighlighterAction,
   type HighlighterProps,
 } from "./highlighter";
+export { Lamp, type LampProps } from "./lamp";
 export {
   LiquidGlassCard,
   type LiquidGlassCardProps,
@@ -95,6 +111,12 @@ export {
   type MagicTabVariant,
 } from "./magic-tab";
 export {
+  MagneticButton,
+  type MagneticButtonProps,
+  type MagneticButtonSize,
+  type MagneticButtonVariant,
+} from "./magnetic-button";
+export {
   Marquee,
   type MarqueeDirection,
   type MarqueeProps,
@@ -110,6 +132,10 @@ export {
   NumberTicker,
   type NumberTickerProps,
 } from "./number-ticker";
+export {
+  OrbitingCircles,
+  type OrbitingCirclesProps,
+} from "./orbiting-circles";
 export { PixelGrid, type PixelGridProps } from "./pixel-grid";
 export {
   ProgressFoldButton,
@@ -133,6 +159,7 @@ export {
   type ShimmerButtonSize,
   type ShimmerButtonVariant,
 } from "./shimmer-button";
+export { Sparkles, type SparklesProps } from "./sparkles";
 export {
   SpotlightCard,
   type SpotlightCardProps,
@@ -144,6 +171,8 @@ export {
   type TextAnimatePreset,
   type TextAnimateProps,
 } from "./text-animate";
+export { ThemeToggle, type ThemeToggleProps } from "./theme-toggle";
+export { TiltCard, type TiltCardProps } from "./tilt-card";
 export {
   type ToastAction,
   type ToastOptions,

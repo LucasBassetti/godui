@@ -1,0 +1,75 @@
+---
+title: Confetti
+description: A physics-based confetti burst with an imperative fire API for celebratory moments.
+---
+
+import { ConfettiDemo } from "@/components/demos/confetti-demo";
+
+<ComponentPreview
+  code={`import { ConfettiButton } from "@/components/godui/confetti";
+
+export function ConfettiDemo() {
+  return (
+    <ConfettiButton className="rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground" options={{ particleCount: 140, spread: 90 }}>
+      Celebrate 🎉
+    </ConfettiButton>
+  );
+}`}
+>
+  <ConfettiDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="Confetti" />
+
+A thin wrapper over [canvas-confetti](https://github.com/catdad/canvas-confetti).
+`ConfettiButton` bursts from its own position on click. For full control, render
+`Confetti` and hold a ref, or call the imperative `confetti()` from anywhere —
+mirroring the `toast()` ergonomics used elsewhere in GodUI.
+
+## Usage
+
+### Button
+
+```tsx
+import { ConfettiButton } from "@/components/godui/confetti";
+```
+
+```tsx
+<ConfettiButton options={{ particleCount: 140, spread: 90 }}>
+  Celebrate 🎉
+</ConfettiButton>
+```
+
+### Imperative ref
+
+```tsx
+import { Confetti, type ConfettiHandle } from "@/components/godui/confetti";
+
+const ref = useRef<ConfettiHandle>(null);
+```
+
+```tsx
+<Confetti ref={ref} />
+<button onClick={() => ref.current?.fire()}>Fire</button>
+```
+
+### Direct call
+
+```tsx
+import { confetti } from "@/components/godui/confetti";
+
+confetti({ particleCount: 200, spread: 120 });
+```
+
+## Props
+
+### `ConfettiButton`
+
+| Prop      | Type              | Default | Description                              |
+| --------- | ----------------- | ------- | ---------------------------------------- |
+| `options` | `ConfettiOptions` | —       | Confetti options applied on click.       |
+
+Forwards every standard `<button>` attribute. `ConfettiOptions` is re-exported
+from `canvas-confetti`.

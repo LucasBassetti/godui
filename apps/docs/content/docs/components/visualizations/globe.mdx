@@ -1,0 +1,83 @@
+---
+title: Globe
+description: A draggable, auto-rotating WebGL globe with glowing location markers.
+---
+
+import { GlobeDemo } from "@/components/demos/globe-demo";
+
+<ComponentPreview
+  code={`import { Globe } from "@/components/godui/globe";
+
+const GLOBE_CONFIG = {
+  dark: 1,
+  mapBrightness: 4,
+  baseColor: [0.26, 0.29, 0.36],
+  markerColor: [0.39, 0.6, 1],
+  glowColor: [0.18, 0.28, 0.55],
+  markers: [
+    { location: [40.7128, -74.006], size: 0.1 },
+    { location: [51.5074, -0.1278], size: 0.09 },
+    { location: [35.6762, 139.6503], size: 0.08 },
+    { location: [1.3521, 103.8198], size: 0.07 },
+  ],
+};
+
+export function GlobeHero() {
+  return (
+    <div className="relative overflow-hidden rounded-3xl bg-[#04060f] [background:radial-gradient(120%_120%_at_50%_-20%,#13204a,#04060f_55%)]">
+      <div className="relative z-10 flex flex-col items-center px-6 pt-12 text-center">
+        <h2 className="text-3xl font-semibold tracking-tight text-white md:text-4xl">Deployed across every region on Earth</h2>
+        <p className="mt-3 max-w-md text-sm text-white/55">Routed to the closest data center for sub-50ms responses anywhere.</p>
+      </div>
+      <div className="relative mx-auto -mt-4 h-[330px] max-w-[560px] [mask-image:linear-gradient(to_bottom,black_62%,transparent)]">
+        <Globe config={GLOBE_CONFIG} className="!max-w-none" />
+      </div>
+    </div>
+  );
+}`}
+>
+  <GlobeDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="Globe" />
+
+`Globe` renders a WebGL globe with [cobe](https://github.com/shuding/cobe), driven
+by a `requestAnimationFrame` loop. It auto-rotates while idle and hands rotation
+to the pointer on drag, picking up where the spin left off. Drag it to spin.
+
+## Usage
+
+```tsx
+import { Globe } from "@/components/godui/globe";
+```
+
+```tsx
+<Globe />
+```
+
+### Custom markers and colors
+
+`config` is merged over the defaults and accepts any
+[cobe option](https://github.com/shuding/cobe#props) — markers, arcs, colors, glow.
+
+```tsx
+<Globe
+  config={{
+    markerColor: [0.9, 0.5, 0.1],
+    markers: [
+      { location: [37.7595, -122.4367], size: 0.1 },
+      { location: [40.7128, -74.006], size: 0.1 },
+    ],
+  }}
+/>
+```
+
+## Props
+
+| Prop     | Type                    | Default | Description                                       |
+| -------- | ----------------------- | ------- | ------------------------------------------------- |
+| `config` | `Partial<COBEOptions>`  | —       | Override any cobe option (markers, colors, glow). |
+
+`Globe` also forwards every standard `<div>` attribute to the root element.

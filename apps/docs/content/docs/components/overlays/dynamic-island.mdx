@@ -1,0 +1,59 @@
+---
+title: Dynamic Island
+description: An Apple-inspired pill that springs between size presets while its content cross-fades.
+---
+
+import { DynamicIsland } from "@godui/components";
+import { DynamicIslandDemo } from "@/components/demos/dynamic-island-demo";
+
+<ComponentPreview
+  code={`import { DynamicIsland } from "@/components/godui/dynamic-island";
+import { useState } from "react";
+
+export function DynamicIslandDemo() {
+  const [size, setSize] = useState("default");
+  return (
+    <>
+      <DynamicIsland size={size} presenceKey={size}>
+        {/* render content per size */}
+      </DynamicIsland>
+      <button onClick={() => setSize("large")}>Now Playing</button>
+    </>
+  );
+}`}
+>
+  <DynamicIslandDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="DynamicIsland" />
+
+The shell animates its `width`, `height`, and `borderRadius` between presets with
+an underdamped spring for the signature rubbery overshoot. Change `presenceKey`
+(or `size`) and the inner view cross-fades with a scale-and-blur transition. The
+spring is skipped under `prefers-reduced-motion`.
+
+## Usage
+
+```tsx
+import { DynamicIsland } from "@/components/godui/dynamic-island";
+```
+
+```tsx
+<DynamicIsland size="large" presenceKey="player">
+  <NowPlaying />
+</DynamicIsland>
+```
+
+Drive `size` and `presenceKey` from state to morph between views. Size presets:
+`compact`, `default`, `long`, `tall`, and `large`.
+
+## Props
+
+| Prop          | Type                                                          | Default     | Description                                       |
+| ------------- | ------------------------------------------------------------ | ----------- | ------------------------------------------------- |
+| `size`        | `"compact" \| "default" \| "long" \| "tall" \| "large"`      | `"default"` | Shape preset the island morphs to.                |
+| `presenceKey` | `React.Key`                                                  | `size`      | Identity of the current content; change to cross-fade. |
+
+`DynamicIsland` also forwards every standard `<div>` attribute to the root element.
