@@ -21,7 +21,7 @@ function PlayIcon() {
   return (
     <svg
       aria-hidden="true"
-      viewBox="0 0 24 24"
+      viewBox="6.5 5 14 14"
       className="size-3"
       fill="currentColor"
     >

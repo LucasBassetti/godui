@@ -66,25 +66,48 @@ export function PillTabs({ tabs, value, onChange, className }: PillTabsProps) {
  * tabs) this renders an enclosed track with a raised active segment.
  */
 export function Segmented({ tabs, value, onChange, className }: DocsTabsProps) {
+  const activeIndex = Math.max(
+    0,
+    tabs.findIndex((tab) => tab.value === value),
+  );
+
   return (
     <div
       className={cn(
         // NB: --color-fd-muted is aliased to muted-foreground in the GodUI
         // theme, so bg-fd-muted renders light in dark mode. Use the real
         // --muted/--card tokens directly for a correct, contrasting track.
-        "inline-flex gap-0.5 rounded-[10px] border border-fd-border bg-[var(--muted)] p-[3px]",
+        // Grid (not inline-flex) so every segment is an equal-width column —
+        // a shrink-to-fit flex track sizes buttons to their content, which
+        // makes the half-width thumb misalign with the wider tab.
+        "relative inline-grid rounded-[10px] border border-fd-border bg-[var(--muted)] p-[3px]",
         className,
       )}
+      style={{
+        gridTemplateColumns: `repeat(${tabs.length}, minmax(0, 1fr))`,
+      }}
     >
+      {/* Floating thumb that slides under the active segment. */}
+      <span
+        aria-hidden="true"
+        className="absolute inset-y-[3px] left-[3px] rounded-[7px] bg-[var(--card)] shadow-sm transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none"
+        style={{
+          // Match the flex-1 button width exactly: track inner width is
+          // (100% - 2*3px padding), split n ways. translateX(100%) then steps
+          // by one button so the thumb stays centered under each segment.
+          width: `calc((100% - 6px) / ${tabs.length})`,
+          transform: `translateX(${activeIndex * 100}%)`,
+        }}
+      />
       {tabs.map((tab) => (
         <button
           key={tab.value}
           type="button"
           onClick={() => onChange(tab.value)}
           className={cn(
-            "inline-flex items-center gap-1.5 rounded-[7px] px-3 py-1 text-[13px] font-medium transition-colors",
+            "relative z-[1] inline-flex items-center justify-center gap-1.5 rounded-[7px] px-3 py-1 text-[13px] font-medium transition-colors",
             value === tab.value
-              ? "bg-[var(--card)] text-[var(--foreground)] shadow-sm"
+              ? "text-[var(--foreground)]"
               : "text-[var(--muted-foreground)] hover:text-[var(--foreground)]",
           )}
         >
