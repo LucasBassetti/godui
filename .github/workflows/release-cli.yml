@@ -1,0 +1,41 @@
+name: Release CLI
+
+# Publishes @godui/cli to npm when a tag like `cli-v0.1.0` is pushed.
+# Requires an NPM_TOKEN repo secret (npm automation token with publish access).
+on:
+  push:
+    tags:
+      - "cli-v*"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # for npm provenance
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm --filter @godui/cli build
+
+      - name: Test
+        run: pnpm --filter @godui/cli test
+
+      - name: Publish
+        run: pnpm --filter @godui/cli publish --no-git-checks --access public --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

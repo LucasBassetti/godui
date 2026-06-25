@@ -1,0 +1,331 @@
+{
+  "name": "godui",
+  "homepage": "https://godui.design",
+  "generatedAt": "2026-06-25T20:24:19.294Z",
+  "components": [
+    {
+      "name": "animated-beam",
+      "title": "Animated Beam",
+      "description": "An animated gradient beam that travels along a path connecting two separate nodes.",
+      "category": "Visualizations",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/animated-beam"
+    },
+    {
+      "name": "animated-testimonials",
+      "title": "Animated Testimonials",
+      "description": "A testimonial carousel with a shuffling image stack, word-by-word quote reveal, and autoplay.",
+      "category": "Layout",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/animated-testimonials"
+    },
+    {
+      "name": "animated-tooltip",
+      "title": "Animated Tooltip",
+      "description": "A tooltip that springs in and tilts in 3D as the pointer moves across its trigger.",
+      "category": "Overlays",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/animated-tooltip"
+    },
+    {
+      "name": "aurora-text",
+      "title": "Aurora Text",
+      "description": "Gradient text with a rainbow aurora that drifts across the letters.",
+      "category": "Text",
+      "dependencies": [],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/aurora-text"
+    },
+    {
+      "name": "bento-grid",
+      "title": "Bento Grid",
+      "description": "A modular bento layout of mixed-size cards that stagger in on scroll and lift with a spotlight on hover.",
+      "category": "Layout",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/bento-grid"
+    },
+    {
+      "name": "border-beam",
+      "title": "Border Beam",
+      "description": "An animated beam of light that travels around the border of its container.",
+      "category": "Effects",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/border-beam"
+    },
+    {
+      "name": "command-palette",
+      "title": "Command Palette",
+      "description": "A ⌘K command menu with fuzzy filtering, keyboard navigation, and a spring-tracked active highlight.",
+      "category": "Overlays",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/command-palette"
+    },
+    {
+      "name": "confetti",
+      "title": "Confetti",
+      "description": "A physics-based confetti burst with an imperative fire API for celebratory moments.",
+      "category": "Effects",
+      "dependencies": ["canvas-confetti"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/confetti"
+    },
+    {
+      "name": "dock",
+      "title": "Dock",
+      "description": "A macOS-style dock whose items magnify with spring physics as the pointer moves across them.",
+      "category": "Navigation",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/dock"
+    },
+    {
+      "name": "drawer",
+      "title": "Drawer",
+      "description": "A draggable bottom or side sheet with rubber-band physics, flick-to-dismiss, scrim, and scroll lock.",
+      "category": "Overlays",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/drawer"
+    },
+    {
+      "name": "dynamic-island",
+      "title": "Dynamic Island",
+      "description": "An Apple-inspired pill that springs between size presets while its content cross-fades.",
+      "category": "Overlays",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/dynamic-island"
+    },
+    {
+      "name": "elastic-text",
+      "title": "Elastic Text",
+      "description": "Variable-font text whose weight springs up under an automatic spotlight or the pointer.",
+      "category": "Text",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/elastic-text"
+    },
+    {
+      "name": "globe",
+      "title": "Globe",
+      "description": "A draggable, auto-rotating WebGL globe with glowing location markers.",
+      "category": "Visualizations",
+      "dependencies": ["cobe"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/globe"
+    },
+    {
+      "name": "highlighter",
+      "title": "Highlighter",
+      "description": "Hand-drawn rough-notation annotations (highlight, underline, box, circle) over text.",
+      "category": "Text",
+      "dependencies": ["framer-motion", "rough-notation"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/highlighter"
+    },
+    {
+      "name": "lamp",
+      "title": "Lamp",
+      "description": "A conic-gradient lamp that ignites and reveals a headline as it scrolls into view.",
+      "category": "Effects",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/lamp"
+    },
+    {
+      "name": "liquid-glass-card",
+      "title": "Liquid Glass Card",
+      "description": "A glass panel that refracts the content behind it with a mouse-tracked specular highlight.",
+      "category": "Glass",
+      "dependencies": [],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/liquid-glass-card"
+    },
+    {
+      "name": "liquid-glass-lens",
+      "title": "Liquid Glass Lens",
+      "description": "A circular glass lens that floats over your content and follows the cursor, refracting everything beneath it.",
+      "category": "Glass",
+      "dependencies": [],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/liquid-glass-lens"
+    },
+    {
+      "name": "magic-button",
+      "title": "Magic Button",
+      "description": "A tactile 3D push button with an animated rainbow edge and shadow.",
+      "category": "Buttons",
+      "dependencies": [],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/magic-button"
+    },
+    {
+      "name": "magic-input",
+      "title": "Magic Input",
+      "description": "A 3D layered text input that lifts on focus with an optional rainbow edge animation.",
+      "category": "Inputs",
+      "dependencies": [],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/magic-input"
+    },
+    {
+      "name": "magic-tab",
+      "title": "Magic Tab",
+      "description": "A segmented tab bar where the selected option lifts into a 3D button with an optional rainbow edge.",
+      "category": "Navigation",
+      "dependencies": [],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/magic-tab"
+    },
+    {
+      "name": "magnetic-button",
+      "title": "Magnetic Button",
+      "description": "A button whose content is magnetically pulled toward the cursor within a sensor range, springing back on exit.",
+      "category": "Buttons",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/magnetic-button"
+    },
+    {
+      "name": "marquee",
+      "title": "Marquee",
+      "description": "An infinite, seamless scrolling row or column of content that pauses on hover.",
+      "category": "Effects",
+      "dependencies": [],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/marquee"
+    },
+    {
+      "name": "mask-button",
+      "title": "Mask Button",
+      "description": "A button whose face wipes away on hover via an animated CSS sprite-sheet mask, revealing the label behind it.",
+      "category": "Buttons",
+      "dependencies": [],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/mask-button"
+    },
+    {
+      "name": "number-ticker",
+      "title": "Number Ticker",
+      "description": "Animates a number to its target value with spring physics when scrolled into view.",
+      "category": "Text",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/number-ticker"
+    },
+    {
+      "name": "orbiting-circles",
+      "title": "Orbiting Circles",
+      "description": "Icons that orbit a center point on a configurable ring, staying upright as they travel.",
+      "category": "Visualizations",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/orbiting-circles"
+    },
+    {
+      "name": "pixel-grid",
+      "title": "Pixel Grid",
+      "description": "A grid of flickering squares with an optional cursor spotlight that lights up nearby pixels.",
+      "category": "Backgrounds",
+      "dependencies": [],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/pixel-grid"
+    },
+    {
+      "name": "progress-fold-button",
+      "title": "Progress Fold Button",
+      "description": "A button whose front face folds back to reveal a controlled progress bar while loading.",
+      "category": "Buttons",
+      "dependencies": [],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/progress-fold-button"
+    },
+    {
+      "name": "progressive-card-reveal",
+      "title": "Progressive Card Reveal",
+      "description": "A vertical stack of cards where one card expands to its full view while the rest collapse to compact pills, animating the morph between them.",
+      "category": "Layout",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/progressive-card-reveal"
+    },
+    {
+      "name": "scroll-reveal",
+      "title": "Scroll Reveal",
+      "description": "Reveals its children with a spring as they scroll into view, with optional scroll-velocity skew.",
+      "category": "Effects",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/scroll-reveal"
+    },
+    {
+      "name": "shimmer-button",
+      "title": "Shimmer Button",
+      "description": "A button with an animated shimmering border light that speeds up on hover.",
+      "category": "Buttons",
+      "dependencies": [],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/shimmer-button"
+    },
+    {
+      "name": "sparkles",
+      "title": "Sparkles",
+      "description": "A canvas field of twinkling particles rendered behind its content.",
+      "category": "Effects",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/sparkles"
+    },
+    {
+      "name": "spotlight-card",
+      "title": "Spotlight Card",
+      "description": "A card with a radial spotlight glow that follows the pointer, optionally lighting the border.",
+      "category": "Effects",
+      "dependencies": [],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/spotlight-card"
+    },
+    {
+      "name": "text-animate",
+      "title": "Text Animate",
+      "description": "Staggered text entrance animations (fade, blur, slide) by character, word, or line.",
+      "category": "Text",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/text-animate"
+    },
+    {
+      "name": "theme-toggle",
+      "title": "Theme Toggle",
+      "description": "A dark/light switch that reveals the new theme with a circular wipe from the click origin.",
+      "category": "Buttons",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/theme-toggle"
+    },
+    {
+      "name": "tilt-card",
+      "title": "Tilt Card",
+      "description": "A card that tilts in 3D toward the pointer with parallax depth and a specular glare.",
+      "category": "Layout",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/tilt-card"
+    },
+    {
+      "name": "toast",
+      "title": "Toast",
+      "description": "Stacked, swipe-dismissible toasts with an imperative toast() API and auto-dismiss.",
+      "category": "Overlays",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/toast"
+    }
+  ]
+}

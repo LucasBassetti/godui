@@ -1,0 +1,48 @@
+{
+  "name": "@godui/cli",
+  "version": "0.1.0",
+  "description": "Install the GodUI MCP server into your AI IDE with one command.",
+  "keywords": [
+    "godui",
+    "cli",
+    "mcp",
+    "cursor",
+    "windsurf",
+    "claude",
+    "cline"
+  ],
+  "homepage": "https://godui.design",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/godui-design/godui.git",
+    "directory": "packages/cli"
+  },
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "godui": "dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "start": "node dist/index.js",
+    "lint": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "tsup": "^8.3.5",
+    "typescript": "^5.9.3",
+    "vitest": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=20.19.0"
+  }
+}
