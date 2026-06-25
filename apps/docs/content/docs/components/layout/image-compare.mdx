@@ -1,0 +1,75 @@
+---
+title: Image Compare
+description: A draggable before/after slider with clip-path reveal, keyboard support, and a pulsing handle hint.
+---
+
+import { ImageCompareDemo, ImageCompareVerticalDemo } from "@/components/demos/image-compare-demo";
+
+<ComponentPreview
+  code={`import { ImageCompare } from "@/components/godui/image-compare";
+
+export function ImageCompareDemo() {
+  return (
+    <div className="w-full max-w-md aspect-[4/3]">
+      <ImageCompare
+        beforeLabel="Color"
+        afterLabel="B&W"
+        before={<img src="/before.jpg" alt="Before" />}
+        after={<img src="/after.jpg" alt="After" />}
+      />
+    </div>
+  );
+}`}
+>
+  <ImageCompareDemo />
+</ComponentPreview>
+
+## Vertical
+
+<ComponentPreview
+  code={`import { ImageCompare } from "@/components/godui/image-compare";
+
+export function ImageCompareVertical() {
+  return (
+    <div className="w-full max-w-md aspect-[4/3]">
+      <ImageCompare
+        orientation="vertical"
+        before={<img src="/before.jpg" alt="Before" />}
+        after={<img src="/after.jpg" alt="After" />}
+      />
+    </div>
+  );
+}`}
+>
+  <ImageCompareVerticalDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall name="image-compare" />
+
+## Usage
+
+```tsx
+import { ImageCompare } from "@godui/components";
+
+<ImageCompare
+  before={<img src="/before.jpg" alt="Before" />}
+  after={<img src="/after.jpg" alt="After" />}
+/>;
+```
+
+Drag the handle, or focus it and use the arrow keys (hold <kbd>Shift</kbd> for
+larger steps).
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `before` | `ReactNode` | — | Content revealed on the left/top. |
+| `after` | `ReactNode` | — | Base content underneath. |
+| `initial` | `number` | `50` | Starting handle position (0–100). |
+| `orientation` | `"horizontal" \| "vertical"` | `"horizontal"` | Drag axis. |
+| `beforeLabel` | `string` | — | Badge over the before layer. |
+| `afterLabel` | `string` | — | Badge over the after layer. |
+| `onChange` | `(position: number) => void` | — | Fires as the handle moves. |

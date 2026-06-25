@@ -1,0 +1,80 @@
+---
+title: OTP Input
+description: A segmented one-time-code input with auto-advance, paste-to-fill, a traveling caret, and error shake.
+---
+
+import { OTPInput } from "@godui/components";
+
+<ComponentPreview
+  code={`import { OTPInput } from "@/components/godui/otp-input";
+
+export function OTPInputDemo() {
+  return <OTPInput length={6} onComplete={(code) => console.log(code)} />;
+}`}
+>
+  <OTPInput length={6} />
+</ComponentPreview>
+
+## Masked
+
+Set `mask` to render entered characters as dots — useful for sensitive codes.
+
+<ComponentPreview
+  code={`import { OTPInput } from "@/components/godui/otp-input";
+
+export function OTPInputMasked() {
+  return <OTPInput length={6} mask />;
+}`}
+>
+  <OTPInput length={6} mask />
+</ComponentPreview>
+
+## Validation status
+
+`status="error"` shakes the row; `status="success"` settles it. Flip back to
+`idle` to re-arm the shake.
+
+<ComponentPreview
+  code={`import { OTPInput } from "@/components/godui/otp-input";
+
+export function OTPInputStatus() {
+  return (
+    <div className="flex flex-col gap-6">
+      <OTPInput length={6} status="error" defaultValue="1234" />
+      <OTPInput length={6} status="success" defaultValue="123456" />
+    </div>
+  );
+}`}
+>
+  <div className="flex flex-col gap-6">
+    <OTPInput length={6} status="error" defaultValue="1234" />
+    <OTPInput length={6} status="success" defaultValue="123456" />
+  </div>
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall name="otp-input" />
+
+## Usage
+
+```tsx
+import { OTPInput } from "@godui/components";
+
+<OTPInput length={6} onComplete={(code) => verify(code)} />;
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `length` | `number` | `6` | Number of code cells. |
+| `value` | `string` | — | Controlled value. |
+| `defaultValue` | `string` | `""` | Uncontrolled initial value. |
+| `type` | `"numeric" \| "alphanumeric"` | `"numeric"` | Accepted characters. |
+| `mask` | `boolean` | `false` | Render characters as dots. |
+| `status` | `"idle" \| "error" \| "success"` | `"idle"` | Validation state. |
+| `disabled` | `boolean` | `false` | Disable input. |
+| `autoFocus` | `boolean` | `false` | Focus on mount. |
+| `onChange` | `(value: string) => void` | — | Fires on every change. |
+| `onComplete` | `(value: string) => void` | — | Fires when the last cell fills. |

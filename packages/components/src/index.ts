@@ -1,3 +1,8 @@
+export {
+  Accordion,
+  type AccordionItem,
+  type AccordionProps,
+} from "./accordion";
 export { AnimatedBeam, type AnimatedBeamProps } from "./animated-beam";
 export {
   AnimatedTestimonials,
@@ -10,6 +15,12 @@ export {
   type AnimatedTooltipSide,
 } from "./animated-tooltip";
 export { AuroraText, type AuroraTextProps } from "./aurora-text";
+export {
+  type Avatar,
+  AvatarGroup,
+  type AvatarGroupProps,
+  type AvatarGroupSize,
+} from "./avatar-group";
 export {
   BentoCard,
   type BentoCardProps,
@@ -63,6 +74,11 @@ export {
   type ElasticTextProps,
 } from "./elastic-text";
 export {
+  FloatingToolbar,
+  type FloatingToolbarProps,
+  type ToolbarAction,
+} from "./floating-toolbar";
+export {
   GeometricBackground,
   type GeometricBackgroundProps,
   type GeometricBackgroundVariant,
@@ -82,6 +98,7 @@ export {
   type HighlighterAction,
   type HighlighterProps,
 } from "./highlighter";
+export { ImageCompare, type ImageCompareProps } from "./image-compare";
 export { Lamp, type LampProps } from "./lamp";
 export {
   LiquidGlassCard,
@@ -136,6 +153,11 @@ export {
   OrbitingCircles,
   type OrbitingCirclesProps,
 } from "./orbiting-circles";
+export {
+  OTPInput,
+  type OTPInputProps,
+  type OTPInputStatus,
+} from "./otp-input";
 export { PixelGrid, type PixelGridProps } from "./pixel-grid";
 export {
   ProgressFoldButton,
@@ -149,10 +171,20 @@ export {
   type ProgressiveCardRevealProps,
 } from "./progressive-card-reveal";
 export {
+  ScrollProgress,
+  type ScrollProgressProps,
+} from "./scroll-progress";
+export {
   ScrollReveal,
   type ScrollRevealDirection,
   type ScrollRevealProps,
 } from "./scroll-reveal";
+export {
+  SegmentedControl,
+  type SegmentedControlProps,
+  type SegmentedControlSize,
+  type SegmentedOption,
+} from "./segmented-control";
 export {
   ShimmerButton,
   type ShimmerButtonProps,
@@ -164,6 +196,8 @@ export {
   SpotlightCard,
   type SpotlightCardProps,
 } from "./spotlight-card";
+export { type Step, Stepper, type StepperProps } from "./stepper";
+export { Switch, type SwitchProps, type SwitchSize } from "./switch";
 export {
   TextAnimate,
   type TextAnimateBy,

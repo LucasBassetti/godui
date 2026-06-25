@@ -1,0 +1,83 @@
+---
+title: Accordion
+description: A disclosure list with spring height animation, rotating chevrons, and single or multiple open modes.
+---
+
+import { Accordion } from "@godui/components";
+
+export const faqItems = [
+  {
+    value: "what",
+    title: "What is GodUI?",
+    content:
+      "A collection of animated React components built with Tailwind CSS and Framer Motion.",
+  },
+  {
+    value: "install",
+    title: "How do I install a component?",
+    content: "Use the shadcn CLI to add any component into your project.",
+  },
+  {
+    value: "license",
+    title: "Is it free to use?",
+    content: "Yes — copy, paste, and ship.",
+  },
+];
+
+<ComponentPreview
+  code={`import { Accordion } from "@/components/godui/accordion";
+
+const items = [
+  { value: "what", title: "What is GodUI?", content: "An animated component library." },
+  { value: "install", title: "How do I install?", content: "Use the shadcn CLI." },
+];
+
+export function AccordionDemo() {
+  return <Accordion items={items} defaultValue="what" />;
+}`}
+>
+  <div className="w-full max-w-lg">
+    <Accordion items={faqItems} defaultValue="what" />
+  </div>
+</ComponentPreview>
+
+## Multiple open
+
+`type="multiple"` lets any number of panels stay open at once.
+
+<ComponentPreview
+  code={`import { Accordion } from "@/components/godui/accordion";
+
+export function AccordionMultiple() {
+  return <Accordion items={items} type="multiple" />;
+}`}
+>
+  <div className="w-full max-w-lg">
+    <Accordion items={faqItems} type="multiple" />
+  </div>
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall name="accordion" />
+
+## Usage
+
+```tsx
+import { Accordion } from "@godui/components";
+
+<Accordion
+  type="single"
+  defaultValue="a"
+  items={[{ value: "a", title: "Question", content: "Answer" }]}
+/>;
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `items` | `AccordionItem[]` | — | `{ value, title, content, disabled? }`. |
+| `type` | `"single" \| "multiple"` | `"single"` | Open behavior. |
+| `defaultValue` | `string \| string[]` | — | Initially open value(s). |
+| `collapsible` | `boolean` | `true` | Allow closing the open panel in single mode. |
