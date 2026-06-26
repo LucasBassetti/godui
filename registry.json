@@ -1321,6 +1321,139 @@
           "target": "components/godui/presence.ts"
         }
       ]
+    },
+    {
+      "name": "neural-grid",
+      "type": "registry:ui",
+      "title": "Neural Grid",
+      "description": "A neural lattice — nodes wired into a grid with signal pulses traveling the edges. The AI-product hero background, on a lightweight Canvas.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/neural-grid/neural-grid.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/neural-grid.tsx"
+        }
+      ]
+    },
+    {
+      "name": "flow-field",
+      "type": "registry:ui",
+      "title": "Flow Field",
+      "description": "Particles streaming along an evolving noise vector field, leaving silky fading trails. Paints its own themed background.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/flow-field/flow-field.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/flow-field.tsx"
+        }
+      ]
+    },
+    {
+      "name": "blueprint-grid",
+      "type": "registry:ui",
+      "title": "Blueprint Grid",
+      "description": "A technical blueprint lattice — ruled lines, a dot matrix, or a perspective floor — with a diagonal light sweep and a cursor spotlight. Pure CSS.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/blueprint-grid/blueprint-grid.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/blueprint-grid.tsx"
+        }
+      ],
+      "cssVars": {
+        "theme": {
+          "animate-blueprint-sweep": "blueprint-sweep var(--blueprint-speed, 8s) linear infinite"
+        }
+      },
+      "css": {
+        "@keyframes blueprint-sweep": {
+          "0%": {
+            "transform": "translate(-50%, -50%) rotate(var(--blueprint-angle, 25deg))",
+            "opacity": "0"
+          },
+          "15%, 85%": { "opacity": "1" },
+          "100%": {
+            "transform": "translate(150%, 150%) rotate(var(--blueprint-angle, 25deg))",
+            "opacity": "0"
+          }
+        }
+      }
+    },
+    {
+      "name": "topographic-drift",
+      "type": "registry:ui",
+      "title": "Topographic Drift",
+      "description": "Slowly drifting topographic contour lines — a living elevation map drawn with marching squares on a Canvas.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/topographic-drift/topographic-drift.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/topographic-drift.tsx"
+        }
+      ]
+    },
+    {
+      "name": "liquid-metaballs",
+      "type": "registry:ui",
+      "title": "Liquid Metaballs",
+      "description": "Gooey blobs that drift, collide, and merge under an SVG goo filter, with an optional cursor blob. Per-instance filter id.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/liquid-metaballs/liquid-metaballs.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/liquid-metaballs.tsx"
+        }
+      ]
+    },
+    {
+      "name": "light-rays",
+      "type": "registry:ui",
+      "title": "Light Rays",
+      "description": "Volumetric god-rays that slowly sweep and breathe, with optional film grain. Pure CSS.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/light-rays/light-rays.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/light-rays.tsx"
+        }
+      ],
+      "cssVars": {
+        "theme": {
+          "animate-light-rays-sweep": "light-rays-sweep var(--rays-speed, 14s) ease-in-out infinite alternate"
+        }
+      },
+      "css": {
+        "@keyframes light-rays-sweep": {
+          "0%": {
+            "transform": "rotate(calc(var(--rays-angle, 0deg) - 6deg)) scale(1)",
+            "opacity": "calc(var(--rays-intensity, 0.6) * 0.7)"
+          },
+          "100%": {
+            "transform": "rotate(calc(var(--rays-angle, 0deg) + 6deg)) scale(1.08)",
+            "opacity": "var(--rays-intensity, 0.6)"
+          }
+        }
+      }
+    },
+    {
+      "name": "warp-starfield",
+      "type": "registry:ui",
+      "title": "Warp Starfield",
+      "description": "A depth starfield you fly through — stars stream toward the viewer with cursor parallax and an optional hyperspace warp.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/warp-starfield/warp-starfield.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/warp-starfield.tsx"
+        }
+      ]
     }
   ]
 }

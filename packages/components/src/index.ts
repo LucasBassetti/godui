@@ -34,6 +34,11 @@ export {
   BentoGrid,
   type BentoGridProps,
 } from "./bento-grid";
+export {
+  BlueprintGrid,
+  type BlueprintGridProps,
+  type BlueprintGridVariant,
+} from "./blueprint-grid";
 export { BorderBeam, type BorderBeamProps } from "./border-beam";
 export {
   type BreadcrumbItem,
@@ -126,6 +131,7 @@ export {
   type FloatingToolbarProps,
   type ToolbarAction,
 } from "./floating-toolbar";
+export { FlowField, type FlowFieldProps } from "./flow-field";
 export {
   GeometricBackground,
   type GeometricBackgroundProps,
@@ -148,12 +154,17 @@ export {
 } from "./highlighter";
 export { ImageCompare, type ImageCompareProps } from "./image-compare";
 export { Lamp, type LampProps } from "./lamp";
+export { LightRays, type LightRaysProps } from "./light-rays";
 export {
   LiquidGlassCard,
   type LiquidGlassCardProps,
   LiquidGlassLens,
   type LiquidGlassLensProps,
 } from "./liquid-glass";
+export {
+  LiquidMetaballs,
+  type LiquidMetaballsProps,
+} from "./liquid-metaballs";
 export {
   type LiveCursor,
   LiveCursors,
@@ -207,6 +218,7 @@ export {
   type MegaMenuProps,
   type MegaMenuSection,
 } from "./mega-menu";
+export { NeuralGrid, type NeuralGridProps } from "./neural-grid";
 export {
   type Notification,
   NotificationInbox,
@@ -316,3 +328,11 @@ export {
   type ToastVariant,
   toast,
 } from "./toast";
+export {
+  TopographicDrift,
+  type TopographicDriftProps,
+} from "./topographic-drift";
+export {
+  WarpStarfield,
+  type WarpStarfieldProps,
+} from "./warp-starfield";

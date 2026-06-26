@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "generatedAt": "2026-06-26T04:09:09.139Z",
+  "generatedAt": "2026-06-26T14:58:27.047Z",
   "components": [
     {
       "name": "accordion",
@@ -74,6 +74,15 @@
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add @godui/bento-grid"
+    },
+    {
+      "name": "blueprint-grid",
+      "title": "Blueprint Grid",
+      "description": "A technical blueprint lattice — ruled lines, a dot matrix, or a perspective floor — with a diagonal light sweep and a cursor spotlight. Pure CSS.",
+      "category": "Backgrounds",
+      "dependencies": [],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/blueprint-grid"
     },
     {
       "name": "border-beam",
@@ -211,6 +220,15 @@
       "install": "npx shadcn@latest add @godui/floating-toolbar"
     },
     {
+      "name": "flow-field",
+      "title": "Flow Field",
+      "description": "Particles streaming along an evolving noise vector field, leaving silky fading trails. Paints its own themed background.",
+      "category": "Backgrounds",
+      "dependencies": [],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/flow-field"
+    },
+    {
       "name": "globe",
       "title": "Globe",
       "description": "A draggable, auto-rotating WebGL globe with glowing location markers.",
@@ -247,6 +265,15 @@
       "install": "npx shadcn@latest add @godui/lamp"
     },
     {
+      "name": "light-rays",
+      "title": "Light Rays",
+      "description": "Volumetric god-rays that slowly sweep and breathe, with optional film grain. Pure CSS.",
+      "category": "Backgrounds",
+      "dependencies": [],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/light-rays"
+    },
+    {
       "name": "liquid-glass-card",
       "title": "Liquid Glass Card",
       "description": "A glass panel that refracts the content behind it with a mouse-tracked specular highlight.",
@@ -263,6 +290,15 @@
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add @godui/liquid-glass-lens"
+    },
+    {
+      "name": "liquid-metaballs",
+      "title": "Liquid Metaballs",
+      "description": "Gooey blobs that drift, collide, and merge under an SVG goo filter, with an optional cursor blob. Per-instance filter id.",
+      "category": "Backgrounds",
+      "dependencies": [],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/liquid-metaballs"
     },
     {
       "name": "live-cursors",
@@ -335,6 +371,15 @@
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add @godui/mega-menu"
+    },
+    {
+      "name": "neural-grid",
+      "title": "Neural Grid",
+      "description": "A neural lattice — nodes wired into a grid with signal pulses traveling the edges. The AI-product hero background, on a lightweight Canvas.",
+      "category": "Backgrounds",
+      "dependencies": [],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/neural-grid"
     },
     {
       "name": "notification-inbox",
@@ -578,6 +623,24 @@
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add @godui/toast"
+    },
+    {
+      "name": "topographic-drift",
+      "title": "Topographic Drift",
+      "description": "Slowly drifting topographic contour lines — a living elevation map drawn with marching squares on a Canvas.",
+      "category": "Backgrounds",
+      "dependencies": [],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/topographic-drift"
+    },
+    {
+      "name": "warp-starfield",
+      "title": "Warp Starfield",
+      "description": "A depth starfield you fly through — stars stream toward the viewer with cursor parallax and an optional hyperspace warp.",
+      "category": "Backgrounds",
+      "dependencies": [],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/warp-starfield"
     }
   ]
 }

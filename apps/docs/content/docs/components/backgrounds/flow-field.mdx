@@ -1,0 +1,90 @@
+---
+title: Flow Field
+description: Particles streaming along an evolving noise vector field, leaving silky fading trails.
+---
+
+import { FlowField } from "@godui/components";
+
+Hundreds of particles ride an invisible, slowly-evolving current, leaving silky
+trails that fade behind them — generative, organic, hypnotic. It paints its own
+themed background, so drop it as the first child of a `relative` container and
+let your content sit above it.
+
+<ComponentPreview
+  code={`import { FlowField } from "@/components/godui/flow-field";
+
+export function FlowFieldDemo() {
+  return (
+    <div className="relative flex h-[360px] w-full items-center justify-center overflow-hidden rounded-xl border border-border">
+      <FlowField />
+      <div className="relative z-raised text-center">
+        <h2 className="font-semibold text-3xl tracking-tight">Generative by default</h2>
+        <p className="mt-2 text-muted-foreground">Currents you never see twice.</p>
+      </div>
+    </div>
+  );
+}`}
+>
+  <div className="relative flex h-[360px] w-full items-center justify-center overflow-hidden rounded-xl border border-border">
+    <FlowField />
+    <div className="relative z-raised text-center">
+      <h2 className="font-semibold text-3xl tracking-tight">Generative by default</h2>
+      <p className="mt-2 text-muted-foreground">Currents you never see twice.</p>
+    </div>
+  </div>
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall name="flow-field" />
+
+## Usage
+
+```tsx
+import { FlowField } from "@/components/godui/flow-field";
+
+<div className="relative overflow-hidden">
+  <FlowField />
+  <YourContent />
+</div>
+```
+
+The layer is `absolute inset-0 z-base`; parent must be `relative`, content at
+`z-raised`+. It paints its own background from `--color-background` and draws
+trails in `color` (default `--color-primary`); both track light/dark. Caps DPR at
+2, pauses off-screen and on hidden tabs, and renders a frozen still under
+`prefers-reduced-motion`.
+
+## Examples
+
+### Long trails
+
+Lower `fade` for longer, silkier streaks.
+
+<ComponentPreview
+  code={`import { FlowField } from "@/components/godui/flow-field";
+
+export function FlowFieldLong() {
+  return (
+    <div className="relative h-[320px] w-full overflow-hidden rounded-xl border border-border">
+      <FlowField fade={0.02} speed={1.2} />
+    </div>
+  );
+}`}
+>
+  <div className="relative h-[320px] w-full overflow-hidden rounded-xl border border-border">
+    <FlowField fade={0.02} speed={1.2} />
+  </div>
+</ComponentPreview>
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `particleCount` | `number` | `900` | Number of particles (auto-scaled to area). |
+| `noiseScale` | `number` | `0.0016` | Field scale — smaller is broader/smoother. |
+| `speed` | `number` | `1` | Flow speed multiplier. |
+| `color` | `string` | `--color-primary` | Trail color. |
+| `fade` | `number` | `0.06` | Trail fade per frame, `0`–`1` (lower = longer trails). |
+
+Also accepts standard `div` attributes (e.g. `className`, `style`).

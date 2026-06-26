@@ -106,6 +106,14 @@
   --animate-progress-fold-indeterminate: progress-fold-indeterminate 1.2s
     ease-in-out infinite;
 
+  /* Blueprint grid: a light band sweeps across the lattice */
+  --animate-blueprint-sweep: blueprint-sweep var(--blueprint-speed, 8s) linear
+    infinite;
+
+  /* Light rays: god-rays rotate and breathe */
+  --animate-light-rays-sweep: light-rays-sweep var(--rays-speed, 14s)
+    ease-in-out infinite alternate;
+
   /* Marquee: seamless track scroll (duration driven by the `--duration` var) */
   --animate-marquee: marquee var(--duration, 40s) linear infinite;
   --animate-marquee-vertical: marquee-vertical var(--duration, 40s) linear
@@ -241,5 +249,33 @@
   }
   100% {
     transform: translateX(250%);
+  }
+}
+
+/* Blueprint grid: a diagonal light band travels across the lattice */
+@keyframes blueprint-sweep {
+  0% {
+    transform: translate(-50%, -50%) rotate(var(--blueprint-angle, 25deg));
+    opacity: 0;
+  }
+  15%,
+  85% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(150%, 150%) rotate(var(--blueprint-angle, 25deg));
+    opacity: 0;
+  }
+}
+
+/* Light rays: the ray fan slowly rotates and breathes in intensity */
+@keyframes light-rays-sweep {
+  0% {
+    transform: rotate(calc(var(--rays-angle, 0deg) - 6deg)) scale(1);
+    opacity: calc(var(--rays-intensity, 0.6) * 0.7);
+  }
+  100% {
+    transform: rotate(calc(var(--rays-angle, 0deg) + 6deg)) scale(1.08);
+    opacity: var(--rays-intensity, 0.6);
   }
 }

@@ -1,0 +1,88 @@
+---
+title: Topographic Drift
+description: Slowly drifting topographic contour lines — a living elevation map drawn with marching squares.
+---
+
+import { TopographicDrift } from "@godui/components";
+
+Contour lines of an imaginary landscape, slowly rising and falling as the terrain
+beneath them evolves. Editorial, cartographic, and calm — drawn with marching
+squares on one Canvas. Drop it as the first child of a `relative` container.
+
+<ComponentPreview
+  code={`import { TopographicDrift } from "@/components/godui/topographic-drift";
+
+export function TopographicDriftDemo() {
+  return (
+    <div className="relative flex h-[360px] w-full items-center justify-center overflow-hidden rounded-xl border border-border bg-background">
+      <TopographicDrift />
+      <div className="relative z-raised text-center">
+        <h2 className="font-semibold text-3xl tracking-tight">Chart the unknown</h2>
+        <p className="mt-2 text-muted-foreground">Terrain that never stops shifting.</p>
+      </div>
+    </div>
+  );
+}`}
+>
+  <div className="relative flex h-[360px] w-full items-center justify-center overflow-hidden rounded-xl border border-border bg-background">
+    <TopographicDrift />
+    <div className="relative z-raised text-center">
+      <h2 className="font-semibold text-3xl tracking-tight">Chart the unknown</h2>
+      <p className="mt-2 text-muted-foreground">Terrain that never stops shifting.</p>
+    </div>
+  </div>
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall name="topographic-drift" />
+
+## Usage
+
+```tsx
+import { TopographicDrift } from "@/components/godui/topographic-drift";
+
+<div className="relative overflow-hidden">
+  <TopographicDrift />
+  <YourContent />
+</div>
+```
+
+The layer is `absolute inset-0 z-base`; parent must be `relative`, content at
+`z-raised`+. Color defaults to `--color-foreground` (tracks light/dark). Caps DPR
+at 2, pauses off-screen and on hidden tabs, and renders a static map under
+`prefers-reduced-motion`.
+
+## Examples
+
+### Dense
+
+More levels, finer terrain.
+
+<ComponentPreview
+  code={`import { TopographicDrift } from "@/components/godui/topographic-drift";
+
+export function TopographicDriftDense() {
+  return (
+    <div className="relative h-[320px] w-full overflow-hidden rounded-xl border border-border bg-background">
+      <TopographicDrift lineCount={16} noiseScale={0.006} />
+    </div>
+  );
+}`}
+>
+  <div className="relative h-[320px] w-full overflow-hidden rounded-xl border border-border bg-background">
+    <TopographicDrift lineCount={16} noiseScale={0.006} />
+  </div>
+</ComponentPreview>
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `lineCount` | `number` | `9` | Number of contour levels. |
+| `speed` | `number` | `1` | Drift speed multiplier. |
+| `color` | `string` | `--color-foreground` | Contour color. |
+| `noiseScale` | `number` | `0.004` | Field scale — smaller is broader terrain. |
+| `weight` | `number` | `1` | Contour line width (px). |
+
+Also accepts standard `div` attributes (e.g. `className`, `style`).

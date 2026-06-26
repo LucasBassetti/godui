@@ -1,0 +1,89 @@
+---
+title: Liquid Metaballs
+description: Gooey blobs that drift, collide, and merge under an SVG goo filter — with a cursor blob.
+---
+
+import { LiquidMetaballs } from "@godui/components";
+
+Soft blobs of color drift across the surface and fuse into one gooey mass
+wherever they meet, courtesy of an SVG goo filter. An extra blob follows the
+cursor and merges with the rest. Playful and organic. Drop it as the first child
+of a `relative` container.
+
+<ComponentPreview
+  code={`import { LiquidMetaballs } from "@/components/godui/liquid-metaballs";
+
+export function LiquidMetaballsDemo() {
+  return (
+    <div className="relative flex h-[360px] w-full items-center justify-center overflow-hidden rounded-xl border border-border bg-background">
+      <LiquidMetaballs />
+      <div className="relative z-raised text-center">
+        <h2 className="font-semibold text-3xl tracking-tight">Fluid by nature</h2>
+        <p className="mt-2 text-muted-foreground">Move your cursor to stir the goo.</p>
+      </div>
+    </div>
+  );
+}`}
+>
+  <div className="relative flex h-[360px] w-full items-center justify-center overflow-hidden rounded-xl border border-border bg-background">
+    <LiquidMetaballs />
+    <div className="relative z-raised text-center">
+      <h2 className="font-semibold text-3xl tracking-tight">Fluid by nature</h2>
+      <p className="mt-2 text-muted-foreground">Move your cursor to stir the goo.</p>
+    </div>
+  </div>
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall name="liquid-metaballs" />
+
+## Usage
+
+```tsx
+import { LiquidMetaballs } from "@/components/godui/liquid-metaballs";
+
+<div className="relative overflow-hidden">
+  <LiquidMetaballs />
+  <YourContent />
+</div>
+```
+
+The layer is `absolute inset-0 z-base`; parent must be `relative`, content at
+`z-raised`+. The goo filter id is per-instance, so multiple metaball backgrounds
+coexist safely. Pauses off-screen and on hidden tabs; freezes under
+`prefers-reduced-motion`.
+
+## Examples
+
+### Extra gooey
+
+Raise `gooeyness` and `blobCount`.
+
+<ComponentPreview
+  code={`import { LiquidMetaballs } from "@/components/godui/liquid-metaballs";
+
+export function LiquidMetaballsGooey() {
+  return (
+    <div className="relative h-[320px] w-full overflow-hidden rounded-xl border border-border bg-background">
+      <LiquidMetaballs gooeyness={24} blobCount={9} />
+    </div>
+  );
+}`}
+>
+  <div className="relative h-[320px] w-full overflow-hidden rounded-xl border border-border bg-background">
+    <LiquidMetaballs gooeyness={24} blobCount={9} />
+  </div>
+</ComponentPreview>
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `blobCount` | `number` | `7` | Number of floating blobs. |
+| `colors` | `string[]` | indigo/violet/pink/cyan | Blob colors (cycled). |
+| `speed` | `number` | `1` | Drift speed multiplier. |
+| `gooeyness` | `number` | `16` | Goo strength (blur stdDeviation). |
+| `interactive` | `boolean` | `true` | A blob follows the cursor (adds a pointer listener). |
+
+Also accepts standard `div` attributes (e.g. `className`, `style`).

@@ -1,0 +1,87 @@
+---
+title: Warp Starfield
+description: A depth starfield you fly through — cursor parallax and an optional hyperspace warp.
+---
+
+import { WarpStarfield } from "@godui/components";
+
+Stars stream toward you out of the dark, with the cursor gently steering the
+field for parallax. Flip on `warp` for a hyperspace jump where the stars stretch
+into streaks. Drop it as the first child of a `relative` container.
+
+<ComponentPreview
+  code={`import { WarpStarfield } from "@/components/godui/warp-starfield";
+
+export function WarpStarfieldDemo() {
+  return (
+    <div className="relative flex h-[360px] w-full items-center justify-center overflow-hidden rounded-xl border border-border bg-background">
+      <WarpStarfield />
+      <div className="relative z-raised text-center">
+        <h2 className="font-semibold text-3xl tracking-tight">Reach the stars</h2>
+        <p className="mt-2 text-muted-foreground">Move your cursor to steer.</p>
+      </div>
+    </div>
+  );
+}`}
+>
+  <div className="relative flex h-[360px] w-full items-center justify-center overflow-hidden rounded-xl border border-border bg-background">
+    <WarpStarfield />
+    <div className="relative z-raised text-center">
+      <h2 className="font-semibold text-3xl tracking-tight">Reach the stars</h2>
+      <p className="mt-2 text-muted-foreground">Move your cursor to steer.</p>
+    </div>
+  </div>
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall name="warp-starfield" />
+
+## Usage
+
+```tsx
+import { WarpStarfield } from "@/components/godui/warp-starfield";
+
+<div className="relative overflow-hidden">
+  <WarpStarfield />
+  <YourContent />
+</div>
+```
+
+The layer is `absolute inset-0 z-base`; parent must be `relative`, content at
+`z-raised`+. Star color defaults to `--color-foreground` (tracks light/dark — it
+reads on light surfaces too). Caps DPR at 2, pauses off-screen and on hidden
+tabs, and renders a static frame under `prefers-reduced-motion`.
+
+## Examples
+
+### Hyperspace
+
+<ComponentPreview
+  code={`import { WarpStarfield } from "@/components/godui/warp-starfield";
+
+export function WarpStarfieldHyperspace() {
+  return (
+    <div className="relative h-[320px] w-full overflow-hidden rounded-xl border border-border bg-background">
+      <WarpStarfield warp speed={1.6} />
+    </div>
+  );
+}`}
+>
+  <div className="relative h-[320px] w-full overflow-hidden rounded-xl border border-border bg-background">
+    <WarpStarfield warp speed={1.6} />
+  </div>
+</ComponentPreview>
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `starCount` | `number` | `400` | Number of stars (auto-scaled to area). |
+| `speed` | `number` | `1` | Forward speed multiplier. |
+| `depth` | `number` | `1.5` | Field depth — larger is deeper. |
+| `color` | `string` | `--color-foreground` | Star color. |
+| `warp` | `boolean` | `false` | Hyperspace mode — stars become streaks. |
+| `parallax` | `number` | `30` | Cursor parallax strength (px). |
+
+Also accepts standard `div` attributes (e.g. `className`, `style`).

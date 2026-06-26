@@ -1,0 +1,33 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "light-rays",
+  "title": "Light Rays",
+  "description": "Volumetric god-rays that slowly sweep and breathe, with optional film grain. Pure CSS.",
+  "registryDependencies": ["@godui/godui-theme"],
+  "files": [
+    {
+      "path": "packages/components/src/light-rays/light-rays.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\n\nexport type LightRaysProps = React.HTMLAttributes<HTMLDivElement> & {\n  /** Number of rays in the fan. */\n  rayCount?: number;\n  /**\n   * Ray color, any CSS color string. Defaults to the `--color-primary` token.\n   */\n  color?: string;\n  /** Sweep speed multiplier. `1` is the calm default. */\n  speed?: number;\n  /** Base angle (deg) the fan points from. */\n  angle?: number;\n  /** Overall ray opacity, `0`–`1`. */\n  intensity?: number;\n  /** Film-grain amount, `0`–`1`. `0` disables the grain layer. */\n  grain?: number;\n};\n\n/**\n * Volumetric light rays — a soft fan of god-rays that slowly sweeps and\n * breathes, with optional film grain. Pure CSS. Drop it as the first child of a\n * `relative overflow-hidden` container; your content sits above it.\n */\nconst LightRays = React.forwardRef<HTMLDivElement, LightRaysProps>(\n  (\n    {\n      className,\n      style,\n      rayCount = 14,\n      color = \"var(--primary)\",\n      speed = 1,\n      angle = 0,\n      intensity = 0.6,\n      grain = 0.05,\n      ...props\n    },\n    ref,\n  ) => {\n    const rootRef = React.useRef<HTMLDivElement>(null);\n    React.useImperativeHandle(ref, () => rootRef.current as HTMLDivElement);\n    const grainId = `light-rays-grain-${React.useId().replace(/:/g, \"\")}`;\n\n    const step = 360 / rayCount;\n    const rayColor = `color-mix(in oklab, ${color}, transparent 55%)`;\n\n    return (\n      <div\n        ref={rootRef}\n        data-slot=\"light-rays\"\n        aria-hidden=\"true\"\n        className={`absolute inset-0 z-base overflow-hidden ${className ?? \"\"}`}\n        style={\n          {\n            \"--rays-speed\": `${14 / speed}s`,\n            \"--rays-angle\": `${angle}deg`,\n            \"--rays-intensity\": `${intensity}`,\n            ...style,\n          } as React.CSSProperties\n        }\n        {...props}\n      >\n        {/* Source glow at the top. */}\n        <div\n          className=\"absolute inset-0\"\n          style={{\n            backgroundImage: `radial-gradient(ellipse 60% 40% at 50% -5%, color-mix(in oklab, ${color}, transparent 70%), transparent 70%)`,\n          }}\n        />\n\n        {/* The ray fan — oversized so rotation never reveals an edge, blurred for\n            softness, and faded out toward the bottom. */}\n        <div\n          className=\"absolute inset-[-50%] origin-top motion-reduce:animate-none animate-light-rays-sweep [will-change:transform,opacity]\"\n          style={{\n            backgroundImage: `repeating-conic-gradient(from ${angle}deg at 50% 0%, transparent 0deg, ${rayColor} ${step * 0.16}deg, transparent ${step}deg)`,\n            filter: \"blur(8px)\",\n            opacity: intensity,\n            WebkitMaskImage:\n              \"linear-gradient(to bottom, #000 10%, transparent 75%)\",\n            maskImage: \"linear-gradient(to bottom, #000 10%, transparent 75%)\",\n          }}\n        />\n\n        {/* Film grain. */}\n        {grain > 0 && (\n          <svg\n            className=\"absolute inset-0 size-full mix-blend-overlay\"\n            style={{ opacity: grain }}\n            role=\"presentation\"\n          >\n            <filter id={grainId}>\n              <feTurbulence\n                type=\"fractalNoise\"\n                baseFrequency=\"0.9\"\n                numOctaves=\"2\"\n                stitchTiles=\"stitch\"\n              />\n            </filter>\n            <rect width=\"100%\" height=\"100%\" filter={`url(#${grainId})`} />\n          </svg>\n        )}\n      </div>\n    );\n  },\n);\nLightRays.displayName = \"LightRays\";\n\nexport { LightRays };\n",
+      "type": "registry:ui",
+      "target": "components/godui/light-rays.tsx"
+    }
+  ],
+  "cssVars": {
+    "theme": {
+      "animate-light-rays-sweep": "light-rays-sweep var(--rays-speed, 14s) ease-in-out infinite alternate"
+    }
+  },
+  "css": {
+    "@keyframes light-rays-sweep": {
+      "0%": {
+        "transform": "rotate(calc(var(--rays-angle, 0deg) - 6deg)) scale(1)",
+        "opacity": "calc(var(--rays-intensity, 0.6) * 0.7)"
+      },
+      "100%": {
+        "transform": "rotate(calc(var(--rays-angle, 0deg) + 6deg)) scale(1.08)",
+        "opacity": "var(--rays-intensity, 0.6)"
+      }
+    }
+  },
+  "type": "registry:ui"
+}

@@ -1,0 +1,107 @@
+---
+title: Blueprint Grid
+description: A technical lattice — lines, dots, or a perspective floor — with a light sweep and cursor spotlight.
+---
+
+import { BlueprintGrid } from "@godui/components";
+
+The engineering-blueprint backdrop: a precise lattice with a diagonal light
+sweep traveling across it and a soft spotlight that follows the cursor. Choose
+ruled `lines`, a `dots` matrix, or a floor-fading `perspective` grid. Pure CSS.
+Drop it as the first child of a `relative overflow-hidden` container.
+
+<ComponentPreview
+  code={`import { BlueprintGrid } from "@/components/godui/blueprint-grid";
+
+export function BlueprintGridDemo() {
+  return (
+    <div className="relative flex h-[360px] w-full items-center justify-center overflow-hidden rounded-xl border border-border bg-background">
+      <BlueprintGrid />
+      <div className="relative z-raised text-center">
+        <h2 className="font-semibold text-3xl tracking-tight">Built with precision</h2>
+        <p className="mt-2 text-muted-foreground">Move your cursor across the grid.</p>
+      </div>
+    </div>
+  );
+}`}
+>
+  <div className="relative flex h-[360px] w-full items-center justify-center overflow-hidden rounded-xl border border-border bg-background">
+    <BlueprintGrid />
+    <div className="relative z-raised text-center">
+      <h2 className="font-semibold text-3xl tracking-tight">Built with precision</h2>
+      <p className="mt-2 text-muted-foreground">Move your cursor across the grid.</p>
+    </div>
+  </div>
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall name="blueprint-grid" />
+
+## Usage
+
+```tsx
+import { BlueprintGrid } from "@/components/godui/blueprint-grid";
+
+<div className="relative overflow-hidden">
+  <BlueprintGrid />
+  <YourContent />
+</div>
+```
+
+The layer is `absolute inset-0 z-base`; parent must be `relative overflow-hidden`,
+content at `z-raised`+. Color defaults to `--color-border`. The sweep hides under
+`prefers-reduced-motion`; the static lattice remains.
+
+## Examples
+
+### Dots
+
+<ComponentPreview
+  code={`import { BlueprintGrid } from "@/components/godui/blueprint-grid";
+
+export function BlueprintGridDots() {
+  return (
+    <div className="relative h-[300px] w-full overflow-hidden rounded-xl border border-border bg-background">
+      <BlueprintGrid variant="dots" />
+    </div>
+  );
+}`}
+>
+  <div className="relative h-[300px] w-full overflow-hidden rounded-xl border border-border bg-background">
+    <BlueprintGrid variant="dots" />
+  </div>
+</ComponentPreview>
+
+### Perspective
+
+<ComponentPreview
+  code={`import { BlueprintGrid } from "@/components/godui/blueprint-grid";
+
+export function BlueprintGridPerspective() {
+  return (
+    <div className="relative h-[300px] w-full overflow-hidden rounded-xl border border-border bg-background">
+      <BlueprintGrid variant="perspective" color="#6366f1" />
+    </div>
+  );
+}`}
+>
+  <div className="relative h-[300px] w-full overflow-hidden rounded-xl border border-border bg-background">
+    <BlueprintGrid variant="perspective" color="#6366f1" />
+  </div>
+</ComponentPreview>
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `variant` | `"lines" \| "dots" \| "perspective"` | `"lines"` | Grid style. |
+| `cellSize` | `number` | `32` | Cell size (px). |
+| `color` | `string` | `--color-border` | Line / dot color. |
+| `sweep` | `boolean` | `true` | Diagonal light sweep. |
+| `sweepDuration` | `number` | `8` | Seconds per sweep pass. |
+| `spotlight` | `boolean` | `true` | Cursor spotlight that lights up nearby cells (ignored for `perspective`). |
+| `spotlightColor` | `string` | `--color-primary` | Color the spotlit cells light up in. |
+| `spotlightRadius` | `number` | `200` | Spotlight radius (px). |
+
+Also accepts standard `div` attributes (e.g. `className`, `style`).

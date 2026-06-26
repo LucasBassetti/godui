@@ -1,0 +1,87 @@
+---
+title: Light Rays
+description: Volumetric god-rays that slowly sweep and breathe, with optional film grain. Pure CSS.
+---
+
+import { LightRays } from "@godui/components";
+
+A soft fan of volumetric light rays beams down from above, slowly sweeping and
+breathing in intensity, finished with a layer of film grain. Cinematic and warm —
+the spotlight-from-the-heavens hero. Pure CSS. Drop it as the first child of a
+`relative overflow-hidden` container.
+
+<ComponentPreview
+  code={`import { LightRays } from "@/components/godui/light-rays";
+
+export function LightRaysDemo() {
+  return (
+    <div className="relative flex h-[360px] w-full items-center justify-center overflow-hidden rounded-xl border border-border bg-background">
+      <LightRays />
+      <div className="relative z-raised text-center">
+        <h2 className="font-semibold text-3xl tracking-tight">Step into the light</h2>
+        <p className="mt-2 text-muted-foreground">God-rays that gently breathe.</p>
+      </div>
+    </div>
+  );
+}`}
+>
+  <div className="relative flex h-[360px] w-full items-center justify-center overflow-hidden rounded-xl border border-border bg-background">
+    <LightRays />
+    <div className="relative z-raised text-center">
+      <h2 className="font-semibold text-3xl tracking-tight">Step into the light</h2>
+      <p className="mt-2 text-muted-foreground">God-rays that gently breathe.</p>
+    </div>
+  </div>
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall name="light-rays" />
+
+## Usage
+
+```tsx
+import { LightRays } from "@/components/godui/light-rays";
+
+<div className="relative overflow-hidden">
+  <LightRays />
+  <YourContent />
+</div>
+```
+
+The layer is `absolute inset-0 z-base`; parent must be `relative overflow-hidden`,
+content at `z-raised`+. Color defaults to `--color-primary`. The sweep stops under
+`prefers-reduced-motion`; the static fan remains.
+
+## Examples
+
+### Warm
+
+<ComponentPreview
+  code={`import { LightRays } from "@/components/godui/light-rays";
+
+export function LightRaysWarm() {
+  return (
+    <div className="relative h-[320px] w-full overflow-hidden rounded-xl border border-border bg-background">
+      <LightRays color="#f59e0b" rayCount={18} intensity={0.7} />
+    </div>
+  );
+}`}
+>
+  <div className="relative h-[320px] w-full overflow-hidden rounded-xl border border-border bg-background">
+    <LightRays color="#f59e0b" rayCount={18} intensity={0.7} />
+  </div>
+</ComponentPreview>
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `rayCount` | `number` | `14` | Number of rays in the fan. |
+| `color` | `string` | `--color-primary` | Ray color. |
+| `speed` | `number` | `1` | Sweep speed multiplier. |
+| `angle` | `number` | `0` | Base angle (deg) the fan points from. |
+| `intensity` | `number` | `0.6` | Overall ray opacity, `0`–`1`. |
+| `grain` | `number` | `0.05` | Film-grain amount, `0`–`1` (`0` disables it). |
+
+Also accepts standard `div` attributes (e.g. `className`, `style`).
