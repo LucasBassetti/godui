@@ -6,50 +6,36 @@ import {
   geometricBackgroundVariants,
 } from "@godui/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { select } from "../playground/argtypes";
+import { effectStage } from "../playground/stage";
 
-type ShowcaseArgs = GeometricBackgroundProps & {
+type PlaygroundArgs = GeometricBackgroundProps & {
   variant: GeometricBackgroundVariant;
 };
 
-const meta: Meta<ShowcaseArgs> = {
+const meta: Meta<PlaygroundArgs> = {
   title: "Backgrounds/Geometric Background",
   component: GeometricBackground,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },
+  decorators: [
+    effectStage({
+      title: "Geometric Background",
+      subtitle: "Ruled grids meet soft glows.",
+    }),
+  ],
   argTypes: {
-    variant: { control: "select", options: geometricBackgroundVariants },
+    variant: select(geometricBackgroundVariants, "Appearance"),
   },
-  args: { variant: geometricBackgroundVariants[0] },
+  args: {
+    variant: geometricBackgroundVariants[0],
+  },
+  render: ({ variant }) => (
+    <GeometricBackground style={geometricBackgroundPresets[variant]} />
+  ),
 };
 
 export default meta;
-type Story = StoryObj<ShowcaseArgs>;
+type Story = StoryObj<PlaygroundArgs>;
 
-export const Default: Story = {
-  render: ({ variant }) => (
-    <div className="relative flex min-h-[420px] w-full items-center justify-center overflow-hidden">
-      <GeometricBackground style={geometricBackgroundPresets[variant]} />
-      <p className="relative z-raised rounded-lg bg-background/70 px-4 py-2 text-sm font-medium text-foreground backdrop-blur">
-        {variant}
-      </p>
-    </div>
-  ),
-};
-
-export const Gallery: Story = {
-  render: () => (
-    <div className="grid grid-cols-2 gap-4 p-4 sm:grid-cols-3">
-      {geometricBackgroundVariants.map((variant) => (
-        <div
-          key={variant}
-          className="relative flex h-40 items-end overflow-hidden rounded-lg border border-border"
-        >
-          <GeometricBackground style={geometricBackgroundPresets[variant]} />
-          <span className="relative z-raised w-full truncate bg-background/70 px-2 py-1 text-xs text-foreground backdrop-blur">
-            {variant}
-          </span>
-        </div>
-      ))}
-    </div>
-  ),
-};
+export const Playground: Story = {};

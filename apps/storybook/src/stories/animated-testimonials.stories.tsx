@@ -1,5 +1,7 @@
 import { AnimatedTestimonials } from "@godui/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { hidden, range, toggle } from "../playground/argtypes";
+import { centered } from "../playground/stage";
 
 const testimonials = [
   {
@@ -28,12 +30,20 @@ const meta = {
   component: AnimatedTestimonials,
   tags: ["autodocs"],
   parameters: { layout: "centered" },
-  args: { testimonials, autoplay: true, interval: 5000 },
+  decorators: [centered()],
+  argTypes: {
+    testimonials: hidden(),
+    autoplay: toggle("Behavior"),
+    interval: range(1000, 10000, 500, "Behavior"),
+  },
+  args: {
+    testimonials,
+    autoplay: true,
+    interval: 5000,
+  },
 } satisfies Meta<typeof AnimatedTestimonials>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
-
-export const NoAutoplay: Story = { args: { autoplay: false } };
+export const Playground: Story = {};

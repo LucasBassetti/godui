@@ -1,17 +1,7 @@
 import { SourceCitation, SourceList } from "@godui/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-
-const meta = {
-  title: "AI/SourceCitations",
-  component: SourceCitation,
-  subcomponents: { SourceList },
-  tags: ["autodocs"],
-  parameters: { layout: "padded" },
-  args: { index: 1, source: { title: "", url: "" } },
-} satisfies Meta<typeof SourceCitation>;
-
-export default meta;
-type Story = StoryObj<typeof meta>;
+import { hidden, range, toggle } from "../playground/argtypes";
+import { centered } from "../playground/stage";
 
 const sources = [
   {
@@ -36,25 +26,31 @@ const sources = [
   },
 ];
 
-export const InlineCitations: Story = {
-  render: () => (
-    <div className="mx-auto max-w-lg text-sm leading-7 text-foreground">
-      <p>
-        Modern design systems lean on OKLCH for consistent theming
-        <SourceCitation index={1} source={sources[0]} /> and Tailwind v4 for a
-        CSS-first config
-        <SourceCitation index={2} source={sources[1]} />. Motion is increasingly
-        treated as a first-class concern
-        <SourceCitation index={3} source={sources[3]} />.
-      </p>
+const meta = {
+  title: "AI/SourceCitations",
+  component: SourceList,
+  subcomponents: { SourceCitation },
+  tags: ["autodocs"],
+  parameters: { layout: "centered" },
+  decorators: [centered(384)],
+  argTypes: {
+    collapsible: toggle("Behavior"),
+    previewCount: range(1, 6, 1, "Behavior"),
+    sources: hidden(),
+  },
+  args: {
+    collapsible: true,
+    previewCount: 2,
+    sources,
+  },
+  render: (args) => (
+    <div className="w-full rounded-xl border border-border bg-card p-4">
+      <SourceList {...args} />
     </div>
   ),
-};
+} satisfies Meta<typeof SourceList>;
 
-export const SourcesList: Story = {
-  render: () => (
-    <div className="mx-auto max-w-md rounded-xl border border-border bg-card p-4">
-      <SourceList sources={sources} previewCount={2} />
-    </div>
-  ),
-};
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const Playground: Story = {};

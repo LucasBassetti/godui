@@ -1,22 +1,7 @@
 // biome-ignore-all lint/a11y/useValidAriaRole: "role" is a chat-message domain prop, not an ARIA role
-import {
-  ConversationMessage,
-  ConversationThread,
-  StreamingText,
-} from "@godui/components";
+import { ConversationMessage, ConversationThread } from "@godui/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { useState } from "react";
-
-const meta = {
-  title: "AI/ConversationThread",
-  component: ConversationThread,
-  subcomponents: { ConversationMessage },
-  tags: ["autodocs"],
-  parameters: { layout: "padded" },
-} satisfies Meta<typeof ConversationThread>;
-
-export default meta;
-type Story = StoryObj<typeof meta>;
+import { hidden, select, toggle } from "../playground/argtypes";
 
 const copyAction = {
   label: "Copy",
@@ -35,7 +20,21 @@ const copyAction = {
   ),
 };
 
-export const Bubbles: Story = {
+const meta = {
+  title: "AI/ConversationThread",
+  component: ConversationThread,
+  subcomponents: { ConversationMessage },
+  tags: ["autodocs"],
+  parameters: { layout: "padded" },
+  argTypes: {
+    variant: select(["bubbles", "document", "compact"], "Appearance"),
+    autoScroll: toggle("Behavior"),
+    children: hidden(),
+  },
+  args: {
+    variant: "bubbles",
+    autoScroll: true,
+  },
   render: (args) => (
     <div className="mx-auto h-[420px] max-w-2xl rounded-2xl border border-border bg-background">
       <ConversationThread {...args}>
@@ -65,55 +64,9 @@ export const Bubbles: Story = {
       </ConversationThread>
     </div>
   ),
-  args: { variant: "bubbles" },
-};
+} satisfies Meta<typeof ConversationThread>;
 
-export const Document: Story = {
-  render: () => (
-    <div className="mx-auto h-[420px] max-w-2xl rounded-2xl border border-border bg-background">
-      <ConversationThread variant="document">
-        <ConversationMessage role="user" name="You">
-          Summarize the design-engineer role in one paragraph.
-        </ConversationMessage>
-        <ConversationMessage
-          role="assistant"
-          name="GodUI"
-          actions={[copyAction]}
-        >
-          A design engineer bridges product design and frontend engineering —
-          shipping interfaces with the polish of a designer and the rigor of an
-          engineer, owning motion, accessibility, and the last 10% that makes a
-          product feel premium.
-        </ConversationMessage>
-      </ConversationThread>
-    </div>
-  ),
-};
+export default meta;
+type Story = StoryObj<typeof meta>;
 
-export const LiveStreaming: Story = {
-  render: () => {
-    function Demo() {
-      const [done, setDone] = useState(false);
-      return (
-        <div className="mx-auto h-[300px] max-w-2xl rounded-2xl border border-border bg-background">
-          <ConversationThread>
-            <ConversationMessage role="user" name="You">
-              Give me a tagline for GodUI.
-            </ConversationMessage>
-            <ConversationMessage
-              role="assistant"
-              name="GodUI"
-              streaming={!done}
-            >
-              <StreamingText
-                text="Animated UI components for design engineers — own the code, keep the magic."
-                onDone={() => setDone(true)}
-              />
-            </ConversationMessage>
-          </ConversationThread>
-        </div>
-      );
-    }
-    return <Demo />;
-  },
-};
+export const Playground: Story = {};

@@ -3,36 +3,49 @@ import {
   type TopographicDriftProps,
 } from "@godui/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import {
+  type PresetMap,
+  presetSelect,
+  renderPreset,
+} from "../playground/presets";
+import { effectStage } from "../playground/stage";
 
-const meta = {
+const presets = {
+  Calm: { lineCount: 9, noiseScale: 0.004, speed: 1, weight: 1 },
+  Dense: { lineCount: 16, noiseScale: 0.006, speed: 1, weight: 1 },
+  Sky: {
+    color: "#0ea5e9",
+    lineCount: 9,
+    noiseScale: 0.004,
+    speed: 1,
+    weight: 1.4,
+  },
+  Broad: { lineCount: 7, noiseScale: 0.0025, speed: 0.8, weight: 1.2 },
+} satisfies PresetMap<TopographicDriftProps>;
+
+type PlaygroundArgs = TopographicDriftProps & { preset: keyof typeof presets };
+
+const meta: Meta<PlaygroundArgs> = {
   title: "Backgrounds/Topographic Drift",
   component: TopographicDrift,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },
   decorators: [
-    (Story) => (
-      <div className="relative flex min-h-[60vh] w-full items-center justify-center overflow-hidden bg-background">
-        <Story />
-        <div className="relative z-raised text-center">
-          <h1 className="font-semibold text-4xl tracking-tight">
-            Topographic Drift
-          </h1>
-          <p className="mt-2 text-muted-foreground">A living elevation map.</p>
-        </div>
-      </div>
-    ),
+    effectStage({
+      title: "Topographic Drift",
+      subtitle: "A living elevation map.",
+    }),
   ],
-} satisfies Meta<typeof TopographicDrift>;
+  argTypes: {
+    preset: presetSelect(presets, "Appearance"),
+  },
+  args: {
+    preset: "Calm",
+  },
+  render: renderPreset(presets, (cfg) => <TopographicDrift {...cfg} />),
+};
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<PlaygroundArgs>;
 
-export const Default: Story = { args: {} satisfies TopographicDriftProps };
-
-export const Dense: Story = {
-  args: { lineCount: 16, noiseScale: 0.006 } satisfies TopographicDriftProps,
-};
-
-export const Tinted: Story = {
-  args: { color: "#0ea5e9", weight: 1.4 } satisfies TopographicDriftProps,
-};
+export const Playground: Story = {};

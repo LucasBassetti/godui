@@ -1,63 +1,34 @@
-import { MagicButton, type MagicButtonProps } from "@godui/components";
+import { MagicButton } from "@godui/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { fn } from "storybook/test";
+import { action, select, text, toggle } from "../playground/argtypes";
+import { centered } from "../playground/stage";
 
 const meta = {
   title: "Buttons/Magic Button",
   component: MagicButton,
   tags: ["autodocs"],
-  parameters: {
-    layout: "centered",
+  parameters: { layout: "centered" },
+  decorators: [centered()],
+  argTypes: {
+    children: text("Content"),
+    variant: select(["default", "secondary"], "Appearance"),
+    size: select(["sm", "md", "lg"], "Appearance"),
+    rainbow: toggle("Appearance"),
+    disabled: toggle("State"),
+    onClick: action("click"),
+  },
+  args: {
+    children: "Push me",
+    variant: "default",
+    size: "md",
+    rainbow: true,
+    disabled: false,
+    onClick: fn(),
   },
 } satisfies Meta<typeof MagicButton>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
-  args: {
-    children: "Push me",
-    variant: "default",
-  } satisfies MagicButtonProps,
-};
-
-export const Secondary: Story = {
-  args: {
-    children: "Push me",
-    variant: "secondary",
-  } satisfies MagicButtonProps,
-};
-
-export const Disabled: Story = {
-  args: {
-    children: "Push me",
-    variant: "default",
-    disabled: true,
-  } satisfies MagicButtonProps,
-};
-
-export const Sizes: Story = {
-  render: () => (
-    <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-      <MagicButton size="sm">Small</MagicButton>
-      <MagicButton size="md">Medium</MagicButton>
-      <MagicButton size="lg">Large</MagicButton>
-    </div>
-  ),
-};
-
-export const Playground: Story = {
-  args: {
-    children: "Push me",
-    variant: "default",
-    size: "md",
-    rainbow: true,
-  } satisfies MagicButtonProps,
-};
-
-export const WithoutRainbow: Story = {
-  args: {
-    children: "Push me",
-    variant: "default",
-    rainbow: false,
-  } satisfies MagicButtonProps,
-};
+export const Playground: Story = {};

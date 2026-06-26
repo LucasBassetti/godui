@@ -1,6 +1,7 @@
 import { Marquee, type MarqueeProps } from "@godui/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import type { ReactNode } from "react";
+import { range, select, toggle } from "../playground/argtypes";
 
 const logos: { name: string; mark: ReactNode }[] = [
   { name: "Northwind", mark: <circle cx="12" cy="12" r="9" /> },
@@ -32,35 +33,25 @@ function LogoCloud() {
   ));
 }
 
-const reviews = [
-  { name: "Ada", body: "The smoothest UI I've shipped this year." },
-  { name: "Linus", body: "Spring physics that actually feel right." },
-  { name: "Grace", body: "Dropped it in and it just worked." },
-  { name: "Alan", body: "My landing page finally feels premium." },
-];
-
-function ReviewCards() {
-  return reviews.map((r) => (
-    <figure
-      key={r.name}
-      className="w-64 rounded-xl border border-border bg-card p-4 shadow-sm"
-    >
-      <figcaption className="text-sm font-semibold text-foreground">
-        {r.name}
-      </figcaption>
-      <blockquote className="mt-2 text-sm text-muted-foreground">
-        {r.body}
-      </blockquote>
-    </figure>
-  ));
-}
-
 const meta = {
   title: "Effects/Marquee",
   component: Marquee,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },
-  args: { direction: "left", speed: 28, pauseOnHover: true, fade: true },
+  argTypes: {
+    direction: select(["left", "right", "up", "down"], "Behavior"),
+    speed: range(5, 60, 1, "Behavior"),
+    repeat: range(2, 6, 1, "Behavior"),
+    pauseOnHover: toggle("Behavior"),
+    fade: toggle("Appearance"),
+  },
+  args: {
+    direction: "left",
+    speed: 28,
+    repeat: 2,
+    pauseOnHover: true,
+    fade: true,
+  },
   render: (args: MarqueeProps) => (
     <div className="p-10">
       <p className="mb-6 text-center text-sm font-medium uppercase tracking-wide text-muted-foreground">
@@ -76,31 +67,4 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const LogoCloudStory: Story = { name: "Logo Cloud" };
-
-export const Reviews: Story = {
-  render: (args: MarqueeProps) => (
-    <div className="p-10">
-      <Marquee {...args}>
-        <ReviewCards />
-      </Marquee>
-    </div>
-  ),
-};
-
-export const Reverse: Story = { args: { direction: "right" } };
-
-export const Fast: Story = { args: { speed: 15 } };
-
-export const NoFade: Story = { args: { fade: false } };
-
-export const Vertical: Story = {
-  args: { direction: "up" },
-  render: (args: MarqueeProps) => (
-    <div className="flex h-[420px] items-center justify-center p-8">
-      <Marquee {...args} className="h-full">
-        <ReviewCards />
-      </Marquee>
-    </div>
-  ),
-};
+export const Playground: Story = {};

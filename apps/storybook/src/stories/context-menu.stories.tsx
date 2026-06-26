@@ -1,5 +1,7 @@
 import { ContextMenu, type ContextMenuItem } from "@godui/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { hidden } from "../playground/argtypes";
+import { centered } from "../playground/stage";
 
 const items: ContextMenuItem[] = [
   { type: "label", label: "Actions" },
@@ -16,6 +18,11 @@ const meta = {
   component: ContextMenu,
   tags: ["autodocs"],
   parameters: { layout: "centered" },
+  decorators: [centered()],
+  argTypes: {
+    items: hidden(),
+    children: hidden(),
+  },
   args: {
     items,
     children: (
@@ -29,4 +36,4 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+export const Playground: Story = {};

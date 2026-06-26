@@ -1,5 +1,7 @@
 import { ResizableHeader } from "@godui/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { fn } from "storybook/test";
+import { action, hidden, range, toggle } from "../playground/argtypes";
 
 const links = [
   { label: "Home", href: "/" },
@@ -22,7 +24,6 @@ const meta = {
   component: ResizableHeader,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },
-  args: { links, activeHref: "/features", cta },
   decorators: [
     (Story) => (
       <div className="h-[150vh] bg-muted/30">
@@ -33,11 +34,26 @@ const meta = {
       </div>
     ),
   ],
+  argTypes: {
+    logo: hidden(),
+    links: hidden(),
+    cta: hidden(),
+    scrollRef: hidden(),
+    sticky: toggle("Behavior"),
+    scrollThreshold: range(0, 240, 10, "Behavior"),
+    onNavigate: action("navigate"),
+  },
+  args: {
+    links,
+    activeHref: "/features",
+    cta,
+    sticky: true,
+    scrollThreshold: 40,
+    onNavigate: fn(),
+  },
 } satisfies Meta<typeof ResizableHeader>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
-export const NoCta: Story = { args: { cta: undefined } };
-export const NonSticky: Story = { args: { sticky: false } };
+export const Playground: Story = {};

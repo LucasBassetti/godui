@@ -1,39 +1,48 @@
 import { NeuralGrid, type NeuralGridProps } from "@godui/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import {
+  type PresetMap,
+  presetSelect,
+  renderPreset,
+} from "../playground/presets";
+import { effectStage } from "../playground/stage";
 
-const meta = {
+const presets = {
+  Calm: { nodeCount: 48, density: 0.5, pulseSpeed: 1, nodeSize: 2 },
+  Busy: { nodeCount: 80, density: 0.9, pulseSpeed: 1.4, nodeSize: 2 },
+  Cyan: {
+    color: "#22d3ee",
+    nodeCount: 48,
+    density: 0.5,
+    pulseSpeed: 1,
+    nodeSize: 2.5,
+  },
+  Sparse: { nodeCount: 28, density: 0.3, pulseSpeed: 0.8, nodeSize: 3 },
+} satisfies PresetMap<NeuralGridProps>;
+
+type PlaygroundArgs = NeuralGridProps & { preset: keyof typeof presets };
+
+const meta: Meta<PlaygroundArgs> = {
   title: "Backgrounds/Neural Grid",
   component: NeuralGrid,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },
   decorators: [
-    (Story) => (
-      <div className="relative flex min-h-[60vh] w-full items-center justify-center overflow-hidden bg-background">
-        <Story />
-        <div className="relative z-raised text-center">
-          <h1 className="font-semibold text-4xl tracking-tight">Neural Grid</h1>
-          <p className="mt-2 text-muted-foreground">
-            Signals firing across a lattice.
-          </p>
-        </div>
-      </div>
-    ),
+    effectStage({
+      title: "Neural Grid",
+      subtitle: "Signals firing across a lattice.",
+    }),
   ],
-} satisfies Meta<typeof NeuralGrid>;
+  argTypes: {
+    preset: presetSelect(presets, "Appearance"),
+  },
+  args: {
+    preset: "Calm",
+  },
+  render: renderPreset(presets, (cfg) => <NeuralGrid {...cfg} />),
+};
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<PlaygroundArgs>;
 
-export const Default: Story = { args: {} satisfies NeuralGridProps };
-
-export const Busy: Story = {
-  args: {
-    nodeCount: 80,
-    density: 0.9,
-    pulseSpeed: 1.4,
-  } satisfies NeuralGridProps,
-};
-
-export const Tinted: Story = {
-  args: { color: "#22d3ee", nodeSize: 2.5 } satisfies NeuralGridProps,
-};
+export const Playground: Story = {};

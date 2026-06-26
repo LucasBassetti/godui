@@ -1,5 +1,6 @@
 import { FloatingToolbar } from "@godui/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { hidden, toggle } from "../playground/argtypes";
 
 const icon = (path: string) => (
   <svg
@@ -28,10 +29,15 @@ const meta = {
   component: FloatingToolbar,
   tags: ["autodocs"],
   parameters: { layout: "centered" },
+  argTypes: {
+    open: toggle("State"),
+    actions: hidden(),
+    children: hidden(),
+  },
   args: { actions, open: true },
 } satisfies Meta<typeof FloatingToolbar>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+export const Playground: Story = {};

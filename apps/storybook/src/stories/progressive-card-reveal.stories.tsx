@@ -1,18 +1,8 @@
 import { ProgressiveCardReveal } from "@godui/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import * as React from "react";
-
-const meta = {
-  title: "Layout/Progressive Card Reveal",
-  component: ProgressiveCardReveal,
-  tags: ["autodocs"],
-  parameters: {
-    layout: "centered",
-  },
-} satisfies Meta<typeof ProgressiveCardReveal>;
-
-export default meta;
-type Story = StoryObj<typeof meta>;
+import { hidden, range } from "../playground/argtypes";
+import { centered } from "../playground/stage";
 
 type Leg = {
   icon: string;
@@ -98,13 +88,17 @@ function ExpandedBody({ icon, label, distance, time }: Leg) {
 }
 
 function TravelDemo({
-  initialActive = 4,
+  activeIndex,
   maxDepth,
 }: {
-  initialActive?: number;
+  activeIndex: number;
   maxDepth?: number;
 }) {
-  const [active, setActive] = React.useState(initialActive);
+  const [active, setActive] = React.useState(activeIndex);
+
+  React.useEffect(() => {
+    setActive(activeIndex);
+  }, [activeIndex]);
 
   return (
     <ProgressiveCardReveal
@@ -127,37 +121,28 @@ function TravelDemo({
   );
 }
 
-export const Default: Story = {
-  args: { activeIndex: 4 },
-  render: () => <TravelDemo />,
-};
-
-export const CappedDepth: Story = {
-  args: { activeIndex: 0, maxDepth: 2 },
-  render: () => <TravelDemo initialActive={0} maxDepth={2} />,
-};
-
-export const FirstActive: Story = {
-  args: { activeIndex: 0 },
-  render: () => {
-    const [active, setActive] = React.useState(0);
-    return (
-      <ProgressiveCardReveal
-        activeIndex={active}
-        onActiveChange={setActive}
-        className="w-[420px]"
-      >
-        {legs.map((leg) => (
-          <ProgressiveCardReveal.Card key={leg.label}>
-            <ProgressiveCardReveal.CardCollapsed>
-              <CollapsedRow {...leg} />
-            </ProgressiveCardReveal.CardCollapsed>
-            <ProgressiveCardReveal.CardExpanded>
-              <ExpandedBody {...leg} />
-            </ProgressiveCardReveal.CardExpanded>
-          </ProgressiveCardReveal.Card>
-        ))}
-      </ProgressiveCardReveal>
-    );
+const meta = {
+  title: "Layout/Progressive Card Reveal",
+  component: ProgressiveCardReveal,
+  tags: ["autodocs"],
+  parameters: { layout: "centered" },
+  decorators: [centered()],
+  argTypes: {
+    children: hidden(),
+    onActiveChange: hidden(),
+    activeIndex: range(0, 4, 1, "State"),
+    maxDepth: range(1, 5, 1, "Behavior"),
   },
-};
+  args: {
+    activeIndex: 4,
+    maxDepth: 3,
+  },
+  render: ({ activeIndex, maxDepth }) => (
+    <TravelDemo activeIndex={activeIndex} maxDepth={maxDepth} />
+  ),
+} satisfies Meta<typeof ProgressiveCardReveal>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const Playground: Story = {};

@@ -1,16 +1,8 @@
 import { PromptSuggestions } from "@godui/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-
-const meta = {
-  title: "AI/PromptSuggestions",
-  component: PromptSuggestions,
-  tags: ["autodocs"],
-  parameters: { layout: "padded" },
-  args: { suggestions: [] },
-} satisfies Meta<typeof PromptSuggestions>;
-
-export default meta;
-type Story = StoryObj<typeof meta>;
+import { fn } from "storybook/test";
+import { action, hidden, range, select, toggle } from "../playground/argtypes";
+import { padded } from "../playground/stage";
 
 function Icon({ d }: { d: string }) {
   return (
@@ -60,27 +52,29 @@ const suggestions = [
   },
 ];
 
-export const Grid: Story = {
-  render: (args) => (
-    <div className="mx-auto max-w-xl">
-      <PromptSuggestions {...args} suggestions={suggestions} />
-    </div>
-  ),
-  args: { variant: "grid" },
-};
+const meta = {
+  title: "AI/PromptSuggestions",
+  component: PromptSuggestions,
+  tags: ["autodocs"],
+  parameters: { layout: "padded" },
+  decorators: [padded(576)],
+  argTypes: {
+    variant: select(["grid", "chips", "list"], "Appearance"),
+    loading: toggle("State"),
+    skeletonCount: range(1, 8, 1, "Behavior"),
+    suggestions: hidden(),
+    onSelect: action("select"),
+  },
+  args: {
+    variant: "grid",
+    loading: false,
+    skeletonCount: 4,
+    suggestions,
+    onSelect: fn(),
+  },
+} satisfies Meta<typeof PromptSuggestions>;
 
-export const Chips: Story = {
-  render: () => (
-    <div className="mx-auto max-w-xl">
-      <PromptSuggestions variant="chips" suggestions={suggestions} />
-    </div>
-  ),
-};
+export default meta;
+type Story = StoryObj<typeof meta>;
 
-export const Loading: Story = {
-  render: () => (
-    <div className="mx-auto max-w-xl">
-      <PromptSuggestions suggestions={suggestions} loading skeletonCount={4} />
-    </div>
-  ),
-};
+export const Playground: Story = {};

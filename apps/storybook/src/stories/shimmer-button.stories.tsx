@@ -1,78 +1,34 @@
-import { ShimmerButton, type ShimmerButtonProps } from "@godui/components";
+import { ShimmerButton } from "@godui/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { fn } from "storybook/test";
+import { action, select, text, toggle } from "../playground/argtypes";
+import { centered } from "../playground/stage";
 
 const meta = {
   title: "Buttons/Shimmer Button",
   component: ShimmerButton,
   tags: ["autodocs"],
-  parameters: {
-    layout: "centered",
+  parameters: { layout: "centered" },
+  decorators: [centered()],
+  argTypes: {
+    children: text("Content"),
+    variant: select(["primary", "secondary", "outline"], "Appearance"),
+    size: select(["sm", "md", "lg"], "Appearance"),
+    shimmer: toggle("Appearance"),
+    disabled: toggle("State"),
+    onClick: action("click"),
+  },
+  args: {
+    children: "Shimmer",
+    variant: "primary",
+    size: "md",
+    shimmer: true,
+    disabled: false,
+    onClick: fn(),
   },
 } satisfies Meta<typeof ShimmerButton>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Primary: Story = {
-  args: {
-    children: "Shimmer",
-    variant: "primary",
-  } satisfies ShimmerButtonProps,
-};
-
-export const Secondary: Story = {
-  args: {
-    children: "Shimmer",
-    variant: "secondary",
-  } satisfies ShimmerButtonProps,
-};
-
-export const Outline: Story = {
-  args: {
-    children: "Shimmer",
-    variant: "outline",
-  } satisfies ShimmerButtonProps,
-};
-
-export const Disabled: Story = {
-  args: {
-    children: "Shimmer",
-    variant: "primary",
-    disabled: true,
-  } satisfies ShimmerButtonProps,
-};
-
-export const Sizes: Story = {
-  render: () => (
-    <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-      <ShimmerButton size="sm">Small</ShimmerButton>
-      <ShimmerButton size="md">Medium</ShimmerButton>
-      <ShimmerButton size="lg">Large</ShimmerButton>
-    </div>
-  ),
-};
-
-export const WithoutShimmer: Story = {
-  args: {
-    children: "Shimmer",
-    variant: "primary",
-    shimmer: false,
-  } satisfies ShimmerButtonProps,
-};
-
-export const Variants: Story = {
-  render: () => (
-    <div
-      style={{
-        display: "flex",
-        flexWrap: "wrap",
-        alignItems: "center",
-        gap: 16,
-      }}
-    >
-      <ShimmerButton variant="primary">Primary</ShimmerButton>
-      <ShimmerButton variant="secondary">Secondary</ShimmerButton>
-      <ShimmerButton variant="outline">Outline</ShimmerButton>
-    </div>
-  ),
-};
+export const Playground: Story = {};

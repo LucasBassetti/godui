@@ -1,5 +1,7 @@
 import { Combobox, type ComboboxOption } from "@godui/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { fn } from "storybook/test";
+import { action, hidden, text } from "../playground/argtypes";
 
 const frameworks: ComboboxOption[] = [
   { label: "Next.js", value: "next", description: "The React framework" },
@@ -19,7 +21,6 @@ const meta = {
   component: Combobox,
   tags: ["autodocs"],
   parameters: { layout: "centered" },
-  args: { options: frameworks, placeholder: "Search frameworks…" },
   decorators: [
     (Story) => (
       <div className="flex h-80 items-start justify-center pt-4">
@@ -27,22 +28,22 @@ const meta = {
       </div>
     ),
   ],
+  argTypes: {
+    options: hidden(),
+    onSearch: hidden(),
+    value: hidden(),
+    placeholder: text("Content"),
+    emptyMessage: text("Content"),
+    onChange: action("change"),
+  },
+  args: {
+    options: frameworks,
+    placeholder: "Search frameworks…",
+    onChange: fn(),
+  },
 } satisfies Meta<typeof Combobox>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
-export const Preselected: Story = { args: { defaultValue: "astro" } };
-
-export const Async: Story = {
-  args: {
-    options: undefined,
-    onSearch: async (q: string) => {
-      await new Promise((r) => setTimeout(r, 400));
-      return frameworks.filter((f) =>
-        f.label.toLowerCase().includes(q.toLowerCase()),
-      );
-    },
-  },
-};
+export const Playground: Story = {};

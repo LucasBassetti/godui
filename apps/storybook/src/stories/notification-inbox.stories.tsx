@@ -1,19 +1,10 @@
 import { type Notification, NotificationInbox } from "@godui/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { useState } from "react";
+import { fn } from "storybook/test";
+import { action, hidden, text } from "../playground/argtypes";
+import { centered } from "../playground/stage";
 
-const meta = {
-  title: "Collaboration/NotificationInbox",
-  component: NotificationInbox,
-  tags: ["autodocs"],
-  parameters: { layout: "padded" },
-  args: { notifications: [] },
-} satisfies Meta<typeof NotificationInbox>;
-
-export default meta;
-type Story = StoryObj<typeof meta>;
-
-const seed: Notification[] = [
+const notifications: Notification[] = [
   {
     id: "1",
     actor: "Ana Reyes",
@@ -59,35 +50,29 @@ const seed: Notification[] = [
   },
 ];
 
-export const Default: Story = {
-  render: () => {
-    function Demo() {
-      const [items, setItems] = useState(seed);
-      return (
-        <div className="mx-auto max-w-sm">
-          <NotificationInbox
-            notifications={items}
-            onRead={(id) =>
-              setItems((p) =>
-                p.map((n) => (n.id === id ? { ...n, read: true } : n)),
-              )
-            }
-            onArchive={(id) => setItems((p) => p.filter((n) => n.id !== id))}
-            onMarkAllRead={() =>
-              setItems((p) => p.map((n) => ({ ...n, read: true })))
-            }
-          />
-        </div>
-      );
-    }
-    return <Demo />;
+const meta = {
+  title: "Collaboration/NotificationInbox",
+  component: NotificationInbox,
+  tags: ["autodocs"],
+  parameters: { layout: "centered" },
+  decorators: [centered(384)],
+  argTypes: {
+    title: text("Content"),
+    notifications: hidden(),
+    onRead: action("read"),
+    onArchive: action("archive"),
+    onMarkAllRead: action("markAllRead"),
   },
-};
+  args: {
+    title: "Inbox",
+    notifications,
+    onRead: fn(),
+    onArchive: fn(),
+    onMarkAllRead: fn(),
+  },
+} satisfies Meta<typeof NotificationInbox>;
 
-export const Empty: Story = {
-  render: () => (
-    <div className="mx-auto max-w-sm">
-      <NotificationInbox notifications={[]} />
-    </div>
-  ),
-};
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const Playground: Story = {};

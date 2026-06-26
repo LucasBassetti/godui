@@ -1,5 +1,6 @@
 import { DynamicIsland } from "@godui/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { hidden, select } from "../playground/argtypes";
 
 const meta = {
   title: "Overlays/Dynamic Island",
@@ -7,26 +8,20 @@ const meta = {
   tags: ["autodocs"],
   parameters: { layout: "centered" },
   argTypes: {
-    size: {
-      control: "select",
-      options: ["compact", "default", "long", "tall", "large"],
-    },
+    size: select(["compact", "default", "long", "tall", "large"], "Appearance"),
+    presenceKey: hidden(),
+    children: hidden(),
   },
+  args: { size: "default" },
 } satisfies Meta<typeof DynamicIsland>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
-  args: { size: "default" },
+export const Playground: Story = {
   render: (args) => (
     <DynamicIsland {...args}>
       <span className="text-sm">Now playing</span>
     </DynamicIsland>
   ),
-};
-
-export const Large: Story = {
-  ...Default,
-  args: { size: "large" },
 };

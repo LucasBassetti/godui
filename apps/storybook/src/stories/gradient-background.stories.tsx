@@ -6,50 +6,36 @@ import {
   gradientBackgroundVariants,
 } from "@godui/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { select } from "../playground/argtypes";
+import { effectStage } from "../playground/stage";
 
-type ShowcaseArgs = GradientBackgroundProps & {
+type PlaygroundArgs = GradientBackgroundProps & {
   variant: GradientBackgroundVariant;
 };
 
-const meta: Meta<ShowcaseArgs> = {
+const meta: Meta<PlaygroundArgs> = {
   title: "Backgrounds/Gradient Background",
   component: GradientBackground,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },
+  decorators: [
+    effectStage({
+      title: "Gradient Background",
+      subtitle: "Spotlit radial washes.",
+    }),
+  ],
   argTypes: {
-    variant: { control: "select", options: gradientBackgroundVariants },
+    variant: select(gradientBackgroundVariants, "Appearance"),
   },
-  args: { variant: gradientBackgroundVariants[0] },
+  args: {
+    variant: gradientBackgroundVariants[0],
+  },
+  render: ({ variant }) => (
+    <GradientBackground style={gradientBackgroundPresets[variant]} />
+  ),
 };
 
 export default meta;
-type Story = StoryObj<ShowcaseArgs>;
+type Story = StoryObj<PlaygroundArgs>;
 
-export const Default: Story = {
-  render: ({ variant }) => (
-    <div className="relative flex min-h-[420px] w-full items-center justify-center overflow-hidden">
-      <GradientBackground style={gradientBackgroundPresets[variant]} />
-      <p className="relative z-raised rounded-lg bg-background/70 px-4 py-2 text-sm font-medium text-foreground backdrop-blur">
-        {variant}
-      </p>
-    </div>
-  ),
-};
-
-export const Gallery: Story = {
-  render: () => (
-    <div className="grid grid-cols-2 gap-4 p-4 sm:grid-cols-3">
-      {gradientBackgroundVariants.map((variant) => (
-        <div
-          key={variant}
-          className="relative flex h-40 items-end overflow-hidden rounded-lg border border-border"
-        >
-          <GradientBackground style={gradientBackgroundPresets[variant]} />
-          <span className="relative z-raised w-full truncate bg-background/70 px-2 py-1 text-xs text-foreground backdrop-blur">
-            {variant}
-          </span>
-        </div>
-      ))}
-    </div>
-  ),
-};
+export const Playground: Story = {};

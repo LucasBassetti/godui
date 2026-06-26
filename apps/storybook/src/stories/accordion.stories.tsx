@@ -1,5 +1,7 @@
 import { Accordion } from "@godui/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { hidden, select, toggle } from "../playground/argtypes";
+import { padded } from "../playground/stage";
 
 const items = [
   {
@@ -25,18 +27,22 @@ const meta = {
   component: Accordion,
   tags: ["autodocs"],
   parameters: { layout: "padded" },
-  args: { items },
-  decorators: [
-    (Story) => (
-      <div style={{ maxWidth: 520, margin: "0 auto" }}>
-        <Story />
-      </div>
-    ),
-  ],
+  decorators: [padded(520)],
+  argTypes: {
+    items: hidden(),
+    defaultValue: hidden(),
+    type: select(["single", "multiple"], "Behavior"),
+    collapsible: toggle("Behavior"),
+  },
+  args: {
+    items,
+    type: "single",
+    defaultValue: "what",
+    collapsible: true,
+  },
 } satisfies Meta<typeof Accordion>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Single: Story = { args: { type: "single", defaultValue: "what" } };
-export const Multiple: Story = { args: { type: "multiple" } };
+export const Playground: Story = {};

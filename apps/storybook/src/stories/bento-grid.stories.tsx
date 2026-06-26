@@ -1,17 +1,8 @@
 import { BentoCard, BentoGrid } from "@godui/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import type { ReactNode } from "react";
-
-const meta = {
-  title: "Layout/BentoGrid",
-  component: BentoGrid,
-  subcomponents: { BentoCard },
-  tags: ["autodocs"],
-  parameters: { layout: "padded" },
-} satisfies Meta<typeof BentoGrid>;
-
-export default meta;
-type Story = StoryObj<typeof meta>;
+import { select } from "../playground/argtypes";
+import { padded } from "../playground/stage";
 
 function Icon({ children }: { children: ReactNode }) {
   return (
@@ -61,9 +52,21 @@ function MiniBars() {
   );
 }
 
-export const Default: Story = {
-  render: () => (
-    <BentoGrid className="max-w-4xl">
+const meta = {
+  title: "Layout/BentoGrid",
+  component: BentoGrid,
+  subcomponents: { BentoCard },
+  tags: ["autodocs"],
+  parameters: { layout: "padded" },
+  decorators: [padded(896)],
+  argTypes: {
+    columns: select(["2", "3", "4"], "Appearance"),
+  },
+  args: {
+    columns: 4,
+  },
+  render: ({ columns }) => (
+    <BentoGrid columns={Number(columns) as 2 | 3 | 4} className="max-w-4xl">
       <BentoCard
         colSpan={2}
         icon={<Icon>{sparkles}</Icon>}
@@ -107,4 +110,9 @@ export const Default: Story = {
       />
     </BentoGrid>
   ),
-};
+} satisfies Meta<typeof BentoGrid>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const Playground: Story = {};

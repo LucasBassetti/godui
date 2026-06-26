@@ -1,5 +1,7 @@
 import { AvatarGroup } from "@godui/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { hidden, range, select, toggle } from "../playground/argtypes";
+import { centered } from "../playground/stage";
 
 const avatars = [
   { src: "https://i.pravatar.cc/80?img=1", alt: "Ada" },
@@ -15,24 +17,22 @@ const meta = {
   component: AvatarGroup,
   tags: ["autodocs"],
   parameters: { layout: "centered" },
-  args: { avatars },
+  decorators: [centered()],
+  argTypes: {
+    avatars: hidden(),
+    max: range(1, 6, 1, "Behavior"),
+    size: select(["sm", "md", "lg"], "Appearance"),
+    spreadOnHover: toggle("Behavior"),
+  },
+  args: {
+    avatars,
+    max: 4,
+    size: "md",
+    spreadOnHover: true,
+  },
 } satisfies Meta<typeof AvatarGroup>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = { args: { max: 4 } };
-export const Small: Story = { args: { size: "sm", max: 4 } };
-export const Large: Story = { args: { size: "lg", max: 4 } };
-export const Initials: Story = {
-  args: {
-    max: 4,
-    avatars: [
-      { fallback: "AB", alt: "Ada" },
-      { fallback: "CD", alt: "Carl" },
-      { fallback: "EF", alt: "Eve" },
-      { fallback: "GH", alt: "Gus" },
-      { fallback: "IJ", alt: "Ivy" },
-    ],
-  },
-};
+export const Playground: Story = {};

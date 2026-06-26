@@ -1,35 +1,42 @@
 import { FlowField, type FlowFieldProps } from "@godui/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import {
+  type PresetMap,
+  presetSelect,
+  renderPreset,
+} from "../playground/presets";
+import { effectStage } from "../playground/stage";
 
-const meta = {
+const presets = {
+  Calm: { speed: 1, fade: 0.06, noiseScale: 0.0016 },
+  "Long Trails": { speed: 1.2, fade: 0.02, noiseScale: 0.0016 },
+  Emerald: { color: "#10b981", speed: 1, fade: 0.05, noiseScale: 0.0024 },
+  Crisp: { speed: 0.8, fade: 0.12, noiseScale: 0.002 },
+} satisfies PresetMap<FlowFieldProps>;
+
+type PlaygroundArgs = FlowFieldProps & { preset: keyof typeof presets };
+
+const meta: Meta<PlaygroundArgs> = {
   title: "Backgrounds/Flow Field",
   component: FlowField,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },
   decorators: [
-    (Story) => (
-      <div className="relative flex min-h-[60vh] w-full items-center justify-center overflow-hidden bg-background">
-        <Story />
-        <div className="relative z-raised text-center">
-          <h1 className="font-semibold text-4xl tracking-tight">Flow Field</h1>
-          <p className="mt-2 text-muted-foreground">
-            Particles riding the currents.
-          </p>
-        </div>
-      </div>
-    ),
+    effectStage({
+      title: "Flow Field",
+      subtitle: "Particles riding the currents.",
+    }),
   ],
-} satisfies Meta<typeof FlowField>;
+  argTypes: {
+    preset: presetSelect(presets, "Appearance"),
+  },
+  args: {
+    preset: "Calm",
+  },
+  render: renderPreset(presets, (cfg) => <FlowField {...cfg} />),
+};
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<PlaygroundArgs>;
 
-export const Default: Story = { args: {} satisfies FlowFieldProps };
-
-export const LongTrails: Story = {
-  args: { fade: 0.02, speed: 1.2 } satisfies FlowFieldProps,
-};
-
-export const Tinted: Story = {
-  args: { color: "#10b981", noiseScale: 0.0024 } satisfies FlowFieldProps,
-};
+export const Playground: Story = {};

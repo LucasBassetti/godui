@@ -1,5 +1,8 @@
 import { type Facet, FilterBar } from "@godui/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { fn } from "storybook/test";
+import { action, hidden, toggle } from "../playground/argtypes";
+import { padded } from "../playground/stage";
 
 const facets: Facet[] = [
   {
@@ -36,23 +39,19 @@ const meta = {
   component: FilterBar,
   tags: ["autodocs"],
   parameters: { layout: "centered" },
-  args: { facets },
-  decorators: [
-    (Story) => (
-      <div className="w-[640px] max-w-full">
-        <Story />
-      </div>
-    ),
-  ],
+  decorators: [padded()],
+  argTypes: {
+    facets: hidden(),
+    value: hidden(),
+    defaultValue: hidden(),
+    searchable: toggle("Behavior"),
+    showCounts: toggle("Appearance"),
+    onChange: action("change"),
+  },
+  args: { facets, searchable: true, showCounts: true, onChange: fn() },
 } satisfies Meta<typeof FilterBar>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
-
-export const Preselected: Story = {
-  args: { defaultValue: { status: ["open"], type: ["bug", "feature"] } },
-};
-
-export const NoCounts: Story = { args: { showCounts: false } };
+export const Playground: Story = {};

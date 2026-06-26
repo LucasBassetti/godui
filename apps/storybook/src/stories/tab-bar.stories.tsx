@@ -1,5 +1,8 @@
 import { TabBar, type TabBarTab } from "@godui/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { fn } from "storybook/test";
+import { action, hidden, select, toggle } from "../playground/argtypes";
+import { centered } from "../playground/stage";
 
 const icon = (d: string) => (
   <svg
@@ -47,11 +50,25 @@ const meta = {
   component: TabBar,
   tags: ["autodocs"],
   parameters: { layout: "centered" },
-  args: { tabs, defaultValue: "home" },
+  decorators: [centered()],
+  argTypes: {
+    tabs: hidden(),
+    value: hidden(),
+    defaultValue: select(["home", "search", "alerts", "profile"], "State"),
+    labelsOnActiveOnly: toggle("Appearance"),
+    safeArea: toggle("Appearance"),
+    onChange: action("change"),
+  },
+  args: {
+    tabs,
+    defaultValue: "home",
+    labelsOnActiveOnly: true,
+    safeArea: false,
+    onChange: fn(),
+  },
 } satisfies Meta<typeof TabBar>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
-export const AllLabels: Story = { args: { labelsOnActiveOnly: false } };
+export const Playground: Story = {};

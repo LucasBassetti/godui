@@ -1,5 +1,7 @@
 import { Sidebar, type SidebarItem } from "@godui/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { fn } from "storybook/test";
+import { action, hidden, toggle } from "../playground/argtypes";
 
 const dot = (
   <span className="h-2 w-2 rounded-full bg-current" aria-hidden="true" />
@@ -25,7 +27,6 @@ const meta = {
   component: Sidebar,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },
-  args: { items, activeId: "home", header: "GodUI" },
   decorators: [
     (Story) => (
       <div className="flex h-[420px] bg-muted/20">
@@ -36,13 +37,25 @@ const meta = {
       </div>
     ),
   ],
+  argTypes: {
+    items: hidden(),
+    header: hidden(),
+    footer: hidden(),
+    defaultCollapsed: toggle("State"),
+    expandOnHover: toggle("Behavior"),
+    onNavigate: action("navigate"),
+  },
+  args: {
+    items,
+    activeId: "home",
+    header: "GodUI",
+    defaultCollapsed: true,
+    expandOnHover: true,
+    onNavigate: fn(),
+  },
 } satisfies Meta<typeof Sidebar>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
-export const Expanded: Story = { args: { defaultCollapsed: false } };
-export const PinnedToggle: Story = {
-  args: { expandOnHover: false, defaultCollapsed: false },
-};
+export const Playground: Story = {};

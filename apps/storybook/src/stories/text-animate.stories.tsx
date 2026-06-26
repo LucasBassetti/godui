@@ -1,12 +1,46 @@
-import { TextAnimate, type TextAnimateProps } from "@godui/components";
+import { TextAnimate } from "@godui/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { hidden, range, select, text, toggle } from "../playground/argtypes";
+import { centered } from "../playground/stage";
 
 const meta = {
   title: "Text/TextAnimate",
   component: TextAnimate,
   tags: ["autodocs"],
-  parameters: {
-    layout: "centered",
+  parameters: { layout: "centered" },
+  decorators: [centered()],
+  argTypes: {
+    children: text("Content"),
+    animation: select(
+      [
+        "fadeIn",
+        "blurIn",
+        "blurInUp",
+        "blurInDown",
+        "slideUp",
+        "slideDown",
+        "slideLeft",
+        "slideRight",
+        "scaleUp",
+        "scaleDown",
+      ],
+      "Appearance",
+    ),
+    by: select(["text", "word", "character", "line"], "Behavior"),
+    as: select(
+      ["span", "p", "div", "h1", "h2", "h3", "h4", "h5", "h6", "li", "section"],
+      "Appearance",
+    ),
+    delay: range(0, 2, 0.1, "Behavior"),
+    duration: range(0.1, 2, 0.1, "Behavior"),
+    stagger: range(0, 0.2, 0.01, "Behavior"),
+    startOnView: toggle("Behavior"),
+    once: toggle("Behavior"),
+    accessible: toggle("Behavior"),
+    viewportAmount: hidden(),
+    variants: hidden(),
+    segmentClassName: hidden(),
+    className: hidden(),
   },
   args: {
     children: "Animate your ideas into reality",
@@ -14,106 +48,10 @@ const meta = {
     by: "word",
     startOnView: false,
     className: "text-4xl font-semibold tracking-tight",
-  } satisfies TextAnimateProps,
+  },
 } satisfies Meta<typeof TextAnimate>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const FadeIn: Story = {
-  args: {
-    animation: "fadeIn",
-    by: "word",
-  },
-};
-
-export const BlurInUp: Story = {
-  args: {
-    animation: "blurInUp",
-    by: "word",
-    children: "Blur in from below",
-  },
-};
-
-export const CharacterSlideUp: Story = {
-  args: {
-    animation: "slideUp",
-    by: "character",
-    stagger: 0.03,
-    children: "Character by character",
-  },
-};
-
-export const ScaleUp: Story = {
-  args: {
-    animation: "scaleUp",
-    by: "word",
-    children: "Scale up with spring",
-  },
-};
-
-export const SlideLeft: Story = {
-  args: {
-    animation: "slideLeft",
-    by: "word",
-    children: "Slide from the right",
-  },
-};
-
-export const Heading: Story = {
-  args: {
-    as: "h1",
-    animation: "blurInUp",
-    by: "word",
-    children: "Hero headline",
-    className: "text-5xl font-bold tracking-tight",
-  },
-};
-
-export const InView: Story = {
-  args: {
-    animation: "fadeIn",
-    by: "word",
-    startOnView: true,
-    once: true,
-    children: "Scroll to reveal this text",
-  },
-  decorators: [
-    (Story) => (
-      <div style={{ height: "200vh", paddingTop: "80vh" }}>
-        <Story />
-      </div>
-    ),
-  ],
-};
-
-export const AllPresets: Story = {
-  render: () => (
-    <div className="flex max-w-2xl flex-col gap-8">
-      {(
-        [
-          "fadeIn",
-          "blurIn",
-          "blurInUp",
-          "blurInDown",
-          "slideUp",
-          "slideDown",
-          "slideLeft",
-          "slideRight",
-          "scaleUp",
-          "scaleDown",
-        ] as const
-      ).map((animation) => (
-        <TextAnimate
-          key={animation}
-          animation={animation}
-          by="word"
-          startOnView={false}
-          className="text-2xl font-medium"
-        >
-          {animation}
-        </TextAnimate>
-      ))}
-    </div>
-  ),
-};
+export const Playground: Story = {};

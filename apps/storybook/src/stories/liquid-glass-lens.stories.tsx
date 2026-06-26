@@ -1,5 +1,6 @@
 import { LiquidGlassLens, type LiquidGlassLensProps } from "@godui/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { color, range } from "../playground/argtypes";
 
 const meta: Meta<LiquidGlassLensProps> = {
   title: "Effects/Liquid Glass Lens",
@@ -7,12 +8,13 @@ const meta: Meta<LiquidGlassLensProps> = {
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },
   argTypes: {
-    size: { control: { type: "range", min: 80, max: 320, step: 4 } },
-    blur: { control: { type: "range", min: 0, max: 20, step: 0.5 } },
-    strength: { control: { type: "range", min: 0, max: 160, step: 1 } },
-    dispersion: { control: { type: "range", min: 0, max: 1, step: 0.01 } },
-    saturation: { control: { type: "range", min: 1, max: 3, step: 0.1 } },
-    sheen: { control: { type: "range", min: 0, max: 1, step: 0.01 } },
+    size: range(80, 320, 4, "Appearance"),
+    blur: range(0, 20, 0.5, "Appearance"),
+    strength: range(0, 160, 1, "Appearance"),
+    dispersion: range(0, 1, 0.01, "Appearance"),
+    saturation: range(1, 3, 0.1, "Appearance"),
+    sheen: range(0, 1, 0.01, "Appearance"),
+    tint: color("Appearance"),
   },
   args: {
     size: 220,
@@ -22,12 +24,6 @@ const meta: Meta<LiquidGlassLensProps> = {
     saturation: 1.6,
     sheen: 0.5,
   },
-};
-
-export default meta;
-type Story = StoryObj<LiquidGlassLensProps>;
-
-export const Default: Story = {
   render: (args) => (
     <div className="relative flex min-h-[480px] w-full items-center justify-center overflow-hidden p-10">
       <div className="absolute inset-0 [background:conic-gradient(from_0deg,#ff2d55,#ff9500,#ffd60a,#34c759,#0a84ff,#5e5ce6,#bf5af2,#ff2d55)] opacity-90" />
@@ -39,3 +35,8 @@ export const Default: Story = {
     </div>
   ),
 };
+
+export default meta;
+type Story = StoryObj<LiquidGlassLensProps>;
+
+export const Playground: Story = {};

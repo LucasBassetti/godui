@@ -1,101 +1,52 @@
-import { Highlighter, type HighlighterProps } from "@godui/components";
+import { Highlighter } from "@godui/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import {
+  color,
+  hidden,
+  range,
+  select,
+  text,
+  toggle,
+} from "../playground/argtypes";
+import { centered } from "../playground/stage";
 
 const meta = {
   title: "Text/Highlighter",
   component: Highlighter,
   tags: ["autodocs"],
-  parameters: {
-    layout: "centered",
+  parameters: { layout: "centered" },
+  decorators: [centered()],
+  argTypes: {
+    children: text("Content"),
+    action: select(
+      [
+        "highlight",
+        "underline",
+        "box",
+        "circle",
+        "strike-through",
+        "crossed-off",
+        "bracket",
+      ],
+      "Appearance",
+    ),
+    color: color("Appearance"),
+    strokeWidth: range(1, 6, 0.5, "Appearance"),
+    animationDuration: range(200, 3000, 100, "Behavior"),
+    iterations: range(1, 5, 1, "Appearance"),
+    padding: range(0, 16, 1, "Appearance"),
+    multiline: toggle("Behavior"),
+    isView: toggle("Behavior"),
+    className: hidden(),
   },
   args: {
     children: "highlight",
     action: "highlight",
     className: "text-3xl font-sans",
-  } satisfies HighlighterProps,
+  },
 } satisfies Meta<typeof Highlighter>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Highlight: Story = {
-  args: {
-    action: "highlight",
-    children: "highlight",
-  },
-};
-
-export const Underline: Story = {
-  args: {
-    action: "underline",
-    color: "#60a5fa",
-    children: "underline",
-  },
-};
-
-export const Box: Story = {
-  args: {
-    action: "box",
-    color: "#f59e0b",
-    children: "box",
-  },
-};
-
-export const Circle: Story = {
-  args: {
-    action: "circle",
-    color: "#34d399",
-    children: "circle",
-  },
-};
-
-export const StrikeThrough: Story = {
-  args: {
-    action: "strike-through",
-    color: "#f87171",
-    children: "strike-through",
-  },
-};
-
-export const CrossedOff: Story = {
-  args: {
-    action: "crossed-off",
-    color: "#a78bfa",
-    children: "crossed-off",
-  },
-};
-
-export const Bracket: Story = {
-  args: {
-    action: "bracket",
-    color: "#fb7185",
-    children: "bracket",
-  },
-};
-
-export const CustomColor: Story = {
-  args: {
-    action: "highlight",
-    color: "#22d3ee",
-    children: "custom color",
-  },
-};
-
-export const InView: Story = {
-  args: {
-    action: "underline",
-    isView: true,
-    children: "Scroll into view to animate",
-    className: "text-3xl font-sans",
-  },
-  decorators: [
-    (Story) => (
-      <div style={{ height: "200vh", paddingTop: "120vh" }}>
-        <Story />
-      </div>
-    ),
-  ],
-  parameters: {
-    layout: "padded",
-  },
-};
+export const Playground: Story = {};

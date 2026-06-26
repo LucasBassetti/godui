@@ -1,5 +1,5 @@
 import Link from "fumadocs-core/link";
-import { Component, Sparkles } from "lucide-react";
+import { ArrowUpRight, Component, Sparkles } from "lucide-react";
 import { ANIMATED_ICONS_URL } from "./docs-header";
 
 const itemClass =
@@ -28,6 +28,7 @@ export function MobileMenu() {
       >
         <Sparkles />
         Animated Icons
+        <ArrowUpRight className="ml-auto text-fd-muted-foreground/60" />
       </a>
     </div>
   );

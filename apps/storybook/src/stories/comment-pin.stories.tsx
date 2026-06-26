@@ -1,16 +1,7 @@
 import { CommentPin } from "@godui/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-
-const meta = {
-  title: "Collaboration/CommentPin",
-  component: CommentPin,
-  tags: ["autodocs"],
-  parameters: { layout: "centered" },
-  args: { x: 0, y: 0 },
-} satisfies Meta<typeof CommentPin>;
-
-export default meta;
-type Story = StoryObj<typeof meta>;
+import { fn } from "storybook/test";
+import { action, hidden, range, text, toggle } from "../playground/argtypes";
 
 const Frame = ({ children }: { children: React.ReactNode }) => (
   <div className="relative h-80 w-[40rem] max-w-[90vw] overflow-hidden rounded-2xl border border-border bg-card">
@@ -36,34 +27,41 @@ const comments = [
   },
 ];
 
-export const Threaded: Story = {
-  render: () => (
-    <Frame>
-      <CommentPin
-        x={12}
-        y={14}
-        comments={comments}
-        defaultOpen
-        onReply={() => {}}
-      />
-      <CommentPin
-        x={70}
-        y={18}
-        comments={[{ id: "c3", author: "Priya Nair", body: "Love this card." }]}
-      />
-    </Frame>
-  ),
-};
+const meta = {
+  title: "Collaboration/CommentPin",
+  component: CommentPin,
+  tags: ["autodocs"],
+  parameters: { layout: "centered" },
+  decorators: [
+    (Story) => (
+      <Frame>
+        <Story />
+      </Frame>
+    ),
+  ],
+  argTypes: {
+    x: range(0, 100, 1, "Appearance"),
+    y: range(0, 100, 1, "Appearance"),
+    label: text("Content"),
+    color: hidden(),
+    resolved: toggle("State"),
+    defaultOpen: toggle("State"),
+    comments: hidden(),
+    onReply: action("reply"),
+    onOpenChange: action("openChange"),
+  },
+  args: {
+    x: 12,
+    y: 14,
+    resolved: false,
+    defaultOpen: true,
+    comments,
+    onReply: fn(),
+    onOpenChange: fn(),
+  },
+} satisfies Meta<typeof CommentPin>;
 
-export const Resolved: Story = {
-  render: () => (
-    <Frame>
-      <CommentPin
-        x={20}
-        y={70}
-        resolved
-        comments={[{ id: "c4", author: "Jules Kim", body: "Fixed in latest." }]}
-      />
-    </Frame>
-  ),
-};
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const Playground: Story = {};

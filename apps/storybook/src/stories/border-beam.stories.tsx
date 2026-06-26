@@ -1,14 +1,40 @@
 import { BorderBeam } from "@godui/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import type * as React from "react";
+import { color, range, toggle } from "../playground/argtypes";
 
 const meta = {
   title: "Effects/Border Beam",
   component: BorderBeam,
   tags: ["autodocs"],
-  parameters: {
-    layout: "centered",
+  parameters: { layout: "centered" },
+  argTypes: {
+    size: range(20, 120, 1, "Appearance"),
+    borderWidth: range(1, 6, 0.5, "Appearance"),
+    colorFrom: color("Appearance"),
+    colorTo: color("Appearance"),
+    glow: toggle("Appearance"),
+    rainbow: toggle("Appearance"),
+    duration: range(2, 20, 1, "Behavior"),
+    delay: range(0, 10, 0.5, "Behavior"),
+    initialOffset: range(0, 100, 1, "Behavior"),
+    reverse: toggle("Behavior"),
   },
+  args: {
+    size: 70,
+    borderWidth: 1,
+    glow: false,
+    rainbow: false,
+    duration: 15,
+    delay: 0,
+    initialOffset: 0,
+    reverse: false,
+  },
+  render: (args) => (
+    <DemoCard>
+      <BorderBeam {...args} />
+    </DemoCard>
+  ),
 } satisfies Meta<typeof BorderBeam>;
 
 export default meta;
@@ -28,56 +54,4 @@ function DemoCard({ children }: { children: React.ReactNode }) {
   );
 }
 
-export const Default: Story = {
-  render: (args) => (
-    <DemoCard>
-      <BorderBeam {...args} />
-    </DemoCard>
-  ),
-};
-
-export const FastLargeBeam: Story = {
-  render: () => (
-    <DemoCard>
-      <BorderBeam duration={8} size={70} />
-    </DemoCard>
-  ),
-};
-
-export const Reverse: Story = {
-  render: () => (
-    <DemoCard>
-      <BorderBeam size={70} reverse />
-    </DemoCard>
-  ),
-};
-
-export const Glow: Story = {
-  render: () => (
-    <DemoCard>
-      <BorderBeam size={80} glow />
-    </DemoCard>
-  ),
-};
-
-export const ThickColored: Story = {
-  render: () => (
-    <DemoCard>
-      <BorderBeam
-        size={70}
-        borderWidth={2}
-        colorFrom="var(--chart-2)"
-        colorTo="var(--chart-4)"
-      />
-    </DemoCard>
-  ),
-};
-
-export const DualBeams: Story = {
-  render: () => (
-    <DemoCard>
-      <BorderBeam size={70} duration={6} />
-      <BorderBeam size={70} duration={6} delay={3} />
-    </DemoCard>
-  ),
-};
+export const Playground: Story = {};

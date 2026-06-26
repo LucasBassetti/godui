@@ -1,17 +1,7 @@
 import { Dock, DockItem } from "@godui/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import type { ReactNode } from "react";
-
-const meta = {
-  title: "Navigation/Dock",
-  component: Dock,
-  subcomponents: { DockItem },
-  tags: ["autodocs"],
-  parameters: { layout: "centered" },
-} satisfies Meta<typeof Dock>;
-
-export default meta;
-type Story = StoryObj<typeof meta>;
+import { range } from "../playground/argtypes";
 
 function Icon({ children }: { children: ReactNode }) {
   return (
@@ -93,31 +83,36 @@ const items: { label: string; color: string; icon: ReactNode }[] = [
   },
 ];
 
-function renderItems() {
-  return items.map((item) => (
-    <DockItem key={item.label} label={item.label}>
-      <span
-        className={`flex size-full items-center justify-center ${item.color}`}
-      >
-        {item.icon}
-      </span>
-    </DockItem>
-  ));
-}
-
-export const Default: Story = {
-  render: (args) => (
-    <div className="flex h-48 items-end">
-      <Dock {...args}>{renderItems()}</Dock>
-    </div>
-  ),
-};
-
-export const StrongMagnify: Story = {
-  args: { magnification: 96, distance: 180 },
+const meta = {
+  title: "Navigation/Dock",
+  component: Dock,
+  subcomponents: { DockItem },
+  tags: ["autodocs"],
+  parameters: { layout: "centered" },
+  argTypes: {
+    baseSize: range(32, 80, 4, "Appearance"),
+    magnification: range(48, 128, 4, "Behavior"),
+    distance: range(80, 240, 10, "Behavior"),
+  },
+  args: { baseSize: 48, magnification: 72, distance: 140 },
   render: (args) => (
     <div className="flex h-56 items-end">
-      <Dock {...args}>{renderItems()}</Dock>
+      <Dock {...args}>
+        {items.map((item) => (
+          <DockItem key={item.label} label={item.label}>
+            <span
+              className={`flex size-full items-center justify-center ${item.color}`}
+            >
+              {item.icon}
+            </span>
+          </DockItem>
+        ))}
+      </Dock>
     </div>
   ),
-};
+} satisfies Meta<typeof Dock>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const Playground: Story = {};

@@ -1,17 +1,7 @@
 import { PresenceFacepile } from "@godui/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { useEffect, useState } from "react";
-
-const meta = {
-  title: "Collaboration/PresenceFacepile",
-  component: PresenceFacepile,
-  tags: ["autodocs"],
-  parameters: { layout: "centered" },
-  args: { users: [] },
-} satisfies Meta<typeof PresenceFacepile>;
-
-export default meta;
-type Story = StoryObj<typeof meta>;
+import { hidden, range, select, toggle } from "../playground/argtypes";
+import { centered } from "../playground/stage";
 
 const users = [
   { id: "1", name: "Ana Reyes", status: "active" as const },
@@ -23,30 +13,27 @@ const users = [
   { id: "7", name: "Noa Levi", status: "active" as const },
 ];
 
-export const Default: Story = {
-  args: { users, max: 5 },
-};
-
-export const NoStatus: Story = {
-  args: { users, max: 6, showStatus: false },
-};
-
-export const Large: Story = {
-  args: { users, max: 4, size: "lg" },
-};
-
-export const LiveJoinLeave: Story = {
-  render: () => {
-    function Demo() {
-      const [count, setCount] = useState(3);
-      useEffect(() => {
-        const id = setInterval(() => {
-          setCount((c) => (c >= users.length ? 2 : c + 1));
-        }, 1400);
-        return () => clearInterval(id);
-      }, []);
-      return <PresenceFacepile users={users.slice(0, count)} max={5} />;
-    }
-    return <Demo />;
+const meta = {
+  title: "Collaboration/PresenceFacepile",
+  component: PresenceFacepile,
+  tags: ["autodocs"],
+  parameters: { layout: "centered" },
+  decorators: [centered()],
+  argTypes: {
+    size: select(["sm", "md", "lg"], "Appearance"),
+    max: range(1, 7, 1, "Behavior"),
+    showStatus: toggle("Appearance"),
+    users: hidden(),
   },
-};
+  args: {
+    size: "md",
+    max: 5,
+    showStatus: true,
+    users,
+  },
+} satisfies Meta<typeof PresenceFacepile>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const Playground: Story = {};

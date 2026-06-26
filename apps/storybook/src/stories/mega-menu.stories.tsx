@@ -1,5 +1,7 @@
 import { MegaMenu, type MegaMenuItem } from "@godui/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { fn } from "storybook/test";
+import { action, hidden, range } from "../playground/argtypes";
 
 const items: MegaMenuItem[] = [
   {
@@ -56,17 +58,23 @@ const meta = {
   component: MegaMenu,
   tags: ["autodocs"],
   parameters: { layout: "centered" },
-  args: { items },
   decorators: [
     (Story) => (
-      <div className="flex h-80 items-start justify-center pt-6">
+      <div className="flex h-80 w-full items-start justify-center pt-6">
         <Story />
       </div>
     ),
   ],
+  argTypes: {
+    items: hidden(),
+    openDelay: range(0, 400, 20, "Behavior"),
+    closeDelay: range(0, 600, 20, "Behavior"),
+    onNavigate: action("navigate"),
+  },
+  args: { items, openDelay: 80, closeDelay: 160, onNavigate: fn() },
 } satisfies Meta<typeof MegaMenu>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
+export const Playground: Story = {};

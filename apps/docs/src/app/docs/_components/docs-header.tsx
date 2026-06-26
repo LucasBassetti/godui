@@ -6,7 +6,7 @@ import {
   FullSearchTrigger,
   SearchTrigger,
 } from "fumadocs-ui/layouts/shared/slots/search-trigger";
-import { Menu } from "lucide-react";
+import { ArrowUpRight, Menu } from "lucide-react";
 import type { ComponentProps } from "react";
 import { cn } from "@/lib/cn";
 import { GitHubStars } from "./github-stars";
@@ -51,9 +51,10 @@ export function DocsHeader({
           href={ANIMATED_ICONS_URL}
           target="_blank"
           rel="noreferrer"
-          className="font-medium text-fd-muted-foreground text-sm transition-colors hover:text-fd-foreground"
+          className="group inline-flex items-center gap-1 font-medium text-fd-muted-foreground text-sm transition-colors hover:text-fd-foreground"
         >
           Animated Icons
+          <ArrowUpRight className="size-3.5 transition-transform group-hover:-translate-y-px group-hover:translate-x-px" />
         </a>
       </nav>
       <div className="flex-1" />

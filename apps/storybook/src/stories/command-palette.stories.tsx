@@ -1,17 +1,7 @@
 import { type CommandGroup, CommandPalette } from "@godui/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import * as React from "react";
-
-const meta = {
-  title: "Overlays/CommandPalette",
-  component: CommandPalette,
-  tags: ["autodocs"],
-  parameters: { layout: "centered" },
-  args: { open: false, onOpenChange: () => {}, groups: [] },
-} satisfies Meta<typeof CommandPalette>;
-
-export default meta;
-type Story = StoryObj<typeof meta>;
+import { hidden, text, toggle } from "../playground/argtypes";
 
 const groups: CommandGroup[] = [
   {
@@ -37,8 +27,32 @@ const groups: CommandGroup[] = [
   },
 ];
 
-export const Default: Story = {
-  render: () => {
+const meta = {
+  title: "Overlays/CommandPalette",
+  component: CommandPalette,
+  tags: ["autodocs"],
+  parameters: { layout: "centered" },
+  argTypes: {
+    placeholder: text("Content"),
+    enableShortcut: toggle("Behavior"),
+    open: hidden(),
+    onOpenChange: hidden(),
+    groups: hidden(),
+  },
+  args: {
+    placeholder: "Type a command or search…",
+    enableShortcut: true,
+    open: false,
+    onOpenChange: () => {},
+    groups,
+  },
+} satisfies Meta<typeof CommandPalette>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const Playground: Story = {
+  render: (args) => {
     const [open, setOpen] = React.useState(false);
     return (
       <>
@@ -49,7 +63,7 @@ export const Default: Story = {
         >
           Open palette (or press ⌘K)
         </button>
-        <CommandPalette open={open} onOpenChange={setOpen} groups={groups} />
+        <CommandPalette {...args} open={open} onOpenChange={setOpen} />
       </>
     );
   },

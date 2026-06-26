@@ -1,5 +1,6 @@
 import { DropdownMenu, type DropdownMenuItem } from "@godui/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { hidden, select } from "../playground/argtypes";
 
 const items: DropdownMenuItem[] = [
   { type: "label", label: "My account" },
@@ -29,7 +30,6 @@ const meta = {
   component: DropdownMenu,
   tags: ["autodocs"],
   parameters: { layout: "centered" },
-  args: { trigger, items },
   decorators: [
     (Story) => (
       <div className="flex h-72 items-start justify-center pt-4">
@@ -37,11 +37,16 @@ const meta = {
       </div>
     ),
   ],
+  argTypes: {
+    trigger: hidden(),
+    items: hidden(),
+    side: select(["top", "bottom", "left", "right"], "Behavior"),
+    align: select(["start", "center", "end"], "Behavior"),
+  },
+  args: { trigger, items, side: "bottom", align: "start" },
 } satisfies Meta<typeof DropdownMenu>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {};
-export const AlignEnd: Story = { args: { align: "end" } };
-export const SideRight: Story = { args: { side: "right" } };
+export const Playground: Story = {};

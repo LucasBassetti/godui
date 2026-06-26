@@ -6,50 +6,36 @@ import {
   decorativeBackgroundVariants,
 } from "@godui/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { select } from "../playground/argtypes";
+import { effectStage } from "../playground/stage";
 
-type ShowcaseArgs = DecorativeBackgroundProps & {
+type PlaygroundArgs = DecorativeBackgroundProps & {
   variant: DecorativeBackgroundVariant;
 };
 
-const meta: Meta<ShowcaseArgs> = {
+const meta: Meta<PlaygroundArgs> = {
   title: "Backgrounds/Decorative Background",
   component: DecorativeBackground,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },
+  decorators: [
+    effectStage({
+      title: "Decorative Background",
+      subtitle: "Drop-in full-bleed surfaces.",
+    }),
+  ],
   argTypes: {
-    variant: { control: "select", options: decorativeBackgroundVariants },
+    variant: select(decorativeBackgroundVariants, "Appearance"),
   },
-  args: { variant: decorativeBackgroundVariants[0] },
+  args: {
+    variant: decorativeBackgroundVariants[0],
+  },
+  render: ({ variant }) => (
+    <DecorativeBackground style={decorativeBackgroundPresets[variant]} />
+  ),
 };
 
 export default meta;
-type Story = StoryObj<ShowcaseArgs>;
+type Story = StoryObj<PlaygroundArgs>;
 
-export const Default: Story = {
-  render: ({ variant }) => (
-    <div className="relative flex min-h-[420px] w-full items-center justify-center overflow-hidden">
-      <DecorativeBackground style={decorativeBackgroundPresets[variant]} />
-      <p className="relative z-raised rounded-lg bg-background/70 px-4 py-2 text-sm font-medium text-foreground backdrop-blur">
-        {variant}
-      </p>
-    </div>
-  ),
-};
-
-export const Gallery: Story = {
-  render: () => (
-    <div className="grid grid-cols-2 gap-4 p-4 sm:grid-cols-3">
-      {decorativeBackgroundVariants.map((variant) => (
-        <div
-          key={variant}
-          className="relative flex h-40 items-end overflow-hidden rounded-lg border border-border"
-        >
-          <DecorativeBackground style={decorativeBackgroundPresets[variant]} />
-          <span className="relative z-raised w-full truncate bg-background/70 px-2 py-1 text-xs text-foreground backdrop-blur">
-            {variant}
-          </span>
-        </div>
-      ))}
-    </div>
-  ),
-};
+export const Playground: Story = {};

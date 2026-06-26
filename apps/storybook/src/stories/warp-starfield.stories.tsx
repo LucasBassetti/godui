@@ -1,35 +1,45 @@
 import { WarpStarfield, type WarpStarfieldProps } from "@godui/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { toggle } from "../playground/argtypes";
+import {
+  type PresetMap,
+  presetSelect,
+  renderPreset,
+} from "../playground/presets";
+import { effectStage } from "../playground/stage";
 
-const meta = {
+const presets = {
+  Cruise: { starCount: 400, speed: 1, depth: 1.5, parallax: 30 },
+  Hyperspace: { starCount: 400, speed: 1.6, depth: 1.5, parallax: 30 },
+  Dense: { starCount: 700, speed: 0.7, depth: 1.5, parallax: 30 },
+  Deep: { starCount: 400, speed: 1, depth: 2.4, parallax: 45 },
+} satisfies PresetMap<WarpStarfieldProps>;
+
+type PlaygroundArgs = WarpStarfieldProps & { preset: keyof typeof presets };
+
+const meta: Meta<PlaygroundArgs> = {
   title: "Backgrounds/Warp Starfield",
   component: WarpStarfield,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },
   decorators: [
-    (Story) => (
-      <div className="relative flex min-h-[60vh] w-full items-center justify-center overflow-hidden bg-background">
-        <Story />
-        <div className="relative z-raised text-center">
-          <h1 className="font-semibold text-4xl tracking-tight">
-            Warp Starfield
-          </h1>
-          <p className="mt-2 text-muted-foreground">Fly through the stars.</p>
-        </div>
-      </div>
-    ),
+    effectStage({
+      title: "Warp Starfield",
+      subtitle: "Fly through the stars.",
+    }),
   ],
-} satisfies Meta<typeof WarpStarfield>;
+  argTypes: {
+    preset: presetSelect(presets, "Appearance"),
+    warp: toggle("Behavior"),
+  },
+  args: {
+    preset: "Cruise",
+    warp: false,
+  },
+  render: renderPreset(presets, (cfg) => <WarpStarfield {...cfg} />),
+};
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<PlaygroundArgs>;
 
-export const Default: Story = { args: {} satisfies WarpStarfieldProps };
-
-export const Hyperspace: Story = {
-  args: { warp: true, speed: 1.6 } satisfies WarpStarfieldProps,
-};
-
-export const Dense: Story = {
-  args: { starCount: 700, speed: 0.7 } satisfies WarpStarfieldProps,
-};
+export const Playground: Story = {};

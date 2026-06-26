@@ -1,18 +1,26 @@
 import { ToastProvider, toast } from "@godui/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { range, select } from "../playground/argtypes";
 
 const meta = {
   title: "Overlays/Toast",
   component: ToastProvider,
   tags: ["autodocs"],
   parameters: { layout: "centered" },
+  argTypes: {
+    position: select(
+      ["top-left", "top-right", "bottom-left", "bottom-right"],
+      "Appearance",
+    ),
+    duration: range(1000, 10000, 500, "Behavior"),
+  },
   args: { position: "bottom-right", duration: 4000 },
 } satisfies Meta<typeof ToastProvider>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
+export const Playground: Story = {
   render: (args) => (
     <>
       <div className="flex flex-wrap gap-3">

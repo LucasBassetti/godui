@@ -1,21 +1,26 @@
 import { TiltCard } from "@godui/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { range, toggle } from "../playground/argtypes";
+import { centered } from "../playground/stage";
 
 const meta = {
   title: "Layout/Tilt Card",
   component: TiltCard,
   tags: ["autodocs"],
   parameters: { layout: "centered" },
+  decorators: [centered()],
   argTypes: {
-    maxTilt: { control: { type: "range", min: 0, max: 30, step: 1 } },
-    depth: { control: { type: "range", min: 0, max: 120, step: 5 } },
+    maxTilt: range(0, 30, 1, "Behavior"),
+    scale: range(1, 1.2, 0.01, "Behavior"),
+    depth: range(0, 120, 5, "Behavior"),
+    glare: toggle("Appearance"),
   },
-} satisfies Meta<typeof TiltCard>;
-
-export default meta;
-type Story = StoryObj<typeof meta>;
-
-export const Default: Story = {
+  args: {
+    maxTilt: 12,
+    scale: 1.04,
+    depth: 40,
+    glare: true,
+  },
   render: (args) => (
     <TiltCard {...args} className="w-72 p-6">
       <h3 className="text-lg font-semibold text-foreground">Tilt me</h3>
@@ -24,14 +29,9 @@ export const Default: Story = {
       </p>
     </TiltCard>
   ),
-};
+} satisfies Meta<typeof TiltCard>;
 
-export const StrongTilt: Story = {
-  ...Default,
-  args: { maxTilt: 22, depth: 70 },
-};
+export default meta;
+type Story = StoryObj<typeof meta>;
 
-export const NoGlare: Story = {
-  ...Default,
-  args: { glare: false },
-};
+export const Playground: Story = {};
