@@ -1,0 +1,66 @@
+---
+title: Live Cursors
+description: Smoothly interpolated multiplayer cursors with trailing name flags and optional cursor-chat — the signature "this app is alive" effect.
+---
+
+import { LiveCursorsDemo } from "@/components/demos/live-cursors-demo";
+
+<ComponentPreview
+  code={`import {
+  LiveCursors,
+  SimulatedCursors,
+} from "@/components/godui/live-cursors";
+
+// Drive it from your realtime source:
+export function Collab({ peers }) {
+  return <LiveCursors cursors={peers} />;
+}
+
+// Or self-driving peers for demos and marketing:
+export function LiveCursorsDemo() {
+  return <SimulatedCursors names={["Ana", "Marco", "Priya", "Jules"]} />;
+}`}
+>
+  <LiveCursorsDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="LiveCursors" />
+
+`LiveCursors` renders an absolutely-positioned overlay inside a `relative`
+container. Each cursor is spring-lerped, so positions stay smooth even with
+coarse network updates. Colors come from the shared presence palette. Use
+`SimulatedCursors` for self-driving peers in docs, stories, or hero sections.
+
+## Usage
+
+```tsx
+import { LiveCursors } from "@/components/godui/live-cursors";
+```
+
+```tsx
+<div className="relative h-96">
+  <LiveCursors
+    cursors={[
+      { id: "1", name: "Ana", x: 120, y: 80, message: "on it!" },
+      { id: "2", name: "Marco", x: 300, y: 200 },
+    ]}
+  />
+</div>
+```
+
+## Props
+
+### LiveCursors
+
+| Prop        | Type           | Default | Description                                  |
+| ----------- | -------------- | ------- | -------------------------------------------- |
+| `cursors`   | `LiveCursor[]` | —       | Cursors with `x`/`y` relative to container.  |
+| `hideNames` | `boolean`      | `false` | Show pointers only, no name flags.           |
+
+### SimulatedCursors
+
+| Prop    | Type       | Default                  | Description                  |
+| ------- | ---------- | ------------------------ | ---------------------------- |
+| `names` | `string[]` | four sample teammates    | Names for the drifting peers.|

@@ -1,0 +1,92 @@
+---
+title: Conversation Thread
+description: A streaming AI chat surface — messages spring in, tokens reveal with a blinking caret, hover actions fade in, and the view auto-sticks to the latest message.
+---
+
+import { ConversationThreadDemo } from "@/components/demos/conversation-thread-demo";
+
+<ComponentPreview
+  code={`import {
+  ConversationThread,
+  ConversationMessage,
+  StreamingText,
+} from "@/components/godui/conversation-thread";
+
+export function ConversationThreadDemo() {
+  return (
+    <ConversationThread>
+      <ConversationMessage role="user" name="You">
+        How do I center a div in 2026?
+      </ConversationMessage>
+      <ConversationMessage role="assistant" name="GodUI" streaming>
+        <StreamingText text="Use a grid parent with place-items-center." />
+      </ConversationMessage>
+    </ConversationThread>
+  );
+}`}
+>
+  <ConversationThreadDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="ConversationThread" />
+
+`ConversationThread` owns the scroll container: it stays pinned to the newest
+message until you scroll up, then reveals a **Jump to latest** pill. Each
+`ConversationMessage` springs in, aligns by `role`, and reveals hover actions.
+`StreamingText` reveals a string token-by-token and honors reduced motion.
+
+## Usage
+
+```tsx
+import {
+  ConversationThread,
+  ConversationMessage,
+  StreamingText,
+} from "@/components/godui/conversation-thread";
+```
+
+```tsx
+<ConversationThread variant="bubbles">
+  <ConversationMessage role="user" name="You">
+    Hi
+  </ConversationMessage>
+  <ConversationMessage
+    role="assistant"
+    name="GodUI"
+    actions={[{ label: "Copy", icon: <CopyIcon />, onClick: copy }]}
+  >
+    Hello!
+  </ConversationMessage>
+</ConversationThread>
+```
+
+## Props
+
+### ConversationThread
+
+| Prop         | Type                                      | Default     | Description                                  |
+| ------------ | ----------------------------------------- | ----------- | -------------------------------------------- |
+| `variant`    | `"bubbles" \| "document" \| "compact"`    | `"bubbles"` | Layout style.                                |
+| `autoScroll` | `boolean`                                 | `true`      | Stick to the newest message when at bottom.  |
+
+### ConversationMessage
+
+| Prop        | Type                              | Default | Description                              |
+| ----------- | --------------------------------- | ------- | ---------------------------------------- |
+| `role`      | `"user" \| "assistant" \| "system"` | —     | Determines alignment and tint.           |
+| `name`      | `string`                          | —       | Author label.                            |
+| `avatar`    | `ReactNode`                       | —       | Avatar node.                             |
+| `timestamp` | `string`                          | —       | Time label.                              |
+| `actions`   | `MessageAction[]`                 | —       | Hover actions (copy, regenerate, …).     |
+| `streaming` | `boolean`                         | `false` | Shows a blinking caret while streaming.  |
+
+### StreamingText
+
+| Prop     | Type         | Default | Description                          |
+| -------- | ------------ | ------- | ------------------------------------ |
+| `text`   | `string`     | —       | Full text to reveal.                 |
+| `chunk`  | `number`     | `2`     | Characters revealed per tick.        |
+| `speed`  | `number`     | `24`    | Milliseconds between ticks.          |
+| `onDone` | `() => void` | —       | Fired when the full text is shown.   |

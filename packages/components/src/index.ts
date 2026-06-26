@@ -3,6 +3,13 @@ export {
   type AccordionItem,
   type AccordionProps,
 } from "./accordion";
+export {
+  AgentStep,
+  type AgentStepProps,
+  AgentTimeline,
+  type AgentTimelineProps,
+  type StepStatus,
+} from "./agent-timeline";
 export { AnimatedBeam, type AnimatedBeamProps } from "./animated-beam";
 export {
   AnimatedTestimonials,
@@ -41,6 +48,11 @@ export {
   type CommandPaletteProps,
 } from "./command-palette";
 export {
+  type Comment,
+  CommentPin,
+  type CommentPinProps,
+} from "./comment-pin";
+export {
   Confetti,
   ConfettiButton,
   type ConfettiButtonProps,
@@ -53,6 +65,17 @@ export {
   type ContextMenuItem,
   type ContextMenuProps,
 } from "./context-menu";
+export {
+  ConversationMessage,
+  type ConversationMessageProps,
+  ConversationThread,
+  type ConversationThreadProps,
+  type ConversationVariant,
+  type MessageAction,
+  type MessageRole,
+  StreamingText,
+  type StreamingTextProps,
+} from "./conversation-thread";
 export {
   DecorativeBackground,
   type DecorativeBackgroundProps,
@@ -132,6 +155,13 @@ export {
   type LiquidGlassLensProps,
 } from "./liquid-glass";
 export {
+  type LiveCursor,
+  LiveCursors,
+  type LiveCursorsProps,
+  SimulatedCursors,
+  type SimulatedCursorsProps,
+} from "./live-cursors";
+export {
   MagicButton,
   type MagicButtonProps,
   type MagicButtonSize,
@@ -178,6 +208,11 @@ export {
   type MegaMenuSection,
 } from "./mega-menu";
 export {
+  type Notification,
+  NotificationInbox,
+  type NotificationInboxProps,
+} from "./notification-inbox";
+export {
   NumberTicker,
   type NumberTickerProps,
 } from "./number-ticker";
@@ -193,6 +228,12 @@ export {
 export { Pagination, type PaginationProps } from "./pagination";
 export { PixelGrid, type PixelGridProps } from "./pixel-grid";
 export {
+  PresenceFacepile,
+  type PresenceFacepileProps,
+  type PresenceStatus,
+  type PresenceUser,
+} from "./presence-facepile";
+export {
   ProgressFoldButton,
   type ProgressFoldButtonProps,
   type ProgressFoldButtonSize,
@@ -203,6 +244,19 @@ export {
   type ProgressiveCardRevealCardProps,
   type ProgressiveCardRevealProps,
 } from "./progressive-card-reveal";
+export {
+  type PromptAttachment,
+  PromptComposer,
+  type PromptComposerProps,
+  type PromptComposerVariant,
+} from "./prompt-composer";
+export {
+  type PromptSuggestion,
+  PromptSuggestions,
+  type PromptSuggestionsProps,
+  type PromptSuggestionsVariant,
+} from "./prompt-suggestions";
+export { type Reaction, Reactions, type ReactionsProps } from "./reactions";
 export {
   type HeaderLink,
   ResizableHeader,
@@ -230,13 +284,19 @@ export {
   type ShimmerButtonVariant,
 } from "./shimmer-button";
 export { Sidebar, type SidebarItem, type SidebarProps } from "./sidebar";
+export {
+  type CitationSource,
+  SourceCitation,
+  type SourceCitationProps,
+  SourceList,
+  type SourceListProps,
+} from "./source-citations";
 export { Sparkles, type SparklesProps } from "./sparkles";
 export {
   SpotlightCard,
   type SpotlightCardProps,
 } from "./spotlight-card";
 export { type Step, Stepper, type StepperProps } from "./stepper";
-export { Switch, type SwitchProps, type SwitchSize } from "./switch";
 export { TabBar, type TabBarProps, type TabBarTab } from "./tab-bar";
 export {
   TextAnimate,

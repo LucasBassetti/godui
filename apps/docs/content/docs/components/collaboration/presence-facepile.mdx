@@ -1,0 +1,53 @@
+---
+title: Presence Facepile
+description: Live avatars with animated status rings, spring join/leave, and a +N overflow that expands into a presence list — who's online, idle, or typing right now.
+---
+
+import { PresenceFacepileDemo } from "@/components/demos/presence-facepile-demo";
+
+<ComponentPreview
+  code={`import { PresenceFacepile } from "@/components/godui/presence-facepile";
+
+const users = [
+  { id: "1", name: "Ana Reyes", status: "active" },
+  { id: "2", name: "Marco Bell", status: "typing" },
+  { id: "3", name: "Priya Nair", status: "idle" },
+  { id: "4", name: "Jules Kim", status: "active" },
+  { id: "5", name: "Sam Diaz", status: "active" },
+  { id: "6", name: "Lee Cho", status: "idle" },
+];
+
+export function PresenceFacepileDemo() {
+  return <PresenceFacepile users={users} max={5} />;
+}`}
+>
+  <PresenceFacepileDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="PresenceFacepile" />
+
+Avatars carry a status ring (`active`, `idle`, `typing`, `offline`) and reorder
+with a spring as users join or leave. Beyond `max`, the rest collapse into a
+`+N` chip that opens a presence list. Colors are stable per user via the shared
+presence palette.
+
+## Usage
+
+```tsx
+import { PresenceFacepile } from "@/components/godui/presence-facepile";
+```
+
+```tsx
+<PresenceFacepile users={users} max={5} size="md" />
+```
+
+## Props
+
+| Prop         | Type                      | Default | Description                          |
+| ------------ | ------------------------- | ------- | ------------------------------------ |
+| `users`      | `PresenceUser[]`          | —       | People to render.                    |
+| `max`        | `number`                  | `5`     | Avatars before the `+N` chip.        |
+| `size`       | `"sm" \| "md" \| "lg"`    | `"md"`  | Avatar size.                         |
+| `showStatus` | `boolean`                 | `true`  | Render status rings/typing dots.     |

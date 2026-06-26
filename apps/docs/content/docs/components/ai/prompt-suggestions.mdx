@@ -1,0 +1,59 @@
+---
+title: Prompt Suggestions
+description: Animated starter prompts for AI empty states — cards stagger in, lift on hover, and feed straight into the composer when chosen.
+---
+
+import { PromptSuggestionsDemo } from "@/components/demos/prompt-suggestions-demo";
+
+<ComponentPreview
+  code={`import { PromptSuggestions } from "@/components/godui/prompt-suggestions";
+
+const suggestions = [
+  { id: "1", label: "Summarize this thread", hint: "Condense into 3 bullets" },
+  { id: "2", label: "Draft a reply", hint: "Friendly and concise" },
+  { id: "3", label: "Find action items", hint: "Extract todos and owners" },
+];
+
+export function PromptSuggestionsDemo() {
+  return (
+    <PromptSuggestions
+      suggestions={suggestions}
+      onSelect={(s) => console.log(s.label)}
+    />
+  );
+}`}
+>
+  <PromptSuggestionsDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="PromptSuggestions" />
+
+Suggestions stagger in with a spring, lift on hover, and support arrow-key
+navigation. Pair `onSelect` with a controlled `PromptComposer` to drop the
+chosen prompt into the input. Set `loading` to show shimmering skeletons.
+
+## Usage
+
+```tsx
+import { PromptSuggestions } from "@/components/godui/prompt-suggestions";
+```
+
+```tsx
+<PromptSuggestions
+  variant="grid"
+  suggestions={suggestions}
+  onSelect={(suggestion) => setValue(suggestion.label)}
+/>
+```
+
+## Props
+
+| Prop            | Type                              | Default  | Description                          |
+| --------------- | --------------------------------- | -------- | ------------------------------------ |
+| `suggestions`   | `PromptSuggestion[]`              | —        | Items to render.                     |
+| `onSelect`      | `(suggestion) => void`            | —        | Fired when an item is chosen.        |
+| `variant`       | `"grid" \| "chips" \| "list"`     | `"grid"` | Layout style.                        |
+| `loading`       | `boolean`                         | `false`  | Render shimmer skeletons.            |
+| `skeletonCount` | `number`                          | `4`      | Skeletons shown while loading.       |
