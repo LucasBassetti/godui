@@ -1,1 +1,9 @@
+<!--
+  Storybook is served under the /design-system/ subpath in production.
+  Vercel strips the trailing slash (/design-system/ -> /design-system), so the
+  manager's relative bundle imports (./sb-manager/*) would otherwise resolve
+  against the site root and 404, leaving the preview iframe stuck loading.
+  This <base> pins all relative manager URLs to the subpath regardless of the
+  trailing slash. Do not remove.
+-->
 <base href="/design-system/" />
