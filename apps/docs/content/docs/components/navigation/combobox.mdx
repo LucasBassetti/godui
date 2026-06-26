@@ -1,0 +1,86 @@
+---
+title: Combobox
+description: A type-ahead autocomplete with staggered result reveal, highlighted matches, keyboard navigation, and an async loading state.
+---
+
+import { ComboboxDemo, ComboboxAsyncDemo } from "@/components/demos/combobox-demo";
+
+<ComponentPreview
+  code={`"use client";
+import { Combobox } from "@/components/godui/combobox";
+import { useState } from "react";
+
+const people = [
+  { label: "Ada Lovelace", value: "ada", description: "Owner" },
+  { label: "Linus Torvalds", value: "linus", description: "Admin" },
+  { label: "Grace Hopper", value: "grace", description: "Admin" },
+  { label: "Alan Turing", value: "alan", description: "Member" },
+];
+
+export function AssigneePicker() {
+  const [value, setValue] = useState("");
+  return <Combobox options={people} value={value} onChange={setValue} placeholder="Assign to…" />;
+}`}
+>
+  <ComboboxDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall name="combobox" />
+
+## Usage
+
+```tsx
+import { Combobox } from "@/components/godui/combobox";
+```
+
+```tsx
+const [value, setValue] = useState("");
+
+<Combobox options={options} value={value} onChange={setValue} />;
+```
+
+## Examples
+
+### Async search
+
+Pass `onSearch` to resolve options for a query — it debounces input and shows a
+loading state while results arrive.
+
+<ComponentPreview
+  code={`"use client";
+import { Combobox } from "@/components/godui/combobox";
+
+const frameworks = [
+  { label: "Next.js", value: "next", description: "The React framework" },
+  { label: "Remix", value: "remix", description: "Full-stack web framework" },
+  { label: "Astro", value: "astro", description: "Content-driven sites" },
+];
+
+export function FrameworkSearch() {
+  return (
+    <Combobox
+      placeholder="Search frameworks…"
+      onSearch={async (q) => {
+        const res = await fetch(\`/api/search?q=\${q}\`);
+        return res.json();
+      }}
+    />
+  );
+}`}
+>
+  <ComboboxAsyncDemo />
+</ComponentPreview>
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `options` | `ComboboxOption[]` | — | Static options (`{ label, value, description? }`) |
+| `onSearch` | `(query) => Promise<ComboboxOption[]>` | — | Async resolver (overrides `options`) |
+| `value` | `string` | — | Controlled selected value |
+| `defaultValue` | `string` | `""` | Uncontrolled initial value |
+| `placeholder` | `string` | `"Search…"` | Input placeholder |
+| `emptyMessage` | `string` | `"No results"` | Shown when nothing matches |
+| `onChange` | `(value, option) => void` | — | Called on selection |

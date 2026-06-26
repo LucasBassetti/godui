@@ -29,6 +29,12 @@ export {
 } from "./bento-grid";
 export { BorderBeam, type BorderBeamProps } from "./border-beam";
 export {
+  type BreadcrumbItem,
+  Breadcrumbs,
+  type BreadcrumbsProps,
+} from "./breadcrumbs";
+export { Combobox, type ComboboxOption, type ComboboxProps } from "./combobox";
+export {
   type CommandGroup,
   type CommandItem,
   CommandPalette,
@@ -43,6 +49,11 @@ export {
   confetti,
 } from "./confetti";
 export {
+  ContextMenu,
+  type ContextMenuItem,
+  type ContextMenuProps,
+} from "./context-menu";
+export {
   DecorativeBackground,
   type DecorativeBackgroundProps,
   type DecorativeBackgroundVariant,
@@ -56,6 +67,13 @@ export {
   type DockProps,
 } from "./dock";
 export { Drawer, type DrawerProps, type DrawerSide } from "./drawer";
+export {
+  type DropdownAlign,
+  DropdownMenu,
+  type DropdownMenuItem,
+  type DropdownMenuProps,
+  type DropdownSide,
+} from "./dropdown-menu";
 export {
   DynamicIsland,
   type DynamicIslandProps,
@@ -73,6 +91,13 @@ export {
   type ElasticTextMode,
   type ElasticTextProps,
 } from "./elastic-text";
+export {
+  type Facet,
+  FilterBar,
+  type FilterBarProps,
+  type FilterOption,
+  type FilterValue,
+} from "./filter-bar";
 export {
   FloatingToolbar,
   type FloatingToolbarProps,
@@ -146,6 +171,13 @@ export {
   type MaskButtonVariant,
 } from "./mask-button";
 export {
+  MegaMenu,
+  type MegaMenuItem,
+  type MegaMenuLink,
+  type MegaMenuProps,
+  type MegaMenuSection,
+} from "./mega-menu";
+export {
   NumberTicker,
   type NumberTickerProps,
 } from "./number-ticker";
@@ -158,6 +190,7 @@ export {
   type OTPInputProps,
   type OTPInputStatus,
 } from "./otp-input";
+export { Pagination, type PaginationProps } from "./pagination";
 export { PixelGrid, type PixelGridProps } from "./pixel-grid";
 export {
   ProgressFoldButton,
@@ -170,6 +203,11 @@ export {
   type ProgressiveCardRevealCardProps,
   type ProgressiveCardRevealProps,
 } from "./progressive-card-reveal";
+export {
+  type HeaderLink,
+  ResizableHeader,
+  type ResizableHeaderProps,
+} from "./resizable-header";
 export {
   ScrollProgress,
   type ScrollProgressProps,
@@ -191,6 +229,7 @@ export {
   type ShimmerButtonSize,
   type ShimmerButtonVariant,
 } from "./shimmer-button";
+export { Sidebar, type SidebarItem, type SidebarProps } from "./sidebar";
 export { Sparkles, type SparklesProps } from "./sparkles";
 export {
   SpotlightCard,
@@ -198,6 +237,7 @@ export {
 } from "./spotlight-card";
 export { type Step, Stepper, type StepperProps } from "./stepper";
 export { Switch, type SwitchProps, type SwitchSize } from "./switch";
+export { TabBar, type TabBarProps, type TabBarTab } from "./tab-bar";
 export {
   TextAnimate,
   type TextAnimateBy,

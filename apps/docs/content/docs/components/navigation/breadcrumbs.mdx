@@ -1,0 +1,83 @@
+---
+title: Breadcrumbs
+description: A breadcrumb trail with a shared-element hover pill that springs between crumbs, animated path changes, and an overflow that collapses into a popover.
+---
+
+import { BreadcrumbsDemo, BreadcrumbsCollapsedDemo } from "@/components/demos/breadcrumbs-demo";
+
+<ComponentPreview
+  code={`"use client";
+import { Breadcrumbs } from "@/components/godui/breadcrumbs";
+import { Home, Layers, Folder, FolderOpen } from "lucide-react";
+
+const items = [
+  { label: "Home", href: "#", icon: <Home className="size-3.5" /> },
+  { label: "Workspace", href: "#", icon: <Layers className="size-3.5" /> },
+  { label: "Settings", href: "#", icon: <Folder className="size-3.5" /> },
+  { label: "Billing", icon: <FolderOpen className="size-3.5" /> },
+];
+
+export function BreadcrumbsDemo() {
+  return <Breadcrumbs items={items} />;
+}`}
+>
+  <BreadcrumbsDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall name="breadcrumbs" />
+
+## Usage
+
+```tsx
+import { Breadcrumbs } from "@/components/godui/breadcrumbs";
+```
+
+```tsx
+const items = [
+  { label: "Home", href: "/" },
+  { label: "Library", href: "/library" },
+  { label: "Current" },
+];
+
+<Breadcrumbs items={items} onNavigate={router.push} />;
+```
+
+Hovering crumbs slides a shared pill; the last crumb is marked as the current page.
+
+## Examples
+
+### Collapsed overflow
+
+Pass `maxItems` to fold the middle into a `…` button that springs open into a popover.
+
+<ComponentPreview
+  code={`"use client";
+import { Breadcrumbs } from "@/components/godui/breadcrumbs";
+
+const items = [
+  { label: "Home", href: "#" },
+  { label: "Engineering", href: "#" },
+  { label: "Platform", href: "#" },
+  { label: "Services", href: "#" },
+  { label: "Auth", href: "#" },
+  { label: "Tokens" },
+];
+
+export function BreadcrumbsCollapsed() {
+  return <Breadcrumbs items={items} maxItems={3} />;
+}`}
+>
+  <BreadcrumbsCollapsedDemo />
+</ComponentPreview>
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `items` | `BreadcrumbItem[]` | — | Crumbs: `{ label, href?, icon? }` |
+| `maxItems` | `number` | `0` | Collapse the middle past this count (0 = never) |
+| `separator` | `ReactNode` | chevron | Node rendered between crumbs |
+| `collapsible` | `boolean` | `true` | Allow the collapsed middle to expand |
+| `onNavigate` | `(href: string) => void` | — | Called on crumb click (prevents default) |

@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "generatedAt": "2026-06-25T21:31:50.292Z",
+  "generatedAt": "2026-06-25T23:42:23.579Z",
   "components": [
     {
       "name": "accordion",
@@ -76,6 +76,24 @@
       "install": "npx shadcn@latest add @godui/border-beam"
     },
     {
+      "name": "breadcrumbs",
+      "title": "Breadcrumbs",
+      "description": "A breadcrumb trail with hover-fill pills, animated path changes, and an overflow that collapses into an expandable popover.",
+      "category": "Navigation",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/breadcrumbs"
+    },
+    {
+      "name": "combobox",
+      "title": "Combobox",
+      "description": "A type-ahead autocomplete with staggered result reveal, highlighted matches, keyboard navigation, and an async loading state.",
+      "category": "Navigation",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/combobox"
+    },
+    {
       "name": "command-palette",
       "title": "Command Palette",
       "description": "A ⌘K command menu with fuzzy filtering, keyboard navigation, and a spring-tracked active highlight.",
@@ -92,6 +110,15 @@
       "dependencies": ["canvas-confetti"],
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add @godui/confetti"
+    },
+    {
+      "name": "context-menu",
+      "title": "Context Menu",
+      "description": "A right-click menu that springs from the cursor point and flips to stay in the viewport, with shortcuts and destructive actions.",
+      "category": "Navigation",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/context-menu"
     },
     {
       "name": "dock",
@@ -112,6 +139,15 @@
       "install": "npx shadcn@latest add @godui/drawer"
     },
     {
+      "name": "dropdown-menu",
+      "title": "Dropdown Menu",
+      "description": "An accessible dropdown that springs open from its trigger edge, with submenus, shortcuts, separators, and keyboard navigation.",
+      "category": "Navigation",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/dropdown-menu"
+    },
+    {
       "name": "dynamic-island",
       "title": "Dynamic Island",
       "description": "An Apple-inspired pill that springs between size presets while its content cross-fades.",
@@ -128,6 +164,15 @@
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add @godui/elastic-text"
+    },
+    {
+      "name": "filter-bar",
+      "title": "Filter Bar",
+      "description": "A faceted filter bar with searchable multi-select popovers, count badges, and active filters that spring in and out as chips.",
+      "category": "Navigation",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/filter-bar"
     },
     {
       "name": "floating-toolbar",
@@ -247,6 +292,15 @@
       "install": "npx shadcn@latest add @godui/mask-button"
     },
     {
+      "name": "mega-menu",
+      "title": "Mega Menu",
+      "description": "A Vercel-style navigation menu with a direction-aware highlight and a panel that springs and height-morphs between triggers.",
+      "category": "Navigation",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/mega-menu"
+    },
+    {
       "name": "number-ticker",
       "title": "Number Ticker",
       "description": "Animates a number to its target value with spring physics when scrolled into view.",
@@ -274,6 +328,15 @@
       "install": "npx shadcn@latest add @godui/otp-input"
     },
     {
+      "name": "pagination",
+      "title": "Pagination",
+      "description": "A page navigator with a shared-element indicator that slides to the active page, nudging arrows, and ellipsis truncation.",
+      "category": "Navigation",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/pagination"
+    },
+    {
       "name": "pixel-grid",
       "title": "Pixel Grid",
       "description": "A grid of flickering squares with an optional cursor spotlight that lights up nearby pixels.",
@@ -299,6 +362,15 @@
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add @godui/progressive-card-reveal"
+    },
+    {
+      "name": "resizable-header",
+      "title": "Resizable Header",
+      "description": "A sticky navbar that springs into a compact, blurred floating pill as you scroll, with a shared-element active indicator.",
+      "category": "Navigation",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/resizable-header"
     },
     {
       "name": "scroll-progress",
@@ -337,6 +409,15 @@
       "install": "npx shadcn@latest add @godui/shimmer-button"
     },
     {
+      "name": "sidebar",
+      "title": "Sidebar",
+      "description": "A collapsible navigation rail that springs open on hover, marks the active item with a shared-element rail, and nests groups.",
+      "category": "Navigation",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/sidebar"
+    },
+    {
       "name": "sparkles",
       "title": "Sparkles",
       "description": "A canvas field of twinkling particles rendered behind its content.",
@@ -371,6 +452,15 @@
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add @godui/switch"
+    },
+    {
+      "name": "tab-bar",
+      "title": "Tab Bar",
+      "description": "A mobile bottom navigation where a shared-element blob slides under the active tab and the icon gives a haptic-style pop.",
+      "category": "Navigation",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/tab-bar"
     },
     {
       "name": "text-animate",

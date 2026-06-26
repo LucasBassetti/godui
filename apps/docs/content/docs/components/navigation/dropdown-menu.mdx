@@ -1,0 +1,71 @@
+---
+title: Dropdown Menu
+description: An accessible dropdown that springs open from its trigger edge, with submenus, icons, shortcuts, separators, and full keyboard navigation.
+---
+
+import { DropdownMenuDemo } from "@/components/demos/dropdown-menu-demo";
+
+<ComponentPreview
+  code={`"use client";
+import { DropdownMenu } from "@/components/godui/dropdown-menu";
+import { User, CreditCard, Users, Plus, LogOut } from "lucide-react";
+import { useState } from "react";
+
+export function AccountMenu() {
+  const [last, setLast] = useState(null);
+  const items = [
+    { type: "label", label: "Signed in as ada@northwind.com" },
+    { label: "Profile", icon: <User className="size-4" />, shortcut: "⌘P", onSelect: () => setLast("Profile") },
+    { label: "Billing", icon: <CreditCard className="size-4" />, onSelect: () => setLast("Billing") },
+    {
+      label: "Switch workspace",
+      icon: <Users className="size-4" />,
+      submenu: [
+        { label: "Northwind", onSelect: () => setLast("Northwind") },
+        { label: "Acme Inc.", onSelect: () => setLast("Acme Inc.") },
+        { type: "separator" },
+        { label: "New workspace", icon: <Plus className="size-4" />, onSelect: () => setLast("New") },
+      ],
+    },
+    { type: "separator" },
+    { label: "Log out", icon: <LogOut className="size-4" />, onSelect: () => setLast("Log out") },
+  ];
+
+  return <DropdownMenu align="end" trigger={<button>Ada Lovelace</button>} items={items} />;
+}`}
+>
+  <DropdownMenuDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall name="dropdown-menu" />
+
+## Usage
+
+```tsx
+import { DropdownMenu } from "@/components/godui/dropdown-menu";
+```
+
+```tsx
+const items = [
+  { label: "Profile", onSelect: () => {} },
+  { label: "Workspaces", submenu: [{ label: "GodUI", onSelect: () => {} }] },
+  { type: "separator" },
+  { label: "Log out", onSelect: () => {} },
+];
+
+<DropdownMenu trigger={<button>Open</button>} items={items} side="bottom" align="start" />;
+```
+
+Items can be `{ type: "separator" }`, `{ type: "label", label }`, or an action with
+`label`, optional `icon`, `shortcut`, `href`, `disabled`, `onSelect`, or a nested `submenu`.
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `trigger` | `ReactNode` | — | Element that toggles the menu |
+| `items` | `DropdownMenuItem[]` | — | Menu items, separators, labels, submenus |
+| `side` | `"top" \| "bottom" \| "left" \| "right"` | `"bottom"` | Panel side |
+| `align` | `"start" \| "center" \| "end"` | `"start"` | Panel alignment |

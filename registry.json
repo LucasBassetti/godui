@@ -1016,6 +1016,156 @@
           "target": "components/godui/stepper.tsx"
         }
       ]
+    },
+    {
+      "name": "resizable-header",
+      "type": "registry:ui",
+      "title": "Resizable Header",
+      "description": "A sticky navbar that springs into a compact, blurred floating pill as you scroll, with a shared-element active indicator.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/resizable-header/resizable-header.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/resizable-header.tsx"
+        }
+      ]
+    },
+    {
+      "name": "mega-menu",
+      "type": "registry:ui",
+      "title": "Mega Menu",
+      "description": "A Vercel-style navigation menu with a direction-aware highlight and a panel that springs and height-morphs between triggers.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/mega-menu/mega-menu.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/mega-menu.tsx"
+        }
+      ]
+    },
+    {
+      "name": "breadcrumbs",
+      "type": "registry:ui",
+      "title": "Breadcrumbs",
+      "description": "A breadcrumb trail with hover-fill pills, animated path changes, and an overflow that collapses into an expandable popover.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/breadcrumbs/breadcrumbs.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/breadcrumbs.tsx"
+        }
+      ]
+    },
+    {
+      "name": "filter-bar",
+      "type": "registry:ui",
+      "title": "Filter Bar",
+      "description": "A faceted filter bar with searchable multi-select popovers, count badges, and active filters that spring in and out as chips.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/filter-bar/filter-bar.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/filter-bar.tsx"
+        }
+      ]
+    },
+    {
+      "name": "dropdown-menu",
+      "type": "registry:ui",
+      "title": "Dropdown Menu",
+      "description": "An accessible dropdown that springs open from its trigger edge, with submenus, shortcuts, separators, and keyboard navigation.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/dropdown-menu/dropdown-menu.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/dropdown-menu.tsx"
+        }
+      ]
+    },
+    {
+      "name": "context-menu",
+      "type": "registry:ui",
+      "title": "Context Menu",
+      "description": "A right-click menu that springs from the cursor point and flips to stay in the viewport, with shortcuts and destructive actions.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/context-menu/context-menu.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/context-menu.tsx"
+        }
+      ]
+    },
+    {
+      "name": "sidebar",
+      "type": "registry:ui",
+      "title": "Sidebar",
+      "description": "A collapsible navigation rail that springs open on hover, marks the active item with a shared-element rail, and nests groups.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/sidebar/sidebar.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/sidebar.tsx"
+        }
+      ]
+    },
+    {
+      "name": "pagination",
+      "type": "registry:ui",
+      "title": "Pagination",
+      "description": "A page navigator with a shared-element indicator that slides to the active page, nudging arrows, and ellipsis truncation.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/pagination/pagination.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/pagination.tsx"
+        }
+      ]
+    },
+    {
+      "name": "tab-bar",
+      "type": "registry:ui",
+      "title": "Tab Bar",
+      "description": "A mobile bottom navigation where a shared-element blob slides under the active tab and the icon gives a haptic-style pop.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/tab-bar/tab-bar.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/tab-bar.tsx"
+        }
+      ]
+    },
+    {
+      "name": "combobox",
+      "type": "registry:ui",
+      "title": "Combobox",
+      "description": "A type-ahead autocomplete with staggered result reveal, highlighted matches, keyboard navigation, and an async loading state.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/combobox/combobox.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/combobox.tsx"
+        }
+      ]
     }
   ]
 }
