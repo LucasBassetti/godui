@@ -1,0 +1,78 @@
+---
+title: Filter Bar
+description: A faceted filter bar with searchable multi-select popovers, count badges, and selections that spring inline into each facet pill.
+---
+
+import { FilterBarDemo } from "@/components/demos/filter-bar-demo";
+
+<ComponentPreview
+  code={`"use client";
+import { FilterBar } from "@/components/godui/filter-bar";
+import { useState } from "react";
+
+const facets = [
+  {
+    id: "status",
+    label: "Status",
+    options: [
+      { label: "Backlog", value: "backlog", count: 24 },
+      { label: "In progress", value: "progress", count: 8 },
+      { label: "Done", value: "done", count: 132 },
+    ],
+  },
+  {
+    id: "priority",
+    label: "Priority",
+    options: [
+      { label: "Urgent", value: "urgent", count: 3 },
+      { label: "High", value: "high", count: 12 },
+      { label: "Low", value: "low", count: 18 },
+    ],
+  },
+];
+
+export function FilterBarDemo() {
+  const [value, setValue] = useState({ status: ["progress"] });
+  return <FilterBar facets={facets} value={value} onChange={setValue} />;
+}`}
+>
+  <FilterBarDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall name="filter-bar" />
+
+## Usage
+
+```tsx
+import { FilterBar } from "@/components/godui/filter-bar";
+```
+
+```tsx
+const facets = [
+  {
+    id: "status",
+    label: "Status",
+    options: [{ label: "Open", value: "open", count: 12 }],
+  },
+];
+
+const [value, setValue] = useState({});
+
+<FilterBar facets={facets} value={value} onChange={setValue} />;
+```
+
+`value` is a `Record<facetId, string[]>`. Each facet pill shows its current
+selection inline (`Status: Open +2`) and clears with the inline `×`.
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `facets` | `Facet[]` | — | `{ id, label, options: { label, value, count? }[] }` |
+| `value` | `Record<string, string[]>` | — | Controlled selection |
+| `defaultValue` | `Record<string, string[]>` | `{}` | Uncontrolled initial selection |
+| `onChange` | `(value) => void` | — | Called when the selection changes |
+| `searchable` | `boolean` | `true` | Show a search box in each popover |
+| `showCounts` | `boolean` | `true` | Show option count badges |

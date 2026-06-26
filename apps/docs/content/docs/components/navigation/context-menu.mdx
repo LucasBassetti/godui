@@ -1,0 +1,64 @@
+---
+title: Context Menu
+description: A right-click menu that springs open from the exact cursor point and flips to stay inside the viewport, with icons, shortcuts, and destructive actions.
+---
+
+import { ContextMenuDemo } from "@/components/demos/context-menu-demo";
+
+<ComponentPreview
+  code={`"use client";
+import { ContextMenu } from "@/components/godui/context-menu";
+import { FileText, Pencil, Copy, Share2, Trash2 } from "lucide-react";
+import { useState } from "react";
+
+export function FileContextMenu() {
+  const [last, setLast] = useState(null);
+  const items = [
+    { type: "label", label: "quarterly-report.pdf" },
+    { label: "Open", icon: <FileText className="size-4" />, shortcut: "↵", onSelect: () => setLast("Open") },
+    { label: "Rename", icon: <Pencil className="size-4" />, shortcut: "⌘R", onSelect: () => setLast("Rename") },
+    { type: "separator" },
+    { label: "Copy link", icon: <Copy className="size-4" />, shortcut: "⌘C", onSelect: () => setLast("Copy") },
+    { label: "Share", icon: <Share2 className="size-4" />, onSelect: () => setLast("Share") },
+    { type: "separator" },
+    { label: "Delete", icon: <Trash2 className="size-4" />, destructive: true, shortcut: "⌫", onSelect: () => setLast("Delete") },
+  ];
+
+  return (
+    <ContextMenu items={items}>
+      <div className="rounded-xl border border-dashed p-10">Right-click here</div>
+    </ContextMenu>
+  );
+}`}
+>
+  <ContextMenuDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall name="context-menu" />
+
+## Usage
+
+```tsx
+import { ContextMenu } from "@/components/godui/context-menu";
+```
+
+```tsx
+const items = [
+  { label: "Copy", shortcut: "⌘C", onSelect: () => {} },
+  { type: "separator" },
+  { label: "Delete", destructive: true, onSelect: () => {} },
+];
+
+<ContextMenu items={items}>
+  <YourTargetArea />
+</ContextMenu>;
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `items` | `ContextMenuItem[]` | — | Items, separators, and labels |
+| `children` | `ReactNode` | — | The area that responds to right-click |

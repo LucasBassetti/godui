@@ -1,0 +1,56 @@
+---
+title: Tab Bar
+description: A mobile bottom navigation where a shared-element blob slides under the active tab, the icon gives a haptic-style pop, and the label reveals on selection.
+---
+
+import { TabBarDemo } from "@/components/demos/tab-bar-demo";
+
+<ComponentPreview
+  code={`"use client";
+import { TabBar } from "@/components/godui/tab-bar";
+import { Home, Search, Bell, User } from "lucide-react";
+import { useState } from "react";
+
+const tabs = [
+  { value: "home", label: "Home", icon: <Home className="size-5" /> },
+  { value: "search", label: "Search", icon: <Search className="size-5" /> },
+  { value: "alerts", label: "Alerts", icon: <Bell className="size-5" />, badge: 5 },
+  { value: "profile", label: "Profile", icon: <User className="size-5" /> },
+];
+
+export function BottomNav() {
+  const [tab, setTab] = useState("home");
+  return <TabBar tabs={tabs} value={tab} onChange={setTab} />;
+}`}
+>
+  <TabBarDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall name="tab-bar" />
+
+## Usage
+
+```tsx
+import { TabBar } from "@/components/godui/tab-bar";
+```
+
+```tsx
+const [tab, setTab] = useState("home");
+
+<TabBar tabs={tabs} value={tab} onChange={setTab} safeArea />;
+```
+
+Pass `safeArea` to add bottom safe-area padding for devices with a home indicator.
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `tabs` | `TabBarTab[]` | — | `{ value, label, icon, badge? }` |
+| `value` | `string` | — | Controlled active tab |
+| `defaultValue` | `string` | first tab | Uncontrolled initial tab |
+| `labelsOnActiveOnly` | `boolean` | `true` | Reveal the label only on the active tab |
+| `safeArea` | `boolean` | `false` | Add bottom safe-area padding |
+| `onChange` | `(value: string) => void` | — | Called when the active tab changes |

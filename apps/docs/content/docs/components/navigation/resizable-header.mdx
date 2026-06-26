@@ -1,0 +1,83 @@
+---
+title: Resizable Header
+description: A sticky navbar that springs into a compact, blurred floating pill as you scroll, with a shared-element active indicator.
+---
+
+import { ResizableHeaderDemo } from "@/components/demos/resizable-header-demo";
+
+<ComponentPreview
+  code={`"use client";
+import { ResizableHeader } from "@/components/godui/resizable-header";
+import { useState } from "react";
+
+const links = [
+  { label: "Product", href: "product" },
+  { label: "Solutions", href: "solutions" },
+  { label: "Customers", href: "customers" },
+  { label: "Pricing", href: "pricing" },
+];
+
+export function HeaderDemo() {
+  const [active, setActive] = useState("product");
+  return (
+    <ResizableHeader
+      links={links}
+      activeHref={active}
+      onNavigate={setActive}
+      logo="Northwind"
+      cta={
+        <button className="rounded-full bg-primary px-4 py-1.5 text-sm font-medium text-primary-foreground">
+          Start free
+        </button>
+      }
+    />
+  );
+}`}
+>
+  <ResizableHeaderDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall name="resizable-header" />
+
+## Usage
+
+```tsx
+import { ResizableHeader } from "@/components/godui/resizable-header";
+```
+
+```tsx
+const links = [
+  { label: "Product", href: "/product" },
+  { label: "Pricing", href: "/pricing" },
+  { label: "Docs", href: "/docs" },
+];
+
+<ResizableHeader links={links} activeHref={pathname} onNavigate={router.push} />;
+```
+
+By default the header tracks window scroll. To track a scroll container instead
+(as in the preview above), pass a `scrollRef`:
+
+```tsx
+const scrollRef = useRef(null);
+
+<div ref={scrollRef} className="overflow-y-auto">
+  <ResizableHeader scrollRef={scrollRef} links={links} />
+  {/* content */}
+</div>;
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `logo` | `ReactNode` | `"GodUI"` | Brand mark on the left |
+| `links` | `HeaderLink[]` | `[]` | Navigation links: `{ label, href }` |
+| `activeHref` | `string` | — | `href` of the active link |
+| `cta` | `ReactNode` | — | Call-to-action node on the right |
+| `scrollThreshold` | `number` | `24` | Scroll px before the bar morphs to a pill |
+| `sticky` | `boolean` | `true` | Stick the header to the top |
+| `scrollRef` | `RefObject<HTMLElement>` | — | Scroll container to track (defaults to window) |
+| `onNavigate` | `(href: string) => void` | — | Called on link click (prevents default) |

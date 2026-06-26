@@ -1,0 +1,84 @@
+---
+title: Mega Menu
+description: A Vercel-style navigation menu with a direction-aware highlight and a panel that springs and height-morphs between triggers.
+---
+
+import { MegaMenuDemo } from "@/components/demos/mega-menu-demo";
+
+<ComponentPreview
+  code={`"use client";
+import { MegaMenu } from "@/components/godui/mega-menu";
+import { GitBranch, Rocket, BookOpen, Newspaper } from "lucide-react";
+
+const items = [
+  {
+    label: "Product",
+    sections: [
+      {
+        heading: "Build",
+        links: [
+          { label: "Editor", href: "#editor", description: "Write and ship code", icon: <GitBranch className="size-4" /> },
+          { label: "Deploy", href: "#deploy", description: "Global edge", icon: <Rocket className="size-4" /> },
+        ],
+      },
+    ],
+  },
+  {
+    label: "Resources",
+    sections: [
+      {
+        links: [
+          { label: "Docs", href: "#docs", description: "Guides and reference", icon: <BookOpen className="size-4" /> },
+          { label: "Changelog", href: "#changelog", description: "What shipped", icon: <Newspaper className="size-4" /> },
+        ],
+      },
+    ],
+  },
+  { label: "Pricing", href: "#pricing" },
+];
+
+export function MegaMenuDemo() {
+  return <MegaMenu items={items} />;
+}`}
+>
+  <MegaMenuDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall name="mega-menu" />
+
+## Usage
+
+```tsx
+import { MegaMenu } from "@/components/godui/mega-menu";
+```
+
+```tsx
+const items = [
+  {
+    label: "Product",
+    sections: [
+      {
+        heading: "Build",
+        links: [{ label: "Editor", href: "/editor", description: "Write code" }],
+      },
+    ],
+  },
+  { label: "Pricing", href: "/pricing" },
+];
+
+<MegaMenu items={items} onNavigate={router.push} />;
+```
+
+Items with `sections` open a panel on hover; items with only `href` render as plain links.
+Hovering between triggers slides a shared highlight and morphs the panel height.
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `items` | `MegaMenuItem[]` | — | Triggers: `{ label, href?, sections? }` |
+| `openDelay` | `number` | `80` | Delay (ms) before opening on hover |
+| `closeDelay` | `number` | `140` | Delay (ms) before closing after leaving |
+| `onNavigate` | `(href: string) => void` | — | Called on link click (prevents default) |
