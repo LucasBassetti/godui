@@ -1,0 +1,64 @@
+---
+title: Reactions
+description: Emoji reaction pills with a spring count, a particle burst when you react, and a stagger-in picker — the social signal that makes collaboration feel human.
+---
+
+import { ReactionsDemo } from "@/components/demos/reactions-demo";
+
+<ComponentPreview
+  code={`import { Reactions } from "@/components/godui/reactions";
+import { useState } from "react";
+
+export function ReactionsDemo() {
+  const [reactions, setReactions] = useState([
+    { emoji: "👍", count: 4, reacted: true },
+    { emoji: "🎉", count: 2 },
+  ]);
+
+  const toggle = (emoji) =>
+    setReactions((prev) =>
+      prev
+        .map((r) =>
+          r.emoji === emoji
+            ? { ...r, reacted: !r.reacted, count: r.count + (r.reacted ? -1 : 1) }
+            : r,
+        )
+        .filter((r) => r.count > 0),
+    );
+
+  return <Reactions reactions={reactions} onToggle={toggle} />;
+}`}
+>
+  <ReactionsDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="Reactions" />
+
+Each pill springs its count and fires a particle burst when newly reacted. The
+`+` button opens a stagger-in emoji picker. Pass `users` per reaction to show
+who reacted on hover.
+
+## Usage
+
+```tsx
+import { Reactions } from "@/components/godui/reactions";
+```
+
+```tsx
+<Reactions
+  reactions={reactions}
+  onToggle={(emoji) => toggle(emoji)}
+  onAdd={(emoji) => add(emoji)}
+/>
+```
+
+## Props
+
+| Prop        | Type                       | Default        | Description                          |
+| ----------- | -------------------------- | -------------- | ------------------------------------ |
+| `reactions` | `Reaction[]`               | —              | Reaction pills to render.            |
+| `onToggle`  | `(emoji: string) => void`  | —              | Fired when a pill is toggled.        |
+| `options`   | `string[]`                 | 8 common emoji | Emoji offered in the picker.         |
+| `onAdd`     | `(emoji: string) => void`  | —              | Fired when a new emoji is chosen.    |

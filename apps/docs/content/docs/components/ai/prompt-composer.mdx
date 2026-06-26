@@ -1,0 +1,77 @@
+---
+title: Prompt Composer
+description: An AI input box with auto-growing textarea, attachment chips, an inline model picker, and a send button that morphs into a stop control while streaming.
+---
+
+import { PromptComposerDemo } from "@/components/demos/prompt-composer-demo";
+
+<ComponentPreview
+  code={`import { PromptComposer } from "@/components/godui/prompt-composer";
+import { useState } from "react";
+
+export function PromptComposerDemo() {
+  const [streaming, setStreaming] = useState(false);
+
+  return (
+    <PromptComposer
+      placeholder="Ask anything…"
+      models={["Opus 4.8", "Sonnet 4.6", "Haiku 4.5"]}
+      isStreaming={streaming}
+      onSend={() => {
+        setStreaming(true);
+        setTimeout(() => setStreaming(false), 2200);
+      }}
+      onStop={() => setStreaming(false)}
+    />
+  );
+}`}
+>
+  <PromptComposerDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="PromptComposer" />
+
+The textarea auto-grows up to `maxRows`, then scrolls. Submit with the send
+button or ⌘/Ctrl + Enter. Drop or paste files to attach them as chips. While
+`isStreaming` is true, the send button cross-fades into a stop button.
+
+## Usage
+
+```tsx
+import { PromptComposer } from "@/components/godui/prompt-composer";
+```
+
+```tsx
+<PromptComposer
+  placeholder="Ask anything…"
+  onSend={(text, attachments) => send(text, attachments)}
+/>
+```
+
+### Controlled value
+
+```tsx
+const [value, setValue] = useState("");
+
+<PromptComposer value={value} onValueChange={setValue} onSend={send} />;
+```
+
+## Props
+
+| Prop                  | Type                                          | Default          | Description                                        |
+| --------------------- | --------------------------------------------- | ---------------- | -------------------------------------------------- |
+| `value`               | `string`                                      | —                | Controlled textarea value.                         |
+| `defaultValue`        | `string`                                      | `""`             | Uncontrolled initial value.                        |
+| `onValueChange`       | `(value: string) => void`                     | —                | Fired on every keystroke.                          |
+| `onSend`              | `(value, attachments) => void`                | —                | Fired on submit with the text + attachments.       |
+| `isStreaming`         | `boolean`                                     | `false`          | Morphs the send button into a stop button.         |
+| `onStop`              | `() => void`                                  | —                | Fired when stop is pressed while streaming.        |
+| `variant`             | `"comfortable" \| "compact" \| "minimal"`     | `"comfortable"`  | Visual density.                                    |
+| `maxRows`             | `number`                                      | `8`              | Rows before the textarea scrolls.                  |
+| `attachments`         | `PromptAttachment[]`                          | —                | Controlled attachment chips.                       |
+| `onAttachmentsChange` | `(attachments: PromptAttachment[]) => void`   | —                | Fired when attachments change.                     |
+| `models`              | `string[]`                                    | —                | Enables the inline model picker.                   |
+| `model`               | `string`                                      | —                | Selected model.                                    |
+| `onModelChange`       | `(model: string) => void`                     | —                | Fired when a model is chosen.                      |

@@ -1,0 +1,61 @@
+---
+title: Comment Pin
+description: Figma-style annotation pins that spring in over any surface and expand into a threaded comment popover with a reply field.
+---
+
+import { CommentPinDemo } from "@/components/demos/comment-pin-demo";
+
+<ComponentPreview
+  code={`import { CommentPin } from "@/components/godui/comment-pin";
+
+export function CommentPinDemo() {
+  return (
+    <div className="relative h-96">
+      <CommentPin
+        x={16}
+        y={20}
+        defaultOpen
+        comments={[
+          { id: "c1", author: "Ana Reyes", body: "Can we tighten this spacing?", time: "2m" },
+          { id: "c2", author: "Marco Bell", body: "Agreed — bumping to 8px.", time: "1m" },
+        ]}
+        onReply={(text) => console.log(text)}
+      />
+    </div>
+  );
+}`}
+>
+  <CommentPinDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="CommentPin" />
+
+Position a pin with `x`/`y` percentages inside a `relative` container. It
+springs in, and clicking morphs out a thread popover with the comment list and
+an optional reply field. Resolved pins shrink and desaturate.
+
+## Usage
+
+```tsx
+import { CommentPin } from "@/components/godui/comment-pin";
+```
+
+```tsx
+<div className="relative">
+  <CommentPin x={25} y={40} comments={comments} onReply={reply} />
+</div>
+```
+
+## Props
+
+| Prop           | Type                      | Default | Description                              |
+| -------------- | ------------------------- | ------- | ---------------------------------------- |
+| `x` / `y`      | `number`                  | —       | Position as a percentage of container.   |
+| `comments`     | `Comment[]`               | `[]`    | Thread comments.                         |
+| `label`        | `ReactNode`               | —       | Pin face (defaults to author initials).  |
+| `resolved`     | `boolean`                 | `false` | Shrink + desaturate the pin.             |
+| `open`         | `boolean`                 | —       | Controlled open state.                   |
+| `onOpenChange` | `(open: boolean) => void` | —       | Fired when the thread toggles.           |
+| `onReply`      | `(text: string) => void`  | —       | Enables and handles the reply field.     |

@@ -973,21 +973,6 @@
       ]
     },
     {
-      "name": "switch",
-      "type": "registry:ui",
-      "title": "Switch",
-      "description": "An Apple-grade toggle with a spring thumb you can drag, and a track that crossfades.",
-      "dependencies": ["framer-motion"],
-      "registryDependencies": ["@godui/godui-theme"],
-      "files": [
-        {
-          "path": "packages/components/src/switch/switch.tsx",
-          "type": "registry:ui",
-          "target": "components/godui/switch.tsx"
-        }
-      ]
-    },
-    {
       "name": "floating-toolbar",
       "type": "registry:ui",
       "title": "Floating Toolbar",
@@ -1164,6 +1149,176 @@
           "path": "packages/components/src/combobox/combobox.tsx",
           "type": "registry:ui",
           "target": "components/godui/combobox.tsx"
+        }
+      ]
+    },
+    {
+      "name": "prompt-composer",
+      "type": "registry:ui",
+      "title": "Prompt Composer",
+      "description": "An AI input box with an auto-growing textarea, attachment chips, an inline model picker, and a send button that morphs into a stop control while streaming.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/prompt-composer/prompt-composer.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/prompt-composer.tsx"
+        }
+      ]
+    },
+    {
+      "name": "conversation-thread",
+      "type": "registry:ui",
+      "title": "Conversation Thread",
+      "description": "A streaming AI chat surface where messages spring in, tokens reveal with a blinking caret, hover actions fade in, and the view auto-sticks to the latest message.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/conversation-thread/conversation-thread.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/conversation-thread.tsx"
+        }
+      ]
+    },
+    {
+      "name": "agent-timeline",
+      "type": "registry:ui",
+      "title": "Agent Timeline",
+      "description": "A vertical timeline of agent steps with live status, a spring-filled connector, and collapsible reasoning or tool-output bodies that morph open.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/agent-timeline/agent-timeline.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/agent-timeline.tsx"
+        }
+      ]
+    },
+    {
+      "name": "prompt-suggestions",
+      "type": "registry:ui",
+      "title": "Prompt Suggestions",
+      "description": "Animated starter prompts for AI empty states that stagger in, lift on hover, and feed straight into the composer when chosen.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/prompt-suggestions/prompt-suggestions.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/prompt-suggestions.tsx"
+        }
+      ]
+    },
+    {
+      "name": "source-citations",
+      "type": "registry:ui",
+      "title": "Source Citations",
+      "description": "Inline numbered citation pills that spring out a rich preview card on hover, plus a collapsible source list for AI answers.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/source-citations/source-citations.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/source-citations.tsx"
+        }
+      ]
+    },
+    {
+      "name": "live-cursors",
+      "type": "registry:ui",
+      "title": "Live Cursors",
+      "description": "Smoothly interpolated multiplayer cursors with trailing name flags and optional cursor-chat, plus a self-driving simulated-peer mode.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/live-cursors/live-cursors.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/live-cursors.tsx"
+        },
+        {
+          "path": "packages/components/src/lib/presence.ts",
+          "type": "registry:lib",
+          "target": "components/godui/presence.ts"
+        }
+      ]
+    },
+    {
+      "name": "presence-facepile",
+      "type": "registry:ui",
+      "title": "Presence Facepile",
+      "description": "Live avatars with animated status rings, spring join/leave, and a +N overflow that expands into a presence list.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/presence-facepile/presence-facepile.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/presence-facepile.tsx"
+        },
+        {
+          "path": "packages/components/src/lib/presence.ts",
+          "type": "registry:lib",
+          "target": "components/godui/presence.ts"
+        }
+      ]
+    },
+    {
+      "name": "comment-pin",
+      "type": "registry:ui",
+      "title": "Comment Pin",
+      "description": "Figma-style annotation pins that spring in over any surface and expand into a threaded comment popover with a reply field.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/comment-pin/comment-pin.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/comment-pin.tsx"
+        },
+        {
+          "path": "packages/components/src/lib/presence.ts",
+          "type": "registry:lib",
+          "target": "components/godui/presence.ts"
+        }
+      ]
+    },
+    {
+      "name": "reactions",
+      "type": "registry:ui",
+      "title": "Reactions",
+      "description": "Emoji reaction pills with a spring count, a particle burst when you react, and a stagger-in emoji picker.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/reactions/reactions.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/reactions.tsx"
+        }
+      ]
+    },
+    {
+      "name": "notification-inbox",
+      "type": "registry:ui",
+      "title": "Notification Inbox",
+      "description": "A Linear-style notification center with time-bucketed groups, unread accent rails, swipe-to-archive, mark-all-read, and a polished empty state.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/notification-inbox/notification-inbox.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/notification-inbox.tsx"
+        },
+        {
+          "path": "packages/components/src/lib/presence.ts",
+          "type": "registry:lib",
+          "target": "components/godui/presence.ts"
         }
       ]
     }

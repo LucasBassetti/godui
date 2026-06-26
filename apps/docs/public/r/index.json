@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "generatedAt": "2026-06-25T23:42:23.579Z",
+  "generatedAt": "2026-06-26T04:09:09.139Z",
   "components": [
     {
       "name": "accordion",
@@ -11,6 +11,15 @@
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add @godui/accordion"
+    },
+    {
+      "name": "agent-timeline",
+      "title": "Agent Timeline",
+      "description": "A vertical timeline of agent steps with live status, a spring-filled connector, and collapsible reasoning or tool-output bodies that morph open.",
+      "category": "AI",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/agent-timeline"
     },
     {
       "name": "animated-beam",
@@ -103,6 +112,15 @@
       "install": "npx shadcn@latest add @godui/command-palette"
     },
     {
+      "name": "comment-pin",
+      "title": "Comment Pin",
+      "description": "Figma-style annotation pins that spring in over any surface and expand into a threaded comment popover with a reply field.",
+      "category": "Collaboration",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/comment-pin"
+    },
+    {
       "name": "confetti",
       "title": "Confetti",
       "description": "A physics-based confetti burst with an imperative fire API for celebratory moments.",
@@ -119,6 +137,15 @@
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add @godui/context-menu"
+    },
+    {
+      "name": "conversation-thread",
+      "title": "Conversation Thread",
+      "description": "A streaming AI chat surface where messages spring in, tokens reveal with a blinking caret, hover actions fade in, and the view auto-sticks to the latest message.",
+      "category": "AI",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/conversation-thread"
     },
     {
       "name": "dock",
@@ -238,6 +265,15 @@
       "install": "npx shadcn@latest add @godui/liquid-glass-lens"
     },
     {
+      "name": "live-cursors",
+      "title": "Live Cursors",
+      "description": "Smoothly interpolated multiplayer cursors with trailing name flags and optional cursor-chat, plus a self-driving simulated-peer mode.",
+      "category": "Collaboration",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/live-cursors"
+    },
+    {
       "name": "magic-button",
       "title": "Magic Button",
       "description": "A tactile 3D push button with an animated rainbow edge and shadow.",
@@ -301,6 +337,15 @@
       "install": "npx shadcn@latest add @godui/mega-menu"
     },
     {
+      "name": "notification-inbox",
+      "title": "Notification Inbox",
+      "description": "A Linear-style notification center with time-bucketed groups, unread accent rails, swipe-to-archive, mark-all-read, and a polished empty state.",
+      "category": "Collaboration",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/notification-inbox"
+    },
+    {
       "name": "number-ticker",
       "title": "Number Ticker",
       "description": "Animates a number to its target value with spring physics when scrolled into view.",
@@ -346,6 +391,15 @@
       "install": "npx shadcn@latest add @godui/pixel-grid"
     },
     {
+      "name": "presence-facepile",
+      "title": "Presence Facepile",
+      "description": "Live avatars with animated status rings, spring join/leave, and a +N overflow that expands into a presence list.",
+      "category": "Collaboration",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/presence-facepile"
+    },
+    {
       "name": "progress-fold-button",
       "title": "Progress Fold Button",
       "description": "A button whose front face folds back to reveal a controlled progress bar while loading.",
@@ -362,6 +416,33 @@
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add @godui/progressive-card-reveal"
+    },
+    {
+      "name": "prompt-composer",
+      "title": "Prompt Composer",
+      "description": "An AI input box with an auto-growing textarea, attachment chips, an inline model picker, and a send button that morphs into a stop control while streaming.",
+      "category": "AI",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/prompt-composer"
+    },
+    {
+      "name": "prompt-suggestions",
+      "title": "Prompt Suggestions",
+      "description": "Animated starter prompts for AI empty states that stagger in, lift on hover, and feed straight into the composer when chosen.",
+      "category": "AI",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/prompt-suggestions"
+    },
+    {
+      "name": "reactions",
+      "title": "Reactions",
+      "description": "Emoji reaction pills with a spring count, a particle burst when you react, and a stagger-in emoji picker.",
+      "category": "Collaboration",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/reactions"
     },
     {
       "name": "resizable-header",
@@ -394,7 +475,7 @@
       "name": "segmented-control",
       "title": "Segmented Control",
       "description": "An iOS-style selector with a sliding pill that springs between options.",
-      "category": "Controls",
+      "category": "Navigation",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add @godui/segmented-control"
@@ -416,6 +497,15 @@
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add @godui/sidebar"
+    },
+    {
+      "name": "source-citations",
+      "title": "Source Citations",
+      "description": "Inline numbered citation pills that spring out a rich preview card on hover, plus a collapsible source list for AI answers.",
+      "category": "AI",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/source-citations"
     },
     {
       "name": "sparkles",
@@ -443,15 +533,6 @@
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add @godui/stepper"
-    },
-    {
-      "name": "switch",
-      "title": "Switch",
-      "description": "An Apple-grade toggle with a spring thumb you can drag, and a track that crossfades.",
-      "category": "Controls",
-      "dependencies": ["framer-motion"],
-      "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/switch"
     },
     {
       "name": "tab-bar",

@@ -1,0 +1,63 @@
+---
+title: Agent Timeline
+description: A vertical timeline of agent steps with live status, a spring-filled connector, and collapsible reasoning or tool-output bodies that morph open.
+---
+
+import { AgentTimelineDemo } from "@/components/demos/agent-timeline-demo";
+
+<ComponentPreview
+  code={`import { AgentTimeline, AgentStep } from "@/components/godui/agent-timeline";
+
+export function AgentTimelineDemo() {
+  return (
+    <AgentTimeline>
+      <AgentStep status="success" title="Read the repository" meta="0.4s">
+        Indexed 128 files across 6 packages.
+      </AgentStep>
+      <AgentStep status="running" title="Editing auth-middleware.ts" defaultOpen>
+        Changed the expiry check from < to <=.
+      </AgentStep>
+      <AgentStep status="pending" title="Run the test suite" last />
+    </AgentTimeline>
+  );
+}`}
+>
+  <AgentTimelineDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="AgentTimeline" />
+
+Each `AgentStep` reflects a `status` (`pending`, `running`, `success`,
+`error`). Running steps pulse and the connector below fills as the step
+completes. Steps with children become collapsible — click to morph the body
+open.
+
+## Usage
+
+```tsx
+import { AgentTimeline, AgentStep } from "@/components/godui/agent-timeline";
+```
+
+```tsx
+<AgentTimeline>
+  <AgentStep status="success" title="Step one" meta="0.4s">
+    Optional collapsible body.
+  </AgentStep>
+  <AgentStep status="running" title="Step two" last />
+</AgentTimeline>
+```
+
+## Props
+
+### AgentStep
+
+| Prop          | Type                                              | Default   | Description                               |
+| ------------- | ------------------------------------------------- | --------- | ----------------------------------------- |
+| `status`      | `"pending" \| "running" \| "success" \| "error"`  | `"pending"` | Drives the node icon and connector fill. |
+| `title`       | `ReactNode`                                       | —         | Step label.                               |
+| `meta`        | `ReactNode`                                       | —         | Secondary label (duration, tool name).    |
+| `children`    | `ReactNode`                                       | —         | Collapsible body. Omit for a leaf step.   |
+| `defaultOpen` | `boolean`                                         | `false`   | Start expanded.                           |
+| `last`        | `boolean`                                         | `false`   | Hides the connector below the step.       |
