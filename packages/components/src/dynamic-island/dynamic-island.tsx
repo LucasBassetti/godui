@@ -61,7 +61,7 @@ const DynamicIsland = React.forwardRef<HTMLDivElement, DynamicIslandProps>(
         }}
         transition={reduceMotion ? { duration: 0 } : SHELL_SPRING}
         className={`relative flex items-center justify-center overflow-hidden bg-black text-white shadow-xl ${className ?? ""}`}
-        style={style}
+        style={{ maxWidth: "100%", ...style }}
         {...(props as React.ComponentProps<typeof motion.div>)}
       >
         <AnimatePresence mode="popLayout" initial={false}>

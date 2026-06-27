@@ -280,7 +280,6 @@ export {
   type PromptSuggestionsProps,
   type PromptSuggestionsVariant,
 } from "./prompt-suggestions";
-export { type Reaction, Reactions, type ReactionsProps } from "./reactions";
 export {
   type HeaderLink,
   ResizableHeader,
@@ -308,7 +307,6 @@ export {
   type ShimmerButtonSize,
   type ShimmerButtonVariant,
 } from "./shimmer-button";
-export { Sidebar, type SidebarItem, type SidebarProps } from "./sidebar";
 export {
   type CitationSource,
   SourceCitation,

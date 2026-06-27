@@ -1226,21 +1226,6 @@
       ]
     },
     {
-      "name": "sidebar",
-      "type": "registry:ui",
-      "title": "Sidebar",
-      "description": "A collapsible navigation rail that springs open on hover, marks the active item with a shared-element rail, and nests groups.",
-      "dependencies": ["framer-motion"],
-      "registryDependencies": ["@godui/godui-theme"],
-      "files": [
-        {
-          "path": "packages/components/src/sidebar/sidebar.tsx",
-          "type": "registry:ui",
-          "target": "components/godui/sidebar.tsx"
-        }
-      ]
-    },
-    {
       "name": "pagination",
       "type": "registry:ui",
       "title": "Pagination",
@@ -1417,21 +1402,6 @@
           "path": "packages/components/src/lib/presence.ts",
           "type": "registry:lib",
           "target": "components/godui/presence.ts"
-        }
-      ]
-    },
-    {
-      "name": "reactions",
-      "type": "registry:ui",
-      "title": "Reactions",
-      "description": "Emoji reaction pills with a spring count, a particle burst when you react, and a stagger-in emoji picker.",
-      "dependencies": ["framer-motion"],
-      "registryDependencies": ["@godui/godui-theme"],
-      "files": [
-        {
-          "path": "packages/components/src/reactions/reactions.tsx",
-          "type": "registry:ui",
-          "target": "components/godui/reactions.tsx"
         }
       ]
     },

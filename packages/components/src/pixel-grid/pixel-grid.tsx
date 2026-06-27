@@ -309,7 +309,7 @@ const PixelGrid = React.forwardRef<HTMLDivElement, PixelGridProps>(
         ref={containerRef}
         data-slot="pixel-grid"
         aria-hidden="true"
-        className={`absolute inset-0 z-base size-full overflow-hidden ${className ?? ""}`}
+        className={`absolute inset-0 z-base overflow-hidden ${className ?? ""}`}
         style={style}
         {...props}
       >

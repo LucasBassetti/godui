@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "generatedAt": "2026-06-26T23:33:34.836Z",
+  "generatedAt": "2026-06-27T04:24:18.351Z",
   "components": [
     {
       "name": "accordion",
@@ -526,15 +526,6 @@
       "install": "npx shadcn@latest add @godui/prompt-suggestions"
     },
     {
-      "name": "reactions",
-      "title": "Reactions",
-      "description": "Emoji reaction pills with a spring count, a particle burst when you react, and a stagger-in emoji picker.",
-      "category": "Collaboration",
-      "dependencies": ["framer-motion"],
-      "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/reactions"
-    },
-    {
       "name": "resizable-header",
       "title": "Resizable Header",
       "description": "A sticky navbar that springs into a compact, blurred floating pill as you scroll, with a shared-element active indicator.",
@@ -587,15 +578,6 @@
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add @godui/shimmer-button"
-    },
-    {
-      "name": "sidebar",
-      "title": "Sidebar",
-      "description": "A collapsible navigation rail that springs open on hover, marks the active item with a shared-element rail, and nests groups.",
-      "category": "Navigation",
-      "dependencies": ["framer-motion"],
-      "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/sidebar"
     },
     {
       "name": "source-citations",

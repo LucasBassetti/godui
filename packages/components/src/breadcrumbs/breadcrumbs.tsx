@@ -100,6 +100,13 @@ const Breadcrumbs = React.forwardRef<HTMLElement, BreadcrumbsProps>(
       return [...head, { kind: "ellipsis", hidden }, ...tail];
     }, [items, collapse, maxItems]);
 
+    // CSS-only mobile collapse: when the JS maxItems collapse isn't active and
+    // there are >2 crumbs, hide the middle crumbs below `sm` and show a static
+    // "…" so the trail stays on one line. (JS viewport detection can't be used:
+    // in the docs mobile preview the component is portaled into an iframe but
+    // runs in the parent realm, so only CSS reflects the iframe width.)
+    const mobileCollapse = !collapse && items.length > 2;
+
     const pillClass =
       "relative inline-flex items-center gap-1.5 rounded-lg px-2 py-1 font-medium text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring";
 
@@ -168,10 +175,18 @@ const Breadcrumbs = React.forwardRef<HTMLElement, BreadcrumbsProps>(
             {entries.map((entry, i) => {
               const key =
                 entry.kind === "ellipsis" ? "ellipsis" : `crumb-${entry.index}`;
+              const hideOnMobile =
+                mobileCollapse &&
+                entry.kind === "crumb" &&
+                entry.index > 0 &&
+                !entry.isLast;
               return (
                 <React.Fragment key={key}>
                   {i > 0 && (
-                    <li aria-hidden="true" className="flex items-center px-0.5">
+                    <li
+                      aria-hidden="true"
+                      className={`flex items-center px-0.5${hideOnMobile ? " max-sm:hidden" : ""}`}
+                    >
                       {separator}
                     </li>
                   )}
@@ -184,7 +199,7 @@ const Breadcrumbs = React.forwardRef<HTMLElement, BreadcrumbsProps>(
                         reduceMotion ? { opacity: 0 } : { opacity: 0, x: -6 }
                       }
                       transition={spring}
-                      className="flex min-w-0 items-center"
+                      className={`flex min-w-0 items-center${hideOnMobile ? " max-sm:hidden" : ""}`}
                     >
                       {renderCrumb(entry.item, entry.isLast, key)}
                     </motion.li>
@@ -255,6 +270,25 @@ const Breadcrumbs = React.forwardRef<HTMLElement, BreadcrumbsProps>(
                         )}
                       </AnimatePresence>
                     </motion.li>
+                  )}
+                  {mobileCollapse && i === 0 && (
+                    <React.Fragment key="mobile-ellipsis">
+                      <li
+                        aria-hidden="true"
+                        className="flex items-center px-0.5 sm:hidden"
+                      >
+                        {separator}
+                      </li>
+                      <li aria-hidden="true" className="sm:hidden">
+                        <span className={`${pillClass} text-muted-foreground`}>
+                          <span className="flex items-center gap-0.5">
+                            <span className="h-1 w-1 rounded-full bg-current" />
+                            <span className="h-1 w-1 rounded-full bg-current" />
+                            <span className="h-1 w-1 rounded-full bg-current" />
+                          </span>
+                        </span>
+                      </li>
+                    </React.Fragment>
                   )}
                 </React.Fragment>
               );

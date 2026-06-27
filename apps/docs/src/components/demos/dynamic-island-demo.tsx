@@ -15,8 +15,8 @@ export function DynamicIslandDemo() {
   const [view, setView] = React.useState<DynamicIslandSize>("default");
 
   return (
-    <div className="flex flex-col items-center gap-8">
-      <div className="flex h-[220px] items-start pt-2">
+    <div className="flex w-full flex-col items-center gap-8">
+      <div className="flex h-[220px] w-full items-start justify-center pt-2">
         <DynamicIsland size={view} presenceKey={view}>
           {view === "compact" ? (
             <div className="size-2 rounded-full bg-white/70" />

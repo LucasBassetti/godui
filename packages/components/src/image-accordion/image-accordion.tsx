@@ -51,7 +51,7 @@ const ImageAccordion = React.forwardRef<HTMLDivElement, ImageAccordionProps>(
       <div
         ref={ref}
         data-slot="image-accordion"
-        className={`flex gap-2 overflow-hidden ${className ?? ""}`}
+        className={`flex flex-col gap-2 overflow-hidden sm:flex-row ${className ?? ""}`}
         style={{ height, ...style }}
         onPointerLeave={() => setActive(defaultIndex)}
         {...props}
@@ -69,8 +69,9 @@ const ImageAccordion = React.forwardRef<HTMLDivElement, ImageAccordionProps>(
               data-active={isActive}
               aria-expanded={isActive}
               onPointerEnter={() => setActive(i)}
+              onClick={() => setActive(i)}
               onFocus={() => setActive(i)}
-              className="group relative block h-full min-w-[2rem] overflow-hidden rounded-2xl text-left [transition:flex-grow_550ms_cubic-bezier(0.22,1,0.36,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-none"
+              className="group relative block min-h-[3rem] min-w-0 overflow-hidden rounded-2xl text-left [transition:flex-grow_550ms_cubic-bezier(0.22,1,0.36,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-none sm:min-h-0 sm:min-w-[2rem]"
               style={{ flexGrow: isActive ? activeGrow : 1, flexBasis: 0 }}
             >
               {/* Image — desaturated when idle, full color + zoomed when active */}
@@ -87,7 +88,7 @@ const ImageAccordion = React.forwardRef<HTMLDivElement, ImageAccordionProps>(
               />
 
               {/* Collapsed label — a vertical tab on idle panels */}
-              <span className="absolute bottom-4 left-1/2 -translate-x-1/2 text-sm font-medium whitespace-nowrap text-white opacity-80 [writing-mode:vertical-rl] rotate-180 [transition:opacity_300ms_ease] group-data-[active=true]:opacity-0">
+              <span className="absolute bottom-4 left-1/2 -translate-x-1/2 text-sm font-medium whitespace-nowrap text-white opacity-80 [writing-mode:vertical-rl] rotate-180 [transition:opacity_300ms_ease] group-data-[active=true]:opacity-0 max-sm:top-1/2 max-sm:bottom-auto max-sm:left-5 max-sm:-translate-y-1/2 max-sm:translate-x-0 max-sm:rotate-0 max-sm:[writing-mode:horizontal-tb]">
                 {panel.title}
               </span>
 

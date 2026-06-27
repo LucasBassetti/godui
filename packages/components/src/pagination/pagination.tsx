@@ -123,13 +123,13 @@ const Pagination = React.forwardRef<HTMLElement, PaginationProps>(
       : ({ type: "spring", stiffness: 480, damping: 34 } as const);
 
     const navBtn =
-      "group inline-flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground outline-none [transition:background-color_120ms_ease,color_120ms_ease] hover:bg-accent hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-40";
+      "group inline-flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground outline-none sm:h-9 sm:w-9 [transition:background-color_120ms_ease,color_120ms_ease] hover:bg-accent hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-40";
 
     return (
       <nav
         ref={ref}
         aria-label="Pagination"
-        className={`inline-flex items-center gap-1 ${className ?? ""}`}
+        className={`inline-flex items-center gap-0.5 sm:gap-1 ${className ?? ""}`}
         {...props}
       >
         <button
@@ -144,7 +144,7 @@ const Pagination = React.forwardRef<HTMLElement, PaginationProps>(
           </span>
         </button>
 
-        <ul className="flex items-center gap-1">
+        <ul className="flex items-center gap-0.5 sm:gap-1">
           {cells.map((cell, i) => {
             if (cell === "start-ellipsis" || cell === "end-ellipsis") {
               return (
@@ -152,7 +152,7 @@ const Pagination = React.forwardRef<HTMLElement, PaginationProps>(
                   // biome-ignore lint/suspicious/noArrayIndexKey: ellipsis cell position is its identity
                   key={`${cell}-${i}`}
                   aria-hidden="true"
-                  className="flex h-9 w-9 items-center justify-center text-muted-foreground"
+                  className="flex h-8 w-8 items-center justify-center text-muted-foreground sm:h-9 sm:w-9"
                 >
                   …
                 </li>
@@ -166,7 +166,7 @@ const Pagination = React.forwardRef<HTMLElement, PaginationProps>(
                   aria-label={`Page ${cell}`}
                   aria-current={active ? "page" : undefined}
                   onClick={() => goTo(cell)}
-                  className={`relative inline-flex h-9 min-w-9 items-center justify-center rounded-lg px-2 font-medium text-sm tabular-nums outline-none [transition:color_120ms_ease] focus-visible:ring-2 focus-visible:ring-ring ${
+                  className={`relative inline-flex h-8 min-w-8 items-center justify-center rounded-lg px-1.5 font-medium text-sm tabular-nums outline-none [transition:color_120ms_ease] focus-visible:ring-2 focus-visible:ring-ring sm:h-9 sm:min-w-9 sm:px-2 ${
                     active
                       ? "text-primary-foreground"
                       : "text-muted-foreground hover:bg-accent hover:text-foreground"

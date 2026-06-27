@@ -26,7 +26,9 @@ export function PixelGridDemo() {
   );
 }`}
 >
-  <PixelGrid interactive={false} />
+  <div className="relative min-h-[320px] w-full overflow-hidden rounded-xl border border-border bg-background">
+    <PixelGrid interactive={false} />
+  </div>
 </ComponentPreview>
 
 ## Installation
@@ -68,8 +70,10 @@ export function PixelGridCursor() {
   );
 }`}
 >
-  <PixelGrid interactive />
-  <p className="relative z-10 text-sm font-medium text-foreground">Move your cursor across the grid</p>
+  <div className="relative flex min-h-[240px] w-full items-center justify-center overflow-hidden rounded-xl border border-border bg-background">
+    <PixelGrid interactive />
+    <p className="relative z-10 text-sm font-medium text-foreground">Move your cursor across the grid</p>
+  </div>
 </ComponentPreview>
 
 ### Cursor reveal over a dim field
@@ -89,8 +93,10 @@ export function PixelGridCursorDim() {
   );
 }`}
 >
-  <PixelGrid interactive cursorReveal="dim" />
-  <p className="relative z-10 text-sm font-medium text-foreground">Move your cursor across the grid</p>
+  <div className="relative flex min-h-[240px] w-full items-center justify-center overflow-hidden rounded-xl border border-border bg-background">
+    <PixelGrid interactive cursorReveal="dim" />
+    <p className="relative z-10 text-sm font-medium text-foreground">Move your cursor across the grid</p>
+  </div>
 </ComponentPreview>
 
 ### Custom color
@@ -108,7 +114,9 @@ export function PixelGridColored() {
   );
 }`}
 >
-  <PixelGrid interactive={false} color="oklch(0.7 0.18 280)" maxOpacity={0.5} />
+  <div className="relative min-h-[240px] w-full overflow-hidden rounded-xl border border-border bg-background">
+    <PixelGrid interactive={false} color="oklch(0.7 0.18 280)" maxOpacity={0.5} />
+  </div>
 </ComponentPreview>
 
 ### Dense grid
@@ -126,7 +134,9 @@ export function PixelGridDense() {
   );
 }`}
 >
-  <PixelGrid interactive={false} squareSize={2} gridGap={2} flickerChance={0.2} maxOpacity={0.4} />
+  <div className="relative min-h-[240px] w-full overflow-hidden rounded-xl border border-border bg-background">
+    <PixelGrid interactive={false} squareSize={2} gridGap={2} flickerChance={0.2} maxOpacity={0.4} />
+  </div>
 </ComponentPreview>
 
 ## Props

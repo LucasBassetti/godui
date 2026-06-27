@@ -3,20 +3,59 @@
 import { Pagination } from "@godui/components";
 import { useState } from "react";
 
-const ROWS = [
-  { name: "Ada Lovelace", email: "ada@northwind.com", role: "Owner" },
-  { name: "Linus Torvalds", email: "linus@northwind.com", role: "Admin" },
-  { name: "Grace Hopper", email: "grace@northwind.com", role: "Admin" },
-  { name: "Alan Turing", email: "alan@northwind.com", role: "Member" },
-  { name: "Katherine Johnson", email: "kat@northwind.com", role: "Member" },
-  { name: "Margaret Hamilton", email: "maggie@northwind.com", role: "Member" },
-  { name: "Dennis Ritchie", email: "dennis@northwind.com", role: "Member" },
-  { name: "Barbara Liskov", email: "barbara@northwind.com", role: "Member" },
-  { name: "Donald Knuth", email: "don@northwind.com", role: "Viewer" },
-  { name: "Edsger Dijkstra", email: "edsger@northwind.com", role: "Viewer" },
-  { name: "Tim Berners-Lee", email: "tim@northwind.com", role: "Viewer" },
-  { name: "Vint Cerf", email: "vint@northwind.com", role: "Viewer" },
+// 40 members → 10 pages at 4 per page, so the pagination shows real
+// ellipsis truncation (1 … 4 5 6 … 10) on desktop and mobile.
+const NAMES = [
+  "Ada Lovelace",
+  "Linus Torvalds",
+  "Grace Hopper",
+  "Alan Turing",
+  "Katherine Johnson",
+  "Margaret Hamilton",
+  "Dennis Ritchie",
+  "Barbara Liskov",
+  "Donald Knuth",
+  "Edsger Dijkstra",
+  "Tim Berners-Lee",
+  "Vint Cerf",
+  "Radia Perlman",
+  "Leslie Lamport",
+  "John McCarthy",
+  "Frances Allen",
+  "Shafi Goldwasser",
+  "Adi Shamir",
+  "Ken Thompson",
+  "Bjarne Stroustrup",
+  "Guido van Rossum",
+  "James Gosling",
+  "Brendan Eich",
+  "John Carmack",
+  "Anita Borg",
+  "Claude Shannon",
+  "John von Neumann",
+  "Tony Hoare",
+  "Niklaus Wirth",
+  "Brian Kernighan",
+  "Douglas Engelbart",
+  "Sophie Wilson",
+  "Steve Wozniak",
+  "Yukihiro Matsumoto",
+  "Rasmus Lerdorf",
+  "Rich Hickey",
+  "Joe Armstrong",
+  "Evan You",
+  "Dan Abramov",
+  "Rich Harris",
 ];
+
+const ROLES = ["Admin", "Member", "Member", "Viewer"];
+
+const ROWS = NAMES.map((name, i) => ({
+  id: i,
+  name,
+  email: `${name.toLowerCase().replace(/[^a-z]+/g, ".")}@northwind.com`,
+  role: i === 0 ? "Owner" : ROLES[i % ROLES.length],
+}));
 
 const PAGE_SIZE = 4;
 
@@ -33,7 +72,7 @@ export function PaginationDemo() {
       </div>
       <ul className="divide-y divide-border">
         {rows.map((row) => (
-          <li key={row.email} className="flex items-center gap-3 px-4 py-2.5">
+          <li key={row.id} className="flex items-center gap-3 px-4 py-2.5">
             <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted font-semibold text-foreground text-xs">
               {row.name
                 .split(" ")
@@ -54,8 +93,8 @@ export function PaginationDemo() {
           </li>
         ))}
       </ul>
-      <div className="flex items-center justify-between border-border border-t px-4 py-3">
-        <span className="text-muted-foreground text-xs tabular-nums">
+      <div className="flex flex-col items-start gap-3 border-border border-t px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+        <span className="whitespace-nowrap text-muted-foreground text-xs tabular-nums">
           {start + 1}–{Math.min(start + PAGE_SIZE, ROWS.length)} of{" "}
           {ROWS.length}
         </span>

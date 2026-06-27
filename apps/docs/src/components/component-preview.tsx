@@ -1,8 +1,10 @@
 "use client";
 
 import { DynamicCodeBlock } from "fumadocs-ui/components/dynamic-codeblock";
+import { Monitor, Smartphone } from "lucide-react";
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { CopyButton } from "@/components/copy-button";
 import { DocsPanel, Segmented } from "@/components/docs-tabs";
 import { cn } from "@/lib/cn";
@@ -19,8 +21,15 @@ type ComponentPreviewProps = {
    * When set, a "Playground" link to the live Storybook page is shown.
    */
   story?: string;
+  /**
+   * When true the demo fills the preview canvas edge-to-edge instead of sitting
+   * centered in a padded box. Use for full-bleed UI (docks, nav bars, heroes).
+   */
+  fullWidth?: boolean;
   className?: string;
 };
+
+type ViewMode = "desktop" | "mobile";
 
 const STORYBOOK_URL = "https://storybook.godui.design";
 
@@ -89,15 +98,144 @@ function CodeIcon() {
   );
 }
 
+function ViewToggle({
+  view,
+  onChange,
+}: {
+  view: ViewMode;
+  onChange: (next: ViewMode) => void;
+}) {
+  const options: { value: ViewMode; label: string; Icon: typeof Monitor }[] = [
+    { value: "desktop", label: "Desktop view", Icon: Monitor },
+    { value: "mobile", label: "Mobile view", Icon: Smartphone },
+  ];
+
+  return (
+    // bg-fd-muted is aliased to muted-foreground in the GodUI theme (renders as a
+    // heavy block), so use the real --muted track + raised --card active segment,
+    // matching <Segmented>.
+    <div className="hidden h-8 items-center rounded-[10px] border border-fd-border bg-[var(--muted)] p-[3px] md:inline-flex">
+      {options.map(({ value, label, Icon }) => {
+        const active = view === value;
+        return (
+          <button
+            key={value}
+            type="button"
+            onClick={() => onChange(value)}
+            aria-label={label}
+            aria-pressed={active}
+            title={label}
+            className={cn(
+              "inline-flex size-6 items-center justify-center rounded-[6px] transition-colors",
+              active
+                ? "bg-[var(--card)] text-[var(--foreground)] shadow-sm"
+                : "text-[var(--muted-foreground)] hover:text-[var(--foreground)]",
+            )}
+          >
+            <Icon className="size-4" aria-hidden="true" />
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+/**
+ * Renders the demo inside an <iframe> so real CSS media queries fire against the
+ * frame's width — the only way to simulate mobile for components that ship
+ * viewport breakpoints (`md:` etc.) internally. Used for the "mobile" view only;
+ * desktop renders in-page (cheaper). Parent stylesheets + theme class are cloned
+ * into the frame and the demo is portaled into its body.
+ */
+function PreviewFrame({
+  children,
+  fullWidth,
+}: {
+  children: ReactNode;
+  fullWidth: boolean;
+}) {
+  const [frame, setFrame] = useState<HTMLIFrameElement | null>(null);
+  const [mount, setMount] = useState<HTMLElement | null>(null);
+  const [height, setHeight] = useState(440);
+
+  useEffect(() => {
+    if (!frame) return;
+    const doc = frame.contentDocument;
+    if (!doc) return;
+
+    const syncTheme = () => {
+      doc.documentElement.className = document.documentElement.className;
+      doc.documentElement.setAttribute(
+        "style",
+        document.documentElement.getAttribute("style") ?? "",
+      );
+    };
+
+    // Clone parent stylesheets (Tailwind, fonts) into the frame.
+    for (const node of document.head.querySelectorAll(
+      'style, link[rel="stylesheet"]',
+    )) {
+      doc.head.appendChild(node.cloneNode(true));
+    }
+    syncTheme();
+    doc.body.style.margin = "0";
+    doc.body.style.background = "transparent";
+    setMount(doc.body);
+
+    const ro = new ResizeObserver(() => {
+      setHeight(Math.max(360, doc.body.scrollHeight));
+    });
+    ro.observe(doc.body);
+    const mo = new MutationObserver(syncTheme);
+    mo.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class", "style", "data-theme"],
+    });
+
+    return () => {
+      ro.disconnect();
+      mo.disconnect();
+    };
+  }, [frame]);
+
+  return (
+    <>
+      <iframe
+        ref={setFrame}
+        title="Mobile preview"
+        className="w-[360px] max-w-full overflow-hidden rounded-[28px] border-[6px] border-fd-border bg-fd-background shadow-md transition-[height] duration-200"
+        style={{ height }}
+      />
+      {mount
+        ? createPortal(
+            <div
+              className={cn(
+                "flex w-full",
+                fullWidth
+                  ? "flex-col"
+                  : "min-h-[440px] items-center justify-center p-4",
+              )}
+            >
+              {children}
+            </div>,
+            mount,
+          )
+        : null}
+    </>
+  );
+}
+
 export function ComponentPreview({
   children,
   code,
   lang = "tsx",
   file,
   story,
+  fullWidth = false,
   className,
 }: ComponentPreviewProps) {
   const [tab, setTab] = useState("preview");
+  const [view, setView] = useState<ViewMode>("desktop");
   const [replayKey, setReplayKey] = useState(0);
   const [formattedCode, setFormattedCode] = useState(() => code.trim());
 
@@ -139,6 +277,9 @@ export function ComponentPreview({
         <div className="ms-auto flex items-center gap-2">
           {story ? <PlaygroundLink story={story} /> : null}
           {tab === "preview" ? (
+            <ViewToggle view={view} onChange={setView} />
+          ) : null}
+          {tab === "preview" ? (
             <button
               type="button"
               onClick={() => setReplayKey((key) => key + 1)}
@@ -172,10 +313,29 @@ export function ComponentPreview({
       </div>
 
       {tab === "preview" ? (
-        <div className="component-preview-canvas relative flex min-h-[280px] items-center justify-center p-10 md:min-h-[320px]">
-          <div key={replayKey} className="contents">
-            {children}
-          </div>
+        <div
+          className={cn(
+            "component-preview-canvas relative flex min-h-[360px] flex-col items-center justify-center md:min-h-[460px]",
+            view === "mobile" ? "p-6" : fullWidth ? "p-0" : "p-6 md:p-10",
+          )}
+        >
+          {view === "mobile" ? (
+            <PreviewFrame key={replayKey} fullWidth={fullWidth}>
+              {children}
+            </PreviewFrame>
+          ) : (
+            <div
+              key={replayKey}
+              className={cn(
+                "flex w-full max-w-full",
+                fullWidth
+                  ? "flex-1 flex-col self-stretch"
+                  : "items-center justify-center",
+              )}
+            >
+              {children}
+            </div>
+          )}
         </div>
       ) : (
         <DynamicCodeBlock

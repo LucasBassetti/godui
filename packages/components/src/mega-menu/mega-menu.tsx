@@ -54,6 +54,10 @@ const MegaMenu = React.forwardRef<HTMLElement, MegaMenuProps>(
     const highlightId = React.useMemo(() => `mega-hl-${megaSeed++}`, []);
     const [active, setActive] = React.useState<number | null>(null);
     const [hovered, setHovered] = React.useState<number | null>(null);
+    const [mobileOpen, setMobileOpen] = React.useState(false);
+    const [mobileExpanded, setMobileExpanded] = React.useState<number | null>(
+      null,
+    );
     const openTimer = React.useRef<ReturnType<typeof setTimeout> | undefined>(
       undefined,
     );
@@ -128,7 +132,150 @@ const MegaMenu = React.forwardRef<HTMLElement, MegaMenuProps>(
         onMouseLeave={scheduleClose}
         {...props}
       >
-        <ul className="relative flex items-center gap-1">
+        {/* Mobile: hamburger toggle + accordion drawer (hover panels don't work on touch). */}
+        <div className="md:hidden">
+          <button
+            type="button"
+            aria-expanded={mobileOpen}
+            aria-label="Toggle menu"
+            onClick={() => setMobileOpen((o) => !o)}
+            className="inline-flex items-center gap-2 rounded-lg border border-border bg-background px-3 py-2 font-medium text-foreground text-sm [transition:background-color_150ms_ease] hover:bg-accent"
+          >
+            <MenuIcon open={mobileOpen} />
+            Menu
+          </button>
+          <AnimatePresence initial={false}>
+            {mobileOpen && (
+              <motion.div
+                initial={reduceMotion ? false : { opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={reduceMotion ? { opacity: 0 } : { opacity: 0, height: 0 }}
+                transition={
+                  reduceMotion
+                    ? { duration: 0 }
+                    : { duration: 0.22, ease: [0.16, 1, 0.3, 1] }
+                }
+                className="absolute top-full left-1/2 z-popover mt-2 max-h-[70vh] w-72 max-w-[calc(100vw-1.5rem)] -translate-x-1/2 overflow-y-auto rounded-2xl border border-border bg-background shadow-2xl"
+              >
+                <ul className="flex flex-col p-1">
+                  {items.map((item, index) => {
+                    const expanded = mobileExpanded === index;
+                    return (
+                      <li key={item.label}>
+                        {item.sections ? (
+                          <>
+                            <button
+                              type="button"
+                              aria-expanded={expanded}
+                              onClick={() =>
+                                setMobileExpanded(expanded ? null : index)
+                              }
+                              className="flex w-full items-center justify-between rounded-xl px-3 py-2.5 font-medium text-foreground text-sm [transition:background-color_150ms_ease] hover:bg-accent"
+                            >
+                              {item.label}
+                              <ChevronIcon
+                                className={`size-4 text-muted-foreground [transition:transform_200ms_ease] ${expanded ? "rotate-180" : ""}`}
+                              />
+                            </button>
+                            <AnimatePresence initial={false}>
+                              {expanded && (
+                                <motion.div
+                                  initial={
+                                    reduceMotion
+                                      ? false
+                                      : { opacity: 0, height: 0 }
+                                  }
+                                  animate={{ opacity: 1, height: "auto" }}
+                                  exit={
+                                    reduceMotion
+                                      ? { opacity: 0 }
+                                      : { opacity: 0, height: 0 }
+                                  }
+                                  transition={
+                                    reduceMotion
+                                      ? { duration: 0 }
+                                      : {
+                                          duration: 0.2,
+                                          ease: [0.16, 1, 0.3, 1],
+                                        }
+                                  }
+                                  className="overflow-hidden"
+                                >
+                                  <div className="px-2 pb-2">
+                                    {item.sections.map((section) => (
+                                      <div
+                                        key={
+                                          section.heading ??
+                                          section.links[0]?.label
+                                        }
+                                      >
+                                        {section.heading && (
+                                          <p className="px-3 pt-2 pb-1 font-medium text-muted-foreground text-xs uppercase tracking-wide">
+                                            {section.heading}
+                                          </p>
+                                        )}
+                                        {section.links.map((link) => (
+                                          <a
+                                            key={link.href}
+                                            href={link.href}
+                                            onClick={(e) => {
+                                              if (onNavigate) {
+                                                e.preventDefault();
+                                              }
+                                              select(link.href);
+                                              setMobileOpen(false);
+                                            }}
+                                            className="flex items-start gap-3 rounded-xl p-2.5 [transition:background-color_150ms_ease] hover:bg-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                                          >
+                                            {link.icon && (
+                                              <span className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg bg-muted text-foreground">
+                                                {link.icon}
+                                              </span>
+                                            )}
+                                            <span className="flex flex-col">
+                                              <span className="font-medium text-foreground text-sm">
+                                                {link.label}
+                                              </span>
+                                              {link.description && (
+                                                <span className="text-muted-foreground text-xs">
+                                                  {link.description}
+                                                </span>
+                                              )}
+                                            </span>
+                                          </a>
+                                        ))}
+                                      </div>
+                                    ))}
+                                  </div>
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
+                          </>
+                        ) : (
+                          <a
+                            href={item.href}
+                            onClick={(e) => {
+                              if (onNavigate && item.href) {
+                                e.preventDefault();
+                                select(item.href);
+                              }
+                              setMobileOpen(false);
+                            }}
+                            className="block rounded-xl px-3 py-2.5 font-medium text-foreground text-sm [transition:background-color_150ms_ease] hover:bg-accent"
+                          >
+                            {item.label}
+                          </a>
+                        )}
+                      </li>
+                    );
+                  })}
+                </ul>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        <ul className="relative hidden items-center gap-1 md:flex">
           {items.map((item, index) => {
             const hasPanel = !!item.sections;
             // Single highlighted item so the layoutId pill slides between
@@ -280,5 +427,50 @@ const MegaMenu = React.forwardRef<HTMLElement, MegaMenuProps>(
   },
 );
 MegaMenu.displayName = "MegaMenu";
+
+function MenuIcon({ open }: { open: boolean }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="size-4"
+      aria-hidden="true"
+    >
+      {open ? (
+        <>
+          <path d="M18 6 6 18" />
+          <path d="m6 6 12 12" />
+        </>
+      ) : (
+        <>
+          <path d="M4 12h16" />
+          <path d="M4 6h16" />
+          <path d="M4 18h16" />
+        </>
+      )}
+    </svg>
+  );
+}
+
+function ChevronIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="m6 9 6 6 6-6" />
+    </svg>
+  );
+}
 
 export { MegaMenu };
