@@ -9,7 +9,7 @@ your project — you own the source.
 
 > **Note:** We have the exact same installation process as
 > [shadcn/ui](https://ui.shadcn.com/docs/installation). If you already use
-> shadcn, you only need to add the `@godui` registry (step 2).
+> shadcn, skip straight to step 2.
 
 ## 1. Create project
 
@@ -19,32 +19,16 @@ Run the `init` command to create a new project or to set up an existing one:
 pnpm dlx shadcn@latest init
 ```
 
-## 2. Add the GodUI registry
+## 2. Add components
 
-Add the `@godui` namespace to the `registries` field of your
-`components.json` (one-time setup):
-
-```json title="components.json"
-{
-  "registries": {
-    "@godui": "https://godui.design/r/{name}.json"
-  }
-}
-```
-
-## 3. Add components
-
-You can now add any GodUI component by name:
+Add any GodUI component with its registry URL — no configuration required:
 
 ```bash
-pnpm dlx shadcn@latest add @godui/magic-button
+pnpm dlx shadcn@latest add https://godui.design/r/magic-button.json
 ```
 
 This copies the component into `components/godui/` and merges the GodUI theme
 tokens and component styles into your global stylesheet automatically.
-
-> Prefer zero configuration? Skip step 2 and install with the full registry URL:
-> `pnpm dlx shadcn@latest add https://godui.design/r/magic-button.json`.
 
 ## Typography (bring your own font)
 
