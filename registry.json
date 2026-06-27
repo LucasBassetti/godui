@@ -957,21 +957,6 @@
       ]
     },
     {
-      "name": "theme-toggle",
-      "type": "registry:ui",
-      "title": "Theme Toggle",
-      "description": "A dark/light switch that reveals the new theme with a circular wipe from the click origin.",
-      "dependencies": ["framer-motion"],
-      "registryDependencies": ["@godui/godui-theme"],
-      "files": [
-        {
-          "path": "packages/components/src/theme-toggle/theme-toggle.tsx",
-          "type": "registry:ui",
-          "target": "components/godui/theme-toggle.tsx"
-        }
-      ]
-    },
-    {
       "name": "sparkles",
       "type": "registry:ui",
       "title": "Sparkles",
@@ -1226,21 +1211,6 @@
       ]
     },
     {
-      "name": "pagination",
-      "type": "registry:ui",
-      "title": "Pagination",
-      "description": "A page navigator with a shared-element indicator that slides to the active page, nudging arrows, and ellipsis truncation.",
-      "dependencies": ["framer-motion"],
-      "registryDependencies": ["@godui/godui-theme"],
-      "files": [
-        {
-          "path": "packages/components/src/pagination/pagination.tsx",
-          "type": "registry:ui",
-          "target": "components/godui/pagination.tsx"
-        }
-      ]
-    },
-    {
       "name": "tab-bar",
       "type": "registry:ui",
       "title": "Tab Bar",
@@ -1426,20 +1396,6 @@
       ]
     },
     {
-      "name": "neural-grid",
-      "type": "registry:ui",
-      "title": "Neural Grid",
-      "description": "A neural lattice — nodes wired into a grid with signal pulses traveling the edges. The AI-product hero background, on a lightweight Canvas.",
-      "registryDependencies": ["@godui/godui-theme"],
-      "files": [
-        {
-          "path": "packages/components/src/neural-grid/neural-grid.tsx",
-          "type": "registry:ui",
-          "target": "components/godui/neural-grid.tsx"
-        }
-      ]
-    },
-    {
       "name": "flow-field",
       "type": "registry:ui",
       "title": "Flow Field",
@@ -1559,21 +1515,6 @@
       ]
     },
     {
-      "name": "copy-button",
-      "type": "registry:ui",
-      "title": "Copy Button",
-      "description": "A premium clipboard button with a drawn checkmark, label morph, auto-revert, and a non-secure-context fallback.",
-      "dependencies": ["framer-motion"],
-      "registryDependencies": ["@godui/godui-theme"],
-      "files": [
-        {
-          "path": "packages/components/src/copy-button/copy-button.tsx",
-          "type": "registry:ui",
-          "target": "components/godui/copy-button.tsx"
-        }
-      ]
-    },
-    {
       "name": "hold-confirm-button",
       "type": "registry:ui",
       "title": "Hold Confirm Button",
@@ -1585,51 +1526,6 @@
           "path": "packages/components/src/hold-confirm-button/hold-confirm-button.tsx",
           "type": "registry:ui",
           "target": "components/godui/hold-confirm-button.tsx"
-        }
-      ]
-    },
-    {
-      "name": "voice-button",
-      "type": "registry:ui",
-      "title": "Voice Button",
-      "description": "A push-to-talk mic button with a live, audio-reactive waveform and a pulsing recording ring.",
-      "dependencies": ["framer-motion"],
-      "registryDependencies": ["@godui/godui-theme"],
-      "files": [
-        {
-          "path": "packages/components/src/voice-button/voice-button.tsx",
-          "type": "registry:ui",
-          "target": "components/godui/voice-button.tsx"
-        }
-      ]
-    },
-    {
-      "name": "optimistic-toggle-button",
-      "type": "registry:ui",
-      "title": "Optimistic Toggle Button",
-      "description": "A Follow / Following toggle that flips optimistically, rolls back on failure, and swaps to a destructive label on hover.",
-      "dependencies": ["framer-motion"],
-      "registryDependencies": ["@godui/godui-theme"],
-      "files": [
-        {
-          "path": "packages/components/src/optimistic-toggle-button/optimistic-toggle-button.tsx",
-          "type": "registry:ui",
-          "target": "components/godui/optimistic-toggle-button.tsx"
-        }
-      ]
-    },
-    {
-      "name": "undo-button",
-      "type": "registry:ui",
-      "title": "Undo Button",
-      "description": "A deferred-commit affordance with a shrinking countdown ring that auto-commits unless undone.",
-      "dependencies": ["framer-motion"],
-      "registryDependencies": ["@godui/godui-theme"],
-      "files": [
-        {
-          "path": "packages/components/src/undo-button/undo-button.tsx",
-          "type": "registry:ui",
-          "target": "components/godui/undo-button.tsx"
         }
       ]
     },

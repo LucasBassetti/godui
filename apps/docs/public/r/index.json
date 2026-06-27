@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "generatedAt": "2026-06-27T13:18:23.625Z",
+  "generatedAt": "2026-06-27T13:41:19.400Z",
   "components": [
     {
       "name": "accordion",
@@ -164,15 +164,6 @@
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add @godui/conversation-thread"
-    },
-    {
-      "name": "copy-button",
-      "title": "Copy Button",
-      "description": "A premium clipboard button with a drawn checkmark, label morph, auto-revert, and a non-secure-context fallback.",
-      "category": "Buttons",
-      "dependencies": ["framer-motion"],
-      "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/copy-button"
     },
     {
       "name": "dock",
@@ -436,15 +427,6 @@
       "install": "npx shadcn@latest add @godui/mega-menu"
     },
     {
-      "name": "neural-grid",
-      "title": "Neural Grid",
-      "description": "A neural lattice — nodes wired into a grid with signal pulses traveling the edges. The AI-product hero background, on a lightweight Canvas.",
-      "category": "Backgrounds",
-      "dependencies": [],
-      "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/neural-grid"
-    },
-    {
       "name": "notification-inbox",
       "title": "Notification Inbox",
       "description": "A Linear-style notification center with time-bucketed groups, unread accent rails, swipe-to-archive, mark-all-read, and a polished empty state.",
@@ -463,15 +445,6 @@
       "install": "npx shadcn@latest add @godui/number-ticker"
     },
     {
-      "name": "optimistic-toggle-button",
-      "title": "Optimistic Toggle Button",
-      "description": "A Follow / Following toggle that flips optimistically, rolls back on failure, and swaps to a destructive label on hover.",
-      "category": "Buttons",
-      "dependencies": ["framer-motion"],
-      "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/optimistic-toggle-button"
-    },
-    {
       "name": "orbiting-circles",
       "title": "Orbiting Circles",
       "description": "Icons that orbit a center point on a configurable ring, staying upright as they travel.",
@@ -488,15 +461,6 @@
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add @godui/otp-input"
-    },
-    {
-      "name": "pagination",
-      "title": "Pagination",
-      "description": "A page navigator with a shared-element indicator that slides to the active page, nudging arrows, and ellipsis truncation.",
-      "category": "Navigation",
-      "dependencies": ["framer-motion"],
-      "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/pagination"
     },
     {
       "name": "particle-dissolve",
@@ -706,15 +670,6 @@
       "install": "npx shadcn@latest add @godui/text-scramble"
     },
     {
-      "name": "theme-toggle",
-      "title": "Theme Toggle",
-      "description": "A dark/light switch that reveals the new theme with a circular wipe from the click origin.",
-      "category": "Buttons",
-      "dependencies": ["framer-motion"],
-      "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/theme-toggle"
-    },
-    {
       "name": "tilt-card",
       "title": "Tilt Card",
       "description": "A card that tilts in 3D toward the pointer with parallax depth and a specular glare.",
@@ -740,24 +695,6 @@
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add @godui/topographic-drift"
-    },
-    {
-      "name": "undo-button",
-      "title": "Undo Button",
-      "description": "A deferred-commit affordance with a shrinking countdown ring that auto-commits unless undone.",
-      "category": "Buttons",
-      "dependencies": ["framer-motion"],
-      "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/undo-button"
-    },
-    {
-      "name": "voice-button",
-      "title": "Voice Button",
-      "description": "A push-to-talk mic button with a live, audio-reactive waveform and a pulsing recording ring.",
-      "category": "Buttons",
-      "dependencies": ["framer-motion"],
-      "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/voice-button"
     },
     {
       "name": "warp-starfield",

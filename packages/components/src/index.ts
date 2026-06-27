@@ -83,13 +83,6 @@ export {
   type StreamingTextProps,
 } from "./conversation-thread";
 export {
-  CopyButton,
-  type CopyButtonProps,
-  type CopyButtonSize,
-  type CopyButtonStatus,
-  type CopyButtonVariant,
-} from "./copy-button";
-export {
   DecorativeBackground,
   type DecorativeBackgroundProps,
   type DecorativeBackgroundVariant,
@@ -247,7 +240,6 @@ export {
   type MegaMenuProps,
   type MegaMenuSection,
 } from "./mega-menu";
-export { NeuralGrid, type NeuralGridProps } from "./neural-grid";
 export {
   type Notification,
   NotificationInbox,
@@ -258,11 +250,6 @@ export {
   type NumberTickerProps,
 } from "./number-ticker";
 export {
-  OptimisticToggleButton,
-  type OptimisticToggleButtonProps,
-  type OptimisticToggleSize,
-} from "./optimistic-toggle-button";
-export {
   OrbitingCircles,
   type OrbitingCirclesProps,
 } from "./orbiting-circles";
@@ -271,7 +258,6 @@ export {
   type OTPInputProps,
   type OTPInputStatus,
 } from "./otp-input";
-export { Pagination, type PaginationProps } from "./pagination";
 export {
   ParticleDissolve,
   type ParticleDissolveProps,
@@ -375,7 +361,6 @@ export {
   TextScramble,
   type TextScrambleProps,
 } from "./text-scramble";
-export { ThemeToggle, type ThemeToggleProps } from "./theme-toggle";
 export { TiltCard, type TiltCardProps } from "./tilt-card";
 export {
   type ToastAction,
@@ -390,20 +375,6 @@ export {
   TopographicDrift,
   type TopographicDriftProps,
 } from "./topographic-drift";
-export {
-  UndoButton,
-  type UndoButtonProps,
-  type UndoButtonSize,
-  type UndoButtonStatus,
-} from "./undo-button";
-export {
-  VoiceButton,
-  type VoiceButtonMode,
-  type VoiceButtonProps,
-  type VoiceButtonSize,
-  type VoiceButtonStatus,
-  type VoiceButtonVariant,
-} from "./voice-button";
 export {
   WarpStarfield,
   type WarpStarfieldProps,
