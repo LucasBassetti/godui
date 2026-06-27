@@ -1,0 +1,84 @@
+---
+title: Spotlight Reveal
+description: A cursor-following flashlight that cuts through the top layer to expose a hidden layer beneath.
+---
+
+import { SpotlightReveal } from "@godui/components";
+import { SpotlightRevealDemo } from "@/components/demos/spotlight-reveal-demo";
+
+Two layers stacked, with a soft spotlight that follows your cursor and punches a hole in the top one — revealing whatever sits beneath. Idle, the spotlight drifts to invite a hover; click to pin it in place. Move across the panel below.
+
+<ComponentPreview
+  story="effects-spotlightreveal"
+  code={`import { SpotlightReveal } from "@/components/godui/spotlight-reveal";
+
+export function Reveal() {
+  return (
+    <SpotlightReveal
+      className="aspect-[16/10]"
+      reveal={
+        <div className="grid size-full place-items-center bg-primary text-primary-foreground">
+          <p className="text-3xl font-semibold">You found it</p>
+        </div>
+      }
+    >
+      <div className="grid size-full place-items-center bg-card">
+        <p className="text-3xl font-semibold text-foreground">Move your cursor</p>
+      </div>
+    </SpotlightReveal>
+  );
+}`}
+>
+  <SpotlightRevealDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="SpotlightReveal" />
+
+The cover layer is masked with a feathered radial gradient whose centre is eased
+toward the pointer in a single `requestAnimationFrame` loop — the lag gives the
+spotlight a liquid feel. When idle, the centre drifts in a slow ellipse.
+
+## Usage
+
+```tsx
+import { SpotlightReveal } from "@/components/godui/spotlight-reveal";
+```
+
+Pass the hidden layer to `reveal` and the cover layer as children.
+
+```tsx
+<SpotlightReveal reveal={<HiddenLayer />}>
+  <CoverLayer />
+</SpotlightReveal>
+```
+
+### Tuning the light
+
+`radius` sizes the spotlight, `softness` feathers its edge, and `ease` controls
+how much the light lags the cursor (lower = more lag).
+
+```tsx
+<SpotlightReveal radius={220} softness={0.7} ease={0.1} reveal={<A />}>
+  <B />
+</SpotlightReveal>
+```
+
+## Accessibility
+
+Both layers are real DOM, so their text remains selectable and readable to
+assistive tech. When `prefers-reduced-motion` is set, the mask is dropped and
+the cover simply sits at a calm, slightly transparent blend over the layer
+beneath.
+
+## Props
+
+| Prop       | Type             | Default | Description                                                  |
+| ---------- | ---------------- | ------- | ------------------------------------------------------------ |
+| `reveal`   | `React.ReactNode`| —       | The hidden layer exposed under the spotlight.                |
+| `radius`   | `number`         | `150`   | Spotlight radius in px.                                       |
+| `softness` | `number`         | `0.55`  | Edge feather, 0 (hard) – 1 (very soft).                      |
+| `ease`     | `number`         | `0.16`  | Follow easing per frame, 0 (frozen) – 1 (instant).           |
+
+The cover layer is passed as `children`. `SpotlightReveal` also forwards every standard `<div>` attribute to the root element.

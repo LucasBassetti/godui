@@ -14,8 +14,49 @@ type ComponentPreviewProps = {
   lang?: string;
   /** Optional filename shown in the example bar, e.g. "App.tsx". */
   file?: string;
+  /**
+   * Storybook docs id for this component, e.g. "ai-promptcomposer".
+   * When set, a "Playground" link to the live Storybook page is shown.
+   */
+  story?: string;
   className?: string;
 };
+
+const STORYBOOK_URL = "https://storybook.godui.design";
+
+function ExternalIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      className="size-3"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M15 3h6v6" />
+      <path d="M10 14 21 3" />
+      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+    </svg>
+  );
+}
+
+function PlaygroundLink({ story }: { story: string }) {
+  return (
+    <a
+      href={`${STORYBOOK_URL}/?path=/docs/${story}--docs`}
+      target="_blank"
+      rel="noreferrer"
+      title="Open the interactive playground in Storybook"
+      className="inline-flex h-8 items-center gap-1.5 rounded-md border border-fd-border bg-fd-card px-2.5 font-medium text-fd-muted-foreground text-xs transition-colors hover:border-fd-primary/45 hover:text-fd-primary"
+    >
+      Playground
+      <ExternalIcon />
+    </a>
+  );
+}
 
 function PlayIcon() {
   return (
@@ -53,6 +94,7 @@ export function ComponentPreview({
   code,
   lang = "tsx",
   file,
+  story,
   className,
 }: ComponentPreviewProps) {
   const [tab, setTab] = useState("preview");
@@ -94,7 +136,8 @@ export function ComponentPreview({
             {file}
           </span>
         ) : null}
-        <div className="ms-auto">
+        <div className="ms-auto flex items-center gap-2">
+          {story ? <PlaygroundLink story={story} /> : null}
           {tab === "preview" ? (
             <button
               type="button"

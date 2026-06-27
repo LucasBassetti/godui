@@ -1,0 +1,88 @@
+---
+title: Image Accordion
+description: Horizontal image panels that expand on hover to reveal their caption — an elegant, space-efficient gallery.
+---
+
+import { ImageAccordion } from "@godui/components";
+import { ImageAccordionDemo } from "@/components/demos/image-accordion-demo";
+
+An elegant way to show a handful of features or images in a single band. Hover or focus a panel and it eases wide while the others compress — the image saturates and zooms, and the caption slides up. Move across the panels below.
+
+<ComponentPreview
+  story="layout-imageaccordion"
+  code={`import { ImageAccordion } from "@/components/godui/image-accordion";
+
+const panels = [
+  { image: "/photos/mountains.jpg", title: "Mountains", description: "Alpine ridges at first light." },
+  { image: "/photos/rivers.jpg", title: "Rivers", description: "Glacial water carving the valley." },
+  { image: "/photos/waterfalls.jpg", title: "Waterfalls", description: "A 60-metre drop into the basin." },
+  { image: "/photos/forests.jpg", title: "Forests", description: "Old growth as far as you can see." },
+];
+
+export function Gallery() {
+  return <ImageAccordion panels={panels} height="24rem" />;
+}`}
+>
+  <ImageAccordionDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="ImageAccordion" />
+
+The active panel grows via an animated `flex-grow` while its neighbours
+compress in the same timeline — no layout jump. Idle panels show a compact
+vertical label; the active one reveals a full caption that slides up.
+
+## Usage
+
+```tsx
+import { ImageAccordion } from "@/components/godui/image-accordion";
+```
+
+```tsx
+<ImageAccordion
+  panels={[
+    { image: "/a.jpg", title: "One", description: "First panel." },
+    { image: "/b.jpg", title: "Two", description: "Second panel." },
+    { image: "/c.jpg", title: "Three", description: "Third panel." },
+  ]}
+/>
+```
+
+### Links
+
+Give a panel an `href` to render it as an anchor.
+
+```tsx
+<ImageAccordion
+  panels={[{ image: "/a.jpg", title: "Read more", href: "/blog/a" }]}
+/>
+```
+
+### Tuning
+
+`activeGrow` sets how much wider the open panel becomes; `height` and
+`defaultIndex` control the band height and which panel starts open.
+
+```tsx
+<ImageAccordion panels={panels} activeGrow={6} defaultIndex={1} height="30rem" />
+```
+
+## Accessibility
+
+Each panel is a real button (or anchor) with `aria-expanded`. Tabbing focuses a
+panel and opens it, so the component is fully keyboard navigable. When
+`prefers-reduced-motion` is set, transitions are removed and panels switch
+instantly.
+
+## Props
+
+| Prop           | Type                    | Default   | Description                                              |
+| -------------- | ----------------------- | --------- | -------------------------------------------------------- |
+| `panels`       | `ImageAccordionPanel[]` | —         | Panels, left to right. 3–6 works best.                   |
+| `defaultIndex` | `number`                | `0`       | Index of the panel open by default.                      |
+| `activeGrow`   | `number`                | `5`       | How much wider the active panel grows vs. the others.    |
+| `height`       | `string`                | `"26rem"` | Height of the accordion (any CSS length).                |
+
+Each `ImageAccordionPanel` has `image`, `title`, optional `description`, and optional `href`.

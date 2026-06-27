@@ -45,6 +45,7 @@ export {
   Breadcrumbs,
   type BreadcrumbsProps,
 } from "./breadcrumbs";
+export { CardSwap, type CardSwapProps } from "./card-swap";
 export { Combobox, type ComboboxOption, type ComboboxProps } from "./combobox";
 export {
   type CommandGroup,
@@ -152,7 +153,13 @@ export {
   type HighlighterAction,
   type HighlighterProps,
 } from "./highlighter";
+export {
+  ImageAccordion,
+  type ImageAccordionPanel,
+  type ImageAccordionProps,
+} from "./image-accordion";
 export { ImageCompare, type ImageCompareProps } from "./image-compare";
+export { ImageTrail, type ImageTrailProps } from "./image-trail";
 export { Lamp, type LampProps } from "./lamp";
 export { LightRays, type LightRaysProps } from "./light-rays";
 export {
@@ -161,6 +168,7 @@ export {
   LiquidGlassLens,
   type LiquidGlassLensProps,
 } from "./liquid-glass";
+export { LiquidImage, type LiquidImageProps } from "./liquid-image";
 export {
   LiquidMetaballs,
   type LiquidMetaballsProps,
@@ -238,6 +246,10 @@ export {
   type OTPInputStatus,
 } from "./otp-input";
 export { Pagination, type PaginationProps } from "./pagination";
+export {
+  ParticleDissolve,
+  type ParticleDissolveProps,
+} from "./particle-dissolve";
 export { PixelGrid, type PixelGridProps } from "./pixel-grid";
 export {
   PresenceFacepile,
@@ -283,6 +295,7 @@ export {
   type ScrollRevealDirection,
   type ScrollRevealProps,
 } from "./scroll-reveal";
+export { ScrollStack, type ScrollStackProps } from "./scroll-stack";
 export {
   SegmentedControl,
   type SegmentedControlProps,
@@ -308,7 +321,16 @@ export {
   SpotlightCard,
   type SpotlightCardProps,
 } from "./spotlight-card";
+export {
+  SpotlightReveal,
+  type SpotlightRevealProps,
+} from "./spotlight-reveal";
 export { type Step, Stepper, type StepperProps } from "./stepper";
+export {
+  SwipeDeck,
+  type SwipeDeckProps,
+  type SwipeDirection,
+} from "./swipe-deck";
 export { TabBar, type TabBarProps, type TabBarTab } from "./tab-bar";
 export {
   TextAnimate,
@@ -317,6 +339,11 @@ export {
   type TextAnimatePreset,
   type TextAnimateProps,
 } from "./text-animate";
+export {
+  type ScrambleCharset,
+  TextScramble,
+  type TextScrambleProps,
+} from "./text-scramble";
 export { ThemeToggle, type ThemeToggleProps } from "./theme-toggle";
 export { TiltCard, type TiltCardProps } from "./tilt-card";
 export {

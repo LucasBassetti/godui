@@ -1,0 +1,81 @@
+---
+title: Image Trail
+description: Images spawn along the pointer's path, pop in, and drift away — the signature portfolio hover effect.
+---
+
+import { ImageTrail } from "@godui/components";
+import { ImageTrailDemo } from "@/components/demos/image-trail-demo";
+
+As the pointer moves across the area, images are emitted along its path — each pops in, tilts toward the direction of travel, then drifts up and fades. Move your cursor across the frame below.
+
+<ComponentPreview
+  story="effects-imagetrail"
+  code={`import { ImageTrail } from "@/components/godui/image-trail";
+
+const images = [
+  "/photos/1.jpg", "/photos/2.jpg", "/photos/3.jpg",
+  "/photos/4.jpg", "/photos/5.jpg", "/photos/6.jpg",
+];
+
+export function Hero() {
+  return (
+    <ImageTrail images={images} className="grid h-[26rem] place-items-center">
+      <h2 className="pointer-events-none text-2xl font-semibold text-foreground">Move your cursor</h2>
+    </ImageTrail>
+  );
+}`}
+>
+  <ImageTrailDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="ImageTrail" />
+
+`ImageTrail` keeps a fixed, recycled pool of `<img>` elements and drives every
+spawn with the Web Animations API and direct style writes — no React re-render
+per pointer move, so it stays smooth even at high cursor speed. A new image is
+only emitted once the pointer has travelled `threshold` pixels from the last one,
+which gives even spacing regardless of speed.
+
+## Usage
+
+```tsx
+import { ImageTrail } from "@/components/godui/image-trail";
+```
+
+```tsx
+<ImageTrail images={images} className="grid h-[26rem] place-items-center">
+  <h2>Move your cursor</h2>
+</ImageTrail>
+```
+
+### Tuning the trail
+
+```tsx
+<ImageTrail
+  images={images}
+  threshold={48} // tighter spacing
+  duration={900} // longer-lived images
+  size={220}
+  max={16} // larger pool for fast cursors
+/>
+```
+
+## Accessibility
+
+When `prefers-reduced-motion` is set, the trail is disabled and a calm static
+gallery of the images is shown instead. Trail images are decorative
+(`aria-hidden`), so place real content as children.
+
+## Props
+
+| Prop        | Type       | Default | Description                                                  |
+| ----------- | ---------- | ------- | ------------------------------------------------------------ |
+| `images`    | `string[]` | —       | Images cycled through as the pointer moves.                  |
+| `threshold` | `number`   | `64`    | Minimum pointer distance (px) between two spawned images.    |
+| `duration`  | `number`   | `750`   | Lifespan of each trail image, in ms.                         |
+| `max`       | `number`   | `12`    | Maximum images alive at once (the recycled DOM pool size).   |
+| `size`      | `number`   | `180`   | Width/height of each trail image, in px.                     |
+
+`ImageTrail` also forwards every standard `<div>` attribute to the root element.

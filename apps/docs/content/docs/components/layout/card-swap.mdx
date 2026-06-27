@@ -1,0 +1,93 @@
+---
+title: Card Swap
+description: A 3D stack of cards that cycles through a showcase loop, with pointer parallax and spring re-flow.
+---
+
+import { CardSwap } from "@godui/components";
+import { CardSwapDemo } from "@/components/demos/card-swap-demo";
+
+A compact, eye-catching way to cycle product features or screens in a hero corner. Cards sit in a 3D perspective stack and spring to their new slot on each swap; the whole stack tilts toward your pointer. Hover to pause, or use the arrows.
+
+<ComponentPreview
+  story="layout-cardswap"
+  code={`import { CardSwap } from "@/components/godui/card-swap";
+
+const features = [
+  { title: "Realtime sync", body: "Every change lands instantly across every device." },
+  { title: "Built-in analytics", body: "Understand usage without wiring up a single event." },
+  { title: "Edge delivery", body: "Served from the closest region, every request." },
+];
+
+export function FeatureSwap() {
+  return (
+    <CardSwap className="h-64 w-80">
+      {features.map((f) => (
+        <div key={f.title} className="flex h-full w-full flex-col justify-end rounded-2xl border border-border bg-card p-7 shadow-xl">
+          <h3 className="text-xl font-semibold text-foreground">{f.title}</h3>
+          <p className="mt-2 text-sm text-muted-foreground">{f.body}</p>
+        </div>
+      ))}
+    </CardSwap>
+  );
+}`}
+>
+  <CardSwapDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="CardSwap" />
+
+Each card is assigned a rank in the stack; when the order rotates, every card
+springs to its new slot — scale, offset, and z-index all interpolate at once.
+The container reads the pointer position and tilts the whole stack in 3D for
+parallax depth.
+
+## Usage
+
+```tsx
+import { CardSwap } from "@/components/godui/card-swap";
+```
+
+```tsx
+<CardSwap className="h-64 w-80">
+  <Card>One</Card>
+  <Card>Two</Card>
+  <Card>Three</Card>
+</CardSwap>
+```
+
+Give the `CardSwap` a fixed size (`h-… w-…`); each card fills it.
+
+### Manual only
+
+Set `interval={0}` to disable auto-advance and drive the stack with the arrows
+(or your own controls).
+
+```tsx
+<CardSwap interval={0}>{/* cards */}</CardSwap>
+```
+
+### Tuning the stack
+
+```tsx
+<CardSwap offsetY={36} offsetX={28} scaleStep={0.08} />
+```
+
+## Accessibility
+
+The previous/next controls are real buttons with labels. When
+`prefers-reduced-motion` is set, swaps are instant and the parallax tilt is
+disabled.
+
+## Props
+
+| Prop           | Type      | Default  | Description                                            |
+| -------------- | --------- | -------- | ------------------------------------------------------ |
+| `interval`     | `number`  | `3500`   | Auto-advance interval in ms. `0` disables it.          |
+| `pauseOnHover` | `boolean` | `true`   | Pause the auto-advance while the pointer is over it.   |
+| `offsetY`      | `number`  | `28`     | Vertical offset (px) between stacked cards.            |
+| `offsetX`      | `number`  | `22`     | Horizontal offset (px) between stacked cards.          |
+| `scaleStep`    | `number`  | `0.06`   | Scale removed per card going back.                     |
+
+`CardSwap` also forwards every standard `<div>` attribute to the root element.

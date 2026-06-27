@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "generatedAt": "2026-06-26T14:58:27.047Z",
+  "generatedAt": "2026-06-26T23:33:34.836Z",
   "components": [
     {
       "name": "accordion",
@@ -101,6 +101,15 @@
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add @godui/breadcrumbs"
+    },
+    {
+      "name": "card-swap",
+      "title": "Card Swap",
+      "description": "A 3D stack of cards that cycles through a showcase loop, with pointer parallax and spring re-flow.",
+      "category": "Layout",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/card-swap"
     },
     {
       "name": "combobox",
@@ -247,6 +256,15 @@
       "install": "npx shadcn@latest add @godui/highlighter"
     },
     {
+      "name": "image-accordion",
+      "title": "Image Accordion",
+      "description": "Horizontal image panels that expand on hover to reveal their caption — an elegant, space-efficient gallery.",
+      "category": "Layout",
+      "dependencies": [],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/image-accordion"
+    },
+    {
       "name": "image-compare",
       "title": "Image Compare",
       "description": "A draggable before/after slider with clip-path reveal, keyboard support, and a pulsing handle hint.",
@@ -254,6 +272,15 @@
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add @godui/image-compare"
+    },
+    {
+      "name": "image-trail",
+      "title": "Image Trail",
+      "description": "Images spawn along the pointer's path, pop in, and drift away — the signature portfolio hover effect.",
+      "category": "Effects",
+      "dependencies": [],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/image-trail"
     },
     {
       "name": "lamp",
@@ -290,6 +317,15 @@
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add @godui/liquid-glass-lens"
+    },
+    {
+      "name": "liquid-image",
+      "title": "Liquid Image",
+      "description": "A premium hover effect that ripples and distorts an image like liquid, intensifying with cursor speed.",
+      "category": "Effects",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/liquid-image"
     },
     {
       "name": "liquid-metaballs",
@@ -427,6 +463,15 @@
       "install": "npx shadcn@latest add @godui/pagination"
     },
     {
+      "name": "particle-dissolve",
+      "title": "Particle Dissolve",
+      "description": "Text or an image is sampled into particles that scatter and reform — a dramatic entrance or transition.",
+      "category": "Effects",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/particle-dissolve"
+    },
+    {
       "name": "pixel-grid",
       "title": "Pixel Grid",
       "description": "A grid of flickering squares with an optional cursor spotlight that lights up nearby pixels.",
@@ -517,6 +562,15 @@
       "install": "npx shadcn@latest add @godui/scroll-reveal"
     },
     {
+      "name": "scroll-stack",
+      "title": "Scroll Stack",
+      "description": "Pinned cards that scale, recede, and stack as the page scrolls — the premium feature-reveal section.",
+      "category": "Layout",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/scroll-stack"
+    },
+    {
       "name": "segmented-control",
       "title": "Segmented Control",
       "description": "An iOS-style selector with a sliding pill that springs between options.",
@@ -571,6 +625,15 @@
       "install": "npx shadcn@latest add @godui/spotlight-card"
     },
     {
+      "name": "spotlight-reveal",
+      "title": "Spotlight Reveal",
+      "description": "A cursor-following flashlight that cuts through the top layer to expose a hidden layer beneath.",
+      "category": "Effects",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/spotlight-reveal"
+    },
+    {
       "name": "stepper",
       "title": "Stepper",
       "description": "A step indicator with a spring-filled progress line and a number-to-checkmark morph.",
@@ -578,6 +641,15 @@
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add @godui/stepper"
+    },
+    {
+      "name": "swipe-deck",
+      "title": "Swipe Deck",
+      "description": "A physics, Tinder-style swipeable card deck with throw-to-dismiss, directional intent, and keyboard controls.",
+      "category": "Layout",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/swipe-deck"
     },
     {
       "name": "tab-bar",
@@ -596,6 +668,15 @@
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add @godui/text-animate"
+    },
+    {
+      "name": "text-scramble",
+      "title": "Text Scramble",
+      "description": "Characters cycle through random glyphs and resolve into the target text — a decrypt / matrix reveal.",
+      "category": "Text",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/text-scramble"
     },
     {
       "name": "theme-toggle",
