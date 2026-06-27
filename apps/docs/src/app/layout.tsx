@@ -1,9 +1,12 @@
 import { GeistMono, GeistSans } from "@godui/components/fonts/next";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { RootProvider } from "fumadocs-ui/provider/next";
 import type { Metadata } from "next";
 import "./globals.css";
 import { AeoWidget } from "./aeo-widget";
 import { SiteStructuredData } from "./structured-data";
+
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 
 const SITE_TITLE = "GodUI — Animated React UI Components for Design Engineers";
 const SITE_DESCRIPTION =
@@ -76,6 +79,7 @@ export default function RootLayout({
         </RootProvider>
         <AeoWidget />
       </body>
+      {GA_ID ? <GoogleAnalytics gaId={GA_ID} /> : null}
     </html>
   );
 }
