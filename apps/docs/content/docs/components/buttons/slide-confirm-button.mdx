@@ -1,0 +1,63 @@
+---
+title: Slide Confirm Button
+description: A drag-to-confirm thumb for high-stakes actions — slide past the threshold to commit, release early to spring back.
+---
+
+import { SlideConfirmButton } from "@godui/components";
+
+The Slide Confirm Button is the most deliberate confirmation gesture: drag the thumb across the track, the fill trails behind it, and it snaps to confirm past the threshold. Pointer, touch, and keyboard are all supported.
+
+<ComponentPreview
+  story="buttons-slide-confirm-button"
+  code={`import { SlideConfirmButton } from "@/components/godui/slide-confirm-button";
+
+export function SlideConfirmButtonDemo() {
+  return (
+    <SlideConfirmButton
+      label="Slide to deploy"
+      onConfirm={() => console.log("deployed")}
+    />
+  );
+}`}
+>
+  <SlideConfirmButton label="Slide to deploy" />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall name="slide-confirm-button" />
+
+## Usage
+
+```tsx
+import { SlideConfirmButton } from "@/components/godui/slide-confirm-button";
+```
+
+```tsx
+<SlideConfirmButton label="Slide to pay" onConfirm={charge} />
+```
+
+## Examples
+
+### Destructive
+
+<ComponentPreview
+  code={`import { SlideConfirmButton } from "@/components/godui/slide-confirm-button";
+
+export function SlideConfirmButtonDestructive() {
+  return <SlideConfirmButton variant="destructive" label="Slide to delete" />;
+}`}
+>
+  <SlideConfirmButton variant="destructive" label="Slide to delete" />
+</ComponentPreview>
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `onConfirm` | `() => void` | — | Fires once the thumb passes the threshold |
+| `variant` | `"default" \| "destructive"` | `"default"` | Visual style |
+| `size` | `"sm" \| "md" \| "lg"` | `"md"` | Track and thumb size |
+| `threshold` | `number` | `0.9` | Fraction of the track (0–1) required to confirm |
+| `label` | `ReactNode` | `"Slide to confirm"` | Track label |
+| `confirmedLabel` | `ReactNode` | `"Confirmed"` | Label after confirming |

@@ -1557,6 +1557,111 @@
           "target": "components/godui/warp-starfield.tsx"
         }
       ]
+    },
+    {
+      "name": "copy-button",
+      "type": "registry:ui",
+      "title": "Copy Button",
+      "description": "A premium clipboard button with a drawn checkmark, label morph, auto-revert, and a non-secure-context fallback.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/copy-button/copy-button.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/copy-button.tsx"
+        }
+      ]
+    },
+    {
+      "name": "hold-confirm-button",
+      "type": "registry:ui",
+      "title": "Hold Confirm Button",
+      "description": "Press and hold to confirm a destructive action; a radial fill commits at 100% and releasing early cancels.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/hold-confirm-button/hold-confirm-button.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/hold-confirm-button.tsx"
+        }
+      ]
+    },
+    {
+      "name": "voice-button",
+      "type": "registry:ui",
+      "title": "Voice Button",
+      "description": "A push-to-talk mic button with a live, audio-reactive waveform and a pulsing recording ring.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/voice-button/voice-button.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/voice-button.tsx"
+        }
+      ]
+    },
+    {
+      "name": "optimistic-toggle-button",
+      "type": "registry:ui",
+      "title": "Optimistic Toggle Button",
+      "description": "A Follow / Following toggle that flips optimistically, rolls back on failure, and swaps to a destructive label on hover.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/optimistic-toggle-button/optimistic-toggle-button.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/optimistic-toggle-button.tsx"
+        }
+      ]
+    },
+    {
+      "name": "undo-button",
+      "type": "registry:ui",
+      "title": "Undo Button",
+      "description": "A deferred-commit affordance with a shrinking countdown ring that auto-commits unless undone.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/undo-button/undo-button.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/undo-button.tsx"
+        }
+      ]
+    },
+    {
+      "name": "slide-confirm-button",
+      "type": "registry:ui",
+      "title": "Slide Confirm Button",
+      "description": "A drag-to-confirm thumb for high-stakes actions that snaps past a threshold and springs back otherwise.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/slide-confirm-button/slide-confirm-button.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/slide-confirm-button.tsx"
+        }
+      ]
+    },
+    {
+      "name": "gooey-fab",
+      "type": "registry:ui",
+      "title": "Gooey FAB",
+      "description": "A floating action button that gooey-morphs to extrude its satellite actions like liquid metaballs.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/gooey-fab/gooey-fab.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/gooey-fab.tsx"
+        }
+      ]
     }
   ]
 }

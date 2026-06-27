@@ -1,0 +1,53 @@
+---
+title: Undo Button
+description: A Gmail-style deferred-commit affordance with a shrinking countdown ring that auto-commits unless undone.
+---
+
+import { UndoButton } from "@godui/components";
+
+The Undo Button gives users a safety window after an action: a countdown ring depletes, the action auto-commits when it empties, and clicking undo before then cancels it. Hovering pauses the countdown.
+
+<ComponentPreview
+  story="buttons-undo-button"
+  code={`import { UndoButton } from "@/components/godui/undo-button";
+
+export function UndoButtonDemo() {
+  return (
+    <UndoButton
+      label="Message archived"
+      onCommit={() => console.log("committed")}
+      onUndo={() => console.log("undone")}
+    />
+  );
+}`}
+>
+  <UndoButton label="Message archived" />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall name="undo-button" />
+
+## Usage
+
+```tsx
+import { UndoButton } from "@/components/godui/undo-button";
+```
+
+```tsx
+<UndoButton label="Message archived" onCommit={archive} onUndo={restore} />
+```
+
+Render the Undo Button when you queue a deferred action. `onCommit` fires when the window elapses; `onUndo` fires if the user cancels first.
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `label` | `ReactNode` | `"Action queued"` | Message describing the deferred action |
+| `undoLabel` | `ReactNode` | `"Undo"` | Text on the undo control |
+| `duration` | `number` | `5000` | ms before the action auto-commits |
+| `pauseOnHover` | `boolean` | `true` | Pause the countdown while hovered |
+| `size` | `"sm" \| "md" \| "lg"` | `"md"` | Padding and text size |
+| `onCommit` | `() => void` | — | Fires when the window elapses |
+| `onUndo` | `() => void` | — | Fires when undo is clicked |

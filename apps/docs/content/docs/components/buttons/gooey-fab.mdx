@@ -1,0 +1,73 @@
+---
+title: Gooey FAB
+description: A floating action button that gooey-morphs to extrude its satellite actions like liquid metaballs.
+---
+
+import { GooeyFab } from "@godui/components";
+
+The Gooey FAB extrudes a set of satellite actions from a single trigger, fused by an SVG metaball filter so they split apart like mercury. The trigger icon rotates from a plus into a cross as it opens.
+
+<ComponentPreview
+  story="buttons-gooey-fab"
+  className="min-h-64 items-end"
+  code={`import { GooeyFab } from "@/components/godui/gooey-fab";
+
+const Icon = ({ d }) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="size-[45%]">
+    <path d={d} />
+  </svg>
+);
+
+export function GooeyFabDemo() {
+  return (
+    <GooeyFab
+      actions={[
+        { label: "Edit", icon: <Icon d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" /> },
+        { label: "Share", icon: <Icon d="M4 12v8h16v-8M12 16V4M8 8l4-4 4 4" /> },
+        { label: "Delete", icon: <Icon d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14" /> },
+      ]}
+    />
+  );
+}`}
+>
+  <GooeyFab
+    actions={[
+      { label: "Edit", icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="size-[45%]"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" /></svg> },
+      { label: "Share", icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="size-[45%]"><path d="M4 12v8h16v-8M12 16V4M8 8l4-4 4 4" /></svg> },
+      { label: "Delete", icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="size-[45%]"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14" /></svg> },
+    ]}
+  />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall name="gooey-fab" />
+
+## Usage
+
+```tsx
+import { GooeyFab } from "@/components/godui/gooey-fab";
+```
+
+```tsx
+<GooeyFab
+  direction="up"
+  actions={[
+    { label: "Edit", icon: <EditIcon />, onClick: edit },
+    { label: "Share", icon: <ShareIcon />, onClick: share },
+  ]}
+/>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `actions` | `GooeyFabAction[]` | — | Satellite actions (`icon`, `label`, `onClick`) |
+| `size` | `"sm" \| "md" \| "lg"` | `"md"` | Trigger and satellite size |
+| `direction` | `"up" \| "down" \| "left" \| "right"` | `"up"` | Direction the satellites extrude |
+| `open` | `boolean` | — | Controlled open state |
+| `defaultOpen` | `boolean` | `false` | Uncontrolled initial open state |
+| `onOpenChange` | `(open: boolean) => void` | — | Fires when the open state changes |
+| `triggerIcon` | `ReactNode` | plus → cross | Custom trigger icon |
+| `triggerLabel` | `string` | `"Open actions"` | Accessible trigger label |

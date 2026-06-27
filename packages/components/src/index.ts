@@ -83,6 +83,13 @@ export {
   type StreamingTextProps,
 } from "./conversation-thread";
 export {
+  CopyButton,
+  type CopyButtonProps,
+  type CopyButtonSize,
+  type CopyButtonStatus,
+  type CopyButtonVariant,
+} from "./copy-button";
+export {
   DecorativeBackground,
   type DecorativeBackgroundProps,
   type DecorativeBackgroundVariant,
@@ -142,6 +149,13 @@ export {
 } from "./geometric-background";
 export { Globe, type GlobeProps } from "./globe";
 export {
+  GooeyFab,
+  type GooeyFabAction,
+  type GooeyFabDirection,
+  type GooeyFabProps,
+  type GooeyFabSize,
+} from "./gooey-fab";
+export {
   GradientBackground,
   type GradientBackgroundProps,
   type GradientBackgroundVariant,
@@ -153,6 +167,13 @@ export {
   type HighlighterAction,
   type HighlighterProps,
 } from "./highlighter";
+export {
+  HoldConfirmButton,
+  type HoldConfirmButtonProps,
+  type HoldConfirmButtonSize,
+  type HoldConfirmButtonStatus,
+  type HoldConfirmButtonVariant,
+} from "./hold-confirm-button";
 export {
   ImageAccordion,
   type ImageAccordionPanel,
@@ -237,6 +258,11 @@ export {
   type NumberTickerProps,
 } from "./number-ticker";
 export {
+  OptimisticToggleButton,
+  type OptimisticToggleButtonProps,
+  type OptimisticToggleSize,
+} from "./optimistic-toggle-button";
+export {
   OrbitingCircles,
   type OrbitingCirclesProps,
 } from "./orbiting-circles";
@@ -308,6 +334,13 @@ export {
   type ShimmerButtonVariant,
 } from "./shimmer-button";
 export {
+  SlideConfirmButton,
+  type SlideConfirmButtonProps,
+  type SlideConfirmSize,
+  type SlideConfirmStatus,
+  type SlideConfirmVariant,
+} from "./slide-confirm-button";
+export {
   type CitationSource,
   SourceCitation,
   type SourceCitationProps,
@@ -357,6 +390,20 @@ export {
   TopographicDrift,
   type TopographicDriftProps,
 } from "./topographic-drift";
+export {
+  UndoButton,
+  type UndoButtonProps,
+  type UndoButtonSize,
+  type UndoButtonStatus,
+} from "./undo-button";
+export {
+  VoiceButton,
+  type VoiceButtonMode,
+  type VoiceButtonProps,
+  type VoiceButtonSize,
+  type VoiceButtonStatus,
+  type VoiceButtonVariant,
+} from "./voice-button";
 export {
   WarpStarfield,
   type WarpStarfieldProps,

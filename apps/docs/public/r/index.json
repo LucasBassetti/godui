@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "generatedAt": "2026-06-27T04:24:18.351Z",
+  "generatedAt": "2026-06-27T13:18:23.625Z",
   "components": [
     {
       "name": "accordion",
@@ -166,6 +166,15 @@
       "install": "npx shadcn@latest add @godui/conversation-thread"
     },
     {
+      "name": "copy-button",
+      "title": "Copy Button",
+      "description": "A premium clipboard button with a drawn checkmark, label morph, auto-revert, and a non-secure-context fallback.",
+      "category": "Buttons",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/copy-button"
+    },
+    {
       "name": "dock",
       "title": "Dock",
       "description": "A macOS-style dock whose items magnify with spring physics as the pointer moves across them.",
@@ -247,6 +256,15 @@
       "install": "npx shadcn@latest add @godui/globe"
     },
     {
+      "name": "gooey-fab",
+      "title": "Gooey FAB",
+      "description": "A floating action button that gooey-morphs to extrude its satellite actions like liquid metaballs.",
+      "category": "Buttons",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/gooey-fab"
+    },
+    {
       "name": "highlighter",
       "title": "Highlighter",
       "description": "Hand-drawn rough-notation annotations (highlight, underline, box, circle) over text.",
@@ -254,6 +272,15 @@
       "dependencies": ["framer-motion", "rough-notation"],
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add @godui/highlighter"
+    },
+    {
+      "name": "hold-confirm-button",
+      "title": "Hold Confirm Button",
+      "description": "Press and hold to confirm a destructive action; a radial fill commits at 100% and releasing early cancels.",
+      "category": "Buttons",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/hold-confirm-button"
     },
     {
       "name": "image-accordion",
@@ -436,6 +463,15 @@
       "install": "npx shadcn@latest add @godui/number-ticker"
     },
     {
+      "name": "optimistic-toggle-button",
+      "title": "Optimistic Toggle Button",
+      "description": "A Follow / Following toggle that flips optimistically, rolls back on failure, and swaps to a destructive label on hover.",
+      "category": "Buttons",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/optimistic-toggle-button"
+    },
+    {
       "name": "orbiting-circles",
       "title": "Orbiting Circles",
       "description": "Icons that orbit a center point on a configurable ring, staying upright as they travel.",
@@ -580,6 +616,15 @@
       "install": "npx shadcn@latest add @godui/shimmer-button"
     },
     {
+      "name": "slide-confirm-button",
+      "title": "Slide Confirm Button",
+      "description": "A drag-to-confirm thumb for high-stakes actions that snaps past a threshold and springs back otherwise.",
+      "category": "Buttons",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/slide-confirm-button"
+    },
+    {
       "name": "source-citations",
       "title": "Source Citations",
       "description": "Inline numbered citation pills that spring out a rich preview card on hover, plus a collapsible source list for AI answers.",
@@ -695,6 +740,24 @@
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add @godui/topographic-drift"
+    },
+    {
+      "name": "undo-button",
+      "title": "Undo Button",
+      "description": "A deferred-commit affordance with a shrinking countdown ring that auto-commits unless undone.",
+      "category": "Buttons",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/undo-button"
+    },
+    {
+      "name": "voice-button",
+      "title": "Voice Button",
+      "description": "A push-to-talk mic button with a live, audio-reactive waveform and a pulsing recording ring.",
+      "category": "Buttons",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/voice-button"
     },
     {
       "name": "warp-starfield",

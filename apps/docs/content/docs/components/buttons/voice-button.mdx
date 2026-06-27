@@ -1,0 +1,65 @@
+---
+title: Voice Button
+description: A push-to-talk mic button with a live, audio-reactive waveform and a pulsing recording ring.
+---
+
+import { VoiceButton } from "@godui/components";
+
+The Voice Button captures the microphone, drives a live waveform from the Web Audio analyser, and pulses a recording ring — with graceful handling when permission is denied or unavailable.
+
+<ComponentPreview
+  story="buttons-voice-button"
+  code={`import { VoiceButton } from "@/components/godui/voice-button";
+
+export function VoiceButtonDemo() {
+  return (
+    <VoiceButton onStop={(ms) => console.log("recorded", ms)}>
+      Record
+    </VoiceButton>
+  );
+}`}
+>
+  <VoiceButton>Record</VoiceButton>
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall name="voice-button" />
+
+## Usage
+
+```tsx
+import { VoiceButton } from "@/components/godui/voice-button";
+```
+
+```tsx
+<VoiceButton mode="toggle" onStop={(ms) => transcribe(ms)}>Record</VoiceButton>
+```
+
+Use `mode="hold"` for push-to-talk (record while held) or `mode="toggle"` (click to start and stop).
+
+## Examples
+
+### Icon only
+
+<ComponentPreview
+  code={`import { VoiceButton } from "@/components/godui/voice-button";
+
+export function VoiceButtonIconOnly() {
+  return <VoiceButton variant="outline" aria-label="Record" />;
+}`}
+>
+  <VoiceButton variant="outline" aria-label="Record" />
+</ComponentPreview>
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `mode` | `"toggle" \| "hold"` | `"toggle"` | Click to start/stop, or push-to-talk |
+| `variant` | `"default" \| "outline"` | `"default"` | Visual style |
+| `size` | `"sm" \| "md" \| "lg"` | `"md"` | Padding and text size |
+| `bars` | `number` | `5` | Number of waveform bars |
+| `onStart` | `() => void` | — | Fires when recording starts |
+| `onStop` | `(durationMs: number) => void` | — | Fires when recording stops |
+| `onDenied` | `() => void` | — | Fires if the mic is blocked or unavailable |

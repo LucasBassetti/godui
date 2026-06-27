@@ -1,0 +1,70 @@
+---
+title: Hold Confirm Button
+description: Press and hold to confirm a destructive action — a radial fill commits at 100%, releasing early cancels.
+---
+
+import { HoldConfirmButton } from "@godui/components";
+
+The Hold Confirm Button replaces a confirmation dialog with a deliberate gesture: hold to fill the progress sweep, release early to cancel. It supports pointer and keyboard holds.
+
+<ComponentPreview
+  story="buttons-hold-confirm-button"
+  code={`import { HoldConfirmButton } from "@/components/godui/hold-confirm-button";
+
+export function HoldConfirmButtonDemo() {
+  return (
+    <HoldConfirmButton onConfirm={() => console.log("deleted")}>
+      Hold to delete
+    </HoldConfirmButton>
+  );
+}`}
+>
+  <HoldConfirmButton>Hold to delete</HoldConfirmButton>
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall name="hold-confirm-button" />
+
+## Usage
+
+```tsx
+import { HoldConfirmButton } from "@/components/godui/hold-confirm-button";
+```
+
+```tsx
+<HoldConfirmButton onConfirm={deleteAccount}>Hold to delete</HoldConfirmButton>
+```
+
+## Examples
+
+### Variants and duration
+
+<ComponentPreview
+  code={`import { HoldConfirmButton } from "@/components/godui/hold-confirm-button";
+
+export function HoldConfirmButtonVariants() {
+  return (
+    <div className="flex flex-wrap items-center justify-center gap-4">
+      <HoldConfirmButton variant="destructive">Hold to delete</HoldConfirmButton>
+      <HoldConfirmButton variant="default" duration={1400}>Hold to publish</HoldConfirmButton>
+    </div>
+  );
+}`}
+>
+  <div className="flex flex-wrap items-center justify-center gap-4">
+    <HoldConfirmButton variant="destructive">Hold to delete</HoldConfirmButton>
+    <HoldConfirmButton variant="default" duration={1400}>Hold to publish</HoldConfirmButton>
+  </div>
+</ComponentPreview>
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `onConfirm` | `() => void` | — | Fires once the hold completes |
+| `variant` | `"destructive" \| "default"` | `"destructive"` | Visual style |
+| `size` | `"sm" \| "md" \| "lg"` | `"md"` | Padding and text size |
+| `duration` | `number` | `900` | ms the user must hold to confirm |
+| `holdingLabel` | `ReactNode` | `"Confirming…"` | Label while holding |
+| `confirmedLabel` | `ReactNode` | `"Confirmed"` | Label after confirming |

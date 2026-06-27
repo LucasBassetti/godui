@@ -1,0 +1,72 @@
+---
+title: Optimistic Toggle Button
+description: A Follow / Following toggle that flips instantly, rolls back on failure, and swaps to a destructive label on hover.
+---
+
+import { OptimisticToggleButton } from "@godui/components";
+import { OptimisticToggleButtonDemo } from "@/components/demos/optimistic-toggle-button-demo";
+
+The Optimistic Toggle Button updates the moment you click — flipping its label and committing in the background — then rolls back if the promise rejects. Hovering the active state reveals a destructive "Unfollow" affordance.
+
+<ComponentPreview
+  story="buttons-optimistic-toggle-button"
+  code={`import { OptimisticToggleButton } from "@/components/godui/optimistic-toggle-button";
+
+export function OptimisticToggleButtonDemo() {
+  return (
+    <OptimisticToggleButton
+      onToggle={(next) => new Promise((r) => setTimeout(r, 600))}
+    />
+  );
+}`}
+>
+  <OptimisticToggleButtonDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall name="optimistic-toggle-button" />
+
+## Usage
+
+```tsx
+import { OptimisticToggleButton } from "@/components/godui/optimistic-toggle-button";
+```
+
+```tsx
+<OptimisticToggleButton onToggle={async (next) => await setFollow(next)} />
+```
+
+The UI flips immediately for a responsive feel. If `onToggle` throws, the flip is rolled back automatically. Pass `pressed` to drive it as a controlled component.
+
+## Examples
+
+### Custom labels
+
+<ComponentPreview
+  code={`import { OptimisticToggleButton } from "@/components/godui/optimistic-toggle-button";
+
+export function OptimisticToggleButtonLabels() {
+  return (
+    <OptimisticToggleButton
+      labelOff="Subscribe"
+      labelOn="Subscribed"
+      labelActiveHover="Unsubscribe"
+    />
+  );
+}`}
+>
+  <OptimisticToggleButton labelOff="Subscribe" labelOn="Subscribed" labelActiveHover="Unsubscribe" />
+</ComponentPreview>
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `onToggle` | `(next: boolean) => void \| Promise<void>` | — | Commit handler; rejection rolls back the optimistic flip |
+| `pressed` | `boolean` | — | Controlled active state |
+| `defaultPressed` | `boolean` | `false` | Uncontrolled initial state |
+| `size` | `"sm" \| "md" \| "lg"` | `"md"` | Padding and text size |
+| `labelOff` | `ReactNode` | `"Follow"` | Inactive label |
+| `labelOn` | `ReactNode` | `"Following"` | Active label |
+| `labelActiveHover` | `ReactNode` | `"Unfollow"` | Active hover (destructive) label |
