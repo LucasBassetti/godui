@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@godui/components": "workspace:*",
+    "@next/third-parties": "^16.2.9",
     "aeo.js": "^0.0.14",
     "framer-motion": "^12.40.0",
     "fumadocs-core": "16.10.2",
