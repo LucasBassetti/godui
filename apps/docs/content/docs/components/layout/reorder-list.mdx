@@ -1,0 +1,80 @@
+---
+title: Reorder List
+description: A drag-to-reorder list where items lift on grab, spring to place, and neighbours flow around them.
+---
+
+import { ReorderList, ReorderItem } from "@godui/components";
+import { ReorderListDemo } from "@/components/demos/reorder-list-demo";
+
+<ComponentPreview
+  story="layout-reorder-list"
+  code={`import { ReorderList, ReorderItem } from "@/components/godui/reorder-list";
+import { useState } from "react";
+
+export function ReorderListDemo() {
+  const [items, setItems] = useState([
+    { id: "1", label: "Draft proposal" },
+    { id: "2", label: "Review with design" },
+    { id: "3", label: "Ship to staging" },
+  ]);
+
+  return (
+    <ReorderList values={items} onReorder={setItems}>
+      {items.map((item) => (
+        <ReorderItem key={item.id} value={item}>
+          {item.label}
+        </ReorderItem>
+      ))}
+    </ReorderList>
+  );
+}`}
+>
+  <ReorderListDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="ReorderList" />
+
+Built on Motion's drag-to-reorder primitives: grabbing an item lifts and scales
+it, and the rest of the list springs around it in real time. Works with pointer
+and touch, and the grab lift is skipped under `prefers-reduced-motion`.
+
+## Usage
+
+```tsx
+import { ReorderList, ReorderItem } from "@/components/godui/reorder-list";
+```
+
+Hold `values` in state and pass the matching `setState` as `onReorder`. Each
+`ReorderItem` takes the `value` it represents — use a stable `key`.
+
+```tsx
+<ReorderList values={items} onReorder={setItems}>
+  {items.map((item) => (
+    <ReorderItem key={item.id} value={item}>
+      {item.label}
+    </ReorderItem>
+  ))}
+</ReorderList>
+```
+
+Set `axis="x"` for a horizontal list.
+
+## Props
+
+### ReorderList
+
+| Prop        | Type                    | Default | Description                               |
+| ----------- | ----------------------- | ------- | ----------------------------------------- |
+| `values`    | `T[]`                   | —       | Ordered values rendered as items.         |
+| `onReorder` | `(values: T[]) => void` | —       | Called with the next order while dragging. |
+| `axis`      | `"x" \| "y"`            | `"y"`   | Drag axis.                                |
+
+### ReorderItem
+
+| Prop    | Type | Default | Description                                          |
+| ------- | ---- | ------- | ---------------------------------------------------- |
+| `value` | `T`  | —       | The value this item represents within `values`.      |
+
+Both components forward every standard attribute to their underlying `<ul>` / `<li>`.

@@ -1,0 +1,84 @@
+---
+title: Morphing Dialog
+description: A card that physically morphs into a modal through a shared layout, then springs back on close.
+---
+
+import {
+  MorphingDialog,
+  MorphingDialogTrigger,
+  MorphingDialogContent,
+  MorphingDialogClose,
+} from "@godui/components";
+import { MorphingDialogDemo } from "@/components/demos/morphing-dialog-demo";
+
+<ComponentPreview
+  story="overlays-morphing-dialog"
+  code={`import {
+  MorphingDialog,
+  MorphingDialogTrigger,
+  MorphingDialogContent,
+  MorphingDialogClose,
+} from "@/components/godui/morphing-dialog";
+
+export function MorphingDialogDemo() {
+  return (
+    <MorphingDialog>
+      <MorphingDialogTrigger className="w-64 rounded-2xl border p-4">
+        <div className="font-semibold">Aurora Sessions</div>
+      </MorphingDialogTrigger>
+      <MorphingDialogContent className="w-[28rem] rounded-2xl p-5">
+        <div className="text-lg font-semibold">Aurora Sessions</div>
+        <MorphingDialogClose />
+      </MorphingDialogContent>
+    </MorphingDialog>
+  );
+}`}
+>
+  <MorphingDialogDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="MorphingDialog" />
+
+The trigger and content share a `layoutId`, so opening the dialog morphs the card
+into the modal with an underdamped spring and a blurred backdrop fade — and
+reverses on close. Escape and backdrop clicks dismiss it, body scroll locks while
+open, and the spring is skipped under `prefers-reduced-motion`.
+
+## Usage
+
+```tsx
+import {
+  MorphingDialog,
+  MorphingDialogTrigger,
+  MorphingDialogContent,
+  MorphingDialogClose,
+} from "@/components/godui/morphing-dialog";
+```
+
+Wrap a trigger and content in a single `MorphingDialog`. It's uncontrolled by
+default; pass `open` / `onOpenChange` to control it.
+
+```tsx
+<MorphingDialog>
+  <MorphingDialogTrigger>{/* collapsed card */}</MorphingDialogTrigger>
+  <MorphingDialogContent>
+    {/* expanded view */}
+    <MorphingDialogClose />
+  </MorphingDialogContent>
+</MorphingDialog>
+```
+
+## Props
+
+### MorphingDialog
+
+| Prop           | Type                      | Default | Description                              |
+| -------------- | ------------------------- | ------- | ---------------------------------------- |
+| `open`         | `boolean`                 | —       | Controlled open state.                   |
+| `onOpenChange` | `(open: boolean) => void` | —       | Called whenever the open state changes.  |
+
+`MorphingDialogTrigger`, `MorphingDialogContent`, and `MorphingDialogClose`
+forward every standard attribute to their root element. The trigger and content
+must share one `MorphingDialog` parent so they animate as a pair.

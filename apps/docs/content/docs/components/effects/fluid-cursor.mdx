@@ -1,0 +1,71 @@
+---
+title: Fluid Cursor
+description: A spring-lagged blend-mode cursor that trails the pointer and swells over interactive elements.
+---
+
+import { FluidCursor } from "@godui/components";
+import { FluidCursorDemo } from "@/components/demos/fluid-cursor-demo";
+
+<ComponentPreview
+  story="effects-fluid-cursor"
+  code={`import { FluidCursor } from "@/components/godui/fluid-cursor";
+import { useRef } from "react";
+
+export function FluidCursorDemo() {
+  const ref = useRef(null);
+  return (
+    <div ref={ref} className="relative cursor-none overflow-hidden">
+      {/* your content */}
+      <FluidCursor containerRef={ref} />
+    </div>
+  );
+}`}
+>
+  <FluidCursorDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="FluidCursor" />
+
+A leading dot springs after the pointer with a softer smear trailing behind, both
+inverting whatever is underneath via `mix-blend-mode: difference`. It swells over
+links, buttons, and anything marked `data-cursor`. The cursor disables itself on
+touch devices and under `prefers-reduced-motion`, so it never strands users
+without a pointer.
+
+## Usage
+
+```tsx
+import { FluidCursor } from "@/components/godui/fluid-cursor";
+```
+
+**Global** — drop it once near the root for a page-wide cursor. Hide the system
+cursor with `cursor: none` where you want it to take over:
+
+```tsx
+<FluidCursor />
+```
+
+**Scoped** — pass a `containerRef` (the element must be positioned) to confine it
+to one region, e.g. a hero or a card:
+
+```tsx
+const ref = useRef(null);
+
+<div ref={ref} className="relative cursor-none overflow-hidden">
+  {/* content */}
+  <FluidCursor containerRef={ref} />
+</div>;
+```
+
+## Props
+
+| Prop                  | Type                              | Default            | Description                                            |
+| --------------------- | --------------------------------- | ------------------ | ------------------------------------------------------ |
+| `size`                | `number`                          | `18`               | Diameter of the leading dot in pixels.                 |
+| `color`               | `string`                          | `"white"`          | Dot color; `white` inverts cleanly under `blend`.      |
+| `blend`               | `boolean`                         | `true`             | Invert the backdrop with `mix-blend-mode: difference`. |
+| `trail`               | `boolean`                         | `true`             | Render the soft lagging smear.                         |
+| `containerRef`        | `RefObject<HTMLElement \| null>`  | —                  | Scope the cursor to a positioned element.              |
+| `interactiveSelector` | `string`                          | links, buttons, `[data-cursor]` | Elements that enlarge the cursor on hover. |

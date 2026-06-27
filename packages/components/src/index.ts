@@ -133,6 +133,7 @@ export {
   type ToolbarAction,
 } from "./floating-toolbar";
 export { FlowField, type FlowFieldProps } from "./flow-field";
+export { FluidCursor, type FluidCursorProps } from "./fluid-cursor";
 export {
   GeometricBackground,
   type GeometricBackgroundProps,
@@ -241,6 +242,16 @@ export {
   type MegaMenuSection,
 } from "./mega-menu";
 export {
+  MorphingDialog,
+  MorphingDialogClose,
+  type MorphingDialogCloseProps,
+  MorphingDialogContent,
+  type MorphingDialogContentProps,
+  type MorphingDialogProps,
+  MorphingDialogTrigger,
+  type MorphingDialogTriggerProps,
+} from "./morphing-dialog";
+export {
   type Notification,
   NotificationInbox,
   type NotificationInboxProps,
@@ -292,6 +303,12 @@ export {
   type PromptSuggestionsProps,
   type PromptSuggestionsVariant,
 } from "./prompt-suggestions";
+export {
+  ReorderItem,
+  type ReorderItemProps,
+  ReorderList,
+  type ReorderListProps,
+} from "./reorder-list";
 export {
   type HeaderLink,
   ResizableHeader,
@@ -375,6 +392,12 @@ export {
   TopographicDrift,
   type TopographicDriftProps,
 } from "./topographic-drift";
+export {
+  useAudioAmplitude,
+  VoiceOrb,
+  type VoiceOrbProps,
+  type VoiceOrbState,
+} from "./voice-orb";
 export {
   WarpStarfield,
   type WarpStarfieldProps,

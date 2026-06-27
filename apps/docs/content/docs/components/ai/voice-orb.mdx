@@ -1,0 +1,61 @@
+---
+title: Voice Orb
+description: A Siri-style audio-reactive orb that breathes when idle, pulses while listening, and swells with the voice as it speaks.
+---
+
+import { VoiceOrb } from "@godui/components";
+import { VoiceOrbDemo } from "@/components/demos/voice-orb-demo";
+
+<ComponentPreview
+  story="ai-voice-orb"
+  code={`import { VoiceOrb, useAudioAmplitude } from "@/components/godui/voice-orb";
+import { useState } from "react";
+
+export function VoiceOrbDemo() {
+  const [stream, setStream] = useState(null);
+  const amplitude = useAudioAmplitude(stream);
+
+  return <VoiceOrb state="listening" amplitude={amplitude} />;
+}`}
+>
+  <VoiceOrbDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="VoiceOrb" />
+
+A rotating rainbow corona blooms behind a glassy core. The core breathes on its
+own when `idle`; feed a live `amplitude` (`0`–`1`) and it swells with the voice
+while `speaking`, or pulses a ring while `listening`. All motion is paused under
+`prefers-reduced-motion`.
+
+## Usage
+
+```tsx
+import { VoiceOrb, useAudioAmplitude } from "@/components/godui/voice-orb";
+```
+
+The bundled `useAudioAmplitude` hook turns a `MediaStream` into a smoothed
+`0`–`1` level you can hand straight to the orb. It returns `0` on the server or
+when no stream is attached, so it's safe to call unconditionally.
+
+```tsx
+const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+const amplitude = useAudioAmplitude(stream);
+
+return <VoiceOrb state="listening" amplitude={amplitude} />;
+```
+
+Driving it from an agent instead of a mic? Set `state="speaking"` and feed the
+output level from your TTS / realtime stream.
+
+## Props
+
+| Prop        | Type                                    | Default  | Description                                            |
+| ----------- | --------------------------------------- | -------- | ----------------------------------------------------- |
+| `state`     | `"idle" \| "listening" \| "speaking"`   | `"idle"` | Conversation phase the orb visualizes.                |
+| `amplitude` | `number`                                | `0`      | Live audio level `0`–`1`; drives the swell and corona. |
+| `size`      | `number`                                | `160`    | Diameter in pixels.                                    |
+
+`VoiceOrb` also forwards every standard `<div>` attribute to the root element.

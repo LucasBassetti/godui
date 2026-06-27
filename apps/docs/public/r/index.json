@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "generatedAt": "2026-06-27T13:41:19.400Z",
+  "generatedAt": "2026-06-27T15:34:53.876Z",
   "components": [
     {
       "name": "accordion",
@@ -238,6 +238,15 @@
       "install": "npx shadcn@latest add @godui/flow-field"
     },
     {
+      "name": "fluid-cursor",
+      "title": "Fluid Cursor",
+      "description": "A spring-lagged blend-mode cursor that trails the pointer and swells over interactive elements.",
+      "category": "Effects",
+      "dependencies": [],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/fluid-cursor"
+    },
+    {
       "name": "globe",
       "title": "Globe",
       "description": "A draggable, auto-rotating WebGL globe with glowing location markers.",
@@ -427,6 +436,15 @@
       "install": "npx shadcn@latest add @godui/mega-menu"
     },
     {
+      "name": "morphing-dialog",
+      "title": "Morphing Dialog",
+      "description": "A card that physically morphs into a modal through a shared layout, then springs back on close.",
+      "category": "Overlays",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/morphing-dialog"
+    },
+    {
       "name": "notification-inbox",
       "title": "Notification Inbox",
       "description": "A Linear-style notification center with time-bucketed groups, unread accent rails, swipe-to-archive, mark-all-read, and a polished empty state.",
@@ -524,6 +542,15 @@
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add @godui/prompt-suggestions"
+    },
+    {
+      "name": "reorder-list",
+      "title": "Reorder List",
+      "description": "A drag-to-reorder list where items lift on grab, spring to place, and neighbours flow around them.",
+      "category": "Layout",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/reorder-list"
     },
     {
       "name": "resizable-header",
@@ -695,6 +722,15 @@
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add @godui/topographic-drift"
+    },
+    {
+      "name": "voice-orb",
+      "title": "Voice Orb",
+      "description": "A Siri-style audio-reactive orb that breathes when idle, pulses while listening, and swells with the voice as it speaks.",
+      "category": "AI",
+      "dependencies": [],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/voice-orb"
     },
     {
       "name": "warp-starfield",

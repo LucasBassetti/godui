@@ -1,0 +1,48 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "voice-orb",
+  "title": "Voice Orb",
+  "description": "A Siri-style audio-reactive orb that breathes when idle, pulses while listening, and swells with the voice as it speaks.",
+  "registryDependencies": ["@godui/godui-theme"],
+  "files": [
+    {
+      "path": "packages/components/src/voice-orb/voice-orb.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\n\nexport type VoiceOrbState = \"idle\" | \"listening\" | \"speaking\";\n\nexport type VoiceOrbProps = Omit<\n  React.HTMLAttributes<HTMLDivElement>,\n  \"ref\"\n> & {\n  /** Conversation phase the orb visualizes. Defaults to `\"idle\"`. */\n  state?: VoiceOrbState;\n  /**\n   * Live audio level, `0`–`1`. Drives the core swell and corona spread while\n   * `state=\"speaking\"` (and the ring while `\"listening\"`). Pair with\n   * {@link useAudioAmplitude} or feed your own analyser. Defaults to `0`.\n   */\n  amplitude?: number;\n  /** Diameter in pixels. Defaults to `160`. */\n  size?: number;\n};\n\n// Smooth, clamp and ease the raw level so a noisy analyser doesn't make the orb\n// jitter — a touch of curve gives quiet speech visible life without the loud\n// peaks blowing out.\nconst shape = (a: number) => {\n  const c = Math.min(1, Math.max(0, a));\n  return c ** 0.6;\n};\n\nconst VoiceOrb = React.forwardRef<HTMLDivElement, VoiceOrbProps>(\n  (\n    { state = \"idle\", amplitude = 0, size = 160, className, style, ...props },\n    ref,\n  ) => {\n    const level = state === \"idle\" ? 0 : shape(amplitude);\n\n    return (\n      <div\n        ref={ref}\n        data-slot=\"voice-orb\"\n        data-state={state}\n        className={`relative grid aspect-square place-items-center [container-type:size] ${className ?? \"\"}`}\n        style={\n          {\n            width: size,\n            height: size,\n            \"--amp\": level,\n            ...style,\n          } as React.CSSProperties\n        }\n        {...props}\n      >\n        {/* Corona — amplitude swells the wrapper; the inner layer spins. The\n            split keeps the keyframe (rotate) from clobbering the inline scale. */}\n        <div\n          aria-hidden\n          className=\"absolute inset-0 will-change-transform\"\n          style={{ transform: `scale(${0.92 + level * 0.35})` }}\n        >\n          <div className=\"size-full rounded-full opacity-70 blur-2xl [background:conic-gradient(from_0deg,var(--rainbow-1),var(--rainbow-2),var(--rainbow-3),var(--rainbow-4),var(--rainbow-5),var(--rainbow-1))] animate-voice-orb-spin motion-reduce:animate-none\" />\n        </div>\n\n        {/* Core — wrapper breathes (keyframe scale); inner swells with speech. */}\n        <div\n          aria-hidden\n          className=\"relative size-[78%] will-change-transform animate-voice-orb-breathe motion-reduce:animate-none\"\n        >\n          <div\n            className=\"size-full rounded-full shadow-[0_8px_40px_-8px_var(--rainbow-3),inset_0_2px_12px_rgba(255,255,255,0.35)] [background:radial-gradient(circle_at_32%_28%,color-mix(in_oklch,white_55%,var(--rainbow-1)),var(--rainbow-2)_42%,var(--primary)_100%)]\"\n            style={{ transform: `scale(${1 + level * 0.22})` }}\n          >\n            {/* Specular highlight to read as a lit sphere, not a flat disc. */}\n            <span className=\"absolute left-[22%] top-[16%] size-[28%] rounded-full bg-white/55 blur-md\" />\n          </div>\n        </div>\n\n        {/* Listening ring — expands and fades, faster the louder the input. */}\n        <div\n          aria-hidden\n          className=\"pointer-events-none absolute inset-0 rounded-full border border-[var(--ring)] opacity-0 data-[on=true]:animate-voice-orb-ring motion-reduce:animate-none\"\n          data-on={state === \"listening\"}\n          style={{ animationDuration: `${1.6 - level * 0.7}s` }}\n        />\n      </div>\n    );\n  },\n);\nVoiceOrb.displayName = \"VoiceOrb\";\n\n/**\n * Drives a `0`–`1` amplitude from a `MediaStream` (e.g. a microphone) or any\n * audio source you wrap in one. Returns `0` when `stream` is `null`, on the\n * server, or where Web Audio is unavailable, so it's safe to call\n * unconditionally and hand straight to {@link VoiceOrb}'s `amplitude`.\n */\nexport function useAudioAmplitude(stream: MediaStream | null): number {\n  const [amplitude, setAmplitude] = React.useState(0);\n\n  React.useEffect(() => {\n    if (!stream) {\n      setAmplitude(0);\n      return;\n    }\n    const Ctx =\n      typeof window !== \"undefined\"\n        ? (window.AudioContext ??\n          (window as unknown as { webkitAudioContext?: typeof AudioContext })\n            .webkitAudioContext)\n        : undefined;\n    if (!Ctx) return;\n\n    const ctx = new Ctx();\n    const source = ctx.createMediaStreamSource(stream);\n    const analyser = ctx.createAnalyser();\n    analyser.fftSize = 1024;\n    source.connect(analyser);\n    const data = new Uint8Array(analyser.frequencyBinCount);\n    let raf = 0;\n\n    const tick = () => {\n      analyser.getByteTimeDomainData(data);\n      // RMS of the waveform around the 128 zero-point → perceptual loudness.\n      let sum = 0;\n      for (let i = 0; i < data.length; i++) {\n        const v = (data[i] - 128) / 128;\n        sum += v * v;\n      }\n      setAmplitude(Math.min(1, Math.sqrt(sum / data.length) * 3));\n      raf = requestAnimationFrame(tick);\n    };\n    tick();\n\n    return () => {\n      cancelAnimationFrame(raf);\n      source.disconnect();\n      ctx.close();\n    };\n  }, [stream]);\n\n  return amplitude;\n}\n\nexport { VoiceOrb };\n",
+      "type": "registry:ui",
+      "target": "components/godui/voice-orb.tsx"
+    }
+  ],
+  "cssVars": {
+    "theme": {
+      "animate-voice-orb-spin": "voice-orb-spin 8s linear infinite",
+      "animate-voice-orb-breathe": "voice-orb-breathe 4s ease-in-out infinite",
+      "animate-voice-orb-ring": "voice-orb-ring 1.6s ease-out infinite"
+    }
+  },
+  "css": {
+    "@keyframes voice-orb-spin": {
+      "to": {
+        "transform": "rotate(360deg)"
+      }
+    },
+    "@keyframes voice-orb-breathe": {
+      "0%, 100%": {
+        "transform": "scale(1)"
+      },
+      "50%": {
+        "transform": "scale(1.04)"
+      }
+    },
+    "@keyframes voice-orb-ring": {
+      "0%": {
+        "transform": "scale(0.85)",
+        "opacity": "0.6"
+      },
+      "100%": {
+        "transform": "scale(1.4)",
+        "opacity": "0"
+      }
+    }
+  },
+  "type": "registry:ui"
+}

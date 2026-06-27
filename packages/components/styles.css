@@ -126,6 +126,38 @@
   --animate-mask-urban-out: mask-button-out 0.7s steps(29) forwards;
   --animate-mask-forest-in: mask-button-in 0.7s steps(70) forwards;
   --animate-mask-forest-out: mask-button-out 0.7s steps(70) forwards;
+
+  /* Voice orb: corona rotation, idle breathing, and the listening ring pulse */
+  --animate-voice-orb-spin: voice-orb-spin 8s linear infinite;
+  --animate-voice-orb-breathe: voice-orb-breathe 4s ease-in-out infinite;
+  --animate-voice-orb-ring: voice-orb-ring 1.6s ease-out infinite;
+}
+
+@keyframes voice-orb-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes voice-orb-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.04);
+  }
+}
+
+@keyframes voice-orb-ring {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
 }
 
 @keyframes shimmer-slide {

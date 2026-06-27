@@ -1558,6 +1558,84 @@
           "target": "components/godui/gooey-fab.tsx"
         }
       ]
+    },
+    {
+      "name": "voice-orb",
+      "type": "registry:ui",
+      "title": "Voice Orb",
+      "description": "A Siri-style audio-reactive orb that breathes when idle, pulses while listening, and swells with the voice as it speaks.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/voice-orb/voice-orb.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/voice-orb.tsx"
+        }
+      ],
+      "cssVars": {
+        "theme": {
+          "animate-voice-orb-spin": "voice-orb-spin 8s linear infinite",
+          "animate-voice-orb-breathe": "voice-orb-breathe 4s ease-in-out infinite",
+          "animate-voice-orb-ring": "voice-orb-ring 1.6s ease-out infinite"
+        }
+      },
+      "css": {
+        "@keyframes voice-orb-spin": {
+          "to": { "transform": "rotate(360deg)" }
+        },
+        "@keyframes voice-orb-breathe": {
+          "0%, 100%": { "transform": "scale(1)" },
+          "50%": { "transform": "scale(1.04)" }
+        },
+        "@keyframes voice-orb-ring": {
+          "0%": { "transform": "scale(0.85)", "opacity": "0.6" },
+          "100%": { "transform": "scale(1.4)", "opacity": "0" }
+        }
+      }
+    },
+    {
+      "name": "morphing-dialog",
+      "type": "registry:ui",
+      "title": "Morphing Dialog",
+      "description": "A card that physically morphs into a modal through a shared layout, then springs back on close.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/morphing-dialog/morphing-dialog.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/morphing-dialog.tsx"
+        }
+      ]
+    },
+    {
+      "name": "reorder-list",
+      "type": "registry:ui",
+      "title": "Reorder List",
+      "description": "A drag-to-reorder list where items lift on grab, spring to place, and neighbours flow around them.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/reorder-list/reorder-list.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/reorder-list.tsx"
+        }
+      ]
+    },
+    {
+      "name": "fluid-cursor",
+      "type": "registry:ui",
+      "title": "Fluid Cursor",
+      "description": "A spring-lagged blend-mode cursor that trails the pointer and swells over interactive elements.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/fluid-cursor/fluid-cursor.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/fluid-cursor.tsx"
+        }
+      ]
     }
   ]
 }
