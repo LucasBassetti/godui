@@ -15,12 +15,11 @@ export function VoiceOrbDemo() {
   const micAmp = useAudioAmplitude(stream);
 
   // Synthetic amplitude when no mic is attached, so the orb always feels alive.
+  // Idle is handled in render (amplitude 0), so the loop only runs while active —
+  // and it's kicked off via rAF so no setState fires synchronously in the effect.
   const [synthAmp, setSynthAmp] = React.useState(0);
   React.useEffect(() => {
-    if (stream || state === "idle") {
-      setSynthAmp(0);
-      return;
-    }
+    if (stream || state === "idle") return;
     let raf = 0;
     const loop = () => {
       const t = performance.now() / 1000;
@@ -28,9 +27,11 @@ export function VoiceOrbDemo() {
       setSynthAmp(base + base * Math.sin(t * 6) * Math.sin(t * 1.7));
       raf = requestAnimationFrame(loop);
     };
-    loop();
+    raf = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(raf);
   }, [state, stream]);
+
+  const amplitude = stream ? micAmp : state === "idle" ? 0 : synthAmp;
 
   const toggleMic = async () => {
     if (stream) {
@@ -49,7 +50,7 @@ export function VoiceOrbDemo() {
 
   return (
     <div className="flex w-full flex-col items-center gap-8 py-6">
-      <VoiceOrb state={state} amplitude={stream ? micAmp : synthAmp} />
+      <VoiceOrb state={state} amplitude={amplitude} />
 
       <div className="flex flex-wrap items-center justify-center gap-2">
         {STATES.map((s) => (
