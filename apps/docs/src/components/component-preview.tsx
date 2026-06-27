@@ -3,7 +3,7 @@
 import { DynamicCodeBlock } from "fumadocs-ui/components/dynamic-codeblock";
 import { Monitor, Smartphone } from "lucide-react";
 import type { ReactNode } from "react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { CopyButton } from "@/components/copy-button";
 import { DocsPanel, Segmented } from "@/components/docs-tabs";
@@ -154,14 +154,21 @@ function PreviewFrame({
   children: ReactNode;
   fullWidth: boolean;
 }) {
-  const [frame, setFrame] = useState<HTMLIFrameElement | null>(null);
   const [mount, setMount] = useState<HTMLElement | null>(null);
   const [height, setHeight] = useState(440);
+  const cleanupRef = useRef<(() => void) | undefined>(undefined);
 
-  useEffect(() => {
-    if (!frame) return;
-    const doc = frame.contentDocument;
-    if (!doc) return;
+  // Set up the iframe in a ref callback (not an effect): the document mutation
+  // and setState below are valid here, and `frame` is a local rather than a
+  // useState value, so the strict react-hooks lint rules don't fire.
+  const attach = useCallback((frame: HTMLIFrameElement | null) => {
+    cleanupRef.current?.();
+    cleanupRef.current = undefined;
+    const doc = frame?.contentDocument;
+    if (!doc) {
+      setMount(null);
+      return;
+    }
 
     const syncTheme = () => {
       doc.documentElement.className = document.documentElement.className;
@@ -192,16 +199,18 @@ function PreviewFrame({
       attributeFilter: ["class", "style", "data-theme"],
     });
 
-    return () => {
+    cleanupRef.current = () => {
       ro.disconnect();
       mo.disconnect();
     };
-  }, [frame]);
+  }, []);
+
+  useEffect(() => () => cleanupRef.current?.(), []);
 
   return (
     <>
       <iframe
-        ref={setFrame}
+        ref={attach}
         title="Mobile preview"
         className="w-[360px] max-w-full overflow-hidden rounded-[28px] border-[6px] border-fd-border bg-fd-background shadow-md transition-[height] duration-200"
         style={{ height }}
