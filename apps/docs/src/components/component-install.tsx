@@ -36,8 +36,8 @@ type ComponentInstallProps = {
   componentName?: string;
   /**
    * Registry variant to bake into the install (e.g. a background pattern id).
-   * When set, the command + Manual source use the full-URL `?variant=` form
-   * served by the dynamic registry route, and the namespace note is hidden.
+   * When set, the command + Manual source append the `?variant=` query served
+   * by the dynamic registry route.
    */
   variant?: string;
   /**
@@ -155,10 +155,8 @@ export function ComponentInstall({
 
   const cliCommand = useMemo(
     () =>
-      variant
-        ? `${getExecPrefix(manager)} shadcn@latest add "${REGISTRY_BASE}/${itemName}.json${query}"`
-        : `${getExecPrefix(manager)} shadcn@latest add @godui/${itemName}`,
-    [manager, itemName, variant, query],
+      `${getExecPrefix(manager)} shadcn@latest add "${REGISTRY_BASE}/${itemName}.json${query}"`,
+    [manager, itemName, query],
   );
 
   // Pull the built registry item so the Manual tab can show the source directly.
@@ -185,12 +183,6 @@ export function ComponentInstall({
     dependencies.length > 0
       ? `${getAddPrefix(manager)} ${dependencies.join(" ")}`
       : null;
-
-  const registryConfig = `{
-  "registries": {
-    "@godui": "${REGISTRY_BASE}/{name}.json"
-  }
-}`;
 
   const cssText = item?.css ? cssObjectToString(item.css) : "";
   const hasDeps = Boolean(depsCommand);
@@ -231,19 +223,6 @@ export function ComponentInstall({
               </pre>
             </div>
           </div>
-          {variant ? null : (
-            <>
-              <p className="text-sm text-fd-muted-foreground">
-                Requires the <code>@godui</code> namespace in your{" "}
-                <code>components.json</code> (one-time setup):
-              </p>
-              <DynamicCodeBlock
-                lang="json"
-                code={registryConfig}
-                codeblock={{ allowCopy: true, className: "my-0" }}
-              />
-            </>
-          )}
         </div>
       ) : (
         <div className="mt-4 space-y-4">
