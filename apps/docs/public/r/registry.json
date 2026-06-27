@@ -668,6 +668,139 @@
       ]
     },
     {
+      "name": "swipe-deck",
+      "type": "registry:ui",
+      "title": "Swipe Deck",
+      "description": "A physics, Tinder-style swipeable card deck with throw-to-dismiss, directional intent, and keyboard controls.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "dependencies": ["framer-motion"],
+      "files": [
+        {
+          "path": "packages/components/src/swipe-deck/swipe-deck.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/swipe-deck.tsx"
+        }
+      ]
+    },
+    {
+      "name": "image-accordion",
+      "type": "registry:ui",
+      "title": "Image Accordion",
+      "description": "Horizontal image panels that expand on hover to reveal their caption — an elegant, space-efficient gallery.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/image-accordion/image-accordion.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/image-accordion.tsx"
+        }
+      ]
+    },
+    {
+      "name": "card-swap",
+      "type": "registry:ui",
+      "title": "Card Swap",
+      "description": "A 3D stack of cards that cycles through a showcase loop, with pointer parallax and spring re-flow.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "dependencies": ["framer-motion"],
+      "files": [
+        {
+          "path": "packages/components/src/card-swap/card-swap.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/card-swap.tsx"
+        }
+      ]
+    },
+    {
+      "name": "scroll-stack",
+      "type": "registry:ui",
+      "title": "Scroll Stack",
+      "description": "Pinned cards that scale, recede, and stack as the page scrolls — the premium feature-reveal section.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "dependencies": ["framer-motion"],
+      "files": [
+        {
+          "path": "packages/components/src/scroll-stack/scroll-stack.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/scroll-stack.tsx"
+        }
+      ]
+    },
+    {
+      "name": "liquid-image",
+      "type": "registry:ui",
+      "title": "Liquid Image",
+      "description": "A premium hover effect that ripples and distorts an image like liquid, intensifying with cursor speed.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "dependencies": ["framer-motion"],
+      "files": [
+        {
+          "path": "packages/components/src/liquid-image/liquid-image.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/liquid-image.tsx"
+        }
+      ]
+    },
+    {
+      "name": "text-scramble",
+      "type": "registry:ui",
+      "title": "Text Scramble",
+      "description": "Characters cycle through random glyphs and resolve into the target text — a decrypt / matrix reveal.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "dependencies": ["framer-motion"],
+      "files": [
+        {
+          "path": "packages/components/src/text-scramble/text-scramble.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/text-scramble.tsx"
+        }
+      ]
+    },
+    {
+      "name": "particle-dissolve",
+      "type": "registry:ui",
+      "title": "Particle Dissolve",
+      "description": "Text or an image is sampled into particles that scatter and reform — a dramatic entrance or transition.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "dependencies": ["framer-motion"],
+      "files": [
+        {
+          "path": "packages/components/src/particle-dissolve/particle-dissolve.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/particle-dissolve.tsx"
+        }
+      ]
+    },
+    {
+      "name": "spotlight-reveal",
+      "type": "registry:ui",
+      "title": "Spotlight Reveal",
+      "description": "A cursor-following flashlight that cuts through the top layer to expose a hidden layer beneath.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "dependencies": ["framer-motion"],
+      "files": [
+        {
+          "path": "packages/components/src/spotlight-reveal/spotlight-reveal.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/spotlight-reveal.tsx"
+        }
+      ]
+    },
+    {
+      "name": "image-trail",
+      "type": "registry:ui",
+      "title": "Image Trail",
+      "description": "Images spawn along the pointer's path, pop in, and drift away — the signature portfolio hover effect.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/image-trail/image-trail.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/image-trail.tsx"
+        }
+      ]
+    },
+    {
       "name": "spotlight-card",
       "type": "registry:ui",
       "title": "Spotlight Card",

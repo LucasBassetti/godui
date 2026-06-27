@@ -1,0 +1,86 @@
+---
+title: Text Scramble
+description: Characters cycle through random glyphs and resolve into the target text — a decrypt / matrix reveal.
+---
+
+import { TextScramble } from "@godui/components";
+import { TextScrambleDemo } from "@/components/demos/text-scramble-demo";
+
+Each character flickers through a glyph pool then locks into place, left to right — the unresolved glyphs glow in the accent color until they settle. When the text changes, only the characters that differ re-scramble. The demo below swaps words on a timer.
+
+<ComponentPreview
+  story="text-textscramble"
+  code={`import { TextScramble } from "@/components/godui/text-scramble";
+
+export function Decode() {
+  return <TextScramble text="Decrypting…" trigger="in-view" charset="symbols" className="font-mono text-4xl font-semibold" />;
+}`}
+>
+  <TextScrambleDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="TextScramble" />
+
+Each position is given a staggered start and end frame; before its start it
+shows the previous character, between them a random glyph from the charset, and
+after, the resolved character. Changing `text` animates from the current string
+to the next, so only the differing characters move.
+
+## Usage
+
+```tsx
+import { TextScramble } from "@/components/godui/text-scramble";
+```
+
+```tsx
+<TextScramble text="Decrypting…" />
+```
+
+### Charsets
+
+Choose `alphanumeric`, `symbols`, `katakana`, or `binary` — or pass your own
+string of glyphs.
+
+```tsx
+<TextScramble text="01001000" charset="binary" />
+<TextScramble text="アクセス" charset="アイウエオカキクケコ" />
+```
+
+### Triggers
+
+`mount` runs once on load, `in-view` waits until scrolled into view, and `hover`
+runs on pointer enter.
+
+```tsx
+<TextScramble text="Hover me" trigger="hover" />
+```
+
+### Tuning
+
+`speed` is the ms per frame (lower is faster); `spread` is how widely the
+per-character stagger is spread.
+
+```tsx
+<TextScramble text="Loading" speed={20} spread={40} />
+```
+
+## Accessibility
+
+The resolved text is always present as a visually hidden, selectable string, so
+assistive tech and copy/paste get clean text while the animated glyphs are
+`aria-hidden`. When `prefers-reduced-motion` is set, the text is shown resolved
+with no scramble.
+
+## Props
+
+| Prop      | Type                                              | Default          | Description                                          |
+| --------- | ------------------------------------------------- | ---------------- | ---------------------------------------------------- |
+| `text`    | `string`                                          | —                | The resolved text; changing it re-scrambles the diff.|
+| `trigger` | `"mount" \| "in-view" \| "hover"`                 | `"mount"`        | When the first scramble runs.                        |
+| `charset` | `"alphanumeric" \| "symbols" \| "katakana" \| "binary"` \| `string` | `"alphanumeric"` | Glyph pool used while unresolved.                    |
+| `speed`   | `number`                                          | `28`             | Milliseconds per frame — lower is faster.            |
+| `spread`  | `number`                                          | `28`             | Max stagger spread, in frames.                       |
+
+`TextScramble` also forwards every standard `<span>` attribute to the root element.

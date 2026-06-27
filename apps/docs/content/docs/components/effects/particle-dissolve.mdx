@@ -1,0 +1,82 @@
+---
+title: Particle Dissolve
+description: Text or an image is sampled into particles that scatter and reform — a dramatic entrance or transition.
+---
+
+import { ParticleDissolve } from "@godui/components";
+import { ParticleDissolveDemo } from "@/components/demos/particle-dissolve-demo";
+
+The source — a headline, a logo, or an image — is sampled into thousands of particles that fly in from scatter to form the shape, hold with a subtle shimmer, then disperse and reform. A strong second-read moment for a hero.
+
+<ComponentPreview
+  story="effects-particledissolve"
+  code={`import { ParticleDissolve } from "@/components/godui/particle-dissolve";
+
+export function Hero() {
+  return <ParticleDissolve text="GodUI" mode="loop" trigger="in-view" className="text-primary" />;
+}`}
+>
+  <ParticleDissolveDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="ParticleDissolve" />
+
+The source is drawn to an offscreen canvas and sampled on a grid; every opaque
+pixel becomes a particle whose colour is taken from the source (so images keep
+their colours). A single `requestAnimationFrame` loop eases a global
+form/scatter progress, with a per-particle delay for the stagger.
+
+## Usage
+
+```tsx
+import { ParticleDissolve } from "@/components/godui/particle-dissolve";
+```
+
+### Text
+
+```tsx
+<ParticleDissolve text="Launch" className="text-primary" />
+```
+
+The particle colour follows the canvas's CSS `color`, so a Tailwind text utility
+(`text-primary`) just works — or pass an explicit `color`.
+
+### Image
+
+```tsx
+<ParticleDissolve src="/logo.png" width={480} height={480} />
+```
+
+Images must be same-origin or CORS-enabled to be sampled.
+
+### Modes & triggers
+
+`mode` sets the resting behaviour (`assemble`, `disperse`, or `loop`); `trigger`
+decides when it starts (`mount`, `in-view`, or `hover`).
+
+```tsx
+<ParticleDissolve text="Hover me" mode="assemble" trigger="hover" />
+```
+
+## Accessibility
+
+The canvas exposes the text as its `aria-label` (`role="img"`). When
+`prefers-reduced-motion` is set, the shape is drawn once, fully formed, with no
+animation.
+
+## Props
+
+| Prop           | Type                                    | Default        | Description                                          |
+| -------------- | --------------------------------------- | -------------- | ---------------------------------------------------- |
+| `text`         | `string`                                | —              | Text to render as particles (ignored when `src` set).|
+| `src`          | `string`                                | —              | Image URL to sample into particles.                  |
+| `mode`         | `"assemble" \| "disperse" \| "loop"`    | `"assemble"`   | Resting behaviour once triggered.                    |
+| `trigger`      | `"mount" \| "in-view" \| "hover"`       | `"in-view"`    | When the animation starts.                           |
+| `density`      | `number`                                | `4`            | Pixel sampling step — smaller is denser.             |
+| `particleSize` | `number`                                | `2`            | Particle dot size in px.                             |
+| `color`        | `string`                                | text color     | Fill colour for text particles.                      |
+| `width` / `height` | `number`                            | `640` / `240`  | Canvas size in CSS px.                               |
+
+`ParticleDissolve` also forwards every standard `<canvas>` attribute.

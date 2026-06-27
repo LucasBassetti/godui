@@ -1,0 +1,95 @@
+---
+title: Scroll Stack
+description: Pinned cards that scale, recede, and stack as the page scrolls — the premium feature-reveal section.
+---
+
+import { ScrollStack } from "@godui/components";
+import { ScrollStackDemo } from "@/components/demos/scroll-stack-demo";
+
+Each card pins to the top of the scroller while the next one rises over it. As a card is buried it eases down to a smaller scale, dims, and blurs — so depth reads even on a flat stack. Scroll the frame below.
+
+<ComponentPreview
+  story="layout-scrollstack"
+  code={`import { ScrollStack } from "@/components/godui/scroll-stack";
+
+const cards = [
+  { eyebrow: "01 — Capture", title: "Everything in one place", body: "Pin ideas, tasks, and docs to a single surface that scrolls with you." },
+  { eyebrow: "02 — Organize", title: "Structure that scales", body: "Group work into projects and views without losing the thread." },
+  { eyebrow: "03 — Ship", title: "Move from plan to done", body: "Track progress and hand off — the stack keeps the story intact." },
+];
+
+export function FeatureStack() {
+  return (
+    <ScrollStack height="30rem" pinTop="10%" className="max-w-xl rounded-xl border border-border">
+      {cards.map((c) => (
+        <article key={c.title} className="w-full rounded-2xl border border-border bg-card p-10 shadow-xl">
+          <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">{c.eyebrow}</p>
+          <h3 className="mt-3 text-2xl font-semibold text-foreground">{c.title}</h3>
+          <p className="mt-2 text-muted-foreground">{c.body}</p>
+        </article>
+      ))}
+    </ScrollStack>
+  );
+}`}
+>
+  <ScrollStackDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="ScrollStack" />
+
+`ScrollStack` drives every card from a single scroll progress value. There is no
+scroll-jacking — the cards are plain `position: sticky` elements, and the scale,
+brightness, and blur are interpolated from how far each card has been buried.
+
+## Usage
+
+```tsx
+import { ScrollStack } from "@/components/godui/scroll-stack";
+```
+
+By default the stack tracks the **page** scroll — the right choice for a full
+landing-page section. Each card occupies one viewport of scroll distance.
+
+```tsx
+<ScrollStack>
+  <Card>First</Card>
+  <Card>Second</Card>
+  <Card>Third</Card>
+</ScrollStack>
+```
+
+### Self-contained scroller
+
+Pass `height` to make the stack its own scroll viewport — useful inside a bounded
+region rather than the whole page.
+
+```tsx
+<ScrollStack height="32rem" pinTop="10%">
+  {/* cards */}
+</ScrollStack>
+```
+
+### Tuning the depth
+
+```tsx
+<ScrollStack baseScale={0.8} peek={20} blur={false} />
+```
+
+## Accessibility
+
+When `prefers-reduced-motion` is set, `ScrollStack` renders the cards as a plain
+vertical list — no pinning, scaling, or blur.
+
+## Props
+
+| Prop        | Type      | Default   | Description                                                                 |
+| ----------- | --------- | --------- | --------------------------------------------------------------------------- |
+| `height`    | `string`  | —         | When set, the stack becomes its own scroll viewport of this height.         |
+| `baseScale` | `number`  | `0.86`    | Scale of the most-buried card at the back of the stack.                     |
+| `peek`      | `number`  | `16`      | How far (px) each stacked card peeks below the one in front of it.          |
+| `blur`      | `boolean` | `true`    | Blur buried cards as they recede.                                           |
+| `pinTop`    | `string`  | `"12vh"`  | Distance from the top of the scroller where cards pin.                      |
+
+`ScrollStack` also forwards every standard `<div>` attribute to the root element.
