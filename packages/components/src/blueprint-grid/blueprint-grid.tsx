@@ -61,7 +61,7 @@ const BlueprintGrid = React.forwardRef<HTMLDivElement, BlueprintGridProps>(
         const rect = root.getBoundingClientRect();
         root.style.setProperty("--bx", `${ev.clientX - rect.left}px`);
         root.style.setProperty("--by", `${ev.clientY - rect.top}px`);
-        root.style.setProperty("--bo", "1");
+        root.style.setProperty("--bo", "0.55");
       };
       const onLeave = () => root.style.setProperty("--bo", "0");
       target.addEventListener("pointermove", onMove);
@@ -90,7 +90,7 @@ const BlueprintGrid = React.forwardRef<HTMLDivElement, BlueprintGridProps>(
     // clipped to a disc that follows the cursor.
     const spotMask = `radial-gradient(circle ${spotlightRadius}px at var(--bx, 50%) var(--by, 50%), #000 0%, #000 35%, transparent 75%)`;
     const spotStyle: React.CSSProperties = {
-      backgroundImage: `radial-gradient(circle ${spotlightRadius}px at var(--bx, 50%) var(--by, 50%), color-mix(in oklab, ${spotlightColor}, transparent 78%), transparent 60%), ${buildGrid(spotlightColor)}`,
+      backgroundImage: `radial-gradient(circle ${spotlightRadius}px at var(--bx, 50%) var(--by, 50%), color-mix(in oklab, ${spotlightColor}, transparent 90%), transparent 65%), ${buildGrid(`color-mix(in oklab, ${spotlightColor}, transparent 35%)`)}`,
       backgroundSize: `auto, ${gridSize}`,
       opacity: "var(--bo)",
       WebkitMaskImage: spotMask,

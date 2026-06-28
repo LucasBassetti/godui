@@ -1,7 +1,7 @@
 "use client";
 
 import { MagicButton } from "@godui/components";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { DocsHeader } from "./docs/_components/docs-header";
 
@@ -14,7 +14,7 @@ const structuredData = {
       "@type": "WebPage",
       "@id": `${SITE_URL}/#webpage`,
       url: SITE_URL,
-      name: "GodUI — Motion UI Collection for Modern Interfaces",
+      name: "GodUI — UI Collection for Modern Interfaces",
       description:
         "An open-source collection of beautifully crafted motion components built with React, TypeScript, Tailwind CSS, Motion, and shadcn/ui.",
       isPartOf: { "@id": `${SITE_URL}/#website` },
@@ -24,7 +24,6 @@ const structuredData = {
 };
 
 export default function Home() {
-  const router = useRouter();
   const gridRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -98,7 +97,7 @@ export default function Home() {
           Actively building — star us on GitHub
         </a>
         <h1 className="max-w-3xl text-balance font-semibold text-4xl text-fd-foreground tracking-tight sm:text-5xl md:text-6xl">
-          Motion UI Collection for Modern Interfaces
+          UI Collection for Modern Interfaces
         </h1>
         <p className="max-w-md text-balance text-fd-muted-foreground text-sm sm:text-base">
           An open-source collection of beautifully crafted motion components
@@ -110,9 +109,11 @@ export default function Home() {
           and{" "}
           <span className="font-semibold text-fd-foreground">shadcn/ui</span>.
         </p>
-        <MagicButton size="lg" onClick={() => router.push("/docs/components")}>
-          Browse Components
-        </MagicButton>
+        <Link href="/docs/components" className="inline-block">
+          <MagicButton size="lg" tabIndex={-1}>
+            Browse Components
+          </MagicButton>
+        </Link>
       </section>
       <script
         type="application/ld+json"

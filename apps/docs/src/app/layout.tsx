@@ -8,7 +8,7 @@ import { SiteStructuredData } from "./structured-data";
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 
-const SITE_TITLE = "GodUI — Motion UI Collection for Modern Interfaces";
+const SITE_TITLE = "GodUI — UI Collection for Modern Interfaces";
 const SITE_DESCRIPTION =
   "An open-source collection of beautifully crafted motion components built with React, TypeScript, Tailwind CSS, Motion, and shadcn/ui.";
 
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "GodUI — Motion UI Collection for Modern Interfaces",
+        alt: "GodUI — UI Collection for Modern Interfaces",
       },
     ],
   },
