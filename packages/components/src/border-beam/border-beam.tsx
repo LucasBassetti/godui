@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, type Transition } from "framer-motion";
+import { motion, type Transition, useReducedMotion } from "framer-motion";
 import * as React from "react";
 
 export type BorderBeamProps = Omit<
@@ -56,6 +56,8 @@ const BorderBeam = React.forwardRef<HTMLDivElement, BorderBeamProps>(
     },
     ref,
   ) => {
+    const reduceMotion = useReducedMotion();
+
     // A square rides the padding-box border path; animating `offset-distance`
     // sweeps it around, and the mask reveals only the border ring.
     const beamStyle = {
@@ -72,18 +74,22 @@ const BorderBeam = React.forwardRef<HTMLDivElement, BorderBeamProps>(
       ? ""
       : "bg-linear-to-l from-(--color-from) via-(--color-to) to-transparent";
 
-    const animate = {
-      offsetDistance: reverse
-        ? [`${100 - initialOffset}%`, `${-initialOffset}%`]
-        : [`${initialOffset}%`, `${100 + initialOffset}%`],
-    };
-    const motionTransition: Transition = {
-      repeat: Number.POSITIVE_INFINITY,
-      ease: "linear",
-      duration,
-      delay: -delay,
-      ...transition,
-    };
+    const animate = reduceMotion
+      ? { offsetDistance: `${initialOffset}%` }
+      : {
+          offsetDistance: reverse
+            ? [`${100 - initialOffset}%`, `${-initialOffset}%`]
+            : [`${initialOffset}%`, `${100 + initialOffset}%`],
+        };
+    const motionTransition: Transition = reduceMotion
+      ? { duration: 0 }
+      : {
+          repeat: Number.POSITIVE_INFINITY,
+          ease: "linear",
+          duration,
+          delay: -delay,
+          ...transition,
+        };
 
     return (
       <div

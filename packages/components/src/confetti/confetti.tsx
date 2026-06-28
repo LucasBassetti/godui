@@ -23,6 +23,9 @@ const DEFAULTS: ConfettiOptions = {
   startVelocity: 45,
   particleCount: 120,
   origin: { y: 0.7 },
+  // Honor the Accessibility principle — canvas-confetti suppresses the burst
+  // when the user prefers reduced motion.
+  disableForReducedMotion: true,
 };
 
 /**

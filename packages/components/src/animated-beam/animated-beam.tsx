@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import * as React from "react";
 
 export type AnimatedBeamProps = {
@@ -61,6 +61,7 @@ export function AnimatedBeam({
   className,
 }: AnimatedBeamProps) {
   const id = React.useId();
+  const reduceMotion = useReducedMotion();
   const [path, setPath] = React.useState("");
   const [box, setBox] = React.useState({ width: 0, height: 0 });
 
@@ -141,18 +142,26 @@ export function AnimatedBeam({
           id={id}
           gradientUnits="userSpaceOnUse"
           initial={{ x1: "0%", x2: "0%", y1: "0%", y2: "0%" }}
-          animate={{
-            x1: gradient.x1,
-            x2: gradient.x2,
-            y1: ["0%", "0%"],
-            y2: ["0%", "0%"],
-          }}
-          transition={{
-            duration,
-            delay,
-            repeat: Number.POSITIVE_INFINITY,
-            ease: "linear",
-          }}
+          animate={
+            reduceMotion
+              ? { x1: "0%", x2: "100%", y1: "0%", y2: "0%" }
+              : {
+                  x1: gradient.x1,
+                  x2: gradient.x2,
+                  y1: ["0%", "0%"],
+                  y2: ["0%", "0%"],
+                }
+          }
+          transition={
+            reduceMotion
+              ? { duration: 0 }
+              : {
+                  duration,
+                  delay,
+                  repeat: Number.POSITIVE_INFINITY,
+                  ease: "linear",
+                }
+          }
         >
           <stop stopColor={gradientStartColor} stopOpacity="0" />
           <stop stopColor={gradientStartColor} />

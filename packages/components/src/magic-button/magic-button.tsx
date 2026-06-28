@@ -27,7 +27,7 @@ const FRONT_BASE =
   "relative block rounded-xl [will-change:translate] -translate-y-[4px] [transition:translate_600ms_cubic-bezier(0.3,0.7,0.4,1)] group-hover:-translate-y-[6px] group-hover:[transition:translate_250ms_cubic-bezier(0.3,0.7,0.4,1.5)] group-focus-visible:-translate-y-[6px] group-focus-visible:[transition:translate_250ms_cubic-bezier(0.3,0.7,0.4,1.5)] group-active:-translate-y-[2px] group-active:[transition:translate_34ms] group-data-[pressed=true]:-translate-y-[2px] group-data-[pressed=true]:[transition:translate_34ms] group-disabled:translate-y-0 group-disabled:[transition:none]";
 
 const RAINBOW_FILL =
-  "[background-image:linear-gradient(90deg,var(--rainbow-1),var(--rainbow-5),var(--rainbow-3),var(--rainbow-4),var(--rainbow-2))] [background-size:200%_100%] animate-magic-rainbow";
+  "[background-image:linear-gradient(90deg,var(--rainbow-1),var(--rainbow-5),var(--rainbow-3),var(--rainbow-4),var(--rainbow-2))] [background-size:200%_100%] animate-magic-rainbow motion-reduce:animate-none";
 
 const SOLID_SHADOW = "bg-[hsl(0deg_0%_0%_/_0.25)] blur-[4px]";
 const RAINBOW_SHADOW = `${RAINBOW_FILL} blur-[12px] opacity-70`;

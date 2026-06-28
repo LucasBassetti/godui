@@ -1,6 +1,11 @@
 "use client";
 
-import { useInView, useMotionValue, useSpring } from "framer-motion";
+import {
+  useInView,
+  useMotionValue,
+  useReducedMotion,
+  useSpring,
+} from "framer-motion";
 import * as React from "react";
 
 export type NumberTickerProps = Omit<
@@ -39,6 +44,7 @@ const NumberTicker = React.forwardRef<HTMLSpanElement, NumberTickerProps>(
     forwardedRef,
   ) => {
     const ref = React.useRef<HTMLSpanElement>(null);
+    const reduceMotion = useReducedMotion();
     const motionValue = useMotionValue(
       direction === "down" ? value : startValue,
     );
@@ -53,12 +59,24 @@ const NumberTicker = React.forwardRef<HTMLSpanElement, NumberTickerProps>(
     React.useEffect(() => {
       if (!isInView) return;
 
+      const target = direction === "down" ? startValue : value;
       const timer = setTimeout(() => {
-        motionValue.set(direction === "down" ? startValue : value);
+        motionValue.set(target);
+        // Reduced motion: land on the final value instead of springing to it.
+        if (reduceMotion) springValue.jump(target);
       }, delay * 1000);
 
       return () => clearTimeout(timer);
-    }, [motionValue, isInView, delay, value, direction, startValue]);
+    }, [
+      motionValue,
+      springValue,
+      isInView,
+      delay,
+      value,
+      direction,
+      startValue,
+      reduceMotion,
+    ]);
 
     React.useEffect(
       () =>
