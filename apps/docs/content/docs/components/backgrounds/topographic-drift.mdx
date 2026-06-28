@@ -10,6 +10,7 @@ beneath them evolves. Editorial, cartographic, and calm — drawn with marching
 squares on one Canvas. Drop it as the first child of a `relative` container.
 
 <ComponentPreview
+  fullWidth
   story="backgrounds-topographic-drift"
   code={`import { TopographicDrift } from "@/components/godui/topographic-drift";
 
@@ -25,7 +26,7 @@ export function TopographicDriftDemo() {
   );
 }`}
 >
-  <div className="relative flex h-[360px] w-full items-center justify-center overflow-hidden rounded-xl border border-border bg-background">
+  <div className="relative flex w-full flex-1 items-center justify-center overflow-hidden bg-background">
     <TopographicDrift />
     <div className="relative z-raised text-center">
       <h2 className="font-semibold text-3xl tracking-tight">Chart the unknown</h2>
@@ -61,6 +62,7 @@ at 2, pauses off-screen and on hidden tabs, and renders a static map under
 More levels, finer terrain.
 
 <ComponentPreview
+  fullWidth
   code={`import { TopographicDrift } from "@/components/godui/topographic-drift";
 
 export function TopographicDriftDense() {
@@ -71,7 +73,7 @@ export function TopographicDriftDense() {
   );
 }`}
 >
-  <div className="relative h-[320px] w-full overflow-hidden rounded-xl border border-border bg-background">
+  <div className="relative w-full flex-1 overflow-hidden bg-background">
     <TopographicDrift lineCount={16} noiseScale={0.006} />
   </div>
 </ComponentPreview>

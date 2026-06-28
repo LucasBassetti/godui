@@ -11,6 +11,7 @@ cursor and merges with the rest. Playful and organic. Drop it as the first child
 of a `relative` container.
 
 <ComponentPreview
+  fullWidth
   story="backgrounds-liquid-metaballs"
   code={`import { LiquidMetaballs } from "@/components/godui/liquid-metaballs";
 
@@ -26,7 +27,7 @@ export function LiquidMetaballsDemo() {
   );
 }`}
 >
-  <div className="relative flex h-[360px] w-full items-center justify-center overflow-hidden rounded-xl border border-border bg-background">
+  <div className="relative flex w-full flex-1 items-center justify-center overflow-hidden bg-background">
     <LiquidMetaballs />
     <div className="relative z-raised text-center">
       <h2 className="font-semibold text-3xl tracking-tight">Fluid by nature</h2>
@@ -62,6 +63,7 @@ coexist safely. Pauses off-screen and on hidden tabs; freezes under
 Raise `gooeyness` and `blobCount`.
 
 <ComponentPreview
+  fullWidth
   code={`import { LiquidMetaballs } from "@/components/godui/liquid-metaballs";
 
 export function LiquidMetaballsGooey() {
@@ -72,7 +74,7 @@ export function LiquidMetaballsGooey() {
   );
 }`}
 >
-  <div className="relative h-[320px] w-full overflow-hidden rounded-xl border border-border bg-background">
+  <div className="relative w-full flex-1 overflow-hidden bg-background">
     <LiquidMetaballs gooeyness={24} blobCount={9} />
   </div>
 </ComponentPreview>

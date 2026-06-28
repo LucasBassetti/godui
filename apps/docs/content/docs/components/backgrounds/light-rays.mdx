@@ -11,6 +11,7 @@ the spotlight-from-the-heavens hero. Pure CSS. Drop it as the first child of a
 `relative overflow-hidden` container.
 
 <ComponentPreview
+  fullWidth
   story="backgrounds-light-rays"
   code={`import { LightRays } from "@/components/godui/light-rays";
 
@@ -26,7 +27,7 @@ export function LightRaysDemo() {
   );
 }`}
 >
-  <div className="relative flex h-[360px] w-full items-center justify-center overflow-hidden rounded-xl border border-border bg-background">
+  <div className="relative flex w-full flex-1 items-center justify-center overflow-hidden bg-background">
     <LightRays />
     <div className="relative z-raised text-center">
       <h2 className="font-semibold text-3xl tracking-tight">Step into the light</h2>
@@ -59,6 +60,7 @@ content at `z-raised`+. Color defaults to `--color-primary`. The sweep stops und
 ### Warm
 
 <ComponentPreview
+  fullWidth
   code={`import { LightRays } from "@/components/godui/light-rays";
 
 export function LightRaysWarm() {
@@ -69,7 +71,7 @@ export function LightRaysWarm() {
   );
 }`}
 >
-  <div className="relative h-[320px] w-full overflow-hidden rounded-xl border border-border bg-background">
+  <div className="relative w-full flex-1 overflow-hidden bg-background">
     <LightRays color="#f59e0b" rayCount={18} intensity={0.7} />
   </div>
 </ComponentPreview>

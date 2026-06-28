@@ -11,6 +11,7 @@ ruled `lines`, a `dots` matrix, or a floor-fading `perspective` grid. Pure CSS.
 Drop it as the first child of a `relative overflow-hidden` container.
 
 <ComponentPreview
+  fullWidth
   story="backgrounds-blueprint-grid"
   code={`import { BlueprintGrid } from "@/components/godui/blueprint-grid";
 
@@ -26,7 +27,7 @@ export function BlueprintGridDemo() {
   );
 }`}
 >
-  <div className="relative flex h-[360px] w-full items-center justify-center overflow-hidden rounded-xl border border-border bg-background">
+  <div className="relative flex w-full flex-1 items-center justify-center overflow-hidden bg-background">
     <BlueprintGrid />
     <div className="relative z-raised text-center">
       <h2 className="font-semibold text-3xl tracking-tight">Built with precision</h2>
@@ -59,6 +60,7 @@ content at `z-raised`+. Color defaults to `--color-border`. The sweep hides unde
 ### Dots
 
 <ComponentPreview
+  fullWidth
   code={`import { BlueprintGrid } from "@/components/godui/blueprint-grid";
 
 export function BlueprintGridDots() {
@@ -69,7 +71,7 @@ export function BlueprintGridDots() {
   );
 }`}
 >
-  <div className="relative h-[300px] w-full overflow-hidden rounded-xl border border-border bg-background">
+  <div className="relative w-full flex-1 overflow-hidden bg-background">
     <BlueprintGrid variant="dots" />
   </div>
 </ComponentPreview>
@@ -77,6 +79,7 @@ export function BlueprintGridDots() {
 ### Perspective
 
 <ComponentPreview
+  fullWidth
   code={`import { BlueprintGrid } from "@/components/godui/blueprint-grid";
 
 export function BlueprintGridPerspective() {
@@ -87,7 +90,7 @@ export function BlueprintGridPerspective() {
   );
 }`}
 >
-  <div className="relative h-[300px] w-full overflow-hidden rounded-xl border border-border bg-background">
+  <div className="relative w-full flex-1 overflow-hidden bg-background">
     <BlueprintGrid variant="perspective" color="#6366f1" />
   </div>
 </ComponentPreview>

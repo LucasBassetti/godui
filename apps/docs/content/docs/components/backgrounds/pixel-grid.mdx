@@ -15,6 +15,7 @@ color defaults to the `--color-foreground` theme token and re-resolves on theme
 change, so it tracks light and dark automatically.
 
 <ComponentPreview
+  fullWidth
   story="backgrounds-pixel-grid"
   code={`import { PixelGrid } from "@/components/godui/pixel-grid";
 
@@ -26,7 +27,7 @@ export function PixelGridDemo() {
   );
 }`}
 >
-  <div className="relative min-h-[320px] w-full overflow-hidden rounded-xl border border-border bg-background">
+  <div className="relative w-full flex-1 overflow-hidden bg-background">
     <PixelGrid interactive={false} />
   </div>
 </ComponentPreview>
@@ -59,6 +60,7 @@ animate. With the default `cursorReveal="hidden"`, the rest stay invisible — a
 spotlight that follows the pointer.
 
 <ComponentPreview
+  fullWidth
   code={`import { PixelGrid } from "@/components/godui/pixel-grid";
 
 export function PixelGridCursor() {
@@ -70,7 +72,7 @@ export function PixelGridCursor() {
   );
 }`}
 >
-  <div className="relative flex min-h-[240px] w-full items-center justify-center overflow-hidden rounded-xl border border-border bg-background">
+  <div className="relative flex w-full flex-1 items-center justify-center overflow-hidden bg-background">
     <PixelGrid interactive />
     <p className="relative z-10 text-sm font-medium text-foreground">Move your cursor across the grid</p>
   </div>
@@ -82,6 +84,7 @@ export function PixelGridCursor() {
 opacity, so the cursor lights up an already-present grid.
 
 <ComponentPreview
+  fullWidth
   code={`import { PixelGrid } from "@/components/godui/pixel-grid";
 
 export function PixelGridCursorDim() {
@@ -93,7 +96,7 @@ export function PixelGridCursorDim() {
   );
 }`}
 >
-  <div className="relative flex min-h-[240px] w-full items-center justify-center overflow-hidden rounded-xl border border-border bg-background">
+  <div className="relative flex w-full flex-1 items-center justify-center overflow-hidden bg-background">
     <PixelGrid interactive cursorReveal="dim" />
     <p className="relative z-10 text-sm font-medium text-foreground">Move your cursor across the grid</p>
   </div>
@@ -104,6 +107,7 @@ export function PixelGridCursorDim() {
 Pass any CSS color string to `color` to override the theme token.
 
 <ComponentPreview
+  fullWidth
   code={`import { PixelGrid } from "@/components/godui/pixel-grid";
 
 export function PixelGridColored() {
@@ -114,7 +118,7 @@ export function PixelGridColored() {
   );
 }`}
 >
-  <div className="relative min-h-[240px] w-full overflow-hidden rounded-xl border border-border bg-background">
+  <div className="relative w-full flex-1 overflow-hidden bg-background">
     <PixelGrid interactive={false} color="oklch(0.7 0.18 280)" maxOpacity={0.5} />
   </div>
 </ComponentPreview>
@@ -124,6 +128,7 @@ export function PixelGridColored() {
 Smaller `squareSize` and `gridGap` pack the field tighter.
 
 <ComponentPreview
+  fullWidth
   code={`import { PixelGrid } from "@/components/godui/pixel-grid";
 
 export function PixelGridDense() {
@@ -134,7 +139,7 @@ export function PixelGridDense() {
   );
 }`}
 >
-  <div className="relative min-h-[240px] w-full overflow-hidden rounded-xl border border-border bg-background">
+  <div className="relative w-full flex-1 overflow-hidden bg-background">
     <PixelGrid interactive={false} squareSize={2} gridGap={2} flickerChance={0.2} maxOpacity={0.4} />
   </div>
 </ComponentPreview>
