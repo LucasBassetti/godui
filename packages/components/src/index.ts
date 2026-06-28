@@ -176,15 +176,6 @@ export {
 export { ImageCompare, type ImageCompareProps } from "./image-compare";
 export { ImageTrail, type ImageTrailProps } from "./image-trail";
 export { Lamp, type LampProps } from "./lamp";
-export {
-  DURATION,
-  EASE,
-  ENTER,
-  EXIT,
-  motionSafe,
-  SPRING,
-  STAGGER,
-} from "./lib/motion";
 export { LightRays, type LightRaysProps } from "./light-rays";
 export {
   LiquidGlassCard,
