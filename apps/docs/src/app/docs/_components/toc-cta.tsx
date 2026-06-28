@@ -11,7 +11,7 @@ export function TocCta() {
         Built with GodUI
       </p>
       <p className="mt-1 text-[12.5px] text-fd-muted-foreground leading-relaxed">
-        Open-source animated components and effects for design engineers.
+        Beautifully crafted motion components for modern interfaces.
       </p>
       <a
         href={REPO}

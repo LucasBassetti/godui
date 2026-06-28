@@ -8,9 +8,9 @@ import { SiteStructuredData } from "./structured-data";
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 
-const SITE_TITLE = "GodUI — Animated React UI Components for Design Engineers";
+const SITE_TITLE = "GodUI — Motion UI Collection for Modern Interfaces";
 const SITE_DESCRIPTION =
-  "GodUI is an open-source collection of animated UI components for React, built with TypeScript, Tailwind CSS, and Motion. Copy-paste, shadcn/ui-ready components for design engineers.";
+  "An open-source collection of beautifully crafted motion components built with React, TypeScript, Tailwind CSS, Motion, and shadcn/ui.";
 
 export const metadata: Metadata = {
   title: {
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "GodUI — UI collection for Design Engineers",
+        alt: "GodUI — Motion UI Collection for Modern Interfaces",
       },
     ],
   },
