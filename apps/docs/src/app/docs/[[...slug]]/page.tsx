@@ -46,7 +46,6 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
       <DocsDescription className="docs-lead">
         {page.data.description}
       </DocsDescription>
-      <hr className="docs-lead-divider" />
       <DocsBody>
         <MDX components={getMDXComponents()} />
       </DocsBody>

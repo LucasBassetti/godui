@@ -79,15 +79,72 @@ body {
 @media (width >= 48rem) {
   #nd-docs-layout {
     --fd-sidebar-width: 260px;
+    /* Cap + center the whole layout (header included — it's a grid area inside
+       this container) so the sidenav and TOC sit close to the content instead
+       of pinned to the screen edges. */
+    max-width: 90rem;
+    margin-inline: auto;
+    /* Gutter between the viewport edge and the centered layout — used to anchor
+       the fixed header / sidebar / TOC to the layout's edges. */
+    --gutter: max(0px, calc((100vw - 90rem) / 2));
+    /* The header is fixed (leaves grid flow), so reserve its height here. */
+    padding-top: 3.5rem;
   }
 
   [data-sidebar-placeholder] {
     --fd-sidebar-width: 260px;
   }
+
+  /* Pin the header, sidebar and TOC to the viewport with position: fixed so they
+     stay put during overscroll/rubber-band — only the scrolling document body
+     (the content) bounces. Each is anchored to the centered layout via --gutter. */
+  /* Scoped to the docs layout: --gutter only exists here. The home page reuses
+     <DocsHeader> outside #nd-docs-layout, so it keeps its default sticky header. */
+  #nd-docs-layout #nd-nav {
+    position: fixed !important;
+    top: 0 !important;
+    left: var(--gutter) !important;
+    right: var(--gutter) !important;
+  }
+
+  #nd-sidebar {
+    position: fixed !important;
+    top: 3.5rem !important;
+    left: var(--gutter) !important;
+    width: var(--fd-sidebar-width) !important;
+    height: calc(100dvh - 3.5rem) !important;
+    overflow-y: auto !important;
+  }
+
+  #nd-toc {
+    position: fixed !important;
+    top: 3.5rem !important;
+    right: var(--gutter) !important;
+    height: calc(100dvh - 3.5rem) !important;
+    overflow-y: auto !important;
+  }
+
+  /* Tighten the gap between the header and the content. */
+  #nd-page {
+    padding-top: 1.5rem !important;
+  }
+
+  /* The mobile-only "Menu" block is hidden on desktop but its wrapper's mb-4
+     margin still pushed the first nav label down. Remove it, and zero the first
+     section label's top margin, so GETTING STARTED lines up with the breadcrumb. */
+  #nd-sidebar .mb-4:has(> .md\:hidden) {
+    display: none !important;
+  }
+
+  #nd-sidebar [data-radix-scroll-area-viewport] p.mt-6:first-of-type {
+    margin-top: 0 !important;
+  }
 }
 
+/* Empty search-trigger container (search is disabled) — drop its top padding so
+   the first nav label (GETTING STARTED) lines up with the content breadcrumb. */
 #nd-sidebar > .flex.flex-col.gap-3.p-4 {
-  padding: 0.5rem 0.875rem 0.25rem;
+  padding: 0 0.875rem 0.25rem;
 }
 
 /* Denser nav — flat sections, more items visible without scrolling.
@@ -112,9 +169,7 @@ body {
   margin-top: 0;
 }
 
-/* Group labels — uppercase, letter-spaced, with a rainbow dot marker whose
-   color cycles --rainbow-1..5 by group order (separators are <p>, the only
-   <p> children of the nav list, so nth-of-type counts groups). */
+/* Group labels — uppercase, letter-spaced. */
 #nd-sidebar p.mt-6 {
   font-size: 0.6875rem;
   font-weight: 650;
@@ -123,51 +178,9 @@ body {
   color: var(--color-fd-muted-foreground);
 }
 
-#nd-sidebar p.mt-6::before {
-  content: "";
-  flex: none;
-  width: 5px;
-  height: 5px;
-  border-radius: 99px;
-  background: var(--color-fd-muted-foreground);
-}
-
-#nd-sidebar p.mt-6:nth-of-type(5n + 1)::before {
-  background: var(--rainbow-1);
-}
-#nd-sidebar p.mt-6:nth-of-type(5n + 2)::before {
-  background: var(--rainbow-2);
-}
-#nd-sidebar p.mt-6:nth-of-type(5n + 3)::before {
-  background: var(--rainbow-3);
-}
-#nd-sidebar p.mt-6:nth-of-type(5n + 4)::before {
-  background: var(--rainbow-4);
-}
-#nd-sidebar p.mt-6:nth-of-type(5n + 5)::before {
-  background: var(--rainbow-5);
-}
-
-/* Active link — keep Fumadocs' primary/10 pill, add a rainbow edge indicator
-   pinned to the sidebar's left gutter. Items are position:relative. */
+/* Active link — keep Fumadocs' primary/10 pill, just a touch bolder. */
 #nd-sidebar a[data-active="true"] {
   font-weight: 550;
-}
-
-#nd-sidebar a[data-active="true"]::before {
-  content: "";
-  position: absolute;
-  left: -0.875rem;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 3px;
-  height: 18px;
-  border-radius: 0 3px 3px 0;
-  background: linear-gradient(
-    var(--rainbow-1),
-    var(--rainbow-3),
-    var(--rainbow-5)
-  );
 }
 
 /* Content header — larger title, muted lead, thin divider before the body. */
@@ -183,13 +196,6 @@ p.docs-lead {
   line-height: 1.55;
   color: var(--color-fd-muted-foreground);
   text-wrap: pretty;
-}
-
-hr.docs-lead-divider {
-  height: 1px;
-  border: 0;
-  background: var(--color-fd-border);
-  margin: 2rem 0 0;
 }
 
 /* Component preview — seamless code block inside the card */
@@ -385,13 +391,12 @@ hr.docs-lead-divider {
   -webkit-box-decoration-break: clone;
 }
 
-/* Sidebar — right divider, blend with page background, stick below header */
+/* Sidebar — blend with page background, no divider. Positioning (fixed at md+)
+   lives in the layout media query above; on mobile it stays Fumadocs' drawer.
+   Override Fumadocs' default border-e utility on the sidebar element. */
 #nd-sidebar {
-  border-right: 1px solid var(--color-fd-border) !important;
+  border-inline-end: 0 !important;
   background: var(--color-fd-background) !important;
-  position: sticky !important;
-  top: var(--fd-nav-height, 3.5rem) !important;
-  height: calc(100dvh - var(--fd-nav-height, 3.5rem)) !important;
 }
 
 [data-theme-toggle] {
@@ -423,13 +428,9 @@ hr.docs-lead-divider {
     var(--color-fd-primary) 16%,
     var(--color-fd-border)
   );
-  --table-glow: color-mix(in srgb, var(--color-fd-primary) 10%, transparent);
   border-radius: var(--radius-xl);
   border: 1px solid var(--table-border);
   background: var(--color-fd-card);
-  box-shadow:
-    0 1px 2px var(--table-glow),
-    0 12px 32px color-mix(in srgb, var(--color-fd-primary) 5%, transparent);
 }
 
 .docs-table {
@@ -591,42 +592,12 @@ hr.docs-lead-divider {
   font-size: 0.875rem;
 }
 
-.dark .docs-table-wrapper {
-  --table-glow: color-mix(in srgb, var(--color-fd-primary) 18%, transparent);
-  box-shadow:
-    0 1px 2px var(--table-glow),
-    0 12px 40px color-mix(in srgb, var(--color-fd-primary) 8%, transparent),
-    inset 0 1px 0 color-mix(in srgb, var(--color-fd-primary) 8%, transparent);
-}
-
 .dark .docs-table thead th {
   background: linear-gradient(
     135deg,
     color-mix(in srgb, var(--color-fd-primary) 14%, var(--color-fd-card)) 0%,
     color-mix(in srgb, var(--color-fd-accent) 70%, var(--color-fd-card)) 100%
   );
-}
-
-/* Logo sunglasses: sweep the rainbow gradient left→right once on hover.
-   Gradient uses userSpaceOnUse + spreadMethod="repeat" so translating by one
-   tile width (256 user units) is seamless and rests on the static rainbow. */
-@keyframes godui-glasses-sweep {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(256px);
-  }
-}
-
-#nd-nav a:hover .godui-glasses-gradient {
-  animation: godui-glasses-sweep 0.9s linear;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  #nd-nav a:hover .godui-glasses-gradient {
-    animation: none;
-  }
 }
 
 /* Copy button: pop the icon in when it swaps to the success check mark. */
