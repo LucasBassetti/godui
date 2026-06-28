@@ -159,7 +159,12 @@ const CommandPalette = React.forwardRef<HTMLDivElement, CommandPaletteProps>(
               initial={{ opacity: 0, scale: 0.96, y: -8, filter: "blur(8px)" }}
               animate={{ opacity: 1, scale: 1, y: 0, filter: "blur(0px)" }}
               exit={{ opacity: 0, scale: 0.97, y: -6, filter: "blur(6px)" }}
-              transition={{ type: "spring", stiffness: 320, damping: 28 }}
+              transition={{
+                type: "spring",
+                stiffness: 320,
+                damping: 32,
+                mass: 0.9,
+              }}
               onKeyDown={handleKeyDown}
               className="relative z-raised flex max-h-[60vh] w-full max-w-xl flex-col overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-xl"
             >

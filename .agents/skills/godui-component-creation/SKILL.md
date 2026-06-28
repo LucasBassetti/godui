@@ -97,6 +97,53 @@ Express CSS-heavy designs (3D buttons, sprite masks, gradients, state machines) 
 
 Only `@keyframes` and the `@theme` token layer belong in CSS. Everything visual is a utility class on the element.
 
+## Motion — use the guideline tokens (required)
+
+All animation must speak the GodUI **motion language**. Do not invent new spring,
+duration, or easing numbers — pick from the documented presets so the new
+component feels like the rest of the library.
+
+**Source of truth:** `packages/components/src/motion/tokens.ts` (re-exported from
+`@godui/components` and from the docs). Copy-paste components are self-contained,
+so **use these values _inline_** — don't import the module into a component.
+The docs/guidelines import it; components mirror the values. They must match.
+
+| Token | Values |
+|-------|--------|
+| `DURATION` | `fast 0.15`, `base 0.2`, `slow 0.3` (seconds) |
+| `EASE` (Motion tuple) | `standard [0.3,0.7,0.4,1]`, `out [0.22,1,0.36,1]`, `back [0.3,0.7,0.4,1.5]`, `inOut [0.65,0,0.35,1]` |
+| `EASE_CSS` (className) | `cubic-bezier(0.3,0.7,0.4,1)` standard · `…,1.5` back · `cubic-bezier(0.22,1,0.36,1)` out |
+| `SPRING` | `smooth {320,32,mass 0.9}` · `crisp {500,40}` · `snappy {520,32}` · `bouncy {170,12,mass 0.1}` |
+| `STAGGER` | `tight 0.03`, `base 0.05`, `loose 0.08` |
+| `ENTER` / `EXIT` | `{opacity:0,y:12}` / `{opacity:0,y:8}` |
+
+Pick the spring by intent: **smooth** = surfaces/morph/shared-layout, **crisp** =
+height/collapse, **snappy** = menus/popovers/overlays pop, **bouncy** =
+magnify/overshoot/follow-through.
+
+Follow the principles ([/docs/guidelines/principles](/docs/guidelines/principles),
+recipes at [/docs/guidelines/patterns](/docs/guidelines/patterns)):
+
+- **Animate `transform` + `opacity` only** (plus `filter: blur` sparingly). These
+  are GPU-cheap; avoid animating layout properties (except `height: auto` for
+  collapse, which is the documented Spring Height pattern).
+- **Always honor reduced motion.** Use `useReducedMotion()` and drop transforms
+  (keep a subtle opacity change or go static); for CSS transitions add
+  `motion-reduce:[transition:none]`. ~Every animated component does this already.
+- **Never `transition: all`** — name exact properties (see §3).
+
+```tsx
+import { motion, useReducedMotion } from "framer-motion";
+
+const reduce = useReducedMotion();
+<motion.div
+  initial={reduce ? false : { opacity: 0, y: 12 }}   // ENTER
+  animate={{ opacity: 1, y: 0 }}
+  exit={reduce ? undefined : { opacity: 0, y: 8 }}     // EXIT
+  transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 520, damping: 32 }} // SPRING.snappy
+/>;
+```
+
 ## 4. Storybook story
 
 ```typescript
@@ -221,6 +268,8 @@ hand-maintained too.
 - **NEVER** create a CSS file or add `@layer components` rules for a component — use inline Tailwind utilities (see §3). Only `@keyframes` + the `@theme` token layer live in `styles.css`.
 - **NEVER** skip `React.forwardRef` — components must forward refs for composition.
 - **NEVER** add `"use client"` unless hooks/client APIs are used.
+- **NEVER** invent spring/duration/easing numbers — use the motion tokens (see "Motion"). Match the documented values inline.
+- **NEVER** ship an animation without a reduced-motion path, and **never** `transition: all`.
 - **NEVER** use arbitrary z-index — use the scale: `z-base`, `z-raised`, `z-overlay`, `z-sticky`, `z-popover`, `z-modal`, `z-toast`.
 - **NEVER** put bare text on its own line inside a block tag in `ComponentPreview` children — MDX wraps it in a `<p>`, causing `<p>`-in-`<p>` hydration errors. Keep text inline (see §5).
 - **NEVER** rely on folder auto-nav for docs — register the page in the root `apps/docs/content/docs/meta.json` (slug `components/{category}/{name}`) and add a `<Card>` in `components/index.mdx`, or it won't appear (see §5).
@@ -241,6 +290,7 @@ hand-maintained too.
 - [ ] Exported (component + prop/variant types) from `index.ts`
 - [ ] `@source "./src"` in `styles.css`
 - [ ] Styles authored as inline Tailwind utilities — no CSS file / no `@layer components` (only `@keyframes` + `@theme` may touch `styles.css`)
+- [ ] Motion uses the guideline tokens (DURATION/EASE/SPRING/STAGGER/ENTER/EXIT) inline — no invented numbers; transform/opacity only; reduced-motion handled (see "Motion")
 - [ ] Storybook story with `tags: ["autodocs"]`
 - [ ] Docs MDX under `components/{category}/` with ComponentPreview + ComponentInstall
 - [ ] ComponentPreview children: text inline in its tag (no `<p>`-in-`<p>` — see §5)

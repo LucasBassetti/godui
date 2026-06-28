@@ -20,7 +20,7 @@ export type TiltCardProps = React.HTMLAttributes<HTMLDivElement> & {
   glare?: boolean;
 };
 
-const SPRING = { stiffness: 200, damping: 18, mass: 0.4 } as const;
+const SPRING = { stiffness: 170, damping: 12, mass: 0.1 } as const;
 
 const ROOT_BASE =
   "relative rounded-2xl border border-border bg-card text-card-foreground shadow-lg [transform-style:preserve-3d] [will-change:transform]";

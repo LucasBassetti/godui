@@ -91,7 +91,7 @@ const SegmentedControl = React.forwardRef<
                   transition={
                     reduceMotion
                       ? { duration: 0 }
-                      : { type: "spring", stiffness: 450, damping: 35 }
+                      : { type: "spring", stiffness: 520, damping: 32 }
                   }
                   className="absolute inset-0 rounded-md bg-background shadow-sm"
                 />

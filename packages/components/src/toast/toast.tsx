@@ -87,7 +87,12 @@ const PEEK = 16; // px each toast peeks out behind the front when collapsed
 const SCALE_STEP = 0.05; // scale lost per depth when collapsed
 const MAX_VISIBLE = 3; // toasts shown behind the front when collapsed
 
-const TOAST_SPRING = { type: "spring", stiffness: 280, damping: 30 } as const;
+const TOAST_SPRING = {
+  type: "spring",
+  stiffness: 320,
+  damping: 32,
+  mass: 0.9,
+} as const;
 
 function useMounted() {
   const [mounted, setMounted] = React.useState(false);

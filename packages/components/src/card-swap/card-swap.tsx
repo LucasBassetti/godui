@@ -110,7 +110,12 @@ const CardSwap = React.forwardRef<HTMLDivElement, CardSwapProps>(
         <motion.div
           className="relative h-full w-full [transform-style:preserve-3d]"
           animate={{ rotateX: tilt.x, rotateY: tilt.y }}
-          transition={{ type: "spring", stiffness: 150, damping: 18 }}
+          transition={{
+            type: "spring",
+            stiffness: 170,
+            damping: 12,
+            mass: 0.1,
+          }}
         >
           {items.map((child, i) => {
             const r = rankOf[i] ?? 0;
@@ -130,7 +135,7 @@ const CardSwap = React.forwardRef<HTMLDivElement, CardSwapProps>(
                 transition={
                   reduce
                     ? { duration: 0 }
-                    : { type: "spring", stiffness: 260, damping: 26 }
+                    : { type: "spring", stiffness: 320, damping: 32, mass: 0.9 }
                 }
               >
                 {child}

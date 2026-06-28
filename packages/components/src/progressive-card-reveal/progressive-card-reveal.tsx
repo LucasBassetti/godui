@@ -36,12 +36,13 @@ const CardIndexContext = React.createContext<number | null>(null);
 // underdamping makes the moving edges wobble, which reads as a flick on hover.
 const LAYOUT_TRANSITION = {
   type: "spring",
-  stiffness: 300,
-  damping: 36,
+  stiffness: 320,
+  damping: 32,
+  mass: 0.9,
 } as const;
 // Crossfade between the collapsed and expanded views. A touch slower than the
 // layout spring so content settles into the new box instead of popping.
-const FADE_TRANSITION = { duration: 0.22, ease: [0.4, 0, 0.2, 1] } as const;
+const FADE_TRANSITION = { duration: 0.2, ease: [0.65, 0, 0.35, 1] } as const;
 const COLLAPSED_RADIUS = 9999;
 const EXPANDED_RADIUS = 20;
 const EXPANDED_WIDTH = "100%";

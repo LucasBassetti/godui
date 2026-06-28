@@ -129,7 +129,7 @@ const OTPInput = React.forwardRef<HTMLInputElement, OTPInputProps>(
                   <motion.span
                     initial={reduceMotion ? false : { opacity: 0, y: 4 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.12 }}
+                    transition={{ duration: 0.15 }}
                   >
                     {char}
                   </motion.span>

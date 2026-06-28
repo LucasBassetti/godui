@@ -37,7 +37,7 @@ const FloatingToolbar = React.forwardRef<HTMLDivElement, FloatingToolbarProps>(
             exit={
               reduceMotion ? { opacity: 0 } : { opacity: 0, y: 8, scale: 0.95 }
             }
-            transition={{ type: "spring", stiffness: 500, damping: 32 }}
+            transition={{ type: "spring", stiffness: 520, damping: 32 }}
             className={`inline-flex items-center gap-0.5 rounded-xl border border-border bg-popover/90 p-1 text-popover-foreground shadow-lg backdrop-blur-md ${
               className ?? ""
             }`}
@@ -54,7 +54,7 @@ const FloatingToolbar = React.forwardRef<HTMLDivElement, FloatingToolbarProps>(
                 onClick={action.onClick}
                 whileHover={reduceMotion ? undefined : { y: -2, scale: 1.08 }}
                 whileTap={reduceMotion ? undefined : { scale: 0.94 }}
-                transition={{ type: "spring", stiffness: 500, damping: 24 }}
+                transition={{ type: "spring", stiffness: 520, damping: 32 }}
                 className={`grid size-9 place-items-center rounded-lg [transition:background-color_150ms_ease,color_150ms_ease] focus:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-40 ${
                   action.active
                     ? "bg-primary text-primary-foreground"

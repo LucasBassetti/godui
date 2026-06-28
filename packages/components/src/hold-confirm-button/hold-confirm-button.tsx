@@ -88,7 +88,7 @@ const HoldConfirmButton = React.forwardRef<
       resetTimer.current = setTimeout(() => {
         if (!mounted.current) return;
         setStatus("idle");
-        animate(progress, 0, { duration: 0.25 });
+        animate(progress, 0, { duration: 0.2 });
       }, 1100);
     };
 
@@ -106,7 +106,12 @@ const HoldConfirmButton = React.forwardRef<
       if (statusRef.current !== "holding") return;
       playback.current?.stop();
       setStatus("idle");
-      animate(progress, 0, { type: "spring", stiffness: 300, damping: 30 });
+      animate(progress, 0, {
+        type: "spring",
+        stiffness: 320,
+        damping: 32,
+        mass: 0.9,
+      });
     };
 
     const handleKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>) => {

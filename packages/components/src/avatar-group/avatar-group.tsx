@@ -90,7 +90,7 @@ const AvatarGroup = React.forwardRef<HTMLDivElement, AvatarGroupProps>(
                 rest: { marginLeft: i === 0 ? 0 : margin, y: 0 },
                 spread: { marginLeft: i === 0 ? 0 : 4, y: -2 },
               }}
-              transition={{ type: "spring", stiffness: 400, damping: 28 }}
+              transition={{ type: "spring", stiffness: 520, damping: 32 }}
               whileHover={reduceMotion ? undefined : { y: -6, scale: 1.06 }}
               style={{ zIndex: i }}
               className={`relative ${sizeClasses[size]} ${ringClasses}`}
@@ -120,7 +120,7 @@ const AvatarGroup = React.forwardRef<HTMLDivElement, AvatarGroupProps>(
               rest: { marginLeft: margin },
               spread: { marginLeft: 4 },
             }}
-            transition={{ type: "spring", stiffness: 400, damping: 28 }}
+            transition={{ type: "spring", stiffness: 520, damping: 32 }}
             style={{ zIndex: visible.length }}
             className={`relative flex items-center justify-center rounded-full bg-muted font-medium text-muted-foreground ring-2 ring-background ${sizeClasses[size]}`}
           >

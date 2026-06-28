@@ -149,7 +149,7 @@ const CircleProgress = React.forwardRef<HTMLDivElement, CircleProps>(
         initial={{ opacity: 0, scale: 0.7 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.7 }}
-        transition={{ type: "spring", stiffness: 400, damping: 28 }}
+        transition={{ type: "spring", stiffness: 520, damping: 32 }}
         style={{ width: size, height: size }}
         className="pointer-events-auto relative grid place-items-center rounded-full border border-border bg-background text-foreground shadow-lg"
       >

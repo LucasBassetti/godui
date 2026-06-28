@@ -51,7 +51,7 @@ const itemVariants: Variants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { type: "spring", damping: 22, stiffness: 200 },
+    transition: { type: "spring", damping: 32, stiffness: 320, mass: 0.9 },
   },
 };
 

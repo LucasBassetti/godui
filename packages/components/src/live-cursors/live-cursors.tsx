@@ -74,7 +74,7 @@ function CursorFlag({
       initial={{ opacity: 0, scale: 0.5 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.5 }}
-      transition={{ duration: 0.16 }}
+      transition={{ duration: 0.15 }}
       className="absolute left-0 top-0 z-popover flex items-start"
     >
       <svg

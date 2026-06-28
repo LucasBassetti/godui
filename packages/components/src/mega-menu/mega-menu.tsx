@@ -75,7 +75,7 @@ const MegaMenu = React.forwardRef<HTMLElement, MegaMenuProps>(
 
     const spring = reduceMotion
       ? { duration: 0 }
-      : ({ type: "spring", stiffness: 380, damping: 36 } as const);
+      : ({ type: "spring", stiffness: 320, damping: 32, mass: 0.9 } as const);
 
     const scheduleOpen = (index: number) => {
       clearTimeout(closeTimer.current);
@@ -122,7 +122,7 @@ const MegaMenu = React.forwardRef<HTMLElement, MegaMenuProps>(
 
     const sizeTransition = reduceMotion
       ? { duration: 0 }
-      : ({ duration: 0.26, ease: [0.16, 1, 0.3, 1] } as const);
+      : ({ duration: 0.3, ease: [0.22, 1, 0.36, 1] } as const);
 
     return (
       <nav
@@ -153,7 +153,7 @@ const MegaMenu = React.forwardRef<HTMLElement, MegaMenuProps>(
                 transition={
                   reduceMotion
                     ? { duration: 0 }
-                    : { duration: 0.22, ease: [0.16, 1, 0.3, 1] }
+                    : { duration: 0.2, ease: [0.22, 1, 0.36, 1] }
                 }
                 className="absolute top-full left-1/2 z-popover mt-2 max-h-[70vh] w-72 max-w-[calc(100vw-1.5rem)] -translate-x-1/2 overflow-y-auto rounded-2xl border border-border bg-background shadow-2xl"
               >
@@ -196,7 +196,7 @@ const MegaMenu = React.forwardRef<HTMLElement, MegaMenuProps>(
                                       ? { duration: 0 }
                                       : {
                                           duration: 0.2,
-                                          ease: [0.16, 1, 0.3, 1],
+                                          ease: [0.22, 1, 0.36, 1],
                                         }
                                   }
                                   className="overflow-hidden"
@@ -347,7 +347,7 @@ const MegaMenu = React.forwardRef<HTMLElement, MegaMenuProps>(
               transition={
                 reduceMotion
                   ? { duration: 0 }
-                  : { duration: 0.18, ease: [0.16, 1, 0.3, 1] }
+                  : { duration: 0.2, ease: [0.22, 1, 0.36, 1] }
               }
               onMouseEnter={() => clearTimeout(closeTimer.current)}
               className="absolute top-full left-0 z-popover mt-2 origin-top-left rounded-2xl border border-border bg-background shadow-2xl"
@@ -368,7 +368,7 @@ const MegaMenu = React.forwardRef<HTMLElement, MegaMenuProps>(
                     animate={{ opacity: 1 }}
                     exit={reduceMotion ? { opacity: 0 } : { opacity: 0 }}
                     transition={
-                      reduceMotion ? { duration: 0 } : { duration: 0.13 }
+                      reduceMotion ? { duration: 0 } : { duration: 0.15 }
                     }
                     className="flex w-max gap-2 p-2"
                   >

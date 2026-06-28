@@ -77,7 +77,7 @@ const Breadcrumbs = React.forwardRef<HTMLElement, BreadcrumbsProps>(
 
     const spring = reduceMotion
       ? { duration: 0 }
-      : ({ type: "spring", stiffness: 500, damping: 34 } as const);
+      : ({ type: "spring", stiffness: 520, damping: 32 } as const);
 
     const collapse =
       maxItems >= 2 && items.length > maxItems && collapsible && !expanded;

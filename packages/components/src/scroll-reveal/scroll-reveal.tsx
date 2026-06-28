@@ -63,8 +63,9 @@ const ScrollReveal = React.forwardRef<HTMLDivElement, ScrollRevealProps>(
     const { scrollY } = useScroll();
     const scrollVelocity = useVelocity(scrollY);
     const smoothVelocity = useSpring(scrollVelocity, {
-      damping: 50,
-      stiffness: 400,
+      damping: 32,
+      stiffness: 320,
+      mass: 0.9,
     });
     const skew = useTransform(smoothVelocity, [-2000, 0, 2000], [6, 0, -6], {
       clamp: true,
@@ -95,8 +96,9 @@ const ScrollReveal = React.forwardRef<HTMLDivElement, ScrollRevealProps>(
         animate={isInView ? visible : hidden}
         transition={{
           type: "spring",
-          damping: 24,
-          stiffness: 180,
+          damping: 32,
+          stiffness: 320,
+          mass: 0.9,
           delay,
         }}
         {...(props as React.ComponentProps<typeof motion.div>)}

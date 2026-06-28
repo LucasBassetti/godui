@@ -70,7 +70,12 @@ const SourceCitation = React.forwardRef<HTMLSpanElement, SourceCitationProps>(
               initial={{ opacity: 0, y: 6, scale: 0.96 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 6, scale: 0.96 }}
-              transition={{ type: "spring", stiffness: 340, damping: 26 }}
+              transition={{
+                type: "spring",
+                stiffness: 320,
+                damping: 32,
+                mass: 0.9,
+              }}
               onMouseEnter={show}
               onMouseLeave={hide}
               className="absolute bottom-full left-1/2 z-popover mb-2 block w-72 max-w-[80vw] origin-bottom -translate-x-1/2 rounded-xl border border-border bg-popover p-3 text-left shadow-xl"

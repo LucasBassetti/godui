@@ -94,7 +94,12 @@ const Drawer = React.forwardRef<HTMLDivElement, DrawerProps>(
               initial={hidden}
               animate={shown}
               exit={hidden}
-              transition={{ type: "spring", damping: 32, stiffness: 320 }}
+              transition={{
+                type: "spring",
+                damping: 32,
+                stiffness: 320,
+                mass: 0.9,
+              }}
               drag={isBottom ? "y" : "x"}
               dragConstraints={{ top: 0, bottom: 0, left: 0, right: 0 }}
               dragElastic={
