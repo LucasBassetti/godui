@@ -3,7 +3,7 @@
 import { DynamicCodeBlock } from "fumadocs-ui/components/dynamic-codeblock";
 import { useState } from "react";
 import { CopyButton } from "@/components/copy-button";
-import { DocsPanel, DocsTabs, PillTabs } from "@/components/docs-tabs";
+import { DocsPanel, PillTabs, Segmented } from "@/components/docs-tabs";
 
 type PackageManager = "pnpm" | "npm" | "yarn" | "bun";
 
@@ -67,7 +67,7 @@ export function MCPInstall() {
 
   return (
     <DocsPanel className="my-6">
-      <DocsTabs
+      <Segmented
         tabs={[
           { value: "cli", label: "CLI" },
           { value: "manual", label: "Manual" },

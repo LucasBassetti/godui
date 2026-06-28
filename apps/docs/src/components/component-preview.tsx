@@ -265,7 +265,7 @@ export function ComponentPreview({
   return (
     <DocsPanel
       className={cn(
-        "component-preview my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card shadow-xs",
+        "component-preview my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card",
         className,
       )}
     >

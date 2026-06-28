@@ -126,7 +126,11 @@ export default function Home() {
           WebkitMaskComposite: "source-in",
         }}
       />
-      <DocsHeader className="border-transparent" showSidebarTrigger={false} />
+      <DocsHeader
+        className="mx-auto w-full max-w-[90rem] border-transparent"
+        showSidebarTrigger={false}
+        showScrollBorder={false}
+      />
       <section className="relative z-10 flex flex-1 flex-col items-center justify-center gap-8 px-4 text-center">
         <a
           href="https://github.com/LucasBassetti/godui"
