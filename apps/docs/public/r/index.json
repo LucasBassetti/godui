@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "generatedAt": "2026-06-28T15:48:44.788Z",
+  "generatedAt": "2026-06-28T15:51:18.464Z",
   "components": [
     {
       "name": "accordion",
@@ -623,15 +623,6 @@
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add @godui/source-citations"
-    },
-    {
-      "name": "sparkles",
-      "title": "Sparkles",
-      "description": "A canvas field of twinkling particles rendered behind its content.",
-      "category": "Effects",
-      "dependencies": ["framer-motion"],
-      "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/sparkles"
     },
     {
       "name": "spotlight-card",

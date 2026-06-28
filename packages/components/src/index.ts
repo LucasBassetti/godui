@@ -360,7 +360,6 @@ export {
   SourceList,
   type SourceListProps,
 } from "./source-citations";
-export { Sparkles, type SparklesProps } from "./sparkles";
 export {
   SpotlightCard,
   type SpotlightCardProps,
