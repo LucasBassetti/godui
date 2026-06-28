@@ -4,6 +4,7 @@ import { DynamicCodeBlock } from "fumadocs-ui/components/dynamic-codeblock";
 import { useEffect, useMemo, useState } from "react";
 import { CopyButton } from "@/components/copy-button";
 import { DocsPanel, PillTabs, Segmented } from "@/components/docs-tabs";
+import { LangBadge } from "@/components/lang-badge";
 
 type PackageManager = "pnpm" | "npm" | "yarn" | "bun";
 
@@ -208,7 +209,7 @@ export function ComponentInstall({
       {tab === "cli" ? (
         <div className="mt-4 space-y-3">
           <div className="component-install-cli overflow-hidden rounded-xl border border-fd-border bg-fd-card shadow-sm">
-            <div className="flex items-center justify-between gap-3 border-b border-fd-border px-4 py-3">
+            <div className="flex items-center justify-between gap-3 border-b border-fd-border px-4 py-2.5">
               <PillTabs
                 tabs={packageManagers.map((value) => ({ value, label: value }))}
                 value={manager}
@@ -216,7 +217,7 @@ export function ComponentInstall({
               />
               <CopyButton value={cliCommand} />
             </div>
-            <div className="flex items-center gap-3 px-4 py-4">
+            <div className="flex items-center gap-3 px-4 py-2.5">
               <TerminalIcon />
               <pre className="overflow-x-auto font-mono text-sm text-fd-foreground">
                 <code>{cliCommand}</code>
@@ -247,8 +248,8 @@ export function ComponentInstall({
                   <p className="text-sm font-medium text-fd-foreground">
                     {depsStep}. Install dependencies
                   </p>
-                  <div className="overflow-hidden rounded-xl border border-fd-border bg-fd-card shadow-sm">
-                    <div className="flex items-center justify-between gap-3 border-b border-fd-border px-4 py-3">
+                  <div className="component-install-cli overflow-hidden rounded-xl border border-fd-border bg-fd-card shadow-sm">
+                    <div className="flex items-center justify-between gap-3 border-b border-fd-border px-4 py-2.5">
                       <PillTabs
                         tabs={packageManagers.map((value) => ({
                           value,
@@ -261,7 +262,7 @@ export function ComponentInstall({
                       />
                       <CopyButton value={depsCommand} />
                     </div>
-                    <div className="flex items-center gap-3 px-4 py-4">
+                    <div className="flex items-center gap-3 px-4 py-2.5">
                       <TerminalIcon />
                       <pre className="overflow-x-auto font-mono text-sm text-fd-foreground">
                         <code>{depsCommand}</code>
@@ -275,18 +276,23 @@ export function ComponentInstall({
                 <p className="text-sm font-medium text-fd-foreground">
                   {copyStep}. Copy the component into your project
                 </p>
-                {(item.files ?? []).map((file) => (
-                  <div key={file.target ?? file.path} className="space-y-1">
-                    <p className="font-mono text-xs text-fd-muted-foreground">
-                      {file.target ?? file.path}
-                    </p>
+                {(item.files ?? []).map((file) => {
+                  const path = file.target ?? file.path;
+                  const lang = langFromPath(path);
+                  return (
                     <DynamicCodeBlock
-                      lang={langFromPath(file.target ?? file.path)}
+                      key={path}
+                      lang={lang}
                       code={file.content}
-                      codeblock={{ allowCopy: true, className: "my-0" }}
+                      codeblock={{
+                        title: path,
+                        icon: <LangBadge lang={lang} />,
+                        allowCopy: true,
+                        className: "my-0",
+                      }}
                     />
-                  </div>
-                ))}
+                  );
+                })}
               </div>
 
               {hasCss ? (
@@ -301,7 +307,12 @@ export function ComponentInstall({
                   <DynamicCodeBlock
                     lang="css"
                     code={cssText}
-                    codeblock={{ allowCopy: true, className: "my-0" }}
+                    codeblock={{
+                      title: "globals.css",
+                      icon: <LangBadge lang="css" />,
+                      allowCopy: true,
+                      className: "my-0",
+                    }}
                   />
                 </div>
               ) : null}

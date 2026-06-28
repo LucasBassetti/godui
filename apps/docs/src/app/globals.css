@@ -130,14 +130,15 @@ body {
   }
 
   /* The mobile-only "Menu" block is hidden on desktop but its wrapper's mb-4
-     margin still pushed the first nav label down. Remove it, and zero the first
-     section label's top margin, so GETTING STARTED lines up with the breadcrumb. */
+     margin still pushed the first nav label down. Remove it, then offset the
+     first section label by the same amount as #nd-page's top padding so
+     GETTING STARTED lines up with the content breadcrumb. */
   #nd-sidebar .mb-4:has(> .md\:hidden) {
     display: none !important;
   }
 
   #nd-sidebar [data-radix-scroll-area-viewport] p.mt-6:first-of-type {
-    margin-top: 0 !important;
+    margin-top: 0.75rem !important;
   }
 }
 
@@ -164,9 +165,10 @@ body {
   margin-bottom: 0.25rem;
 }
 
-/* First section title sits flush with the top of the nav. */
+/* First section title aligns with the content breadcrumb (see the
+   first-of-type rule above, which wins via !important). */
 #nd-sidebar p.mt-6:first-child {
-  margin-top: 0;
+  margin-top: 0.75rem;
 }
 
 /* Group labels — uppercase, letter-spaced. */
@@ -252,6 +254,86 @@ p.docs-lead {
 .shiki {
   border-color: var(--code-block-border, var(--color-fd-border)) !important;
   box-shadow: none !important;
+}
+
+/* Fumadocs code-block copy button (Usage + Manual install) — match the
+   bordered icon-button used by <CopyButton> in Preview/CLI/Manual-deps. */
+figure.shiki button[aria-label] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-fd-border);
+  background: var(--color-fd-card);
+  color: var(--color-fd-muted-foreground);
+  transition:
+    color 150ms ease,
+    border-color 150ms ease,
+    transform 150ms ease;
+}
+
+figure.shiki button[aria-label]:hover {
+  border-color: color-mix(in srgb, var(--color-fd-primary) 45%, transparent);
+  color: var(--color-fd-primary);
+  background: var(--color-fd-card);
+}
+
+figure.shiki button[aria-label]:active {
+  transform: scale(0.96);
+}
+
+figure.shiki button[aria-label][data-checked] {
+  border-color: color-mix(in srgb, var(--color-fd-success) 45%, transparent);
+  color: var(--color-fd-success);
+}
+
+figure.shiki button[aria-label] svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* Swap Fumadocs' default lucide Clipboard glyph for the two-squares "copy"
+   icon used by <CopyButton>. Idle state only — keep lucide's check on copy. */
+figure.shiki button[aria-label]:not([data-checked]) svg {
+  display: none;
+}
+
+figure.shiki button[aria-label]:not([data-checked])::before {
+  content: "";
+  width: 1rem;
+  height: 1rem;
+  background: currentColor;
+  -webkit-mask: var(--godui-copy-icon) center / contain no-repeat;
+  mask: var(--godui-copy-icon) center / contain no-repeat;
+}
+
+/* Match the code-block title bar height to the install blocks' header
+   (px-4 py-2.5). Fumadocs ships a shorter fixed h-9.5 bar, which makes the
+   Usage header read smaller than the CLI/Manual headers right beside it. */
+figure.shiki > div:has(> figcaption) {
+  height: auto;
+  min-height: 0;
+  padding-top: 0.625rem;
+  padding-bottom: 0.625rem;
+  /* Header sits on --card, one step off the --code-block body, so the title
+     bar reads as a distinct band rather than blending into the code. */
+  background: var(--color-fd-card);
+}
+
+/* Same header/body tone split for the custom CLI + Manual-deps blocks
+   (wrapper bg is --code-block; lift the header to --card). */
+.component-install-cli > div:first-child {
+  background: var(--color-fd-card);
+}
+
+/* Fumadocs wraps the copy button in a `-me-2` action slot, so its copy icon
+   sits closer to the edge than the install blocks' copy (flush with px-4).
+   Drop the negative margin so the right gap matches across all headers. */
+figure.shiki div:has(> button[aria-label]) {
+  margin-inline-end: 0;
 }
 
 .component-install-cli {
@@ -421,183 +503,118 @@ p.docs-lead {
   color: var(--color-fd-foreground) !important;
 }
 
-/* Props tables — celestial data grid */
+/* Props tables — Stripe/Linear-style API reference grid.
+   NOTE: --color-fd-muted aliases to --muted-foreground (mid-grey) in this
+   theme, so it is NEVER used as a surface. Raw var(--muted) is the light
+   surface; var(--color-fd-muted-foreground) is correct for label text. */
 .docs-table-wrapper {
-  --table-border: color-mix(
-    in srgb,
-    var(--color-fd-primary) 16%,
-    var(--color-fd-border)
-  );
-  border-radius: var(--radius-xl);
-  border: 1px solid var(--table-border);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-fd-border);
   background: var(--color-fd-card);
+  overflow: hidden;
 }
 
 .docs-table {
+  width: 100%;
   border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.875rem;
 }
 
+/* Header — subtle raised fill (raw --muted, NOT the aliased fd-muted) gives
+   the bar definition in both themes; uppercase labels stay quiet. */
 .docs-table thead th {
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--color-fd-primary) 10%, var(--color-fd-card)) 0%,
-    color-mix(in srgb, var(--color-fd-accent) 55%, var(--color-fd-card)) 100%
-  );
-  color: color-mix(
-    in srgb,
-    var(--color-fd-foreground) 70%,
-    var(--color-fd-accent-foreground)
-  );
+  background: color-mix(in srgb, var(--muted) 60%, var(--color-fd-card));
+  color: var(--color-fd-muted-foreground);
   font-weight: 600;
   font-size: 0.6875rem;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  padding: 0.75rem 1.125rem;
+  padding: 0.75rem 1.25rem;
   text-align: left;
-  border-bottom: 1px solid var(--table-border);
+  border-bottom: 1px solid var(--color-fd-border);
   white-space: nowrap;
 }
 
-.docs-table thead th:first-child {
-  border-top-left-radius: calc(var(--radius-xl) - 1px);
-}
-
-.docs-table thead th:last-child {
-  border-top-right-radius: calc(var(--radius-xl) - 1px);
-}
-
+/* Body — generous rhythm, clearer row dividers */
 .docs-table tbody td {
-  padding: 0.875rem 1.125rem;
+  padding: 0.875rem 1.25rem;
   border-bottom: 1px solid
-    color-mix(in srgb, var(--color-fd-border) 70%, transparent);
+    color-mix(in srgb, var(--color-fd-border) 75%, transparent);
   vertical-align: top;
-  line-height: 1.55;
+  line-height: 1.6;
 }
 
 .docs-table tbody tr:last-child td {
   border-bottom: none;
 }
 
+/* Row hover — visible but soft scan aid */
 .docs-table tbody tr {
-  background: var(--color-fd-card);
+  transition: background-color 150ms ease;
 }
 
-.docs-table td:first-child code {
-  display: inline-block;
+.docs-table tbody tr:hover {
+  background: color-mix(in srgb, var(--muted) 55%, transparent);
+}
+
+/* Strip Fumadocs' inline-code chrome from every cell up front */
+.docs-table-wrapper .docs-table code {
+  display: inline;
+  box-shadow: none;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0;
+  padding: 0 !important;
   font-family: var(--font-mono);
+}
+
+/* Prop name (col 1) — the key: plain semibold mono in full-strength ink */
+.docs-table-wrapper .docs-table td:first-child code {
   font-size: 0.8125rem;
   font-weight: 600;
-  color: var(--color-fd-primary);
-  background: color-mix(in srgb, var(--color-fd-primary) 12%, transparent);
-  border: 1px solid color-mix(in srgb, var(--color-fd-primary) 18%, transparent);
-  border-radius: calc(var(--radius) - 2px);
-  padding: 0.125rem 0.5rem;
+  color: var(--color-fd-foreground) !important;
   white-space: nowrap;
 }
 
 .docs-table thead th:nth-child(2),
 .docs-table tbody td:nth-child(2) {
-  max-width: 14rem;
-  width: 14rem;
+  max-width: 20rem;
 }
 
-.docs-table td:nth-child(2) code {
-  display: inline-block;
-  max-width: 100%;
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--color-fd-accent-foreground);
-  background: color-mix(in srgb, var(--color-fd-accent) 50%, transparent);
-  border: 1px solid
-    color-mix(in srgb, var(--color-fd-accent-foreground) 12%, transparent);
-  border-radius: calc(var(--radius) - 2px);
-  padding: 0.125rem 0.375rem;
-  line-height: 1.4;
+/* Type (col 2) — secondary: plain muted mono, no chrome */
+.docs-table-wrapper .docs-table td:nth-child(2) code {
+  font-size: 0.8125rem;
+  font-weight: 450;
+  color: var(--color-fd-muted-foreground) !important;
   white-space: normal;
   overflow-wrap: anywhere;
   word-break: break-word;
 }
 
-.docs-table td:nth-child(3) code {
+/* Default (col 3) — the one tasteful badge: a small token pill */
+.docs-table-wrapper .docs-table td:nth-child(3) code {
   display: inline-block;
-  font-family: var(--font-mono);
   font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--color-fd-accent-foreground);
-  background: color-mix(in srgb, var(--color-fd-accent) 50%, transparent);
-  border: 1px solid
-    color-mix(in srgb, var(--color-fd-accent-foreground) 12%, transparent);
-  border-radius: calc(var(--radius) - 2px);
-  padding: 0.125rem 0.375rem;
-  line-height: 1.4;
+  font-weight: 500;
+  color: var(--color-fd-foreground) !important;
+  background: var(--muted) !important;
+  border: 1px solid color-mix(in srgb, var(--color-fd-border) 80%, transparent) !important;
+  border-radius: calc(var(--radius) - 4px);
+  padding: 0.0625rem 0.4375rem !important;
+  line-height: 1.5;
   white-space: nowrap;
 }
 
-.docs-table-wrapper .docs-table code {
-  box-shadow: none;
-}
-
-.docs-table-wrapper .docs-table td:first-child code {
-  background: color-mix(
-    in srgb,
-    var(--color-fd-primary) 12%,
-    transparent
-  ) !important;
-  color: var(--color-fd-primary) !important;
-  border-color: color-mix(
-    in srgb,
-    var(--color-fd-primary) 18%,
-    transparent
-  ) !important;
-}
-
-.docs-table-wrapper .docs-table td:nth-child(2) code {
-  background: color-mix(
-    in srgb,
-    var(--color-fd-accent) 50%,
-    transparent
-  ) !important;
-  color: var(--color-fd-accent-foreground) !important;
-  border-color: color-mix(
-    in srgb,
-    var(--color-fd-accent-foreground) 12%,
-    transparent
-  ) !important;
-  white-space: normal !important;
-  overflow-wrap: anywhere;
-  word-break: break-word;
-}
-
-.docs-table-wrapper .docs-table td:nth-child(3) code {
-  background: color-mix(
-    in srgb,
-    var(--color-fd-accent) 50%,
-    transparent
-  ) !important;
-  color: var(--color-fd-accent-foreground) !important;
-  border-color: color-mix(
-    in srgb,
-    var(--color-fd-accent-foreground) 12%,
-    transparent
-  ) !important;
-}
-
+/* Description (col 4) — readable body copy, no orphans */
 .docs-table td:nth-child(4) {
   color: color-mix(
     in srgb,
-    var(--color-fd-foreground) 88%,
+    var(--color-fd-foreground) 78%,
     var(--color-fd-muted-foreground)
   );
   font-size: 0.875rem;
-}
-
-.dark .docs-table thead th {
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--color-fd-primary) 14%, var(--color-fd-card)) 0%,
-    color-mix(in srgb, var(--color-fd-accent) 70%, var(--color-fd-card)) 100%
-  );
+  text-wrap: pretty;
 }
 
 /* Copy button: pop the icon in when it swaps to the success check mark. */
@@ -621,6 +638,7 @@ p.docs-lead {
    fumadocs, so we mask the lucide panel-left glyph rather than fork the slot. */
 :root {
   --godui-close-icon: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='%23000'%20stroke-width='2.5'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Cpath%20d='M18%206%206%2018'/%3E%3Cpath%20d='m6%206%2012%2012'/%3E%3C/svg%3E");
+  --godui-copy-icon: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%20fill='none'%20stroke='%23000'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'%3E%3Crect%20width='14'%20height='14'%20x='8'%20y='8'%20rx='2'%20ry='2'/%3E%3Cpath%20d='M4%2016c-1.1%200-2-.9-2-2V4c0-1.1.9-2%202-2h10c1.1%200%202%20.9%202%202'/%3E%3C/svg%3E");
 }
 #nd-sidebar-mobile button:has(> .lucide-panel-left) > .lucide-panel-left {
   display: none;

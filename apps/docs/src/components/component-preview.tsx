@@ -313,10 +313,7 @@ export function ComponentPreview({
               </svg>
             </button>
           ) : (
-            <CopyButton
-              value={formattedCode}
-              className="border border-fd-border bg-fd-card hover:border-fd-primary/45 hover:bg-transparent hover:text-fd-primary"
-            />
+            <CopyButton value={formattedCode} />
           )}
         </div>
       </div>

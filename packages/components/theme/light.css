@@ -1,59 +1,50 @@
 :root,
 .light {
-  /* Base — luminous cool-white */
-  --background: oklch(0.992 0.004 266);
-  --foreground: oklch(0.2 0.036 266);
+  /* shadcn default — neutral */
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
 
-  /* Surfaces */
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.2 0.036 266);
+  --card-foreground: oklch(0.145 0 0);
 
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.2 0.036 266);
+  --popover-foreground: oklch(0.145 0 0);
 
-  /* Brand — Celestial Sapphire (AA-safe with white) */
-  --primary: oklch(0.55 0.19 266);
-  --primary-foreground: oklch(1 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
 
-  /* Heavenly Gold */
-  --secondary: oklch(0.97 0.038 90);
-  --secondary-foreground: oklch(0.42 0.09 80);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
 
-  /* Celestial Accent */
-  --accent: oklch(0.965 0.016 266);
-  --accent-foreground: oklch(0.46 0.155 266);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
 
-  /* Neutral */
-  --muted: oklch(0.97 0.005 266);
-  --muted-foreground: oklch(0.51 0.022 266);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
 
-  /* Status */
-  --destructive: oklch(0.57 0.21 25);
+  --destructive: oklch(0.577 0.245 27.325);
 
-  /* Inputs */
-  --border: oklch(0.925 0.01 266);
-  --input: oklch(0.925 0.01 266);
-  --ring: oklch(0.55 0.19 266);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
 
-  /* Charts — angelic spectrum */
-  --chart-1: oklch(0.55 0.19 266);
-  --chart-2: oklch(0.8 0.13 90);
-  --chart-3: oklch(0.82 0.1 185);
-  --chart-4: oklch(0.68 0.16 305);
-  --chart-5: oklch(0.78 0.12 14);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
 
-  /* Sidebar */
-  --sidebar: oklch(1 0 0);
-  --sidebar-foreground: oklch(0.2 0.036 266);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
 
-  --sidebar-primary: oklch(0.55 0.19 266);
-  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
 
-  --sidebar-accent: oklch(0.97 0.014 266);
-  --sidebar-accent-foreground: oklch(0.46 0.155 266);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
 
-  --sidebar-border: oklch(0.925 0.01 266);
-  --sidebar-ring: oklch(0.55 0.19 266);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
 
   /* Typography — set --font-geist-* in your app (see @godui/components/fonts) */
   --font-sans: var(
@@ -96,7 +87,7 @@
   );
 
   /* Radius */
-  --radius: 0.75rem;
+  --radius: 0.625rem;
 
   /* Shadows */
   --shadow-2xs: 0 1px 2px rgb(0 0 0 / 0.02);
@@ -124,32 +115,32 @@
   --syntax-comment: oklch(0.63 0.016 266);
   --syntax-number: oklch(0.54 0.115 235);
 
-  /* Inline code */
-  --inline-code-bg: oklch(0.955 0.021 266);
-  --inline-code-fg: oklch(0.46 0.165 266);
-  --inline-code-border: oklch(0.82 0.07 266);
+  /* Inline code — track neutral theme tokens */
+  --inline-code-bg: var(--muted);
+  --inline-code-fg: var(--foreground);
+  --inline-code-border: var(--border);
 
   /* Code blocks */
-  --code-block: oklch(0.978 0.006 266);
-  --code-block-foreground: oklch(0.2 0.036 266);
-  --code-block-border: oklch(0.925 0.01 266);
+  --code-block: oklch(0.978 0 0);
+  --code-block-foreground: oklch(0.205 0 0);
+  --code-block-border: oklch(0.922 0 0);
 
-  /* Search */
-  --search-bg: oklch(1 0 0);
-  --search-fg: oklch(0.29 0.026 266);
-  --search-border: oklch(0.89 0.011 266);
-  --search-kbd-bg: oklch(0.965 0.006 266);
-  --search-kbd-fg: oklch(0.2 0.036 266);
-  --search-placeholder: oklch(0.54 0.022 266);
-  --search-highlight-bg: oklch(0.89 0.053 266);
-  --search-highlight-fg: oklch(0.34 0.13 266);
+  /* Search — track neutral theme tokens */
+  --search-bg: var(--card);
+  --search-fg: var(--muted-foreground);
+  --search-border: var(--border);
+  --search-kbd-bg: var(--muted);
+  --search-kbd-fg: var(--muted-foreground);
+  --search-placeholder: var(--muted-foreground);
+  --search-highlight-bg: var(--primary);
+  --search-highlight-fg: var(--primary-foreground);
 
-  /* Theme panel */
-  --theme-panel-bg: oklch(1 0 0);
-  --theme-panel-border: oklch(0.89 0.011 266);
-  --theme-panel-fg: oklch(0.4 0.022 266);
-  --theme-panel-active-bg: oklch(0.955 0.021 266);
-  --theme-panel-active-fg: oklch(0.46 0.165 266);
+  /* Theme panel — track neutral theme tokens */
+  --theme-panel-bg: var(--card);
+  --theme-panel-border: var(--border);
+  --theme-panel-fg: var(--muted-foreground);
+  --theme-panel-active-bg: var(--muted);
+  --theme-panel-active-fg: var(--foreground);
 
   /* Z-index */
   --z-base: 0;
@@ -208,12 +199,6 @@
 @media (color-gamut: p3) {
   :root,
   .light {
-    --secondary: oklch(0.97 0.04 90);
-    --accent: oklch(0.965 0.018 266);
-    --sidebar-accent: oklch(0.97 0.016 266);
-    --inline-code-bg: oklch(0.955 0.023 266);
-    --theme-panel-active-bg: oklch(0.955 0.023 266);
-    --search-highlight-bg: oklch(0.89 0.058 266);
     --syntax-string: oklch(0.52 0.13 168);
     --syntax-number: oklch(0.54 0.13 235);
   }

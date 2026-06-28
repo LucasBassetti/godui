@@ -92,16 +92,6 @@ export default function Home() {
 
   return (
     <main className="relative flex min-h-svh flex-col">
-      {/* Rainbow Radial Glow */}
-      <div
-        className="pointer-events-none absolute inset-0 z-0"
-        style={{
-          background: `
-            radial-gradient(125% 125% at 50% 10%, var(--color-fd-background) 40%, transparent 100%),
-            linear-gradient(to right, var(--rainbow-1), var(--rainbow-2), var(--rainbow-3), var(--rainbow-4), var(--rainbow-5))
-          `,
-        }}
-      />
       {/* Dashed Center Fade Grid */}
       <div
         className="pointer-events-none absolute inset-0 z-0"

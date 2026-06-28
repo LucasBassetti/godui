@@ -7,6 +7,7 @@ export const docs = defineDocs({
 export default defineConfig({
   mdxOptions: {
     rehypeCodeOptions: {
+      addLanguageClass: true,
       themes: {
         light: "github-light",
         dark: "one-dark-pro",

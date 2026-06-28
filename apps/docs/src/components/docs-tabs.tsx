@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { cn } from "@/lib/cn";
 
 type DocsTabsProps = {
@@ -40,17 +41,59 @@ type PillTabsProps = {
 };
 
 export function PillTabs({ tabs, value, onChange, className }: PillTabsProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [thumb, setThumb] = useState<{
+    left: number;
+    top: number;
+    width: number;
+    height: number;
+  } | null>(null);
+
+  // Measure the active pill so the floating thumb can slide to it. Pills are
+  // variable-width (pnpm/npm/yarn/bun), so the thumb is positioned from the
+  // live layout rather than an equal-column grid like <Segmented>.
+  useLayoutEffect(() => {
+    const container = containerRef.current;
+    const active = container?.querySelector<HTMLButtonElement>(
+      `[data-value="${CSS.escape(value)}"]`,
+    );
+    if (!active) return;
+    setThumb({
+      left: active.offsetLeft,
+      top: active.offsetTop,
+      width: active.offsetWidth,
+      height: active.offsetHeight,
+    });
+  }, [value]);
+
   return (
-    <div className={cn("flex flex-wrap gap-1", className)}>
+    <div
+      ref={containerRef}
+      className={cn("relative flex flex-wrap gap-1", className)}
+    >
+      {thumb ? (
+        <span
+          aria-hidden="true"
+          className="absolute rounded-md border border-fd-border bg-[var(--muted)] shadow-sm transition-[transform,width,height] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none"
+          style={{
+            width: thumb.width,
+            height: thumb.height,
+            transform: `translate(${thumb.left}px, ${thumb.top}px)`,
+            top: 0,
+            left: 0,
+          }}
+        />
+      ) : null}
       {tabs.map((tab) => (
         <button
           key={tab.value}
           type="button"
+          data-value={tab.value}
           onClick={() => onChange(tab.value)}
           className={cn(
-            "rounded-md px-2.5 py-1 text-sm transition-colors",
+            "relative z-[1] rounded-md px-2.5 py-1 text-sm transition-colors",
             value === tab.value
-              ? "bg-fd-background text-fd-foreground shadow-sm"
+              ? "text-fd-foreground"
               : "text-fd-muted-foreground hover:text-fd-foreground",
           )}
         >

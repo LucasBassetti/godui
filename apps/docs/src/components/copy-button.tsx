@@ -23,9 +23,10 @@ export function CopyButton({ value, className }: CopyButtonProps) {
       aria-label={copied ? "Copied" : "Copy to clipboard"}
       onClick={onCopy}
       className={cn(
-        "inline-flex size-8 items-center justify-center rounded-md text-fd-muted-foreground transition-[color,border-color,transform] duration-150 hover:bg-fd-accent hover:text-fd-accent-foreground active:scale-90",
+        "inline-flex size-8 items-center justify-center rounded-md border border-fd-border bg-fd-card text-fd-muted-foreground transition-[color,border-color,background-color,transform] duration-150 hover:border-fd-primary/45 hover:text-fd-primary active:scale-[0.96]",
         className,
-        copied && "border-fd-success/45 text-fd-success hover:text-fd-success",
+        copied &&
+          "border-fd-success/45 text-fd-success hover:border-fd-success/45 hover:text-fd-success",
       )}
     >
       {/* Remount on toggle (via key) so the pop animation replays each copy. */}
