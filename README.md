@@ -1,12 +1,12 @@
 <div align="center">
 
 <a href="https://godui.design">
-  <img src="https://raw.githubusercontent.com/LucasBassetti/godui/main/apps/docs/public/og-image.png" alt="GodUI — open-source, animated UI components for Design Engineers" width="100%" />
+  <img src="https://raw.githubusercontent.com/LucasBassetti/godui/main/apps/docs/public/og-image.png" alt="GodUI — Motion UI Collection for Modern Interfaces" width="100%" />
 </a>
 
 <h1>GodUI</h1>
 
-<p><strong>Open-source, animated UI components for Design Engineers.</strong></p>
+<p><strong>Motion UI Collection for Modern Interfaces.</strong></p>
 
 <p>
   Built with React, TypeScript, Tailwind CSS v4, and Motion — distributed as a

@@ -17,7 +17,7 @@ export function SiteStructuredData() {
         name: "GodUI",
         url: SITE_URL,
         description:
-          "Open-source collection of animated UI components for React, built with TypeScript, Tailwind CSS, and Motion.",
+          "An open-source collection of beautifully crafted motion components built with React, TypeScript, Tailwind CSS, Motion, and shadcn/ui.",
         publisher: { "@id": `${SITE_URL}/#organization` },
       },
       {
@@ -39,7 +39,7 @@ export function SiteStructuredData() {
         operatingSystem: "Web",
         url: SITE_URL,
         description:
-          "Copy-paste animated React components built with TypeScript, Tailwind CSS, and Motion. shadcn/ui-ready, built for design engineers.",
+          "An open-source collection of beautifully crafted motion components built with React, TypeScript, Tailwind CSS, Motion, and shadcn/ui.",
         offers: {
           "@type": "Offer",
           price: "0",
