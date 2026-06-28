@@ -101,8 +101,9 @@ const PromptSuggestions = React.forwardRef<
               transition={{
                 delay: reduce ? 0 : index * 0.05,
                 type: "spring",
-                stiffness: 300,
-                damping: 24,
+                stiffness: 320,
+                damping: 32,
+                mass: 0.9,
               }}
               onClick={() => onSelect?.(suggestion)}
               onKeyDown={(e) => {

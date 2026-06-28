@@ -189,7 +189,7 @@ const PromptComposer = React.forwardRef<HTMLFormElement, PromptComposerProps>(
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.8 }}
-                    transition={{ type: "spring", stiffness: 420, damping: 28 }}
+                    transition={{ type: "spring", stiffness: 520, damping: 32 }}
                     className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background py-1 pl-2 pr-1 text-xs text-foreground shadow-2xs"
                   >
                     <PaperclipIcon className="size-3 text-muted-foreground" />
@@ -287,7 +287,7 @@ const PromptComposer = React.forwardRef<HTMLFormElement, PromptComposerProps>(
                     initial={{ opacity: 0, scale: 0.6 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.6 }}
-                    transition={{ duration: 0.12 }}
+                    transition={{ duration: 0.15 }}
                   >
                     <StopIcon className="size-3.5" />
                   </motion.span>
@@ -297,7 +297,7 @@ const PromptComposer = React.forwardRef<HTMLFormElement, PromptComposerProps>(
                     initial={{ opacity: 0, scale: 0.6 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.6 }}
-                    transition={{ duration: 0.12 }}
+                    transition={{ duration: 0.15 }}
                   >
                     <ArrowUpIcon className="size-4" />
                   </motion.span>
@@ -344,7 +344,12 @@ function ModelPicker({
             initial={{ opacity: 0, y: 6, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 6, scale: 0.96 }}
-            transition={{ type: "spring", stiffness: 320, damping: 26 }}
+            transition={{
+              type: "spring",
+              stiffness: 320,
+              damping: 32,
+              mass: 0.9,
+            }}
             className="absolute bottom-full left-0 z-popover mb-1.5 min-w-40 origin-bottom rounded-xl border border-border bg-popover p-1 shadow-lg"
           >
             {models.map((m) => (

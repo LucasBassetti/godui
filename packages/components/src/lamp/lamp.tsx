@@ -13,8 +13,8 @@ const VIEWPORT = { once: true, margin: "-20%" } as const;
 const Lamp = React.forwardRef<HTMLDivElement, LampProps>(
   ({ color = "var(--primary)", className, children, style, ...props }, ref) => {
     const reduceMotion = useReducedMotion();
-    const lit = { width: "30rem", opacity: 1 };
-    const unlit = { width: "15rem", opacity: 0.5 };
+    const lit = { scaleX: 1, opacity: 1 };
+    const unlit = { scaleX: 0.5, opacity: 0.5 };
 
     return (
       <div
@@ -31,22 +31,22 @@ const Lamp = React.forwardRef<HTMLDivElement, LampProps>(
             whileInView={lit}
             viewport={VIEWPORT}
             transition={{ duration: 0.8, ease: "easeInOut" }}
-            className="absolute right-1/2 h-56 w-[30rem] [background-image:conic-gradient(from_70deg_at_center_top,color-mix(in_oklch,var(--lamp)_60%,transparent),transparent,transparent)] [mask-image:linear-gradient(to_top,transparent,white)]"
+            className="absolute right-1/2 h-56 w-[30rem] origin-right [background-image:conic-gradient(from_70deg_at_center_top,color-mix(in_oklch,var(--lamp)_60%,transparent),transparent,transparent)] [mask-image:linear-gradient(to_top,transparent,white)]"
           />
           <motion.div
             initial={reduceMotion ? lit : unlit}
             whileInView={lit}
             viewport={VIEWPORT}
             transition={{ duration: 0.8, ease: "easeInOut" }}
-            className="absolute left-1/2 h-56 w-[30rem] [background-image:conic-gradient(from_290deg_at_center_top,transparent,transparent,color-mix(in_oklch,var(--lamp)_60%,transparent))] [mask-image:linear-gradient(to_top,transparent,white)]"
+            className="absolute left-1/2 h-56 w-[30rem] origin-left [background-image:conic-gradient(from_290deg_at_center_top,transparent,transparent,color-mix(in_oklch,var(--lamp)_60%,transparent))] [mask-image:linear-gradient(to_top,transparent,white)]"
           />
           {/* Glowing bar where the two cones meet. */}
           <motion.div
-            initial={reduceMotion ? { width: "16rem" } : { width: "8rem" }}
-            whileInView={{ width: "16rem" }}
+            initial={reduceMotion ? { scaleX: 1 } : { scaleX: 0.5 }}
+            whileInView={{ scaleX: 1 }}
             viewport={VIEWPORT}
             transition={{ duration: 0.8, ease: "easeInOut" }}
-            className="absolute top-1/2 z-raised h-0.5 -translate-y-[3.5rem] rounded-full blur-sm [background:var(--lamp)]"
+            className="absolute top-1/2 z-raised h-0.5 w-64 -translate-y-[3.5rem] rounded-full blur-sm [background:var(--lamp)]"
           />
           <div className="absolute top-1/2 z-raised h-36 w-full -translate-y-[6rem] [background:radial-gradient(ellipse_at_center_top,color-mix(in_oklch,var(--lamp)_25%,transparent),transparent_60%)]" />
         </div>

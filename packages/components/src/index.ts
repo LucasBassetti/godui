@@ -252,6 +252,16 @@ export {
   type MorphingDialogTriggerProps,
 } from "./morphing-dialog";
 export {
+  DURATION,
+  EASE,
+  EASE_CSS,
+  ENTER,
+  EXIT,
+  motionSafe,
+  SPRING,
+  STAGGER,
+} from "./motion";
+export {
   type Notification,
   NotificationInbox,
   type NotificationInboxProps,
@@ -350,7 +360,6 @@ export {
   SourceList,
   type SourceListProps,
 } from "./source-citations";
-export { Sparkles, type SparklesProps } from "./sparkles";
 export {
   SpotlightCard,
   type SpotlightCardProps,

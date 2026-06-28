@@ -208,8 +208,9 @@ export const TEXT_ANIMATE_PRESETS: Record<
           duration: 0.3,
           scale: {
             type: "spring",
-            damping: 15,
-            stiffness: 300,
+            damping: 32,
+            stiffness: 320,
+            mass: 0.9,
           },
         },
       },
@@ -231,8 +232,9 @@ export const TEXT_ANIMATE_PRESETS: Record<
           duration: 0.3,
           scale: {
             type: "spring",
-            damping: 15,
-            stiffness: 300,
+            damping: 32,
+            stiffness: 320,
+            mass: 0.9,
           },
         },
       },

@@ -65,9 +65,14 @@ const Globe = React.forwardRef<HTMLDivElement, GlobeProps>(
 
       const globe = createGlobe(canvas, merged);
       let raf = 0;
+      // Honor reduced motion — hold the globe still instead of auto-rotating.
+      const reduceMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
       // Auto-rotate while idle; hand control to the pointer on drag.
       const tick = () => {
-        if (pointerInteracting.current === null) phiRef.current += 0.005;
+        if (pointerInteracting.current === null && !reduceMotion)
+          phiRef.current += 0.005;
         globe.update({
           phi: phiRef.current + pointerMovement.current / 200,
           width: widthRef.current * 2,

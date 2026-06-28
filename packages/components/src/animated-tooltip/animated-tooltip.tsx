@@ -23,7 +23,7 @@ export type AnimatedTooltipProps = Omit<
   children: React.ReactNode;
 };
 
-const SPRING = { stiffness: 220, damping: 16 } as const;
+const SPRING = { stiffness: 170, damping: 12, mass: 0.1 } as const;
 
 const PANEL_BASE =
   "pointer-events-none absolute left-1/2 z-popover flex max-w-[16rem] -translate-x-1/2 flex-col items-center rounded-lg bg-foreground px-3 py-1.5 text-center text-xs font-medium text-background shadow-lg [transform-style:preserve-3d]";
@@ -69,7 +69,12 @@ const AnimatedTooltip = React.forwardRef<HTMLSpanElement, AnimatedTooltipProps>(
                 opacity: 1,
                 y: 0,
                 scale: 1,
-                transition: { type: "spring", stiffness: 260, damping: 18 },
+                transition: {
+                  type: "spring",
+                  stiffness: 170,
+                  damping: 12,
+                  mass: 0.1,
+                },
               }}
               exit={{ opacity: 0, y: isTop ? 6 : -6, scale: 0.9 }}
               style={{ rotate, x: translateX }}

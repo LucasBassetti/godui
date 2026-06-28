@@ -80,7 +80,7 @@ const CommentPin = React.forwardRef<HTMLDivElement, CommentPinProps>(
           layout
           initial={{ scale: 0 }}
           animate={{ scale: resolved ? 0.85 : 1 }}
-          transition={{ type: "spring", stiffness: 500, damping: 22 }}
+          transition={{ type: "spring", stiffness: 520, damping: 32 }}
           onClick={() => setOpen(!open)}
           aria-label={resolved ? "Resolved comment" : "Open comment thread"}
           aria-expanded={open}
@@ -96,7 +96,12 @@ const CommentPin = React.forwardRef<HTMLDivElement, CommentPinProps>(
               initial={{ opacity: 0, scale: 0.85, y: 4 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.85, y: 4 }}
-              transition={{ type: "spring", stiffness: 360, damping: 26 }}
+              transition={{
+                type: "spring",
+                stiffness: 320,
+                damping: 32,
+                mass: 0.9,
+              }}
               className="absolute left-0 top-9 z-popover w-72 origin-top-left overflow-hidden rounded-xl border border-border bg-popover shadow-xl"
             >
               <div className="flex max-h-64 flex-col gap-3 overflow-y-auto p-3">

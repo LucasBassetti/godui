@@ -7,9 +7,8 @@ import * as React from "react";
 // little spring so items settle rather than snap.
 const REORDER_SPRING = {
   type: "spring" as const,
-  stiffness: 600,
-  damping: 38,
-  mass: 0.8,
+  stiffness: 520,
+  damping: 32,
 };
 
 // Framer Motion redefines these drag/animation handlers with its own

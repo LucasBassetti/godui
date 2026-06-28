@@ -28,7 +28,12 @@ export type SwipeDeckProps = Omit<
   actions?: { left: string; right: string };
 };
 
-const STACK_SPRING = { type: "spring", stiffness: 380, damping: 32 } as const;
+const STACK_SPRING = {
+  type: "spring",
+  stiffness: 320,
+  damping: 32,
+  mass: 0.9,
+} as const;
 
 type Leaving = { dir: SwipeDirection; velocity: number } | null;
 
@@ -95,14 +100,14 @@ const FrontCard: React.FC<FrontCardProps> = ({
       // Snap back, carrying the release velocity into the spring.
       animate(x, 0, {
         type: "spring",
-        stiffness: 600,
-        damping: 34,
+        stiffness: 520,
+        damping: 32,
         velocity: info.velocity.x,
       });
       animate(y, 0, {
         type: "spring",
-        stiffness: 600,
-        damping: 34,
+        stiffness: 520,
+        damping: 32,
         velocity: info.velocity.y,
       });
     }

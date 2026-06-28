@@ -130,7 +130,7 @@ const SlideConfirmButton = React.forwardRef<
         0,
         reduce
           ? { duration: 0.2 }
-          : { type: "spring", stiffness: 400, damping: 35 },
+          : { type: "spring", stiffness: 500, damping: 40 },
       );
     };
 

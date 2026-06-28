@@ -55,7 +55,7 @@ const TabBar = React.forwardRef<HTMLElement, TabBarProps>(
 
     const spring = reduceMotion
       ? { duration: 0 }
-      : ({ type: "spring", stiffness: 420, damping: 32 } as const);
+      : ({ type: "spring", stiffness: 520, damping: 32 } as const);
 
     return (
       <nav
@@ -95,7 +95,7 @@ const TabBar = React.forwardRef<HTMLElement, TabBarProps>(
                     ? { scale: 1 }
                     : { scale: [1, 1.18, 1] }
                 }
-                transition={{ duration: 0.32, ease: "easeOut" }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
               >
                 {tab.icon}
                 {tab.badge !== undefined && (

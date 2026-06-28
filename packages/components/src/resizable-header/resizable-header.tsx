@@ -72,7 +72,7 @@ const ResizableHeader = React.forwardRef<HTMLElement, ResizableHeaderProps>(
 
     const spring = reduceMotion
       ? { duration: 0 }
-      : ({ type: "spring", stiffness: 380, damping: 34 } as const);
+      : ({ type: "spring", stiffness: 320, damping: 32, mass: 0.9 } as const);
 
     const select = (href: string) => {
       onNavigate?.(href);
@@ -187,7 +187,7 @@ const ResizableHeader = React.forwardRef<HTMLElement, ResizableHeaderProps>(
               transition={
                 reduceMotion
                   ? { duration: 0 }
-                  : { duration: 0.18, ease: "easeOut" }
+                  : { duration: 0.2, ease: "easeOut" }
               }
               className="absolute inset-x-4 top-full mt-2 origin-top rounded-2xl border border-border bg-background p-2 shadow-xl md:hidden"
             >

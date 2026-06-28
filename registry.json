@@ -957,21 +957,6 @@
       ]
     },
     {
-      "name": "sparkles",
-      "type": "registry:ui",
-      "title": "Sparkles",
-      "description": "A canvas field of twinkling particles rendered behind its content.",
-      "dependencies": ["framer-motion"],
-      "registryDependencies": ["@godui/godui-theme"],
-      "files": [
-        {
-          "path": "packages/components/src/sparkles/sparkles.tsx",
-          "type": "registry:ui",
-          "target": "components/godui/sparkles.tsx"
-        }
-      ]
-    },
-    {
       "name": "lamp",
       "type": "registry:ui",
       "title": "Lamp",

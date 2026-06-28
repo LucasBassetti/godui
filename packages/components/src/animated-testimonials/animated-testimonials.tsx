@@ -88,7 +88,12 @@ const AnimatedTestimonials = React.forwardRef<
                     y: isActive ? 0 : 8,
                   }}
                   exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ type: "spring", stiffness: 180, damping: 22 }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 320,
+                    damping: 32,
+                    mass: 0.9,
+                  }}
                   className="absolute inset-0 size-full rounded-2xl object-cover shadow-lg"
                 />
               );
@@ -103,7 +108,7 @@ const AnimatedTestimonials = React.forwardRef<
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -12 }}
-              transition={{ duration: 0.25 }}
+              transition={{ duration: 0.2 }}
             >
               <p className="text-lg leading-relaxed text-foreground">
                 {current.quote.split(" ").map((word, i) => (

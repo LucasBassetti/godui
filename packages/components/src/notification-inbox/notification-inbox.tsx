@@ -157,7 +157,7 @@ function NotificationRow({
       initial={reduce ? false : { opacity: 0, height: 0 }}
       animate={{ opacity: 1, height: "auto" }}
       exit={{ opacity: 0, height: 0, x: -80 }}
-      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+      transition={{ type: "spring", stiffness: 320, damping: 32, mass: 0.9 }}
       className="relative overflow-hidden"
     >
       {/* Archive affordance revealed while swiping */}

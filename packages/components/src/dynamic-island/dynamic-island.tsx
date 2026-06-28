@@ -34,9 +34,8 @@ const SIZES: Record<
 // Underdamped so the shell settles with the signature rubbery overshoot.
 const SHELL_SPRING = {
   type: "spring" as const,
-  stiffness: 400,
-  damping: 30,
-  mass: 1,
+  stiffness: 520,
+  damping: 32,
 };
 
 const DynamicIsland = React.forwardRef<HTMLDivElement, DynamicIslandProps>(

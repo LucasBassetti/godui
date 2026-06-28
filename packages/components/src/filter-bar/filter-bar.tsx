@@ -130,7 +130,7 @@ const FilterBar = React.forwardRef<HTMLDivElement, FilterBarProps>(
 
     const spring = reduceMotion
       ? { duration: 0 }
-      : ({ type: "spring", stiffness: 480, damping: 36 } as const);
+      : ({ type: "spring", stiffness: 520, damping: 32 } as const);
 
     const activeCount = Object.values(value).reduce(
       (sum, list) => sum + list.length,

@@ -75,7 +75,12 @@ const ConversationThread = React.forwardRef<
                 initial={{ opacity: 0, y: 8, scale: 0.9 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 8, scale: 0.9 }}
-                transition={{ type: "spring", stiffness: 360, damping: 28 }}
+                transition={{
+                  type: "spring",
+                  stiffness: 320,
+                  damping: 32,
+                  mass: 0.9,
+                }}
                 onClick={() => {
                   setPinned(true);
                   scrollToBottom("smooth");
@@ -147,7 +152,7 @@ const ConversationMessage = React.forwardRef<
         layout={!reduce}
         initial={reduce ? false : { opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ type: "spring", stiffness: 260, damping: 26 }}
+        transition={{ type: "spring", stiffness: 320, damping: 32, mass: 0.9 }}
         data-slot="conversation-message"
         data-role={role}
         className={`group/msg flex gap-3 ${isUser && !isDocument ? "flex-row-reverse" : ""} ${isCompact ? "gap-2" : ""} ${className ?? ""}`}

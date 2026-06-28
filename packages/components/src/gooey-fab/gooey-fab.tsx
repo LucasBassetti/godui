@@ -153,8 +153,9 @@ const GooeyFab = React.forwardRef<HTMLDivElement, GooeyFabProps>(
                     ? { duration: 0.15 }
                     : {
                         type: "spring",
-                        stiffness: 380,
-                        damping: 26,
+                        stiffness: 170,
+                        damping: 12,
+                        mass: 0.1,
                         delay: open ? i * 0.04 : (actions.length - i) * 0.02,
                       }
                 }
@@ -191,11 +192,12 @@ const GooeyFab = React.forwardRef<HTMLDivElement, GooeyFabProps>(
                 }
                 transition={
                   reduce
-                    ? { duration: 0.12 }
+                    ? { duration: 0.15 }
                     : {
                         type: "spring",
-                        stiffness: 380,
-                        damping: 26,
+                        stiffness: 170,
+                        damping: 12,
+                        mass: 0.1,
                         delay: open ? i * 0.04 + 0.03 : 0,
                       }
                 }
@@ -220,8 +222,8 @@ const GooeyFab = React.forwardRef<HTMLDivElement, GooeyFabProps>(
             animate={{ rotate: open ? 135 : 0 }}
             transition={
               reduce
-                ? { duration: 0.1 }
-                : { type: "spring", stiffness: 300, damping: 20 }
+                ? { duration: 0.15 }
+                : { type: "spring", stiffness: 170, damping: 12, mass: 0.1 }
             }
           >
             {triggerIcon ?? <PlusIcon />}

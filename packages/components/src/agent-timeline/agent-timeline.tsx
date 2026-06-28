@@ -109,7 +109,7 @@ const AgentStep = React.forwardRef<HTMLLIElement, AgentStepProps>(
                 transition={
                   reduce
                     ? { duration: 0 }
-                    : { type: "spring", stiffness: 120, damping: 20 }
+                    : { type: "spring", stiffness: 320, damping: 32, mass: 0.9 }
                 }
                 className={`absolute inset-0 origin-top ${CONNECTOR_FILL[status]}`}
               />
@@ -152,7 +152,7 @@ const AgentStep = React.forwardRef<HTMLLIElement, AgentStepProps>(
                 transition={
                   reduce
                     ? { duration: 0 }
-                    : { type: "spring", stiffness: 240, damping: 30 }
+                    : { type: "spring", stiffness: 320, damping: 32, mass: 0.9 }
                 }
                 className="overflow-hidden"
               >

@@ -115,7 +115,7 @@ const PresenceFacepile = React.forwardRef<
                 initial={reduce ? false : { opacity: 0, scale: 0.5, x: -8 }}
                 animate={{ opacity: 1, scale: 1, x: 0 }}
                 exit={{ opacity: 0, scale: 0.5 }}
-                transition={{ type: "spring", stiffness: 420, damping: 28 }}
+                transition={{ type: "spring", stiffness: 520, damping: 32 }}
                 title={`${user.name}${user.status ? ` · ${user.status}` : ""}`}
                 className="transition-transform hover:z-raised hover:-translate-y-0.5"
               >
@@ -147,7 +147,12 @@ const PresenceFacepile = React.forwardRef<
               initial={{ opacity: 0, y: 6, scale: 0.96 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 6, scale: 0.96 }}
-              transition={{ type: "spring", stiffness: 320, damping: 26 }}
+              transition={{
+                type: "spring",
+                stiffness: 320,
+                damping: 32,
+                mass: 0.9,
+              }}
               className="absolute left-0 top-full z-popover mt-2 max-h-64 w-56 origin-top-left overflow-y-auto rounded-xl border border-border bg-popover p-1.5 shadow-xl"
             >
               {overflow.map((user) => (

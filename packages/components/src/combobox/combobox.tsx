@@ -135,7 +135,7 @@ const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
 
     const spring = reduceMotion
       ? { duration: 0 }
-      : ({ type: "spring", stiffness: 520, damping: 34 } as const);
+      : ({ type: "spring", stiffness: 520, damping: 32 } as const);
 
     return (
       <div

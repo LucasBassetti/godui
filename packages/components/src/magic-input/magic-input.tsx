@@ -323,7 +323,7 @@ const MagicInput = React.forwardRef<HTMLInputElement, MagicInputProps>(
 
     // Morphing icons: all four stacked, the active one cross-fades + scales in.
     const ICON_BASE =
-      "absolute inset-0 grid place-items-center [transition:opacity_220ms_ease,transform_220ms_cubic-bezier(0.3,0.7,0.4,1.4)] motion-reduce:[transition:none]";
+      "absolute inset-0 grid place-items-center [transition:opacity_220ms_ease,transform_220ms_cubic-bezier(0.3,0.7,0.4,1.5)] motion-reduce:[transition:none]";
     const iconClass = (active: boolean) =>
       active
         ? `${ICON_BASE} opacity-100 [transform:scale(1)_rotate(0deg)]`

@@ -89,7 +89,7 @@ function Connector({
         transition={
           reduceMotion
             ? { duration: 0 }
-            : { type: "spring", stiffness: 260, damping: 30 }
+            : { type: "spring", stiffness: 320, damping: 32, mass: 0.9 }
         }
       />
     </div>
