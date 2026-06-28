@@ -11,6 +11,7 @@ themed background, so drop it as the first child of a `relative` container and
 let your content sit above it.
 
 <ComponentPreview
+  fullWidth
   story="backgrounds-flow-field"
   code={`import { FlowField } from "@/components/godui/flow-field";
 
@@ -26,7 +27,7 @@ export function FlowFieldDemo() {
   );
 }`}
 >
-  <div className="relative flex h-[360px] w-full items-center justify-center overflow-hidden rounded-xl border border-border">
+  <div className="relative flex w-full flex-1 items-center justify-center overflow-hidden">
     <FlowField />
     <div className="relative z-raised text-center">
       <h2 className="font-semibold text-3xl tracking-tight">Generative by default</h2>
@@ -63,6 +64,7 @@ trails in `color` (default `--color-primary`); both track light/dark. Caps DPR a
 Lower `fade` for longer, silkier streaks.
 
 <ComponentPreview
+  fullWidth
   code={`import { FlowField } from "@/components/godui/flow-field";
 
 export function FlowFieldLong() {
@@ -73,7 +75,7 @@ export function FlowFieldLong() {
   );
 }`}
 >
-  <div className="relative h-[320px] w-full overflow-hidden rounded-xl border border-border">
+  <div className="relative w-full flex-1 overflow-hidden">
     <FlowField fade={0.02} speed={1.2} />
   </div>
 </ComponentPreview>

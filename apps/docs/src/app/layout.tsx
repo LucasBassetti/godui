@@ -3,6 +3,7 @@ import { GoogleAnalytics } from "@next/third-parties/google";
 import { RootProvider } from "fumadocs-ui/provider/next";
 import type { Metadata } from "next";
 import "./globals.css";
+import { GodSearchDialog } from "@/components/search-dialog";
 import { AeoWidget } from "./aeo-widget";
 import { SiteStructuredData } from "./structured-data";
 
@@ -74,6 +75,7 @@ export default function RootLayout({
             enableSystem: true,
             enabled: true,
           }}
+          search={{ SearchDialog: GodSearchDialog }}
         >
           {children}
         </RootProvider>

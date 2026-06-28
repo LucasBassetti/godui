@@ -14,8 +14,14 @@ import {
   gradientBackgroundPresets,
   gradientBackgroundVariants,
 } from "@godui/components";
-import { type ComponentType, type CSSProperties, useState } from "react";
+import {
+  type ComponentType,
+  type CSSProperties,
+  useMemo,
+  useState,
+} from "react";
 import { ComponentInstall } from "@/components/component-install";
+import { ComponentPreview } from "@/components/component-preview";
 import { cn } from "@/lib/cn";
 
 type Key = "gradient" | "geometric" | "decorative" | "effect";
@@ -60,11 +66,32 @@ const SETS: Record<
   },
 };
 
+/** Serialize a preset's CSSProperties into the usage snippet for the Code tab. */
+function buildCode(set: (typeof SETS)[Key], preset: CSSProperties) {
+  const style = Object.entries(preset)
+    .map(([key, value]) => `          ${key}: ${JSON.stringify(value)},`)
+    .join("\n");
+  return `import { ${set.component} } from "@/components/godui/${set.name}";
+
+export function ${set.component}Demo() {
+  return (
+    <div className="relative h-[360px] w-full overflow-hidden rounded-xl border border-border">
+      <${set.component}
+        style={{
+${style}
+        }}
+      />
+    </div>
+  );
+}`;
+}
+
 export function BackgroundShowcase({ component }: { component: Key }) {
   const set = SETS[component];
   const [selected, setSelected] = useState(set.variants[0]);
   const preset = set.presets[selected];
   const Bg = set.Component;
+  const code = useMemo(() => buildCode(set, preset), [set, preset]);
 
   // Geometric grids/dashes look like flat colour in a tiny swatch (you only see
   // one cell). Render them into a larger, scaled-down box so several tiles show.
@@ -100,13 +127,13 @@ export function BackgroundShowcase({ component }: { component: Key }) {
         ))}
       </div>
 
-      {/* live preview */}
-      <div className="relative flex min-h-[320px] w-full items-center justify-center overflow-hidden rounded-xl border border-fd-border">
-        <Bg style={preset} />
-        <span className="relative z-10 rounded-md bg-fd-background/70 px-3 py-1 text-sm backdrop-blur">
-          {selected}
-        </span>
-      </div>
+      {/* live preview — the selected variant drives both the canvas and the
+          Code tab, full-bleed inside the preview box */}
+      <ComponentPreview fullWidth className="my-0!" code={code}>
+        <div className="relative w-full flex-1 overflow-hidden">
+          <Bg style={preset} />
+        </div>
+      </ComponentPreview>
 
       {/* install — same tabbed pattern as every component, with the selected
           variant baked into the command + Manual source */}
