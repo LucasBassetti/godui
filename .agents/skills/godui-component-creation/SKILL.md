@@ -110,7 +110,7 @@ The docs/guidelines import it; components mirror the values. They must match.
 
 | Token | Values |
 |-------|--------|
-| `DURATION` | `fast 0.15`, `base 0.2`, `slow 0.3` (seconds) |
+| `DURATION` | `fast 0.15`, `base 0.2`, `slow 0.3`, `slower 0.4` (seconds; larger-traversal/ambient) |
 | `EASE` (Motion tuple) | `standard [0.3,0.7,0.4,1]`, `out [0.22,1,0.36,1]`, `back [0.3,0.7,0.4,1.5]`, `inOut [0.65,0,0.35,1]` |
 | `EASE_CSS` (className) | `cubic-bezier(0.3,0.7,0.4,1)` standard · `…,1.5` back · `cubic-bezier(0.22,1,0.36,1)` out |
 | `SPRING` | `smooth {320,32,mass 0.9}` · `crisp {500,40}` · `snappy {520,32}` · `bouncy {170,12,mass 0.1}` |

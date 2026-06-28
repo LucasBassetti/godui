@@ -288,6 +288,32 @@ function LoopDemo() {
   );
 }
 
+// Reduced-Motion Fallback — swap transforms for a plain opacity cross-fade. Tap to play.
+function ReducedMotionFallbackDemo() {
+  const { play, start, done } = useOneShot();
+  return (
+    <TapToPlay label="Play Reduced-Motion Fallback demo" onTap={start}>
+      <div className="relative grid h-16 w-40 place-items-center rounded-xl border border-border bg-card">
+        <motion.span
+          className="absolute font-medium text-foreground text-sm"
+          animate={{ opacity: play ? 0 : 1 }}
+          transition={{ duration: DURATION.base }}
+        >
+          Before
+        </motion.span>
+        <motion.span
+          className="absolute font-medium text-foreground text-sm"
+          animate={{ opacity: play ? 1 : 0 }}
+          transition={{ duration: DURATION.base }}
+          onAnimationComplete={play ? done : undefined}
+        >
+          After
+        </motion.span>
+      </div>
+    </TapToPlay>
+  );
+}
+
 export const PATTERNS: GalleryItem[] = [
   {
     slug: "enter",
@@ -358,5 +384,12 @@ export const PATTERNS: GalleryItem[] = [
     description:
       "A seamless marquee: duplicate the track and translate by half. Serves Restraint.",
     Demo: LoopDemo,
+  },
+  {
+    slug: "reduced-motion-fallback",
+    title: "Reduced-Motion Fallback",
+    description:
+      "Under prefers-reduced-motion, swap transforms for a plain opacity cross-fade — usability preserved. Serves Accessibility.",
+    Demo: ReducedMotionFallbackDemo,
   },
 ];

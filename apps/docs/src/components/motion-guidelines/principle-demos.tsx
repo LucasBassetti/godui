@@ -267,6 +267,70 @@ function RestraintDemo() {
   );
 }
 
+// 11. Performance — only transform & opacity, so it stays at 60fps.
+function PerformanceDemo() {
+  const { play, start, done } = useOneShot();
+  return (
+    <TapToPlay label="Play Performance demo" onTap={start}>
+      <div className="flex items-center gap-3">
+        {[0, 1, 2].map((i) => (
+          <motion.span
+            key={i}
+            className="size-8 rounded-lg bg-foreground"
+            animate={
+              play
+                ? { y: [0, -16, 0], scale: [1, 0.85, 1] }
+                : { y: 0, scale: 1 }
+            }
+            transition={
+              play
+                ? { duration: 0.9, ease: EASE.inOut, delay: i * STAGGER.base }
+                : REST
+            }
+            onAnimationComplete={play && i === 2 ? done : undefined}
+          />
+        ))}
+      </div>
+    </TapToPlay>
+  );
+}
+
+// 12. Accessibility — honor reduced motion: drop transforms, keep opacity.
+function AccessibilityDemo() {
+  const { play, start, done } = useOneShot();
+  const cols: { label: string; reduced: boolean }[] = [
+    { label: "default", reduced: false },
+    { label: "reduced", reduced: true },
+  ];
+  return (
+    <TapToPlay label="Play Accessibility demo" onTap={start}>
+      <div className="flex items-end gap-6">
+        {cols.map((col, i) => (
+          <div key={col.label} className="flex flex-col items-center gap-2">
+            <div className="grid h-16 place-items-center">
+              <motion.span
+                className="size-9 rounded-lg bg-foreground"
+                animate={
+                  play
+                    ? col.reduced
+                      ? { opacity: [0, 1] }
+                      : { opacity: [0, 1], y: [16, 0] }
+                    : { opacity: 1, y: 0 }
+                }
+                transition={play ? { duration: 0.5, ease: EASE.out } : REST}
+                onAnimationComplete={play && i === 0 ? done : undefined}
+              />
+            </div>
+            <span className="font-mono text-[10px] text-muted-foreground">
+              {col.label}
+            </span>
+          </div>
+        ))}
+      </div>
+    </TapToPlay>
+  );
+}
+
 export const PRINCIPLES: GalleryItem[] = [
   {
     slug: "clarity",
@@ -337,5 +401,19 @@ export const PRINCIPLES: GalleryItem[] = [
     description:
       "The best motion is felt, not noticed. When in doubt, do less — subtle beats flashy every time.",
     Demo: RestraintDemo,
+  },
+  {
+    slug: "performance",
+    title: "Performance",
+    description:
+      "Animate only transform and opacity so motion stays at a buttery 60fps, and keep springs interruptible.",
+    Demo: PerformanceDemo,
+  },
+  {
+    slug: "accessibility",
+    title: "Accessibility",
+    description:
+      "Honor prefers-reduced-motion: drop transforms, keep a subtle opacity change, and the interface still reads.",
+    Demo: AccessibilityDemo,
   },
 ];

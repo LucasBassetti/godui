@@ -11,11 +11,13 @@
 
 import type { Transition } from "framer-motion";
 
-/** Durations in seconds. Enter is calmer than exit; opacity sits in the middle. */
+/** Durations in seconds. Enter is calmer than exit; opacity sits in the middle.
+ * `slower` covers larger-traversal / ambient moves (matches Material 3 medium4). */
 export const DURATION = {
   fast: 0.15,
   base: 0.2,
   slow: 0.3,
+  slower: 0.4,
 } as const;
 
 /** Cubic-bezier easing curves, as Motion tuples. */
