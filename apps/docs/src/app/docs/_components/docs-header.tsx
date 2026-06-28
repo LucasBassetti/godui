@@ -64,7 +64,7 @@ export function DocsHeader({
           href="/"
           className="inline-flex items-center gap-2 font-bold text-[0.9375rem] text-fd-foreground"
         >
-          <GoduiLogo className="h-7 w-7" width={28} height={28} />
+          <GoduiLogo className="h-6 w-6" width={24} height={24} />
           GodUI
         </Link>
         {/* Desktop nav links. On mobile these live in the sidebar drawer's

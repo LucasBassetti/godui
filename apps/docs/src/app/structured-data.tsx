@@ -27,7 +27,7 @@ export function SiteStructuredData() {
         url: SITE_URL,
         logo: {
           "@type": "ImageObject",
-          url: `${SITE_URL}/logo.png`,
+          url: `${SITE_URL}/icon.svg`,
         },
         sameAs: ["https://github.com/LucasBassetti/godui"],
       },
