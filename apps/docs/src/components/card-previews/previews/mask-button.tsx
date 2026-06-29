@@ -1,0 +1,11 @@
+"use client";
+
+import { Ac } from "./_kit";
+
+export default function MaskButtonPreview() {
+  return (
+    <div className="relative h-9 w-32 overflow-hidden rounded-lg bg-[var(--muted-foreground)]/20">
+      <Ac className="absolute inset-y-0 right-0 w-0 transition-[width] duration-300 group-hover:w-full" />
+    </div>
+  );
+}
