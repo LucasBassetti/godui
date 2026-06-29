@@ -8,6 +8,7 @@ import {
   type ReactNode,
 } from "react";
 import { BackgroundShowcase } from "@/components/background-showcase";
+import { PreviewCard } from "@/components/card-previews/preview-card";
 import { ComponentInstall } from "@/components/component-install";
 import { ComponentPreview } from "@/components/component-preview";
 import { LangBadge } from "@/components/lang-badge";
@@ -61,6 +62,7 @@ export function getMDXComponents(components?: MDXComponents) {
     ComponentInstall,
     MCPInstall,
     BackgroundShowcase,
+    PreviewCard,
     ...components,
   } satisfies MDXComponents;
 }

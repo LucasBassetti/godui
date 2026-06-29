@@ -18,6 +18,8 @@ Follow this workflow when adding a component to `@godui/components`.
 | Keyframes (dist) | the component's own `registry.json` entry → `cssVars.theme` (token) + `css` (`@keyframes`) — **not** the shared `godui-theme` |
 | Storybook | `apps/storybook/src/stories/{name}.stories.tsx` |
 | Docs | `apps/docs/content/docs/components/{category}/{name}.mdx` |
+| Index card | `apps/docs/content/docs/components/index.mdx` → `<PreviewCard>` |
+| Placeholder preview | `apps/docs/src/components/card-previews/previews/{name}.tsx` + slug in `registry.tsx` |
 | Nav | `apps/docs/content/docs/components/meta.json` |
 
 ## 1. Create the component
@@ -251,17 +253,63 @@ file simply won't appear in the sidebar). Slugs are the full path from `docs/`, 
 }
 ```
 
-Also add a `<Card>` for the component to its category section in
+Also add a `<PreviewCard>` for the component to its category section in
 `apps/docs/content/docs/components/index.mdx` (the Components landing grid) — that page is
-hand-maintained too.
+hand-maintained too. `<PreviewCard>` (registered globally in `mdx.tsx`) takes the same
+`href` + `title` as the old fumadocs `<Card>`, with the description as children, and renders
+a live **placeholder preview** on top (see §6):
 
-## 6. Naming rules
+```mdx
+<PreviewCard href="/docs/components/buttons/my-component" title="My Component">
+  One-line description of what it does.
+</PreviewCard>
+```
+
+## 6. Component index placeholder preview (required)
+
+Every index card shows a uniform **skeleton placeholder** — muted gray blocks + a single
+accent highlight on a dotted background, animating on card hover. They are NOT live
+components; they all share one visual language so the grid reads consistently. Add one for
+each new component:
+
+**a. Create `apps/docs/src/components/card-previews/previews/{name}.tsx`** — a default-export
+built from the shared kit (`./_kit`): `Sk` (gray block `bg-[var(--muted-foreground)]/20`),
+`Ac` (the single accent, `bg-primary`), `Panel` (framed surface). Set shape/size via
+`className`. Drive motion with CSS `group-hover` only (the card root is `group`) — no `play`
+prop, no JS/framer, no remote images.
+
+```tsx
+"use client";
+
+import { Ac, Sk } from "./_kit";
+
+export default function MyComponentPreview() {
+  return (
+    <div className="relative h-10 w-32">
+      <Sk className="h-9 w-32 rounded-lg" />
+      <Ac className="absolute inset-y-0 left-0 w-1/3 rounded-lg transition-[width] duration-500 group-hover:w-full" />
+    </div>
+  );
+}
+```
+
+Common motion patterns: `grid-rows-[0fr]↔group-hover:grid-rows-[1fr]` (expand/reveal),
+`group-hover:translate-*/scale-*/rotate-*`, staggered `style={{ transitionDelay }}` on plain
+divs, `[background:radial-gradient(...var(--primary)...)]` glows. Keep it minimal and
+abstract — one representative motif, ~`size-24` / a single pill / a small panel.
+
+**b. Register the slug** in `apps/docs/src/components/card-previews/registry.tsx` — add
+`"{name}"` to the `CURATED_SLUGS` array (under its category). The registry lazy-imports
+`./previews/{slug}` by the card href's last segment, so the filename **must** equal that
+slug.
+
+## 7. Naming rules
 
 - Component names must be valid JS identifiers (`MagicButton` not `3DButton`)
 - File names: kebab-case (`shimmer-button.tsx`, `magic-button.tsx`)
 - Export PascalCase component + prop types from `index.ts`
 
-## 7. Anti-patterns
+## 8. Anti-patterns
 
 - **NEVER** construct Tailwind class names dynamically (`grid-cols-${n}`) — map to static strings; the scanner can't see interpolated classes.
 - **NEVER** skip `@source "./src"` in `styles.css`.
@@ -272,9 +320,10 @@ hand-maintained too.
 - **NEVER** ship an animation without a reduced-motion path, and **never** `transition: all`.
 - **NEVER** use arbitrary z-index — use the scale: `z-base`, `z-raised`, `z-overlay`, `z-sticky`, `z-popover`, `z-modal`, `z-toast`.
 - **NEVER** put bare text on its own line inside a block tag in `ComponentPreview` children — MDX wraps it in a `<p>`, causing `<p>`-in-`<p>` hydration errors. Keep text inline (see §5).
-- **NEVER** rely on folder auto-nav for docs — register the page in the root `apps/docs/content/docs/meta.json` (slug `components/{category}/{name}`) and add a `<Card>` in `components/index.mdx`, or it won't appear (see §5).
+- **NEVER** rely on folder auto-nav for docs — register the page in the root `apps/docs/content/docs/meta.json` (slug `components/{category}/{name}`) and add a `<PreviewCard>` in `components/index.mdx`, or it won't appear (see §5).
+- **NEVER** ship a `<PreviewCard>` without its placeholder preview — create `card-previews/previews/{name}.tsx` (filename = href slug) and add the slug to `CURATED_SLUGS`, or the card renders text-only and breaks the uniform grid (see §6).
 
-## 8. Theme tokens
+## 9. Theme tokens
 
 | Category | Examples | Backing token |
 |----------|----------|---------------|
@@ -284,7 +333,7 @@ hand-maintained too.
 | Z-index | `z-base`, `z-raised`, `z-overlay`, `z-sticky`, `z-popover`, `z-modal`, `z-toast` | `--z-index-*` |
 | Fonts | `font-sans`, `font-mono`, `font-serif` | `--font-*` |
 
-## 9. Checklist
+## 10. Checklist
 
 - [ ] `packages/components/src/{name}.tsx` with `forwardRef`
 - [ ] Exported (component + prop/variant types) from `index.ts`
@@ -295,6 +344,7 @@ hand-maintained too.
 - [ ] Docs MDX under `components/{category}/` with ComponentPreview + ComponentInstall
 - [ ] ComponentPreview children: text inline in its tag (no `<p>`-in-`<p>` — see §5)
 - [ ] Registered in root `apps/docs/content/docs/meta.json` as `components/{category}/{name}`
-- [ ] `<Card>` added to its section in `components/index.mdx`
+- [ ] `<PreviewCard>` added to its section in `components/index.mdx`
+- [ ] Placeholder preview `card-previews/previews/{name}.tsx` (kit skeleton, `group-hover` motion) + slug in `CURATED_SLUGS` (see §6)
 - [ ] Static Tailwind classes only (no dynamic class construction)
 - [ ] Verified styles in Storybook and docs after dev server restart
