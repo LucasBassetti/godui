@@ -102,21 +102,11 @@ export function Demo() {
 
 ## 🧩 Components
 
-36+ animated components, organized by category. Browse them all in the
-[component docs](https://godui.design/docs/components).
+A growing collection of animated components, organized by category — buttons,
+text, overlays, navigation, layout, effects, glass, backgrounds,
+visualizations, inputs, and more.
 
-| Category | Components |
-| --- | --- |
-| **Buttons** | [Magic Button](https://godui.design/docs/components/buttons/magic-button) · [Shimmer Button](https://godui.design/docs/components/buttons/shimmer-button) · [Magnetic Button](https://godui.design/docs/components/buttons/magnetic-button) · [Mask Button](https://godui.design/docs/components/buttons/mask-button) · [Progress Fold Button](https://godui.design/docs/components/buttons/progress-fold-button) · [Theme Toggle](https://godui.design/docs/components/buttons/theme-toggle) |
-| **Text** | [Aurora Text](https://godui.design/docs/components/text/aurora-text) · [Elastic Text](https://godui.design/docs/components/text/elastic-text) · [Text Animate](https://godui.design/docs/components/text/text-animate) · [Highlighter](https://godui.design/docs/components/text/highlighter) · [Number Ticker](https://godui.design/docs/components/text/number-ticker) |
-| **Overlays** | [Command Palette](https://godui.design/docs/components/overlays/command-palette) · [Toast](https://godui.design/docs/components/overlays/toast) · [Drawer](https://godui.design/docs/components/overlays/drawer) · [Animated Tooltip](https://godui.design/docs/components/overlays/animated-tooltip) · [Dynamic Island](https://godui.design/docs/components/overlays/dynamic-island) |
-| **Navigation** | [Dock](https://godui.design/docs/components/navigation/dock) · [Magic Tab](https://godui.design/docs/components/navigation/magic-tab) |
-| **Layout** | [Bento Grid](https://godui.design/docs/components/layout/bento-grid) · [Tilt Card](https://godui.design/docs/components/layout/tilt-card) · [Progressive Card Reveal](https://godui.design/docs/components/layout/progressive-card-reveal) · [Animated Testimonials](https://godui.design/docs/components/layout/animated-testimonials) |
-| **Effects** | [Border Beam](https://godui.design/docs/components/effects/border-beam) · [Marquee](https://godui.design/docs/components/effects/marquee) · [Spotlight Card](https://godui.design/docs/components/effects/spotlight-card) · [Scroll Reveal](https://godui.design/docs/components/effects/scroll-reveal) · [Lamp](https://godui.design/docs/components/effects/lamp) · [Confetti](https://godui.design/docs/components/effects/confetti) |
-| **Glass** | [Liquid Glass Card](https://godui.design/docs/components/glass/liquid-glass-card) · [Liquid Glass Lens](https://godui.design/docs/components/glass/liquid-glass-lens) |
-| **Backgrounds** | [Gradient](https://godui.design/docs/components/backgrounds/gradient-background) · [Geometric](https://godui.design/docs/components/backgrounds/geometric-background) · [Decorative](https://godui.design/docs/components/backgrounds/decorative-background) · [Effect](https://godui.design/docs/components/backgrounds/effect-background) · [Pixel Grid](https://godui.design/docs/components/backgrounds/pixel-grid) |
-| **Visualizations** | [Globe](https://godui.design/docs/components/visualizations/globe) · [Animated Beam](https://godui.design/docs/components/visualizations/animated-beam) · [Orbiting Circles](https://godui.design/docs/components/visualizations/orbiting-circles) |
-| **Inputs** | [Magic Input](https://godui.design/docs/components/inputs/magic-input) |
+**[Browse all components →](https://godui.design/docs/components)**
 
 ## 🛠️ Local development
 
