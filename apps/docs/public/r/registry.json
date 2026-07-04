@@ -1256,6 +1256,66 @@
       ]
     },
     {
+      "name": "cover-flow",
+      "type": "registry:ui",
+      "title": "Cover Flow",
+      "description": "A physics 3D cover flow — the centered slide faces front while neighbours rotate away in perspective, with momentum drag and snap.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/cover-flow/cover-flow.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/cover-flow.tsx"
+        }
+      ]
+    },
+    {
+      "name": "inertia-gallery",
+      "type": "registry:ui",
+      "title": "Inertia Gallery",
+      "description": "A horizontal gallery you throw with the pointer — momentum carries it, it rubber-bands at the ends, and slides scale, blur, and fade with distance from center.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/inertia-gallery/inertia-gallery.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/inertia-gallery.tsx"
+        }
+      ]
+    },
+    {
+      "name": "morph-gallery",
+      "type": "registry:ui",
+      "title": "Morph Gallery",
+      "description": "A thumbnail grid where a tile morphs into a fullscreen detail view via a shared-element transition, with swipe and keyboard navigation.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/morph-gallery/morph-gallery.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/morph-gallery.tsx"
+        }
+      ]
+    },
+    {
+      "name": "orbit-carousel",
+      "type": "registry:ui",
+      "title": "Orbit Carousel",
+      "description": "Slides ride an arc and rotate around a pivot, tilting and receding with angular distance from the front, with momentum drag and snap.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/orbit-carousel/orbit-carousel.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/orbit-carousel.tsx"
+        }
+      ]
+    },
+    {
       "name": "agent-timeline",
       "type": "registry:ui",
       "title": "Agent Timeline",

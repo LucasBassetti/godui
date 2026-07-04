@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "generatedAt": "2026-06-28T16:00:26.513Z",
+  "generatedAt": "2026-07-04T18:03:24.564Z",
   "components": [
     {
       "name": "accordion",
@@ -166,6 +166,15 @@
       "install": "npx shadcn@latest add @godui/conversation-thread"
     },
     {
+      "name": "cover-flow",
+      "title": "Cover Flow",
+      "description": "A physics 3D cover flow — the centered slide faces front while neighbours rotate away in perspective, with momentum drag and snap.",
+      "category": "Layout",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/cover-flow"
+    },
+    {
       "name": "dock",
       "title": "Dock",
       "description": "A macOS-style dock whose items magnify with spring physics as the pointer moves across them.",
@@ -310,6 +319,15 @@
       "install": "npx shadcn@latest add @godui/image-trail"
     },
     {
+      "name": "inertia-gallery",
+      "title": "Inertia Gallery",
+      "description": "A horizontal gallery you throw with the pointer — momentum carries it, it rubber-bands at the ends, and slides scale, blur, and fade with distance from center.",
+      "category": "Layout",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/inertia-gallery"
+    },
+    {
       "name": "lamp",
       "title": "Lamp",
       "description": "A conic-gradient lamp that ignites and reveals a headline as it scrolls into view.",
@@ -436,6 +454,15 @@
       "install": "npx shadcn@latest add @godui/mega-menu"
     },
     {
+      "name": "morph-gallery",
+      "title": "Morph Gallery",
+      "description": "A thumbnail grid where a tile morphs into a fullscreen detail view via a shared-element transition, with swipe and keyboard navigation.",
+      "category": "Layout",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/morph-gallery"
+    },
+    {
       "name": "morphing-dialog",
       "title": "Morphing Dialog",
       "description": "A card that physically morphs into a modal through a shared layout, then springs back on close.",
@@ -461,6 +488,15 @@
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add @godui/number-ticker"
+    },
+    {
+      "name": "orbit-carousel",
+      "title": "Orbit Carousel",
+      "description": "Slides ride an arc and rotate around a pivot, tilting and receding with angular distance from the front, with momentum drag and snap.",
+      "category": "Layout",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/orbit-carousel"
     },
     {
       "name": "orbiting-circles",

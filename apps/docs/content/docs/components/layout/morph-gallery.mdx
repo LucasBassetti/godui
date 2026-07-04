@@ -1,0 +1,81 @@
+---
+title: Morph Gallery
+description: A thumbnail grid where a tile morphs into a fullscreen detail view via a shared-element transition, with swipe and keyboard navigation.
+---
+
+import { MorphGallery } from "@godui/components";
+import { MorphGalleryDemo } from "@/components/demos/morph-gallery-demo";
+
+Click a thumbnail and it morphs — the same image element grows from its grid slot into a fullscreen detail via a shared-layout transition. Move between photos with the arrows or keys; close and it morphs back into place.
+
+<ComponentPreview
+  story="layout-morphgallery"
+  code={`import { MorphGallery } from "@/components/godui/morph-gallery";
+
+export function Gallery() {
+  return (
+    <MorphGallery
+      columns={3}
+      items={[
+        { src: "/1.jpg", alt: "Coastline at dawn" },
+        { src: "/2.jpg", alt: "Alpine switchbacks" },
+        { src: "/3.jpg", alt: "Fog over the valley" },
+      ]}
+    />
+  );
+}`}
+>
+  <MorphGalleryDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="MorphGallery" />
+
+The grid image and the detail image share a `layoutId`, so opening and closing
+animate the same element between the two positions with a spring — no cross-fade
+seam. The detail view traps focus, restores it to the originating tile on close,
+and supports arrow-key and button navigation.
+
+## Usage
+
+```tsx
+import { MorphGallery } from "@/components/godui/morph-gallery";
+```
+
+```tsx
+<MorphGallery
+  columns={3}
+  onOpenChange={(index) => console.log(index)}
+  items={[
+    { src: "/photo-1.jpg", alt: "Coastline", caption: "Coastline at dawn" },
+    { src: "/photo-2.jpg", alt: "Ridge", caption: "Alpine switchbacks" },
+  ]}
+/>
+```
+
+### Columns
+
+`columns` sets the grid width (2–5); it drops to fewer columns on small screens.
+
+```tsx
+<MorphGallery columns={4} items={items} />
+```
+
+## Accessibility
+
+Each tile is a labelled button. The detail view is a modal dialog:
+<kbd>←</kbd> / <kbd>→</kbd> move between photos, <kbd>Esc</kbd> closes, focus is
+trapped inside while open and restored to the tile on close. When
+`prefers-reduced-motion` is set, the shared-element morph is replaced with a
+cross-fade.
+
+## Props
+
+| Prop           | Type                             | Default | Description                                   |
+| -------------- | -------------------------------- | ------- | --------------------------------------------- |
+| `items`        | `MorphGalleryItem[]`             | —       | Images: `{ src, alt, caption? }`.             |
+| `columns`      | `2 \| 3 \| 4 \| 5`               | `3`     | Grid column count.                            |
+| `onOpenChange` | `(index: number \| null) => void` | —      | Fired when the detail view opens or closes.   |
+
+`MorphGallery` also forwards every standard `<div>` attribute to the root element.

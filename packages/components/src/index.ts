@@ -82,6 +82,7 @@ export {
   StreamingText,
   type StreamingTextProps,
 } from "./conversation-thread";
+export { CoverFlow, type CoverFlowProps } from "./cover-flow";
 export {
   DecorativeBackground,
   type DecorativeBackgroundProps,
@@ -175,6 +176,10 @@ export {
 } from "./image-accordion";
 export { ImageCompare, type ImageCompareProps } from "./image-compare";
 export { ImageTrail, type ImageTrailProps } from "./image-trail";
+export {
+  InertiaGallery,
+  type InertiaGalleryProps,
+} from "./inertia-gallery";
 export { Lamp, type LampProps } from "./lamp";
 export { LightRays, type LightRaysProps } from "./light-rays";
 export {
@@ -242,6 +247,11 @@ export {
   type MegaMenuSection,
 } from "./mega-menu";
 export {
+  MorphGallery,
+  type MorphGalleryItem,
+  type MorphGalleryProps,
+} from "./morph-gallery";
+export {
   MorphingDialog,
   MorphingDialogClose,
   type MorphingDialogCloseProps,
@@ -270,6 +280,10 @@ export {
   NumberTicker,
   type NumberTickerProps,
 } from "./number-ticker";
+export {
+  OrbitCarousel,
+  type OrbitCarouselProps,
+} from "./orbit-carousel";
 export {
   OrbitingCircles,
   type OrbitingCirclesProps,

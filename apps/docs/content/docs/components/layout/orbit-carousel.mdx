@@ -1,0 +1,79 @@
+---
+title: Orbit Carousel
+description: Slides ride an arc and rotate around a pivot, tilting and receding with angular distance from the front, with momentum drag and snap.
+---
+
+import { OrbitCarousel } from "@godui/components";
+import { OrbitCarouselDemo } from "@/components/demos/orbit-carousel-demo";
+
+Slides fan out on a wheel and rotate around a pivot below the stage. The front slide sits upright and full-size; the rest tilt, shrink, and dim as they curve away. Drag, click a slide, use the buttons, or the arrow keys.
+
+<ComponentPreview
+  story="layout-orbitcarousel"
+  code={`import { OrbitCarousel } from "@/components/godui/orbit-carousel";
+
+export function Wheel() {
+  return (
+    <OrbitCarousel defaultIndex={2} onChange={(i) => console.log(i)}>
+      <OrbitCard title="Aurora" />
+      <OrbitCard title="Basalt" />
+      <OrbitCard title="Cirrus" />
+    </OrbitCarousel>
+  );
+}`}
+>
+  <OrbitCarouselDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="OrbitCarousel" />
+
+A single rotation motion value places every slide on the arc; each derives its
+position, tilt, scale, and opacity from its angular distance to the top. A
+release snaps the rotation to the nearest slide with a spring, and a fast flick
+advances an extra step.
+
+## Usage
+
+```tsx
+import { OrbitCarousel } from "@/components/godui/orbit-carousel";
+```
+
+```tsx
+<OrbitCarousel defaultIndex={0} onChange={(index) => select(index)}>
+  <Card>One</Card>
+  <Card>Two</Card>
+  <Card>Three</Card>
+</OrbitCarousel>
+```
+
+### Shaping the arc
+
+`radius` sets how far slides sit from the pivot; `angleStep` sets the degrees
+between adjacent slides — smaller values pack the wheel tighter.
+
+```tsx
+<OrbitCarousel radius={280} angleStep={20}>
+  {/* slides */}
+</OrbitCarousel>
+```
+
+## Accessibility
+
+The stage is a focusable group: <kbd>←</kbd> and <kbd>→</kbd> move between
+slides, and the labelled buttons do the same. When `prefers-reduced-motion` is
+set, the per-slide tilt is dropped.
+
+## Props
+
+| Prop           | Type                      | Default | Description                                    |
+| -------------- | ------------------------- | ------- | ---------------------------------------------- |
+| `radius`       | `number`                  | `240`   | Arc radius in px.                              |
+| `angleStep`    | `number`                  | `26`    | Degrees between adjacent slides.               |
+| `itemWidth`    | `number`                  | `160`   | Slide width in px.                             |
+| `itemHeight`   | `number`                  | `200`   | Slide height in px.                            |
+| `defaultIndex` | `number`                  | `0`     | Slide at the front on mount.                   |
+| `onChange`     | `(index: number) => void` | —       | Fired when a new slide settles at the front.   |
+
+`OrbitCarousel` also forwards every standard `<div>` attribute to the root element.

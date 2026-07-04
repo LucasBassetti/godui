@@ -1,0 +1,88 @@
+---
+title: Inertia Gallery
+description: A horizontal gallery you throw with the pointer — momentum carries it, it rubber-bands at the ends, and slides scale, blur, and fade with distance from center.
+---
+
+import { InertiaGallery } from "@godui/components";
+import { InertiaGalleryDemo } from "@/components/demos/inertia-gallery-demo";
+
+Throw the strip and let it coast. Each slide scales up, sharpens, and brightens as it nears the center, and dims and blurs as it drifts away — the Apple-Photos feel. Drag, use the buttons, or the arrow keys.
+
+<ComponentPreview
+  story="layout-inertiagallery"
+  fullWidth
+  code={`import { InertiaGallery } from "@/components/godui/inertia-gallery";
+
+export function Shots() {
+  return (
+    <InertiaGallery snap onChange={(i) => console.log(i)}>
+      <Shot label="Dune" />
+      <Shot label="Harbor" />
+      <Shot label="Ridge" />
+    </InertiaGallery>
+  );
+}`}
+>
+  <InertiaGalleryDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="InertiaGallery" />
+
+The track is a single draggable element with momentum; its `x` motion value
+drives a per-slide transform that maps distance-from-center to `scale`,
+`opacity`, and a small `blur`. With `snap`, the nearest slide springs to center
+when the throw settles.
+
+## Usage
+
+```tsx
+import { InertiaGallery } from "@/components/godui/inertia-gallery";
+```
+
+```tsx
+<InertiaGallery onChange={(index) => setActive(index)}>
+  <Shot>One</Shot>
+  <Shot>Two</Shot>
+  <Shot>Three</Shot>
+</InertiaGallery>
+```
+
+### Snapping
+
+By default the strip coasts freely. Pass `snap` to settle the nearest slide to
+center.
+
+```tsx
+<InertiaGallery snap>{/* slides */}</InertiaGallery>
+```
+
+### Falloff
+
+`falloff` scales the distance-based scale/blur/opacity effect; `0` renders a flat
+strip.
+
+```tsx
+<InertiaGallery falloff={0.5}>{/* slides */}</InertiaGallery>
+```
+
+## Accessibility
+
+The viewport is a focusable group: <kbd>←</kbd> and <kbd>→</kbd> move between
+slides, and the labelled buttons do the same. When `prefers-reduced-motion` is
+set, the blur and scale/opacity falloff are disabled and the strip scrolls
+plainly.
+
+## Props
+
+| Prop        | Type                      | Default | Description                                                     |
+| ----------- | ------------------------- | ------- | --------------------------------------------------------------- |
+| `itemWidth` | `number`                  | `200`   | Slide width in px.                                              |
+| `gap`       | `number`                  | `24`    | Gap between slides in px.                                       |
+| `snap`      | `boolean`                 | `false` | Snap the nearest slide to center when the throw settles.        |
+| `falloff`   | `number`                  | `1`     | Strength of the distance-from-center scale/blur/opacity effect. |
+| `defaultIndex` | `number`               | `0`     | Slide centered on mount.                                        |
+| `onChange`  | `(index: number) => void` | —       | Fired when a new slide reaches center.                          |
+
+`InertiaGallery` also forwards every standard `<div>` attribute to the root element.

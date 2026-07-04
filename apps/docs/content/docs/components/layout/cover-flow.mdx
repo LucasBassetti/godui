@@ -1,0 +1,89 @@
+---
+title: Cover Flow
+description: A physics 3D cover flow — the centered slide faces front while neighbours rotate away in perspective, with momentum drag and snap.
+---
+
+import { CoverFlow } from "@godui/components";
+import { CoverFlowDemo } from "@/components/demos/cover-flow-demo";
+
+A tactile way to browse album art, product shots, or covers. Drag across the stage — the row telescopes in 3D and snaps to the nearest slide when you let go. Drag, click a side slide, use the buttons, or the arrow keys.
+
+<ComponentPreview
+  story="layout-coverflow"
+  code={`import { CoverFlow } from "@/components/godui/cover-flow";
+
+export function Albums() {
+  return (
+    <CoverFlow defaultIndex={2} onChange={(i) => console.log(i)}>
+      <Cover title="Nightfall" artist="Aurora Grey" />
+      <Cover title="Golden Hour" artist="Marlowe" />
+      <Cover title="Deep Field" artist="Vesper" />
+    </CoverFlow>
+  );
+}`}
+>
+  <CoverFlowDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="CoverFlow" />
+
+Each slide derives its `translateX`, `rotateY`, `translateZ`, `scale`, and
+`opacity` from its signed distance to center — a single motion value the drag
+updates. A release snaps that value to the nearest index with a spring, and a
+fast flick advances an extra slide.
+
+## Usage
+
+```tsx
+import { CoverFlow } from "@/components/godui/cover-flow";
+```
+
+```tsx
+<CoverFlow defaultIndex={0} onChange={(index) => select(index)}>
+  <Cover>One</Cover>
+  <Cover>Two</Cover>
+  <Cover>Three</Cover>
+</CoverFlow>
+```
+
+### Sizing
+
+Slides are absolutely positioned on the stage, so give them a size with
+`itemWidth` / `itemHeight`. `gap` adds space between slide centers on top of the
+overlap.
+
+```tsx
+<CoverFlow itemWidth={240} itemHeight={300} gap={16}>
+  {/* slides */}
+</CoverFlow>
+```
+
+### Reflection
+
+`reflection` (on by default) renders a fading mirror of each slide on the floor.
+
+```tsx
+<CoverFlow reflection={false}>{/* slides */}</CoverFlow>
+```
+
+## Accessibility
+
+The stage is a focusable group: <kbd>←</kbd> and <kbd>→</kbd> move between
+slides, and the labelled buttons do the same. When `prefers-reduced-motion` is
+set, the 3D rotation and depth are dropped for a flat cross-fade.
+
+## Props
+
+| Prop           | Type                        | Default | Description                                          |
+| -------------- | --------------------------- | ------- | ---------------------------------------------------- |
+| `defaultIndex` | `number`                    | `0`     | Slide centered on mount.                             |
+| `onChange`     | `(index: number) => void`   | —       | Fired when a new slide settles at center.            |
+| `itemWidth`    | `number`                    | `240`   | Slide width in px.                                   |
+| `itemHeight`   | `number`                    | `300`   | Slide height in px.                                  |
+| `gap`          | `number`                    | `0`     | Extra px between slide centers.                      |
+| `perspective`  | `number`                    | `1200`  | CSS perspective depth for the 3D stage.              |
+| `reflection`   | `boolean`                   | `true`  | Render a fading floor reflection under each slide.   |
+
+`CoverFlow` also forwards every standard `<div>` attribute to the root element.
