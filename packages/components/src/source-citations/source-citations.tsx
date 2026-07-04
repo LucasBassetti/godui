@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import * as React from "react";
 
 export type CitationSource = {
@@ -119,10 +119,15 @@ const SourceList = React.forwardRef<HTMLDivElement, SourceListProps>(
     { sources, collapsible = true, previewCount = 3, className, ...props },
     ref,
   ) => {
+    const reduce = useReducedMotion();
     const [expanded, setExpanded] = React.useState(!collapsible);
     const visible =
       expanded || !collapsible ? sources : sources.slice(0, previewCount);
     const hidden = sources.length - previewCount;
+
+    // Soft fade-up settle (EASE.out / DURATION.slow / STAGGER.base). Caps the
+    // per-item delay so expand/collapse reveals stay snappy on long lists.
+    const ease = [0.22, 1, 0.36, 1] as const;
 
     return (
       <div
@@ -136,28 +141,42 @@ const SourceList = React.forwardRef<HTMLDivElement, SourceListProps>(
           Sources
         </div>
         <div className="flex flex-col gap-1">
-          {visible.map((source, i) => (
-            <a
-              key={source.url}
-              href={source.url}
-              target="_blank"
-              rel="noreferrer"
-              className="group flex items-center gap-2.5 rounded-lg border border-transparent px-2 py-1.5 transition-colors hover:border-border hover:bg-accent"
-            >
-              <span className="flex size-5 shrink-0 items-center justify-center rounded bg-muted text-[10px] font-semibold tabular-nums text-muted-foreground">
-                {i + 1}
-              </span>
-              <span className="min-w-0 flex-1">
-                <span className="block truncate text-sm font-medium text-foreground">
-                  {source.title}
+          <AnimatePresence>
+            {visible.map((source, i) => (
+              <motion.a
+                key={source.url}
+                href={source.url}
+                target="_blank"
+                rel="noreferrer"
+                initial={{ opacity: 0, y: reduce ? 0 : 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{
+                  opacity: 0,
+                  y: reduce ? 0 : -4,
+                  transition: { duration: reduce ? 0 : 0.15, ease },
+                }}
+                transition={{
+                  duration: reduce ? 0 : 0.3,
+                  ease,
+                  delay: reduce ? 0 : Math.min(i, previewCount) * 0.05,
+                }}
+                className="group flex items-center gap-2.5 rounded-lg border border-transparent px-2 py-1.5 transition-colors hover:border-border hover:bg-accent"
+              >
+                <span className="flex size-5 shrink-0 items-center justify-center rounded bg-muted text-[10px] font-semibold tabular-nums text-muted-foreground">
+                  {i + 1}
                 </span>
-                <span className="block truncate text-xs text-muted-foreground">
-                  {hostname(source.url)}
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-sm font-medium text-foreground">
+                    {source.title}
+                  </span>
+                  <span className="block truncate text-xs text-muted-foreground">
+                    {hostname(source.url)}
+                  </span>
                 </span>
-              </span>
-              <ExternalIcon className="size-3.5 shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
-            </a>
-          ))}
+                <ExternalIcon className="size-3.5 shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
+              </motion.a>
+            ))}
+          </AnimatePresence>
         </div>
         {collapsible && hidden > 0 ? (
           <button
