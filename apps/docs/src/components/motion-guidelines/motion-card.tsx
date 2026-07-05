@@ -31,6 +31,19 @@ export function useOneShot() {
   };
 }
 
+/**
+ * A play-button glyph used as the pointer cursor over tap-to-play demos, so it
+ * reads as "click anywhere to play". White disc + dark triangle stays legible on
+ * both light and dark card backgrounds. Hotspot centered on the 32px glyph.
+ */
+const PLAY_CURSOR_SVG = encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">' +
+    '<circle cx="16" cy="16" r="14" fill="rgba(255,255,255,0.92)" stroke="rgba(0,0,0,0.8)" stroke-width="1.5"/>' +
+    '<path d="M13 10.5l9 5.5-9 5.5z" fill="rgba(0,0,0,0.85)"/>' +
+    "</svg>",
+);
+const PLAY_CURSOR = `url("data:image/svg+xml,${PLAY_CURSOR_SVG}") 16 16, pointer`;
+
 /** Full-bleed clickable wrapper that triggers a demo's one-shot animation. */
 export function TapToPlay({
   children,
@@ -46,7 +59,8 @@ export function TapToPlay({
       type="button"
       onClick={onTap}
       aria-label={label}
-      className="grid size-full cursor-pointer place-items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-inset"
+      style={{ cursor: PLAY_CURSOR }}
+      className="grid size-full place-items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-inset"
     >
       {children}
     </button>
