@@ -8,7 +8,7 @@ export default function TextAnimatePreview() {
       {[0, 1, 2].map((i) => (
         <div
           key={i}
-          className={`h-3 ${widths[i]} translate-y-1 rounded bg-[var(--muted-foreground)]/20 opacity-0 blur-[1px] transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 group-hover:blur-0`}
+          className={`h-3 ${widths[i]} translate-y-1 rounded bg-[var(--muted-foreground)]/25 opacity-40 blur-[1px] transition-all duration-300 group-hover:translate-y-0 group-hover:bg-primary/60 group-hover:opacity-100 group-hover:blur-0`}
           style={{ transitionDelay: `${i * 120}ms` }}
         />
       ))}
