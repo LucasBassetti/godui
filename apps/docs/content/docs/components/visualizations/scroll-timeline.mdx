@@ -1,0 +1,69 @@
+---
+title: Scroll Timeline
+description: A scrollytelling timeline whose progress line grows as you scroll, revealing entries with sticky labels.
+---
+
+import { ScrollTimelineDemo } from "@/components/demos/scroll-timeline-demo";
+
+A vertical timeline built for storytelling: a progress line traces down the rail as you scroll, entries fade up into place, and each label sticks while its section is in view. Scroll the preview to draw the line.
+
+<ComponentPreview
+  fullWidth
+  story="visualizations-scroll-timeline"
+  code={`import { ScrollTimeline } from "@/components/godui/scroll-timeline";
+
+export function Changelog() {
+  return (
+    <ScrollTimeline
+      data={[
+        { date: "2021", title: "The first commit", content: <p>A single component.</p> },
+        { date: "2023", title: "Ten thousand stars", content: <p>The community took over.</p> },
+        { date: "2025", title: "One hundred components", content: <p>Every surface, polished.</p> },
+      ]}
+    />
+  );
+}`}
+>
+  <ScrollTimelineDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="ScrollTimeline" />
+
+`ScrollTimeline` measures its track and maps scroll progress to the accent
+line's height, so the rail fills exactly as far as you've read. Entries fade up
+once on enter, and the date rail stays sticky while its entry is on screen.
+Under reduced motion the line is drawn in full and entries appear statically.
+
+## Usage
+
+```tsx
+import { ScrollTimeline } from "@/components/godui/scroll-timeline";
+```
+
+```tsx
+<ScrollTimeline
+  data={[
+    {
+      date: "Q1",
+      title: "Discovery",
+      content: <p>Research, interviews, and a first prototype.</p>,
+    },
+    {
+      date: "Q2",
+      title: "Build",
+      content: <p>Shipped the beta to early customers.</p>,
+    },
+  ]}
+/>
+```
+
+## Props
+
+| Prop   | Type              | Default | Description                       |
+| ------ | ----------------- | ------- | --------------------------------- |
+| `data` | `TimelineEntry[]` | —       | Entries to render top to bottom.  |
+
+Each entry is `{ title: string; date?: string; content: React.ReactNode }`.
+`ScrollTimeline` also forwards every standard `<div>` attribute to the root.

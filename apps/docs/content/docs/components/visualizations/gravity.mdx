@@ -1,0 +1,82 @@
+---
+title: Gravity
+description: A physics playground where elements fall, pile, collide, and can be dragged and flung.
+---
+
+import { GravityDemo } from "@/components/demos/gravity-demo";
+
+Drop any elements into a `Gravity` canvas and they become real physics bodies — they fall, stack, collide, and fling when you grab them. Powered by [matter-js](https://brm.io/matter-js/). Grab a pill and throw it.
+
+<ComponentPreview
+  story="visualizations-gravity"
+  code={`import { Gravity, MatterBody } from "@/components/godui/gravity";
+
+export function Playground() {
+  return (
+    <Gravity className="h-[420px] w-full rounded-xl border border-border">
+      {["design", "motion", "physics", "react"].map((label, i) => (
+        <MatterBody key={label} x={\`\${20 + i * 15}%\`} y="0%" angle={i * 6}>
+          <span className="rounded-full bg-primary px-5 py-2.5 text-lg font-medium text-primary-foreground">
+            {label}
+          </span>
+        </MatterBody>
+      ))}
+    </Gravity>
+  );
+}`}
+>
+  <GravityDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="Gravity" />
+
+`Gravity` owns a matter-js engine sized to its container and syncs each
+`MatterBody`'s DOM transform to its physics body every frame. Bodies are grabbed
+with a mouse constraint, walls keep them contained, and the whole engine is torn
+down on unmount. Under reduced motion the simulation is skipped and bodies lay
+out statically at their origins.
+
+## Usage
+
+```tsx
+import { Gravity, MatterBody } from "@/components/godui/gravity";
+```
+
+```tsx
+<Gravity gravity={{ x: 0, y: 1 }}>
+  <MatterBody x="50%" y="0%" angle={-8}>
+    <span className="rounded-full bg-primary px-4 py-2">drag me</span>
+  </MatterBody>
+</Gravity>
+```
+
+### Zero gravity
+
+Set `gravity` to `{ x: 0, y: 0 }` for a floating, bumper-car feel.
+
+```tsx
+<Gravity gravity={{ x: 0, y: 0 }}>{/* …bodies */}</Gravity>
+```
+
+## Props
+
+### `Gravity`
+
+| Prop          | Type                   | Default          | Description                                        |
+| ------------- | ---------------------- | ---------------- | -------------------------------------------------- |
+| `gravity`     | `{ x: number; y: number }` | `{ x: 0, y: 1 }` | World gravity vector.                          |
+| `autoStart`   | `boolean`              | `true`           | Start the simulation immediately.                  |
+| `addTopWall`  | `boolean`              | `true`           | Close the top so flung bodies can't escape upward. |
+| `restitution` | `number`               | `0.4`            | Bounciness of the walls and bodies (0–1).          |
+
+### `MatterBody`
+
+| Prop                | Type                          | Default       | Description                                          |
+| ------------------- | ----------------------------- | ------------- | --------------------------------------------------- |
+| `x` / `y`           | `number \| string`            | `"50%"` / `"0%"` | Initial position (`%` of container or px).       |
+| `angle`             | `number`                      | `0`           | Initial rotation in degrees.                        |
+| `bodyType`          | `"rectangle" \| "circle"`     | `"rectangle"` | Collision shape.                                    |
+| `isDraggable`       | `boolean`                     | `true`        | Whether the pointer can grab and fling this body.   |
+| `matterBodyOptions` | `Matter.IChamferableBodyDefinition` | —       | Escape hatch for raw Matter body options.           |

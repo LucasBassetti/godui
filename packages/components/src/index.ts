@@ -158,6 +158,17 @@ export {
   gradientBackgroundVariants,
 } from "./gradient-background";
 export {
+  Gravity,
+  type GravityProps,
+  MatterBody,
+  type MatterBodyProps,
+} from "./gravity";
+export {
+  HeroParallax,
+  type HeroParallaxItem,
+  type HeroParallaxProps,
+} from "./hero-parallax";
+export {
   Highlighter,
   type HighlighterAction,
   type HighlighterProps,
@@ -349,6 +360,11 @@ export {
 } from "./scroll-reveal";
 export { ScrollStack, type ScrollStackProps } from "./scroll-stack";
 export {
+  ScrollTimeline,
+  type ScrollTimelineProps,
+  type TimelineEntry,
+} from "./scroll-timeline";
+export {
   SegmentedControl,
   type SegmentedControlProps,
   type SegmentedControlSize,
@@ -425,3 +441,9 @@ export {
   WarpStarfield,
   type WarpStarfieldProps,
 } from "./warp-starfield";
+export {
+  WorldMap,
+  type WorldMapConnection,
+  type WorldMapPoint,
+  type WorldMapProps,
+} from "./world-map";

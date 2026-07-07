@@ -54,6 +54,7 @@ const CURATED_SLUGS = [
   "bento-grid",
   "card-swap",
   "cover-flow",
+  "hero-parallax",
   "image-accordion",
   "image-compare",
   "inertia-gallery",
@@ -86,7 +87,10 @@ const CURATED_SLUGS = [
   // Visualizations
   "animated-beam",
   "globe",
+  "gravity",
   "orbiting-circles",
+  "scroll-timeline",
+  "world-map",
   // Effects
   "border-beam",
   "confetti",

@@ -1681,6 +1681,67 @@
           "target": "components/godui/fluid-cursor.tsx"
         }
       ]
+    },
+    {
+      "name": "world-map",
+      "type": "registry:ui",
+      "title": "World Map",
+      "description": "A dotted world map that draws animated arcs between locations, with pulsing endpoint pins.",
+      "dependencies": ["dotted-map", "framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/world-map/world-map.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/world-map.tsx"
+        }
+      ]
+    },
+    {
+      "name": "gravity",
+      "type": "registry:ui",
+      "title": "Gravity",
+      "description": "A physics playground where elements fall, pile, collide, and can be dragged and flung.",
+      "dependencies": ["matter-js"],
+      "devDependencies": ["@types/matter-js"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/gravity/gravity.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/gravity.tsx"
+        }
+      ]
+    },
+    {
+      "name": "hero-parallax",
+      "type": "registry:ui",
+      "title": "Hero Parallax",
+      "description": "A scroll-driven grid of cards that drift in alternating directions on a tilted perspective plane.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/hero-parallax/hero-parallax.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/hero-parallax.tsx"
+        }
+      ]
+    },
+    {
+      "name": "scroll-timeline",
+      "type": "registry:ui",
+      "title": "Scroll Timeline",
+      "description": "A scrollytelling timeline whose progress line grows as you scroll, revealing entries with sticky labels.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/scroll-timeline/scroll-timeline.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/scroll-timeline.tsx"
+        }
+      ]
     }
   ]
 }

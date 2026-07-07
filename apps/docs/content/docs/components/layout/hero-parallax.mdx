@@ -1,0 +1,78 @@
+---
+title: Hero Parallax
+description: A scroll-driven grid of cards that drift in alternating directions on a tilted perspective plane.
+---
+
+import { HeroParallaxDemo } from "@/components/demos/hero-parallax-demo";
+
+Three rows of cards drift in alternating directions as you scroll, while the whole plane un-tilts and rises into view. The classic hero moment for a portfolio or product reel. Scroll the preview.
+
+<ComponentPreview
+  fullWidth
+  story="layout-hero-parallax"
+  code={`import { HeroParallax } from "@/components/godui/hero-parallax";
+
+export function Showcase() {
+  return (
+    <HeroParallax
+      products={[
+        { title: "Project 1", thumbnail: "/1.jpg", href: "#" },
+        { title: "Project 2", thumbnail: "/2.jpg", href: "#" },
+        // …up to ~15 for three full rows
+      ]}
+    />
+  );
+}`}
+>
+  <HeroParallaxDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="HeroParallax" />
+
+`HeroParallax` maps the container's scroll progress to spring-smoothed
+transforms: rows translate on X in alternating directions while the plane's
+`rotateX`, `rotateZ`, `translateY`, and opacity resolve to rest. It needs tall
+scroll room, so the root is `300vh`. Under reduced motion it renders a calm
+static grid instead.
+
+## Usage
+
+```tsx
+import { HeroParallax } from "@/components/godui/hero-parallax";
+```
+
+```tsx
+<HeroParallax
+  products={[
+    { title: "Aurora", thumbnail: "/aurora.jpg", href: "/work/aurora" },
+    { title: "Beacon", thumbnail: "/beacon.jpg", href: "/work/beacon" },
+  ]}
+/>
+```
+
+### Custom header
+
+Pass `header` to replace the default headline block with your own.
+
+```tsx
+<HeroParallax
+  products={products}
+  header={
+    <div className="mx-auto max-w-7xl px-4 py-20">
+      <h1 className="text-6xl font-bold">Selected work</h1>
+    </div>
+  }
+/>
+```
+
+## Props
+
+| Prop       | Type                 | Default        | Description                                        |
+| ---------- | -------------------- | -------------- | -------------------------------------------------- |
+| `products` | `HeroParallaxItem[]` | —              | Cards to scatter across the rows (best with ~15).  |
+| `header`   | `React.ReactNode`    | Default block  | Replaces the default headline.                     |
+
+Each item is `{ title: string; thumbnail: string; href?: string }`.
+`HeroParallax` also forwards every standard `<div>` attribute to the root.

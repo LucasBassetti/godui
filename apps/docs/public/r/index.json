@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "generatedAt": "2026-07-04T18:15:53.950Z",
+  "generatedAt": "2026-07-07T01:55:25.001Z",
   "components": [
     {
       "name": "accordion",
@@ -272,6 +272,24 @@
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add @godui/gooey-fab"
+    },
+    {
+      "name": "gravity",
+      "title": "Gravity",
+      "description": "A physics playground where elements fall, pile, collide, and can be dragged and flung.",
+      "category": "Visualizations",
+      "dependencies": ["matter-js"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/gravity"
+    },
+    {
+      "name": "hero-parallax",
+      "title": "Hero Parallax",
+      "description": "A scroll-driven grid of cards that drift in alternating directions on a tilted perspective plane.",
+      "category": "Layout",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/hero-parallax"
     },
     {
       "name": "highlighter",
@@ -625,6 +643,15 @@
       "install": "npx shadcn@latest add @godui/scroll-stack"
     },
     {
+      "name": "scroll-timeline",
+      "title": "Scroll Timeline",
+      "description": "A scrollytelling timeline whose progress line grows as you scroll, revealing entries with sticky labels.",
+      "category": "Visualizations",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/scroll-timeline"
+    },
+    {
       "name": "segmented-control",
       "title": "Segmented Control",
       "description": "An iOS-style selector with a sliding pill that springs between options.",
@@ -767,6 +794,15 @@
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add @godui/warp-starfield"
+    },
+    {
+      "name": "world-map",
+      "title": "World Map",
+      "description": "A dotted world map that draws animated arcs between locations, with pulsing endpoint pins.",
+      "category": "Visualizations",
+      "dependencies": ["dotted-map", "framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/world-map"
     }
   ]
 }

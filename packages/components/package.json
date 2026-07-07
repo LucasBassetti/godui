@@ -43,6 +43,8 @@
   "dependencies": {
     "canvas-confetti": "^1.9.4",
     "cobe": "^2.0.1",
+    "dotted-map": "^3.1.0",
+    "matter-js": "^0.20.0",
     "rough-notation": "^0.5.1"
   },
   "peerDependenciesMeta": {
@@ -57,6 +59,7 @@
     "@testing-library/react": "^16.1.0",
     "@testing-library/user-event": "^14.5.2",
     "@types/canvas-confetti": "^1.9.0",
+    "@types/matter-js": "^0.20.2",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.0",
     "@vitejs/plugin-react": "^4.3.4",

@@ -1,0 +1,84 @@
+---
+title: World Map
+description: A dotted world map that draws animated arcs between locations, with pulsing endpoint pins.
+---
+
+import { WorldMapDemo } from "@/components/demos/world-map-demo";
+
+A dotted equirectangular map with animated arcs connecting any set of coordinates. Each beam draws in and loops, and every endpoint gets a pulsing pin. The land dots and lines follow your theme.
+
+<ComponentPreview
+  fullWidth
+  story="visualizations-world-map"
+  code={`import { WorldMap } from "@/components/godui/world-map";
+
+export function Connections() {
+  return (
+    <WorldMap
+      connections={[
+        {
+          start: { lat: 37.7749, lng: -122.4194, label: "San Francisco" },
+          end: { lat: 51.5074, lng: -0.1278, label: "London" },
+        },
+        {
+          start: { lat: 40.7128, lng: -74.006, label: "New York" },
+          end: { lat: 1.3521, lng: 103.8198, label: "Singapore" },
+        },
+      ]}
+    />
+  );
+}`}
+>
+  <WorldMapDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="WorldMap" />
+
+`WorldMap` generates the land dots with [dotted-map](https://github.com/NTgamesoft/dotted-map)
+and projects each connection's coordinates onto the same grid, so the arcs land
+exactly on the dots. The dots render inline with `currentColor`, so they stay
+theme-aware without regenerating the SVG.
+
+## Usage
+
+```tsx
+import { WorldMap } from "@/components/godui/world-map";
+```
+
+```tsx
+<WorldMap
+  connections={[
+    {
+      start: { lat: 37.7749, lng: -122.4194, label: "San Francisco" },
+      end: { lat: 51.5074, lng: -0.1278, label: "London" },
+    },
+  ]}
+/>
+```
+
+### Colors
+
+`lineColor` and `dotColor` take any CSS color, so you can match a brand or a
+section background.
+
+```tsx
+<WorldMap
+  lineColor="var(--primary)"
+  dotColor="color-mix(in oklch, var(--muted-foreground) 40%, transparent)"
+/>
+```
+
+## Props
+
+| Prop          | Type                    | Default             | Description                                    |
+| ------------- | ----------------------- | ------------------- | ---------------------------------------------- |
+| `connections` | `WorldMapConnection[]`  | Global sample set   | Arcs to draw, each a `{ start, end }` pair.    |
+| `lineColor`   | `string`                | `var(--primary)`    | Color of the arcs and endpoint pins.           |
+| `dotColor`    | `string`                | Muted token         | Color of the land dots.                        |
+| `loop`        | `boolean`               | `true`              | Re-draw the arcs on a loop.                    |
+| `duration`    | `number`                | `1.6`               | Seconds for one arc to draw in.                |
+
+Each point is `{ lat: number; lng: number; label?: string }`. `WorldMap` also
+forwards every standard `<div>` attribute to the root element.
