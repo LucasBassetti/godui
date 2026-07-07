@@ -28,6 +28,7 @@ export {
   type AvatarGroupProps,
   type AvatarGroupSize,
 } from "./avatar-group";
+export { BeamDraw, type BeamDrawProps } from "./beam-draw";
 export {
   BentoCard,
   type BentoCardProps,
@@ -66,6 +67,10 @@ export {
   type ConfettiOptions,
   confetti,
 } from "./confetti";
+export {
+  ContainerScroll,
+  type ContainerScrollProps,
+} from "./container-scroll";
 export {
   ContextMenu,
   type ContextMenuItem,
@@ -400,6 +405,11 @@ export {
 } from "./spotlight-reveal";
 export { type Step, Stepper, type StepperProps } from "./stepper";
 export {
+  StickyScroll,
+  type StickyScrollItem,
+  type StickyScrollProps,
+} from "./sticky-scroll";
+export {
   SwipeDeck,
   type SwipeDeckProps,
   type SwipeDirection,
@@ -417,6 +427,7 @@ export {
   TextScramble,
   type TextScrambleProps,
 } from "./text-scramble";
+export { ThreeDMarquee, type ThreeDMarqueeProps } from "./three-d-marquee";
 export { TiltCard, type TiltCardProps } from "./tilt-card";
 export {
   type ToastAction,

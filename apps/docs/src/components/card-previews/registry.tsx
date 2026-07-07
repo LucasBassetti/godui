@@ -53,6 +53,7 @@ const CURATED_SLUGS = [
   "avatar-group",
   "bento-grid",
   "card-swap",
+  "container-scroll",
   "cover-flow",
   "hero-parallax",
   "image-accordion",
@@ -64,7 +65,9 @@ const CURATED_SLUGS = [
   "reorder-list",
   "scroll-stack",
   "stepper",
+  "sticky-scroll",
   "swipe-deck",
+  "three-d-marquee",
   "tilt-card",
   // Text
   "aurora-text",
@@ -92,6 +95,7 @@ const CURATED_SLUGS = [
   "scroll-timeline",
   "world-map",
   // Effects
+  "beam-draw",
   "border-beam",
   "confetti",
   "fluid-cursor",

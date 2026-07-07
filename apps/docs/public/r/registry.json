@@ -1742,6 +1742,66 @@
           "target": "components/godui/scroll-timeline.tsx"
         }
       ]
+    },
+    {
+      "name": "container-scroll",
+      "type": "registry:ui",
+      "title": "Container Scroll",
+      "description": "A device frame that un-tilts from a 3D perspective and scales to rest as you scroll — the classic product hero.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/container-scroll/container-scroll.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/container-scroll.tsx"
+        }
+      ]
+    },
+    {
+      "name": "three-d-marquee",
+      "type": "registry:ui",
+      "title": "3D Marquee",
+      "description": "A perspective grid of images whose columns drift in alternating directions on a tilted plane.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/three-d-marquee/three-d-marquee.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/three-d-marquee.tsx"
+        }
+      ]
+    },
+    {
+      "name": "sticky-scroll",
+      "type": "registry:ui",
+      "title": "Sticky Scroll",
+      "description": "A pinned two-column reveal where scrolling the text steps a synced visual panel through each item.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/sticky-scroll/sticky-scroll.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/sticky-scroll.tsx"
+        }
+      ]
+    },
+    {
+      "name": "beam-draw",
+      "type": "registry:ui",
+      "title": "Beam Draw",
+      "description": "SVG beams that draw themselves along scroll progress with a soft glow.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/beam-draw/beam-draw.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/beam-draw.tsx"
+        }
+      ]
     }
   ]
 }

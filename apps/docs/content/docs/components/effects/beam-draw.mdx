@@ -1,0 +1,63 @@
+---
+title: Beam Draw
+description: SVG beams that draw themselves along scroll progress with a soft glow.
+---
+
+import { BeamDrawDemo } from "@/components/demos/beam-draw-demo";
+
+A set of flowing SVG beams that stroke themselves into existence as you scroll, trailing a soft glow — the connective, high-energy accent for a hero or section transition. Scroll the preview.
+
+<ComponentPreview
+  fullWidth
+  story="effects-beam-draw"
+  code={`import { BeamDraw } from "@/components/godui/beam-draw";
+
+export function Pipeline() {
+  return (
+    <div className="relative aspect-[5/2] w-full rounded-2xl border">
+      {/* Beams draw from the left core to each node as you scroll. */}
+      <BeamDraw preserveAspectRatio="none" className="absolute inset-0 size-full" />
+      <Node className="left-0 top-1/2">API Core</Node>
+      <Node className="right-0 top-[10%]">Database</Node>
+      <Node className="right-0 top-[37.5%]">Auth</Node>
+      <Node className="right-0 top-[62.5%]">Payments</Node>
+      <Node className="right-0 top-[90%]">Analytics</Node>
+    </div>
+  );
+}`}
+>
+  <BeamDrawDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="BeamDraw" />
+
+`BeamDraw` maps the element's scroll progress to a spring-smoothed `pathLength`,
+drawing each path from `0` to `1`. A `drop-shadow` in the primary color gives the
+soft glow. Under reduced motion the paths render fully drawn and static.
+
+## Usage
+
+```tsx
+import { BeamDraw } from "@/components/godui/beam-draw";
+```
+
+```tsx
+<BeamDraw
+  paths={["M0 200 C 250 200, 350 60, 600 60 S 900 40, 1000 40"]}
+  strokeWidth={2}
+/>
+```
+
+Omit `paths` to use the built-in beam set. Paths are drawn on a `1000×400`
+viewBox.
+
+## Props
+
+| Prop          | Type       | Default        | Description                                  |
+| ------------- | ---------- | -------------- | -------------------------------------------- |
+| `paths`       | `string[]` | Built-in beams | SVG path `d` strings, drawn on `1000×400`.    |
+| `strokeWidth` | `number`   | `2`            | Stroke width of each beam.                    |
+
+`BeamDraw` also forwards every standard `<svg>` attribute to the root.

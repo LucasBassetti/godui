@@ -1,0 +1,60 @@
+---
+title: Sticky Scroll
+description: A pinned two-column reveal where scrolling the text steps a synced visual panel through each item.
+---
+
+import { StickyScrollDemo } from "@/components/demos/sticky-scroll-demo";
+
+Text scrolls in the left column while a pinned panel on the right swaps to match the item in view — the premium way to walk through features one beat at a time. Scroll the preview.
+
+<ComponentPreview
+  fullWidth
+  story="layout-sticky-scroll"
+  code={`import { StickyScroll } from "@/components/godui/sticky-scroll";
+
+export function Features() {
+  return (
+    <StickyScroll
+      items={[
+        { title: "Collaborate", description: "Work together.", content: <Panel /> },
+        { title: "Ship", description: "Deploy fast.", content: <Panel /> },
+      ]}
+    />
+  );
+}`}
+>
+  <StickyScrollDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="StickyScroll" />
+
+`StickyScroll` tracks the section's scroll progress and derives the active index
+from it, dimming the inactive titles and cross-fading the pinned panel to the
+active item's `content`. Under reduced motion the swaps are instant, opacity
+only.
+
+## Usage
+
+```tsx
+import { StickyScroll } from "@/components/godui/sticky-scroll";
+```
+
+```tsx
+<StickyScroll
+  items={[
+    { title: "Collaborate", description: "Real-time cursors.", content: <Preview /> },
+    { title: "Ship", description: "Deploy on click.", content: <Preview /> },
+  ]}
+/>
+```
+
+## Props
+
+| Prop    | Type                | Default | Description                          |
+| ------- | ------------------- | ------- | ------------------------------------ |
+| `items` | `StickyScrollItem[]`| —       | The steps, in scroll order.          |
+
+Each item is `{ title: string; description: React.ReactNode; content: React.ReactNode }`.
+`StickyScroll` also forwards every standard `<div>` attribute to the root.

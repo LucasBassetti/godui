@@ -1,0 +1,58 @@
+---
+title: Container Scroll
+description: A device frame that un-tilts from a 3D perspective and scales to rest as you scroll — the classic product hero.
+---
+
+import { ContainerScrollDemo } from "@/components/demos/container-scroll-demo";
+
+The frame starts tilted back in 3D space and gently un-tilts, scales down, and settles as the section scrolls into view — while the headline rises above it. The staple hero moment for a product screenshot or demo video. Scroll the preview.
+
+<ComponentPreview
+  fullWidth
+  story="layout-container-scroll"
+  code={`import { ContainerScroll } from "@/components/godui/container-scroll";
+
+export function Hero() {
+  return (
+    <ContainerScroll header={<h2>Scroll to bring it to life</h2>}>
+      <img src="/dashboard.png" alt="Dashboard" />
+    </ContainerScroll>
+  );
+}`}
+>
+  <ContainerScrollDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="ContainerScroll" />
+
+`ContainerScroll` maps the section's scroll progress to spring-smoothed
+transforms: the card's `rotateX` resolves from tilted to flat, `scale` settles to
+`1`, and the header translates up. It needs tall scroll room, so the root is
+`60rem`+ high with a `1000px` perspective. Under reduced motion it renders an
+upright, static frame instead.
+
+## Usage
+
+```tsx
+import { ContainerScroll } from "@/components/godui/container-scroll";
+```
+
+```tsx
+<ContainerScroll header={<h2>Ship faster</h2>}>
+  <img src="/screen.png" alt="Product" />
+</ContainerScroll>
+```
+
+The `children` become the "screen" inside the frame — an image, a video, or live
+UI. `img` and `video` children are stretched to cover automatically.
+
+## Props
+
+| Prop       | Type              | Default | Description                                       |
+| ---------- | ----------------- | ------- | ------------------------------------------------- |
+| `header`   | `React.ReactNode` | —       | Headline block above the frame; rises on scroll.  |
+| `children` | `React.ReactNode` | —       | The screen content (image, video, or UI).         |
+
+`ContainerScroll` also forwards every standard `<div>` attribute to the root.

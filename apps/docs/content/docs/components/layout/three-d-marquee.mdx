@@ -1,0 +1,56 @@
+---
+title: 3D Marquee
+description: A perspective grid of images whose columns drift in alternating directions on a tilted plane.
+---
+
+import { ThreeDMarqueeDemo } from "@/components/demos/three-d-marquee-demo";
+
+A wall of images laid on a tilted 3D plane, its columns drifting up and down in alternating directions — an ambient, high-impact showcase for a hero background or gallery.
+
+<ComponentPreview
+  fullWidth
+  story="layout-three-d-marquee"
+  code={`import { ThreeDMarquee } from "@/components/godui/three-d-marquee";
+
+export function Showcase() {
+  return (
+    <div className="h-[26rem] w-full">
+      <ThreeDMarquee
+        images={["/1.jpg", "/2.jpg", "/3.jpg" /* …8+ */]}
+      />
+    </div>
+  );
+}`}
+>
+  <ThreeDMarqueeDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="ThreeDMarquee" />
+
+`ThreeDMarquee` splits `images` into columns, lays them on a
+`rotateX(55deg) rotateZ(-45deg)` plane, and drives an ambient vertical drift per
+column with alternating direction. Give it a sized container — it fills its
+parent. Under reduced motion the grid holds still.
+
+## Usage
+
+```tsx
+import { ThreeDMarquee } from "@/components/godui/three-d-marquee";
+```
+
+```tsx
+<div className="h-[30rem] w-full">
+  <ThreeDMarquee images={images} columns={4} />
+</div>
+```
+
+## Props
+
+| Prop      | Type       | Default | Description                                    |
+| --------- | ---------- | ------- | ---------------------------------------------- |
+| `images`  | `string[]` | —       | Image URLs to tile across the grid (best 8+).  |
+| `columns` | `3 \| 4`   | `4`     | Number of columns.                             |
+
+`ThreeDMarquee` also forwards every standard `<div>` attribute to the root.

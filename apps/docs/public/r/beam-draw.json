@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "beam-draw",
+  "title": "Beam Draw",
+  "description": "SVG beams that draw themselves along scroll progress with a soft glow.",
+  "dependencies": ["framer-motion"],
+  "registryDependencies": ["@godui/godui-theme"],
+  "files": [
+    {
+      "path": "packages/components/src/beam-draw/beam-draw.tsx",
+      "content": "\"use client\";\n\nimport {\n  motion,\n  useReducedMotion,\n  useScroll,\n  useSpring,\n  useTransform,\n} from \"framer-motion\";\nimport * as React from \"react\";\n\nexport type BeamDrawProps = Omit<React.SVGProps<SVGSVGElement>, \"ref\"> & {\n  /** SVG path `d` strings drawn along scroll progress. Sensible default beams if omitted. */\n  paths?: string[];\n  /** Stroke width of each beam. Defaults to 2. */\n  strokeWidth?: number;\n};\n\n// SPRING.smooth — surfaces / shared-layout feel.\nconst SPRING = { stiffness: 320, damping: 32, mass: 0.9 } as const;\n\n// A flowing default beam set on a 1000×400 canvas, fanning out from the left.\nconst DEFAULT_PATHS = [\n  \"M0 200 C 250 200, 350 60, 600 60 S 900 40, 1000 40\",\n  \"M0 200 C 250 200, 350 140, 600 140 S 900 150, 1000 150\",\n  \"M0 200 C 250 200, 350 260, 600 260 S 900 250, 1000 250\",\n  \"M0 200 C 250 200, 350 340, 600 340 S 900 360, 1000 360\",\n];\n\nconst BeamDraw = React.forwardRef<SVGSVGElement, BeamDrawProps>(\n  ({ paths = DEFAULT_PATHS, strokeWidth = 2, className, ...props }, ref) => {\n    const reduce = useReducedMotion();\n    const containerRef = React.useRef<SVGSVGElement>(null);\n    React.useImperativeHandle(ref, () => containerRef.current as SVGSVGElement);\n\n    const { scrollYProgress } = useScroll({\n      // useScroll's target types expect an HTMLElement ref; the SVG root works\n      // the same at runtime (getBoundingClientRect).\n      target: containerRef as unknown as React.RefObject<HTMLElement>,\n      offset: [\"start end\", \"end start\"],\n    });\n    const pathLength = useSpring(\n      useTransform(scrollYProgress, [0.1, 0.8], [0, 1]),\n      SPRING,\n    );\n\n    return (\n      <svg\n        ref={containerRef}\n        data-slot=\"beam-draw\"\n        viewBox=\"0 0 1000 400\"\n        fill=\"none\"\n        aria-hidden=\"true\"\n        className={`w-full [filter:drop-shadow(0_0_8px_color-mix(in_oklch,var(--primary)_50%,transparent))] ${className ?? \"\"}`}\n        {...props}\n      >\n        {paths.map((d, i) => (\n          <motion.path\n            // biome-ignore lint/suspicious/noArrayIndexKey: path list is positional and static.\n            key={i}\n            d={d}\n            stroke=\"var(--primary)\"\n            strokeWidth={strokeWidth}\n            strokeLinecap=\"round\"\n            style={{ pathLength: reduce ? 1 : pathLength }}\n          />\n        ))}\n      </svg>\n    );\n  },\n);\nBeamDraw.displayName = \"BeamDraw\";\n\nexport { BeamDraw };\n",
+      "type": "registry:ui",
+      "target": "components/godui/beam-draw.tsx"
+    }
+  ],
+  "type": "registry:ui"
+}
