@@ -1,12 +1,12 @@
 <div align="center">
 
 <a href="https://godui.design">
-  <img src="https://raw.githubusercontent.com/LucasBassetti/godui/main/apps/docs/public/og-image.png" alt="GodUI — Motion UI Collection for Modern Interfaces" width="100%" />
+  <img src="https://raw.githubusercontent.com/LucasBassetti/godui/main/apps/docs/public/og-image.png" alt="GodUI — UI Collection for Modern Interfaces" width="100%" />
 </a>
 
 <h1>GodUI</h1>
 
-<p><strong>Motion UI Collection for Modern Interfaces.</strong></p>
+<p><strong>UI Collection for Modern Interfaces.</strong></p>
 
 <p>
   Built with React, TypeScript, Tailwind CSS v4, and Motion — distributed as a
@@ -31,10 +31,11 @@
 
 ## Overview
 
-**GodUI** is a collection of open-source, animated UI components for Design
-Engineers. Built with **React**, **TypeScript**, **Tailwind CSS v4**, and
-**Motion**, and distributed as a [shadcn](https://ui.shadcn.com) registry — so
-the components are copied straight into your project and you own every line.
+**GodUI** is a UI collection for modern interfaces — open-source, animated
+components. Built with **React**, **TypeScript**,
+**Tailwind CSS v4**, and **Motion**, and distributed as a
+[shadcn](https://ui.shadcn.com) registry — so the components are copied straight
+into your project and you own every line.
 
 If you already use [shadcn/ui](https://ui.shadcn.com), GodUI drops in with the
 exact same workflow: add the `@godui` registry, then pull components by name.
