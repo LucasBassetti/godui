@@ -119,6 +119,10 @@
   --animate-marquee-vertical: marquee-vertical var(--duration, 40s) linear
     infinite;
 
+  /* App showcase: the phone screen auto-scrolls its screenshot on a loop */
+  --animate-app-showcase-scroll: app-showcase-scroll var(--as-loop, 24s) linear
+    infinite;
+
   /* Mask flipbook — one token per sprite (step counts differ) */
   --animate-mask-nature-in: mask-button-in 0.7s steps(22) forwards;
   --animate-mask-nature-out: mask-button-out 0.7s steps(22) forwards;
@@ -271,6 +275,16 @@
   }
   to {
     transform: translateY(calc(-100% - var(--gap)));
+  }
+}
+
+/* App showcase: track holds two stacked copies; scroll one full copy up */
+@keyframes app-showcase-scroll {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-50%);
   }
 }
 

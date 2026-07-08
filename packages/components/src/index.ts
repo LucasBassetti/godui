@@ -21,6 +21,13 @@ export {
   type AnimatedTooltipProps,
   type AnimatedTooltipSide,
 } from "./animated-tooltip";
+export {
+  AppShowcase,
+  type AppShowcaseProps,
+  type ShowcaseDevice,
+  type ShowcaseFrameColor,
+  type ShowcaseMode,
+} from "./app-showcase";
 export { AuroraText, type AuroraTextProps } from "./aurora-text";
 export {
   type Avatar,
@@ -409,6 +416,17 @@ export {
   type StickyScrollItem,
   type StickyScrollProps,
 } from "./sticky-scroll";
+export {
+  QrCode,
+  type QrCodeErrorCorrection,
+  type QrCodeProps,
+  StoreBadge,
+  StoreBadgeGroup,
+  type StoreBadgeGroupProps,
+  type StoreBadgeProps,
+  type StoreBadgeStore,
+  type StoreBadgeTheme,
+} from "./store-badge";
 export {
   SwipeDeck,
   type SwipeDeckProps,

@@ -50,6 +50,7 @@ const CURATED_SLUGS = [
   // Layout
   "accordion",
   "animated-testimonials",
+  "app-showcase",
   "avatar-group",
   "bento-grid",
   "card-swap",
@@ -66,6 +67,7 @@ const CURATED_SLUGS = [
   "scroll-stack",
   "stepper",
   "sticky-scroll",
+  "store-badge",
   "swipe-deck",
   "three-d-marquee",
   "tilt-card",

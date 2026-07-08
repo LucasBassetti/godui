@@ -1,0 +1,89 @@
+---
+title: Store Badge
+description: App Store and Google Play download badges with light/dark finishes, a hover sheen, and an optional scan-to-download QR popover.
+---
+
+import { StoreBadgeDemo } from "@/components/demos/store-badge-demo";
+import { StoreBadgeQrDemo } from "@/components/demos/store-badge-qr-demo";
+
+The download CTA that sits under every app hero. Drop in an App Store or Google Play badge, or use the group for the classic dual-badge row. Badges are inline SVG, scale with a single `height` prop, carry the official hairline border, and sweep a subtle sheen on hover.
+
+<ComponentPreview
+  story="layout-store-badge"
+  code={`import { StoreBadge, StoreBadgeGroup } from "@/components/godui/store-badge";
+
+export function Download() {
+  return (
+    <StoreBadgeGroup>
+      <StoreBadge store="app-store" href="https://apps.apple.com/app/id6761287549" />
+      <StoreBadge store="google-play" href="https://play.google.com/store/apps/details?id=lol.hivemind" />
+    </StoreBadgeGroup>
+  );
+}`}
+>
+  <StoreBadgeDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="StoreBadge" />
+
+## Scan to download
+
+Add the `qr` prop and the badge gains the pro "scan to download" behaviour: on a
+desktop (fine pointer), hovering or focusing the badge reveals a QR popover that
+encodes the badge's `href` (or `qrUrl`) — so a laptop visitor can install on
+their phone. On touch, the popover is skipped and the badge links normally. The
+QR is generated on the client from the URL — no image, no setup.
+
+<ComponentPreview
+  code={`<StoreBadgeGroup>
+  <StoreBadge store="app-store" href="https://apps.apple.com/app/id6761287549" qr />
+  <StoreBadge store="google-play" href="https://play.google.com/store/apps/details?id=lol.hivemind" qr />
+</StoreBadgeGroup>`}
+>
+  <StoreBadgeQrDemo />
+</ComponentPreview>
+
+## Usage
+
+```tsx
+import { StoreBadge, StoreBadgeGroup } from "@/components/godui/store-badge";
+```
+
+```tsx
+<StoreBadge store="app-store" href="https://apps.apple.com/app/id6761287549" />
+<StoreBadge store="google-play" theme="light" href="https://play.google.com/store/apps/details?id=lol.hivemind" />
+
+// With the scan-to-download QR popover:
+<StoreBadge store="app-store" href="https://apps.apple.com/app/id6761287549" qr />
+```
+
+The `QrCode` primitive is exported too, for any link — with theming and an
+optional center logo:
+
+```tsx
+import { QrCode } from "@/components/godui/store-badge";
+
+<QrCode value="https://apps.apple.com/app/id6761287549" size={180} logo={<Logo />} />;
+```
+
+## Props
+
+### `StoreBadge`
+
+| Prop        | Type                           | Default              | Description                                     |
+| ----------- | ------------------------------ | -------------------- | ----------------------------------------------- |
+| `store`     | `"app-store" \| "google-play"` | —                    | Which store the badge links to.                 |
+| `theme`     | `"dark" \| "light"`            | `"dark"`             | Dark (black) or light (white) finish.           |
+| `height`    | `number`                       | `52`                 | Badge height in px; type scales with it.        |
+| `href`      | `string`                       | —                    | Destination URL (forwarded to `<a>`).           |
+| `qr`        | `boolean`                      | `false`              | Reveal a scan-to-download QR popover on hover.  |
+| `qrUrl`     | `string`                       | `href`               | Override what the QR encodes.                   |
+| `qrLabel`   | `string`                       | `"Scan to download"` | Heading in the QR popover.                      |
+| `qrCaption` | `string`                       | `"Point your phone…"`| Small line under the QR.                        |
+| `qrSize`    | `number`                       | `148`                | QR render size in px.                           |
+| `qrLogo`    | `React.ReactNode`              | —                    | Node knocked out in the QR center.              |
+
+`StoreBadge` forwards every standard `<a>` attribute. `StoreBadgeGroup` is a flex
+row wrapper for the dual-badge CTA and forwards `<div>` attributes.

@@ -1802,6 +1802,51 @@
           "target": "components/godui/beam-draw.tsx"
         }
       ]
+    },
+    {
+      "name": "app-showcase",
+      "type": "registry:ui",
+      "title": "App Showcase",
+      "description": "A realistic iPhone or Android device frame that shows your app on screen, with scroll, loop, carousel, and cluster interactions.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/app-showcase/app-showcase.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/app-showcase.tsx"
+        }
+      ],
+      "cssVars": {
+        "theme": {
+          "animate-app-showcase-scroll": "app-showcase-scroll var(--as-loop, 24s) linear infinite"
+        }
+      },
+      "css": {
+        "@keyframes app-showcase-scroll": {
+          "from": {
+            "transform": "translateY(0)"
+          },
+          "to": {
+            "transform": "translateY(-50%)"
+          }
+        }
+      }
+    },
+    {
+      "name": "store-badge",
+      "type": "registry:ui",
+      "title": "Store Badge",
+      "description": "App Store and Google Play download badges with light/dark finishes, a hover sheen, and an optional scan-to-download QR popover.",
+      "dependencies": ["framer-motion", "uqr"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/store-badge/store-badge.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/store-badge.tsx"
+        }
+      ]
     }
   ]
 }

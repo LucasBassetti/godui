@@ -1,0 +1,115 @@
+---
+title: App Showcase
+description: A realistic iPhone or Android device frame that shows your app on screen, with scroll, loop, carousel, and cluster interactions.
+---
+
+import { AppShowcaseDemo } from "@/components/demos/app-showcase-demo";
+import { AppShowcaseCarouselDemo } from "@/components/demos/app-showcase-carousel-demo";
+import { AppShowcaseClusterDemo } from "@/components/demos/app-showcase-cluster-demo";
+import { AppShowcaseFramesDemo } from "@/components/demos/app-showcase-frames-demo";
+
+The hero shot of every mobile-app landing page: your screenshots or demo video framed in a real device. Pick a device and an interaction — the screen pans as you scroll, auto-scrolls on a loop, cross-fades a feature tour, or fans out into a parallax cluster. The screen below auto-scrolls while it is in view.
+
+<ComponentPreview
+  story="layout-app-showcase"
+  code={`import { AppShowcase } from "@/components/godui/app-showcase";
+
+export function Hero() {
+  return (
+    <AppShowcase
+      device="iphone"
+      mode="loop"
+      width={260}
+      src="/app-home.png"
+      alt="App home screen"
+    />
+  );
+}`}
+>
+  <AppShowcaseDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="AppShowcase" />
+
+`AppShowcase` renders a pure-CSS device shell (accurate Dynamic Island on iPhone,
+hole-punch on Android) with the screen masked and correctly clipped. Video is a
+plain DOM overlay to avoid the Safari/iOS masking bug. Every mode has a
+reduced-motion fallback that renders a calm, static frame.
+
+## Usage
+
+```tsx
+import { AppShowcase } from "@/components/godui/app-showcase";
+```
+
+### Scroll (default) — Apple-style hero
+
+The phone floats in and the tall screenshot pans with page scroll.
+
+```tsx
+<AppShowcase device="iphone" mode="scroll" src="/app-tall.png" />
+```
+
+### Loop — auto-scrolling screen
+
+The screenshot scrolls on a gentle infinite loop while the phone is in view (the
+preview at the top of this page). Swap `device` for the Android frame:
+
+```tsx
+<AppShowcase device="android" mode="loop" src="/app-tall.png" />
+```
+
+### Carousel — feature tour
+
+Cross-fade through multiple screens with dot controls.
+
+<ComponentPreview
+  code={`<AppShowcase
+  mode="carousel"
+  screens={["/a.png", "/b.png", "/c.png"]}
+/>`}
+>
+  <AppShowcaseCarouselDemo />
+</ComponentPreview>
+
+### Cluster — parallax centerpiece
+
+Two or three phones at different depths that react to the pointer.
+
+<ComponentPreview
+  code={`<AppShowcase
+  mode="cluster"
+  screens={["/a.png", "/b.png", "/c.png"]}
+/>`}
+>
+  <AppShowcaseClusterDemo />
+</ComponentPreview>
+
+### Frame colors
+
+Each device comes in `black`, `silver`, and `gold` finishes.
+
+<ComponentPreview
+  code={`<AppShowcase mode="loop" frameColor="silver" src="/app-tall.png" />`}
+>
+  <AppShowcaseFramesDemo />
+</ComponentPreview>
+
+## Props
+
+| Prop         | Type                                          | Default    | Description                                                    |
+| ------------ | --------------------------------------------- | ---------- | -------------------------------------------------------------- |
+| `device`     | `"iphone" \| "android"`                       | `"iphone"` | Device frame to render.                                        |
+| `mode`       | `"scroll" \| "loop" \| "carousel" \| "cluster"` | `"scroll"` | The screen interaction.                                        |
+| `src`        | `string`                                      | —          | Single screen source (`scroll` / `loop`). A tall image pans best. |
+| `videoSrc`   | `string`                                      | —          | Screen video source (`scroll` / `loop`).                       |
+| `screens`    | `string[]`                                    | —          | Screens for `carousel` / `cluster`.                            |
+| `frameColor` | `"black" \| "silver" \| "gold"`               | `"black"`  | Bezel finish.                                                  |
+| `autoplay`   | `boolean`                                     | `true`     | Autoplay the loop / carousel.                                  |
+| `interval`   | `number`                                      | `4`        | Carousel step / loop pace, in seconds.                         |
+| `width`      | `number`                                      | `300`      | Frame width in px; height derives from the aspect ratio.       |
+| `alt`        | `string`                                      | —          | Accessible label for the screen media.                         |
+
+`AppShowcase` also forwards every standard `<div>` attribute to the root.

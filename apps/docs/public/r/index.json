@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "generatedAt": "2026-07-07T17:09:47.210Z",
+  "generatedAt": "2026-07-08T20:25:19.993Z",
   "components": [
     {
       "name": "accordion",
@@ -47,6 +47,15 @@
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add @godui/animated-tooltip"
+    },
+    {
+      "name": "app-showcase",
+      "title": "App Showcase",
+      "description": "A realistic iPhone or Android device frame that shows your app on screen, with scroll, loop, carousel, and cluster interactions.",
+      "category": "Layout",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/app-showcase"
     },
     {
       "name": "aurora-text",
@@ -740,6 +749,15 @@
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add @godui/sticky-scroll"
+    },
+    {
+      "name": "store-badge",
+      "title": "Store Badge",
+      "description": "App Store and Google Play download badges with light/dark finishes, a hover sheen, and an optional scan-to-download QR popover.",
+      "category": "Layout",
+      "dependencies": ["framer-motion", "uqr"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/store-badge"
     },
     {
       "name": "swipe-deck",

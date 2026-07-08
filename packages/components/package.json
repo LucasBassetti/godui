@@ -45,7 +45,8 @@
     "cobe": "^2.0.1",
     "dotted-map": "^3.1.0",
     "matter-js": "^0.20.0",
-    "rough-notation": "^0.5.1"
+    "rough-notation": "^0.5.1",
+    "uqr": "^0.1.3"
   },
   "peerDependenciesMeta": {
     "geist": {
