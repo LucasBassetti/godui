@@ -318,78 +318,86 @@ export const PATTERNS: GalleryItem[] = [
   {
     slug: "enter",
     title: "Enter",
-    description:
-      "Bring an element in with a gentle fade-up on a soft spring. Serves Clarity.",
+    description: "Bring an element in with a gentle fade-up on a soft spring.",
+    serves: "Clarity",
     Demo: EnterDemo,
   },
   {
     slug: "exit",
     title: "Exit",
     description:
-      "Send it out the way it came, but faster — exits should never linger. Serves Continuity.",
+      "Send it out the way it came, but faster — exits should never linger.",
+    serves: "Continuity",
     Demo: ExitDemo,
   },
   {
     slug: "spring-pop",
     title: "Spring Pop",
-    description:
-      "Scale and fade together for menus, popovers, and tooltips. Serves Spatial Awareness.",
+    description: "Scale and fade together for menus, popovers, and tooltips.",
+    serves: "Spatial Awareness",
     Demo: SpringPopDemo,
   },
   {
     slug: "spring-height",
     title: "Spring Height",
     description:
-      "Animate height to auto for accordions, fading opacity alongside. Serves Continuity.",
+      "Animate height to auto for accordions, fading opacity alongside.",
+    serves: "Continuity",
     Demo: SpringHeightDemo,
   },
   {
     slug: "hover-lift",
     title: "Hover Lift",
     description:
-      "A small lift and shadow on hover gives cards and tiles weight. Serves Feedback.",
+      "A small lift and shadow on hover gives cards and tiles weight.",
+    serves: "Feedback",
     Demo: HoverLiftDemo,
   },
   {
     slug: "stagger-reveal",
     title: "Stagger Reveal",
     description:
-      "Cascade children with a shared stagger so a list reads as one wave. Serves Rhythm.",
+      "Cascade children with a shared stagger so a list reads as one wave.",
+    serves: "Rhythm",
     Demo: StaggerRevealDemo,
   },
   {
     slug: "backdrop-fade",
     title: "Backdrop Fade",
-    description:
-      "Fade the scrim independently from the content's spring. Serves Hierarchy.",
+    description: "Fade the scrim independently from the content's spring.",
+    serves: "Hierarchy",
     Demo: BackdropFadeDemo,
   },
   {
     slug: "shared-layout-morph",
     title: "Shared-Layout Morph",
     description:
-      "One surface morphs between two states instead of teleporting. Serves Continuity.",
+      "One surface morphs between two states instead of teleporting.",
+    serves: "Continuity",
     Demo: SharedLayoutMorphDemo,
   },
   {
     slug: "press-feedback",
     title: "Press Feedback",
     description:
-      "A quick scale-down confirms the press before anything else happens. Serves Feedback.",
+      "A quick scale-down confirms the press before anything else happens.",
+    serves: "Feedback",
     Demo: PressFeedbackDemo,
   },
   {
     slug: "loop",
     title: "Loop",
     description:
-      "A seamless marquee: duplicate the track and translate by half. Serves Restraint.",
+      "A seamless marquee: duplicate the track and translate by half.",
+    serves: "Restraint",
     Demo: LoopDemo,
   },
   {
     slug: "reduced-motion-fallback",
     title: "Reduced-Motion Fallback",
     description:
-      "Under prefers-reduced-motion, swap transforms for a plain opacity cross-fade — usability preserved. Serves Accessibility.",
+      "Under prefers-reduced-motion, swap transforms for a plain opacity cross-fade — usability preserved.",
+    serves: "Accessibility",
     Demo: ReducedMotionFallbackDemo,
   },
 ];

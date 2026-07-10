@@ -3,12 +3,17 @@
 import { useReducedMotion } from "framer-motion";
 import { type ComponentType, type ReactNode, useState } from "react";
 import { cn } from "@/lib/cn";
+import { type MotionOrigin, OriginLogos } from "./origin-logos";
 
 export type GalleryItem = {
   slug: string;
   title: string;
   description: string;
   Demo: ComponentType;
+  /** Source canon behind the principle (patterns omit this). */
+  origins?: MotionOrigin[];
+  /** For patterns: the principle this recipe serves (principles omit this). */
+  serves?: string;
 };
 
 const CARD = cn(
@@ -68,7 +73,7 @@ export function TapToPlay({
 }
 
 export function MotionCard({ item }: { item: GalleryItem }) {
-  const { title, description, Demo } = item;
+  const { title, description, Demo, origins, serves } = item;
 
   return (
     <article aria-label={`${title} — motion guideline`} className={CARD}>
@@ -77,7 +82,15 @@ export function MotionCard({ item }: { item: GalleryItem }) {
       </div>
 
       <div className="flex flex-1 flex-col p-5">
-        <h3 className="font-semibold text-base text-foreground">{title}</h3>
+        <div className="flex items-start justify-between gap-3">
+          <h3 className="font-semibold text-base text-foreground">{title}</h3>
+          {origins && origins.length > 0 && <OriginLogos origins={origins} />}
+          {serves && (
+            <span className="inline-flex shrink-0 items-center self-center whitespace-nowrap rounded-full border border-border bg-muted/50 px-2.5 py-0 font-medium text-[11px] leading-4 text-muted-foreground">
+              {serves}
+            </span>
+          )}
+        </div>
         <p className="mt-1.5 text-muted-foreground text-sm leading-relaxed">
           {description}
         </p>

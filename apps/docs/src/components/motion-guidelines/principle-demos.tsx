@@ -337,6 +337,7 @@ export const PRINCIPLES: GalleryItem[] = [
     title: "Clarity",
     description:
       "Every motion should clarify what changed and why. One focal change at a time, never noise.",
+    origins: ["material", "apple"],
     Demo: ClarityDemo,
   },
   {
@@ -344,6 +345,7 @@ export const PRINCIPLES: GalleryItem[] = [
     title: "Continuity",
     description:
       "Objects move along visible paths instead of teleporting, so the eye never loses the thread.",
+    origins: ["apple", "material"],
     Demo: ContinuityDemo,
   },
   {
@@ -351,6 +353,7 @@ export const PRINCIPLES: GalleryItem[] = [
     title: "Hierarchy",
     description:
       "Sequence and emphasis tell you what matters first. The primary element leads; the rest follow.",
+    origins: ["material", "apple"],
     Demo: HierarchyDemo,
   },
   {
@@ -358,6 +361,7 @@ export const PRINCIPLES: GalleryItem[] = [
     title: "Spatial Awareness",
     description:
       "Elements enter and exit from where they live, reinforcing a stable mental model of the layout.",
+    origins: ["apple", "material"],
     Demo: SpatialAwarenessDemo,
   },
   {
@@ -365,6 +369,7 @@ export const PRINCIPLES: GalleryItem[] = [
     title: "Feedback",
     description:
       "The interface answers every input immediately, confirming the action landed before anything else.",
+    origins: ["apple", "material"],
     Demo: FeedbackDemo,
   },
   {
@@ -372,6 +377,7 @@ export const PRINCIPLES: GalleryItem[] = [
     title: "Timing & Easing",
     description:
       "The curve is the character. Natural motion accelerates and settles; it rarely moves at a constant speed.",
+    origins: ["disney", "material"],
     Demo: TimingEasingDemo,
   },
   {
@@ -379,6 +385,7 @@ export const PRINCIPLES: GalleryItem[] = [
     title: "Anticipation",
     description:
       "A subtle wind-up before a move primes the eye and makes the action feel intentional, not abrupt.",
+    origins: ["disney"],
     Demo: AnticipationDemo,
   },
   {
@@ -386,6 +393,7 @@ export const PRINCIPLES: GalleryItem[] = [
     title: "Follow Through",
     description:
       "Motion doesn't stop on a dime. Trailing elements keep going and settle, giving weight and life.",
+    origins: ["disney"],
     Demo: FollowThroughDemo,
   },
   {
@@ -393,6 +401,7 @@ export const PRINCIPLES: GalleryItem[] = [
     title: "Rhythm",
     description:
       "Consistent stagger and cadence turn many moving parts into one coordinated, legible gesture.",
+    origins: ["disney", "material"],
     Demo: RhythmDemo,
   },
   {
@@ -400,6 +409,7 @@ export const PRINCIPLES: GalleryItem[] = [
     title: "Restraint",
     description:
       "The best motion is felt, not noticed. When in doubt, do less — subtle beats flashy every time.",
+    origins: ["apple"],
     Demo: RestraintDemo,
   },
   {
@@ -407,6 +417,7 @@ export const PRINCIPLES: GalleryItem[] = [
     title: "Performance",
     description:
       "Animate only transform and opacity so motion stays at a buttery 60fps, and keep springs interruptible.",
+    origins: ["material"],
     Demo: PerformanceDemo,
   },
   {
@@ -414,6 +425,7 @@ export const PRINCIPLES: GalleryItem[] = [
     title: "Accessibility",
     description:
       "Honor prefers-reduced-motion: drop transforms, keep a subtle opacity change, and the interface still reads.",
+    origins: ["apple", "material"],
     Demo: AccessibilityDemo,
   },
 ];
