@@ -1,0 +1,80 @@
+---
+title: Holographic Card
+description: A trading-card holo effect — iridescent foil, specular glare, and glitter that tilt and shift with the pointer or device gyroscope.
+date: "2026-07-10"
+---
+
+import { HolographicCard } from "@godui/components";
+import { HolographicCardDemo } from "@/components/demos/holographic-card-demo";
+
+<ComponentPreview
+  story="layout-holographic-card"
+  code={`import { HolographicCard } from "@/components/godui/holographic-card";
+
+export function HolographicCardDemo() {
+  return (
+    <HolographicCard variant="rainbow" className="h-96 w-72 p-6">
+      <span className="text-xs font-medium uppercase tracking-widest text-white/60">Founding Member</span>
+      <div className="mt-32">
+        <h3 className="text-2xl font-semibold tracking-tight text-white">GodUI</h3>
+        <p className="mt-2 text-sm text-white/70">Move your pointer across the card — the foil, glare, and glitter catch the light as it tilts.</p>
+      </div>
+    </HolographicCard>
+  );
+}`}
+>
+  <HolographicCardDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="HolographicCard" />
+
+The pointer position is normalized over the card and spring-mapped to `rotateX`
+/ `rotateY` on a `perspective` container. The same value drives a CSS variable
+that shifts the iridescent foil, the glitter mask, and a specular glare — so
+the whole surface reacts to a single gesture, like a real foil card catching the
+light. Set `gyroscope` to drive the tilt from the device on touch screens. It
+eases back to rest on leave, and renders as a still card under
+`prefers-reduced-motion`.
+
+## Usage
+
+```tsx
+import { HolographicCard } from "@/components/godui/holographic-card";
+```
+
+```tsx
+<HolographicCard variant="rainbow" className="w-72 p-6">
+  <h3>Title</h3>
+  <p>Body copy</p>
+</HolographicCard>
+```
+
+### Colorways
+
+<ComponentPreview
+  code={`<div className="flex flex-wrap items-center justify-center gap-6">
+  <HolographicCard variant="aurora" className="h-40 w-28" />
+  <HolographicCard variant="galaxy" className="h-40 w-28" />
+  <HolographicCard variant="gold" className="h-40 w-28" />
+</div>`}
+>
+  <div className="flex flex-wrap items-center justify-center gap-6">
+    <HolographicCard variant="aurora" className="h-40 w-28" />
+    <HolographicCard variant="galaxy" className="h-40 w-28" />
+    <HolographicCard variant="gold" className="h-40 w-28" />
+  </div>
+</ComponentPreview>
+
+## Props
+
+| Prop         | Type                                          | Default     | Description                                           |
+| ------------ | --------------------------------------------- | ----------- | ----------------------------------------------------- |
+| `variant`    | `"rainbow" \| "aurora" \| "galaxy" \| "gold"` | `"rainbow"` | Foil colorway.                                        |
+| `maxTilt`    | `number`                                      | `14`        | Maximum tilt in degrees toward the pointer.           |
+| `glare`      | `boolean`                                     | `true`      | Render a specular glare that tracks the pointer.      |
+| `sparkle`    | `boolean`                                     | `true`      | Overlay a fine glitter mask for a holo-flake finish.  |
+| `gyroscope`  | `boolean`                                     | `false`     | Drive the tilt from the device gyroscope on touch.    |
+
+`HolographicCard` also forwards every standard `<div>` attribute to the root element.

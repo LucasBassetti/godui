@@ -193,6 +193,11 @@ export {
   type HoldConfirmButtonVariant,
 } from "./hold-confirm-button";
 export {
+  HolographicCard,
+  type HolographicCardProps,
+  type HolographicVariant,
+} from "./holographic-card";
+export {
   ImageAccordion,
   type ImageAccordionPanel,
   type ImageAccordionProps,
@@ -371,6 +376,12 @@ export {
   type ScrollRevealProps,
 } from "./scroll-reveal";
 export { ScrollStack, type ScrollStackProps } from "./scroll-stack";
+export {
+  ScrollTextReveal,
+  type ScrollTextRevealBy,
+  type ScrollTextRevealElement,
+  type ScrollTextRevealProps,
+} from "./scroll-text-reveal";
 export {
   ScrollTimeline,
   type ScrollTimelineProps,

@@ -727,6 +727,26 @@
       ]
     },
     {
+      "name": "scroll-text-reveal",
+      "type": "registry:ui",
+      "title": "Scroll Text Reveal",
+      "description": "Kinetic typography that scrubs each word from dim to sharp as the paragraph scrolls through view — reverses cleanly on scroll-up.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "dependencies": ["framer-motion"],
+      "files": [
+        {
+          "path": "packages/components/src/scroll-text-reveal/scroll-text-reveal.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/scroll-text-reveal.tsx"
+        },
+        {
+          "path": "packages/components/src/lib/text-utils.ts",
+          "type": "registry:ui",
+          "target": "components/godui/text-utils.ts"
+        }
+      ]
+    },
+    {
       "name": "liquid-image",
       "type": "registry:ui",
       "title": "Liquid Image",
@@ -908,6 +928,21 @@
           "path": "packages/components/src/tilt-card/tilt-card.tsx",
           "type": "registry:ui",
           "target": "components/godui/tilt-card.tsx"
+        }
+      ]
+    },
+    {
+      "name": "holographic-card",
+      "type": "registry:ui",
+      "title": "Holographic Card",
+      "description": "A trading-card holo effect — iridescent foil, specular glare, and glitter that tilt and shift with the pointer or device gyroscope.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/holographic-card/holographic-card.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/holographic-card.tsx"
         }
       ]
     },

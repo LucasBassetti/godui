@@ -178,6 +178,7 @@ Docs live under a **category subfolder** (e.g. `buttons/`, `text/`), not flat. C
 ---
 title: My Component
 description: Short description.
+date: "2026-07-10"
 ---
 
 import { MyComponent } from "@godui/components";
@@ -189,6 +190,11 @@ export function MyComponentDemo() {
 }`}>
   <MyComponent variant="primary">Example</MyComponent>
 </ComponentPreview>
+
+The `date` frontmatter is the component's **creation date** (`YYYY-MM-DD`) and is
+**required for new components**. For one month after that date the sidebar nav
+shows a "New" badge (wired via `date` → `frontmatterSchema` in `source.config.ts`
+→ `newBadgePlugin` in `src/lib/source.ts`). Use today's date.
 
 ## Installation
 <ComponentInstall componentName="MyComponent" />
@@ -342,6 +348,7 @@ slug.
 - [ ] Motion uses the guideline tokens (DURATION/EASE/SPRING/STAGGER/ENTER/EXIT) inline — no invented numbers; transform/opacity only; reduced-motion handled (see "Motion")
 - [ ] Storybook story with `tags: ["autodocs"]`
 - [ ] Docs MDX under `components/{category}/` with ComponentPreview + ComponentInstall
+- [ ] `date: YYYY-MM-DD` (today) in the MDX frontmatter — required; drives the "New" sidebar badge for one month
 - [ ] ComponentPreview children: text inline in its tag (no `<p>`-in-`<p>` — see §5)
 - [ ] Registered in root `apps/docs/content/docs/meta.json` as `components/{category}/{name}`
 - [ ] `<PreviewCard>` added to its section in `components/index.mdx`

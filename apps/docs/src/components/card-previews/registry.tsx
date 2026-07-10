@@ -71,6 +71,7 @@ const CURATED_SLUGS = [
   "swipe-deck",
   "three-d-marquee",
   "tilt-card",
+  "holographic-card",
   // Text
   "aurora-text",
   "elastic-text",
@@ -78,6 +79,7 @@ const CURATED_SLUGS = [
   "number-ticker",
   "text-animate",
   "text-scramble",
+  "scroll-text-reveal",
   // AI
   "agent-timeline",
   "conversation-thread",

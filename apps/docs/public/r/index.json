@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "generatedAt": "2026-07-08T20:25:19.993Z",
+  "generatedAt": "2026-07-10T13:30:03.191Z",
   "components": [
     {
       "name": "accordion",
@@ -337,6 +337,15 @@
       "install": "npx shadcn@latest add @godui/hold-confirm-button"
     },
     {
+      "name": "holographic-card",
+      "title": "Holographic Card",
+      "description": "A trading-card holo effect — iridescent foil, specular glare, and glitter that tilt and shift with the pointer or device gyroscope.",
+      "category": "Layout",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/holographic-card"
+    },
+    {
       "name": "image-accordion",
       "title": "Image Accordion",
       "description": "Horizontal image panels that expand on hover to reveal their caption — an elegant, space-efficient gallery.",
@@ -668,6 +677,15 @@
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add @godui/scroll-stack"
+    },
+    {
+      "name": "scroll-text-reveal",
+      "title": "Scroll Text Reveal",
+      "description": "Kinetic typography that scrubs each word from dim to sharp as the paragraph scrolls through view — reverses cleanly on scroll-up.",
+      "category": "Text",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/scroll-text-reveal"
     },
     {
       "name": "scroll-timeline",

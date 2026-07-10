@@ -1,0 +1,90 @@
+---
+title: Scroll Text Reveal
+description: Kinetic typography that scrubs each word from dim to sharp as the paragraph scrolls through view.
+date: "2026-07-10"
+---
+
+import { ScrollTextReveal } from "@godui/components";
+import {
+  ScrollTextRevealDemo,
+  ScrollTextRevealKeepDemo,
+} from "@/components/demos/scroll-text-reveal-demo";
+
+<ComponentPreview
+  story="text-scroll-text-reveal"
+  code={`import { ScrollTextReveal } from "@/components/godui/scroll-text-reveal";
+
+export function ScrollTextRevealDemo() {
+  return (
+    <ScrollTextReveal as="p" className="text-2xl font-semibold leading-relaxed text-foreground">
+      Great interfaces read like a sentence — one idea resolving into the next. As you scroll, each word settles into focus, pacing attention exactly where it belongs.
+    </ScrollTextReveal>
+  );
+}`}
+>
+  <ScrollTextRevealDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="ScrollTextReveal" />
+
+Each word owns a slice of the paragraph's scroll progress, mapped from a dim
+resting opacity up to full presence (with an optional blur that resolves in
+sync). Because the mapping is scrubbed rather than a play-once entrance, it
+pages forward and backward with the scroll — reversing cleanly when the reader
+scrolls up. Set `keepRevealed` to latch each word at full presence once it
+lands, so the paragraph stays lit on the way back up. Under
+`prefers-reduced-motion` it renders as static, fully legible copy, and the
+complete sentence is always exposed to assistive tech.
+
+Unlike [Text Animate](/docs/components/text/text-animate) (a one-shot entrance
+stagger) or [Scroll Reveal](/docs/components/effects/scroll-reveal) (a block that
+fades in once on view), this couples the reveal directly to scroll position for
+reading-paced storytelling.
+
+## Usage
+
+```tsx
+import { ScrollTextReveal } from "@/components/godui/scroll-text-reveal";
+```
+
+```tsx
+<ScrollTextReveal as="p" className="text-2xl font-semibold leading-relaxed">
+  Words resolve into focus as the reader scrolls the page.
+</ScrollTextReveal>
+```
+
+### Keep revealed
+
+With `keepRevealed`, each word latches at full presence once it lands, so the
+paragraph stays lit when the reader scrolls back up instead of re-dimming.
+
+<ComponentPreview
+  code={`import { ScrollTextReveal } from "@/components/godui/scroll-text-reveal";
+
+export function ScrollTextRevealKeepDemo() {
+  return (
+    <ScrollTextReveal as="p" keepRevealed className="text-2xl font-semibold leading-relaxed text-foreground">
+      With keepRevealed, each word latches at full presence once it lands — so the paragraph stays lit as you scroll back up instead of dimming again.
+    </ScrollTextReveal>
+  );
+}`}
+>
+  <ScrollTextRevealKeepDemo />
+</ComponentPreview>
+
+## Props
+
+| Prop               | Type                                | Default                        | Description                                            |
+| ------------------ | ----------------------------------- | ------------------------------ | ------------------------------------------------------ |
+| `children`         | `string`                            | —                              | The copy to reveal. Must be a plain string.            |
+| `as`               | `"p" \| "h1"…"h6" \| "div" \| "span"` | `"p"`                          | Element to render as.                                  |
+| `by`               | `"word" \| "character" \| "line"`   | `"word"`                       | Split granularity for the reveal.                      |
+| `blur`             | `boolean`                           | `true`                         | Blur each segment in as it resolves.                   |
+| `dimOpacity`       | `number`                            | `0.15`                         | Resting opacity of not-yet-revealed segments.          |
+| `keepRevealed`     | `boolean`                           | `false`                        | Keep each word lit once revealed instead of re-dimming on scroll-up. |
+| `offset`           | `[string, string]`                  | `["start 0.85", "end 0.35"]`   | Scroll offset mapping element position to progress.    |
+| `segmentClassName` | `string`                            | —                              | Class applied to every segment span.                   |
+
+`ScrollTextReveal` also forwards standard attributes to the root element.
