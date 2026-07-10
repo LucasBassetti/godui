@@ -1,0 +1,81 @@
+---
+title: Stack Badge
+description: A tech-stack wall of monochrome logo chips that stagger in on scroll and lift into their full brand color with a soft glow on hover.
+date: "2026-07-10"
+---
+
+import { StackBadgeDemo } from "@/components/demos/stack-badge-demo";
+
+The portfolio flex, done right. Instead of a flat row of grey logos, `StackBadge` renders your stack as calm monochrome chips that stagger in on scroll, then lift and warm into their full brand color on hover. Batteries-included: reference 20 popular technologies by name, or drop in any custom `{ name, icon, color }`.
+
+<ComponentPreview
+  story="layout-stack-badge"
+  code={`import { StackBadge } from "@/components/godui/stack-badge";
+
+export function Stack() {
+  return (
+    <StackBadge
+      items={["react", "typescript", "tailwind", "nextjs", "node", "figma"]}
+    />
+  );
+}`}
+>
+  <StackBadgeDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="StackBadge" />
+
+## Usage
+
+```tsx
+import { StackBadge } from "@/components/godui/stack-badge";
+```
+
+Reference built-in logos by name:
+
+```tsx
+<StackBadge items={["react", "typescript", "tailwind", "nextjs"]} />
+```
+
+Mix in a fully custom chip — pass any 24×24 SVG and a brand color:
+
+```tsx
+<StackBadge
+  items={[
+    "react",
+    { name: "My API", icon: <MyLogo />, color: "#ff5c00" },
+  ]}
+/>
+```
+
+Icon-only chips, hairline surface, or a bigger scale:
+
+```tsx
+<StackBadge items={["react", "go", "rust"]} showLabel={false} />
+<StackBadge items={["figma", "graphql", "supabase"]} variant="outline" />
+<StackBadge items={["react", "typescript"]} size="lg" />
+```
+
+The full built-in set is exported as `TECH`, so you can inspect or extend it:
+
+```tsx
+import { TECH, type TechKey } from "@/components/godui/stack-badge";
+```
+
+Built-in keys: `react`, `nextjs`, `typescript`, `javascript`, `tailwind`, `node`, `python`, `rust`, `go`, `vue`, `svelte`, `figma`, `docker`, `postgres`, `graphql`, `vercel`, `supabase`, `redis`, `sass`, `framer`.
+
+## Props
+
+| Prop        | Type                             | Default  | Description                                              |
+| ----------- | -------------------------------- | -------- | ------------------------------------------------------- |
+| `items`     | `StackBadgeItem[]`               | —        | Built-in tech names and/or custom `{ name, icon, color }`. |
+| `size`      | `"sm" \| "md" \| "lg"`           | `"md"`   | Chip scale.                                             |
+| `variant`   | `"soft" \| "outline"`            | `"soft"` | Filled or hairline chip surface.                        |
+| `showLabel` | `boolean`                        | `true`   | Show the label, or render an icon-only chip.            |
+| `animateIn` | `boolean`                        | `true`   | Stagger the chips in once as they scroll into view.     |
+| `glow`      | `boolean`                        | `true`   | Hover brand-color glow + logo colorize.                 |
+
+`StackBadge` forwards every standard `<div>` attribute. The chips sit still at
+rest — the enter stagger and hover lift both respect `prefers-reduced-motion`.

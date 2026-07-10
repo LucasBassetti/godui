@@ -60,6 +60,7 @@
     "components/layout/scroll-stack",
     "components/layout/stepper",
     "components/layout/sticky-scroll",
+    "components/layout/stack-badge",
     "components/layout/store-badge",
     "components/layout/swipe-deck",
     "components/layout/three-d-marquee",

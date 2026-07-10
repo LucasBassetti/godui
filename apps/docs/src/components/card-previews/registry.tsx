@@ -65,6 +65,7 @@ const CURATED_SLUGS = [
   "progressive-card-reveal",
   "reorder-list",
   "scroll-stack",
+  "stack-badge",
   "stepper",
   "sticky-scroll",
   "store-badge",

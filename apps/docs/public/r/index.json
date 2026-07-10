@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "generatedAt": "2026-07-10T13:30:03.191Z",
+  "generatedAt": "2026-07-10T14:32:49.585Z",
   "components": [
     {
       "name": "accordion",
@@ -749,6 +749,15 @@
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add @godui/spotlight-reveal"
+    },
+    {
+      "name": "stack-badge",
+      "title": "Stack Badge",
+      "description": "A tech-stack wall of monochrome logo chips that stagger in on scroll and lift into their full brand color with a soft glow on hover; ships 20 built-in tech logos plus custom items.",
+      "category": "Layout",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/stack-badge"
     },
     {
       "name": "stepper",

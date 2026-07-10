@@ -1126,6 +1126,21 @@
       ]
     },
     {
+      "name": "stack-badge",
+      "type": "registry:ui",
+      "title": "Stack Badge",
+      "description": "A tech-stack wall of monochrome logo chips that stagger in on scroll and lift into their full brand color with a soft glow on hover; ships 20 built-in tech logos plus custom items.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/stack-badge/stack-badge.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/stack-badge.tsx"
+        }
+      ]
+    },
+    {
       "name": "stepper",
       "type": "registry:ui",
       "title": "Stepper",

@@ -421,6 +421,15 @@ export {
   SpotlightReveal,
   type SpotlightRevealProps,
 } from "./spotlight-reveal";
+export {
+  StackBadge,
+  type StackBadgeItem,
+  type StackBadgeProps,
+  type StackBadgeSize,
+  type StackBadgeVariant,
+  TECH,
+  type TechKey,
+} from "./stack-badge";
 export { type Step, Stepper, type StepperProps } from "./stepper";
 export {
   StickyScroll,
