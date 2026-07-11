@@ -1,19 +1,10 @@
 "use client";
 
-import {
-  type ComponentProps,
-  useEffect,
-  useState,
-  useSyncExternalStore,
-} from "react";
+import type { ComponentProps } from "react";
+import { useGitHubStars } from "@/components/github-stars-provider";
 import { cn } from "@/lib/cn";
 
 const REPO = "LucasBassetti/godui";
-const CACHE_KEY = "godui:gh-stars";
-const CACHE_TTL = 60 * 60 * 1000; // 1h
-
-// No external store to subscribe to — the cache only changes via this component.
-const noopSubscribe = () => () => {};
 
 function GitHubIcon(props: ComponentProps<"svg">) {
   return (
@@ -37,71 +28,13 @@ function GitHubIcon(props: ComponentProps<"svg">) {
 }
 
 /**
- * GitHub badge linking to the repo, showing the live star count. The count is
- * fetched client-side and cached in localStorage (1h TTL) to avoid hitting the
- * GitHub API rate limit on every page load.
+ * GitHub badge linking to the repo, showing the star count. The count is fetched
+ * server-side (see `getGitHubStars`) and passed in as a prop so it renders in the
+ * initial HTML — no client-side pop-in or layout shift. The count is null only
+ * when the server fetch failed, in which case the badge shows just the icon.
  */
-function readCache(): { count: number; ts: number } | null {
-  if (typeof window === "undefined") return null;
-  try {
-    const cached = localStorage.getItem(CACHE_KEY);
-    return cached
-      ? (JSON.parse(cached) as { count: number; ts: number })
-      : null;
-  } catch {
-    return null; // malformed cache
-  }
-}
-
-// Fresh, valid cached count, or null. Used as the client snapshot.
-function readFreshCount(): number | null {
-  const cached = readCache();
-  return cached &&
-    Number.isFinite(cached.count) &&
-    Date.now() - cached.ts < CACHE_TTL
-    ? cached.count
-    : null;
-}
-
 export function GitHubStars({ className, ...props }: ComponentProps<"a">) {
-  // Read the cached count without a hydration mismatch: the server snapshot is
-  // null (matches SSR), then React swaps in the client snapshot after hydration.
-  // A previous render-seed + suppressHydrationWarning froze the value to the
-  // server's empty render whenever the cache was fresh — this avoids that.
-  const cached = useSyncExternalStore(
-    noopSubscribe,
-    readFreshCount,
-    () => null,
-  );
-  const [fetched, setFetched] = useState<number | null>(null);
-  const stars = fetched ?? cached;
-
-  useEffect(() => {
-    if (cached !== null) return; // fresh cache already shown
-
-    let active = true;
-    fetch(`https://api.github.com/repos/${REPO}`)
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => {
-        if (!active || !data || typeof data.stargazers_count !== "number") {
-          return;
-        }
-        const count = data.stargazers_count as number;
-        setFetched(count);
-        localStorage.setItem(
-          CACHE_KEY,
-          JSON.stringify({ count, ts: Date.now() }),
-        );
-      })
-      .catch(() => {
-        // network error — keep whatever we have (cache or nothing)
-      });
-
-    return () => {
-      active = false;
-    };
-  }, [cached]);
-
+  const count = useGitHubStars();
   return (
     <a
       href={`https://github.com/${REPO}`}
@@ -115,8 +48,8 @@ export function GitHubStars({ className, ...props }: ComponentProps<"a">) {
       {...props}
     >
       <GitHubIcon className="size-4" />
-      {stars !== null ? (
-        <span className="tabular-nums">{stars.toLocaleString("en-US")}</span>
+      {count !== null ? (
+        <span className="tabular-nums">{count.toLocaleString("en-US")}</span>
       ) : null}
     </a>
   );

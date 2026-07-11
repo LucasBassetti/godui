@@ -215,7 +215,7 @@ export function ComponentInstall({
                 value={manager}
                 onChange={(value) => setManager(value as PackageManager)}
               />
-              <CopyButton value={cliCommand} />
+              <CopyButton value={cliCommand} className="rounded-md" />
             </div>
             <div className="flex items-center gap-3 px-4 py-2.5">
               <TerminalIcon />
@@ -260,7 +260,7 @@ export function ComponentInstall({
                           setManager(value as PackageManager)
                         }
                       />
-                      <CopyButton value={depsCommand} />
+                      <CopyButton value={depsCommand} className="rounded-md" />
                     </div>
                     <div className="flex items-center gap-3 px-4 py-2.5">
                       <TerminalIcon />

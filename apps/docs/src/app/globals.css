@@ -511,11 +511,16 @@ figure.shiki div:has(> button[aria-label]) {
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-fd-border);
   background: var(--color-fd-card);
-  overflow: hidden;
+  /* Scroll horizontally instead of crushing columns on narrow screens; still
+     clips the rounded corners (auto establishes a clipping context). */
+  overflow-x: auto;
 }
 
 .docs-table {
   width: 100%;
+  /* Floor the table width so columns stay readable on mobile — below this the
+     wrapper scrolls rather than wrapping the type column character-by-character. */
+  min-width: 40rem;
   border-collapse: collapse;
   font-variant-numeric: tabular-nums;
   font-size: 0.875rem;
@@ -615,6 +620,24 @@ figure.shiki div:has(> button[aria-label]) {
   );
   font-size: 0.875rem;
   text-wrap: pretty;
+}
+
+/* --- Focus outlines ---------------------------------------------------------
+   Fumadocs' code blocks are focusable (tabindex="-1") only so click-to-scroll
+   works; they're not in the tab order, so the outline the browser paints on
+   mouse-click is pure noise that lit up the whole card border. Drop it. */
+.shiki:focus,
+.shiki:focus-visible {
+  outline: none;
+}
+
+/* TOC ("On this page") links are full-width blocks, so the default UA outline
+   drew edge-to-edge lines across the column. Replace with a tidy rounded, inset
+   keyboard-focus ring — indicator kept for a11y, but it reads as intentional. */
+#nd-toc a:focus-visible {
+  outline: 2px solid var(--color-fd-ring);
+  outline-offset: -2px;
+  border-radius: 8px;
 }
 
 /* Copy button: pop the icon in when it swaps to the success check mark. */

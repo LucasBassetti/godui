@@ -59,42 +59,12 @@ function PlaygroundLink({ story }: { story: string }) {
       target="_blank"
       rel="noreferrer"
       title="Open the interactive playground in Storybook"
-      className="inline-flex h-8 items-center gap-1.5 rounded-md border border-fd-border bg-fd-card px-2.5 font-medium text-fd-muted-foreground text-xs transition-colors hover:border-fd-primary/45 hover:text-fd-primary"
+      // Hidden on mobile (no Storybook playground there); shown from sm up.
+      className="hidden h-8 items-center gap-1.5 rounded-[10px] border border-fd-border bg-fd-card px-2.5 font-medium text-fd-muted-foreground text-xs transition-colors hover:border-fd-primary/45 hover:text-fd-primary sm:inline-flex"
     >
       Playground
       <ExternalIcon />
     </a>
-  );
-}
-
-function PlayIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="6.5 5 14 14"
-      className="size-3"
-      fill="currentColor"
-    >
-      <path d="M8 5v14l11-7z" />
-    </svg>
-  );
-}
-
-function CodeIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      className="size-3.5"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="m16 18 6-6-6-6" />
-      <path d="m8 6-6 6 6 6" />
-    </svg>
   );
 }
 
@@ -272,8 +242,8 @@ export function ComponentPreview({
       <div className="component-preview-bar flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
         <Segmented
           tabs={[
-            { value: "preview", label: "Preview", icon: <PlayIcon /> },
-            { value: "code", label: "Code", icon: <CodeIcon /> },
+            { value: "preview", label: "Preview" },
+            { value: "code", label: "Code" },
           ]}
           value={tab}
           onChange={setTab}
@@ -294,7 +264,7 @@ export function ComponentPreview({
               onClick={() => setReplayKey((key) => key + 1)}
               aria-label="Replay animation"
               title="Replay"
-              className="inline-flex size-8 items-center justify-center rounded-md border border-fd-border bg-fd-card text-fd-muted-foreground transition-colors hover:text-fd-foreground"
+              className="inline-flex size-8 items-center justify-center rounded-[10px] border border-fd-border bg-fd-card text-fd-muted-foreground transition-colors hover:text-fd-foreground"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -313,7 +283,7 @@ export function ComponentPreview({
               </svg>
             </button>
           ) : (
-            <CopyButton value={formattedCode} />
+            <CopyButton value={formattedCode} className="rounded-[10px]" />
           )}
         </div>
       </div>

@@ -3,7 +3,9 @@ import { GoogleAnalytics } from "@next/third-parties/google";
 import { RootProvider } from "fumadocs-ui/provider/next";
 import type { Metadata } from "next";
 import "./globals.css";
+import { GitHubStarsProvider } from "@/components/github-stars-provider";
 import { GodSearchDialog } from "@/components/search-dialog";
+import { getGitHubStars } from "@/lib/github-stars";
 import { AeoWidget } from "./aeo-widget";
 import { SiteStructuredData } from "./structured-data";
 
@@ -56,11 +58,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const stars = await getGitHubStars();
+
   return (
     <html
       lang="en"
@@ -77,7 +81,7 @@ export default function RootLayout({
           }}
           search={{ SearchDialog: GodSearchDialog }}
         >
-          {children}
+          <GitHubStarsProvider value={stars}>{children}</GitHubStarsProvider>
         </RootProvider>
         <AeoWidget />
       </body>

@@ -23,7 +23,9 @@ export function CopyButton({ value, className }: CopyButtonProps) {
       aria-label={copied ? "Copied" : "Copy to clipboard"}
       onClick={onCopy}
       className={cn(
-        "inline-flex size-8 items-center justify-center rounded-md border border-fd-border bg-fd-card text-fd-muted-foreground transition-[color,border-color,background-color,transform] duration-150 hover:border-fd-primary/45 hover:text-fd-primary active:scale-[0.96]",
+        // Radius comes from the call site (cn has no tailwind-merge, so a base
+        // radius couldn't be overridden). Callers pass rounded-md / rounded-[10px].
+        "inline-flex size-8 items-center justify-center border border-fd-border bg-fd-card text-fd-muted-foreground transition-[color,border-color,background-color,transform] duration-150 hover:border-fd-primary/45 hover:text-fd-primary active:scale-[0.96]",
         className,
         copied &&
           "border-fd-success/45 text-fd-success hover:border-fd-success/45 hover:text-fd-success",

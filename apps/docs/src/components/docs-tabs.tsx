@@ -123,7 +123,7 @@ export function Segmented({ tabs, value, onChange, className }: DocsTabsProps) {
         // Grid (not inline-flex) so every segment is an equal-width column —
         // a shrink-to-fit flex track sizes buttons to their content, which
         // makes the half-width thumb misalign with the wider tab.
-        "relative inline-grid rounded-[10px] border border-fd-border bg-[var(--muted)] p-[3px]",
+        "relative inline-grid h-8 rounded-[10px] border border-fd-border bg-[var(--muted)] p-[3px]",
         className,
       )}
       style={{
@@ -148,7 +148,10 @@ export function Segmented({ tabs, value, onChange, className }: DocsTabsProps) {
           type="button"
           onClick={() => onChange(tab.value)}
           className={cn(
-            "relative z-[1] inline-flex items-center justify-center gap-1.5 rounded-[7px] px-3 py-1 text-[13px] font-medium transition-colors",
+            // h-8 track (border-box) leaves a 24px inner area; symmetric
+            // py-[3px] + leading-[18px] centers the label vertically without
+            // depending on grid row-stretch behavior.
+            "relative z-[1] inline-flex items-center justify-center gap-1.5 rounded-[7px] px-3 py-[3px] text-[13px] leading-[18px] font-medium transition-colors",
             value === tab.value
               ? "text-[var(--foreground)]"
               : "text-[var(--muted-foreground)] hover:text-[var(--foreground)]",
