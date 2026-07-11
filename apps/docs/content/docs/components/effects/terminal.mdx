@@ -1,0 +1,81 @@
+---
+title: Terminal
+description: An animated terminal window that types out a scripted sequence of commands and output, with window chrome and a blinking caret.
+date: "2026-07-11"
+---
+
+import { TerminalDemo } from "@/components/demos/terminal-demo";
+
+Nothing says "developer tool" like a terminal that types itself. `Terminal` plays a scripted sequence — commands type out character by character with a blinking caret, output lands after a beat — inside a clean window frame. It starts when it scrolls into view, can loop, and collapses to plain text for screen readers and reduced-motion users.
+
+<ComponentPreview
+  story="effects-terminal"
+  code={`import { Terminal } from "@/components/godui/terminal";
+
+export function Install() {
+  return (
+    <Terminal
+      title="zsh — godui"
+      loop
+      lines={[
+        { text: "npm install @godui/components", type: "command" },
+        { text: "added 1 package in 1.2s", type: "output", delay: 500 },
+        { text: "npm run build", type: "command" },
+        { text: "✓ Ready in 240ms", type: "output", delay: 300 },
+      ]}
+    />
+  );
+}`}
+>
+  <TerminalDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="Terminal" />
+
+## Usage
+
+```tsx
+import { Terminal } from "@/components/godui/terminal";
+```
+
+Drive it with a `lines` array. Mark commands with `type: "command"` so they type
+out; `output` and `comment` lines appear after an optional `delay`:
+
+```tsx
+<Terminal
+  title="bash"
+  lines={[
+    { text: "# deploy to production", type: "comment" },
+    { text: "git push origin main", type: "command" },
+    { text: "Everything up-to-date", type: "output", delay: 400 },
+  ]}
+/>
+```
+
+Tune the pacing, loop it, or strip the window chrome:
+
+```tsx
+<Terminal lines={lines} typingSpeed={20} loop />
+<Terminal lines={lines} showChrome={false} promptSymbol="›" />
+<Terminal lines={lines} startOnView={false} />
+```
+
+Under `prefers-reduced-motion`, every line renders at once with no typing or caret
+blink, and the full transcript is always exposed to assistive tech.
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `lines` | `TerminalLine[]` | — | Scripted lines. Each is `{ text, type?, prompt?, delay? }`. |
+| `typingSpeed` | `number` | `38` | Milliseconds per character while typing a command. |
+| `startOnView` | `boolean` | `true` | Start playing only once scrolled into view. |
+| `loop` | `boolean` | `false` | Restart from the top after finishing. |
+| `title` | `string` | — | Title shown in the window chrome. |
+| `showChrome` | `boolean` | `true` | Render the traffic-light window chrome. |
+| `promptSymbol` | `string` | `"$"` | Default prompt symbol for command lines. |
+
+`TerminalLine.type` is `"command" \| "output" \| "comment"` (default `"output"`).
+All other `div` props are forwarded to the root element.

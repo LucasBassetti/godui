@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "generatedAt": "2026-07-10T14:32:49.585Z",
+  "generatedAt": "2026-07-11T18:56:00.977Z",
   "components": [
     {
       "name": "accordion",
@@ -245,6 +245,15 @@
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add @godui/elastic-text"
+    },
+    {
+      "name": "encrypted-card",
+      "title": "Encrypted Card",
+      "description": "A card whose surface hides a live stream of scrambling ciphertext, revealed only through a soft spotlight that follows the pointer.",
+      "category": "Effects",
+      "dependencies": [],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/encrypted-card"
     },
     {
       "name": "filter-bar",
@@ -733,6 +742,15 @@
       "install": "npx shadcn@latest add @godui/source-citations"
     },
     {
+      "name": "spin-viewer",
+      "title": "Spin Viewer",
+      "description": "A 360-degree product viewer — drag to spin an object through a sequence of frames, with optional idle auto-rotate and a touch-friendly hint.",
+      "category": "Layout",
+      "dependencies": [],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/spin-viewer"
+    },
+    {
       "name": "spotlight-card",
       "title": "Spotlight Card",
       "description": "A card with a radial spotlight glow that follows the pointer, optionally lighting the border.",
@@ -803,6 +821,15 @@
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add @godui/tab-bar"
+    },
+    {
+      "name": "terminal",
+      "title": "Terminal",
+      "description": "An animated terminal window that types out a scripted sequence of commands and output, with window chrome and a blinking caret.",
+      "category": "Effects",
+      "dependencies": [],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/terminal"
     },
     {
       "name": "text-animate",

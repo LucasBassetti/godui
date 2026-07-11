@@ -134,6 +134,10 @@ export {
   type ElasticTextProps,
 } from "./elastic-text";
 export {
+  EncryptedCard,
+  type EncryptedCardProps,
+} from "./encrypted-card";
+export {
   type Facet,
   FilterBar,
   type FilterBarProps,
@@ -413,6 +417,7 @@ export {
   SourceList,
   type SourceListProps,
 } from "./source-citations";
+export { SpinViewer, type SpinViewerProps } from "./spin-viewer";
 export {
   SpotlightCard,
   type SpotlightCardProps,
@@ -453,6 +458,12 @@ export {
   type SwipeDirection,
 } from "./swipe-deck";
 export { TabBar, type TabBarProps, type TabBarTab } from "./tab-bar";
+export {
+  Terminal,
+  type TerminalLine,
+  type TerminalLineType,
+  type TerminalProps,
+} from "./terminal";
 export {
   TextAnimate,
   type TextAnimateBy,

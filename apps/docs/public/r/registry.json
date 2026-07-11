@@ -1022,6 +1022,48 @@
       ]
     },
     {
+      "name": "encrypted-card",
+      "type": "registry:ui",
+      "title": "Encrypted Card",
+      "description": "A card whose surface hides a live stream of scrambling ciphertext, revealed only through a soft spotlight that follows the pointer.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/encrypted-card/encrypted-card.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/encrypted-card.tsx"
+        }
+      ]
+    },
+    {
+      "name": "terminal",
+      "type": "registry:ui",
+      "title": "Terminal",
+      "description": "An animated terminal window that types out a scripted sequence of commands and output, with window chrome and a blinking caret.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/terminal/terminal.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/terminal.tsx"
+        }
+      ]
+    },
+    {
+      "name": "spin-viewer",
+      "type": "registry:ui",
+      "title": "Spin Viewer",
+      "description": "A 360-degree product viewer — drag to spin an object through a sequence of frames, with optional idle auto-rotate and a touch-friendly hint.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/spin-viewer/spin-viewer.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/spin-viewer.tsx"
+        }
+      ]
+    },
+    {
       "name": "otp-input",
       "type": "registry:ui",
       "title": "OTP Input",

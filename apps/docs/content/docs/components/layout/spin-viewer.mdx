@@ -1,0 +1,69 @@
+---
+title: Spin Viewer
+description: A 360° product viewer — drag to spin an object through a sequence of frames, with optional idle auto-rotate and a touch-friendly hint.
+date: "2026-07-11"
+---
+
+import { SpinViewerDemo } from "@/components/demos/spin-viewer-demo";
+
+The Apple-store trick for making a product feel real: let people grab it and spin it. `SpinViewer` turns an ordered sequence of frames into a draggable 360° object — mouse or touch. It preloads every frame so the spin is buttery, idles with a slow auto-rotate until the first grab, and drops a "drag to rotate" hint for first-timers. Perfect for a product hero, an app device shot, or a portfolio centerpiece.
+
+<ComponentPreview
+  story="layout-spin-viewer"
+  code={`import { SpinViewer } from "@/components/godui/spin-viewer";
+
+export function Product() {
+  // frames = ordered image URLs of your object rotating a full turn
+  return <SpinViewer frames={frames} autoRotate className="size-64" />;
+}`}
+>
+  <SpinViewerDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="SpinViewer" />
+
+## Usage
+
+```tsx
+import { SpinViewer } from "@/components/godui/spin-viewer";
+```
+
+Pass an ordered array of frame URLs — typically 24–48 photos or renders taken a
+few degrees apart around the object:
+
+```tsx
+const frames = Array.from(
+  { length: 36 },
+  (_, i) => `/product/frame-${String(i).padStart(2, "0")}.webp`,
+);
+
+<SpinViewer frames={frames} className="size-72" />;
+```
+
+Idle auto-rotate until grabbed, tune the drag feel, or reverse the direction:
+
+```tsx
+<SpinViewer frames={frames} autoRotate autoRotateSpeed={16} />
+<SpinViewer frames={frames} sensitivity={4} />
+<SpinViewer frames={frames} reverse hint={false} />
+```
+
+Vertical page scroll still works over the viewer (`touch-action: pan-y`), and
+auto-rotate is disabled under `prefers-reduced-motion` — dragging always works.
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `frames` | `string[]` | — | Ordered image URLs, one per rotation frame. |
+| `autoRotate` | `boolean` | `false` | Spin on its own until the first interaction. |
+| `autoRotateSpeed` | `number` | `12` | Auto-rotate speed, in frames per second. |
+| `sensitivity` | `number` | `6` | Pixels of horizontal drag per frame step. |
+| `reverse` | `boolean` | `false` | Reverse the drag/spin direction. |
+| `initialFrame` | `number` | `0` | Frame index to start on. |
+| `hint` | `boolean` | `true` | Show the "drag to rotate" hint until first interaction. |
+| `label` | `string` | `"360-degree view…"` | Accessible label for the viewer. |
+
+All other `div` props are forwarded to the root element.

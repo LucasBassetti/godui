@@ -65,6 +65,7 @@ const CURATED_SLUGS = [
   "progressive-card-reveal",
   "reorder-list",
   "scroll-stack",
+  "spin-viewer",
   "stack-badge",
   "stepper",
   "sticky-scroll",
@@ -103,6 +104,7 @@ const CURATED_SLUGS = [
   "beam-draw",
   "border-beam",
   "confetti",
+  "encrypted-card",
   "fluid-cursor",
   "image-trail",
   "lamp",
@@ -113,6 +115,7 @@ const CURATED_SLUGS = [
   "scroll-reveal",
   "spotlight-card",
   "spotlight-reveal",
+  "terminal",
   // Backgrounds
   "blueprint-grid",
   "decorative-background",

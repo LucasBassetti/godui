@@ -1,0 +1,74 @@
+---
+title: Encrypted Card
+description: A card whose surface hides a live stream of scrambling ciphertext, revealed only through a soft spotlight that follows the pointer.
+date: "2026-07-11"
+---
+
+import { EncryptedCardDemo } from "@/components/demos/encrypted-card-demo";
+
+Security and AI products love the "there's something powerful under the hood" feeling. `EncryptedCard` renders your real content on top, but the surface underneath is a living field of ciphertext that re-scrambles every frame — visible only inside a radial reveal that tracks the cursor. Move across the card and the encryption bleeds through, then re-seals.
+
+<ComponentPreview
+  story="effects-encrypted-card"
+  code={`import { EncryptedCard } from "@/components/godui/encrypted-card";
+
+export function ApiKeyCard() {
+  return (
+    <EncryptedCard className="w-[22rem]">
+      <div className="p-5">
+        <div className="flex items-center justify-between">
+          <p className="text-sm font-medium">Production API key</p>
+          <span className="rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 font-mono text-[10px] uppercase text-primary">
+            Live
+          </span>
+        </div>
+        <code className="mt-4 block truncate rounded-lg border border-border bg-background/60 px-3 py-2 font-mono text-[13px]">
+          sk_live_51Nc••••••••4Rf2
+        </code>
+      </div>
+    </EncryptedCard>
+  );
+}`}
+>
+  <EncryptedCardDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="EncryptedCard" />
+
+## Usage
+
+```tsx
+import { EncryptedCard } from "@/components/godui/encrypted-card";
+```
+
+Wrap any content — the card is a drop-in surface:
+
+```tsx
+<EncryptedCard className="w-80">
+  <div className="p-6">Your content sits above the cipher.</div>
+</EncryptedCard>
+```
+
+Tune the reveal and the stream:
+
+```tsx
+<EncryptedCard revealRadius={80} speed={35} />
+<EncryptedCard streamColor="color-mix(in oklch, var(--primary) 70%, #22d3ee)" />
+<EncryptedCard characters="01" />
+```
+
+The stream honors `prefers-reduced-motion`: the glyphs stop re-scrambling and the
+reveal becomes a static peek, so nothing flickers for motion-sensitive users.
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `characters` | `string` | ciphertext alphabet | Pool of glyphs the stream is drawn from. |
+| `speed` | `number` | `55` | Milliseconds between glyph re-randomizations while hovered. |
+| `revealRadius` | `number` | `130` | Radius of the pointer-following reveal window, in pixels. |
+| `streamColor` | `string` | `var(--primary)` | Color of the encrypted glyph stream. |
+
+All other `div` props are forwarded to the root element.
