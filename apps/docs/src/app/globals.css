@@ -587,14 +587,17 @@ figure.shiki div:has(> button[aria-label]) {
   max-width: 20rem;
 }
 
-/* Type (col 2) — secondary: plain muted mono, no chrome */
+/* Type (col 2) — secondary: plain muted mono, no chrome. Wrap only at natural
+   break points (the spaces in unions like `"single" | "multiple"`); never split
+   a single token mid-word — `string` must stay `string`, not `strin`+`g`. Long
+   unbroken tokens overflow into the wrapper's horizontal scroll instead. */
 .docs-table-wrapper .docs-table td:nth-child(2) code {
   font-size: 0.8125rem;
   font-weight: 450;
   color: var(--color-fd-muted-foreground) !important;
   white-space: normal;
-  overflow-wrap: anywhere;
-  word-break: break-word;
+  overflow-wrap: normal;
+  word-break: normal;
 }
 
 /* Default (col 3) — the one tasteful badge: a small token pill */
