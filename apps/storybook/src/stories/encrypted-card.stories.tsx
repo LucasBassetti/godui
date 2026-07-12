@@ -26,11 +26,13 @@ const meta = {
     speed: 55,
     revealRadius: 130,
     streamColor: "var(--primary)",
+    streamOpacity: 1,
   } satisfies EncryptedCardProps,
   argTypes: {
     speed: { control: { type: "range", min: 20, max: 200, step: 5 } },
     revealRadius: { control: { type: "range", min: 60, max: 260, step: 10 } },
     streamColor: { control: "text" },
+    streamOpacity: { control: { type: "range", min: 0, max: 1, step: 0.05 } },
   },
   render: (args) => (
     <EncryptedCard {...args} className="w-80">
@@ -50,4 +52,8 @@ export const TightReveal: Story = {
 
 export const AccentStream: Story = {
   args: { streamColor: "color-mix(in oklch, var(--primary) 70%, #22d3ee)" },
+};
+
+export const SubtleStream: Story = {
+  args: { streamOpacity: 0.4 },
 };

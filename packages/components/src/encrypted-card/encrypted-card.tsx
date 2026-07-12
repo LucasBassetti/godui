@@ -11,6 +11,11 @@ export type EncryptedCardProps = React.HTMLAttributes<HTMLDivElement> & {
   revealRadius?: number;
   /** Color of the encrypted glyph stream. Accepts any CSS color. */
   streamColor?: string;
+  /**
+   * Opacity of the revealed glyph stream, 0–1. Lower values make the ciphertext
+   * subtler. Defaults to 1 (fully opaque inside the reveal window).
+   */
+  streamOpacity?: number;
 };
 
 // A wide alphabet keeps the stream looking like ciphertext rather than a word.
@@ -27,7 +32,7 @@ const ROOT_BASE =
 // flash). `mask-image` is a single longhand so the shorthand-reset trap does not
 // apply here.
 const STREAM_BASE =
-  "pointer-events-none absolute inset-0 select-none break-all font-mono text-[11px] leading-[1.15] tracking-[0.15em] opacity-0 [transition:opacity_300ms_ease] group-hover:opacity-100 motion-reduce:[transition:none] [mask-image:radial-gradient(var(--reveal)_circle_at_var(--x,50%)_var(--y,50%),#000_0%,transparent_100%)] [-webkit-mask-image:radial-gradient(var(--reveal)_circle_at_var(--x,50%)_var(--y,50%),#000_0%,transparent_100%)]";
+  "pointer-events-none absolute inset-0 select-none break-all font-mono text-[11px] leading-[1.15] tracking-[0.15em] opacity-0 [transition:opacity_300ms_ease] group-hover:[opacity:var(--stream-opacity,1)] motion-reduce:[transition:none] [mask-image:radial-gradient(var(--reveal)_circle_at_var(--x,50%)_var(--y,50%),#000_0%,transparent_100%)] [-webkit-mask-image:radial-gradient(var(--reveal)_circle_at_var(--x,50%)_var(--y,50%),#000_0%,transparent_100%)]";
 
 function randomString(length: number, chars: string): string {
   let out = "";
@@ -56,6 +61,7 @@ const EncryptedCard = React.forwardRef<HTMLDivElement, EncryptedCardProps>(
       speed = 55,
       revealRadius = 130,
       streamColor = "var(--primary)",
+      streamOpacity = 1,
       className,
       style,
       children,
@@ -117,6 +123,7 @@ const EncryptedCard = React.forwardRef<HTMLDivElement, EncryptedCardProps>(
         className={`${ROOT_BASE} ${className ?? ""}`}
         style={{
           ["--reveal" as string]: `${revealRadius}px`,
+          ["--stream-opacity" as string]: streamOpacity,
           ...style,
         }}
         {...props}
