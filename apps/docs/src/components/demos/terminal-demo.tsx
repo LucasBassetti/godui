@@ -18,7 +18,10 @@ export function TerminalDemo() {
         lines={LINES}
         title="zsh — godui"
         loop
-        className="w-full max-w-[26rem]"
+        // Desktop: fixed width so it never reflows as lines type in (the preview
+        // container would otherwise let the width track content). Mobile: stay
+        // fluid so it fits the 360px preview iframe.
+        className="w-full max-w-[26rem] sm:w-[28rem] sm:max-w-none"
       />
     </div>
   );
