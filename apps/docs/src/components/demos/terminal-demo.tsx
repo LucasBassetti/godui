@@ -13,8 +13,13 @@ const LINES: TerminalLine[] = [
 
 export function TerminalDemo() {
   return (
-    <div className="flex items-center justify-center px-6 py-12">
-      <Terminal lines={LINES} title="zsh — godui" loop className="w-[26rem]" />
+    <div className="flex items-center justify-center px-4 py-12 sm:px-6">
+      <Terminal
+        lines={LINES}
+        title="zsh — godui"
+        loop
+        className="w-full max-w-[26rem]"
+      />
     </div>
   );
 }

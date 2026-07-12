@@ -4,8 +4,8 @@ import { EncryptedCard } from "@godui/components";
 
 export function EncryptedCardDemo() {
   return (
-    <div className="flex items-center justify-center">
-      <EncryptedCard className="w-[22rem]">
+    <div className="flex items-center justify-center px-4">
+      <EncryptedCard className="w-full max-w-[22rem]">
         <div className="p-5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2.5">
