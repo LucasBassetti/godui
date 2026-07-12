@@ -56,7 +56,7 @@ export function ProgressiveCardRevealDemo() {
     <ProgressiveCardReveal
       activeIndex={active}
       onActiveChange={setActive}
-      className="mx-4 w-full max-w-[360px]"
+      className="w-full max-w-[360px] max-sm:mx-4"
     >
       {legs.map((leg) => (
         <ProgressiveCardReveal.Card key={leg.label}>
