@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "fumadocs-core/link";
-import { type ReactNode, Suspense, useEffect, useRef, useState } from "react";
+import { type ReactNode, useState } from "react";
 import { cn } from "@/lib/cn";
 import { cardPreviews } from "./registry";
 
@@ -14,10 +14,16 @@ type PreviewCardProps = {
 };
 
 /**
- * Component-index card with an optional live preview zone on top. When a preview
- * is registered for the card's slug it lazy-mounts once the card scrolls near the
- * viewport and only animates while hovered (calm idle, motion on intent). Cards
- * without a registered preview fall back to the plain fumadocs Card look.
+ * Component-index card with an optional live preview zone on top. Every preview
+ * is statically imported (see registry), so it renders immediately — in the SSR
+ * HTML and on hydration — with no intersection gate, no async chunk fetch, and
+ * no Suspense fallback. The zone is therefore never empty, even mid-scroll.
+ *
+ * `content-visibility: auto` keeps that cheap: the browser skips render/paint
+ * work for off-screen zones and does it synchronously as each card nears the
+ * viewport, so a preview is always painted by the time it's visible. Previews
+ * only animate while hovered (calm idle, motion on intent). Cards without a
+ * registered preview fall back to the plain fumadocs Card look.
  */
 export function PreviewCard({
   href,
@@ -27,27 +33,7 @@ export function PreviewCard({
 }: PreviewCardProps) {
   const slug = href.split("/").filter(Boolean).pop() ?? "";
   const Preview = cardPreviews[slug];
-
-  const zoneRef = useRef<HTMLDivElement>(null);
-  const [inView, setInView] = useState(false);
   const [play, setPlay] = useState(false);
-
-  useEffect(() => {
-    if (!Preview) return;
-    const el = zoneRef.current;
-    if (!el) return;
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (entry?.isIntersecting) {
-          setInView(true);
-          io.disconnect();
-        }
-      },
-      { rootMargin: "240px" },
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, [Preview]);
 
   // The card is a <div>, not an <a>, so previews that render their own anchors
   // or buttons don't nest inside a link. Navigation comes from a stretched
@@ -63,20 +49,20 @@ export function PreviewCard({
     >
       {Preview ? (
         <div
-          ref={zoneRef}
           data-play={play}
           className={cn(
             "preview-zone pointer-events-none relative flex h-[150px] items-center justify-center overflow-hidden border-b bg-[radial-gradient(oklch(0.7_0_0/0.12)_1px,transparent_1px)] [background-size:16px_16px]",
+            // Skip off-screen render/paint cost for 100+ cards while keeping each
+            // preview in the DOM; the browser paints it synchronously as it nears
+            // the viewport. contain-intrinsic-size reserves the 150px height so
+            // scroll position stays stable.
+            "[content-visibility:auto] [contain-intrinsic-size:auto_150px]",
             // Hold every CSS animation still until the card is hovered, and always
             // when the user prefers reduced motion.
             "data-[play=false]:[&_*]:![animation-play-state:paused] motion-reduce:[&_*]:![animation-play-state:paused]",
           )}
         >
-          {inView ? (
-            <Suspense fallback={null}>
-              <Preview play={play} />
-            </Suspense>
-          ) : null}
+          <Preview play={play} />
         </div>
       ) : null}
       <div className="p-4">
