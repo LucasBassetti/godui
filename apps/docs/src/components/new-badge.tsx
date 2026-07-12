@@ -6,11 +6,11 @@
  * Fully rounded pill, sized to its text with symmetric vertical padding and
  * centered as a unit in the nav row (`self-center`), so the label is truly
  * centered — no `self-stretch` height to amplify the cap-height metric bias.
- * `-me-0.5` pulls it 2px into the active pill's 8px right padding.
+ * Sits flush against the active pill's 8px right padding.
  */
 export function NewBadge() {
   return (
-    <span className="-me-0.5 ml-auto inline-flex shrink-0 items-center self-center rounded-full bg-sky-400/15 px-1.5 py-[3px] font-semibold text-[8px] text-sky-600 uppercase leading-none tracking-wide ring-1 ring-sky-400/30 dark:bg-sky-400/10 dark:text-sky-300">
+    <span className="ml-auto inline-flex shrink-0 items-center self-center rounded-full bg-sky-400/15 px-1.5 py-[3px] font-semibold text-[8px] text-sky-600 uppercase leading-none tracking-wide ring-1 ring-sky-400/30 dark:bg-sky-400/10 dark:text-sky-300">
       New
     </span>
   );
