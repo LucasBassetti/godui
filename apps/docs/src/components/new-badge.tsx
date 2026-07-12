@@ -10,7 +10,7 @@
  */
 export function NewBadge() {
   return (
-    <span className="my-[3px] -me-0.5 ml-auto flex shrink-0 items-center self-stretch rounded-full bg-sky-400/15 px-1.5 font-semibold text-[9px] text-sky-600 uppercase leading-none tracking-wide ring-1 ring-sky-400/30 dark:bg-sky-400/10 dark:text-sky-300">
+    <span className="my-[3px] -me-0.5 ml-auto flex shrink-0 items-center self-stretch rounded-full bg-sky-400/15 px-1.5 font-semibold text-[8px] text-sky-600 uppercase leading-none tracking-wide ring-1 ring-sky-400/30 dark:bg-sky-400/10 dark:text-sky-300">
       New
     </span>
   );
