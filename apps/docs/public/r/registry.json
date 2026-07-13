@@ -1408,6 +1408,21 @@
       ]
     },
     {
+      "name": "agent-flow",
+      "type": "registry:ui",
+      "title": "Agent Flow",
+      "description": "A draggable, pannable node-graph that visualizes an agent workflow — labelled nodes with live run status and data packets that flow along the edges between them.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/agent-flow/agent-flow.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/agent-flow.tsx"
+        }
+      ]
+    },
+    {
       "name": "agent-timeline",
       "type": "registry:ui",
       "title": "Agent Timeline",

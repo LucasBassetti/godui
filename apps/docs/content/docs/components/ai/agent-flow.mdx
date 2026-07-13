@@ -1,0 +1,172 @@
+---
+title: Agent Flow
+description: A draggable, pannable node-graph that visualizes an agent workflow — labelled nodes with live run status and data packets that flow along the edges between them.
+date: "2026-07-12"
+---
+
+import { AgentFlowDemo } from "@/components/demos/agent-flow-demo";
+import { AgentFlowPersistDemo } from "@/components/demos/agent-flow-persist-demo";
+
+<ComponentPreview
+  story="ai-agentflow"
+  fullWidth
+  code={`import { AgentFlow, type AgentFlowNode, type AgentFlowEdge } from "@/components/godui/agent-flow";
+
+const nodes: AgentFlowNode[] = [
+  { id: "trigger", label: "Trigger", sublabel: "user message", x: 90, y: 170 },
+  { id: "planner", label: "Planner", sublabel: "opus-4.8", x: 320, y: 170 },
+  { id: "search", label: "Search tool", sublabel: "web", x: 560, y: 80 },
+  { id: "code", label: "Code tool", sublabel: "sandbox", x: 560, y: 260 },
+  { id: "synth", label: "Synthesize", sublabel: "opus-4.8", x: 800, y: 170 },
+  { id: "answer", label: "Answer", x: 1020, y: 170 },
+];
+
+const edges: AgentFlowEdge[] = [
+  { id: "e1", from: "trigger", to: "planner" },
+  { id: "e2", from: "planner", to: "search", curvature: 40 },
+  { id: "e3", from: "planner", to: "code", curvature: -40 },
+  { id: "e4", from: "search", to: "synth", curvature: -40 },
+  { id: "e5", from: "code", to: "synth", curvature: 40 },
+  { id: "e6", from: "synth", to: "answer" },
+];
+
+export function AgentFlowDemo() {
+  return <AgentFlow nodes={nodes} edges={edges} autoPlay className="h-[400px] w-full" />;
+}`}
+>
+  <AgentFlowDemo />
+</ComponentPreview>
+
+With `autoPlay`, the graph plays as one continuous light: each node traces its
+border on — growing from the left-edge centre out to both sides — then its icon
+lights and the beam flows down the outgoing edge to the next node, which traces
+in turn. The lit border stays; the flowing line is transient. Root nodes (no
+incoming edge) start the sequence. Drag any node to rearrange it — the edges
+follow live — or drag the dotted backdrop to pan.
+
+## Installation
+
+<ComponentInstall componentName="AgentFlow" />
+
+## Usage
+
+```tsx
+import {
+  AgentFlow,
+  type AgentFlowEdge,
+  type AgentFlowNode,
+} from "@/components/godui/agent-flow";
+```
+
+```tsx
+<AgentFlow
+  nodes={[
+    { id: "a", label: "Trigger", status: "done", x: 80, y: 120 },
+    { id: "b", label: "Planner", sublabel: "opus-4.8", status: "running", x: 320, y: 120 },
+  ]}
+  edges={[{ id: "a-b", from: "a", to: "b" }]}
+  className="h-[360px] w-full"
+/>
+```
+
+Give the canvas an explicit height (and width) — it is an absolutely-positioned
+graph, so it fills its container. With `fitView` (default) the graph scales and
+centers itself so the whole graph is visible on mount.
+
+## Auto-play
+
+Pass `autoPlay` and the component runs the whole choreography for you — trace
+border → light icon → flow to the next node — starting from the root(s). Add
+`continuous` to loop it. Set the pace with `traceDuration` — the packets travel
+at the same speed the borders trace, so the light never speeds up or slows down
+at the card→line seam. (`flowDuration` sets packet speed only when you drive the
+edges yourself, without `autoPlay`.)
+
+```tsx
+<AgentFlow nodes={nodes} edges={edges} autoPlay continuous />
+```
+
+## Persistent edges
+
+Mark an edge `persist` and its line draws on as the packet travels and then
+**stays lit** — the same behaviour as a card's traced border. A completed path
+reads as an established connection, so the whole traversed route glows once the
+flow reaches the end.
+
+<ComponentPreview
+  story="ai-agentflow"
+  fullWidth
+  code={`const edges: AgentFlowEdge[] = [
+  { id: "e1", from: "trigger", to: "planner", persist: true },
+  { id: "e2", from: "planner", to: "search", curvature: 40, persist: true },
+  { id: "e3", from: "planner", to: "code", curvature: -40, persist: true },
+  { id: "e4", from: "search", to: "synth", curvature: -40, persist: true },
+  { id: "e5", from: "code", to: "synth", curvature: 40, persist: true },
+  { id: "e6", from: "synth", to: "answer", persist: true },
+];
+
+export function AgentFlowPersistDemo() {
+  return <AgentFlow nodes={nodes} edges={edges} autoPlay className="h-[400px] w-full" />;
+}`}
+>
+  <AgentFlowPersistDemo />
+</ComponentPreview>
+
+## Driving it yourself
+
+Without `autoPlay`, you control the graph: `node.status` drives each card (a node
+traces its border on the first time it becomes `running`/`done`) and `edge.animated`
+drives the packets. For a manual once-through, mark edges `loop: false` and listen
+for `onEdgeArrive` to advance the sequence yourself.
+
+```tsx
+const [arrived, setArrived] = useState(new Set<string>());
+
+<AgentFlow
+  nodes={nodes}          // status derived from `arrived`
+  edges={edges.map((e) => ({ ...e, loop: false }))}
+  onEdgeArrive={(id) => setArrived((s) => new Set(s).add(id))}
+/>;
+```
+
+## Props
+
+### AgentFlow
+
+| Prop           | Type              | Default            | Description                                          |
+| -------------- | ----------------- | ------------------ | ---------------------------------------------------- |
+| `nodes`        | `AgentFlowNode[]` | —                  | The graph nodes.                                     |
+| `edges`        | `AgentFlowEdge[]` | —                  | Directed connectors between node ids.                |
+| `draggable`    | `boolean`         | `true`             | Allow dragging nodes to reposition them.             |
+| `pannable`     | `boolean`         | `true`             | Allow panning the canvas by dragging the backdrop.   |
+| `flowDuration` | `number`          | `3`                | Seconds per packet travel (manual mode; `autoPlay` matches the border-trace speed). |
+| `traceDuration`| `number`          | `0.8`              | Seconds for a node's border to trace on.             |
+| `fitView`      | `boolean`         | `true`             | Scale + center the graph in view on mount.           |
+| `autoPlay`     | `boolean`         | `false`            | Play the trace → light → flow choreography from the root(s). Overrides `status`/`animated`. |
+| `continuous`   | `boolean`         | `false`            | With `autoPlay`, loop forever instead of stopping at the leaves. |
+| `onEdgeArrive` | `(id: string) => void` | —             | Fires when a non-looping edge's packet reaches its target.     |
+| `onNodeActivate` | `(id: string) => void` | —           | Fires when a node finishes tracing its border (its icon lights). |
+| `aria-label`   | `string`          | `"Agent workflow"` | Accessible label for the canvas group.               |
+
+### AgentFlowNode
+
+| Prop       | Type                                          | Default  | Description                                |
+| ---------- | --------------------------------------------- | -------- | ------------------------------------------ |
+| `id`       | `string`                                      | —        | Unique node id (referenced by edges).      |
+| `label`    | `string`                                      | —        | Primary label.                             |
+| `sublabel` | `string`                                      | —        | Secondary label (tool, model, duration).   |
+| `icon`     | `ReactNode`                                   | —        | Glyph shown in the icon chip.              |
+| `status`   | `"idle" \| "running" \| "done" \| "error"`    | `"idle"` | Drives the chip style and running pulse.   |
+| `x` / `y`  | `number`                                      | —        | Node **center** in canvas units.           |
+
+### AgentFlowEdge
+
+| Prop        | Type      | Default | Description                                     |
+| ----------- | --------- | ------- | ----------------------------------------------- |
+| `id`        | `string`  | —       | Unique edge id.                                 |
+| `from`      | `string`  | —       | Source node id.                                 |
+| `to`        | `string`  | —       | Target node id.                                 |
+| `animated`  | `boolean` | `true`  | Animate a packet along the edge.                |
+| `loop`      | `boolean` | `true`  | Repeat the packet forever. `false` sends one packet that fires `onEdgeArrive` on landing. |
+| `persist`   | `boolean` | `false` | Keep the line lit after its packet passes — draws on like a card's border and stays. |
+| `curvature` | `number`  | `0`     | Bow of the curve in pixels (positive = upward). |

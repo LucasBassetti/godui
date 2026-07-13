@@ -76,6 +76,7 @@
     "components/text/text-scramble",
     "components/text/scroll-text-reveal",
     "---AI---",
+    "components/ai/agent-flow",
     "components/ai/agent-timeline",
     "components/ai/conversation-thread",
     "components/ai/prompt-composer",

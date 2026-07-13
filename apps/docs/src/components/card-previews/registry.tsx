@@ -9,6 +9,7 @@ export type CardPreviewProps = { play?: boolean };
 type Preview = ComponentType<CardPreviewProps>;
 
 import Accordion from "./previews/accordion";
+import AgentFlow from "./previews/agent-flow";
 import AgentTimeline from "./previews/agent-timeline";
 import AnimatedBeam from "./previews/animated-beam";
 import AnimatedTestimonials from "./previews/animated-testimonials";
@@ -182,6 +183,7 @@ export const cardPreviews: Record<string, Preview> = {
   "text-animate": TextAnimate,
   "text-scramble": TextScramble,
   "scroll-text-reveal": ScrollTextReveal,
+  "agent-flow": AgentFlow,
   "agent-timeline": AgentTimeline,
   "conversation-thread": ConversationThread,
   "prompt-composer": PromptComposer,

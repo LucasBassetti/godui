@@ -4,6 +4,13 @@ export {
   type AccordionProps,
 } from "./accordion";
 export {
+  AgentFlow,
+  type AgentFlowEdge,
+  type AgentFlowNode,
+  type AgentFlowProps,
+  type AgentNodeStatus,
+} from "./agent-flow";
+export {
   AgentStep,
   type AgentStepProps,
   AgentTimeline,
