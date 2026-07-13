@@ -77,10 +77,11 @@ centers itself so the whole graph is visible on mount.
 
 Pass `autoPlay` and the component runs the whole choreography for you — trace
 border → light icon → flow to the next node — starting from the root(s). Add
-`continuous` to loop it. Set the pace with `traceDuration` — the packets travel
-at the same speed the borders trace, so the light never speeds up or slows down
-at the card→line seam. (`flowDuration` sets packet speed only when you drive the
-edges yourself, without `autoPlay`.)
+`continuous` to loop it. One `flowSpeed` (px/second) drives everything: each
+card's border and every beam derive their duration from their own length, so the
+light holds a constant pace — bigger cards trace longer, longer edges flow
+longer, and the speed never changes at the card→line seam. (`flowDuration` sets
+packet speed only when you drive the edges yourself, without `autoPlay`.)
 
 ```tsx
 <AgentFlow nodes={nodes} edges={edges} autoPlay continuous />
@@ -139,8 +140,8 @@ const [arrived, setArrived] = useState(new Set<string>());
 | `edges`        | `AgentFlowEdge[]` | —                  | Directed connectors between node ids.                |
 | `draggable`    | `boolean`         | `true`             | Allow dragging nodes to reposition them.             |
 | `pannable`     | `boolean`         | `true`             | Allow panning the canvas by dragging the backdrop.   |
-| `flowDuration` | `number`          | `3`                | Seconds per packet travel (manual mode; `autoPlay` matches the border-trace speed). |
-| `traceDuration`| `number`          | `0.8`              | Seconds for a node's border to trace on.             |
+| `flowDuration` | `number`          | `3`                | Seconds per packet travel (manual mode; `autoPlay` uses `flowSpeed`). |
+| `flowSpeed`    | `number`          | `280`              | Continuous-flow speed in px/second — one pace for every border trace and beam under `autoPlay`. |
 | `fitView`      | `boolean`         | `true`             | Scale + center the graph in view on mount.           |
 | `autoPlay`     | `boolean`         | `false`            | Play the trace → light → flow choreography from the root(s). Overrides `status`/`animated`. |
 | `continuous`   | `boolean`         | `false`            | With `autoPlay`, loop forever instead of stopping at the leaves. |

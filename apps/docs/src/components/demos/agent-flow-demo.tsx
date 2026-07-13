@@ -75,8 +75,6 @@ export function AgentFlowDemo() {
       nodes={NODES}
       edges={EDGES}
       autoPlay
-      flowDuration={1.8}
-      traceDuration={0.8}
       aria-label="Research agent workflow"
       className="h-full min-h-[440px] w-full rounded-none border-0 bg-transparent"
     />

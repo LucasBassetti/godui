@@ -5,6 +5,15 @@ import * as React from "react";
 
 // GodUI motion language (values mirrored inline — see motion/tokens.ts).
 const EASE_OUT = [0.22, 1, 0.36, 1] as const;
+// Length-driven flow is linear (constant speed) so the border trace and the
+// beams never speed up or settle — see EASE.linear in motion/tokens.ts.
+const EASE_LINEAR = [0, 0, 1, 1] as const;
+// Crisp pop for the icon chip — SPRING.snappy in motion/tokens.ts.
+const SPRING_SNAPPY = { type: "spring", stiffness: 520, damping: 32 } as const;
+// Ambient flow speed in px/second (FLOW_SPEED.base). Every length-driven
+// element derives its duration as `length / FLOW_SPEED`, so a card border and
+// the beam that continues from it move at the exact same pace — one flow.
+const FLOW_SPEED = 280;
 
 export type AgentNodeStatus = "idle" | "running" | "done" | "error";
 
@@ -70,8 +79,14 @@ export type AgentFlowProps = Omit<
   autoPlay?: boolean;
   /** With `autoPlay`, loop the whole sequence instead of stopping at the leaves. */
   continuous?: boolean;
-  /** Seconds for a node's border to trace on (default `0.8`). */
-  traceDuration?: number;
+  /**
+   * Speed of the continuous light in **px/second** (default `280`). Every
+   * length-driven element — each card's traced border and every beam — runs at
+   * this one pace (`duration = length / flowSpeed`), so the light never changes
+   * speed at the card→line seam. Bigger cards trace for longer, longer edges
+   * flow for longer; the pace stays constant.
+   */
+  flowSpeed?: number;
   /**
    * Called when a non-looping edge's packet reaches its target node. Use it to
    * sync node status with the flow — e.g. light a node the moment its packet
@@ -121,10 +136,9 @@ function borderTracePaths(w: number, h: number): [string, string] {
 
 /**
  * Length of one border-trace outline (left-edge centre → over the top →
- * right-edge centre): two verticals, two quarter-arcs and the top run. This is
- * the distance the border front travels in `traceDuration`, so an edge can match
- * that speed (px/second) and the border→line handoff reads as one continuous
- * light instead of two clips at different speeds.
+ * right-edge centre): two verticals, two quarter-arcs and the top run. Dividing
+ * it by `flowSpeed` gives the trace duration, so the border front and the beams
+ * that continue from it move at the same px/second — one continuous light.
  */
 function borderOutlineLength(w: number, h: number): number {
   const r = Math.min(CARD_RADIUS, w / 2, h / 2);
@@ -191,7 +205,7 @@ const AgentFlow = React.forwardRef<HTMLDivElement, AgentFlowProps>(
       fitView = true,
       autoPlay = false,
       continuous = false,
-      traceDuration = 0.8,
+      flowSpeed = FLOW_SPEED,
       onEdgeArrive,
       onNodeActivate,
       className,
@@ -475,7 +489,7 @@ const AgentFlow = React.forwardRef<HTMLDivElement, AgentFlowProps>(
             posOf={posOf}
             sizeOf={sizeOf}
             flowDuration={flowDuration}
-            traceDuration={traceDuration}
+            flowSpeed={flowSpeed}
             matchSpeed={autoPlay}
             reduce={reduce}
             onArrive={handleArrive}
@@ -494,7 +508,7 @@ const AgentFlow = React.forwardRef<HTMLDivElement, AgentFlowProps>(
                 y={p.y}
                 reduce={reduce}
                 draggable={draggable}
-                traceDuration={traceDuration}
+                flowSpeed={flowSpeed}
                 onTraceComplete={handleTraceComplete}
                 onPointerDown={(e) => onNodePointerDown(e, n.id)}
                 onPointerMove={onNodePointerMove}
@@ -518,7 +532,7 @@ function NodeCard({
   y,
   reduce,
   draggable,
-  traceDuration,
+  flowSpeed,
   cardRef,
   onTraceComplete,
   onPointerDown,
@@ -533,7 +547,7 @@ function NodeCard({
   y: number;
   reduce: boolean | null;
   draggable: boolean;
-  traceDuration: number;
+  flowSpeed: number;
   cardRef: (el: HTMLElement | null) => void;
   onTraceComplete: (id: string) => void;
   onPointerDown: (e: React.PointerEvent) => void;
@@ -543,9 +557,14 @@ function NodeCard({
   const glowId = `agent-flow-node-${React.useId()}`;
   const active = status === "running" || status === "done";
   const [top, bottom] = borderTracePaths(size.w, size.h);
+  // Border trace duration derives from this card's outline length so the front
+  // moves at exactly `flowSpeed`, matching the beams that continue from it.
+  const traceDuration = borderOutlineLength(size.w, size.h) / flowSpeed;
+  // Linear, not ease-out: constant speed is what makes the border→line handoff
+  // seamless (an ease-out front would decelerate just as the beam starts).
   const traceT = reduce
     ? { duration: 0 }
-    : { duration: traceDuration, ease: EASE_OUT };
+    : { duration: traceDuration, ease: EASE_LINEAR };
 
   // The icon lights when the border trace is halfway drawn (not at the end).
   const [iconLit, setIconLit] = React.useState(status === "done");
@@ -590,7 +609,7 @@ function NodeCard({
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
       onPointerCancel={onPointerUp}
-      className={`absolute z-raised flex w-max max-w-[15rem] -translate-x-1/2 -translate-y-1/2 select-none items-center gap-3 rounded-xl border bg-background/80 p-3 shadow-sm backdrop-blur [transition:border-color_500ms_cubic-bezier(0.22,1,0.36,1),box-shadow_500ms_cubic-bezier(0.22,1,0.36,1),background-color_500ms_cubic-bezier(0.22,1,0.36,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+      className={`absolute z-raised flex w-max max-w-[15rem] -translate-x-1/2 -translate-y-1/2 select-none items-center gap-3 rounded-xl border bg-background/80 p-3 shadow-sm backdrop-blur [transition:border-color_400ms_cubic-bezier(0.22,1,0.36,1),box-shadow_400ms_cubic-bezier(0.22,1,0.36,1),background-color_400ms_cubic-bezier(0.22,1,0.36,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
         STATUS_CARD[status]
       } ${draggable ? "cursor-grab touch-none active:cursor-grabbing" : ""}`}
       style={{ left: x, top: y }}
@@ -683,11 +702,7 @@ function StatusChip({
           reduce ? false : { scale: 0.4, opacity: 0, filter: "blur(3px)" }
         }
         animate={{ scale: 1, opacity: 1, filter: "blur(0px)" }}
-        transition={
-          reduce
-            ? { duration: 0 }
-            : { type: "spring", duration: 0.35, bounce: 0 }
-        }
+        transition={reduce ? { duration: 0 } : SPRING_SNAPPY}
         className="flex size-4 items-center justify-center [&>svg]:size-4"
       >
         {icon ? (
@@ -712,7 +727,7 @@ function Edges({
   posOf,
   sizeOf,
   flowDuration,
-  traceDuration,
+  flowSpeed,
   matchSpeed,
   reduce,
   onArrive,
@@ -721,8 +736,8 @@ function Edges({
   posOf: (id: string) => Point;
   sizeOf: (id: string) => Size;
   flowDuration: number;
-  traceDuration: number;
-  /** Travel each edge at the border-trace speed instead of a fixed duration. */
+  flowSpeed: number;
+  /** Travel each edge at `flowSpeed` (px/s) instead of a fixed duration. */
   matchSpeed: boolean;
   reduce: boolean | null;
   onArrive?: (edgeId: string) => void;
@@ -753,19 +768,17 @@ function Edges({
         const controlX = (startX + endX) / 2;
         const controlY = (startY + endY) / 2 - (edge.curvature ?? 0);
         const d = `M ${startX},${startY} Q ${controlX},${controlY} ${endX},${endY}`;
-        // Match the border-trace speed: the front left the source card at
-        // borderLen/traceDuration px·s⁻¹; make the packet cover this edge's
-        // length at the same rate so the light never speeds up or slows down at
-        // the card→line seam. Curved edges use the control point for a real
-        // (not chord) length estimate.
+        // Continuous flow: the packet covers this edge's length at the shared
+        // `flowSpeed` (px/s) — the same pace the borders trace — so the light
+        // never speeds up or slows at the card→line seam. Curved edges use the
+        // control point for a real (not chord) length estimate.
         const chord = Math.hypot(endX - startX, endY - startY);
         const curveLen =
           Math.hypot(controlX - startX, controlY - startY) +
           Math.hypot(endX - controlX, endY - controlY);
         const len = (chord + curveLen) / 2;
-        const speed = borderOutlineLength(fs.w, fs.h) / traceDuration;
         const edgeDuration = matchSpeed
-          ? Math.max(0.2, len / speed)
+          ? Math.max(0.2, len / flowSpeed)
           : flowDuration;
         return (
           <Edge

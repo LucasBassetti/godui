@@ -74,8 +74,6 @@ export function AgentFlowPersistDemo() {
       nodes={NODES}
       edges={EDGES}
       autoPlay
-      flowDuration={1.8}
-      traceDuration={0.8}
       aria-label="Research agent workflow with persistent edges"
       className="h-full min-h-[440px] w-full rounded-none border-0 bg-transparent"
     />

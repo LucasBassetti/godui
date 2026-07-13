@@ -79,7 +79,7 @@ export const Playground: Story = {};
 // The showcase: a continuous light traces each card's border, lights its icon,
 // then flows down the edge to the next node. Runs once from the root.
 export const AutoPlay: Story = {
-  args: { autoPlay: true, flowDuration: 1.8, traceDuration: 0.8 },
+  args: { autoPlay: true },
 };
 
 // Every edge persists: lines draw on with the packet and stay lit, so the whole
@@ -87,8 +87,6 @@ export const AutoPlay: Story = {
 export const AutoPlayPersist: Story = {
   args: {
     autoPlay: true,
-    flowDuration: 1.8,
-    traceDuration: 0.8,
     edges: EDGES.map((e) => ({ ...e, persist: true })),
   },
 };
@@ -98,8 +96,6 @@ export const AutoPlayContinuous: Story = {
   args: {
     autoPlay: true,
     continuous: true,
-    flowDuration: 1.8,
-    traceDuration: 0.8,
   },
 };
 

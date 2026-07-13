@@ -30,6 +30,9 @@ export const EASE = {
   back: [0.3, 0.7, 0.4, 1.5],
   /** Symmetric in-out for looping traversals. */
   inOut: [0.65, 0, 0.35, 1],
+  /** Constant speed — the only correct curve for length-driven flow (traced
+   * borders, marching beams) so the front never speeds up or settles. */
+  linear: [0, 0, 1, 1],
 } as const satisfies Record<string, [number, number, number, number]>;
 
 /** The same easings as CSS strings, for `transition`/`[transition:…]` classNames. */
@@ -38,6 +41,20 @@ export const EASE_CSS = {
   standard: "cubic-bezier(0.3,0.7,0.4,1)",
   back: "cubic-bezier(0.3,0.7,0.4,1.5)",
   inOut: "cubic-bezier(0.65,0,0.35,1)",
+  linear: "linear",
+} as const;
+
+/**
+ * Ambient flow speed in **pixels per second**. For length-driven motion — traced
+ * borders, beams, marching packets — set each element's duration to
+ * `length / speed` (with {@link EASE.linear}) so the light holds one constant
+ * pace across differently-sized elements and reads as a single continuous flow
+ * rather than separate clips. This is the ambient counterpart to {@link DURATION}
+ * (which is for fixed-length micro-motion).
+ */
+export const FLOW_SPEED = {
+  /** Calm hero-diagram pace (≈ a card border in ~0.8s). */
+  base: 280,
 } as const;
 
 /** Spring presets, named by feel. */
