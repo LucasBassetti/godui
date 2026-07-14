@@ -41,7 +41,11 @@ export function GoduiLogo({ alt = "GodUI", ...props }: GoduiLogoProps) {
           filter: drop-shadow(0 3px 5px rgb(0 0 0 / 0.4));
           transition: offset-distance 1.1s cubic-bezier(.65,.05,.36,1);
         }
-        .godui-mark:hover .godui-dot { offset-distance: 100%; }
+        /* Animate on hover of the mark itself, OR of any ancestor tagged
+           .godui-hover-group (e.g. the header's logo+wordmark link). Inline
+           SVG <style> is document-scoped, so the ancestor selector resolves. */
+        .godui-mark:hover .godui-dot,
+        .godui-hover-group:hover .godui-dot { offset-distance: 100%; }
         @media (prefers-reduced-motion: reduce) {
           .godui-mark .godui-dot { transition: none; }
         }

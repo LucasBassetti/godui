@@ -62,7 +62,7 @@ export function DocsHeader({
       >
         <Link
           href="/"
-          className="inline-flex items-center gap-2 font-bold text-[0.9375rem] text-fd-foreground"
+          className="godui-hover-group inline-flex items-center gap-2 font-bold text-[0.9375rem] text-fd-foreground"
         >
           <GoduiLogo className="h-6 w-6" width={24} height={24} />
           GodUI
