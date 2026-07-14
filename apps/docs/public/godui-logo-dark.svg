@@ -15,7 +15,6 @@
   </defs>
   <style>
     .track { fill: none; stroke: url(#gd-track); stroke-width: 82; stroke-linecap: round; stroke-linejoin: round; }
-    .lobe  { fill: url(#gd-track); }
     .dot   { fill: #fff; filter: url(#gd-dot); transform-box: view-box; offset-path: path("M361.5 153.6 A150 150 0 1 0 400 254 L272 254"); offset-distance: 0%; transition: offset-distance 1.1s cubic-bezier(.65,.05,.36,1); }
     .mark:hover .dot  { offset-distance: 100%; }
     @media (prefers-reduced-motion: reduce) { .dot { transition: none; } }
@@ -24,7 +23,6 @@
     <rect x="0" y="0" width="512" height="512" rx="92" fill="url(#gd-surface)" />
     <rect x="3" y="3" width="506" height="506" rx="89" fill="none" stroke="#ffffff" stroke-opacity="0.12" stroke-width="3" />
     <path class="track" d="M361.5 153.6 A150 150 0 1 0 400 254 L272 254" />
-    <circle class="lobe" cx="361.5" cy="153.6" r="46" />
     <circle class="dot" r="29" />
   </g>
 </svg>

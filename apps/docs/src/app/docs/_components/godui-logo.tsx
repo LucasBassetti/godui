@@ -6,10 +6,9 @@ type GoduiLogoProps = Omit<ComponentProps<"svg">, "viewBox"> & {
 
 // Centerline of the "G" track — a chunky geometric letterform: a thick ring
 // open at the upper-right that sweeps around and turns into a crossbar ending
-// near the center (the dashed target). The top terminal flares into a rounded
-// lobe that cradles the dot; on hover the dot pops out and rides this exact
-// path, 0% → 100%. Keep in sync with public/godui-logo-{light,dark}.svg and
-// app/icon.svg.
+// near the center. The thick stroke's round terminal cradles the dot at rest;
+// on hover the dot pops out and rides this exact path, 0% → 100%. Keep in sync
+// with public/godui-logo-{light,dark}.svg and app/icon.svg.
 const TRACK = "M361.5 153.6 A150 150 0 1 0 400 254 L272 254";
 
 // GodUI mark. EXPERIMENT: fixed dark badge (does not invert with the theme) —
@@ -71,9 +70,8 @@ export function GoduiLogo({ alt = "GodUI", ...props }: GoduiLogoProps) {
           strokeLinecap="round"
           strokeLinejoin="round"
         />
-        {/* flared lobe at the top terminal — cradles the dot at rest */}
-        <circle cx="361.5" cy="153.6" r="46" fill="#8f8f8f" />
-        {/* moving dot — parks inside the lobe, rides the "G" to the center */}
+        {/* moving dot — parks inside the stroke's round terminal, rides the
+            "G" to the center */}
         <circle className="godui-dot" r="29" fill="#ffffff" />
       </g>
     </svg>

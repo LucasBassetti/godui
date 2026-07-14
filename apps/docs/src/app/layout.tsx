@@ -44,8 +44,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: "/og-image.png",
-        width: 1200,
-        height: 630,
+        width: 924,
+        height: 540,
         alt: "GodUI — UI Collection for Modern Interfaces",
       },
     ],
