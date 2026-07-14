@@ -4,10 +4,10 @@ import { SourceCitation, SourceList } from "@godui/components";
 
 const sources = [
   {
-    title: "OKLCH in CSS: why we moved",
-    url: "https://evilmartians.com/chronicles/oklch-in-css",
+    title: "GodUI — motion components for modern interfaces",
+    url: "https://github.com/LucasBassetti/godui",
     snippet:
-      "OKLCH keeps perceived lightness consistent across hues, which makes it ideal for design tokens and dark mode.",
+      "Beautifully crafted motion components with OKLCH theming, built for perceptually uniform design tokens and dark mode.",
   },
   {
     title: "Tailwind CSS v4 release notes",

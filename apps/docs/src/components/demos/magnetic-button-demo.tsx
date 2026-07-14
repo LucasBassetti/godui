@@ -11,7 +11,18 @@ export function MagneticButtonDemo() {
           Get started
           <ArrowRight className="size-4" strokeWidth={2.5} />
         </MagneticButton>
-        <MagneticButton variant="outline" size="lg" range={36}>
+        <MagneticButton
+          variant="outline"
+          size="lg"
+          range={36}
+          onClick={() =>
+            window.open(
+              "https://github.com/LucasBassetti/godui",
+              "_blank",
+              "noopener,noreferrer",
+            )
+          }
+        >
           <Star className="size-4" strokeWidth={2.5} />
           Star on GitHub
         </MagneticButton>

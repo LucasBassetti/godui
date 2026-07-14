@@ -254,10 +254,10 @@ export function ComponentPreview({
           </span>
         ) : null}
         <div className="ms-auto flex items-center gap-2">
-          {story ? <PlaygroundLink story={story} /> : null}
           {tab === "preview" ? (
             <ViewToggle view={view} onChange={setView} />
           ) : null}
+          {story ? <PlaygroundLink story={story} /> : null}
           {tab === "preview" ? (
             <button
               type="button"
