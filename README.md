@@ -1,7 +1,7 @@
 <div align="center">
 
 <a href="https://godui.design">
-  <img src="https://raw.githubusercontent.com/LucasBassetti/godui/main/apps/docs/public/og-image.png" alt="GodUI — UI Collection for Modern Interfaces" width="100%" />
+  <img src="https://raw.githubusercontent.com/LucasBassetti/godui/main/apps/docs/public/og-image.png?v=2" alt="GodUI — UI Collection for Modern Interfaces" width="100%" />
 </a>
 
 <h1>GodUI</h1>
