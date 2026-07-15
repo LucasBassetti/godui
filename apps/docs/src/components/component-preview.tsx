@@ -79,12 +79,30 @@ function ViewToggle({
     { value: "desktop", label: "Desktop view", Icon: Monitor },
     { value: "mobile", label: "Mobile view", Icon: Smartphone },
   ];
+  const activeIndex = Math.max(
+    0,
+    options.findIndex((opt) => opt.value === view),
+  );
 
   return (
     // bg-fd-muted is aliased to muted-foreground in the GodUI theme (renders as a
     // heavy block), so use the real --muted track + raised --card active segment,
     // matching <Segmented>.
-    <div className="hidden h-8 items-center rounded-[10px] border border-fd-border bg-[var(--muted)] p-[3px] md:inline-flex">
+    <div
+      className="relative hidden h-8 rounded-[10px] border border-fd-border bg-[var(--muted)] p-[3px] md:inline-grid"
+      style={{
+        gridTemplateColumns: `repeat(${options.length}, minmax(0, 1fr))`,
+      }}
+    >
+      {/* Floating thumb that slides under the active segment, matching <Segmented>. */}
+      <span
+        aria-hidden="true"
+        className="absolute inset-y-[3px] left-[3px] rounded-[6px] bg-[var(--card)] shadow-sm transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none"
+        style={{
+          width: `calc((100% - 6px) / ${options.length})`,
+          transform: `translateX(${activeIndex * 100}%)`,
+        }}
+      />
       {options.map(({ value, label, Icon }) => {
         const active = view === value;
         return (
@@ -96,9 +114,9 @@ function ViewToggle({
             aria-pressed={active}
             title={label}
             className={cn(
-              "inline-flex size-6 items-center justify-center rounded-[6px] transition-colors",
+              "relative z-[1] inline-flex size-6 items-center justify-center rounded-[6px] transition-colors",
               active
-                ? "bg-[var(--card)] text-[var(--foreground)] shadow-sm"
+                ? "text-[var(--foreground)]"
                 : "text-[var(--muted-foreground)] hover:text-[var(--foreground)]",
             )}
           >

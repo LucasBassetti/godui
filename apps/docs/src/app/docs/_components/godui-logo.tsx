@@ -43,7 +43,8 @@ export function GoduiLogo({ alt = "GodUI", ...props }: GoduiLogoProps) {
         }
         /* Animate on hover of the mark itself, OR of any ancestor tagged
            .godui-hover-group (e.g. the header's logo+wordmark link). Inline
-           SVG <style> is document-scoped, so the ancestor selector resolves. */
+           SVG style elements are document-scoped, so the ancestor selector
+           resolves. */
         .godui-mark:hover .godui-dot,
         .godui-hover-group:hover .godui-dot { offset-distance: 100%; }
         @media (prefers-reduced-motion: reduce) {
