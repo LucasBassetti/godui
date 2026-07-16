@@ -49,6 +49,7 @@
     "components/layout/card-swap",
     "components/layout/container-scroll",
     "components/layout/cover-flow",
+    "components/layout/gooey-stack",
     "components/layout/hero-parallax",
     "components/layout/image-accordion",
     "components/layout/image-compare",

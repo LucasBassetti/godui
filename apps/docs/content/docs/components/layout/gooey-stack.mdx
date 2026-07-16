@@ -1,0 +1,161 @@
+---
+title: Gooey Stack
+description: A stack of cards that fuse with a liquid metaball bridge and collapse behind an anchor with a spring.
+date: "2026-07-16"
+---
+
+import { GooeyStack } from "@godui/components";
+import { GooeyStackDemo } from "@/components/demos/gooey-stack-demo";
+import { GooeyNotificationsDemo } from "@/components/demos/gooey-notifications-demo";
+import { GooeyWalletDemo } from "@/components/demos/gooey-wallet-demo";
+
+Stack content and let the surfaces behave like liquid. As the gap between cards shrinks their rounded surfaces bulge and fuse through a gooey metaball bridge; push it negative and the upper cards frost over — heavy blur, fading opacity — and dissolve into the anchor. Toggle `collapsed`, or drive `gap` from a slider for the full continuous sweep.
+
+<ComponentPreview
+  story="layout-gooeystack"
+  code={`import { GooeyStack } from "@/components/godui/gooey-stack";
+import { useState } from "react";
+
+export function ConnectPrompt() {
+  const [open, setOpen] = useState(false);
+  return (
+    <GooeyStack collapsed={!open}>
+      {/* Children are transparent content — GooeyStack draws the card surface */}
+      <div className="flex items-center gap-3 px-5 py-4">…GitHub connector…</div>
+      <div className="relative h-36 px-5 py-4">
+        <textarea placeholder="Tap the plug to connect a source and watch it merge in…" />
+        <div className="absolute right-4 bottom-4 flex gap-2">
+          {/* Plug icon springs the connector out of the input */}
+          <button onClick={() => setOpen((o) => !o)} aria-label="Connect a source">
+            <PlugIcon />
+          </button>
+          <button aria-label="Send"><ArrowUpIcon /></button>
+        </div>
+      </div>
+    </GooeyStack>
+  );
+}`}
+>
+  <GooeyStackDemo />
+</ComponentPreview>
+
+## Examples
+
+Stacks with **more than two** children collapse rank by rank — the ones furthest
+from the anchor recede and frost the most, with a staggered spring. A notification
+tray folds its history into the newest alert:
+
+<ComponentPreview
+  code={`import { GooeyStack } from "@/components/godui/gooey-stack";
+import { useState } from "react";
+
+export function NotificationTray() {
+  const [collapsed, setCollapsed] = useState(true);
+  return (
+    <GooeyStack collapsed={collapsed} expandedGap={18} radius={22}>
+      {notes.map((n) => (
+        <div key={n.key} className="flex items-start gap-3 px-4 py-3.5">
+          {/* mark + title + body + time */}
+        </div>
+      ))}
+    </GooeyStack>
+  );
+}`}
+>
+  <GooeyNotificationsDemo />
+</ComponentPreview>
+
+The same shape reads as a wallet — three cards fanned out, folding into a stack.
+Keep children on the fused `bg-card` surface and let color come from small accents,
+so the metaball bridge stays seamless:
+
+<ComponentPreview
+  code={`import { GooeyStack } from "@/components/godui/gooey-stack";
+import { useState } from "react";
+
+export function Wallet() {
+  const [open, setOpen] = useState(false);
+  return (
+    <GooeyStack collapsed={!open} expandedGap={18} radius={20}>
+      {cards.map((c) => (
+        <div key={c.last4} className="h-24 px-5 py-4">
+          {/* chip + brand + •••• last4 + label */}
+        </div>
+      ))}
+    </GooeyStack>
+  );
+}`}
+>
+  <GooeyWalletDemo />
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall componentName="GooeyStack" />
+
+Two layers do the work. GooeyStack draws a **surface layer** — one `bg-card`
+rounded rect per child — and runs it through an SVG goo filter (`feGaussianBlur`
+→ `feColorMatrix` threshold), so surfaces that come close bulge and fuse into one
+continuous shape. Your children render **sharp and unfiltered** on top, so text
+and controls stay crisp while only the surfaces merge and the receding ones frost.
+
+## Usage
+
+```tsx
+import { GooeyStack } from "@/components/godui/gooey-stack";
+```
+
+Children are the **inner content** of each card — GooeyStack supplies the fused
+`bg-card` surface, so give children padding and content, not their own background:
+
+```tsx
+<GooeyStack collapsed={collapsed}>
+  <div className="px-5 py-4">First</div>
+  <div className="px-5 py-4">Second</div>
+</GooeyStack>
+```
+
+The **last** child is the anchor — it stays pinned while the others slide down and
+merge into it.
+
+### Driving it with a slider
+
+Set `gap` (px) directly for the full continuous effect — positive values space the
+cards out, small values neck them together, negative values overlap and frost:
+
+```tsx
+<GooeyStack gap={gap}>{/* content */}</GooeyStack>
+```
+
+### Tuning the merge
+
+`gooeyness` is the blur radius feeding the filter: raise it to fuse from further,
+lower it for a tighter neck. `expandedGap` sets the resting spacing, `collapsedGap`
+how deep the `collapsed` toggle merges.
+
+```tsx
+<GooeyStack gooeyness={10} expandedGap={18} collapsedGap={-48} radius={28}>
+  {/* content */}
+</GooeyStack>
+```
+
+## Accessibility
+
+The stack is presentational — drive `collapsed` or `gap` from your own control (a
+button, switch, slider, or route). The surface layer is `aria-hidden`, so only your
+content is read. When `prefers-reduced-motion` is set, the goo filter is dropped
+and the cards snap between states instead of springing.
+
+## Props
+
+| Prop           | Type              | Default | Description                                                             |
+| -------------- | ----------------- | ------- | ----------------------------------------------------------------------- |
+| `children`     | `React.ReactNode` | —       | Inner content of each card (transparent). The last child is the anchor. |
+| `gap`          | `number`          | —       | Controlled gap (px); negative overlaps. Overrides `collapsed`.          |
+| `collapsed`    | `boolean`         | `false` | Convenience toggle between `expandedGap` and `collapsedGap`.            |
+| `expandedGap`  | `number`          | `18`    | Resting gap (px) when expanded.                                         |
+| `collapsedGap` | `number`          | `-48`   | Gap (px) the `collapsed` toggle merges to.                             |
+| `gooeyness`    | `number`          | `10`    | Blur radius feeding the goo filter — larger fuses from further.        |
+| `radius`       | `number`          | `28`    | Corner radius (px) of the fused surfaces.                               |
+
+`GooeyStack` also forwards every standard `<div>` attribute to the root element.

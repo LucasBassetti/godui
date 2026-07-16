@@ -668,6 +668,21 @@
       ]
     },
     {
+      "name": "gooey-stack",
+      "type": "registry:ui",
+      "title": "Gooey Stack",
+      "description": "A stack of cards that fuse with a liquid metaball bridge and collapse behind an anchor with a spring.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "dependencies": ["framer-motion"],
+      "files": [
+        {
+          "path": "packages/components/src/gooey-stack/gooey-stack.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/gooey-stack.tsx"
+        }
+      ]
+    },
+    {
       "name": "swipe-deck",
       "type": "registry:ui",
       "title": "Swipe Deck",

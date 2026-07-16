@@ -46,6 +46,7 @@ import FluidCursor from "./previews/fluid-cursor";
 import GeometricBackground from "./previews/geometric-background";
 import Globe from "./previews/globe";
 import GooeyFab from "./previews/gooey-fab";
+import GooeyStack from "./previews/gooey-stack";
 import GradientBackground from "./previews/gradient-background";
 import Gravity from "./previews/gravity";
 import HeroParallax from "./previews/hero-parallax";
@@ -123,6 +124,7 @@ import WorldMap from "./previews/world-map";
  */
 export const cardPreviews: Record<string, Preview> = {
   "gooey-fab": GooeyFab,
+  "gooey-stack": GooeyStack,
   "hold-confirm-button": HoldConfirmButton,
   "magic-button": MagicButton,
   "magnetic-button": MagneticButton,

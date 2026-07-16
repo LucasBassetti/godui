@@ -173,6 +173,7 @@ export {
   type GooeyFabProps,
   type GooeyFabSize,
 } from "./gooey-fab";
+export { GooeyStack, type GooeyStackProps } from "./gooey-stack";
 export {
   GradientBackground,
   type GradientBackgroundProps,

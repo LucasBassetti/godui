@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "generatedAt": "2026-07-13T02:02:40.315Z",
+  "generatedAt": "2026-07-16T19:17:25.154Z",
   "components": [
     {
       "name": "accordion",
@@ -317,6 +317,15 @@
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add @godui/gooey-fab"
+    },
+    {
+      "name": "gooey-stack",
+      "title": "Gooey Stack",
+      "description": "A stack of cards that fuse with a liquid metaball bridge and collapse behind an anchor with a spring.",
+      "category": "Layout",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/gooey-stack"
     },
     {
       "name": "gravity",

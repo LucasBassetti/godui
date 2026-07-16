@@ -56,18 +56,22 @@ export default function Home() {
         <main className="relative flex min-h-svh flex-col [grid-area:main]">
           <HeroGrid />
           <section className="relative z-10 flex flex-1 flex-col items-center justify-center gap-8 px-4 text-center">
-            <a
-              href="https://github.com/LucasBassetti/godui"
-              target="_blank"
-              rel="noreferrer noopener"
-              className="inline-flex items-center gap-2 rounded-full border bg-fd-card px-3 py-1 font-medium text-fd-muted-foreground text-xs transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground"
+            <Link
+              href="/docs/components/layout/gooey-stack"
+              className="group inline-flex items-center gap-2 rounded-full border bg-fd-card px-3 py-1 font-medium text-fd-muted-foreground text-xs transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground"
             >
               <span className="relative flex size-2">
                 <span className="absolute inline-flex size-full animate-ping rounded-full bg-fd-primary opacity-75" />
                 <span className="relative inline-flex size-2 rounded-full bg-fd-primary" />
               </span>
-              Actively building — star us on GitHub
-            </a>
+              Introducing Gooey Stack — liquid card merging
+              <span
+                aria-hidden="true"
+                className="transition-transform group-hover:translate-x-0.5"
+              >
+                →
+              </span>
+            </Link>
             <h1 className="max-w-3xl text-balance font-semibold text-4xl text-fd-foreground tracking-tight sm:text-5xl md:text-6xl">
               UI Collection for Modern Interfaces
             </h1>
