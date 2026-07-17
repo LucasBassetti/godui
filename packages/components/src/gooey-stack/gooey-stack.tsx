@@ -149,29 +149,33 @@ const GooeyStack = React.forwardRef<HTMLDivElement, GooeyStackProps>(
                 stdDeviation={gooeyness}
                 result="blur"
               />
-              {/* Two hard-edged contours of the same blur. `outer` is slightly
-                  larger and becomes the border; `goo` is the fill on top, so the
-                  border only shows as a uniform ring around it — no seam. */}
+              {/* Hard-edged contour of the blur (razor-steep threshold), so the
+                  fused shape has a crisp edge with almost no anti-aliasing. */}
               <feColorMatrix
                 in="blur"
                 mode="matrix"
-                values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 60 -27"
-                result="outer"
-              />
-              <feColorMatrix
-                in="blur"
-                mode="matrix"
-                values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 60 -30"
+                values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 80 -40"
                 result="goo"
               />
-              {/* Border ring: solid theme border color, masked by `outer`. */}
+              {/* Border: offset the fused shape outward with a *small isotropic*
+                  blur + threshold. A Gaussian is radially symmetric, so the ring
+                  stays round and constant-width at corners and the neck — unlike
+                  box morphology (square corners) or a band off the main blur
+                  (width tracks curvature). */}
+              <feGaussianBlur in="goo" stdDeviation="1.2" result="edge" />
+              <feColorMatrix
+                in="edge"
+                mode="matrix"
+                values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 26 -9"
+                result="grown"
+              />
               <feFlood
                 style={{ floodColor: "var(--border)" }}
                 result="borderColor"
               />
               <feComposite
                 in="borderColor"
-                in2="outer"
+                in2="grown"
                 operator="in"
                 result="borderLayer"
               />
