@@ -106,6 +106,15 @@ const GooeyStack = React.forwardRef<HTMLDivElement, GooeyStackProps>(
     // silhouettes neck together via the goo filter.
     const merge = clamp(-g / -Math.min(collapsedGap, -1), 0, 1);
 
+    // How much the cards are *necking* right now: a band-pass on the gap that is
+    // 0 at both rest ends (fanned out, or fully merged) and peaks while surfaces
+    // are close. It cross-fades the crisp native card surface (shown at rest, so
+    // borders are pixel-perfect) into the soft goo-fused surface (shown only
+    // mid-transition, where motion hides the filter's softness).
+    const nearness =
+      clamp((expandedGap - g) / Math.max(1, expandedGap - 4), 0, 1) *
+      clamp((g - collapsedGap) / 20, 0, 1);
+
     // Target transform for card `i`. rank = distance from the anchor.
     const stateOf = (i: number) => {
       const rank = cardsBelow(i);
@@ -119,7 +128,8 @@ const GooeyStack = React.forwardRef<HTMLDivElement, GooeyStackProps>(
       return {
         y,
         scale: 1 - rank * 0.05 * merge,
-        opacity: Math.max(0, 1 - rank * 0.95 * merge),
+        // Reach 0 before full collapse so a receded card leaves no ghost.
+        opacity: Math.max(0, 1 - rank * 1.1 * merge),
         // The silhouette stays solid through the neck zone, then fades as the
         // card merges deep so it doesn't poke out behind the anchor.
         silOpacity: Math.max(0, 1 - merge),
@@ -191,19 +201,30 @@ const GooeyStack = React.forwardRef<HTMLDivElement, GooeyStackProps>(
                 operator="in"
                 result="fillLayer"
               />
-              <feMerge>
+              <feMerge result="surface">
                 <feMergeNode in="borderLayer" />
                 <feMergeNode in="fillLayer" />
               </feMerge>
+              {/* Re-introduce sub-pixel anti-aliasing. The steep threshold above
+                  makes a crisp shape but with a hard, aliased (stair-stepped)
+                  edge; a tiny blur smooths the edge back to pixel-perfect without
+                  softening the shape. */}
+              <feGaussianBlur in="surface" stdDeviation="0.5" />
             </filter>
           </defs>
         </svg>
 
-        {/* Silhouette layer: solid card backs that merge under the goo filter. */}
-        <div
+        {/* Merge surface (behind): full-size silhouettes fuse under the goo
+            filter into the liquid neck + border. Only faded in while the cards
+            are necking (`nearness`), so its soft filtered edge is never seen at
+            rest — the crisp native surface below covers it there. */}
+        <motion.div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0"
           style={reduce ? undefined : { filter: `url(#${filterId})` }}
+          initial={false}
+          animate={{ opacity: reduce ? 0 : nearness }}
+          transition={transition}
         >
           {items.map((_, i) => {
             const s = stateOf(i);
@@ -224,9 +245,40 @@ const GooeyStack = React.forwardRef<HTMLDivElement, GooeyStackProps>(
               />
             );
           })}
+        </motion.div>
+
+        {/* Native surface: real DOM cards with CSS borders — pixel-perfect at
+            every zoom. Shown at rest; cross-faded out (`1 - nearness`) into the
+            goo surface above while cards neck, so borders stay crisp at rest and
+            fuse seamlessly during the merge. */}
+        <div className="absolute inset-0">
+          {items.map((_, i) => {
+            const s = stateOf(i);
+            return (
+              <motion.div
+                // biome-ignore lint/suspicious/noArrayIndexKey: index identifies a stable card slot
+                key={i}
+                className="absolute inset-x-0 border border-border bg-card"
+                style={{
+                  bottom: bottomOf(i),
+                  height: heights[i] || undefined,
+                  borderRadius: radius,
+                  zIndex: i,
+                }}
+                initial={false}
+                animate={{
+                  y: s.y,
+                  scale: s.scale,
+                  opacity: s.opacity * (1 - nearness),
+                }}
+                transition={transition}
+              />
+            );
+          })}
         </div>
 
-        {/* Content layer: the real cards, sharp and unfiltered, over the blobs. */}
+        {/* Content: children on top of whichever surface is showing. Stays crisp
+            and readable — only recedes/frosts, never cross-faded by the neck. */}
         <div className="absolute inset-0">
           {items.map((child, i) => {
             const s = stateOf(i);
