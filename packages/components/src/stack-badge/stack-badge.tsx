@@ -279,7 +279,7 @@ const StackBadge = React.forwardRef<HTMLDivElement, StackBadgeProps>(
                 "--glow": item.glow,
               } as React.CSSProperties
             }
-            className={`group/chip inline-flex cursor-default select-none items-center rounded-full text-foreground [transition:box-shadow_240ms_cubic-bezier(0.22,1,0.36,1)] ${s.chip} ${s.gap} ${VARIANTS[variant]} ${glow ? "hover:shadow-[0_10px_24px_-14px_var(--glow)]" : ""}`}
+            className={`group/chip relative inline-flex cursor-default select-none items-center rounded-full text-foreground ${s.chip} ${s.gap} ${VARIANTS[variant]}`}
             // Enter once on scroll-in — no ambient loop. SPRING.smooth, STAGGER.tight.
             initial={reduce || !animateIn ? false : { opacity: 0, y: 8 }}
             whileInView={
@@ -307,6 +307,12 @@ const StackBadge = React.forwardRef<HTMLDivElement, StackBadgeProps>(
                   }
             }
           >
+            {glow ? (
+              <span
+                aria-hidden
+                className="pointer-events-none absolute inset-0 rounded-full opacity-0 shadow-[0_10px_24px_-14px_var(--glow)] [transition:opacity_240ms_cubic-bezier(0.22,1,0.36,1)] group-hover/chip:opacity-100"
+              />
+            ) : null}
             <span
               className={`flex shrink-0 items-center text-muted-foreground [transition:color_200ms_cubic-bezier(0.3,0.7,0.4,1)] ${
                 glow ? "group-hover/chip:text-[var(--tech)]" : ""

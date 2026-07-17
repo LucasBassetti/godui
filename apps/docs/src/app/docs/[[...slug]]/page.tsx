@@ -6,7 +6,10 @@ import {
 } from "fumadocs-ui/layouts/docs/page";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { ComponentBadges } from "@/components/component-badges";
 import { getMDXComponents } from "@/components/mdx";
+import { DEPENDENCY_NOTES } from "@/lib/dependency-notes";
+import { MOTION_NOTES, STATIC_COMPONENTS } from "@/lib/motion-notes";
 import { source } from "@/lib/source";
 import { Breadcrumbs, type Crumb } from "../_components/breadcrumbs";
 import { TocCta } from "../_components/toc-cta";
@@ -19,6 +22,15 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
   const MDX = page.data.body;
 
   const slug = params.slug ?? [];
+  // A component leaf page is `components/<category>/<name>` (depth 3); category
+  // and section index pages don't carry badges.
+  const isComponentPage = slug[0] === "components" && slug.length === 3;
+  const componentName = isComponentPage ? slug[2] : undefined;
+  const motionNote = componentName ? MOTION_NOTES[componentName] : undefined;
+  const dependencyNote = componentName
+    ? DEPENDENCY_NOTES[componentName]
+    : undefined;
+  const isStatic = componentName ? STATIC_COMPONENTS.has(componentName) : false;
   const crumbs: Crumb[] = [
     { name: "Docs", url: slug.length ? "/docs" : undefined },
   ];
@@ -42,6 +54,13 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
       tableOfContentPopover={{ footer: <TocCta /> }}
     >
       <Breadcrumbs crumbs={crumbs} />
+      {isComponentPage ? (
+        <ComponentBadges
+          perf={motionNote}
+          dep={dependencyNote}
+          isStatic={isStatic}
+        />
+      ) : null}
       <DocsTitle className="docs-title">{page.data.title}</DocsTitle>
       <DocsDescription className="docs-lead">
         {page.data.description}

@@ -141,10 +141,9 @@ const Gravity = React.forwardRef<HTMLDivElement, GravityProps>(
       Matter.World.add(engine.world, mouseConstraint);
 
       const runner = Matter.Runner.create();
-      if (autoStart) Matter.Runner.run(runner, engine);
 
       // Sync DOM transforms to body positions every frame.
-      let frame = 0;
+      let syncFrame = 0;
       const sync = () => {
         for (const { element, body } of bodiesRef.current.values()) {
           const w = element.offsetWidth;
@@ -153,9 +152,30 @@ const Gravity = React.forwardRef<HTMLDivElement, GravityProps>(
             body.position.y - h / 2
           }px) rotate(${body.angle}rad)`;
         }
-        frame = requestAnimationFrame(sync);
+        syncFrame = requestAnimationFrame(sync);
       };
-      frame = requestAnimationFrame(sync);
+
+      // Pause the physics engine AND the DOM-sync loop whenever the scene is off
+      // screen or the tab is hidden — a physics sim must not burn CPU unseen.
+      let visible = true;
+      let runnerActive = false;
+      const resume = () => {
+        if (autoStart && !runnerActive) {
+          Matter.Runner.run(runner, engine);
+          runnerActive = true;
+        }
+        if (!syncFrame) syncFrame = requestAnimationFrame(sync);
+      };
+      const pause = () => {
+        if (runnerActive) {
+          Matter.Runner.stop(runner);
+          runnerActive = false;
+        }
+        if (syncFrame) {
+          cancelAnimationFrame(syncFrame);
+          syncFrame = 0;
+        }
+      };
 
       const ro = new ResizeObserver(() => {
         const r = canvas.getBoundingClientRect();
@@ -165,8 +185,28 @@ const Gravity = React.forwardRef<HTMLDivElement, GravityProps>(
       });
       ro.observe(canvas);
 
+      const io = new IntersectionObserver(
+        ([entry]) => {
+          visible = entry.isIntersecting;
+          if (visible && !document.hidden) resume();
+          else pause();
+        },
+        { threshold: 0 },
+      );
+      io.observe(canvas);
+
+      const onVisibility = () => {
+        if (document.hidden) pause();
+        else if (visible) resume();
+      };
+      document.addEventListener("visibilitychange", onVisibility);
+
+      resume();
+
       return () => {
-        cancelAnimationFrame(frame);
+        pause();
+        io.disconnect();
+        document.removeEventListener("visibilitychange", onVisibility);
         ro.disconnect();
         Matter.Runner.stop(runner);
         Matter.World.remove(engine.world, mouseConstraint);

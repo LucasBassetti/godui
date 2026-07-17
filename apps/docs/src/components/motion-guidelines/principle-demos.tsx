@@ -416,7 +416,7 @@ export const PRINCIPLES: GalleryItem[] = [
     slug: "performance",
     title: "Performance",
     description:
-      "Animate only transform and opacity so motion stays at a buttery 60fps, and keep springs interruptible.",
+      "Animate only transform, opacity, and filter — the compositor-driven properties — so motion holds a buttery 60fps, and keep springs interruptible. Layout and paint props (width, box-shadow, clip-path) are gated by a CI check; intrinsic morphs like height:auto are the documented exception.",
     origins: ["material"],
     Demo: PerformanceDemo,
   },

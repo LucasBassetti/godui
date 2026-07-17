@@ -91,17 +91,22 @@ function ReorderItemInner<T>(
       data-slot="reorder-item"
       data-dragging={dragging || undefined}
       transition={REORDER_SPRING}
-      // The lift (scale + shadow) is driven by a `data-dragging` class, not
-      // framer's `whileDrag`: a `whileDrag` scale/boxShadow can get stranded as
-      // an inline style when a drop lands mid-reorder, leaving the row wider or
-      // shadowed afterwards. Tailwind v4 emits `scale`/`box-shadow` as their own
-      // properties (separate from framer's layout `transform`), so they compose
-      // cleanly and reset via CSS transition on drop.
+      // The lift is driven by a `data-dragging` class, not framer's `whileDrag`:
+      // a `whileDrag` scale/boxShadow can get stranded as an inline style when a
+      // drop lands mid-reorder, leaving the row wider or shadowed afterwards.
+      // Tailwind v4 emits `scale` as its own property (separate from framer's
+      // layout `transform`), so it composes cleanly and resets via CSS transition
+      // on drop. The lift shadow lives on a sibling overlay whose opacity animates
+      // (GPU-composited) instead of transitioning `box-shadow` (main-thread paint).
       onDragStart={() => setDragging(true)}
       onDragEnd={() => setDragging(false)}
-      className={`flex origin-center cursor-grab touch-none select-none items-center gap-3 rounded-lg border border-border bg-card px-4 py-3 text-card-foreground shadow-sm [transition:scale_150ms_ease,box-shadow_200ms_ease] active:cursor-grabbing motion-reduce:transition-none data-[dragging]:z-raised data-[dragging]:scale-[1.03] data-[dragging]:shadow-xl ${className ?? ""}`}
+      className={`group relative flex origin-center cursor-grab touch-none select-none items-center gap-3 rounded-lg border border-border bg-card px-4 py-3 text-card-foreground shadow-sm [transition:scale_150ms_ease] active:cursor-grabbing motion-reduce:transition-none data-[dragging]:z-raised data-[dragging]:scale-[1.03] ${className ?? ""}`}
       {...props}
     >
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-0 rounded-lg opacity-0 shadow-xl [transition:opacity_200ms_ease] group-data-[dragging]:opacity-100 motion-reduce:transition-none"
+      />
       {children}
     </Reorder.Item>
   );

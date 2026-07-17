@@ -113,6 +113,38 @@ const MagicTab = React.forwardRef<HTMLDivElement, MagicTabProps>(
 
     const tabRefs = React.useRef<Array<HTMLButtonElement | null>>([]);
 
+    // The selected tab's rainbow edge/shadow run an infinite background-position
+    // keyframe (main-thread paint). Pause it when the tablist is off screen so it
+    // costs nothing while idle — resumes seamlessly on scroll-in.
+    const rootRef = React.useRef<HTMLDivElement>(null);
+    const setRefs = React.useCallback(
+      (node: HTMLDivElement | null) => {
+        rootRef.current = node;
+        if (typeof ref === "function") ref(node);
+        else if (ref)
+          (ref as React.MutableRefObject<HTMLDivElement | null>).current = node;
+      },
+      [ref],
+    );
+    React.useEffect(() => {
+      const root = rootRef.current;
+      if (!rainbow || !root || typeof IntersectionObserver === "undefined")
+        return;
+      const io = new IntersectionObserver(
+        ([entry]) => {
+          for (const layer of root.querySelectorAll<HTMLElement>(
+            ".animate-magic-rainbow",
+          ))
+            layer.style.animationPlayState = entry.isIntersecting
+              ? ""
+              : "paused";
+        },
+        { rootMargin: "128px" },
+      );
+      io.observe(root);
+      return () => io.disconnect();
+    }, [rainbow]);
+
     // Roving tabindex moves focus independently of selection (manual
     // activation): arrows move focus, Enter/Space commits the selection.
     const [focusValue, setFocusValue] = React.useState<string | undefined>(
@@ -189,7 +221,7 @@ const MagicTab = React.forwardRef<HTMLDivElement, MagicTabProps>(
 
     return (
       <div
-        ref={ref}
+        ref={setRefs}
         role="tablist"
         aria-orientation="horizontal"
         data-variant={variant}

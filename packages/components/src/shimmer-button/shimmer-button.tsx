@@ -190,7 +190,7 @@ const ShimmerButton = React.forwardRef<HTMLButtonElement, ShimmerButtonProps>(
         <span className="relative z-10">{children}</span>
 
         <div
-          className={`pointer-events-none absolute inset-0 rounded-[inherit] [transition:box-shadow_300ms_ease-in-out] ${HIDDEN_WHEN_OFF}`}
+          className={`pointer-events-none absolute inset-0 rounded-[inherit] ${HIDDEN_WHEN_OFF}`}
           aria-hidden="true"
         />
 

@@ -66,6 +66,39 @@ const MagicButton = React.forwardRef<HTMLButtonElement, MagicButtonProps>(
   ) => {
     const [pressed, setPressed] = React.useState(false);
 
+    // The rainbow edge/shadow run an infinite background-position keyframe
+    // (main-thread paint). Pause it when the button is off screen so it costs
+    // nothing while idle — resumes seamlessly on scroll-in.
+    const rootRef = React.useRef<HTMLButtonElement>(null);
+    const setRefs = React.useCallback(
+      (node: HTMLButtonElement | null) => {
+        rootRef.current = node;
+        if (typeof ref === "function") ref(node);
+        else if (ref)
+          (ref as React.MutableRefObject<HTMLButtonElement | null>).current =
+            node;
+      },
+      [ref],
+    );
+    React.useEffect(() => {
+      const root = rootRef.current;
+      if (!rainbow || !root || typeof IntersectionObserver === "undefined")
+        return;
+      const io = new IntersectionObserver(
+        ([entry]) => {
+          for (const layer of root.querySelectorAll<HTMLElement>(
+            ".animate-magic-rainbow",
+          ))
+            layer.style.animationPlayState = entry.isIntersecting
+              ? ""
+              : "paused";
+        },
+        { rootMargin: "128px" },
+      );
+      io.observe(root);
+      return () => io.disconnect();
+    }, [rainbow]);
+
     const handleKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>) => {
       if (event.key === "Enter" || event.key === " ") {
         setPressed(true);
@@ -82,7 +115,7 @@ const MagicButton = React.forwardRef<HTMLButtonElement, MagicButtonProps>(
 
     return (
       <button
-        ref={ref}
+        ref={setRefs}
         data-variant={variant}
         data-rainbow={rainbow ? "true" : undefined}
         data-pressed={pressed ? "true" : undefined}

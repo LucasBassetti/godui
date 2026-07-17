@@ -388,7 +388,7 @@ function CarouselShowcase({
               aria-selected={i === index}
               aria-label={`Go to screen ${i + 1}`}
               onClick={() => setIndex(i)}
-              className={`h-2 rounded-full transition-all duration-200 ${
+              className={`h-2 rounded-full [transition:width_200ms_ease,background-color_200ms_ease] ${
                 i === index
                   ? "w-6 bg-primary"
                   : "w-2 bg-[var(--muted-foreground)]/30 hover:bg-[var(--muted-foreground)]/50"

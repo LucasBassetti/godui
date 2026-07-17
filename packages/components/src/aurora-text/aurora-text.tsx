@@ -36,6 +36,23 @@ const AuroraText = React.forwardRef<HTMLSpanElement, AuroraTextProps>(
   ) => {
     const stops = [...colors, colors[0]].join(", ");
 
+    // The gradient runs on an infinite background-position keyframe (main-thread
+    // paint). Pause it whenever the text is off screen so it costs nothing while
+    // idle — resumes seamlessly on scroll-in.
+    const gradientRef = React.useRef<HTMLSpanElement>(null);
+    React.useEffect(() => {
+      const el = gradientRef.current;
+      if (!el || typeof IntersectionObserver === "undefined") return;
+      const io = new IntersectionObserver(
+        ([entry]) => {
+          el.style.animationPlayState = entry.isIntersecting ? "" : "paused";
+        },
+        { rootMargin: "128px" },
+      );
+      io.observe(el);
+      return () => io.disconnect();
+    }, []);
+
     return (
       <span
         ref={ref}
@@ -45,6 +62,7 @@ const AuroraText = React.forwardRef<HTMLSpanElement, AuroraTextProps>(
       >
         <span className="sr-only">{children}</span>
         <span
+          ref={gradientRef}
           aria-hidden="true"
           className="animate-aurora-text bg-[length:200%_auto] bg-clip-text text-transparent motion-reduce:animate-none"
           style={

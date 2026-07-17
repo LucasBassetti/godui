@@ -191,6 +191,7 @@ h1.docs-title {
   line-height: 1.08;
   letter-spacing: -0.035em;
   font-weight: 700;
+  margin-top: 0;
 }
 
 p.docs-lead {

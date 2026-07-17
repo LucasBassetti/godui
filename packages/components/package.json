@@ -33,7 +33,8 @@
     "generate:backgrounds": "node scripts/generate-backgrounds.mjs",
     "lint": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:motion": "vitest run src/motion/motion-lint.test.ts"
   },
   "peerDependencies": {
     "framer-motion": ">=11.0.0",

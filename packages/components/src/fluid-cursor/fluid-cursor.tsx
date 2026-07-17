@@ -64,6 +64,47 @@ const FluidCursor = ({
     const scoped = Boolean(containerRef);
     const host: HTMLElement | Window = scoped ? target : window;
 
+    // The follower idles once it catches up to the pointer, so stop the rAF when
+    // everything has settled (or the tab is hidden) and only restart it on real
+    // pointer activity — no forever-spinning loop writing identical transforms.
+    let raf = 0;
+    const SETTLE = 0.01;
+    const settled = () =>
+      Math.abs(s.tx - s.x) < SETTLE &&
+      Math.abs(s.ty - s.y) < SETTLE &&
+      Math.abs(s.tx - s.sx) < SETTLE &&
+      Math.abs(s.ty - s.sy) < SETTLE &&
+      Math.abs(s.thover - s.hover) < SETTLE;
+
+    const loop = () => {
+      s.x += (s.tx - s.x) * 0.25;
+      s.y += (s.ty - s.y) * 0.25;
+      s.sx += (s.tx - s.sx) * 0.12;
+      s.sy += (s.ty - s.sy) * 0.12;
+      s.hover += (s.thover - s.hover) * 0.15;
+
+      const visible = s.seen && s.inside ? "1" : "0";
+      const dot = dotRef.current;
+      if (dot) {
+        dot.style.transform = `translate3d(${s.x}px, ${s.y}px, 0) translate(-50%, -50%) scale(${1 + s.hover * 1.6})`;
+        dot.style.opacity = visible;
+      }
+      const tr = trailRef.current;
+      if (tr) {
+        tr.style.transform = `translate3d(${s.sx}px, ${s.sy}px, 0) translate(-50%, -50%) scale(${1 + s.hover * 0.8})`;
+        tr.style.opacity = visible;
+      }
+
+      if (settled() || document.hidden) {
+        raf = 0;
+        return;
+      }
+      raf = requestAnimationFrame(loop);
+    };
+    const start = () => {
+      if (!raf && !document.hidden) raf = requestAnimationFrame(loop);
+    };
+
     const point = (e: PointerEvent) => {
       if (scoped) {
         const r = target.getBoundingClientRect();
@@ -83,16 +124,20 @@ const FluidCursor = ({
         s.seen = true;
       }
       if (!scoped) s.inside = 1;
+      start();
     };
     const over = (e: PointerEvent) => {
       const el = e.target as Element | null;
       s.thover = el?.closest?.(interactiveSelector) ? 1 : 0;
+      start();
     };
     const enter = () => {
       s.inside = 1;
+      start();
     };
     const leave = () => {
       s.inside = 0;
+      start();
     };
 
     host.addEventListener("pointermove", move as EventListener, {
@@ -106,31 +151,16 @@ const FluidCursor = ({
       host.addEventListener("pointerleave", leave as EventListener);
     }
 
-    let raf = 0;
-    const loop = () => {
-      s.x += (s.tx - s.x) * 0.25;
-      s.y += (s.ty - s.y) * 0.25;
-      s.sx += (s.tx - s.sx) * 0.12;
-      s.sy += (s.ty - s.sy) * 0.12;
-      s.hover += (s.thover - s.hover) * 0.15;
-
-      const visible = s.seen && s.inside ? "1" : "0";
-      const dot = dotRef.current;
-      if (dot) {
-        dot.style.transform = `translate3d(${s.x}px, ${s.y}px, 0) translate(-50%, -50%) scale(${1 + s.hover * 1.6})`;
-        dot.style.opacity = visible;
-      }
-      const tr = trailRef.current;
-      if (tr) {
-        tr.style.transform = `translate3d(${s.sx}px, ${s.sy}px, 0) translate(-50%, -50%) scale(${1 + s.hover * 0.8})`;
-        tr.style.opacity = visible;
-      }
-      raf = requestAnimationFrame(loop);
+    const onVisibility = () => {
+      if (!document.hidden) start();
     };
-    loop();
+    document.addEventListener("visibilitychange", onVisibility);
+
+    start();
 
     return () => {
       cancelAnimationFrame(raf);
+      document.removeEventListener("visibilitychange", onVisibility);
       host.removeEventListener("pointermove", move as EventListener);
       host.removeEventListener("pointerover", over as EventListener);
       if (scoped) {

@@ -126,9 +126,21 @@ magnify/overshoot/follow-through.
 Follow the principles ([/docs/guidelines/principles](/docs/guidelines/principles),
 recipes at [/docs/guidelines/patterns](/docs/guidelines/patterns)):
 
-- **Animate `transform` + `opacity` only** (plus `filter: blur` sparingly). These
-  are GPU-cheap; avoid animating layout properties (except `height: auto` for
-  collapse, which is the documented Spring Height pattern).
+- **Performance is enforced — animate `transform`, `opacity`, or `filter` only.**
+  These run on the compositor and hold 60fps. A CI test
+  (`src/motion/motion-lint.test.ts`, part of `pnpm test`) scans every component and
+  **fails the build** on any animation of a layout/paint-heavy prop —
+  `width`/`height`/`inset`/`margin`/`padding`/`flex`/`gap`, `box-shadow`,
+  `background-size`, `clip-path`, `border-radius`. `transition-all` and ambient
+  (looping) layout animation are **hard-banned**, no escape. It scans both CSS
+  transitions (`[transition:…]`) and framer objects (`animate`/`whileHover`/`exit`/…).
+  - **Fix, don't dodge:** a `box-shadow` transition → a static-shadow overlay whose
+    `opacity` animates; a growing `width` → `transform: scaleX`; a colour glow →
+    an opacity cross-fade. (`filter` is fine — browsers composite it.)
+  - **Genuinely intrinsic?** shared-layout morph, `height:auto` collapse, SVG beam
+    geometry — add an entry to `src/motion/motion-allowlist.ts` with a one-line
+    reason. That list is an audit trail; a growing list is a smell. Check locally:
+    `pnpm --filter @godui/components test:motion`.
 - **Always honor reduced motion.** Use `useReducedMotion()` and drop transforms
   (keep a subtle opacity change or go static); for CSS transitions add
   `motion-reduce:[transition:none]`. ~Every animated component does this already.
