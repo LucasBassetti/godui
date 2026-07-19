@@ -43,3 +43,5 @@ pnpm-debug.log*
 
 # Local brainstorming/spec artifacts (root-anchored so it never matches apps/docs)
 /docs/
+
+.superpowers/
