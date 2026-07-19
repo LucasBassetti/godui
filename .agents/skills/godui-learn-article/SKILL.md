@@ -76,8 +76,11 @@ need nothing here.
 
 Because the learn route has no sidebar node, fumadocs marks the component's sidebar
 link `data-active="false"` there. `SidebarActiveLink` (client) flips it back to
-`"true"` (with a `MutationObserver` to survive re-renders). `page.tsx` renders it when
-`isLearnPage`. Generic — no per-component work.
+`"true"` (with a `MutationObserver` to survive re-renders) **only while
+`pathname` is still that component's `/learn`**. On leave it clears the forced
+flag (immediately if another sidebar item is already active) so client
+navigation never leaves two `data-active="true"` pills. `page.tsx` renders it
+when `isLearnPage`. Generic — no per-component work.
 
 ## Adding a Learn article to a new component
 
@@ -146,6 +149,17 @@ export function MyScene() {
 ```
 
 **Scene design rules:**
+- **Match the final component.** Anatomy / structure scenes must use the same
+  geometry the reader will see in the Result (open state, direction, piece count).
+  If the component is an open FAB with satellites, draw that silhouette — do not
+  invent a generic plate stack that doesn't map to the live UI.
+- **Don't clone Magic Button visuals.** Reference scenes teach *techniques*
+  (keyed keyframes, legends, looping cycles) — not a layout to copy. A new
+  component gets scenes invented from *its* source, not a reskin of
+  `layer-reveal` / `push-physics` / `rainbow-sweep`.
+- **Prose count = diagram count.** If the article says "two layers," the scene
+  and legend show two items. Don't add a third plate "for the trigger" when the
+  mechanism under discussion is blob vs control.
 - **Compositor-only motion**: animate `transform` / `opacity` / `filter` only. No
   `top`/`width`/`box-shadow`/`clip-path`. (The CI motion-lint gate only scans
   `packages/components`, so docs scenes aren't enforced — hold the rule anyway; it's
@@ -153,19 +167,31 @@ export function MyScene() {
 - **Grayscale by default.** Illustrative plates/shapes use `bg-[var(--card)]`,
   `bg-[var(--muted)]`, `bg-black/50`, etc. Reserve real color for a scene whose
   *subject is color* (e.g. a gradient), and for the live component in the result panel.
+- **No copy on the diagram shapes.** Never put button text ("Hold to delete",
+  "Slide to confirm", "Get started") on the animated pieces — it reads as instructional
+  UI and distracts from the motion. Where a shape needs to stand in for a label/content,
+  use a neutral gray token bar (`h-2 w-12 rounded-full bg-[var(--foreground)]/30`, light
+  on dark surfaces). Leave faces blank when the shape alone carries the point. Explanation
+  lives in the legend, the mono captions, and the prose — not on the shape. Real component
+  labels are fine (and expected) only in the `Result` panel, since that's the live product.
 - **Label with a grounded legend, not floating tags.** Put a bottom legend row (tone
   swatch + name + one-liner per element). Floating absolutely-positioned tags read as
   broken — avoid them.
-- **3D exploded views**: center a `[transform-style:preserve-3d]` stage in a
-  fixed-size box (`[perspective:1000px]`), separate plates along `translateZ`. Don't
-  put readable text on rotated plates (it distorts) — name them in the legend.
+- **3D exploded views (only when they help):** center a
+  `[transform-style:preserve-3d]` stage in a fixed-size box (`[perspective:1000px]`),
+  separate plates along `translateZ`. Works for stacked rectangular layers (Magic
+  Button). Avoid for concentric circles — they occlude and look broken; prefer a
+  front-facing split (layer A | layer B | together) instead. Don't put readable
+  text on rotated plates (it distorts) — name them in the legend.
 - **Looping demos** (e.g. a push cycle) are good — use `animation: … infinite`, gated
   behind `cycle > 0` via the keyed remount so it only runs after scroll-in.
 
-See the three built scenes for patterns:
-- `layer-reveal.tsx` — exploded 3-layer stack + bottom legend.
-- `push-physics.tsx` — looping rest→hover→press interaction cycle.
+Reference scenes (technique patterns, not templates to clone):
+- `layer-reveal.tsx` — isometric explode + legend (rectangular layers). Text-free plates.
+- `gooey-layers.tsx` — same open silhouette, split by layer (blob | control | both). Uses a `+` glyph, no words.
+- `mask-twin-labels.tsx` / `slide-anatomy.tsx` — canonical **token-bar** stand-ins for a label (`h-2 w-12 rounded-full bg-[var(--foreground)]/30`, light on dark).
 - `rainbow-sweep.tsx` — the one colored scene (gradient), reuses `animate-magic-rainbow`.
+- `push-physics.tsx` — looping rest→hover→press cycle. NOTE: its face still reads "Push me" — that predates the no-copy rule; do **not** copy that, blank the face or use a token bar instead.
 
 ### 4. Result preview (live component)
 
@@ -211,6 +237,15 @@ excerpts from the component source.
 pnpm --filter docs exec tsc --noEmit          # types
 pnpm exec biome check apps/docs/src/components/learn   # lint
 pnpm --filter docs build                       # SSG both routes
+```
+
+**Scan for stray copy on the diagram shapes** — every human-readable string inside a
+scene (outside the legend/caption/prose) should be a token bar or blank, not button
+text. Eyeball the hits; the only quoted words left should be legend/caption strings and
+`Result`-panel component labels:
+
+```bash
+grep -nE '>[A-Za-z][A-Za-z ]{2,}<' apps/docs/src/components/learn/{scene}.tsx
 ```
 
 Then run the dev server and check in a browser (a docs dev server may already be

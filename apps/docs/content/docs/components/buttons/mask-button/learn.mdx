@@ -1,0 +1,128 @@
+---
+title: Anatomy of the Mask Button
+description: How a button's face wipes away on hover — two stacked labels, a sprite-sheet mask, and a steps() flipbook instead of an eased transition.
+---
+
+The wipe isn't a gradient or a clip-path animating smoothly — it's two copies
+of the same label and a sprite sheet scrubbed frame by frame. Here's every
+piece, pulled apart.
+
+## Two labels, one visible through a mask
+
+Every `MaskButton` renders its children twice. The first span is plain and
+always there. The second is an `aria-hidden` twin, absolutely positioned on
+top, filled with the variant color, and only visible where a mask image lets
+it through:
+
+```tsx
+<span className="relative z-0">{children}</span>
+<span
+  className={`${FILL_BASE} ${fillVariant[variant]} ${cfg.sizeClass} ${cfg.rest} ${cfg.hover}`}
+  style={{ "--mask-img": `url("${MASK_ASSETS[mask]}")` } as React.CSSProperties}
+  aria-hidden="true"
+>
+  {children}
+</span>
+```
+
+`FILL_BASE` sets `mask-image: var(--mask-img)` on that second span. At rest
+the mask hides it almost entirely, so you see the plain base label
+underneath; the hover animation slides the mask across, and wherever it's
+opaque, the colored twin shows through instead.
+
+<MaskTwinLabels />
+
+Same label, twice — a plain span underneath, a colored one clipped by the
+mask on top. The third panel loops the boundary sweeping across, which is
+exactly what a hover-then-leave cycle looks like on the real button.
+
+## The flipbook
+
+The mask asset is a horizontal sprite sheet, not a single image, and the
+reveal is a `mask-position` animation with a `steps()` timing function — not
+an eased slide. Each mask gets its own step count, because the sprites have
+different frame counts:
+
+```css
+--animate-mask-nature-in: mask-button-in 0.7s steps(22) forwards;
+--animate-mask-nature-out: mask-button-out 0.7s steps(22) forwards;
+--animate-mask-urban-in: mask-button-in 0.7s steps(29) forwards;
+--animate-mask-forest-in: mask-button-in 0.7s steps(70) forwards;
+```
+
+```css
+@keyframes mask-button-in {
+  from { mask-position: 0 0; }
+  to   { mask-position: 100% 0; }
+}
+```
+
+`mask-size` stretches the whole sprite strip to a multiple of the button's
+own width — `2300%` for nature's 22-ish frames, `3000%` for urban, `7100%`
+for forest — so each `steps()` tick lands exactly on the next frame instead
+of somewhere between two.
+
+<MaskFlipbook />
+
+The playhead jumps across illustrative frames in discrete steps, and the
+reveal underneath jumps with it — `steps(n)` on a `mask-position` animation
+never interpolates between frames, it holds each one and cuts to the next.
+
+## Why hover and focus-visible share one animation
+
+```tsx
+hover: "group-hover:animate-mask-nature-in group-focus-visible:animate-mask-nature-in",
+```
+
+Keyboard focus gets the identical `*-in` class as a mouse hover — same
+sprite, same duration, same steps. A keyboard user sees precisely the
+transition a mouse user would, instead of a cheaper fallback. Mouse-leave (or
+losing focus) plays `*-out`, the same keyframes run backward, so the wipe
+always resolves in the direction it started.
+
+## The press detail
+
+Press feedback works whether the button was clicked or activated from the
+keyboard. A CSS class handles the pointer case; `data-pressed` covers
+`Enter` / `Space`, since native `:active` doesn't fire for those:
+
+```tsx
+const handleKeyDown = (event) => {
+  if (event.key === "Enter" || event.key === " ") setPressed(true);
+  onKeyDown?.(event);
+};
+```
+
+```css
+enabled:active:scale-[0.96] enabled:data-[pressed=true]:scale-[0.96]
+```
+
+Both paths land on the same `scale-[0.96]` — one state, two triggers.
+
+## Accessibility
+
+`motion-reduce` drops the flipbook entirely and snaps between the two
+`mask-position` endpoints instead of animating through them:
+
+```css
+motion-reduce:animate-none
+motion-reduce:[mask-position:0_0]
+motion-reduce:group-hover:[mask-position:100%_0]
+motion-reduce:group-focus-visible:[mask-position:100%_0]
+```
+
+The button still keeps a real `focus-visible` outline
+(`[outline:2px_solid_var(--ring)]`, `4px` offset) and forwards every native
+`<button>` attribute — the masked span is decorative and `aria-hidden`, so
+assistive tech only ever sees the one real label.
+
+## The result
+
+Every piece, assembled — three real buttons, three sprites. Hover, tab to,
+or press each one.
+
+<MaskResult />
+
+That's the whole illusion: a plain label always in the DOM, a colored twin
+clipped by a sprite mask, and a `steps()` timing function doing the one thing
+an eased transition can't — holding each frame instead of blending it.

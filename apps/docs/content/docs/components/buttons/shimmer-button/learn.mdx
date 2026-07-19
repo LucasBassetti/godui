@@ -1,0 +1,130 @@
+---
+title: Anatomy of the Shimmer Button
+description: How a single rotating conic gradient becomes a border-only light sweep, and why it speeds up under your cursor without restarting.
+---
+
+The shimmer isn't a border animation — there's no border being drawn. It's a
+spinning gradient blob, mostly hidden behind a solid cutout, so only a sliver
+of it ever reaches the edge. Here's the whole stack, then the trick that
+makes it feel alive under your cursor.
+
+## The three-layer stack
+
+Every button renders three things in the same box: a **spark** (a blurred
+conic gradient that spins and slides), a **cut** (a solid inset the exact
+color of the background), and the **label**. The spark fills the entire
+button. The cut sits on top of it and covers everything except a thin ring
+at the edge — that ring is the only part of the spark you ever see.
+
+<ShimmerLayers />
+
+```tsx
+<div ref={sparkRef} className="absolute inset-0 -z-30 overflow-visible blur-[2px] [container-type:size]">
+  <div className="animate-shimmer-slide absolute inset-0 aspect-square h-[100cqh] [mask:none]">
+    <div className="animate-spin-around absolute -inset-full w-auto [background:conic-gradient(from_calc(270deg-(var(--spread)*0.5)),transparent_0,var(--shimmer-color)_var(--spread),transparent_var(--spread))]" />
+  </div>
+</div>
+
+<span className="relative z-10">{children}</span>
+
+<div className="absolute -z-20 [inset:var(--cut)] [border-radius:var(--radius)] [background:var(--bg)]" />
+```
+
+The stacking context does the work: spark at `-z-30`, cut at `-z-20`, label
+at `z-10`. Nothing here is a `border` — it's paint you can only partially
+see.
+
+## Two animations, one gradient
+
+The spark layer is two nested elements, each running its own keyframe. The
+outer one, `shimmer-slide`, translates the whole gradient sideways across
+`100cqw` (container width) — `ease-in-out infinite alternate`, so it slides
+right, then back left, forever. The inner one, `spin-around`, rotates the
+conic gradient itself through a `0° → 90° → 270° → 360°` timeline, `linear
+infinite`, at `calc(var(--speed) * 2)` — twice as slow as the slide. The
+combination is what keeps the light looking like it's orbiting instead of
+just bouncing.
+
+```css
+--animate-shimmer-slide: shimmer-slide var(--speed) ease-in-out infinite alternate;
+--animate-spin-around: spin-around calc(var(--speed) * 2) infinite linear;
+```
+
+`--speed` defaults to `3s` and is just a CSS variable — `shimmerDuration`
+sets it directly, no re-render required.
+
+## Speeding up without restarting
+
+Hovering doesn't swap in a faster animation. The same Web Animations API
+timeline keeps running; the button just asks the browser to play it back
+three times as fast:
+
+```tsx
+const setSparkRate = (rate: number) => {
+  sparkRef.current?.getAnimations({ subtree: true }).forEach((a) => {
+    a.playbackRate = rate;
+  });
+};
+
+const handleMouseEnter = () => setSparkRate(3);
+const handleMouseLeave = () => setSparkRate(1);
+```
+
+<ShimmerSpeed />
+
+Because `playbackRate` scrubs the existing timeline rather than restarting
+it, the gradient never jumps or resets position when you hover — it just
+picks up speed from wherever it already was. Keyboard focus gets the same
+treatment, but only for `:focus-visible` — programmatic or pointer-driven
+focus doesn't trigger the speed-up, so it stays a keyboard-only affordance:
+
+```tsx
+const handleFocus = (e: React.FocusEvent<HTMLButtonElement>) => {
+  if (e.target.matches(":focus-visible")) setSparkRate(3);
+};
+```
+
+## The press dip
+
+Enter and Space fire a native click but never toggle CSS `:active`, so the
+component tracks it manually with `data-pressed`, matching the same
+`translate-y-px` the mouse gets from `active:translate-y-px`:
+
+```tsx
+const handleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
+  if (e.key === "Enter" || e.key === " ") setPressed(true);
+};
+```
+
+```tsx
+className="... active:translate-y-px data-[pressed=true]:translate-y-px ..."
+```
+
+One rule, two triggers — pointer `:active` and the synthetic `data-pressed`
+land on the exact same transform.
+
+## Accessibility
+
+Every decorative layer — spark, its inner slide, and the empty overlay —
+carries `motion-reduce:animate-none`, so `prefers-reduced-motion` users get
+a flat, static button with no gradient at all, not just a slower one. The
+cut and spark also disappear entirely when `shimmer={false}` or the button
+is `disabled`, via a shared Tailwind group selector rather than duplicated
+conditionals:
+
+```tsx
+const HIDDEN_WHEN_OFF =
+  "group-[&:not([data-shimmer=true])]:hidden group-disabled:hidden";
+```
+
+Focus still gets a real ring — `focus-visible:ring-2 focus-visible:ring-ring
+focus-visible:ring-offset-2` — independent of the shimmer speed-up, so
+removing the light show never removes the focus indicator.
+
+## The result
+
+Spinning gradient, solid cutout, a label riding on top, and one line that
+scrubs a Web Animations timeline instead of swapping animations. That's the
+whole light show.
+
+<ShimmerResult />

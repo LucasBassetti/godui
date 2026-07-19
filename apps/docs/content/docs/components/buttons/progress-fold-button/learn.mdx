@@ -1,0 +1,130 @@
+---
+title: Anatomy of the Progress Fold Button
+description: How a 3D hinge, three triggers, and a rAF-armed transition turn one button into a folding progress indicator.
+---
+
+The fold isn't a separate open/closed component swapped in on hover — it's
+one button whose front face is a hinged plate in 3D space. Tilt it back and
+whatever's underneath becomes visible. Here's the hinge, the three things
+that tilt it, and the bar that lives behind it.
+
+## The hinge
+
+The button sits in a `perspective(800px)` space. Its front face is a single
+element with `transform-origin: top center`, so rotating it on the X axis
+tips the *bottom* edge away from the viewer while the top stays pinned —
+like a flap hinged at the top:
+
+```tsx
+const FRONT_BASE =
+  "relative grid w-full place-items-center rounded-[inherit] " +
+  "[transform:rotateX(0deg)] [transform-origin:top_center] " +
+  "[transition:transform_0.2s] " +
+  "group-hover:[transform:rotateX(35deg)] " +
+  "group-focus-visible:[transform:rotateX(35deg)] " +
+  "group-data-[status=loading]:[transform:rotateX(35deg)]";
+```
+
+Behind that face, at `-z-[1]`, sits a back layer: a tint that's always
+there, plus a progress bar that's `w-0` until loading starts.
+
+<FoldStages />
+
+Three completely different triggers — a mouse hovering, a keyboard user
+tabbing in, a `status` prop flipping to `"loading"` — all resolve to the
+same `rotateX(35deg)`. None of them know or care which of the other two is
+also true; they're just three selectors pointed at one transform.
+
+## The bar behind the fold
+
+Once the face is tilted, the back layer is doing one of two things. If you
+pass a `progress` number, the bar is **determinate** — it fills to that
+percentage. If you don't, it's **indeterminate** — a fixed `40%`-wide
+segment sweeps across on a loop:
+
+```tsx
+const BAR_BASE =
+  "absolute top-0 left-0 h-full w-0 " +
+  "group-data-[determinate=true]:[width:var(--progress-fold-fill,0%)] " +
+  "group-[&[data-status=loading]:not([data-determinate=true])]:w-[40%] " +
+  "group-[&[data-status=loading]:not([data-determinate=true])]:animate-progress-fold-indeterminate";
+```
+
+```css
+@keyframes progress-fold-indeterminate {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(250%); }
+}
+```
+
+<FoldProgress />
+
+The indeterminate sweep is pure `transform` — a fixed-width segment
+translating from off-screen left to off-screen right, `ease-in-out infinite`
+at `1.2s`. The determinate fill is the one motion in this component that
+isn't: it transitions `width` against a CSS variable set directly from the
+`progress` prop. It's contained inside `overflow-hidden` and only a few
+pixels tall, so the repaint stays cheap — and a literal percentage variable
+maps straight to `width`, no extra math to convert it into a transform.
+
+## Snap, then arm
+
+Determinate progress can't just start transitioning `width` the instant
+`status` becomes `"loading"` — the CSS variable would already be set to the
+target percentage, and the bar would jump there with no fill animation at
+all. The fix is a two-step state: snap the fill to `0` synchronously, then
+arm the transition one frame later with `requestAnimationFrame`:
+
+```tsx
+const [armed, setArmed] = React.useState(false);
+React.useEffect(() => {
+  if (!isLoading) {
+    setArmed(false);
+    return;
+  }
+  setArmed(false);
+  const id = requestAnimationFrame(() => setArmed(true));
+  return () => cancelAnimationFrame(id);
+}, [isLoading]);
+```
+
+```tsx
+"group-[&[data-determinate=true][data-armed=true]]:[transition:width_0.25s_ease]";
+```
+
+Without `data-armed`, the transition rule is live from the first paint and
+the browser has nothing to animate *from* — the bar would render already
+full. With it, the first frame paints at `0%` untransitioned, and only the
+second frame turns the transition on, so there's always a "from" state to
+fill away from.
+
+## Accessibility
+
+The button carries `aria-busy` while loading, plus a visually hidden
+`role="progressbar"` that only exists during that state — `aria-valuenow`
+when determinate, a plain `"Loading"` label when not:
+
+```tsx
+{isLoading ? (
+  <span
+    className="sr-only"
+    role="progressbar"
+    aria-valuemin={0}
+    aria-valuemax={100}
+    aria-valuenow={isDeterminate ? clamped : undefined}
+    aria-valuetext={isDeterminate ? `${clamped}%` : "Loading"}
+  />
+) : null}
+```
+
+`prefers-reduced-motion` drops both motions to a hard cut: the fold's
+`transition: none` and the indeterminate sweep's `animate-none` mean the
+face still moves to `35deg` and the bar still shows progress, just without
+the tween or the endless sweep.
+
+## The result
+
+One hinge, three triggers, a bar that's either counting up or just letting
+you know it's still working. Click it.
+
+<ProgressFoldResult />

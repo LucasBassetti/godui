@@ -1,0 +1,128 @@
+---
+title: Anatomy of the Magnetic Button
+description: How a button's content leans toward the cursor — a sensor, a scaled delta, and one underdamped spring driving two elements at different weights.
+---
+
+The button doesn't track the cursor directly. A sensor computes a scaled
+offset, hands it to a spring, and the spring drives both the shell and its
+label — at different weights. Here's every piece.
+
+## The sensor
+
+`MagneticButton` wraps its `<button>` in an invisible div. Pointer events are
+bound there, not on the button itself, so `range` can extend the pull past
+the visible edges without changing hit-testing on the button's own box:
+
+```tsx
+<div
+  data-slot="magnetic-button-sensor"
+  onPointerMove={handlePointerMove}
+  onPointerLeave={reset}
+  className="inline-flex"
+  style={{ padding: range }}
+>
+```
+
+`range` defaults to `0` — the sensor is exactly the button's box until you
+opt into a wider catchment.
+
+## The pull
+
+On every `pointermove`, the handler reads the button's center and turns the
+cursor's distance from it into a target, scaled by `strength`:
+
+```tsx
+const rect = el.getBoundingClientRect();
+const cx = rect.left + rect.width / 2;
+const cy = rect.top + rect.height / 2;
+x.set((e.clientX - cx) * strength);
+y.set((e.clientY - cy) * strength);
+```
+
+That target is a raw motion value — it jumps instantly, no easing. What
+actually renders is `useSpring(x, SPRING)`, an underdamped spring
+(`stiffness: 170, damping: 12, mass: 0.1`) chasing it. Underdamped means it
+doesn't ease flatly into place: it laps past the target and settles with a
+touch of elasticity, which is what makes the pull feel alive instead of
+merely delayed.
+
+<MagneticPull />
+
+Three tracks, same timeline: the cursor moves, the dashed target follows it
+instantly at `× strength`, and the solid shell lags a beat behind before
+overshooting into place. On `pointerleave`, both motion values reset to `0`
+and the same spring pulls the shell back home.
+
+## The parallax layer
+
+The label isn't just centered text — it's its own `motion.span`, nested
+inside the `motion.button`, riding a second `useTransform` off the same
+spring value:
+
+```tsx
+const labelFactor = staticLabel ? 0 : 0.4;
+const labelX = useTransform(springX, (v) => v * labelFactor);
+const labelY = useTransform(springY, (v) => v * labelFactor);
+```
+
+Because the label is a DOM child of the button, its own `× 0.4` transform
+stacks on top of whatever the shell is already doing — the button moves by
+the full spring value, and the label inside it drifts an extra 40% in the
+same direction. Two elements, one spring, two different weights.
+
+<MagneticParallax />
+
+Set `staticLabel` and `labelFactor` becomes `0` — the label gets no transform
+of its own and just rides the shell, staying dead-center no matter how far
+the button leans.
+
+## Why one spring, not two tweens
+
+A single `useSpring` per axis drives everything downstream through
+`useTransform`. There's no separate animation to keep in sync when the
+pointer changes direction mid-flight — the spring already knows its own
+velocity, so a reversal blends instead of snapping. And because `x` / `y` are
+motion values applied via `style={{ x: springX, y: springY }}`, Framer writes
+directly to `transform` on the compositor thread — no React re-render per
+pointer move, no layout, no paint.
+
+## Cheap when idle
+
+The sensor has exactly two handlers: `onPointerMove` and `onPointerLeave`.
+There's no `RequestAnimationFrame` loop, no `ResizeObserver`, nothing running
+while the cursor is elsewhere. The spring itself only does work while it's
+displaced from its target — once it settles at `0`, it's inert until the
+next `pointermove`.
+
+## Accessibility
+
+`useReducedMotion()` is checked before anything moves. When it's on, the
+pointer handler returns immediately and the `style` props for both the shell
+and the label are `undefined` — the button renders with no transform at all,
+never mind an animated one:
+
+```tsx
+const reduceMotion = useReducedMotion();
+// …
+const handlePointerMove = (e) => {
+  if (reduceMotion) return;
+  // …
+};
+style={reduceMotion ? undefined : { x: springX, y: springY }}
+```
+
+Press feedback doesn't ride the spring either — `active:scale-[0.97]` is a
+plain CSS transition on the button class, so it fires the instant you click
+regardless of motion preference. Focus gets the standard ring:
+`focus-visible:ring-2 focus-visible:ring-ring`, offset by `2px`.
+
+## The result
+
+Every mechanism, assembled. Move the cursor near each button and feel the
+sensor, the spring, and the parallax working together.
+
+<MagneticResult />
+
+One spring value, read twice at different weights, is the whole trick — the
+shell chases the cursor, the label chases it a little harder, and
+`pointerleave` lets the same spring pull everything back to zero.

@@ -1,0 +1,171 @@
+---
+title: Anatomy of the Hold Confirm Button
+description: How a press-and-hold gesture replaces a confirmation dialog — one motion value, a linear fill, a spring cancel, and a label stack that never resizes the button.
+---
+
+A confirmation dialog asks you to move your eyes and click again. A hold
+asks you to commit with the same gesture for a little longer — and it can
+change its mind mid-motion. That's the whole design brief, and it comes down
+to one `motion value` and two very different easings.
+
+## The fill
+
+Everything rides on a single `useMotionValue(0)` called `progress`. It never
+touches layout — it drives the `scaleX` of an absolutely-positioned span
+pinned to the button's own bounds, `transform-origin: left`. The button
+never resizes; only the fill's transform changes.
+
+<HoldFill />
+
+```tsx
+<motion.span
+  aria-hidden="true"
+  style={{ scaleX: progress }}
+  className="absolute inset-0 origin-left bg-black/20"
+/>
+```
+
+On pointer/key down, `progress` animates `0 → 1` over `duration` (default
+`900`ms) with `ease: "linear"` — no acceleration, no easing curve. A hold is
+a countdown the user is timing themselves against; a non-linear fill would
+make that countdown lie.
+
+```tsx
+playback.current = animate(progress, 1, {
+  duration: duration / 1000,
+  ease: "linear",
+  onComplete: complete,
+});
+```
+
+## Cancel vs confirm
+
+Release before the fill completes and `progress` doesn't just jump back —
+it springs, with enough damping to feel decisive rather than bouncy:
+`stiffness: 320`, `damping: 32`, `mass: 0.9`. Hold all the way through and
+the fill locks at `1`, a checkmark draws itself in over the label, and
+`onConfirm` fires.
+
+<HoldCancel />
+
+```tsx
+const cancel = () => {
+  if (statusRef.current !== "holding") return;
+  playback.current?.stop();
+  setStatus("idle");
+  animate(progress, 0, {
+    type: "spring",
+    stiffness: 320,
+    damping: 32,
+    mass: 0.9,
+  });
+};
+```
+
+The check draws with the same restraint as the fill: an SVG path animates
+`pathLength` from `0` to `1` over a flat `0.3`s, no spring, no overshoot. The
+fill already did the "effort" beat — the check is just confirmation, so it
+stays quiet.
+
+```tsx
+<motion.path
+  d="M5 12.5 10 17.5 19 7"
+  initial={{ pathLength: 0 }}
+  animate={active ? { pathLength: 1 } : { pathLength: 0 }}
+  transition={{ duration: 0.3 }}
+/>
+```
+
+## A label stack that never resizes
+
+`idle`, `holding`, and `confirmed` each have their own label, and all three
+occupy the **same grid cell**:
+
+```tsx
+<span className="relative grid">
+  {labels.map(({ key, node }) => {
+    const active = status === key;
+    return (
+      <span
+        key={key}
+        aria-hidden={active ? undefined : "true"}
+        className={`col-start-1 row-start-1 ... ${active ? "" : "invisible"}`}
+      >
+        {node}
+      </span>
+    );
+  })}
+</span>
+```
+
+A CSS grid track sizes to the largest child even when that child is
+`invisible` rather than `display: none` — invisible elements still occupy
+their box, they just don't paint. So the grid cell is always as wide as the
+longest of the three labels, and the button's width is locked in before any
+status change. Swap `holdingLabel` for something long and the button doesn't
+twitch when the hold starts; it was already sized for it. The inactive
+labels also carry `aria-hidden`, so screen readers only ever see the one
+that's showing.
+
+## The confirmed beat
+
+Confirming doesn't reset immediately — the filled bar holds for `1100`ms so
+the "done" state actually registers, then eases back to `0` over a quick
+`0.2`s (no spring here; the moment has passed, this is just tidying up):
+
+```tsx
+const complete = () => {
+  if (!mounted.current) return;
+  setStatus("confirmed");
+  onConfirm?.();
+  resetTimer.current = setTimeout(() => {
+    if (!mounted.current) return;
+    setStatus("idle");
+    animate(progress, 0, { duration: 0.2 });
+  }, 1100);
+};
+```
+
+Both the pending `animate()` playback and this timeout are torn down on
+unmount, so a hold that outlives its button never calls `setState` into the
+void.
+
+## Keyboard holds like pointer
+
+`onPointerDown` / `onPointerUp` / `onPointerLeave` / `onPointerCancel` all
+map to the same `start()` / `cancel()` pair that Enter and Space use — a
+keyboard hold is not a lesser affordance, it's the identical state machine:
+
+```tsx
+const handleKeyDown = (event) => {
+  if ((event.key === " " || event.key === "Enter") && !event.repeat) {
+    event.preventDefault();
+    start();
+  }
+};
+const handleKeyUp = (event) => {
+  if (event.key === " " || event.key === "Enter") cancel();
+};
+```
+
+`!event.repeat` matters: holding a key fires a stream of `keydown` events at
+the OS repeat rate, and without that guard every one of them would call
+`start()` again and re-stomp the running animation.
+
+## No reduced-motion branch — and that's fine here
+
+Unlike most GodUI motion, this component doesn't check
+`prefers-reduced-motion`. That's a deliberate omission, not an oversight: the
+fill isn't a decorative flourish playing *at* the user, it's the direct,
+proportional feedback for a gesture *they* are actively performing and can
+stop at any instant. Suppressing it would remove the only signal that tells
+someone how much longer to keep holding.
+
+## The result
+
+<HoldConfirmResult />
+
+One motion value, two easings, and a grid trick — that's the entire
+mechanism. The fill tells you how much longer, the spring tells you it heard
+you let go, and the label stack means none of it ever costs you a layout
+shift.

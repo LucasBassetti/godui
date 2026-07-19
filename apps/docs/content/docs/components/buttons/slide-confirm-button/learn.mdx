@@ -1,0 +1,144 @@
+---
+title: Anatomy of the Slide Confirm Button
+description: How a drag-to-confirm thumb measures its own track, trails a fill behind an x motion value, and commits past a 90% line.
+---
+
+Dragging is the most deliberate confirmation gesture there is — you can't
+mash it, and you can feel exactly how far you've committed before you let
+go. The whole thing is one motion value, `x`, and a track that measures
+itself.
+
+## The track measures itself
+
+`maxX` — how far the thumb can travel — isn't a fixed number. It's
+`trackWidth - thumb - pad × 2`, recomputed by a `ResizeObserver` so the
+button stays correct if its container resizes:
+
+```tsx
+React.useLayoutEffect(() => {
+  const el = trackRef.current;
+  if (!el) return;
+  const measure = () => {
+    const usable = el.clientWidth - dims.thumb - dims.pad * 2;
+    setMaxX(Math.max(0, usable));
+  };
+  measure();
+  const ro = new ResizeObserver(measure);
+  ro.observe(el);
+  return () => ro.disconnect();
+}, [dims.thumb, dims.pad]);
+```
+
+At the `md` size that's a real `288`px track, a `40`px thumb, `4`px of pad
+on each side — so `maxX` comes out to `240`. Everything below uses those
+exact numbers.
+
+<SlideAnatomy />
+
+The fill is a second absolutely-positioned pill, pinned at `top`/`bottom`/
+`left: pad`, whose `width` is derived straight from `x`:
+
+```tsx
+const fillWidth = useTransform(x, (v) => v + dims.thumb);
+```
+
+At rest (`x = 0`) the fill's width equals the thumb's width, so it sits
+exactly under the thumb with no bleed on either side. Drag the thumb `120`px
+right and the fill is `160`px wide — it always trails the thumb's trailing
+edge by exactly `pad`. The label centered over the track fades out over the
+first 60% of the travel, so by the time you're most of the way across, the
+instruction has already gotten out of the way:
+
+```tsx
+const labelOpacity = useTransform(x, [0, Math.max(1, maxX * 0.6)], [1, 0]);
+```
+
+## The threshold
+
+`threshold` defaults to `0.9` — the thumb has to clear 90% of `maxX` before
+release counts as a confirm. Everything before that line springs back;
+everything past it springs the rest of the way home:
+
+<SlideThreshold />
+
+```tsx
+const handleDragEnd = () => {
+  if (statusRef.current === "confirmed") return;
+  if (maxX > 0 && x.get() >= maxX * threshold) confirm();
+  else settleBack();
+};
+```
+
+Both outcomes use the same spring — `stiffness: 500`, `damping: 40` — just
+aimed at different targets. A failed drag springs `x` back to `0`; a
+confirmed one springs it the rest of the way to `maxX`, so the last few
+percent of the gesture finishes itself:
+
+```tsx
+const confirm = () => {
+  setStatus("confirmed");
+  animate(x, maxX, { type: "spring", stiffness: 500, damping: 40 });
+  onConfirm?.();
+};
+
+const settleBack = () => {
+  animate(
+    x,
+    0,
+    reduce ? { duration: 0.2 } : { type: "spring", stiffness: 500, damping: 40 },
+  );
+};
+```
+
+`reduce` — this component's own `useReducedMotion()` check — swaps that
+same spring for a flat `0.2`s tween on the settle-back path, so a
+reduced-motion user still gets an instant, legible snap instead of a
+bounce.
+
+## Drag feel: elastic, not momentum-driven
+
+Two Framer Motion drag props shape how the thumb feels under a real finger:
+
+```tsx
+drag={confirmed || disabled ? false : "x"}
+dragConstraints={{ left: 0, right: maxX }}
+dragElastic={0.04}
+dragMomentum={false}
+```
+
+`dragElastic={0.04}` lets the thumb creep just slightly past `0` or `maxX`
+under drag pressure — a tiny give so the track doesn't feel like a hard
+wall — while `dragConstraints` still clamps the resting range.
+`dragMomentum={false}` turns off inertial coasting after release entirely:
+without it, a fast flick could carry `x` past the threshold on momentum
+alone, which would make "past the line" mean something different depending
+on drag speed instead of drag distance. Distance is the only thing that
+should decide a confirm.
+
+## Keyboard confirms instantly
+
+The thumb is a real `<button>`, and `Enter` / `Space` / `ArrowRight` all
+call `confirm()` directly — no simulated dragging, no waiting to cross a
+threshold that doesn't apply to a keypress:
+
+```tsx
+const handleKeyDown = (event) => {
+  if (disabled || statusRef.current === "confirmed") return;
+  if (event.key === "Enter" || event.key === " " || event.key === "ArrowRight") {
+    event.preventDefault();
+    confirm();
+  }
+};
+```
+
+`ArrowRight` earning its own case matters here — it's the key that
+semantically matches "slide right to confirm," so a keyboard user gets a
+gesture-appropriate shortcut instead of only the generic activation keys.
+
+## The result
+
+<SlideConfirmResult />
+
+A measured track, a fill derived from one motion value, a threshold that
+picks the target for the same spring, and a drag config tuned so distance —
+not speed — is what commits. Drag it, or just press the arrow key.

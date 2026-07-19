@@ -12,11 +12,33 @@ import { PreviewCard } from "@/components/card-previews/preview-card";
 import { ComponentInstall } from "@/components/component-install";
 import { ComponentPreview } from "@/components/component-preview";
 import { LangBadge } from "@/components/lang-badge";
+import { FoldProgress } from "@/components/learn/fold-progress";
+import { FoldStages } from "@/components/learn/fold-stages";
+import { GooeyFabResult } from "@/components/learn/gooey-fab-result";
+import { GooeyFilter } from "@/components/learn/gooey-filter";
+import { GooeyLayers } from "@/components/learn/gooey-layers";
+import { GooeySpring } from "@/components/learn/gooey-spring";
+import { HoldCancel } from "@/components/learn/hold-cancel";
+import { HoldConfirmResult } from "@/components/learn/hold-confirm-result";
+import { HoldFill } from "@/components/learn/hold-fill";
 import { LayerReveal } from "@/components/learn/layer-reveal";
+import { MagneticParallax } from "@/components/learn/magnetic-parallax";
+import { MagneticPull } from "@/components/learn/magnetic-pull";
+import { MagneticResult } from "@/components/learn/magnetic-result";
+import { MaskFlipbook } from "@/components/learn/mask-flipbook";
+import { MaskResult } from "@/components/learn/mask-result";
+import { MaskTwinLabels } from "@/components/learn/mask-twin-labels";
+import { ProgressFoldResult } from "@/components/learn/progress-fold-result";
 import { PushPhysics } from "@/components/learn/push-physics";
 import { RainbowSweep } from "@/components/learn/rainbow-sweep";
 import { ResultPreview } from "@/components/learn/result-preview";
 import { ScrollScene } from "@/components/learn/scroll-scene";
+import { ShimmerLayers } from "@/components/learn/shimmer-layers";
+import { ShimmerResult } from "@/components/learn/shimmer-result";
+import { ShimmerSpeed } from "@/components/learn/shimmer-speed";
+import { SlideAnatomy } from "@/components/learn/slide-anatomy";
+import { SlideConfirmResult } from "@/components/learn/slide-confirm-result";
+import { SlideThreshold } from "@/components/learn/slide-threshold";
 import { MCPInstall } from "@/components/mcp-install";
 
 function Table(props: ComponentProps<"table">) {
@@ -73,6 +95,28 @@ export function getMDXComponents(components?: MDXComponents) {
     PushPhysics,
     RainbowSweep,
     ResultPreview,
+    GooeyLayers,
+    GooeyFilter,
+    GooeySpring,
+    GooeyFabResult,
+    HoldFill,
+    HoldCancel,
+    HoldConfirmResult,
+    SlideAnatomy,
+    SlideThreshold,
+    SlideConfirmResult,
+    MagneticPull,
+    MagneticParallax,
+    MagneticResult,
+    MaskTwinLabels,
+    MaskFlipbook,
+    MaskResult,
+    ShimmerLayers,
+    ShimmerSpeed,
+    ShimmerResult,
+    FoldStages,
+    FoldProgress,
+    ProgressFoldResult,
     ...components,
   } satisfies MDXComponents;
 }

@@ -1,0 +1,139 @@
+---
+title: Anatomy of the Gooey FAB
+description: How a floating action button fuses satellite blobs with an SVG metaball filter, then springs them apart on a staggered timeline.
+---
+
+A FAB that splits like mercury isn't a canvas trick — it's two layers of
+circles, one SVG filter, and a spring. Here's every piece, pulled apart.
+
+## The two-layer stack
+
+The goo only works on soft, solid shapes. Icons need sharp edges and real hit
+targets. So every open satellite is drawn twice in the same place: a **blob**
+(filled circle under the SVG filter) and a **control** (transparent button with
+the icon). The trigger is the same idea at the base — soft paint underneath, a
+sharp face on top.
+
+<GooeyLayers />
+
+Same open FAB three ways: blobs alone, controls alone, then both. The third
+column is what you get in the Result — liquid shape with readable icons.
+
+```tsx
+{/* Blob layer: solid circles that merge under the goo filter. */}
+<div aria-hidden style={reduce ? undefined : { filter: `url(#${filterId})` }}>
+  <div className="rounded-full bg-primary" style={{ width: trigger, height: trigger }} />
+  {actions.map(/* motion.div satellites */)}
+</div>
+
+{/* Control layer: sharp, clickable icon buttons over the blobs. */}
+<div className="absolute inset-0 grid place-items-center">
+  {actions.map(/* motion.button satellites */)}
+</div>
+```
+
+## The goo filter
+
+The liquid look is two SVG filter primitives. `feGaussianBlur` softens every
+edge so nearby shapes bleed into each other. `feColorMatrix` then punches the
+alpha channel back up — multiply by 20, subtract 10 — so the soft overlap
+collapses into a hard metaball bridge while the rest of the shape stays
+crisp.
+
+<GooeyFilter />
+
+```tsx
+<filter id={filterId}>
+  <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur" />
+  <feColorMatrix
+    in="blur"
+    mode="matrix"
+    values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -10"
+    result="goo"
+  />
+</filter>
+```
+
+That matrix only touches alpha (`0 0 0 20 -10` in the last row). Color channels
+pass through untouched — the goo is a shape effect, not a tint.
+
+## Why separate layers
+
+Apply the filter to the icons and they smear into illegible blobs. Skip it on
+the paint layer and you get a stack of hard circles with no mercury bridge.
+Splitting the job — soft paint underneath, sharp controls on top — keeps the
+illusion and the usability. The control layer also owns `pointer-events`,
+`tabIndex`, and `aria-label`; the blob layer is `aria-hidden` and
+`pointer-events-none`.
+
+## Spring extrusion
+
+Depth is the filter; _motion_ is a spring. Each satellite animates `x` / `y` /
+`scale` / `opacity` with Framer Motion: `stiffness: 170`, `damping: 12`,
+`mass: 0.1`. On open they stagger out (`i × 40ms`); on close they reverse
+(`(n − i) × 20ms`) so the farthest blob snaps home first. The trigger's plus
+rotates `135°` on the same spring into a cross.
+
+<GooeySpring />
+
+```tsx
+transition={
+  reduce
+    ? { duration: 0.15 }
+    : {
+        type: "spring",
+        stiffness: 170,
+        damping: 12,
+        mass: 0.1,
+        delay: open ? i * 0.04 : (actions.length - i) * 0.02,
+      }
+}
+```
+
+Icons lag the blobs by an extra `30ms` on open — the goo bridge forms a beat
+before the sharp glyph lands, which sells the "extrude then solidify" read.
+
+## Why transform, not layout
+
+Satellites never animate `top` / `left` or resize the parent. Offsets come from
+`offsetFor(direction, step * (i + 1))` and land in Framer's `x` / `y` — GPU
+composited transforms. The wrapper stays a fixed `trigger × trigger` box, so
+opening the menu doesn't reflow the page. Same house rule as the rest of
+GodUI: compositor props only.
+
+```tsx
+const target = offsetFor(direction, step * (i + 1));
+animate={
+  open
+    ? { x: target.x, y: target.y, scale: 1, opacity: 1 }
+    : { x: 0, y: 0, scale: 0.2, opacity: 0 }
+}
+```
+
+## Accessibility
+
+`useReducedMotion()` swaps the spring for a `150ms` fade and drops the goo
+filter entirely — no smear for anyone who's asked the OS to cut motion. Closed
+satellites get `tabIndex={-1}` and `pointerEvents: "none"` so they can't steal
+focus; open ones take `0` and become real buttons. The trigger exposes
+`aria-expanded` and a label; every satellite carries its own `aria-label`.
+`focus-visible` rings land on both layers with a `2px` offset.
+
+```tsx
+const reduce = useReducedMotion() ?? false;
+// …
+tabIndex={open ? 0 : -1}
+pointerEvents: open ? "auto" : "none"
+aria-expanded={open}
+```
+
+## The result
+
+Every piece, assembled — the real component. Open it, pick an action, watch the
+blobs fuse and split. Each motion is one of the mechanisms above doing its job.
+
+<GooeyFabResult />
+
+That's the whole illusion: soft circles under a blur matrix, sharp buttons on
+top, one spring timeline, and the discipline to keep the filter off anything
+you still need to read.
