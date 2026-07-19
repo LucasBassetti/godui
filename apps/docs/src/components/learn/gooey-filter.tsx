@@ -89,7 +89,7 @@ export function GooeyFilter() {
                 feGaussianBlur
               </dt>
               <dd className="font-mono text-[12px] text-fd-muted-foreground">
-                stdDeviation="6"
+                {'stdDeviation="6"'}
               </dd>
             </div>
             <div className="flex flex-col gap-1.5">

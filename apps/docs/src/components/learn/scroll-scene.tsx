@@ -1,7 +1,32 @@
 "use client";
 
-import { type ReactNode, useEffect, useRef, useState } from "react";
+import {
+  type ReactNode,
+  useEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import { cn } from "@/lib/cn";
+
+/**
+ * `prefers-reduced-motion`, read the SSR-safe way. `useSyncExternalStore`
+ * serves the server snapshot (`false`) during render/hydration, then swaps to
+ * the live match afterward — no hydration mismatch, and no derived setState in
+ * an effect (which `react-hooks/set-state-in-effect` rightly flags).
+ */
+function usePrefersReducedMotion() {
+  return useSyncExternalStore(
+    (onChange) => {
+      if (typeof matchMedia === "undefined") return () => {};
+      const mq = matchMedia("(prefers-reduced-motion: reduce)");
+      mq.addEventListener("change", onChange);
+      return () => mq.removeEventListener("change", onChange);
+    },
+    () => matchMedia("(prefers-reduced-motion: reduce)").matches,
+    () => false,
+  );
+}
 
 /** State handed to a scene's render-prop. */
 export type SceneAnim = {
@@ -32,16 +57,11 @@ export function ScrollScene({
 }: ScrollSceneProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [cycle, setCycle] = useState(0);
-  const [reduced, setReduced] = useState(false);
+  const reduced = usePrefersReducedMotion();
 
   useEffect(() => {
     const el = ref.current;
-    const prefersReduced =
-      typeof matchMedia !== "undefined" &&
-      matchMedia("(prefers-reduced-motion: reduce)").matches;
-    setReduced(prefersReduced);
-
-    if (prefersReduced || !el || typeof IntersectionObserver === "undefined") {
+    if (reduced || !el || typeof IntersectionObserver === "undefined") {
       setCycle(1);
       return;
     }
@@ -56,7 +76,7 @@ export function ScrollScene({
     );
     io.observe(el);
     return () => io.disconnect();
-  }, []);
+  }, [reduced]);
 
   const replay = () => setCycle((c) => c + 1);
 
