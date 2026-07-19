@@ -13,6 +13,7 @@ import { MOTION_NOTES, STATIC_COMPONENTS } from "@/lib/motion-notes";
 import { source } from "@/lib/source";
 import { Breadcrumbs, type Crumb } from "../_components/breadcrumbs";
 import { ComponentTabs } from "../_components/component-tabs";
+import { SidebarActiveLink } from "../_components/sidebar-active-link";
 import { TocCta } from "../_components/toc-cta";
 
 export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
@@ -84,6 +85,7 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
       tableOfContent={{ footer: <TocCta /> }}
       tableOfContentPopover={{ footer: <TocCta /> }}
     >
+      {isLearnPage && docsHref ? <SidebarActiveLink href={docsHref} /> : null}
       {crumbs.length > 1 || tabs ? (
         <div className="-mb-2 flex items-center justify-between gap-4">
           <Breadcrumbs crumbs={crumbs} />
