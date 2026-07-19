@@ -3,13 +3,24 @@
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/cn";
 
+/** State handed to a scene's render-prop. */
+export type SceneAnim = {
+  /**
+   * Bumped each time the scene should play: 0 before it scrolls in, 1 on
+   * scroll-in, then +1 per replay. Use it as a React `key` on the animated
+   * subtree so CSS animations restart cleanly on replay.
+   */
+  cycle: number;
+  /** True when the user prefers reduced motion — render the resolved state. */
+  reduced: boolean;
+};
+
 type ScrollSceneProps = {
   /** Bar label, e.g. "Anatomy". */
   label: string;
   /** Optional muted sub-label to the right of the label. */
   note?: string;
-  /** Render-prop; `play` flips true on scroll-in and on replay. */
-  children: (play: boolean) => ReactNode;
+  children: (anim: SceneAnim) => ReactNode;
   className?: string;
 };
 
@@ -20,21 +31,24 @@ export function ScrollScene({
   className,
 }: ScrollSceneProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const [play, setPlay] = useState(false);
+  const [cycle, setCycle] = useState(0);
+  const [reduced, setReduced] = useState(false);
 
   useEffect(() => {
     const el = ref.current;
-    const reduce =
+    const prefersReduced =
       typeof matchMedia !== "undefined" &&
       matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduce || !el || typeof IntersectionObserver === "undefined") {
-      setPlay(true);
+    setReduced(prefersReduced);
+
+    if (prefersReduced || !el || typeof IntersectionObserver === "undefined") {
+      setCycle(1);
       return;
     }
     const io = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setPlay(true);
+          setCycle((c) => (c === 0 ? 1 : c));
           io.disconnect();
         }
       },
@@ -44,12 +58,7 @@ export function ScrollScene({
     return () => io.disconnect();
   }, []);
 
-  const replay = () => {
-    setPlay(false);
-    // Two frames: let the reset state paint before re-arming, so CSS
-    // transitions run again from the start.
-    requestAnimationFrame(() => requestAnimationFrame(() => setPlay(true)));
-  };
+  const replay = () => setCycle((c) => c + 1);
 
   return (
     <div
@@ -73,7 +82,7 @@ export function ScrollScene({
           onClick={replay}
           aria-label="Replay animation"
           title="Replay"
-          className="ms-auto inline-flex size-8 items-center justify-center rounded-[10px] border border-fd-border bg-fd-card text-fd-muted-foreground transition-colors hover:text-fd-foreground"
+          className="ms-auto inline-flex size-8 items-center justify-center rounded-[10px] border border-fd-border bg-fd-card text-fd-muted-foreground transition-colors hover:text-fd-foreground active:scale-95"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -93,7 +102,7 @@ export function ScrollScene({
         </button>
       </div>
       <div className="relative flex min-h-[360px] items-center justify-center p-6 md:min-h-[420px] md:p-10">
-        {children(play)}
+        {children({ cycle, reduced })}
       </div>
     </div>
   );

@@ -15,6 +15,7 @@ import { LangBadge } from "@/components/lang-badge";
 import { LayerReveal } from "@/components/learn/layer-reveal";
 import { PushPhysics } from "@/components/learn/push-physics";
 import { RainbowSweep } from "@/components/learn/rainbow-sweep";
+import { ResultPreview } from "@/components/learn/result-preview";
 import { ScrollScene } from "@/components/learn/scroll-scene";
 import { MCPInstall } from "@/components/mcp-install";
 
@@ -71,6 +72,7 @@ export function getMDXComponents(components?: MDXComponents) {
     LayerReveal,
     PushPhysics,
     RainbowSweep,
+    ResultPreview,
     ...components,
   } satisfies MDXComponents;
 }
