@@ -12,6 +12,10 @@ import { PreviewCard } from "@/components/card-previews/preview-card";
 import { ComponentInstall } from "@/components/component-install";
 import { ComponentPreview } from "@/components/component-preview";
 import { LangBadge } from "@/components/lang-badge";
+import { LayerReveal } from "@/components/learn/layer-reveal";
+import { PushPhysics } from "@/components/learn/push-physics";
+import { RainbowSweep } from "@/components/learn/rainbow-sweep";
+import { ScrollScene } from "@/components/learn/scroll-scene";
 import { MCPInstall } from "@/components/mcp-install";
 
 function Table(props: ComponentProps<"table">) {
@@ -63,6 +67,10 @@ export function getMDXComponents(components?: MDXComponents) {
     MCPInstall,
     BackgroundShowcase,
     PreviewCard,
+    ScrollScene,
+    LayerReveal,
+    PushPhysics,
+    RainbowSweep,
     ...components,
   } satisfies MDXComponents;
 }
