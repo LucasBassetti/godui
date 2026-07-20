@@ -1,0 +1,143 @@
+---
+title: Anatomy of the Morphing Dialog
+description: How one Framer Motion layoutId turns a card into a modal, and springs it back, without a single manually-coordinated animation.
+---
+
+Most "expand to modal" implementations fake it: absolutely position a clone
+over the card, animate its box, then swap in the real modal underneath. Morphing
+Dialog doesn't clone anything — it renders the trigger and the content as two
+components that share one `layoutId`, and lets Framer Motion's layout engine
+do the interpolation.
+
+## One id, two measured boxes
+
+`MorphingDialog` is a context provider; it mints a single `layoutId` and hands
+it to both `MorphingDialogTrigger` and `MorphingDialogContent`:
+
+<MorphingDialogAnatomy />
+
+```tsx
+const value = React.useMemo<MorphingDialogContextValue>(
+  () => ({
+    isOpen,
+    open: () => setOpen(true),
+    close: () => setOpen(false),
+    layoutId: `morphing-dialog-${layoutId}`,
+    reduceMotion,
+  }),
+  [isOpen, setOpen, layoutId, reduceMotion],
+);
+```
+
+Both pieces are just `motion.div`s with `layoutId={layoutId}` set. Framer
+tracks every element with a shared `layoutId` across the tree; when one
+unmounts (the trigger, conceptually, once the content mounts in its place)
+and the other is present, it measures both rects and animates the difference
+— position, size, border radius, all of it — every frame. There's no
+`morph()` call anywhere in the source; the "morph" is just two elements
+agreeing to be the same thing.
+
+## The morph spring
+
+The interpolation itself runs on one transition, tuned specifically for this
+motion:
+
+<MorphingDialogSpring />
+
+```tsx
+// Underdamped so the card settles into the modal with a soft, premium overshoot.
+const MORPH_SPRING = {
+  type: "spring" as const,
+  stiffness: 320,
+  damping: 32,
+  mass: 0.9,
+};
+
+<motion.div
+  layoutId={layoutId}
+  transition={reduceMotion ? { duration: 0 } : MORPH_SPRING}
+  className="relative z-raised overflow-hidden bg-card text-card-foreground shadow-2xl"
+>
+```
+
+`stiffness: 320` with `damping: 32` is underdamped enough to overshoot by a
+hair before settling — the card doesn't just resize, it feels like it has
+mass. `mass: 0.9` pulls that overshoot in slightly so it never looks loose.
+Everything else about the panel — its border radius, its internal layout —
+rides along on the same spring because it's the same animated `layoutId`
+element, not a second thing chasing it.
+
+## Backdrop, portal, and independent timing
+
+The morph is only one of three things happening on open. `MorphingDialogContent`
+mounts through `createPortal` into `document.body` (so `z-modal` always wins,
+regardless of where the trigger lives in the DOM), and it renders its own
+backdrop with a completely separate transition:
+
+<MorphingDialogBackdrop />
+
+```tsx
+<motion.button
+  data-slot="morphing-dialog-backdrop"
+  onClick={close}
+  initial={{ opacity: 0 }}
+  animate={{ opacity: 1 }}
+  exit={{ opacity: 0 }}
+  transition={{ duration: reduceMotion ? 0 : 0.2 }}
+  className="absolute inset-0 cursor-default bg-black/50 backdrop-blur-sm"
+/>
+```
+
+The backdrop is a flat opacity tween — no spring, no overshoot, because a
+dimming layer springing would look like a glitch. The close button uses the
+same flat-fade idea but held back with `transition={{ delay: 0.1 }}` so it
+never appears mid-morph, only once the panel has essentially arrived:
+
+```tsx
+<motion.button
+  data-slot="morphing-dialog-close"
+  initial={{ opacity: 0 }}
+  animate={{ opacity: 1 }}
+  exit={{ opacity: 0 }}
+  transition={{ delay: 0.1 }}
+  aria-label="Close dialog"
+/>
+```
+
+Three timelines, three easings, one moment.
+
+## Dismissal and reduced motion
+
+`MorphingDialogContent` wires up its own escape hatch independent of the
+animation: an effect that only runs `isOpen`, listening for `Escape` and
+locking `document.body`'s scroll for the duration:
+
+```tsx
+React.useEffect(() => {
+  if (!isOpen) return;
+  const onKey = (e: KeyboardEvent) => {
+    if (e.key === "Escape") close();
+  };
+  document.addEventListener("keydown", onKey);
+  const prev = document.body.style.overflow;
+  document.body.style.overflow = "hidden";
+  return () => {
+    document.removeEventListener("keydown", onKey);
+    document.body.style.overflow = prev;
+  };
+}, [isOpen, close]);
+```
+
+The trigger itself is keyboard-operable without any extra markup —
+`role="button"`, `tabIndex={0}`, and an `onKeyDown` that treats Enter and
+Space like a click. `useReducedMotion()` from Framer flips every transition
+above to `{ duration: 0 }`, so under `prefers-reduced-motion` the card still
+becomes the modal — it just doesn't travel to get there.
+
+## The result
+
+<MorphingDialogResult />
+
+One `layoutId`, one spring, and a portal — that's the entire mechanism.
+Everything else (the backdrop, the close delay, the escape key) is
+choreography layered on top of a single measured interpolation.

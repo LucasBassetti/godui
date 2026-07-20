@@ -1,0 +1,138 @@
+---
+title: Anatomy of the Drawer
+description: How a sheet pinned to one edge slides purely on transform, and why its drag gesture only stretches in the direction that dismisses it.
+---
+
+A drawer is a modal that refuses to feel like one. It's still a portalled
+overlay with a backdrop and a `role="dialog"`, but it lives on an edge
+instead of the center, it opens with a slide instead of a fade, and — on
+mobile especially — it expects you to shove it back out the way it came
+in. Every one of those differences comes down to one idea: the panel is
+never really "positioned," it's always at its resting `top`/`right`, and
+everything you see is a `transform` on top of that.
+
+## One panel, pinned to an edge
+
+`side="bottom"` and `side="right"` render the same `motion.div`, just with
+different resting classes and a different drag axis. The bottom sheet gets
+`inset-x-0 bottom-0` plus a grab handle; the side panel gets `inset-y-0
+right-0` and no handle:
+
+<DrawerAnatomy />
+
+```tsx
+const PANEL_BY_SIDE: Record<DrawerSide, string> = {
+  bottom: "inset-x-0 bottom-0 max-h-[90vh] rounded-t-2xl border-t border-border",
+  right:  "inset-y-0 right-0 w-full max-w-md rounded-l-2xl border-l border-border",
+};
+```
+
+Because those classes never change while the drawer is open, the browser
+never has to reflow the panel's box — everything that moves after mount is
+a `transform`, which brings us to the actual animation.
+
+## It slides, it never repositions
+
+Hidden and shown are two `transform` values, nothing else. For the bottom
+sheet that's `y: "100%"` (pushed one full panel-height below its own edge)
+to `y: 0`; for the right panel it's the same idea on `x`. One spring drives
+both directions:
+
+<DrawerSpring />
+
+```tsx
+const hidden = isBottom ? { y: "100%" } : { x: "100%" };
+const shown = isBottom ? { y: 0 } : { x: 0 };
+
+<motion.div
+  initial={hidden}
+  animate={shown}
+  exit={hidden}
+  transition={{ type: "spring", damping: 32, stiffness: 320, mass: 0.9 }}
+  drag={isBottom ? "y" : "x"}
+/>
+```
+
+Because the resting layout never moves, `%`-based transforms stay correct
+at every viewport size without a resize listener — `100%` is always exactly
+one panel-length, on any screen.
+
+## The drag only stretches one way
+
+The same axis the panel slides on is also the axis you can drag it on, but
+`dragElastic` is asymmetric — it only gives in the direction that dismisses
+the drawer, and stiffens the harder you pull:
+
+<DrawerDismiss />
+
+```tsx
+const CLOSE_OFFSET = 120;
+const CLOSE_VELOCITY = 600;
+
+<motion.div
+  drag={isBottom ? "y" : "x"}
+  dragConstraints={{ top: 0, bottom: 0, left: 0, right: 0 }}
+  dragElastic={isBottom ? { top: 0, bottom: 0.6 } : { left: 0, right: 0.6 }}
+  onDragEnd={handleDragEnd}
+/>
+```
+
+`dragConstraints` is zero on every side — there's no real travel budget —
+so all of the give comes from `dragElastic`'s rubber-band math on the
+`bottom` (or `right`) side only. Try to drag a bottom sheet *up* and it
+barely moves; drag it down and it stretches. `onDragEnd` reads the release
+and decides:
+
+```tsx
+const handleDragEnd = (_e, info: PanInfo) => {
+  const offset = isBottom ? info.offset.y : info.offset.x;
+  const velocity = isBottom ? info.velocity.y : info.velocity.x;
+  if (offset > CLOSE_OFFSET || velocity > CLOSE_VELOCITY) {
+    onOpenChange(false);
+  }
+};
+```
+
+Two independent ways to dismiss: drag far enough (`> 120px`), or flick fast
+enough (`> 600px/s`) even from a short drag. Anything short of both and the
+panel has no memory of the gesture — it just springs back to `y: 0` on the
+same transition the open used, because dropping the drag doesn't change
+`animate`.
+
+## Escape, scrim, and scroll lock
+
+Opening a drawer binds a `keydown` listener for `Escape` and locks
+`document.body.style.overflow`, both torn down together when `open` flips
+back to `false` or the component unmounts:
+
+```tsx
+React.useEffect(() => {
+  if (!open) return;
+  const onKey = (e: KeyboardEvent) => {
+    if (e.key === "Escape") onOpenChange(false);
+  };
+  document.addEventListener("keydown", onKey);
+  const prevOverflow = document.body.style.overflow;
+  document.body.style.overflow = "hidden";
+  return () => {
+    document.removeEventListener("keydown", onKey);
+    document.body.style.overflow = prevOverflow;
+  };
+}, [open, onOpenChange]);
+```
+
+The backdrop is a second, independent `motion.div` — a plain opacity fade,
+`onClick` wired straight to `onOpenChange(false)` — so scrim-click, `Escape`,
+and drag-to-dismiss are three unrelated code paths that all converge on the
+same `onOpenChange(false)` call. `role="dialog"` and `aria-modal="true"` sit
+on the panel itself, not a wrapper, so assistive tech sees exactly the node
+that's visually the drawer.
+
+## The result
+
+<DrawerResult />
+
+Same component, two edges: a cart on the right you drag away horizontally,
+a share sheet on the bottom you drag away vertically — one spring, one
+elastic drag axis, and a threshold that decides when a gesture becomes a
+dismissal.

@@ -1,0 +1,149 @@
+---
+title: Anatomy of the Toast
+description: How toast() reaches any component without context, and how a stack of plain divs becomes a hoverable, swipeable pile.
+---
+
+`toast()` works from anywhere — an event handler, a `fetch` callback, a
+non-component utility function — with no `<ToastContext>` to wrap your app
+in. That's because there isn't one. The whole system is a module-level array
+and a `Set` of subscribers.
+
+## An external store, not a context
+
+```tsx
+// Minimal external store so `toast()` can be called from anywhere, no context needed.
+let counter = 0;
+let records: ToastRecord[] = [];
+const listeners = new Set<(r: ToastRecord[]) => void>();
+
+function emit() {
+  for (const l of listeners) l(records);
+}
+
+function addToast(options: ToastOptions): number {
+  const id = ++counter;
+  records = [{ id, variant: "default", ...options }, ...records];
+  emit();
+  return id;
+}
+```
+
+`ToastProvider` is the only thing that subscribes: it calls `setItems` inside
+a `useEffect`, adding itself to `listeners`. Call `toast()` from a plain
+function with no React tree in scope, and it mutates `records` and notifies
+every mounted `ToastProvider` — typically one, rendered once near your app
+root.
+
+## Anatomy of the stack
+
+The stack isn't a `<ul>` with `gap`; it's absolutely-positioned cards that
+compute their own offset from their index:
+
+<ToastAnatomy />
+
+```tsx
+// Stacking tuning.
+const GAP = 14; // px between toasts when expanded
+const PEEK = 16; // px each toast peeks out behind the front when collapsed
+const SCALE_STEP = 0.05; // scale lost per depth when collapsed
+const MAX_VISIBLE = 3; // toasts shown behind the front when collapsed
+
+const dir = isBottom ? -1 : 1; // stack grows away from the anchored edge
+const hidden = !expanded && index >= MAX_VISIBLE;
+
+const y = expanded ? dir * expandedOffset : dir * index * PEEK;
+const scale = expanded ? 1 : Math.max(0, 1 - index * SCALE_STEP);
+```
+
+Every card is full-size and positioned at the same `inset-x-0`; it's the `y`
+offset and `scale` shrinking with depth that make only a sliver of each
+back card visible above the front one. Past `MAX_VISIBLE`, a toast still
+exists in the DOM — it's just `opacity: 0`, ready the instant it's promoted.
+
+## Expand on hover, pause on hover
+
+`ToastProvider` tracks one `expanded` boolean, flipped by the mouse leaving
+or entering the stack region:
+
+<ToastExpand />
+
+```tsx
+<motion.ol
+  onMouseEnter={() => setExpanded(true)}
+  onMouseLeave={() => setExpanded(false)}
+  animate={{ height: regionHeight }}
+  transition={TOAST_SPRING}
+>
+```
+
+Expanding swaps every card's `y` from the collapsed peek formula to a real
+cumulative offset — measured, not guessed, by a `ResizeObserver` on each
+`ToastItem` reporting its height up through `onHeight`. The same `expanded`
+flag also gates the auto-dismiss timer:
+
+```tsx
+React.useEffect(() => {
+  if (expanded) return;
+  const id = setTimeout(
+    () => dismissToast(record.id),
+    record.duration ?? defaultDuration,
+  );
+  return () => clearTimeout(id);
+}, [expanded, record.id, record.duration, defaultDuration]);
+```
+
+Because the `setTimeout` is inside an effect keyed on `expanded`, hovering
+doesn't pause a running countdown — it cancels it and re-arms a fresh one on
+mouse-leave. Close enough for a toast, and far simpler than a real pause/resume
+clock.
+
+## Swipe to dismiss
+
+Every toast is also `drag="x"`, and `onDragEnd` makes the dismiss call:
+
+<ToastSwipe />
+
+```tsx
+const handleDragEnd = (
+  _e: MouseEvent | TouchEvent | PointerEvent,
+  info: PanInfo,
+) => {
+  if (Math.abs(info.offset.x) > 80 || Math.abs(info.velocity.x) > 500) {
+    dismissToast(record.id);
+  }
+};
+```
+
+It's an OR, not an AND — a slow, deliberate 80px drag dismisses, and so does
+a fast flick that never gets that far. `dragElastic={0.6}` gives the card a
+little resistance under the pointer before it commits, and there's no
+snap-back branch: cross either bar and `dismissToast` fires immediately,
+same as the swipe-and-let-go you'd expect from a native notification.
+
+## Entrance, exit, and semantics
+
+Every toast enters the same way regardless of how it leaves:
+
+```tsx
+<motion.li
+  initial={{ opacity: 0, y: dir * -40, scale: 0.9 }}
+  animate={{ opacity: hidden ? 0 : 1, y, scale }}
+  exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
+  transition={TOAST_SPRING}
+>
+```
+
+`TOAST_SPRING` (`stiffness: 320, damping: 32, mass: 0.9`) is the same tuning
+as the morph dialog's spring — GodUI's signature "premium overshoot" feel
+reused across components. The stack itself is `aria-live="polite"`, so
+screen readers announce new toasts without interrupting whatever the user
+was doing, and the whole provider renders through a portal into
+`document.body` so it's never clipped by an `overflow-hidden` ancestor.
+
+## The result
+
+<ToastResult />
+
+An external store instead of context, absolutely-positioned cards instead of
+a list, and one drag gesture instead of a dismiss button — the stack is three
+small decisions, not one big animation.

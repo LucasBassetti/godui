@@ -1,0 +1,114 @@
+---
+title: Anatomy of the Floating Toolbar
+description: How one AnimatePresence and a shared spring turn a flat actions array into a toolbar that springs into place and lifts under the pointer.
+---
+
+Floating Toolbar looks like a simple contextual bar, but it's built from one
+spring config reused three times: once for the whole shell mounting in,
+once for the shell leaving, and once per action button, per interaction. The
+component itself is small — the feel comes entirely from reusing that one
+number set consistently.
+
+## Anatomy
+
+`actions` is a flat array, same shape philosophy as Context Menu — no
+compound components, just objects the toolbar maps over. Structurally, an
+"active" action is identical to an idle one; only `aria-pressed` and two
+class names differ:
+
+<FloatingToolbarAnatomy />
+
+```tsx
+<motion.div role="toolbar" aria-label="Floating toolbar" layout>
+  {actions.map((action) => (
+    <motion.button
+      key={action.label}
+      layout
+      aria-pressed={action.active}
+      className={
+        action.active
+          ? "bg-primary text-primary-foreground"
+          : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+      }
+    >
+      {action.icon}
+    </motion.button>
+  ))}
+</motion.div>
+```
+
+Every button — and the shell around them — carries `layout`. Add or remove
+an action and Framer measures the before/after boxes and animates the diff,
+so the row never jump-cuts when its contents change.
+
+## The motion
+
+The shell doesn't just fade — `AnimatePresence` mounts and unmounts the
+whole `motion.div`, and the enter is a stiff, barely-overshooting spring:
+
+<FloatingToolbarEnter />
+
+```tsx
+<AnimatePresence>
+  {open && (
+    <motion.div
+      initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 12, scale: 0.92 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 8, scale: 0.95 }}
+      transition={{ type: "spring", stiffness: 520, damping: 32 }}
+    >
+      {/* actions */}
+    </motion.div>
+  )}
+</AnimatePresence>
+```
+
+`520/32` is a much stiffer, more critically-damped pair than the tooltip's
+`170/12/0.1` — this needs to feel *immediate*, like the toolbar was always
+there and just became visible, not like it's still settling. The exit target
+isn't the mirror of the enter (`y: 8`, not `12`; `scale: 0.95`, not `0.92`):
+it travels a shorter distance on the way out, because a lingering overshoot
+on dismissal would read as sluggish.
+
+## Per-action spring
+
+The same `520/32` spring drives every action's hover and press state,
+independent of the shell:
+
+<FloatingToolbarMagnetic />
+
+```tsx
+<motion.button
+  layout
+  whileHover={reduceMotion ? undefined : { y: -2, scale: 1.08 }}
+  whileTap={reduceMotion ? undefined : { scale: 0.94 }}
+  transition={{ type: "spring", stiffness: 520, damping: 32 }}
+>
+  {action.icon}
+</motion.button>
+```
+
+`whileHover`/`whileTap` are declarative targets, not event handlers you wire
+up yourself — Framer owns the pointer listeners and animates toward whichever
+state is currently true. Because it's the *same* spring as the shell's
+entrance, a button lifting under the cursor feels like it's made of the same
+material as the toolbar it's floating in, not a separate hover effect
+layered on top.
+
+## Accessibility
+
+`role="toolbar"` and `aria-label="Floating toolbar"` are hard-coded onto the
+shell, and every action gets `aria-label={action.label}` plus
+`aria-pressed={action.active}` — so a screen reader announces exactly which
+tool is active without reading any visual state. `useReducedMotion` strips
+every transform from both the shell and its actions, leaving nothing but the
+`opacity` fades: the toolbar still appears and disappears, and buttons still
+respond to hover/tap, just without the y-shift, scale, or overshoot.
+
+## The result
+
+<FloatingToolbarResult />
+
+Two springs, one number set: `stiffness: 520, damping: 32` gets the whole
+shell in and out, and gets each button lifting and settling under the
+pointer — reused, not reinvented, for every piece that moves.

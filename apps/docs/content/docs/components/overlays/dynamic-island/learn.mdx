@@ -1,0 +1,126 @@
+---
+title: Anatomy of the Dynamic Island
+description: How five fixed size presets, one stiff spring, and a separate crossfade combine into Apple's signature pill.
+---
+
+The Dynamic Island's shell and its content are animated by two entirely
+different systems that happen to sit inside the same element: the shell's
+box model is driven by `layout` + explicit `animate`, and the content inside
+it is a nested `AnimatePresence` that doesn't know or care what shape it's
+sitting in.
+
+## Five presets, nothing computed
+
+There's no formula deriving a size from content — `SIZES` is a lookup table,
+and every shape the shell can take is one of exactly five entries:
+
+<DynamicIslandAnatomy />
+
+```tsx
+const SIZES: Record<
+  DynamicIslandSize,
+  { width: number; height: number; radius: number }
+> = {
+  compact: { width: 140, height: 36, radius: 18 },
+  default: { width: 220, height: 44, radius: 22 },
+  long: { width: 360, height: 52, radius: 26 },
+  tall: { width: 260, height: 120, radius: 28 },
+  large: { width: 360, height: 200, radius: 36 },
+};
+```
+
+Passing a size you haven't defined isn't possible — `DynamicIslandSize` is a
+union of these five keys, so the shell only ever animates between known,
+designed states, never an arbitrary in-between.
+
+## The shell spring
+
+Changing `size` triggers one `animate` call across all three box properties
+at once:
+
+<DynamicIslandShell />
+
+```tsx
+// Underdamped so the shell settles with the signature rubbery overshoot.
+const SHELL_SPRING = {
+  type: "spring" as const,
+  stiffness: 520,
+  damping: 32,
+};
+
+<motion.div
+  layout
+  initial={false}
+  animate={{
+    width: dims.width,
+    height: dims.height,
+    borderRadius: dims.radius,
+  }}
+  transition={reduceMotion ? { duration: 0 } : SHELL_SPRING}
+  className="relative flex items-center justify-center overflow-hidden bg-black text-white shadow-xl"
+/>
+```
+
+`stiffness: 520` is considerably stiffer than the morph dialog's `320` —
+the island snaps toward its target almost immediately and only overshoots by
+a touch, which is what makes it feel rubbery rather than soft. `layout` is
+set too, so if the island sits inside a flex or grid parent, siblings
+reflow smoothly around the resize instead of jumping. Tall and large aren't
+capsules anymore — their radius is much smaller than half the height — so the
+scene above springs the same three box properties the component does, rather
+than faking the morph with `scale` (which would warp the corners).
+
+## The content crossfade
+
+The shell's `animate` only touches the box. What's inside crossfades through
+its own, independent `AnimatePresence`:
+
+<DynamicIslandCrossfade />
+
+```tsx
+const key = presenceKey ?? size;
+
+<AnimatePresence mode="popLayout" initial={false}>
+  <motion.div
+    key={key}
+    initial={reduceMotion ? false : { opacity: 0, scale: 0.9, filter: "blur(4px)" }}
+    animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+    exit={reduceMotion ? undefined : { opacity: 0, scale: 0.9, filter: "blur(4px)" }}
+    transition={{ duration: 0.2, ease: "easeOut" }}
+  >
+    {children}
+  </motion.div>
+</AnimatePresence>
+```
+
+`presenceKey` defaults to `size`, so simply switching shapes is enough to
+trigger a crossfade — but it's a separate prop precisely so you can keep the
+*same* size and still crossfade to new content (a timer ticking inside a
+`tall` island, say) by changing `presenceKey` on its own. `mode="popLayout"`
+means the exiting and entering views animate concurrently rather than
+waiting their turn, which is what makes it read as one view dissolving into
+the next instead of two sequential fades.
+
+## Cheap when idle
+
+There's no observer, no interval, no subscription running behind the scenes
+— `DynamicIsland` only re-renders (and only animates) when its `size` or
+`presenceKey` prop actually changes. An island sitting at `compact` with a
+static dot inside costs nothing beyond the one style calculation React
+skips on every render where nothing changed.
+
+## Reduced motion
+
+A single `useReducedMotion()` call gates both systems independently: the
+shell's `transition` collapses to `{ duration: 0 }`, and the content's
+`initial`/`exit` become `false`/`undefined` so `AnimatePresence` swaps
+content instantly instead of interpolating opacity, scale, or blur. Either
+way the island still lands at the correct final size with the correct final
+content — motion is what's skipped, not state.
+
+## The result
+
+<DynamicIslandResult />
+
+Two systems, cleanly separated: a five-preset shell spring for the box, and
+an independent crossfade for whatever you put inside it.

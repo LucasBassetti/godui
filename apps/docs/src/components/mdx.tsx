@@ -12,6 +12,10 @@ import { PreviewCard } from "@/components/card-previews/preview-card";
 import { ComponentInstall } from "@/components/component-install";
 import { ComponentPreview } from "@/components/component-preview";
 import { LangBadge } from "@/components/lang-badge";
+import { AnimatedTooltipAnatomy } from "@/components/learn/animated-tooltip-anatomy";
+import { AnimatedTooltipResult } from "@/components/learn/animated-tooltip-result";
+import { AnimatedTooltipSpring } from "@/components/learn/animated-tooltip-spring";
+import { AnimatedTooltipTilt } from "@/components/learn/animated-tooltip-tilt";
 import { BreadcrumbsAnatomy } from "@/components/learn/breadcrumbs-anatomy";
 import { BreadcrumbsCollapse } from "@/components/learn/breadcrumbs-collapse";
 import { BreadcrumbsPill } from "@/components/learn/breadcrumbs-pill";
@@ -21,6 +25,10 @@ import { ComboboxHighlight } from "@/components/learn/combobox-highlight";
 import { ComboboxRace } from "@/components/learn/combobox-race";
 import { ComboboxResult } from "@/components/learn/combobox-result";
 import { ComboboxStagger } from "@/components/learn/combobox-stagger";
+import { CommandPaletteAnatomy } from "@/components/learn/command-palette-anatomy";
+import { CommandPaletteEnter } from "@/components/learn/command-palette-enter";
+import { CommandPaletteHighlight } from "@/components/learn/command-palette-highlight";
+import { CommandPaletteResult } from "@/components/learn/command-palette-result";
 import { ContextMenuAnatomy } from "@/components/learn/context-menu-anatomy";
 import { ContextMenuFlip } from "@/components/learn/context-menu-flip";
 import { ContextMenuResult } from "@/components/learn/context-menu-result";
@@ -28,13 +36,25 @@ import { ContextMenuSpring } from "@/components/learn/context-menu-spring";
 import { DockAnatomy } from "@/components/learn/dock-anatomy";
 import { DockMagnify } from "@/components/learn/dock-magnify";
 import { DockResult } from "@/components/learn/dock-result";
+import { DrawerAnatomy } from "@/components/learn/drawer-anatomy";
+import { DrawerDismiss } from "@/components/learn/drawer-dismiss";
+import { DrawerResult } from "@/components/learn/drawer-result";
+import { DrawerSpring } from "@/components/learn/drawer-spring";
 import { DropdownMenuAnatomy } from "@/components/learn/dropdown-menu-anatomy";
 import { DropdownMenuResult } from "@/components/learn/dropdown-menu-result";
 import { DropdownMenuSpring } from "@/components/learn/dropdown-menu-spring";
 import { DropdownMenuSubmenu } from "@/components/learn/dropdown-menu-submenu";
+import { DynamicIslandAnatomy } from "@/components/learn/dynamic-island-anatomy";
+import { DynamicIslandCrossfade } from "@/components/learn/dynamic-island-crossfade";
+import { DynamicIslandResult } from "@/components/learn/dynamic-island-result";
+import { DynamicIslandShell } from "@/components/learn/dynamic-island-shell";
 import { FilterBarAnatomy } from "@/components/learn/filter-bar-anatomy";
 import { FilterBarResult } from "@/components/learn/filter-bar-result";
 import { FilterBarSpring } from "@/components/learn/filter-bar-spring";
+import { FloatingToolbarAnatomy } from "@/components/learn/floating-toolbar-anatomy";
+import { FloatingToolbarEnter } from "@/components/learn/floating-toolbar-enter";
+import { FloatingToolbarMagnetic } from "@/components/learn/floating-toolbar-magnetic";
+import { FloatingToolbarResult } from "@/components/learn/floating-toolbar-result";
 import { FoldProgress } from "@/components/learn/fold-progress";
 import { FoldStages } from "@/components/learn/fold-stages";
 import { GooeyFabResult } from "@/components/learn/gooey-fab-result";
@@ -64,6 +84,10 @@ import { MegaMenuAnatomy } from "@/components/learn/mega-menu-anatomy";
 import { MegaMenuHighlight } from "@/components/learn/mega-menu-highlight";
 import { MegaMenuMorph } from "@/components/learn/mega-menu-morph";
 import { MegaMenuResult } from "@/components/learn/mega-menu-result";
+import { MorphingDialogAnatomy } from "@/components/learn/morphing-dialog-anatomy";
+import { MorphingDialogBackdrop } from "@/components/learn/morphing-dialog-backdrop";
+import { MorphingDialogResult } from "@/components/learn/morphing-dialog-result";
+import { MorphingDialogSpring } from "@/components/learn/morphing-dialog-spring";
 import { OtpAnatomy } from "@/components/learn/otp-anatomy";
 import { OtpCaret } from "@/components/learn/otp-caret";
 import { OtpResult } from "@/components/learn/otp-result";
@@ -90,6 +114,10 @@ import { TabBarAnatomy } from "@/components/learn/tab-bar-anatomy";
 import { TabBarBlob } from "@/components/learn/tab-bar-blob";
 import { TabBarPop } from "@/components/learn/tab-bar-pop";
 import { TabBarResult } from "@/components/learn/tab-bar-result";
+import { ToastAnatomy } from "@/components/learn/toast-anatomy";
+import { ToastExpand } from "@/components/learn/toast-expand";
+import { ToastResult } from "@/components/learn/toast-result";
+import { ToastSwipe } from "@/components/learn/toast-swipe";
 import { MCPInstall } from "@/components/mcp-install";
 
 function Table(props: ComponentProps<"table">) {
@@ -219,6 +247,34 @@ export function getMDXComponents(components?: MDXComponents) {
     TabBarBlob,
     TabBarPop,
     TabBarResult,
+    AnimatedTooltipAnatomy,
+    AnimatedTooltipSpring,
+    AnimatedTooltipTilt,
+    AnimatedTooltipResult,
+    CommandPaletteAnatomy,
+    CommandPaletteEnter,
+    CommandPaletteHighlight,
+    CommandPaletteResult,
+    DrawerAnatomy,
+    DrawerSpring,
+    DrawerDismiss,
+    DrawerResult,
+    DynamicIslandAnatomy,
+    DynamicIslandShell,
+    DynamicIslandCrossfade,
+    DynamicIslandResult,
+    FloatingToolbarAnatomy,
+    FloatingToolbarEnter,
+    FloatingToolbarMagnetic,
+    FloatingToolbarResult,
+    MorphingDialogAnatomy,
+    MorphingDialogSpring,
+    MorphingDialogBackdrop,
+    MorphingDialogResult,
+    ToastAnatomy,
+    ToastExpand,
+    ToastSwipe,
+    ToastResult,
     ...components,
   } satisfies MDXComponents;
 }

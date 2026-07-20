@@ -1,0 +1,112 @@
+---
+title: Anatomy of the Animated Tooltip
+description: How one motion.span becomes a bouncy, pointer-tracking tooltip — the mount spring, the 3D tilt math, and why both share one spring config.
+---
+
+Most tooltips are a `display` toggle with a CSS transition bolted on. Animated
+Tooltip is one `<span>` wrapper, an `AnimatePresence`, and two coupled springs
+— one for the mount, one for the pointer — built from the exact same
+`{ stiffness: 170, damping: 12, mass: 0.1 }` config so the whole thing feels
+like a single physical object.
+
+## Anatomy
+
+The wrapper never unmounts. `open` — flipped by `onMouseEnter`/`onMouseLeave`
+and `onFocus`/`onBlur` — controls whether the panel and its caret exist at
+all:
+
+<AnimatedTooltipAnatomy />
+
+```tsx
+<span
+  onMouseEnter={() => setOpen(true)}
+  onMouseLeave={() => setOpen(false)}
+  onFocus={() => setOpen(true)}
+  onBlur={() => setOpen(false)}
+  onMouseMove={handleMouseMove}
+>
+  <AnimatePresence mode="wait">
+    {open ? <motion.span role="tooltip">{content}</motion.span> : null}
+  </AnimatePresence>
+  {children}
+</span>
+```
+
+The caret isn't a triangle or an SVG — it's a 2px square, `rotate-45`, tucked
+half-behind the panel's edge. Cheaper than a clip-path, and it inherits the
+panel's own background so there's nothing to keep in sync.
+
+## The motion
+
+The panel's `initial`/`animate` pair isn't a fade with a duration; it's a
+spring, and a deliberately underdamped one. `damping: 12` against
+`stiffness: 170` with a featherweight `mass: 0.1` means it doesn't ease up to
+`scale: 1` — it flies past it and springs back:
+
+<AnimatedTooltipSpring />
+
+```tsx
+<motion.span
+  initial={{ opacity: 0, y: isTop ? 8 : -8, scale: 0.85 }}
+  animate={{
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { type: "spring", stiffness: 170, damping: 12, mass: 0.1 },
+  }}
+  exit={{ opacity: 0, y: isTop ? 6 : -6, scale: 0.9 }}
+/>
+```
+
+Notice the exit isn't a spring at all — no `transition` is specified, so it
+falls back to Framer's default tween. The bounce is a *hello*, not a
+*goodbye*: reserved for the moment the tooltip earns your attention, skipped
+on the way out because nobody's watching it leave.
+
+## Pointer tilt
+
+The 3D read comes from a second spring riding the same config, driven by the
+cursor instead of a mount/unmount. `onMouseMove` measures the pointer against
+the trigger's own center — not the page — so the math is symmetric around
+zero regardless of where the trigger sits:
+
+<AnimatedTooltipTilt />
+
+```tsx
+const x = useMotionValue(0);
+const rotate = useSpring(useTransform(x, [-60, 60], [-14, 14]), SPRING);
+const translateX = useSpring(useTransform(x, [-60, 60], [-12, 12]), SPRING);
+
+const handleMouseMove = (e: React.MouseEvent<HTMLSpanElement>) => {
+  const rect = e.currentTarget.getBoundingClientRect();
+  x.set(e.clientX - rect.left - rect.width / 2);
+};
+```
+
+`useTransform` is the instant, unanimated remap — pure interpolation, no
+easing. `useSpring` is what wraps around it, turning that instantaneous
+target into a value the panel *chases*. That's why the tilt reads as
+physical instead of glued to the cursor: at speed, the panel visibly lags a
+beat behind, then catches up with the same 170/12/0.1 bounce as the mount.
+Both transforms land on `style`, not `animate`, so they update every frame
+off the motion values directly — no re-render per pixel of mouse movement.
+
+`[transform-style:preserve-3d]` on the panel is what keeps `rotate` and the
+caret's own `rotate-45` compositing correctly together instead of one
+flattening the other.
+
+## Accessibility
+
+`role="tooltip"` is on the panel itself, and it opens on `onFocus` exactly
+like it does on `onMouseEnter` — so tabbing to any wrapped trigger reveals
+the same content a mouse hover would, with the same spring. There's no
+separate "keyboard mode": one `open` boolean, four event handlers, all
+routed through the identical `AnimatePresence`.
+
+## The result
+
+<AnimatedTooltipResult />
+
+One spring config, two jobs: the panel springs into existence, and once it
+exists, the same numbers govern how it leans toward wherever you're
+pointing.
