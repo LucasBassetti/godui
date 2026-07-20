@@ -1,0 +1,117 @@
+---
+title: Anatomy of the Context Menu
+description: How a flat items array becomes a spring-loaded menu that grows from the exact cursor point and flips itself to stay inside the viewport.
+---
+
+A native right-click menu is invisible plumbing: capture `contextmenu`, place a
+panel at the pointer, catch focus, and clean up on the first click outside. The
+hard parts aren't the rows — they're *where* the panel lands and *how* it gets
+out of its own way at a screen edge. Context Menu is one component that takes a
+flat array and does all of it.
+
+## The shape of the array is the shape of the menu
+
+There's no nested config and no compound `<Menu.Item>` children. You pass one
+flat `items` array, and the component walks it in order, switching on `type`:
+
+<ContextMenuAnatomy />
+
+```tsx
+{items.map((item, index) => {
+  if (item.type === "separator") return <hr key={`sep-${index}`} />;
+  if (item.type === "label") return <div key={`label-${index}`}>{item.label}</div>;
+  return (
+    <button role="menuitem" data-menu-item onClick={() => { item.onSelect?.(); setCoords(null); }}>
+      {item.icon && <span className="opacity-70">{item.icon}</span>}
+      <span className="flex-1 truncate">{item.label}</span>
+      {item.shortcut && <span className="ml-auto">{item.shortcut}</span>}
+    </button>
+  );
+})}
+```
+
+A `label` is a muted, non-focusable header; a `separator` is a hairline `<hr>`;
+everything else is a `menuitem` button laying out icon · label · shortcut. A
+`destructive: true` item is the same row tinted with `text-destructive` and a
+red hover — no separate variant to render.
+
+## It springs from the cursor point
+
+The menu doesn't fade into the middle of the screen; it appears to grow out of
+where you clicked. On `contextMenu` the component stores the raw
+`clientX/clientY`, mounts the panel at `position: fixed` with `left`/`top` set to
+exactly those coordinates, and pins `transformOrigin` to the corner nearest the
+pointer:
+
+<ContextMenuSpring />
+
+```tsx
+const spring = reduceMotion
+  ? { duration: 0 }
+  : ({ type: "spring", stiffness: 520, damping: 32 } as const);
+
+<motion.div
+  initial={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.9 }}
+  animate={{ opacity: 1, scale: 1 }}
+  exit={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.9 }}
+  transition={spring}
+  style={{ position: "fixed", left: coords.x, top: coords.y, transformOrigin: "left top" }}
+/>
+```
+
+`scale: 0.9 → 1` with the origin at the click corner is what sells the "grew from
+the pointer" read — a centered scale would look like it inflated from the middle.
+The `stiffness 520 / damping 32` spring is stiff enough to feel instant but still
+lands with a hair of overshoot.
+
+## It flips to stay inside the viewport
+
+Anchoring at the cursor breaks the moment you right-click near the bottom-right
+corner — a naive panel would overflow the screen. So `openAt` measures first. It
+estimates the panel box from the item count and compares it against the viewport
+before the menu ever mounts:
+
+<ContextMenuFlip />
+
+```tsx
+const openAt = (clientX, clientY) => {
+  const menuW = 220;
+  const menuH = Math.min(items.length * 40 + 12, 360);
+  const flipX = clientX + menuW > window.innerWidth;
+  const flipY = clientY + menuH > window.innerHeight;
+  setCoords({ x: clientX, y: clientY, flipX, flipY });
+};
+```
+
+When a flag trips, the anchor switches from `left/top` to `right/bottom`
+(`right: innerWidth − x`) and `transformOrigin` swaps to the opposite corner. The
+panel opens *away* from the edge instead of through it — and because the origin
+moves with it, it still springs out of the pointer, just in the other direction.
+
+## Focus, keys, and cleanup
+
+Opening the menu immediately moves focus to the first `data-menu-item`, so the
+keyboard is live without a click. `ArrowDown`/`ArrowUp` walk the items with a
+wrap-around modulo, and three listeners — `mousedown` outside, `scroll`
+(capture), and `Escape` — all collapse it back to `null`:
+
+```tsx
+const moveFocus = (dir: 1 | -1) => {
+  const nodes = Array.from(menuRef.current?.querySelectorAll("[data-menu-item]") ?? []);
+  const idx = nodes.indexOf(document.activeElement);
+  nodes[(idx + dir + nodes.length) % nodes.length]?.focus();
+};
+```
+
+The listeners only exist while the menu is open — the effect that binds them is
+keyed on `coords` and tears them all down on close, so an idle right-click target
+carries zero global handlers. `useReducedMotion` drops the scale entirely,
+leaving a plain opacity fade with `duration: 0` on the spring.
+
+## The result
+
+<ContextMenuResult />
+
+One flat array in, a `role="menu"` of buttons out — placed at the cursor,
+sprung from its corner, flipped off the edges, and dismissed the instant you
+look away. The rows are just paint; the component is the placement.

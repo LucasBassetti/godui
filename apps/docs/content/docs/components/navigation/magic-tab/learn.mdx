@@ -1,0 +1,108 @@
+---
+title: Anatomy of the Magic Tab
+description: How a segmented control borrows Magic Button's three-layer stack, but only the selected tab ever pays for it.
+---
+
+Magic Tab is Magic Button's sibling: same three-layer illusion of a
+pushed-up surface, same springy bezier — but wearing a `role="tablist"`
+instead of a lone button. The twist is selection. A button is always
+"pressed or not"; a tab has to hold a rest state for every item it isn't,
+and only spend the 3D budget on the one it is.
+
+## Three layers, but one tab wears them
+
+Every tab is a `<button>` with the same absolutely-stacked shadow, edge,
+and front-face spans as Magic Button. The difference: on an unselected tab
+the shadow and edge sit at `opacity-0` and the front is flat
+(`bg-transparent`, no lift). Only the selected tab's stack actually
+materializes — shown below as flat → the three spans → assembled lift:
+
+<MagicTabAnatomy />
+
+```tsx
+const shadowOpacity = selected ? (rainbow ? "opacity-70" : "opacity-100") : "opacity-0";
+const edgeFill = selected ? `opacity-100 ${...}` : "opacity-0";
+const frontState = selected
+  ? `-translate-y-[4px] ${frontVariantSelected[variant]} ...`
+  : `bg-transparent text-muted-foreground ${frontVariantPreview[variant]}`;
+```
+
+Unselected tabs still preview the selected color flat on hover/focus
+(`frontVariantPreview`) — a hint of what clicking does — but never lift.
+Lifting is reserved for the tab that's actually selected.
+
+## The lift has three stops, not two
+
+A selected tab doesn't just sit at `-4px` — it goes one step further on
+`focus-visible`, to `-6px`, the same way Magic Button's hover lift previews
+what a press would feel like. Rest → selected uses the slower settle
+bezier; selected → focus overshoots on the snappier one:
+
+<MagicTabLift />
+
+```tsx
+// front face
+"-translate-y-[4px] group-focus-visible:-translate-y-[6px]
+ [transition:translate_600ms_cubic-bezier(0.3,0.7,0.4,1)]
+ group-focus-visible:[transition:translate_250ms_cubic-bezier(0.3,0.7,0.4,1.5)]"
+```
+
+`600ms` at rest→selected is deliberately unhurried; `250ms` with a `1.5`
+overshoot control point on selected→focus is the snap that says "this is
+now interactive." Both offsets animate `translate`, never `top` — the same
+compositor-only rule Magic Button enforces, for the same reason: a moved
+layer is free, a re-laid-out one isn't.
+
+## The rainbow, paused when nobody's looking
+
+The selected tab's edge and shadow can run the same sliding rainbow
+gradient as Magic Button — `background-size: 200% 100%` with a
+`background-position` keyframe. It's real work on the main thread, so an
+`IntersectionObserver` on the tablist root pauses every
+`.animate-magic-rainbow` layer the instant it scrolls out of view:
+
+<MagicTabRainbow />
+
+```tsx
+const io = new IntersectionObserver(
+  ([entry]) => {
+    for (const layer of root.querySelectorAll<HTMLElement>(".animate-magic-rainbow"))
+      layer.style.animationPlayState = entry.isIntersecting ? "" : "paused";
+  },
+  { rootMargin: "128px" },
+);
+```
+
+`rootMargin: "128px"` resumes the sweep just before the tablist re-enters
+the viewport, so scrolling back to it never catches a frozen mid-cycle
+frame snapping back to life.
+
+## A tablist, not a button row
+
+The container is `role="tablist"` with `aria-orientation="horizontal"`;
+each button is `role="tab"` with `aria-selected`. Focus and selection are
+deliberately separate — arrow keys move a roving `tabIndex` between tabs
+without selecting them, and `Enter`/`Space` commits whichever tab currently
+holds focus:
+
+```tsx
+case "ArrowRight":
+  moveFocus(enabled[(currentIndex + 1) % enabled.length].value);
+  break;
+case "Enter":
+case " ":
+  if (rovingValue !== undefined) select(rovingValue);
+  break;
+```
+
+This is the WAI-ARIA "manual activation" tab pattern: you can arrow through
+every tab to read its label before committing, instead of every keypress
+switching panels. Tabbing out of the list resets the roving stop back to
+whatever's actually selected.
+
+## The result
+
+<MagicTabResult />
+
+Same three spans, same bezier as Magic Button — Magic Tab just decides,
+per render, which single tab is allowed to spend them.

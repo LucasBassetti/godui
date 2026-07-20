@@ -79,8 +79,11 @@ const Breadcrumbs = React.forwardRef<HTMLElement, BreadcrumbsProps>(
       ? { duration: 0 }
       : ({ type: "spring", stiffness: 520, damping: 32 } as const);
 
-    const collapse =
-      maxItems >= 2 && items.length > maxItems && collapsible && !expanded;
+    // Collapse is structural — independent of whether the ellipsis popover is
+    // open. Gating on `expanded` used to expand the whole trail inline when the
+    // dots were clicked, which made the ellipsis vanish instead of opening the
+    // dropdown the Learn article documents.
+    const collapse = maxItems >= 2 && items.length > maxItems && collapsible;
 
     const entries: Entry[] = React.useMemo(() => {
       const last = items.length - 1;
@@ -214,7 +217,7 @@ const Breadcrumbs = React.forwardRef<HTMLElement, BreadcrumbsProps>(
                         aria-label={`Show ${entry.hidden.length} hidden crumbs`}
                         aria-expanded={expanded}
                         onMouseEnter={() => setHovered("ellipsis")}
-                        onClick={() => setExpanded(true)}
+                        onClick={() => setExpanded((open) => !open)}
                         className={`group ${pillClass} text-muted-foreground hover:text-foreground`}
                       >
                         <HoverPill active={hovered === "ellipsis"} />

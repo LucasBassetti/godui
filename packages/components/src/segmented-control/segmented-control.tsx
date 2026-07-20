@@ -79,7 +79,7 @@ const SegmentedControl = React.forwardRef<
               aria-selected={active}
               disabled={opt.disabled}
               onClick={() => select(opt.value)}
-              className={`relative inline-flex h-full items-center justify-center gap-1.5 rounded-md px-3 font-medium [transition:color_150ms_ease] focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-background active:scale-[0.97] disabled:pointer-events-none disabled:opacity-40 ${
+              className={`relative isolate inline-flex h-full items-center justify-center gap-1.5 rounded-md px-3 font-medium [transition:color_150ms_ease] focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-background active:scale-[0.97] disabled:pointer-events-none disabled:opacity-40 ${
                 active
                   ? "text-foreground"
                   : "text-muted-foreground hover:text-foreground"
@@ -93,11 +93,15 @@ const SegmentedControl = React.forwardRef<
                       ? { duration: 0 }
                       : { type: "spring", stiffness: 520, damping: 32 }
                   }
-                  className="absolute inset-0 rounded-md bg-background shadow-sm"
+                  className="absolute inset-0 z-0 rounded-md bg-background shadow-sm"
                 />
               )}
-              {opt.icon && <span className="shrink-0">{opt.icon}</span>}
-              <span className="relative">{opt.label}</span>
+              {opt.icon && (
+                <span className="relative z-10 shrink-0 text-current [&_svg]:text-current">
+                  {opt.icon}
+                </span>
+              )}
+              <span className="relative z-10">{opt.label}</span>
             </button>
           );
         })}

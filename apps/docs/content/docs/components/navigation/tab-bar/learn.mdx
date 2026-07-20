@@ -1,0 +1,102 @@
+---
+title: Anatomy of the Tab Bar
+description: How a bottom nav's active indicator is one sliding blob, one popping icon, and a label that only exists on the tab that's currently active.
+---
+
+A mobile tab bar has one job most desktop nav doesn't: it has to say "you
+are here" in a strip barely tall enough for an icon. Tab Bar answers with
+motion instead of more chrome — a blob that travels, an icon that pops,
+and a label that only shows up where it's needed.
+
+## One pill, one blob, icons plus a label
+
+The bar is a single rounded `<nav>` holding N `<button>` tabs. Every tab
+always shows its icon; only the active one renders the blob underneath it
+and reveals its label — `labelsOnActiveOnly` (default `true`) is what
+keeps the inactive tabs icon-only so the row stays tight enough for four or
+five destinations:
+
+<TabBarAnatomy />
+
+```tsx
+{active && (
+  <motion.span
+    layoutId={blobId}
+    transition={spring}
+    className="absolute inset-0 rounded-full bg-primary shadow-sm"
+  />
+)}
+```
+
+## The blob is a spring, not four backgrounds
+
+Like every other shared-highlight pattern in the system, there's exactly
+one blob element, bound by a `layoutId`. Switching the active tab doesn't
+swap a class on the old and new tab — framer sees the same `layoutId`
+land in a new box and springs it there:
+
+<TabBarBlob />
+
+```tsx
+const spring = reduceMotion
+  ? { duration: 0 }
+  : ({ type: "spring", stiffness: 520, damping: 32 } as const);
+```
+
+`520/32` is the fast, barely-overshooting spring — a bottom nav gets tapped
+in quick succession, so the blob needs to keep up without ever feeling like
+it's still catching up from the last tap.
+
+## Becoming active: a pop, then a label
+
+The instant a tab becomes active, its icon runs a `scale: [1, 1.18, 1]`
+keyframe — a tap-confirmation pop, not a hover effect, since bottom navs
+are touch surfaces first. The label reveal is honestly a layout animation:
+`motion.span` with `layout` animates `width: 0 → auto` so the text doesn't
+just snap into existence:
+
+<TabBarPop />
+
+```tsx
+<motion.span
+  animate={reduceMotion || !active ? { scale: 1 } : { scale: [1, 1.18, 1] }}
+  transition={{ duration: 0.3, ease: "easeOut" }}
+>
+  {tab.icon}
+</motion.span>
+{(!labelsOnActiveOnly || active) && (
+  <motion.span layout initial={{ opacity: 0, width: 0 }} animate={{ opacity: 1, width: "auto" }} transition={spring}>
+    {tab.label}
+  </motion.span>
+)}
+```
+
+Animating `width` breaks the compositor-only rule the rest of GodUI's
+motion holds to — but it's the one place that trade is worth making: it
+happens on at most one tab at a time, only on an explicit tap, and `layout`
+lets framer FLIP the width change into a transform under the hood rather
+than thrashing layout every frame.
+
+## Safe area, for real devices
+
+`safeArea` adds `pb-[max(0.375rem,env(safe-area-inset-bottom))]` — enough
+bottom padding to clear a home indicator on notched phones without adding
+dead space on devices that don't have one. It's opt-in because a tab bar
+docked inside a larger shell (a card, a modal) usually shouldn't reserve
+that space at all.
+
+## Accessibility
+
+Tab Bar is a `<nav>` of `<button>`s, not a `role="tablist"` — a bottom nav
+navigates between destinations rather than switching panels in place, so
+each tab gets `aria-label` (since the visible label can be hidden) and
+`aria-current="page"` on the active one, the same semantic a desktop nav
+link would use. A badge count sits in its own `<span>`, entirely
+decorative to assistive tech beyond what the label already conveys.
+
+## The result
+
+<TabBarResult />
+
+One blob, one pop, one label that shows up exactly where it's active — the
+whole bar fits in the space of four icons and still tells you where you are.

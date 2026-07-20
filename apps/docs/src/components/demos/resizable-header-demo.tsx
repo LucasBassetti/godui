@@ -25,7 +25,10 @@ export function ResizableHeaderDemo() {
         </span>
       </div>
 
-      <div ref={scrollRef} className="h-80 overflow-y-auto bg-muted/20">
+      <div
+        ref={scrollRef}
+        className="h-80 overflow-x-hidden overflow-y-auto bg-muted/20"
+      >
         <ResizableHeader
           scrollRef={scrollRef}
           activeHref={active}

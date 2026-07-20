@@ -1,0 +1,100 @@
+---
+title: Anatomy of the Segmented Control
+description: How a tab-like control renders one pill that lives inside whichever tab is active, and lets Framer's layoutId spring it between segments instead of cross-fading.
+---
+
+A segmented control could be built as N buttons each tracking their own
+"am I selected" background. GodUI builds it as N buttons and exactly **one**
+pill, which is only ever rendered inside the currently active tab. Switching
+segments doesn't toggle a background on the old and new button — it moves
+the same element.
+
+## One track, N tabs, one pill
+
+The track is a `role="tablist"` with `bg-muted`, rounded corners, and a
+little padding; each option is a `role="tab"` button. The pill itself is
+`absolute inset-0` of whichever button is active — conditionally rendered,
+so it only ever exists in one place in the DOM at a time:
+
+<SegmentedControlAnatomy />
+
+```tsx
+<div role="tablist" className="inline-flex items-center rounded-lg border bg-muted p-1">
+  {options.map((opt) => {
+    const active = opt.value === value;
+    return (
+      <button key={opt.value} role="tab" aria-selected={active} onClick={() => select(opt.value)}>
+        {active && (
+          <motion.span
+            layoutId={layoutId}
+            className="absolute inset-0 rounded-md bg-background shadow-sm"
+          />
+        )}
+        <span className="relative">{opt.label}</span>
+      </button>
+    );
+  })}
+</div>
+```
+
+Because the pill is a child of the *button*, not the track, it's positioned
+with plain `inset-0` — no coordinate math to find "which tab am I under."
+The tab's own layout does that for free.
+
+## `layoutId` turns a remount into a slide
+
+When `value` changes, the pill unmounts from the old button and mounts in
+the new one — normally that would be two separate elements popping in and
+out. `layoutId` tells Framer Motion these two mounts are "the same" element:
+it measures the old box, measures the new box, and animates a `transform`
+between them instead of letting either one just appear:
+
+<SegmentedControlSlide />
+
+```tsx
+let pillSeed = 0;
+const layoutId = React.useMemo(() => `segmented-pill-${pillSeed++}`, []);
+
+<motion.span
+  layoutId={layoutId}
+  transition={{ type: "spring", stiffness: 520, damping: 32 }}
+  className="absolute inset-0 rounded-md bg-background shadow-sm"
+/>
+```
+
+The per-instance `pillSeed` counter matters more than it looks: `layoutId`
+is matched globally across the page, so two `SegmentedControl`s rendered at
+once must never share an id, or Framer would try to slide a pill *between
+them*. Incrementing a module-level counter on every mount guarantees each
+instance gets its own namespace without a prop the consumer has to supply.
+
+## Press feedback, no extra state
+
+There's no separate "pressed" boolean to track. Every tab button carries
+`active:scale-[0.97]` — a plain CSS active-state utility, not a Framer
+`whileTap` — so the dip is instantaneous on both mouse and touch and costs
+nothing while the control is idle:
+
+```tsx
+className="... active:scale-[0.97] disabled:pointer-events-none disabled:opacity-40"
+```
+
+## Accessibility
+
+The track is a real `tablist`/`tab` pair — `aria-selected` mirrors `active`
+directly off the same boolean that decides whether to render the pill, so
+the visual state and the accessible state can never drift apart. Focus is
+native `<button>` focus (`focus-visible:ring-2`, offset for contrast against
+the muted track); there's no roving-tabindex manager, because segmented
+controls are typically small enough that browser tab order is enough.
+`useReducedMotion` collapses the pill's spring to `{ duration: 0 }` — the
+pill still jumps to the new tab, it just doesn't slide.
+
+## The result
+
+<SegmentedControlResult />
+
+Two lines of state (`value`, and a `layoutId` that only exists to keep
+instances apart) plus one conditionally-rendered pill — the slide is Framer
+measuring two boxes and animating between them, not a control tracking
+motion on its own.

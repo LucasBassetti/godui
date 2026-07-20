@@ -1,0 +1,130 @@
+---
+title: Anatomy of the Dropdown Menu
+description: How one recursive panel component turns a flat items array into a menu that springs from the trigger's corner and nests submenus to the side, at any depth.
+---
+
+A dropdown menu and its submenus look like two different pieces of UI. In
+the source they're the same component called twice. `MenuPanel` doesn't know
+whether it's the root menu or nested three levels deep — it just renders an
+`items` array, and if one of those items has its own `submenu`, it renders
+another `MenuPanel` inside itself.
+
+## One array, four row kinds
+
+There's no compound `<Menu.Item>` / `<Menu.Label>` API. `DropdownMenuItem` is
+a union, and the panel switches on `type` (or the absence of one) as it maps:
+
+<DropdownMenuAnatomy />
+
+```tsx
+export type DropdownMenuItem =
+  | { type: "separator" }
+  | { type: "label"; label: React.ReactNode }
+  | {
+      type?: "item";
+      label: React.ReactNode;
+      icon?: React.ReactNode;
+      shortcut?: string;
+      submenu?: DropdownMenuItem[];
+    };
+```
+
+A `label` is a muted, non-interactive heading; a `separator` is a hairline
+`<hr>`; a plain item lays out icon · label · shortcut; and an item with a
+non-empty `submenu` gets the same row plus a trailing chevron. Four visual
+kinds, one loop, no branching component tree.
+
+## It springs from the corner nearest the trigger
+
+Opening isn't a fade toward the center — the panel scales `0.94 → 1` while
+fading in, on the same `stiffness: 520 / damping: 32` spring used across
+GodUI's popovers. What makes it read as "growing off the trigger" is
+`transform-origin`: not a fixed corner, but whichever one sits closest to
+where the trigger is, computed from `side` and `align`:
+
+<DropdownMenuSpring />
+
+```tsx
+const originClasses: Record<DropdownSide, Record<DropdownAlign, string>> = {
+  bottom: { start: "origin-top-left", center: "origin-top", end: "origin-top-right" },
+  top:    { start: "origin-bottom-left", center: "origin-bottom", end: "origin-bottom-right" },
+  // …right, left…
+};
+
+<motion.div
+  initial={{ opacity: 0, scale: 0.94 }}
+  animate={{ opacity: 1, scale: 1 }}
+  transition={{ type: "spring", stiffness: 520, damping: 32 }}
+  className={`... ${originClasses[side][align]}`}
+/>
+```
+
+An `align="end"` menu below a right-aligned trigger gets `origin-top-right`
+— the panel visibly unfolds from its own top-right corner, which is exactly
+where the trigger's edge is. Flip `align` to `start` and the origin flips
+with it; the component never hardcodes "top left."
+
+## Submenus are the same panel, recursed
+
+A submenu isn't a second, simpler component — `MenuPanel` calls itself.
+Hovering (or pressing `ArrowRight` on) a row with a `submenu` sets a local
+`openSub` index; the child `MenuPanel` mounts absolutely positioned off that
+row's right edge, with `side="right"` and `align="start"` so its own origin
+resolves to `origin-top-left`:
+
+<DropdownMenuSubmenu />
+
+```tsx
+{hasSub && (
+  <div onMouseEnter={() => setOpenSub(index)} onMouseLeave={() => setOpenSub(null)}>
+    <button
+      onKeyDown={(e) => {
+        if (e.key === "ArrowRight") setOpenSub(index);
+        else if (e.key === "ArrowLeft") setOpenSub(null);
+      }}
+    >
+      {inner}
+    </button>
+    {openSub === index && item.submenu && (
+      <div className="absolute top-0 left-full ml-1">
+        <MenuPanel items={item.submenu} side="right" align="start" isSub />
+      </div>
+    )}
+  </div>
+)}
+```
+
+Because it's the *same* `MenuPanel`, a submenu gets every mechanism the root
+menu gets for free — its own spring-in, its own focus trap, its own
+`ArrowDown`/`ArrowUp` walking — with zero submenu-specific animation code. A
+submenu of a submenu would just work, though the current row kinds only
+nest one level deep in practice.
+
+## Focus and keys, scoped to each panel
+
+Each `MenuPanel` focuses its own first `[data-menu-item]` on mount and owns
+its own `ArrowDown`/`ArrowUp` wrap-around walk — scoped to *that* panel's
+`listRef`, so arrowing inside a submenu never leaks focus back to the parent
+row:
+
+```tsx
+const moveFocus = (dir: 1 | -1) => {
+  const nodes = Array.from(listRef.current?.querySelectorAll("[data-menu-item]") ?? []);
+  const idx = nodes.indexOf(document.activeElement as HTMLElement);
+  nodes[(idx + dir + nodes.length) % nodes.length]?.focus();
+};
+```
+
+`Escape` calls `onClose`, which both collapses `open` and returns focus to
+the trigger button — so closing the menu with the keyboard never drops focus
+onto the page body. A `mousedown` listener bound only while the root menu is
+open handles click-outside; `useReducedMotion` drops the scale on every
+panel, root and submenu alike, leaving a plain opacity fade.
+
+## The result
+
+<DropdownMenuResult />
+
+One `items` array, one recursive `MenuPanel`, and a `transform-origin` that
+follows the trigger instead of being fixed — that's a menu and every nested
+submenu it can grow, built from a single component calling itself.

@@ -24,7 +24,14 @@ describe("Breadcrumbs", () => {
     expect(screen.queryByText("Library")).not.toBeInTheDocument();
     const toggle = screen.getByRole("button", { name: /hidden crumbs/ });
     await userEvent.click(toggle);
+    // Ellipsis stays in the trail; hidden crumbs appear in the popover.
+    expect(toggle).toBeInTheDocument();
+    expect(toggle).toHaveAttribute("aria-expanded", "true");
     expect(screen.getByText("Library")).toBeInTheDocument();
+    // Trail itself does not expand — "Data" is still only in the popover path
+    // via the collapsed middle; the visible trail stays head + … + tail.
+    expect(screen.getByText("Home")).toBeInTheDocument();
+    expect(screen.getByText("Current")).toBeInTheDocument();
   });
 
   it("calls onNavigate when a crumb link is clicked", async () => {

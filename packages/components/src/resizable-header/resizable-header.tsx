@@ -82,14 +82,14 @@ const ResizableHeader = React.forwardRef<HTMLElement, ResizableHeaderProps>(
     return (
       <header
         ref={ref}
-        className={`${sticky ? "sticky top-0" : "relative"} z-sticky flex w-full justify-center px-4 ${className ?? ""}`}
+        className={`${sticky ? "sticky top-0" : "relative"} z-sticky flex w-full max-w-full justify-center overflow-x-clip px-4 ${className ?? ""}`}
         {...props}
       >
         <motion.nav
           layout
           transition={spring}
           aria-label="Main"
-          className={`mt-3 flex items-center justify-between gap-4 border border-border bg-background/70 backdrop-blur-xl ${
+          className={`mt-3 flex min-w-0 max-w-full items-center justify-between gap-4 border border-border bg-background/70 backdrop-blur-xl ${
             shrunk
               ? "w-full max-w-2xl rounded-full px-3 py-2 shadow-lg"
               : "w-full max-w-5xl rounded-2xl px-4 py-3 shadow-sm"

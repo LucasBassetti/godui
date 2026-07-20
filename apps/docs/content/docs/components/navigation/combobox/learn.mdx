@@ -1,0 +1,167 @@
+---
+title: Anatomy of the Combobox
+description: How one input and a floating listbox turn a flat option list into a searchable field — with staggered rows, a spliced highlight, and a race-guarded async resolver.
+---
+
+A combobox looks like a `<select>` that learned to type. Underneath it's much
+simpler than that suggests: one real `<input role="combobox">`, and — mounted
+through `AnimatePresence` the moment it's focused — a `role="listbox"`
+popover sitting on top. No portal, no virtualized list, no hidden `<select>`
+shadowing the input. The input owns the value; the listbox is just its
+reflection.
+
+## One input, a floating listbox
+
+The popover isn't a separate stateful component — it's the same `open`
+boolean that gates the input's dropdown affordance, rendered as an absolutely
+positioned sibling with `origin-top` so it visually grows out of the field's
+bottom edge:
+
+<ComboboxAnatomy />
+
+```tsx
+<input
+  role="combobox"
+  aria-expanded={open}
+  aria-controls={listboxId}
+  aria-autocomplete="list"
+  value={open ? query : (selectedOption?.label ?? query)}
+  onChange={(e) => { setQuery(e.target.value); setActive(0); setOpen(true); }}
+/>
+
+<AnimatePresence>
+  {open && <motion.ul id={listboxId} role="listbox" className="absolute top-full ... origin-top" />}
+</AnimatePresence>
+```
+
+Notice the input's own `value`: while closed it shows the *selected label*;
+the instant you type, it switches to showing your raw `query`. One field,
+two readings, no second input to keep in sync.
+
+## The listbox springs, the rows cascade behind it
+
+Opening isn't a fade — the whole `<ul>` springs in from `scale: 0.97, y: -4`
+to `1, 0` on a `stiffness: 520 / damping: 32` spring, stiff enough to feel
+instant. But the rows inside don't wait for the popover to finish; each
+`<motion.li>` runs its own entrance the moment it mounts, staggered by index:
+
+<ComboboxStagger />
+
+```tsx
+const spring = { type: "spring", stiffness: 520, damping: 32 } as const;
+
+<motion.ul
+  initial={{ opacity: 0, scale: 0.97, y: -4 }}
+  animate={{ opacity: 1, scale: 1, y: 0 }}
+  transition={spring}
+>
+  {results.map((opt, i) => (
+    <motion.li
+      key={opt.value}
+      initial={{ opacity: 0, y: 4 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: i * 0.02 }}
+    />
+  ))}
+</motion.ul>
+```
+
+`delay: i * 0.02` is a 20ms stagger — barely perceptible row-to-row, but
+across ten rows it reads as the list *filling in* rather than appearing all
+at once. Both animations key off the same `open` state, so they always start
+together; the popover just has a head start because it's the outer element.
+
+## The match is spliced, not restyled
+
+`highlight()` doesn't wrap the whole label in a different style and hope the
+match stands out — it finds the query with a case-insensitive `indexOf` and
+cuts the string into three literal pieces, wrapping only the middle one:
+
+<ComboboxHighlight />
+
+```tsx
+function highlight(label: string, query: string) {
+  if (!query) return label;
+  const idx = label.toLowerCase().indexOf(query.toLowerCase());
+  if (idx === -1) return label;
+  return (
+    <>
+      {label.slice(0, idx)}
+      <mark className="bg-transparent font-semibold text-foreground">
+        {label.slice(idx, idx + query.length)}
+      </mark>
+      {label.slice(idx + query.length)}
+    </>
+  );
+}
+```
+
+The `<mark>` carries no background — just weight and full-opacity color — so
+it reads as emphasis inside the row's muted text, not as a search-engine
+yellow smear. Because it's `indexOf`, the match can land anywhere in the
+label; there's no assumption it starts at index 0.
+
+## Async search races itself
+
+Pass `onSearch` instead of `options` and every keystroke becomes a network
+request. Two things keep that safe: a **debounce** so you don't fire on
+every character, and a **request-id guard** so a slow response can never
+clobber a newer one:
+
+<ComboboxRace />
+
+```tsx
+const reqId = React.useRef(0);
+
+React.useEffect(() => {
+  if (!onSearch || !open) return;
+  const id = ++reqId.current;
+  setLoading(true);
+  const t = setTimeout(() => {
+    onSearch(query).then((res) => {
+      if (id === reqId.current) {
+        setAsyncResults(res);
+        setLoading(false);
+        setActive(0);
+      }
+    });
+  }, 180);
+  return () => clearTimeout(t);
+}, [query, onSearch, open]);
+```
+
+Every render that changes `query` bumps `reqId.current` and captures its own
+`id` in the closure. If a request from three keystrokes ago finally resolves
+after a newer one already landed, `id === reqId.current` is false and the
+stale result is silently dropped — no cancellation token, no AbortController,
+just a number that only ever goes up.
+
+## Keys, active index, and cleanup
+
+`ArrowDown`/`ArrowUp` walk a plain `active` index clamped to the results
+array; `Enter` commits whatever row is active; `Escape` closes without
+committing. None of this touches focus — the input never blurs, so typing
+and arrowing can interleave freely:
+
+```tsx
+if (e.key === "ArrowDown") setActive((a) => Math.min(a + 1, results.length - 1));
+else if (e.key === "ArrowUp") setActive((a) => Math.max(a - 1, 0));
+else if (e.key === "Enter" && open && results[active]) commit(results[active]);
+else if (e.key === "Escape") setOpen(false);
+```
+
+A `mousedown` listener bound only while `open` is true closes the popover on
+any click outside the root — the same "bind on open, tear down on close"
+pattern GodUI's overlays share, so an idle combobox carries zero global
+listeners. `useReducedMotion` collapses every spring above to
+`{ duration: 0 }`; the listbox still opens and closes, it just doesn't scale
+or slide to get there.
+
+## The result
+
+<ComboboxResult />
+
+One input, one listbox, one `highlight()` splice, and a request id that only
+counts up — that's the whole searchable field. Swap `options` for `onSearch`
+and every mechanism above — the debounce, the race guard, the stagger — keeps
+working without a single prop changing shape.

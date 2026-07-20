@@ -1,0 +1,109 @@
+---
+title: Anatomy of Breadcrumbs
+description: How a flat items array becomes a trail of pills with one shared hover highlight, a spring-loaded overflow popover, and a mobile collapse that never touches JavaScript.
+---
+
+A breadcrumb trail looks like the simplest nav in the system — links, a
+separator, done. The interesting part shows up at the edges: what happens
+when the pointer moves along the row, and what happens when the trail is
+longer than the screen. Breadcrumbs answers both without adding a single
+extra DOM node per crumb.
+
+## The trail is pills and chevrons
+
+Every crumb but the last is an `<a>` tinted `text-muted-foreground`; the
+last is a plain `<span>` filled `bg-muted` and marked `aria-current="page"`.
+An `aria-hidden` chevron sits between each pair. The whole row is a
+`motion.ol` so `AnimatePresence` can cross-fade crumbs in and out when the
+`items` array changes:
+
+<BreadcrumbsAnatomy />
+
+```tsx
+<motion.li
+  layout
+  initial={reduceMotion ? false : { opacity: 0, x: -6 }}
+  animate={{ opacity: 1, x: 0 }}
+  exit={reduceMotion ? { opacity: 0 } : { opacity: 0, x: -6 }}
+  transition={spring}
+>
+  {isLast || !item.href ? (
+    <span aria-current={isLast ? "page" : undefined} className="... bg-muted text-foreground">
+      {item.label}
+    </span>
+  ) : (
+    <a href={item.href} className="... text-muted-foreground hover:text-foreground">
+      {item.label}
+    </a>
+  )}
+</motion.li>
+```
+
+## One hover pill, not N highlights
+
+Hovering a crumb doesn't toggle that crumb's own background — every link
+shares a single `motion.span` bound by one `layoutId`. It only renders
+under whichever crumb is currently hovered, so moving the pointer along the
+trail springs that one element from box to box:
+
+<BreadcrumbsPill />
+
+```tsx
+const HoverPill = ({ active }: { active: boolean }) =>
+  active ? (
+    <motion.span
+      layoutId={hoverId}
+      transition={{ type: "spring", stiffness: 520, damping: 32 }}
+      className="absolute inset-0 rounded-lg bg-accent"
+    />
+  ) : null;
+```
+
+`stiffness: 520, damping: 32` is the same snap used across GodUI's small
+UI springs — fast enough that it never lags a fast mouse sweep, damped
+enough that it doesn't wobble on arrival. `onMouseEnter` sets `hovered` to
+the crumb's key; leaving the `<nav>` entirely clears it in one
+`onMouseLeave` at the root instead of per-crumb listeners.
+
+## Collapsing the middle
+
+Pass `maxItems`, and once `items.length` exceeds it the middle crumbs fold
+into a single ellipsis button — head crumb, `…`, then the last
+`maxItems − 1` crumbs. Clicking the ellipsis doesn't navigate; it opens a
+popover listing the crumbs it swallowed:
+
+<BreadcrumbsCollapse />
+
+```tsx
+const tailCount = maxItems - 1;
+const head = items.slice(0, 1).map(toEntry);
+const hidden = items.slice(1, items.length - tailCount);
+const tail = items.slice(items.length - tailCount).map(toEntry);
+return [...head, { kind: "ellipsis", hidden }, ...tail];
+```
+
+The popover springs in on `scale: 0.92 → 1, y: -4 → 0` — the same overlay
+entrance used by every other panel in the system — and a `mousedown`
+listener outside `popRef` closes it. Below `maxItems`, a second, CSS-only
+collapse kicks in on narrow viewports: crumbs past the first hide under
+`max-sm:hidden` and a static `…` takes their place. It has to be CSS, not a
+`useEffect` viewport check — in the docs preview the component runs inside
+a portaled iframe but at the parent's JS realm, so only a media query
+actually sees the iframe's width.
+
+## `aria-current` carries the "you are here"
+
+There's no extra label announcing the current page — the last crumb's
+`aria-current="page"` is the whole signal, exactly like a native breadcrumb
+should read to a screen reader. Separators are `aria-hidden` so they're
+invisible to assistive tech, and every link still gets the standard
+`focus-visible:ring-2` — no custom keyboard handling needed because crumbs
+are just anchors.
+
+## The result
+
+<BreadcrumbsResult />
+
+One `items` array, one shared hover pill, and a collapse that degrades
+gracefully from `maxItems` down to a CSS ellipsis on narrow screens — the
+trail never needs more markup than the pieces above.

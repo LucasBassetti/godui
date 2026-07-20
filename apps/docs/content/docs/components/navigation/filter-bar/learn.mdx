@@ -1,0 +1,128 @@
+---
+title: Anatomy of the Filter Bar
+description: How a row of facet pills stays a set of plain buttons and a popover — with an inline summary that grows to fit its content, and a spring-in clear button.
+---
+
+A filter bar reads like a form — checkboxes, a submit, a results count — but
+there's no `<select multiple>` and no schema anywhere in it. `FilterBar`
+takes a `facets` array and renders each one as a pill: a button that opens a
+popover of options, and, once you've picked something, an inline summary of
+what's selected. That's the entire vocabulary.
+
+## One flex row, two pill states
+
+Every facet pill is the same markup wearing one of two looks. Empty, it's a
+dashed ring with a plus glyph and a muted label — an obvious "add a filter"
+affordance. Active, the ring solidifies, a summary of the selection appears
+inline, and a clear button shows up on its trailing edge:
+
+<FilterBarAnatomy />
+
+```tsx
+<div className={hasSelection ? "border-foreground/15 bg-accent" : "border-dashed border-border"}>
+  <button onClick={() => setOpen(isOpen ? null : facet.id)}>
+    {!hasSelection && <span>{PlusIcon}</span>}
+    <span>{facet.label}</span>
+    {hasSelection && <motion.span>{summarize(facet, selected)}</motion.span>}
+  </button>
+  {hasSelection && <motion.button onClick={() => clearFacet(facet.id)}>{CloseIcon}</motion.button>}
+</div>
+```
+
+`summarize()` collapses a multi-select down to `"<first label> +<n-1>"`, so
+the pill never grows unbounded — pick five options in one facet and the
+label still reads as one short phrase.
+
+## The summary is a width reveal — a deliberate exception
+
+Most of GodUI's motion is compositor-only: transform and opacity, never a
+layout property. The facet summary breaks that rule on purpose. When a
+selection appears, the summary span animates `width: 0 → "auto"`:
+
+```tsx
+<motion.span
+  initial={{ opacity: 0, width: 0 }}
+  animate={{ opacity: 1, width: "auto" }}
+  exit={{ opacity: 0, width: 0 }}
+  transition={{ duration: 0.2, ease: "easeOut" }}
+  className="overflow-hidden"
+>
+  <span className="h-3.5 w-px bg-border" />
+  <span>{summarize(facet, selected)}</span>
+</motion.span>
+```
+
+There's no transform equivalent for "grow to fit unknown, dynamically-sized
+content" — the summary text's width isn't known until it renders, so
+`scaleX` from a fixed value would either clip real content or leave a gap.
+Framer Motion's `width: "auto"` measures the child and animates toward that
+real number, at the cost of triggering layout on the parent flex row every
+frame. It's a 200ms animation on an infrequent, user-initiated action (making
+a selection), not a hover loop — a fine trade in that spot. The scene below
+approximates the same read with a `scaleX` reveal for illustration, but the
+real component genuinely animates `width`; that's the honest version of this
+mechanism, exception and all.
+
+<FilterBarSpring />
+
+The clear button beside it *does* stay on the transform budget — it pops in
+with `scale: 0.6 → 1` on the standard `stiffness: 520 / damping: 32` spring,
+same as the rest of the bar.
+
+## The popover and its checkbox list
+
+Clicking a pill opens a `role="listbox"` popover — spring-scaled in from
+`0.96, y: -4`, same spring again — with an optional search input and a list
+of checkbox-style options. Toggling one doesn't close the popover; multi-select
+facets stay open so you can keep picking:
+
+```tsx
+const toggleOption = (facetId: string, optValue: string) => {
+  const current = value[facetId] ?? [];
+  const has = current.includes(optValue);
+  const nextList = has ? current.filter((v) => v !== optValue) : [...current, optValue];
+  const next = { ...value, [facetId]: nextList };
+  if (nextList.length === 0) delete next[facetId];
+  commit(next);
+};
+```
+
+Deleting the key entirely when a facet's list empties out — rather than
+leaving `{ status: [] }` around — is what makes `activeCount` and "Clear all"
+visibility a simple `Object.values(value).length` check downstream, with no
+empty-array edge case to filter out first.
+
+## Accessibility and cleanup
+
+Each pill button carries `aria-haspopup="listbox"` and `aria-expanded`; each
+option row is `role="option"` with `aria-selected` mirroring the checkbox
+fill. Two listeners — `mousedown` outside and `keydown` for `Escape` — close
+whichever popover is open, and both are bound only while `open` is non-null:
+
+```tsx
+React.useEffect(() => {
+  if (!open) return;
+  const onDown = (e: MouseEvent) => {
+    if (rootRef.current && !rootRef.current.contains(e.target as Node)) setOpen(null);
+  };
+  const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(null); };
+  document.addEventListener("mousedown", onDown);
+  document.addEventListener("keydown", onKey);
+  return () => {
+    document.removeEventListener("mousedown", onDown);
+    document.removeEventListener("keydown", onKey);
+  };
+}, [open]);
+```
+
+`useReducedMotion` flattens every spring and the width reveal alike down to
+opacity-only transitions — the summary still appears, it just doesn't grow
+into place.
+
+## The result
+
+<FilterBarResult />
+
+A `facets` array in, a `FilterValue` record out — every pill is a button and
+a popover, the summary is the one place layout motion earns its keep, and
+"Clear all" is nothing more than a count check away from disappearing again.

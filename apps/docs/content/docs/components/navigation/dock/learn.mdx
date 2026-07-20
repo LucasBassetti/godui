@@ -1,0 +1,111 @@
+---
+title: Anatomy of the Dock
+description: How a magnifying dock runs on one shared pointer signal instead of per-item mouse handlers, with each item's size chasing a distance-derived target on its own spring.
+---
+
+A macOS-style dock looks like it needs a lot of coordination — every icon
+has to know how far the pointer is and how big its neighbors have grown. It
+doesn't. `Dock` publishes exactly one number, and every `DockItem` reads it
+independently. There's no loop that measures all items and repaints them;
+each one is its own small reactive system.
+
+## One signal, many listeners
+
+`Dock` holds a single `mouseX` `MotionValue`, updated on every `mousemove`
+and reset to `+Infinity` on `mouseleave`. It hands that value down through
+context — nothing else about pointer position is shared:
+
+<DockAnatomy />
+
+```tsx
+const mouseX = useMotionValue(Number.POSITIVE_INFINITY);
+
+<div
+  onMouseMove={(e) => mouseX.set(e.clientX)}
+  onMouseLeave={() => mouseX.set(Number.POSITIVE_INFINITY)}
+>
+  <DockContext.Provider value={{ mouseX, baseSize, magnification, distance }}>
+    {children}
+  </DockContext.Provider>
+</div>
+```
+
+Resetting to `Infinity` rather than some off-screen coordinate matters:
+every item's distance-from-pointer calculation ends up huge and clamps to
+`baseSize`, so leaving the dock relaxes every icon back to rest in one
+write, with no separate "pointer left" branch to maintain.
+
+## Distance in, size out, on a spring
+
+Each `DockItem` measures its own bounding box and subtracts the shared
+`mouseX` from its center to get a signed distance. `useTransform` maps that
+distance through a triangular curve — far away is `baseSize`, dead center is
+`magnification`, and it falls off linearly on either side — and a
+`useSpring` chases whatever that target becomes, frame by frame:
+
+<DockMagnify />
+
+```tsx
+const distanceFromMouse = useTransform(mouseX, (val) => {
+  const bounds = ref.current?.getBoundingClientRect();
+  if (!bounds) return distance + 1;
+  return val - bounds.x - bounds.width / 2;
+});
+
+const sizeTarget = useTransform(
+  distanceFromMouse,
+  [-distance, 0, distance],
+  [baseSize, magnification, baseSize],
+);
+const size = useSpring(sizeTarget, { mass: 0.1, stiffness: 170, damping: 12 });
+
+<motion.div style={{ width: size, height: size }} />
+```
+
+Defaults are `baseSize: 44`, `magnification: 72`, `distance: 140` — an item
+144px away from the pointer sits fully at rest; directly under it, it's 64%
+larger. Because `sizeTarget` recomputes from the *live* `mouseX` value every
+frame (not from React state), moving the pointer never triggers a re-render
+— the whole ripple runs on Framer's own animation loop, off React entirely.
+The low `mass: 0.1` and `damping: 12` spring is what gives the size a slight
+overshoot as it chases a fast-moving target, instead of snapping rigidly to
+it.
+
+## Labels ride the same hover, no coordination needed
+
+The tooltip above each item is a plain `AnimatePresence` child gated by CSS
+`group-hover:block` — it doesn't read `mouseX` at all. Framer only handles
+its `opacity`/`y` entrance; whether it's visible is pure CSS hover state on
+that item's own DOM node:
+
+```tsx
+<AnimatePresence>
+  {label && (
+    <motion.span
+      initial={{ opacity: 0, y: 4 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 2 }}
+      className="hidden group-hover:block ..."
+    >
+      {label}
+    </motion.span>
+  )}
+</AnimatePresence>
+```
+
+## No `useReducedMotion` — worth knowing
+
+Unlike most GodUI components, `Dock` doesn't check `useReducedMotion`
+anywhere in its source. The magnification spring runs unconditionally for
+every user. It's a deliberate gap worth calling out rather than papering
+over: if you're composing this into a page that needs to respect reduced
+motion, gate `magnification` down toward `baseSize` (or drop the `useSpring`
+entirely) yourself at the call site — the component won't do it for you.
+
+## The result
+
+<DockResult />
+
+One `mouseX` value published on `mousemove`, one distance-to-size transform
+per item, one spring chasing that target — sweep the row and watch the
+ripple move with zero shared layout code between icons.
