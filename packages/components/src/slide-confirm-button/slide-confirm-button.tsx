@@ -11,20 +11,28 @@ import * as React from "react";
 
 export type SlideConfirmVariant = "default" | "destructive";
 export type SlideConfirmSize = "sm" | "md" | "lg";
-export type SlideConfirmStatus = "idle" | "confirmed";
+export type SlideConfirmStatus = "idle" | "loading" | "confirmed";
 
 export type SlideConfirmButtonProps = Omit<
   React.HTMLAttributes<HTMLDivElement>,
   "onClick"
 > & {
-  /** Fires once the thumb is dragged past the threshold. */
-  onConfirm?: () => void;
+  /**
+   * Fires once the thumb is dragged past the threshold. May be async; while the
+   * returned promise is pending the thumb shows a spinner (`loading` status).
+   * If the promise rejects the control returns to `idle` so the action can be
+   * retried.
+   */
+  // biome-ignore lint/suspicious/noConfusingVoidType: void marks the sync path (no spinner); Promise opts into the async loading state. Union is intentional.
+  onConfirm?: () => void | Promise<unknown>;
   variant?: SlideConfirmVariant;
   size?: SlideConfirmSize;
   /** Fraction of the track (0–1) the thumb must pass to confirm. Default `0.9`. */
   threshold?: number;
   /** Track label. Default `"Slide to confirm"`. */
   label?: React.ReactNode;
+  /** Label shown while an async `onConfirm` is pending. Default `"Working…"`. */
+  loadingLabel?: React.ReactNode;
   /** Label shown after confirming. Default `"Confirmed"`. */
   confirmedLabel?: React.ReactNode;
   disabled?: boolean;
@@ -83,6 +91,7 @@ const SlideConfirmButton = React.forwardRef<
       size = "md",
       threshold = 0.9,
       label = "Slide to confirm",
+      loadingLabel = "Working…",
       confirmedLabel = "Confirmed",
       disabled = false,
       className,
@@ -97,6 +106,14 @@ const SlideConfirmButton = React.forwardRef<
     const [status, setStatus] = React.useState<SlideConfirmStatus>("idle");
     const statusRef = React.useRef(status);
     statusRef.current = status;
+
+    const mounted = React.useRef(true);
+    React.useEffect(() => {
+      mounted.current = true;
+      return () => {
+        mounted.current = false;
+      };
+    }, []);
 
     const x = useMotionValue(0);
     const labelOpacity = useTransform(x, [0, Math.max(1, maxX * 0.6)], [1, 0]);
@@ -118,12 +135,6 @@ const SlideConfirmButton = React.forwardRef<
       return () => ro.disconnect();
     }, [dims.thumb, dims.pad]);
 
-    const confirm = () => {
-      setStatus("confirmed");
-      animate(x, maxX, { type: "spring", stiffness: 500, damping: 40 });
-      onConfirm?.();
-    };
-
     const settleBack = () => {
       animate(
         x,
@@ -134,14 +145,42 @@ const SlideConfirmButton = React.forwardRef<
       );
     };
 
+    const confirm = async () => {
+      animate(x, maxX, { type: "spring", stiffness: 500, damping: 40 });
+      let result: unknown;
+      try {
+        result = onConfirm?.();
+      } catch {
+        // Synchronous throw — treat like a rejected action and reset.
+        setStatus("idle");
+        settleBack();
+        return;
+      }
+      // If onConfirm is async, show a spinner in the thumb until it settles.
+      if (result && typeof (result as { then?: unknown }).then === "function") {
+        setStatus("loading");
+        try {
+          await result;
+        } catch {
+          // Action failed — return to idle so it can be retried.
+          if (!mounted.current) return;
+          setStatus("idle");
+          settleBack();
+          return;
+        }
+        if (!mounted.current) return;
+      }
+      setStatus("confirmed");
+    };
+
     const handleDragEnd = () => {
-      if (statusRef.current === "confirmed") return;
+      if (statusRef.current !== "idle") return;
       if (maxX > 0 && x.get() >= maxX * threshold) confirm();
       else settleBack();
     };
 
     const handleKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>) => {
-      if (disabled || statusRef.current === "confirmed") return;
+      if (disabled || statusRef.current !== "idle") return;
       if (
         event.key === "Enter" ||
         event.key === " " ||
@@ -153,6 +192,14 @@ const SlideConfirmButton = React.forwardRef<
     };
 
     const confirmed = status === "confirmed";
+    const loading = status === "loading";
+    const busy = confirmed || loading;
+
+    // Reserve the thumb's resting footprint (thumb width + both pads) on BOTH
+    // sides of the label. Symmetric padding keeps the text dead-center in the
+    // track (never shifted toward one edge) while guaranteeing it never sits
+    // under the thumb — whether the thumb rests left (idle) or right (busy).
+    const restingFootprint = dims.thumb + dims.pad * 2;
 
     return (
       <div
@@ -175,16 +222,26 @@ const SlideConfirmButton = React.forwardRef<
           }}
         />
 
-        {/* Centered label. */}
+        {/* Idle label — centered, footprint reserved on both sides. */}
         <motion.span
-          style={{ opacity: confirmed ? 0 : labelOpacity }}
-          className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center font-medium text-muted-foreground"
+          style={{
+            opacity: busy ? 0 : labelOpacity,
+            paddingLeft: restingFootprint,
+            paddingRight: restingFootprint,
+          }}
+          className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center whitespace-nowrap font-medium text-muted-foreground"
         >
           {label}
         </motion.span>
-        {confirmed && (
-          <span className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center font-medium text-foreground">
-            {confirmedLabel}
+        {busy && (
+          <span
+            style={{
+              paddingLeft: restingFootprint,
+              paddingRight: restingFootprint,
+            }}
+            className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center whitespace-nowrap font-medium text-foreground"
+          >
+            {loading ? loadingLabel : confirmedLabel}
           </span>
         )}
 
@@ -193,7 +250,7 @@ const SlideConfirmButton = React.forwardRef<
           type="button"
           aria-label={typeof label === "string" ? label : "Slide to confirm"}
           disabled={disabled}
-          drag={confirmed || disabled ? false : "x"}
+          drag={busy || disabled ? false : "x"}
           dragConstraints={{ left: 0, right: maxX }}
           dragElastic={0.04}
           dragMomentum={false}
@@ -202,7 +259,19 @@ const SlideConfirmButton = React.forwardRef<
           style={{ x, width: dims.thumb, height: dims.thumb, margin: dims.pad }}
           className={`relative z-20 inline-flex shrink-0 cursor-grab items-center justify-center rounded-full shadow-sm active:cursor-grabbing focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${thumbVariant[variant]}`}
         >
-          {confirmed ? (
+          {loading ? (
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              className="size-5 animate-spin"
+              aria-hidden="true"
+            >
+              <path d="M21 12a9 9 0 1 1-6.2-8.6" />
+            </svg>
+          ) : confirmed ? (
             <svg
               viewBox="0 0 24 24"
               fill="none"
