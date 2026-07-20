@@ -79,7 +79,7 @@ export function DropdownMenuResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — hover "Switch workspace" for the submenu
+          the real component — hover “Switch workspace” for the submenu
         </span>
       </div>
       <div className="flex min-h-[460px] w-full flex-col items-center gap-4 p-10">

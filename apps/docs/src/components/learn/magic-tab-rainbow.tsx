@@ -62,7 +62,7 @@ export function MagicTabRainbow() {
           </div>
 
           <p className="text-center font-mono text-[11px] text-fd-muted-foreground">
-            animationPlayState flips to "paused" once the tablist clears the
+            animationPlayState flips to “paused” once the tablist clears the
             128px margin — resumes seamlessly on the way back in
           </p>
         </div>
