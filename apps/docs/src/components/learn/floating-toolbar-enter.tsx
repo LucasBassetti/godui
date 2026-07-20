@@ -63,7 +63,7 @@ export function FloatingToolbarEnter() {
           </div>
 
           <p className="text-center font-mono text-[11px] text-fd-muted-foreground">
-            {"{"} type: "spring", stiffness: 520, damping: 32 {"}"}
+            {'{ type: "spring", stiffness: 520, damping: 32 }'}
           </p>
 
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">

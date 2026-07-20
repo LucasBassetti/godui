@@ -61,7 +61,7 @@ export function AnimatedTooltipSpring() {
           </div>
 
           <p className="text-center font-mono text-[11px] text-fd-muted-foreground">
-            {"{"} type: "spring", stiffness: 170, damping: 12, mass: 0.1 {"}"}
+            {'{ type: "spring", stiffness: 170, damping: 12, mass: 0.1 }'}
           </p>
 
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">

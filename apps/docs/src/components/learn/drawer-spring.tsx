@@ -49,8 +49,9 @@ export function DrawerSpring() {
           </div>
 
           <p className="text-center font-mono text-[11px] text-fd-muted-foreground">
-            initial/exit: y "100%" · animate: y 0 · transform-only, no top or
-            height
+            {
+              'initial/exit: y "100%" · animate: y 0 · transform-only, no top or height'
+            }
           </p>
         </div>
       )}

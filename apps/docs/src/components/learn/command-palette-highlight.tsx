@@ -65,8 +65,9 @@ export function CommandPaletteHighlight() {
           </div>
 
           <p className="text-center font-mono text-[11px] text-fd-muted-foreground">
-            layoutId="command-active" · spring 500/35 · re-targets on
-            ArrowUp/Down or mouse move
+            {
+              'layoutId="command-active" · spring 500/35 · re-targets on ArrowUp/Down or mouse move'
+            }
           </p>
         </div>
       )}
