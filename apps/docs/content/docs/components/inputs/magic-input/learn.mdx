@@ -1,0 +1,160 @@
+---
+title: Anatomy of the Magic Input
+description: How a flat text field lifts into a 3D card on focus, runs a rainbow edge, and turns its own depth layer into a submit progress bar — all on transform and opacity.
+---
+
+Most inputs draw a border and change its color on focus. Magic Input does
+something physical instead: the field lifts off the page, casts a shadow, and
+reveals a colored edge underneath — then reuses that same edge as a progress
+bar when you submit. None of it touches layout. It's three stacked layers and a
+handful of `transform` / `opacity` transitions.
+
+## The three-layer stack
+
+The component renders one `group` wrapper containing three absolutely-positioned
+layers pinned to the same bounds: a blurred **shadow**, a colored **edge**, and
+the real `<input>` on top. At rest the shadow and edge are hidden; the field
+looks flat.
+
+<MagicInputAnatomy />
+
+```tsx
+<div className="group relative inline-block rounded-xl">
+  <span className={shadowClass} aria-hidden="true" />
+  <span className={edgeClass} aria-hidden="true" />
+  <input className={frontClass} {...props} />
+</div>
+```
+
+Because all three share `inset-0`, they stack perfectly. The 3D illusion is
+entirely a matter of how far apart they sit on the Y axis — which is what the
+lift animates.
+
+## The lift
+
+Focus lives on `group-focus-within`, so tabbing into the `<input>` drives every
+layer at once. The front translates up, the shadow drops down + fades in +
+blurs, and the edge fades in. That divergence — front going one way, shadow the
+other — is what sells the depth.
+
+<MagicInputLift />
+
+```tsx
+// front: springy overshoot into the lifted position
+"group-focus-within:-translate-y-[4px] " +
+  "group-focus-within:[transition:translate_250ms_cubic-bezier(0.3,0.7,0.4,1.5)]";
+
+// shadow: opacity 0 → 1, translate-y 0 → 4px, on a slower settle
+"opacity-0 translate-y-0 group-focus-within:opacity-100 " +
+  "group-focus-within:translate-y-[4px] " +
+  "[transition:translate_600ms_cubic-bezier(0.3,0.7,0.4,1),opacity_250ms_ease]";
+```
+
+The front uses an overshoot bezier (`…,1.5`) so it springs slightly past its
+target and settles — the "pop" you feel on focus. The shadow rides a calmer
+`…,1` curve over `600ms`, because a shadow that snapped would read as a glitch
+rather than a cast. `depth="always"` simply moves the resting position to the
+lifted one, so the field is raised before you ever focus it.
+
+## Everything is transform and opacity
+
+There's no `box-shadow` transition, no `width` or `top` animation, no
+`clip-path`. The shadow is a solid blurred span whose `translate` and `opacity`
+change; the edge only fades. That's deliberate: `transform` and `opacity` are
+the two properties the browser can animate on the compositor without touching
+layout or paint, so the lift stays smooth even with several fields on screen.
+
+```tsx
+const frontClass =
+  "… [will-change:translate] " +
+  "[transition:translate_600ms_cubic-bezier(0.3,0.7,0.4,1)] " +
+  "motion-reduce:[transition:none] …";
+```
+
+`will-change: translate` promotes the layer up front so the first frame doesn't
+hitch, and `motion-reduce:[transition:none]` drops the whole thing to an instant
+state change for anyone who asks for reduced motion.
+
+## The rainbow edge
+
+With `rainbow` (the default), focus swaps the edge **and** shadow fill for a
+single `200%`-wide linear gradient, and `animate-magic-rainbow` slides
+`background-position` across it. The front stays neutral, so the color reads as a
+glowing edge peeking out from under a plain field — not a tinted input.
+
+<MagicInputRainbow />
+
+```tsx
+const RAINBOW_FOCUS_FILL =
+  "group-focus-within:[background-image:linear-gradient(90deg," +
+  "var(--rainbow-1),var(--rainbow-5),var(--rainbow-3)," +
+  "var(--rainbow-4),var(--rainbow-2))] " +
+  "group-focus-within:[background-size:200%_100%] " +
+  "group-focus-within:animate-magic-rainbow " +
+  "motion-reduce:group-focus-within:animate-none";
+```
+
+The gradient is a full literal, not an interpolated string, because Tailwind's
+class scanner can't resolve a `${var}` nested inside an arbitrary value — so the
+colors are written out. Only `background-position` animates; the gradient itself
+never re-renders.
+
+## The submit lifecycle
+
+Pass `onSubmit` (or `submitButton`) and the field grows a submit button. Drive
+`status` and it runs a lifecycle: `loading` → `success` / `error`. The elegant
+part is that the **same edge/shadow layer that draws the depth becomes the
+progress bar** — its `background-size` grows for determinate progress, or a
+segment bounces end to end for indeterminate — while the button's icon
+cross-fades arrow → ring → check.
+
+<MagicInputLifecycle />
+
+```tsx
+const statusFill =
+  isLoading && isDeterminate
+    ? "[background-position:right_center] " +
+      "[background-size:var(--magic-progress,0%)_100%]"
+    : isLoading
+      ? "[background-image:linear-gradient(90deg,transparent," +
+        "var(--magic-fill),transparent)] " +
+        "[background-size:45%_100%] animate-magic-input-indeterminate"
+      : "[background-color:var(--primary)] animate-magic-input-sweep";
+```
+
+The four submit icons — arrow, ring/spinner, check, X — are all stacked in the
+same box; only the active one is `opacity-100 scale(1)`, the rest sit at
+`opacity-0 scale(0.4) rotate(-35deg)`. Switching status just changes which one
+is active, so they morph into each other instead of popping.
+
+```tsx
+const iconClass = (active: boolean) =>
+  active
+    ? "… opacity-100 [transform:scale(1)_rotate(0deg)]"
+    : "… opacity-0 [transform:scale(0.4)_rotate(-35deg)]";
+```
+
+## Locked, not disabled
+
+While `loading` or `success`, the field has to stop accepting input without
+losing its lifted 3D look — a `disabled` input would flatten and gray out. So it
+uses `readOnly` instead:
+
+```tsx
+const lock = readOnly || isLoading || status === "success";
+// …
+<input readOnly={lock} aria-busy={isLoading || undefined} … />
+```
+
+The visuals stay live, the value is frozen, and `aria-busy` plus an `sr-only`
+`role="progressbar"` (with `aria-valuenow` when determinate) tell assistive tech
+what the animation is showing. Focus rings come from `focus-visible` so keyboard
+users get an outline without mouse clicks painting one.
+
+## The result
+
+<MagicInputResult />
+
+Three stacked layers, a focus-driven lift, and a progress bar that's really just
+the depth layer wearing a different fill — the whole component is `transform`
+and `opacity` doing the work that borders and box-shadows usually fake.

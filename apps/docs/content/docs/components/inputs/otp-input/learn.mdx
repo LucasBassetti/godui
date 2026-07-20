@@ -1,0 +1,136 @@
+---
+title: Anatomy of the OTP Input
+description: How a segmented code field is really one hidden input behind display-only cells — with a traveling caret, free paste-to-fill, and a single-keyframe error shake.
+---
+
+A six-box verification code looks like six inputs. Building it that way is a
+trap: you end up hand-syncing focus across six refs, forwarding backspace, and
+fighting the browser's paste and autofill. OTP Input does the opposite — there's
+exactly **one** real input, and the boxes are just paint.
+
+## One input, many cells
+
+The row renders `length` display cells plus a single `<input>` sized to zero and
+made transparent, layered over the top. Every keystroke, paste, and autofill
+lands on that one field; the cells read straight off its value.
+
+<OtpAnatomy />
+
+```tsx
+<motion.div onClick={() => inputRef.current?.focus()}>
+  {Array.from({ length }).map((_, i) => {
+    const char = value[i];
+    return <div key={i}>{/* display cell for value[i] */}</div>;
+  })}
+  <input
+    ref={inputRef}
+    value={value}
+    maxLength={length}
+    autoComplete="one-time-code"
+    className="absolute size-0 opacity-0"
+  />
+</motion.div>
+```
+
+Because the real field is a normal text input, the platform gives you paste,
+SMS autofill (`autocomplete="one-time-code"`), and IME support for free — no
+per-cell wiring. Clicking anywhere in the row just calls
+`inputRef.current?.focus()`.
+
+## The traveling caret
+
+There's no per-cell focus to manage, so "which cell is active" is pure math:
+
+```tsx
+const activeIndex = Math.min(value.length, length - 1);
+```
+
+The next character always lands at `value.length`, clamped to the last cell when
+the code is full. A single highlight — scaled up, ringed, with a blinking caret
+bar — follows that index as the value grows.
+
+<OtpCaret />
+
+```tsx
+const isActive = focused && i === activeIndex && !disabled;
+// …
+className={`${CELL_BASE} ${borderState} ${isActive ? "scale-105" : ""}`}
+```
+
+Each filled character fades and rises into place (`opacity: 0 → 1`, `y: 4 → 0`
+over `0.15s`); the active-but-empty cell shows an `animate-pulse` bar standing in
+for a text caret. `mask` swaps the character for a solid dot for sensitive codes.
+
+## Paste and auto-advance for free
+
+Typing and pasting go through the exact same path, because both are just the
+input's value changing. `sanitize` strips disallowed characters and slices to
+`length`, so pasting a long string fills every cell at once and drops the
+overflow:
+
+```tsx
+function sanitize(raw, type, length) {
+  const pattern = type === "alphanumeric" ? /[^a-zA-Z0-9]/g : /[^0-9]/g;
+  return raw.replace(pattern, "").slice(0, length);
+}
+
+const commit = (next) => {
+  if (!isControlled) setInternal(next);
+  onChange?.(next);
+  if (next.length === length) onComplete?.(next);
+};
+```
+
+`onComplete` fires the moment the last cell fills — whether that came from the
+sixth keystroke or a single paste. There's no "advance to the next box" logic to
+write, because there's only ever one box receiving input.
+
+## The error shake
+
+`status="error"` runs one framer keyframe on the whole row: a quick left-right
+shake that reads as "no, try again" without a word of copy. `success` does the
+inverse — it settles, borders to `primary`, and stays still.
+
+<OtpShake />
+
+```tsx
+React.useEffect(() => {
+  if (status === "error" && !reduceMotion) {
+    controls.start({
+      x: [0, -6, 6, -4, 4, 0],
+      transition: { duration: 0.4, ease: "easeInOut" },
+    });
+  }
+}, [status, reduceMotion, controls]);
+```
+
+The shake is fired from an effect keyed on `status`, so consumers re-arm it by
+flipping back to `idle` and then to `error` again — the same failed code can
+shake twice. `useReducedMotion` gates it entirely: reduced-motion users get the
+destructive border color and no movement.
+
+## Controlled or uncontrolled, one value
+
+Whether you pass `value` or let it manage its own, everything downstream reads a
+single sanitized string — so the cells, the active index, and completion can
+never disagree with each other:
+
+```tsx
+const isControlled = valueProp !== undefined;
+const [internal, setInternal] = React.useState(() =>
+  sanitize(defaultValue, type, length),
+);
+const value = sanitize(isControlled ? valueProp : internal, type, length);
+```
+
+Sanitizing on the way *out* (not just on change) means even a controlled value
+with stray characters or an over-long string renders correctly — the display can
+only ever show valid, length-bounded input.
+
+## The result
+
+<OtpResult />
+
+One hidden input, `length` display cells, and `min(value.length, length − 1)` to
+place the caret — that's the whole component. Paste, autofill, and backspace come
+from the platform; all the code adds is the look and a shake.

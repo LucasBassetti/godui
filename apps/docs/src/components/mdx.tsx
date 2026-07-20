@@ -22,12 +22,21 @@ import { HoldCancel } from "@/components/learn/hold-cancel";
 import { HoldConfirmResult } from "@/components/learn/hold-confirm-result";
 import { HoldFill } from "@/components/learn/hold-fill";
 import { LayerReveal } from "@/components/learn/layer-reveal";
+import { MagicInputAnatomy } from "@/components/learn/magic-input-anatomy";
+import { MagicInputLifecycle } from "@/components/learn/magic-input-lifecycle";
+import { MagicInputLift } from "@/components/learn/magic-input-lift";
+import { MagicInputRainbow } from "@/components/learn/magic-input-rainbow";
+import { MagicInputResult } from "@/components/learn/magic-input-result";
 import { MagneticParallax } from "@/components/learn/magnetic-parallax";
 import { MagneticPull } from "@/components/learn/magnetic-pull";
 import { MagneticResult } from "@/components/learn/magnetic-result";
 import { MaskFlipbook } from "@/components/learn/mask-flipbook";
 import { MaskResult } from "@/components/learn/mask-result";
 import { MaskTwinLabels } from "@/components/learn/mask-twin-labels";
+import { OtpAnatomy } from "@/components/learn/otp-anatomy";
+import { OtpCaret } from "@/components/learn/otp-caret";
+import { OtpResult } from "@/components/learn/otp-result";
+import { OtpShake } from "@/components/learn/otp-shake";
 import { ProgressFoldResult } from "@/components/learn/progress-fold-result";
 import { PushPhysics } from "@/components/learn/push-physics";
 import { RainbowSweep } from "@/components/learn/rainbow-sweep";
@@ -117,6 +126,15 @@ export function getMDXComponents(components?: MDXComponents) {
     FoldStages,
     FoldProgress,
     ProgressFoldResult,
+    MagicInputAnatomy,
+    MagicInputLift,
+    MagicInputRainbow,
+    MagicInputLifecycle,
+    MagicInputResult,
+    OtpAnatomy,
+    OtpCaret,
+    OtpShake,
+    OtpResult,
     ...components,
   } satisfies MDXComponents;
 }
