@@ -71,7 +71,7 @@ export default async function RootLayout({
       suppressHydrationWarning
       className={`${GeistSans.variable} ${GeistMono.variable}`}
     >
-      <body className={GeistSans.className}>
+      <body className={GeistSans.className} suppressHydrationWarning>
         <SiteStructuredData />
         <RootProvider
           theme={{

@@ -114,11 +114,7 @@
     "components/effects/terminal",
     "---Backgrounds---",
     "components/backgrounds/blueprint-grid",
-    "components/backgrounds/decorative-background",
-    "components/backgrounds/effect-background",
     "components/backgrounds/flow-field",
-    "components/backgrounds/geometric-background",
-    "components/backgrounds/gradient-background",
     "components/backgrounds/light-rays",
     "components/backgrounds/liquid-metaballs",
     "components/backgrounds/pixel-grid",
@@ -126,6 +122,11 @@
     "components/backgrounds/warp-starfield",
     "---Glass---",
     "components/glass/liquid-glass-card",
-    "components/glass/liquid-glass-lens"
+    "components/glass/liquid-glass-lens",
+    "---Static Effects---",
+    "components/backgrounds/decorative-background",
+    "components/backgrounds/effect-background",
+    "components/backgrounds/geometric-background",
+    "components/backgrounds/gradient-background"
   ]
 }
