@@ -1,0 +1,153 @@
+---
+title: Anatomy of the Notification Inbox
+description: How a Linear-style inbox groups notifications into sticky buckets, archives a row with an elastic drag, and clears its unread badge in one motion.
+---
+
+A notification inbox lives or dies on triage speed: can you tell what's new,
+clear it, and get rid of what you don't need without ever reaching for a
+menu? Notification Inbox answers with three mechanisms — sticky grouping, a
+draggable archive, and a badge that clears in lockstep with the rows it
+represents.
+
+## Header, sticky groups, rows
+
+The whole thing is one card: a header with the title and an unread count,
+then notifications bucketed by `group` (defaulting to `"Earlier"` when a
+notification doesn't specify one) under a label that sticks to the top of
+the scroll container while its bucket is in view:
+
+<NotificationInboxAnatomy />
+
+```tsx
+function groupNotifications(items: Notification[]) {
+  const order: string[] = [];
+  const map = new Map<string, Notification[]>();
+  for (const item of items) {
+    const key = item.group ?? "Earlier";
+    if (!map.has(key)) {
+      map.set(key, []);
+      order.push(key);
+    }
+    map.get(key)?.push(item);
+  }
+  return order.map((key) => [key, map.get(key)!] as const);
+}
+```
+
+```tsx
+<div className="sticky top-0 z-base bg-card/90 px-4 py-1.5 backdrop-blur-sm">
+  {label}
+</div>
+```
+
+`sticky top-0` inside the scroll container is what lets "Today" pin to the
+top while its rows scroll underneath it — no scroll listener, no manual
+offset math. `z-base` keeps it above the rows without reaching for an
+arbitrary z-index, and `bg-card/90` with a blur means the pinned label never
+looks like it's floating over content with a hard edge.
+
+Each row's `<motion.li layout>` is what makes the group actually respond to
+changes: read a notification, remove one, and every remaining row
+re-measures and springs to its new position instead of snapping.
+
+## Swipe to archive, with a real threshold
+
+Archiving isn't a button — it's a drag. Each row is `drag="x"`, constrained
+to only move left, with elastic resistance built in so a small nudge feels
+soft and a big pull still can't be dragged off past a limit that doesn't
+exist:
+
+<NotificationInboxSwipe />
+
+```tsx
+<motion.div
+  drag="x"
+  dragConstraints={{ left: 0, right: 0 }}
+  dragElastic={{ left: 0.7, right: 0 }}
+  onDragEnd={(_, info) => {
+    if (info.offset.x < -80) onArchive?.(notification.id);
+  }}
+/>
+```
+
+`dragConstraints: { left: 0, right: 0 }` sounds like it should lock the row
+in place — and it would, if not for `dragElastic`. Elastic drag lets the row
+travel past its constraints anyway, just with resistance proportional to the
+`0.7` factor; `right: 0` means there's zero give in that direction, so the
+row only ever pulls left. The archive strip is a solid `bg-destructive`
+panel sitting absolutely behind the row the entire time — dragging doesn't
+reveal it by toggling anything, it's always there, just occluded until the
+row slides off it. Solid (not a fade-to-transparent) so the action is
+readable the moment a sliver appears, not only once you're near the
+threshold.
+`onDragEnd` is the only place the threshold actually matters: cross `-80px`
+of offset and the row archives; land anywhere short of it and Framer springs
+the row back to zero, no threshold check needed for the snap-back — that's
+just the absence of a drag target.
+
+On archive, the row's `exit` animation is `{ opacity: 0, height: 0, x: -80 }`
+— it keeps travelling in the direction it was already being dragged rather
+than snapping back to center first, so the dismissal reads as a
+continuation of the gesture instead of a separate animation taking over.
+
+## The badge and the dots clear together
+
+<NotificationInboxBadge />
+
+```tsx
+<AnimatePresence>
+  {unread > 0 ? (
+    <motion.span
+      initial={{ opacity: 0, scale: 0.6 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.6 }}
+    >
+      {unread}
+    </motion.span>
+  ) : null}
+</AnimatePresence>
+```
+
+The badge isn't hidden with `display: none` when the count hits zero — it's
+conditionally rendered inside `AnimatePresence`, so removing it triggers the
+same `exit` animation as any other `AnimatePresence` child. Because
+`onMarkAllRead` sets every notification's `read` flag in the same state
+update, `unread` drops to `0` in one render: the badge's exit and every
+row's unread-dot disappearance happen on the same tick, not staggered one
+notification at a time. Nothing individually "clears" — the count that
+drives the badge and the flags that drive the dots are the same source of
+truth, updated once.
+
+## Cheap when empty
+
+An empty inbox isn't a static "no notifications" line — the bell icon
+bobs on a slow, infinite `y: [0, -4, 0]` loop:
+
+```tsx
+<motion.div
+  animate={{ y: [0, -4, 0] }}
+  transition={{ duration: 2.4, repeat: Infinity }}
+>
+  <BellIcon />
+</motion.div>
+```
+
+It's a single `transform`-only keyframe on one small icon, so there's no
+per-frame cost worth pausing for — unlike a full row list, an empty state
+has nothing else on screen competing for main-thread time.
+
+## Accessibility
+
+The unread dot carries a visually-hidden `<span className="sr-only">Unread
+</span>` so screen readers get the state without relying on a bare color
+dot, and marking a row read is a real `<button>` wrapping the row's content
+— not a `div` with an `onClick` — so it's reachable and activatable from the
+keyboard independent of the drag gesture layered on top of it.
+
+## The result
+
+<NotificationInboxResult />
+
+One card, one grouping function, one drag threshold, and a badge that's
+just another `AnimatePresence` child reacting to the same state as the rows
+underneath it.

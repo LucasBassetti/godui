@@ -1,0 +1,120 @@
+---
+title: Anatomy of Orbiting Circles
+description: How one rotating ring places every child on a circle, and the one counter-rotation that keeps them from tumbling as they travel.
+---
+
+`OrbitingCircles` doesn't animate each child individually — it spins **one**
+ring, positions every child at a fixed angle on that ring, and then spins
+each child's own content backward by the exact same amount. Three simple
+transforms, layered.
+
+## The box, the ring, and one angle per slot
+
+The component's outer box is sized from its own geometry —
+`radius * 2 + iconSize` — so it never clips the orbit. Every child gets an
+even slice of the circle, `angle = (360 / n) * i`, and is placed with a
+single `rotate → translate` pair: rotate to the child's angle, then push it
+out along the now-rotated Y axis.
+
+<OrbitingCirclesAnatomy />
+
+```tsx
+const box = radius * 2 + iconSize;
+const angle = (360 / n) * i;
+```
+
+```tsx
+<div
+  style={{
+    width: iconSize,
+    height: iconSize,
+    transform: `rotate(${angle}deg) translateY(-${radius}px)`,
+  }}
+>
+  {child}
+</div>
+```
+
+The outer `motion.div` — the ring — renders no visible markup of its own.
+It exists purely to rotate its children together; `showPath` is a separate,
+static circle drawn underneath for the faint track.
+
+## Why counter-rotation, and not just "don't rotate"
+
+The ring has to rotate as a whole — that's what makes every slot travel
+together in lockstep instead of each running its own orbit math. But
+rotating the ring also rotates everything inside it, including each slot's
+icon. Left alone, an icon would spin a full 360° every orbit — upside-down
+at the bottom, sideways at the sides.
+
+<OrbitingCirclesCounter />
+
+The fix is a second `motion.div` **inside** each slot, animating the exact
+inverse on the identical clock:
+
+```tsx
+<motion.div
+  animate={{ rotate: reverse ? -360 : 360 }}   // the ring
+  transition={spin}
+>
+  {/* … */}
+  <motion.div
+    animate={{ rotate: reverse ? [-angle, -angle + 360] : [-angle, -angle - 360] }}
+    transition={spin}                           // same duration, same ease
+  >
+    {child}
+  </motion.div>
+</motion.div>
+```
+
+Same `duration`, same `ease: "linear"`, same `repeat: Infinity` — the two
+rotations are mirror images of each other, so their sum is always zero.
+`reverse` flips both signs together, which is why it never breaks the
+cancellation.
+
+## Two rings, sharing nothing but a center
+
+`radius`, `duration`, and `reverse` are all per-instance, so stacking two
+`OrbitingCircles` on the same absolutely-positioned center gives you two
+independently-timed orbits with no shared state — just two components that
+happen to overlap.
+
+<OrbitingCirclesRings />
+
+```tsx
+<div className="relative flex h-80 items-center justify-center">
+  <OrbitingCircles radius={60} duration={14} className="absolute">
+    <Icon /><Icon />
+  </OrbitingCircles>
+  <OrbitingCircles radius={120} duration={24} reverse className="absolute">
+    <Icon /><Icon /><Icon />
+  </OrbitingCircles>
+</div>
+```
+
+## Why transform, not layout
+
+Both rotations — the ring's and each slot's counter-rotation — are
+`rotate`/`translateY` on `transform`, computed once from `radius` and
+`iconSize` and never touched again after mount. A dense orbit of a dozen
+icons costs the same per frame as one: the browser is just compositing
+already-painted layers along a fixed circle, not recalculating positions.
+
+## Accessibility
+
+Under `prefers-reduced-motion`, both `animate` props are dropped entirely —
+no ring spin, no counter-spin — and each slot's counter-rotation is set
+once via a static `style.transform: rotate(-angle)` so icons still land
+upright, just frozen in place instead of orbiting.
+
+```tsx
+animate={reduceMotion ? undefined : { rotate: reverse ? -360 : 360 }}
+style={reduceMotion ? { transform: `rotate(${-angle}deg)` } : undefined}
+```
+
+## The result
+
+<OrbitingCirclesResult />
+
+One ring rotation, one exact inverse — that's the whole orbit, upright the
+entire way around.

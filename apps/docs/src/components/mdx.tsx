@@ -23,6 +23,10 @@ import { AgentTimelineAnatomy } from "@/components/learn/agent-timeline-anatomy"
 import { AgentTimelineExpand } from "@/components/learn/agent-timeline-expand";
 import { AgentTimelineRail } from "@/components/learn/agent-timeline-rail";
 import { AgentTimelineResult } from "@/components/learn/agent-timeline-result";
+import { AnimatedBeamAnatomy } from "@/components/learn/animated-beam-anatomy";
+import { AnimatedBeamGradient } from "@/components/learn/animated-beam-gradient";
+import { AnimatedBeamMeasure } from "@/components/learn/animated-beam-measure";
+import { AnimatedBeamResult } from "@/components/learn/animated-beam-result";
 import { AnimatedTestimonialsAnatomy } from "@/components/learn/animated-testimonials-anatomy";
 import { AnimatedTestimonialsResult } from "@/components/learn/animated-testimonials-result";
 import { AnimatedTestimonialsStack } from "@/components/learn/animated-testimonials-stack";
@@ -63,6 +67,10 @@ import { CommandPaletteAnatomy } from "@/components/learn/command-palette-anatom
 import { CommandPaletteEnter } from "@/components/learn/command-palette-enter";
 import { CommandPaletteHighlight } from "@/components/learn/command-palette-highlight";
 import { CommandPaletteResult } from "@/components/learn/command-palette-result";
+import { CommentPinAnatomy } from "@/components/learn/comment-pin-anatomy";
+import { CommentPinResolved } from "@/components/learn/comment-pin-resolved";
+import { CommentPinResult } from "@/components/learn/comment-pin-result";
+import { CommentPinSpring } from "@/components/learn/comment-pin-spring";
 import { ContainerScrollAnatomy } from "@/components/learn/container-scroll-anatomy";
 import { ContainerScrollResult } from "@/components/learn/container-scroll-result";
 import { ContainerScrollScrub } from "@/components/learn/container-scroll-scrub";
@@ -105,6 +113,10 @@ import { FloatingToolbarMagnetic } from "@/components/learn/floating-toolbar-mag
 import { FloatingToolbarResult } from "@/components/learn/floating-toolbar-result";
 import { FoldProgress } from "@/components/learn/fold-progress";
 import { FoldStages } from "@/components/learn/fold-stages";
+import { GlobeAnatomy } from "@/components/learn/globe-anatomy";
+import { GlobeLifecycle } from "@/components/learn/globe-lifecycle";
+import { GlobeResult } from "@/components/learn/globe-result";
+import { GlobeRotate } from "@/components/learn/globe-rotate";
 import { GooeyFabResult } from "@/components/learn/gooey-fab-result";
 import { GooeyFilter } from "@/components/learn/gooey-filter";
 import { GooeyLayers } from "@/components/learn/gooey-layers";
@@ -113,6 +125,10 @@ import { GooeyStackAnatomy } from "@/components/learn/gooey-stack-anatomy";
 import { GooeyStackFilter } from "@/components/learn/gooey-stack-filter";
 import { GooeyStackNearness } from "@/components/learn/gooey-stack-nearness";
 import { GooeyStackResult } from "@/components/learn/gooey-stack-result";
+import { GravityAnatomy } from "@/components/learn/gravity-anatomy";
+import { GravityLifecycle } from "@/components/learn/gravity-lifecycle";
+import { GravityResult } from "@/components/learn/gravity-result";
+import { GravitySync } from "@/components/learn/gravity-sync";
 import { HeroParallaxAnatomy } from "@/components/learn/hero-parallax-anatomy";
 import { HeroParallaxResult } from "@/components/learn/hero-parallax-result";
 import { HeroParallaxScrub } from "@/components/learn/hero-parallax-scrub";
@@ -137,6 +153,10 @@ import { InertiaGalleryDrag } from "@/components/learn/inertia-gallery-drag";
 import { InertiaGalleryFalloff } from "@/components/learn/inertia-gallery-falloff";
 import { InertiaGalleryResult } from "@/components/learn/inertia-gallery-result";
 import { LayerReveal } from "@/components/learn/layer-reveal";
+import { LiveCursorsAnatomy } from "@/components/learn/live-cursors-anatomy";
+import { LiveCursorsPresence } from "@/components/learn/live-cursors-presence";
+import { LiveCursorsResult } from "@/components/learn/live-cursors-result";
+import { LiveCursorsSpring } from "@/components/learn/live-cursors-spring";
 import { MagicInputAnatomy } from "@/components/learn/magic-input-anatomy";
 import { MagicInputLifecycle } from "@/components/learn/magic-input-lifecycle";
 import { MagicInputLift } from "@/components/learn/magic-input-lift";
@@ -163,6 +183,10 @@ import { MorphingDialogAnatomy } from "@/components/learn/morphing-dialog-anatom
 import { MorphingDialogBackdrop } from "@/components/learn/morphing-dialog-backdrop";
 import { MorphingDialogResult } from "@/components/learn/morphing-dialog-result";
 import { MorphingDialogSpring } from "@/components/learn/morphing-dialog-spring";
+import { NotificationInboxAnatomy } from "@/components/learn/notification-inbox-anatomy";
+import { NotificationInboxBadge } from "@/components/learn/notification-inbox-badge";
+import { NotificationInboxResult } from "@/components/learn/notification-inbox-result";
+import { NotificationInboxSwipe } from "@/components/learn/notification-inbox-swipe";
 import { NumberTickerAnatomy } from "@/components/learn/number-ticker-anatomy";
 import { NumberTickerResult } from "@/components/learn/number-ticker-result";
 import { NumberTickerSpring } from "@/components/learn/number-ticker-spring";
@@ -170,10 +194,18 @@ import { NumberTickerView } from "@/components/learn/number-ticker-view";
 import { OrbitCarouselAnatomy } from "@/components/learn/orbit-carousel-anatomy";
 import { OrbitCarouselOrbit } from "@/components/learn/orbit-carousel-orbit";
 import { OrbitCarouselResult } from "@/components/learn/orbit-carousel-result";
+import { OrbitingCirclesAnatomy } from "@/components/learn/orbiting-circles-anatomy";
+import { OrbitingCirclesCounter } from "@/components/learn/orbiting-circles-counter";
+import { OrbitingCirclesResult } from "@/components/learn/orbiting-circles-result";
+import { OrbitingCirclesRings } from "@/components/learn/orbiting-circles-rings";
 import { OtpAnatomy } from "@/components/learn/otp-anatomy";
 import { OtpCaret } from "@/components/learn/otp-caret";
 import { OtpResult } from "@/components/learn/otp-result";
 import { OtpShake } from "@/components/learn/otp-shake";
+import { PresenceFacepileAnatomy } from "@/components/learn/presence-facepile-anatomy";
+import { PresenceFacepileEnter } from "@/components/learn/presence-facepile-enter";
+import { PresenceFacepileResult } from "@/components/learn/presence-facepile-result";
+import { PresenceFacepileStatus } from "@/components/learn/presence-facepile-status";
 import { ProgressFoldResult } from "@/components/learn/progress-fold-result";
 import { ProgressiveCardRevealAnatomy } from "@/components/learn/progressive-card-reveal-anatomy";
 import { ProgressiveCardRevealFunnel } from "@/components/learn/progressive-card-reveal-funnel";
@@ -204,6 +236,10 @@ import { ScrollTextRevealAnatomy } from "@/components/learn/scroll-text-reveal-a
 import { ScrollTextRevealLatch } from "@/components/learn/scroll-text-reveal-latch";
 import { ScrollTextRevealResult } from "@/components/learn/scroll-text-reveal-result";
 import { ScrollTextRevealScrub } from "@/components/learn/scroll-text-reveal-scrub";
+import { ScrollTimelineAnatomy } from "@/components/learn/scroll-timeline-anatomy";
+import { ScrollTimelineResult } from "@/components/learn/scroll-timeline-result";
+import { ScrollTimelineScrub } from "@/components/learn/scroll-timeline-scrub";
+import { ScrollTimelineSpring } from "@/components/learn/scroll-timeline-spring";
 import { SegmentedControlAnatomy } from "@/components/learn/segmented-control-anatomy";
 import { SegmentedControlResult } from "@/components/learn/segmented-control-result";
 import { SegmentedControlSlide } from "@/components/learn/segmented-control-slide";
@@ -261,6 +297,10 @@ import { VoiceOrbAmpSplit } from "@/components/learn/voice-orb-amp-split";
 import { VoiceOrbAnatomy } from "@/components/learn/voice-orb-anatomy";
 import { VoiceOrbResult } from "@/components/learn/voice-orb-result";
 import { VoiceOrbStates } from "@/components/learn/voice-orb-states";
+import { WorldMapAnatomy } from "@/components/learn/world-map-anatomy";
+import { WorldMapDraw } from "@/components/learn/world-map-draw";
+import { WorldMapPulse } from "@/components/learn/world-map-pulse";
+import { WorldMapResult } from "@/components/learn/world-map-result";
 import { MCPInstall } from "@/components/mcp-install";
 
 function Table(props: ComponentProps<"table">) {
@@ -323,6 +363,10 @@ export function getMDXComponents(components?: MDXComponents) {
     AgentTimelineExpand,
     AgentTimelineRail,
     AgentTimelineResult,
+    AnimatedBeamAnatomy,
+    AnimatedBeamGradient,
+    AnimatedBeamMeasure,
+    AnimatedBeamResult,
     AnimatedTestimonialsAnatomy,
     AnimatedTestimonialsResult,
     AnimatedTestimonialsStack,
@@ -363,17 +407,21 @@ export function getMDXComponents(components?: MDXComponents) {
     CommandPaletteEnter,
     CommandPaletteHighlight,
     CommandPaletteResult,
+    CommentPinAnatomy,
+    CommentPinResolved,
+    CommentPinResult,
+    CommentPinSpring,
     ContainerScrollAnatomy,
     ContainerScrollResult,
     ContainerScrollScrub,
-    ConversationThreadAnatomy,
-    ConversationThreadResult,
-    ConversationThreadScroll,
-    ConversationThreadStream,
     ContextMenuAnatomy,
     ContextMenuFlip,
     ContextMenuResult,
     ContextMenuSpring,
+    ConversationThreadAnatomy,
+    ConversationThreadResult,
+    ConversationThreadScroll,
+    ConversationThreadStream,
     CoverFlowAnatomy,
     CoverFlowFan,
     CoverFlowResult,
@@ -405,6 +453,10 @@ export function getMDXComponents(components?: MDXComponents) {
     FloatingToolbarResult,
     FoldProgress,
     FoldStages,
+    GlobeAnatomy,
+    GlobeLifecycle,
+    GlobeResult,
+    GlobeRotate,
     GooeyFabResult,
     GooeyFilter,
     GooeyLayers,
@@ -413,6 +465,10 @@ export function getMDXComponents(components?: MDXComponents) {
     GooeyStackFilter,
     GooeyStackNearness,
     GooeyStackResult,
+    GravityAnatomy,
+    GravityLifecycle,
+    GravityResult,
+    GravitySync,
     HeroParallaxAnatomy,
     HeroParallaxResult,
     HeroParallaxScrub,
@@ -437,6 +493,10 @@ export function getMDXComponents(components?: MDXComponents) {
     InertiaGalleryFalloff,
     InertiaGalleryResult,
     LayerReveal,
+    LiveCursorsAnatomy,
+    LiveCursorsPresence,
+    LiveCursorsResult,
+    LiveCursorsSpring,
     MagicInputAnatomy,
     MagicInputLifecycle,
     MagicInputLift,
@@ -463,6 +523,10 @@ export function getMDXComponents(components?: MDXComponents) {
     MorphingDialogBackdrop,
     MorphingDialogResult,
     MorphingDialogSpring,
+    NotificationInboxAnatomy,
+    NotificationInboxBadge,
+    NotificationInboxResult,
+    NotificationInboxSwipe,
     NumberTickerAnatomy,
     NumberTickerResult,
     NumberTickerSpring,
@@ -470,10 +534,18 @@ export function getMDXComponents(components?: MDXComponents) {
     OrbitCarouselAnatomy,
     OrbitCarouselOrbit,
     OrbitCarouselResult,
+    OrbitingCirclesAnatomy,
+    OrbitingCirclesCounter,
+    OrbitingCirclesResult,
+    OrbitingCirclesRings,
     OtpAnatomy,
     OtpCaret,
     OtpResult,
     OtpShake,
+    PresenceFacepileAnatomy,
+    PresenceFacepileEnter,
+    PresenceFacepileResult,
+    PresenceFacepileStatus,
     ProgressFoldResult,
     ProgressiveCardRevealAnatomy,
     ProgressiveCardRevealFunnel,
@@ -504,6 +576,10 @@ export function getMDXComponents(components?: MDXComponents) {
     ScrollTextRevealLatch,
     ScrollTextRevealResult,
     ScrollTextRevealScrub,
+    ScrollTimelineAnatomy,
+    ScrollTimelineResult,
+    ScrollTimelineScrub,
+    ScrollTimelineSpring,
     SegmentedControlAnatomy,
     SegmentedControlResult,
     SegmentedControlSlide,
@@ -561,6 +637,10 @@ export function getMDXComponents(components?: MDXComponents) {
     VoiceOrbAnatomy,
     VoiceOrbResult,
     VoiceOrbStates,
+    WorldMapAnatomy,
+    WorldMapDraw,
+    WorldMapPulse,
+    WorldMapResult,
     ...components,
   } satisfies MDXComponents;
 }

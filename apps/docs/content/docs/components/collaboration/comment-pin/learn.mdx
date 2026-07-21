@@ -1,0 +1,127 @@
+---
+title: Anatomy of the Comment Pin
+description: A pin that springs onto a surface and a thread panel that hangs off its corner — two independent springs, one anchor, no coordinate math for the popover.
+---
+
+Figma-style annotation pins look like they need real positioning logic for
+the popover — where does the thread go so it doesn't run off the pin? The
+answer `CommentPin` picks is to not solve that problem: the panel isn't
+positioned against the viewport or the pin's measured box, it's `absolute`
+inside the *same* relatively-positioned wrapper the pin already lives in.
+
+## One anchor, one panel hanging off it
+
+<CommentPinAnatomy />
+
+```tsx
+<div
+  className="absolute z-raised"
+  style={{ left: `${x}%`, top: `${y}%` }}
+>
+  <motion.button className="rounded-full rounded-bl-sm ..." />
+
+  <motion.div className="absolute left-0 top-9 z-popover w-72 origin-top-left ...">
+    {/* comment list + reply form */}
+  </motion.div>
+</div>
+```
+
+The outer `div` is the only element that knows about `x`/`y` — it's placed
+with a `left`/`top` percentage inside whatever container the caller renders
+(a canvas, a screenshot, a Figma-style frame). The pin button and the panel
+are both plain children with `absolute left-0 top-*`, measured relative to
+*that* wrapper, not the page. Move the wrapper and everything inside it
+moves together; there's no separate "where should the popover go" calculation
+to keep in sync. `rounded-full rounded-bl-sm` on the button is the one
+detail that sells "pin" over "avatar" — leaving a single square corner reads
+as a speech-bubble tail pointing at the exact spot being annotated.
+
+## Two springs, one anchored to the other
+
+<CommentPinSpring />
+
+```tsx
+<motion.button
+  layout
+  initial={{ scale: 0 }}
+  animate={{ scale: resolved ? 0.85 : 1 }}
+  transition={{ type: "spring", stiffness: 520, damping: 32 }}
+/>
+
+<AnimatePresence>
+  {open ? (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.85, y: 4 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.85, y: 4 }}
+      transition={{ type: "spring", stiffness: 320, damping: 32, mass: 0.9 }}
+      className="... origin-top-left"
+    />
+  ) : null}
+</AnimatePresence>
+```
+
+The pin's own spring (`520/32`) is tuned tighter than the panel's (`320/32`,
+plus `mass: 0.9` to add a beat of inertia) — it should feel like the more
+immediate object, since it's what the pointer is actually clicking. Setting
+`origin-top-left` matters as much as the transition values: without it the
+panel would scale from its own center and visibly drift away from the pin
+on entry. Anchoring the transform origin to the same corner the panel is
+positioned from makes it read as growing *out of* the pin, not popping up
+independently beside it.
+
+## `layout` on the pin, not the panel
+
+The pin button carries a `layout` prop; the panel doesn't. That's because
+`resolved` can flip while the pin's own size only ever changes by a spring
+`scale` (a transform, cheap for Framer to interpolate with `layout`
+tracking). The panel's size is driven by its comment list growing or
+shrinking — real height changes — and it's already animating in and out via
+`AnimatePresence`'s own `initial`/`animate`/`exit`, so adding `layout` there
+would fight the mount/unmount transition instead of helping it.
+
+## Active vs resolved: two systems, same element
+
+<CommentPinResolved />
+
+```tsx
+className={`... transition-[filter,opacity] ${resolved ? "opacity-60 grayscale" : ""}`}
+style={{ backgroundColor: pinColor }}
+```
+
+`resolved` doesn't get its own spring — the `scale: 0.85` above already
+covers the size change. Desaturating the pin is a second, entirely separate
+animation system: a plain CSS `transition-[filter,opacity]` toggled by the
+`grayscale`/`opacity-60` classes. Framer never sees the color change at all.
+Splitting it this way means the grayscale fade rides the browser's own
+compositor timeline independently of whatever Framer's spring is doing to
+`scale` in the same frame — two cheap, unrelated transitions landing on one
+element instead of one animation system trying to own both.
+
+## Accessibility
+
+```tsx
+aria-label={resolved ? "Resolved comment" : "Open comment thread"}
+aria-expanded={open}
+```
+
+The pin is a real `<button>` with an `aria-label` that changes with
+`resolved`, so a screen reader announces the pin's state, not just its
+existence. `aria-expanded` mirrors `open` — the same boolean the spring
+above reads to decide the panel's `initial`/`exit` — so assistive tech and
+the visual animation can never disagree about whether the thread is open.
+The reply field, when present, is a real `<form>` with a labeled input and
+a submit button disabled until there's text to send:
+
+```tsx
+<input aria-label="Reply" ... />
+<button type="submit" disabled={!reply.trim()} aria-label="Send reply" />
+```
+
+## The result
+
+<CommentPinResult />
+
+One relatively-positioned wrapper carrying `x`/`y`, a tighter spring on the
+pin than on the panel it anchors, and a resolved state that never touches
+the spring at all — it just lets a CSS transition run alongside it.

@@ -6,9 +6,9 @@ import { ScrollScene } from "./scroll-scene";
 /**
  * Three node cards at absolute (x, y) centers, connected by SVG quadratic
  * curves from each source's right-edge centre to the next target's
- * left-edge centre — the exact anchor rule `Edges` uses. A packet dot rides
- * the first curve to stand in for the travelling beam. Grayscale: this scene
- * is about the graph's shape, not the light itself.
+ * left-edge centre — the exact anchor rule `Edges` uses. A packet dot sits on
+ * the first curve to mark where the travelling beam rides. Grayscale: this
+ * scene is about the graph's shape, not the light itself.
  */
 const BOX_W = 400;
 const BOX_H = 170;
@@ -45,7 +45,8 @@ const ctrl2 = {
 const path1 = `M ${edge1.startX},${edge1.startY} Q ${ctrl1.x},${ctrl1.y} ${edge1.endX},${edge1.endY}`;
 const path2 = `M ${edge2.startX},${edge2.startY} Q ${ctrl2.x},${ctrl2.y} ${edge2.endX},${edge2.endY}`;
 
-// Packet dot parked at t = 0.5 along the first curve's quadratic bezier.
+// Packet dot parked at t = 0.5 along the first curve's quadratic bezier —
+// it simply fades onto the line after the edge draws, no travel, no pulse.
 const packet = {
   x: 0.25 * edge1.startX + 0.5 * ctrl1.x + 0.25 * edge1.endX,
   y: 0.25 * edge1.startY + 0.5 * ctrl1.y + 0.25 * edge1.endY,
@@ -61,25 +62,17 @@ const CSS = `
   10%  { opacity: 1; }
   100% { opacity: 1; stroke-dashoffset: 0; }
 }
-@keyframes afa-pop {
-  from { opacity: 0; transform: scale(0.5); }
-  to   { opacity: 1; transform: scale(1); }
-}
-@keyframes afa-pulse {
-  0%, 100% { opacity: 0.5; }
-  50%      { opacity: 1; }
+@keyframes afa-fade {
+  from { opacity: 0; }
+  to   { opacity: 0.85; }
 }
 .afa-card  { animation: afa-in 420ms cubic-bezier(0.22,1,0.36,1) var(--d) both; opacity: 0; }
 .afa-edge  { animation: afa-edge 520ms linear var(--d) both; opacity: 0; }
-.afa-packet {
-  animation: afa-pop 260ms cubic-bezier(0.34,1.56,0.64,1) 900ms both,
-    afa-pulse 1.8s ease-in-out 1200ms infinite;
-  opacity: 0;
-}
+.afa-packet { animation: afa-fade 320ms ease-out 900ms both; opacity: 0; }
 .afa-static .afa-card, .afa-static .afa-edge {
   animation: none; opacity: 1; filter: none; transform: none; stroke-dashoffset: 0;
 }
-.afa-static .afa-packet { animation: none; opacity: 0.85; transform: none; }
+.afa-static .afa-packet { animation: none; opacity: 0.85; }
 `;
 
 const LEGEND: { name: string; desc: string; swatch: string }[] = [
@@ -95,7 +88,7 @@ const LEGEND: { name: string; desc: string; swatch: string }[] = [
   },
   {
     name: "Packet",
-    desc: "gradient sweep travelling the curve",
+    desc: "gradient beam that rides the curve",
     swatch: "bg-[var(--foreground)]",
   },
 ];

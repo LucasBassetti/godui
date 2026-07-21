@@ -38,7 +38,7 @@ const STATS = [
 
 export function GlobeDemo() {
   return (
-    <div className="relative w-full overflow-hidden rounded-3xl border border-white/10 bg-[#04060f] [background:radial-gradient(120%_120%_at_50%_-20%,#13204a_0%,#04060f_55%)]">
+    <div className="relative w-full overflow-hidden rounded-none border-0 bg-[#04060f] [background:radial-gradient(120%_120%_at_50%_-20%,#13204a_0%,#04060f_55%)]">
       {/* Faint grid that fades toward the globe. */}
       <div className="pointer-events-none absolute inset-0 [background-image:linear-gradient(to_right,rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.04)_1px,transparent_1px)] [background-size:44px_44px] [mask-image:radial-gradient(100%_55%_at_50%_0%,black,transparent)]" />
 

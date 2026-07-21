@@ -1,0 +1,169 @@
+---
+title: Anatomy of Gravity
+description: How a matter-js world lives inside a React tree, why the engine is created at render instead of in an effect, and how a rAF loop turns physics bodies into moving DOM.
+---
+
+`Gravity` isn't a canvas — it's a real, invisible physics world running
+underneath ordinary DOM elements. `matter-js` never draws anything; every
+frame, a sync loop copies each body's position straight into
+`style.transform` on the element you actually see.
+
+## One world, thick walls, a few bodies
+
+The canvas is a plain `relative overflow-hidden` div. On mount, `Gravity`
+adds static rectangle walls just past each edge — `200px` thick, so a body
+moving fast can't tunnel through in a single frame — and every `MatterBody`
+child becomes one more rectangle or circle body in that same world.
+
+<GravityAnatomy />
+
+```tsx
+const t = 200; // thick walls keep fast bodies contained
+const walls = [
+  Matter.Bodies.rectangle(width / 2, height + t / 2, width + t * 2, t, opts),
+  Matter.Bodies.rectangle(-t / 2, height / 2, t, height + t * 2, opts),
+  Matter.Bodies.rectangle(width + t / 2, height / 2, t, height + t * 2, opts),
+];
+if (addTopWall) {
+  walls.push(Matter.Bodies.rectangle(width / 2, -t / 2, width + t * 2, t, opts));
+}
+```
+
+A `ResizeObserver` rebuilds the walls whenever the canvas changes size, so
+they always sit just outside whatever the container currently measures.
+
+## The engine is created at render, not in an effect
+
+```tsx
+const [engine] = React.useState(() => Matter.Engine.create());
+```
+
+This is the one non-obvious line in the file. A child `MatterBody`'s effect
+runs and calls `ctx.register(...)` before the parent `Gravity`'s own effect
+runs — React fires child effects first. If the engine were created inside
+`Gravity`'s effect, every body registered by a child would already have
+tried to add itself to a `world` that doesn't exist yet. Creating it during
+render (via lazy `useState`) guarantees the engine — and its `world` — exist
+before any child can register a body against it.
+
+## Position and angle become `style.transform`
+
+Matter.js has no idea a DOM exists. A `sync` function, scheduled with
+`requestAnimationFrame`, reads every registered body's `position` and
+`angle` each frame and writes them into the matching element's `transform` —
+nothing else moves the plate.
+
+<GravitySync />
+
+```tsx
+const sync = () => {
+  for (const { element, body } of bodiesRef.current.values()) {
+    const w = element.offsetWidth;
+    const h = element.offsetHeight;
+    element.style.transform = `translate(${body.position.x - w / 2}px, ${
+      body.position.y - h / 2
+    }px) rotate(${body.angle}rad)`;
+  }
+  syncFrame = requestAnimationFrame(sync);
+};
+```
+
+Subtracting half the element's own width and height re-centers the
+translation, because Matter tracks a body's *center* while `transform`
+moves from the element's top-left origin. `translate`/`rotate` are both
+compositor-only — the browser moves an already-painted layer without
+re-running layout, which is what makes dozens of simultaneously falling
+bodies stay smooth.
+
+## Only draggable bodies grab
+
+A single shared `Matter.MouseConstraint` handles every pointer interaction
+in the world. Each `MatterBody` carries its own `isDraggable` flag, checked
+the moment a drag starts:
+
+```tsx
+Matter.Events.on(mouseConstraint, "startdrag", (e) => {
+  const dragged = [...bodiesRef.current.values()].find(
+    (b) => b.body === (e as unknown as { body: Matter.Body }).body,
+  );
+  if (dragged && !dragged.isDraggable) {
+    mouseConstraint.constraint.bodyB = null;
+  }
+});
+```
+
+If the body that was grabbed isn't draggable, the constraint's target is
+cleared on the same tick — the pointer never actually attaches, so the body
+keeps falling under gravity instead of following the cursor.
+
+## Cheap when idle
+
+A physics world sitting off screen, or behind a hidden tab, has no business
+burning frames. An `IntersectionObserver` on the canvas and a
+`visibilitychange` listener on the document both gate the same two
+functions: `resume()` starts the Matter `Runner` and reschedules the rAF
+sync loop; `pause()` stops both.
+
+<GravityLifecycle />
+
+```tsx
+const io = new IntersectionObserver(
+  ([entry]) => {
+    visible = entry.isIntersecting;
+    if (visible && !document.hidden) resume();
+    else pause();
+  },
+  { threshold: 0 },
+);
+
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) pause();
+  else if (visible) resume();
+});
+```
+
+Either condition failing is enough to pause — visible-but-hidden-tab and
+intersecting-but-off-screen both stop the simulation, and either one
+becoming true again resumes it exactly where the bodies were left.
+
+## Percent positions, resolved once
+
+`x`/`y` accept a `%` string, a px string, or a number, so a body can be
+placed relative to a container whose size isn't known at author time:
+
+```tsx
+function resolve(value: number | string, size: number): number {
+  if (typeof value === "number") return value;
+  if (value.endsWith("%")) return (parseFloat(value) / 100) * size;
+  return parseFloat(value);
+}
+```
+
+This only runs once, at registration — after that, the body is a free
+physics object and its position is whatever the simulation computes, not
+the original percentage.
+
+## Reduced motion skips the engine entirely
+
+```tsx
+const staticPlacement =
+  !ctx || ctx.reduced
+    ? {
+        left: typeof x === "number" ? `${x}px` : x,
+        top: typeof y === "number" ? `${y}px` : y,
+        transform: `translate(-50%, -50%) rotate(${angle}deg)`,
+      }
+    : undefined;
+```
+
+Under `prefers-reduced-motion`, `Gravity` never creates an engine and
+`MatterBody` never registers — each body just lays itself out statically at
+its authored `x`/`y`/`angle` using ordinary absolute positioning. No physics
+runs, no walls exist, nothing falls.
+
+## The result
+
+<GravityResult />
+
+A matter-js world, invisible and running underneath, mirrored onto the DOM
+one `transform` write per frame — paused the instant nobody's watching.

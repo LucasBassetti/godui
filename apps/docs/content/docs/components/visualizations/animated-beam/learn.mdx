@@ -1,0 +1,123 @@
+---
+title: Anatomy of Animated Beam
+description: How a travelling gradient is drawn along a live-measured quadratic path between two DOM nodes, and why the path itself never has to move.
+---
+
+`AnimatedBeam` doesn't animate a line between two elements — it draws one
+static path and slides a gradient across it. Two completely separate
+problems, solved independently: geometry (where the path goes) and motion
+(what appears to travel along it).
+
+## From, to, and one quadratic curve
+
+Everything starts from two refs. `AnimatedBeam` reads both elements'
+`getBoundingClientRect()` relative to the container, takes their centers
+(plus optional pixel offsets), and connects them with a single quadratic
+Bézier: `M start Q control end`. The control point sits at the horizontal
+midpoint, pushed up or down by `curvature`.
+
+<AnimatedBeamAnatomy />
+
+```tsx
+const startX = a.left - c.left + a.width / 2 + startXOffset;
+const startY = a.top - c.top + a.height / 2 + startYOffset;
+const endX = b.left - c.left + b.width / 2 + endXOffset;
+const endY = b.top - c.top + b.height / 2 + endYOffset;
+const controlX = (startX + endX) / 2;
+const controlY = (startY + endY) / 2 - curvature;
+
+setPath(`M ${startX},${startY} Q ${controlX},${controlY} ${endX},${endY}`);
+```
+
+One `<path>` renders that string twice: once as a faint resting line
+(`pathColor`, `pathOpacity`), once with a gradient stroke on top. The second
+copy is the one that actually moves.
+
+## Live geometry, not a one-time measurement
+
+Refs don't dispatch events when their layout changes, so `AnimatedBeam`
+watches instead. A `ResizeObserver` on the container plus a window `resize`
+listener both call the same `update()` — recomputing every rect and
+rewriting `d` from scratch. Nothing is interpolated between measurements;
+each tick is a fresh, correct snapshot.
+
+<AnimatedBeamMeasure />
+
+```tsx
+const update = () => {
+  const c = container.getBoundingClientRect();
+  const a = from.getBoundingClientRect();
+  const b = to.getBoundingClientRect();
+  setBox({ width: c.width, height: c.height });
+  setPath(/* same formula, fresh rects */);
+};
+
+update();
+const ro = new ResizeObserver(update);
+ro.observe(containerRef.current);
+window.addEventListener("resize", update);
+```
+
+Sizing the `<svg>` from the same container rect (`box.width`/`box.height`)
+keeps the overlay pixel-aligned with whatever just resized it — there's no
+separate "layout" pass to fall out of sync with.
+
+## The showpiece: a gradient that travels, not a shape that moves
+
+The animated part is a `motion.linearGradient` living inside the path's
+`<defs>`. Its `x1`/`x2` tween from one edge to past the other — `["10%",
+"110%"]` — on an infinite, linear-eased loop. The path underneath never
+changes; only where the gradient's stops fall along it does.
+
+<AnimatedBeamGradient />
+
+```tsx
+<motion.linearGradient
+  gradientUnits="userSpaceOnUse"
+  animate={{ x1: ["10%", "110%"], x2: ["0%", "100%"] }}
+  transition={{ duration, delay, repeat: Infinity, ease: "linear" }}
+>
+  <stop stopColor={gradientStartColor} stopOpacity="0" />
+  <stop stopColor={gradientStartColor} />
+  <stop offset="32.5%" stopColor={gradientStopColor} />
+  <stop offset="100%" stopColor={gradientStopColor} stopOpacity="0" />
+</motion.linearGradient>
+```
+
+`reverse` doesn't reverse an animation direction flag — it swaps the
+tween's own start/end percentages (`["90%", "-10%"]`), so the gradient
+still animates forward through the same linear timeline, just mapped onto
+the opposite travel.
+
+## Why the path is cheap even while the gradient runs
+
+The only thing animating every frame is two SVG attributes on a `<stop>`'s
+parent — `x1`/`x2` on a `linearGradient`. That's a paint-level change
+scoped to the gradient fill, not a layout or geometry recalculation of the
+`<path>` itself, and definitely not a JS-driven `requestAnimationFrame`
+loop. The expensive part — remeasuring rects and rebuilding `d` — only runs
+on an actual resize, not every animation frame.
+
+## Reduced motion
+
+`useReducedMotion()` swaps the animated gradient tween for a static one —
+`{ x1: "0%", x2: "100%" }` with `duration: 0` — so the beam still reads as a
+gradient-colored connection, it just never travels.
+
+```tsx
+const reduceMotion = useReducedMotion();
+
+animate={
+  reduceMotion
+    ? { x1: "0%", x2: "100%" }
+    : { x1: gradient.x1, x2: gradient.x2 }
+}
+transition={reduceMotion ? { duration: 0 } : { duration, delay, repeat: Infinity, ease: "linear" }}
+```
+
+## The result
+
+<AnimatedBeamResult />
+
+One measured path, one travelling gradient, and a `ResizeObserver` making
+sure the first never drifts out from under the second.

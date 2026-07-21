@@ -160,8 +160,10 @@ function NotificationRow({
       transition={{ type: "spring", stiffness: 320, damping: 32, mass: 0.9 }}
       className="relative overflow-hidden"
     >
-      {/* Archive affordance revealed while swiping */}
-      <div className="pointer-events-none absolute inset-y-0 right-0 flex w-24 items-center justify-end bg-gradient-to-l from-destructive/15 to-transparent pr-4 text-xs font-medium text-destructive">
+      {/* Archive affordance revealed while swiping — solid, not a fade:
+          the row is opaque, so a gradient-to-transparent just wastes the
+          strip until you've dragged almost to the threshold. */}
+      <div className="pointer-events-none absolute inset-y-0 right-0 flex w-24 items-center justify-end bg-destructive pr-4 text-xs font-medium text-destructive-foreground">
         Archive
       </div>
       <motion.div

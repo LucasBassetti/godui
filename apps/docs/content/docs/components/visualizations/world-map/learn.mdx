@@ -1,0 +1,143 @@
+---
+title: Anatomy of the World Map
+description: How a deterministic dot grid, a plain quadratic Bézier, and a fill-box ripple combine into a map that's identical on the server and the client.
+---
+
+`WorldMap` never fetches a map image. The land is a grid of dots generated
+on the fly, the arcs are two-point curves computed from the same projection
+that placed the dots, and none of it depends on anything that could differ
+between server and client.
+
+## Dots, pins, one arc
+
+Everything shares a single SVG coordinate space. A static grid of land dots
+is generated once with [`dotted-map`](https://github.com/NTgamesoft/dotted-map)
+and drawn with `currentColor`; a pin marks every arc endpoint; an arc is
+just a quadratic Bézier bow between two pins.
+
+<WorldMapAnatomy />
+
+```tsx
+const map = new DottedMap({ height: 60, grid: "diagonal" });
+const svg = map.getSVG({ radius: 0.22, color: "currentColor", shape: "circle" });
+```
+
+Rendering the dots with `currentColor` instead of baking a fixed color into
+the generated markup means `dotColor`, set on the SVG's own `style.color`,
+can restyle every dot without regenerating the grid.
+
+## Deterministic, so the server and the client agree
+
+```tsx
+const { markup, width, height, map } = React.useMemo(() => {
+  const map = new DottedMap({ height: 60, grid: "diagonal" });
+  // …
+}, []);
+```
+
+`DottedMap` with fixed arguments always produces the exact same grid. That
+determinism is what lets `WorldMap` render this way at all: a hydration
+mismatch would happen the instant the server's markup differed from the
+client's, and there's no client-only escape hatch here — the dots are
+injected with `dangerouslySetInnerHTML` on first render, not patched in
+after mount.
+
+## Arcs are computed from the same projection as the dots
+
+`map.getPin({ lat, lng })` is the same projection `dotted-map` used to place
+every dot, so an arc's endpoints land exactly on real dot positions instead
+of drifting from a separately-computed lat/lng-to-pixel formula:
+
+```tsx
+const a = map.getPin({ lat: c.start.lat, lng: c.start.lng });
+const b = map.getPin({ lat: c.end.lat, lng: c.end.lng });
+const cx = (a.x + b.x) / 2;
+const bow = Math.hypot(b.x - a.x, b.y - a.y) * 0.35;
+const cy = Math.min(a.y, b.y) - bow;
+// d = `M ${a.x} ${a.y} Q ${cx} ${cy} ${b.x} ${b.y}`
+```
+
+The control point sits above the midpoint, offset by 35% of the
+start-to-end distance — the farther apart two points are, the higher the
+arc bows, which is what keeps a short hop and a transcontinental line both
+reading as "an arc" instead of the long one looking almost flat.
+
+## The draw-in
+
+Each arc animates `pathLength` from `0` to `1`, staggered per connection so
+a whole map full of routes doesn't snap in all at once:
+
+<WorldMapDraw />
+
+```tsx
+initial={reduceMotion ? false : { pathLength: 0 }}
+animate={{ pathLength: 1 }}
+transition={{
+  duration,
+  delay: 0.4 + i * 0.3,
+  ease: [0.22, 1, 0.36, 1],
+  repeat: loop ? Number.POSITIVE_INFINITY : 0,
+  repeatDelay: loop ? connections.length * 0.3 : 0,
+}}
+```
+
+`repeatDelay` scales with `connections.length` — more arcs means a longer
+pause before the whole set redraws together, so the loop always reads as
+"the map refreshes," not "arc 1 restarts while arc 4 is still drawing."
+
+## A gradient fades the arc's own ends
+
+```tsx
+<linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="0%">
+  <stop offset="0%" stopColor={lineColor} stopOpacity="0" />
+  <stop offset="12%" stopColor={lineColor} stopOpacity="1" />
+  <stop offset="88%" stopColor={lineColor} stopOpacity="1" />
+  <stop offset="100%" stopColor={lineColor} stopOpacity="0" />
+</linearGradient>
+```
+
+Each arc strokes with `url(#gradientId)` instead of a flat color, so every
+beam visibly emerges from its start pin and dissolves into its end pin
+rather than terminating with a hard-edged cap.
+
+## The pin ripple
+
+Every endpoint gets a second, purely decorative circle behind the solid pin
+— the ripple. It scales from `1` to `3` while fading from `0.6` to `0`,
+forever, using `transformBox: fill-box` so it scales around its own center
+instead of the SVG's coordinate origin.
+
+<WorldMapPulse />
+
+```tsx
+<motion.circle
+  initial={{ scale: 1, opacity: 0.6 }}
+  animate={{ scale: 3, opacity: 0 }}
+  transition={{ duration: 1.8, repeat: Number.POSITIVE_INFINITY, ease: [0.22, 1, 0.36, 1] }}
+  style={{ transformBox: "fill-box", transformOrigin: "center" }}
+/>
+```
+
+Without `transformBox: fill-box`, an SVG element's default transform origin
+is the coordinate `(0, 0)` of its nearest viewport, not its own shape — the
+ripple would scale away from the pin instead of growing outward from it.
+
+## Reduced motion removes both loops
+
+```tsx
+initial={reduceMotion ? false : { pathLength: 0 }}
+{!reduceMotion && <motion.circle /* ripple */ />}
+```
+
+Under `prefers-reduced-motion`, arcs render fully drawn immediately and the
+ripple circle isn't rendered at all — not paused, not frozen mid-animation,
+simply absent. The map is fully legible on first paint with nothing left
+looping.
+
+## The result
+
+<WorldMapResult />
+
+A deterministic dot grid, arcs projected from the same math that placed the
+dots, and two independent infinite loops — the draw and the ripple — that
+both vanish cleanly under reduced motion.

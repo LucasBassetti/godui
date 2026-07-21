@@ -1,0 +1,152 @@
+---
+title: Anatomy of the Scroll Timeline
+description: Why the rail grows with scaleY instead of height, how a spring keeps the fill from feeling jittery, and how a sticky node and a fade-up entry share one flex row.
+---
+
+A scrollytelling rail that visibly "draws" as you read only works if the
+fill can grow every scroll frame without ever asking the layout engine to
+recompute anything. `ScrollTimeline` gets there with one measured number, one
+spring, and a transform that never touches `height`.
+
+## One rail, a node and a card per entry
+
+Each entry is a single flex row: a sticky node stays pinned to the rail
+while its section is in view, and a content card fades up once, the first
+time it enters. The rail itself is one absolutely-positioned line sized to
+the track's *measured* height — not one segment stitched per entry.
+
+<ScrollTimelineAnatomy />
+
+```tsx
+<div ref={trackRef} className="relative mx-auto max-w-4xl pb-20">
+  {data.map((item, index) => (
+    <div key={`${item.title}-${index}`} className="flex justify-start pt-10 md:gap-10 md:pt-24">
+      <div className="sticky top-24 z-base flex max-w-xs flex-col items-center self-start md:w-44 md:flex-row md:items-start">
+        {/* node */}
+      </div>
+      <motion.div whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+        {item.content}
+      </motion.div>
+    </div>
+  ))}
+</div>
+```
+
+## Measuring the rail with `ResizeObserver`
+
+The line's total height can't be hard-coded — it depends on how much content
+each entry renders, which varies with the data and the viewport width. A
+`ResizeObserver` on the track keeps a `height` state in sync with whatever
+that turns out to be:
+
+```tsx
+React.useLayoutEffect(() => {
+  const el = trackRef.current;
+  if (!el) return;
+  const measure = () => setHeight(el.getBoundingClientRect().height);
+  measure();
+  const ro = new ResizeObserver(measure);
+  ro.observe(el);
+  return () => ro.disconnect();
+}, []);
+```
+
+`useLayoutEffect`, not `useEffect` — the height is read before the browser
+paints, so the rail's container is sized correctly on the very first frame
+instead of flashing at zero height and snapping.
+
+## `scaleY`, not `height`
+
+The fill is a fixed-height overlay clipped by `overflow: hidden` on its
+`height`-sized parent, transformed with `scaleY` from `transform-origin:
+top`. Scroll progress drives the scale, never the box's actual height.
+
+<ScrollTimelineScrub />
+
+```tsx
+<div style={{ height }} className="absolute top-0 left-7 w-px overflow-hidden bg-border">
+  <motion.div
+    style={{ scaleY: reduce ? 1 : progress, opacity: reduce ? 1 : lineOpacity }}
+    className="absolute inset-0 w-px origin-top rounded-full bg-[linear-gradient(to_top,var(--primary),transparent)]"
+  />
+</div>
+```
+
+`scaleY` is a transform, so growing the line every scroll frame is a
+composited operation — the browser stretches an already-painted layer. If
+this animated `height` instead, every single scroll event would force a
+layout recalculation on the rail's ancestors, which is exactly the kind of
+per-frame layout thrash `useScroll`-driven UI can't afford.
+
+## Why the fill is spring-smoothed
+
+`useScroll` reports `scrollYProgress` as a raw number that updates on every
+native scroll event — precise, but visually jittery, especially over a
+trackpad or an inertial mobile scroll. Feeding it straight into `scaleY`
+would make the rail twitch. `ScrollTimeline` re-emits it through a spring
+first:
+
+<ScrollTimelineSpring />
+
+```tsx
+const { scrollYProgress } = useScroll({
+  target: trackRef,
+  offset: ["start 10%", "end 60%"],
+});
+
+const progress = useSpring(scrollYProgress, {
+  stiffness: 320,
+  damping: 32,
+  mass: 0.9,
+});
+```
+
+`stiffness: 320` keeps the spring tight enough that it doesn't visibly lag
+behind fast scrolling; `damping: 32` is high enough relative to that
+stiffness that it settles without a visible bounce. The result tracks
+scroll closely but smooths out the frame-to-frame jitter raw scroll events
+carry.
+
+The `["start 10%", "end 60%"]` offset means the rail starts filling once the
+track's top has scrolled 10% into the viewport, and finishes once its
+bottom has scrolled up to the 60% line — not when the track enters or
+leaves entirely, which keeps both ends of the fill comfortably on screen.
+
+## Entries fade up once, the sticky label doesn't
+
+Content fades in with Framer's `whileInView`, gated by `once: true` so it
+never replays on scroll back up:
+
+```tsx
+<motion.div
+  initial={reduce ? false : { opacity: 0, y: 12 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  viewport={{ once: true, margin: "-10% 0px" }}
+  transition={reduce ? { duration: 0 } : { duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+>
+```
+
+The node beside it is plain `sticky top-24` — no motion value at all. It
+doesn't need one: `position: sticky` already gives it the "pinned while its
+section passes" behavior for free, so the only animated things on the page
+are the rail's fill and each card's one-time entrance.
+
+## Reduced motion resolves, it doesn't skip
+
+```tsx
+initial={reduce ? false : { opacity: 0, y: 12 }}
+style={{ scaleY: reduce ? 1 : progress, opacity: reduce ? 1 : lineOpacity }}
+```
+
+Under `prefers-reduced-motion`, the rail renders fully drawn (`scaleY: 1`)
+and every entry starts already visible (`initial={false}`) — the timeline is
+immediately readable top to bottom, with no scroll-driven reveal to wait
+out.
+
+## The result
+
+<ScrollTimelineResult />
+
+One measured number driving a `scaleY` transform, smoothed through a
+spring, next to sticky nodes that need no JavaScript at all. Scroll the page
+through it.
