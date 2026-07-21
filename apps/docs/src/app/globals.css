@@ -660,6 +660,33 @@ figure.shiki div:has(> button[aria-label]) {
   }
 }
 
+/* Replay button: full-turn spin of the arrow on click. */
+@keyframes godui-replay-spin {
+  from {
+    rotate: 0deg;
+  }
+  to {
+    rotate: 360deg;
+  }
+}
+
+/* Replay button: a beam races along the border from top-right to bottom-left.
+   pathLength is normalized to 100, so the 20-unit dash is a fifth of each half
+   of the perimeter. Offset starts before the path and exits past its end. */
+@keyframes godui-replay-beam {
+  from {
+    stroke-dashoffset: 20;
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  to {
+    stroke-dashoffset: -100;
+    opacity: 0;
+  }
+}
+
 /* Mobile sidebar drawer: swap fumadocs' default panel-toggle icon on the
    close trigger for a proper close (X) icon. The drawer markup is owned by
    fumadocs, so we mask the lucide panel-left glyph rather than fork the slot. */

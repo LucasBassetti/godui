@@ -6,6 +6,7 @@ description: A circular glass lens that floats over your content and follows the
 import { LiquidGlassLens } from "@godui/components";
 
 <ComponentPreview
+  fullWidth
   story="effects-liquid-glass-lens"
   code={`import { LiquidGlassLens } from "@/components/godui/liquid-glass-lens";
 
@@ -20,7 +21,7 @@ export function LiquidGlassLensDemo() {
   );
 }`}
 >
-  <div className="relative -m-10 flex min-h-[360px] w-[calc(100%+5rem)] items-center justify-center overflow-hidden rounded-xl bg-cover bg-center" style={{ backgroundImage: "url(/glass-bg.webp)" }}>
+  <div className="relative flex min-h-[360px] w-full flex-1 items-center justify-center overflow-hidden bg-cover bg-center" style={{ backgroundImage: "url(/glass-bg.webp)" }}>
     <h2 className="pointer-events-none select-none text-5xl font-bold tracking-tight text-white drop-shadow">Liquid Glass</h2>
     <LiquidGlassLens size={200} strength={80} />
   </div>

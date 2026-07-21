@@ -26,7 +26,7 @@ const LEGEND: { name: string; desc: string; swatch: string }[] = [
   {
     name: "Progress fill",
     desc: "scaleX(progress), origin-left",
-    swatch: "bg-black/25",
+    swatch: "bg-[var(--foreground)]/30",
   },
 ];
 
@@ -44,7 +44,7 @@ export function HoldFill() {
             className="relative flex h-12 w-[220px] items-center justify-center overflow-hidden rounded-xl bg-[var(--foreground)]"
             aria-hidden="true"
           >
-            <span className="hf-fill absolute inset-0 origin-left bg-black/25" />
+            <span className="hf-fill absolute inset-0 origin-left bg-[var(--background)]/30" />
           </div>
 
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">

@@ -1,0 +1,84 @@
+---
+title: Anatomy of Warp Starfield
+description: How perspective projection (focal / z), optional warp streaks, and a 0.06 parallax lerp fly a canvas starfield that pauses when you look away.
+---
+
+`WarpStarfield` keeps a cloud of stars in normalized 3D (`x, y ∈ [-1, 1]`,
+`z ∈ (0, depth]`). Each frame it projects them onto the canvas, optionally
+strokes a hyperspace trail, and eases the projection center toward the
+pointer. No textures — points (or lines) and a `requestAnimationFrame` loop.
+
+## Perspective: `focal / z`
+
+Stars closer to the camera (small `z`) project farther from center and draw
+larger / more opaque. The focal length is derived from the surface:
+
+```tsx
+focal = Math.max(w, h) * 0.6;
+const k = focal / s.z;
+const sx = cx + s.x * k;
+const sy = cy + s.y * k;
+const t = 1 - s.z / maxZ;
+const size = Math.max(0.4, t * 2.2);
+const alpha = Math.min(1, t * 1.2);
+```
+
+Every frame `s.z` decreases by `dz`. When it dips to `≤ 0.02`, the star
+respawns at the far plane (`spawn(maxZ)`). Count is clamped with
+`max(80, min(starCount, area / 2200))` so phone-sized heroes don't spawn
+hundreds of dots.
+
+<WarpStarfieldAnatomy />
+
+## Cruise vs warp
+
+Default cruise fills a disc. Flip `warp` and the brush strokes from the
+**previous** projected point to the current one — a streak — while `dz`
+doubles:
+
+```tsx
+const dz = 0.004 * speed * (warp ? 2 : 1);
+
+if (warp) {
+  const k2 = focal / pz; // z before this frame's step
+  ctx.moveTo(cx + s.x * k2, cy + s.y * k2);
+  ctx.lineTo(sx, sy);
+  ctx.stroke();
+} else {
+  ctx.arc(sx, sy, size, 0, Math.PI * 2);
+  ctx.fill();
+}
+```
+
+<WarpStarfieldWarp />
+
+## Parallax is a lazy center
+
+Pointer position is normalized to `[-0.5, 0.5]` on the container. The draw
+loop never snaps — it lerps:
+
+```tsx
+pointer.x += (pointer.tx - pointer.x) * 0.06;
+pointer.y += (pointer.ty - pointer.y) * 0.06;
+const cx = w / 2 + pointer.x * parallax; // default parallax = 30
+const cy = h / 2 + pointer.y * parallax;
+```
+
+Leave the surface and targets ease back to `0`. Same offscreen / hidden-tab /
+reduced-motion gates as Flow Field: stop the rAF when nothing can see it;
+under reduced motion, paint one still frame.
+
+<WarpStarfieldParallax />
+
+Star color tracks `--foreground` (or a `color` prop) via a theme
+`MutationObserver`, so the field stays high-contrast in light and dark.
+
+## The result
+
+Move across the stage — the vanishing point drifts. The live demo stays in
+cruise (`warp={false}`); set `warp` when you want streaks.
+
+<WarpStarfieldResult />
+
+Project, recycle, optionally streak, ease the center. A starfield that costs
+nothing when it is off screen.

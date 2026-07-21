@@ -39,7 +39,7 @@ function Pill({ fillClass }: { fillClass: string }) {
         aria-hidden="true"
       >
         <span
-          className={`absolute inset-0 origin-left bg-black/25 ${fillClass}`}
+          className={`absolute inset-0 origin-left bg-[var(--background)]/30 ${fillClass}`}
         />
         {fillClass === "hc-confirm" && (
           <svg
@@ -72,12 +72,12 @@ const LEGEND: { name: string; desc: string; swatch: string }[] = [
   {
     name: "Cancel",
     desc: "spring(320, 32, 0.9) back to 0",
-    swatch: "bg-black/25",
+    swatch: "bg-[var(--foreground)]/30",
   },
   {
     name: "Confirm",
     desc: "linear to 1, then check draws in 0.3s",
-    swatch: "bg-black/45",
+    swatch: "bg-[var(--foreground)]/50",
   },
 ];
 

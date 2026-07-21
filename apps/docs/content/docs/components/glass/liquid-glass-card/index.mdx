@@ -6,6 +6,7 @@ description: A glass panel that refracts the content behind it with a mouse-trac
 import { LiquidGlassCard } from "@godui/components";
 
 <ComponentPreview
+  fullWidth
   story="effects-liquid-glass-card"
   code={`import { LiquidGlassCard } from "@/components/godui/liquid-glass-card";
 
@@ -20,7 +21,7 @@ export function LiquidGlassCardDemo() {
   );
 }`}
 >
-  <div className="relative -m-10 flex min-h-[360px] w-[calc(100%+5rem)] items-center justify-center overflow-hidden rounded-xl bg-cover bg-center" style={{ backgroundImage: "url(/glass-bg.webp)" }}>
+  <div className="relative flex min-h-[360px] w-full flex-1 items-center justify-center overflow-hidden bg-cover bg-center" style={{ backgroundImage: "url(/glass-bg.webp)" }}>
     <LiquidGlassCard className="w-72 p-8">
       <h3 className="text-xl font-semibold text-white drop-shadow">Liquid Glass</h3>
       <p className="mt-2 text-sm text-white/80">Move your cursor across the panel.</p>

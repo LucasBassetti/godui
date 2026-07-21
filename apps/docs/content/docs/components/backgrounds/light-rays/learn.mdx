@@ -1,0 +1,82 @@
+---
+title: Anatomy of Light Rays
+description: How a top glow, a repeating-conic fan, a ±6° breathe, and optional film grain stack into volumetric god-rays — all pure CSS.
+---
+
+`LightRays` is three stacked layers and one keyframe. No canvas, no rAF —
+just paint, an oversized transform, and an optional SVG noise overlay. Drop
+it first in a `relative overflow-hidden` container.
+
+## Three plates, one pivot
+
+Read left → right. Every plate shares the same top-center origin:
+
+1. **Source** — soft ellipse parked just above the frame (`50% -5%`).
+2. **Wedges** — sharp `repeating-conic-gradient` so you can count spokes
+   (`step = 360 / rayCount`, default `14`).
+3. **Soft fan** — those wedges at `inset-[-50%]`, `blur(8px)`, faded with a
+   bottom mask. Oversizing is why a ±6° rotate never flashes an empty edge.
+
+```tsx
+const step = 360 / rayCount;
+const rayColor = `color-mix(in oklab, ${color}, transparent 55%)`;
+
+repeating-conic-gradient(
+  from ${angle}deg at 50% 0%,
+  transparent 0deg,
+  ${rayColor} ${step * 0.16}deg,
+  transparent ${step}deg,
+)
+```
+
+Color defaults to `var(--primary)`. Intensity (`0.6` default) sets the fan
+opacity.
+
+<LightRaysAnatomy />
+
+## The sweep is tiny on purpose
+
+Rest vs live. The live plate runs `animate-light-rays-sweep`:
+
+```css
+@keyframes light-rays-sweep {
+  0%   { transform: rotate(calc(var(--rays-angle) - 6deg)) scale(1);
+         opacity: calc(var(--rays-intensity) * 0.7); }
+  100% { transform: rotate(calc(var(--rays-angle) + 6deg)) scale(1.08);
+         opacity: var(--rays-intensity); }
+}
+/* duration: var(--rays-speed, 14s) = 14 / speed · ease-in-out alternate */
+```
+
+```tsx
+style={{ "--rays-speed": `${14 / speed}s`, "--rays-angle": `${angle}deg`, … }}
+```
+
+The needle in the diagram tracks that same arc so the motion is not lost in
+the blur. `motion-reduce:animate-none` freezes the fan — glow and wedges
+stay.
+
+<LightRaysSweep />
+
+## Grain is an overlay, not a texture bake
+
+Clean fan → `feTurbulence` field → both with `mix-blend-overlay`. Default
+`grain={0.05}` is almost subliminal; set `0` to omit the SVG entirely.
+
+```tsx
+<feTurbulence
+  type="fractalNoise"
+  baseFrequency="0.9"
+  numOctaves={2}
+  stitchTiles="stitch"
+/>
+// rect opacity = grain, mix-blend-overlay
+```
+
+<LightRaysGrain />
+
+## The result
+
+<LightRaysResult />
+
+Three layers, one keyframe, optional grit — compositor-only the whole way.

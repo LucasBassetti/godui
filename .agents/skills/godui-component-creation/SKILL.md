@@ -1,6 +1,6 @@
 ---
 name: godui-component-creation
-description: Create new components for the GodUI design system in @godui/components. Use when adding a component, fixing missing Tailwind styles on components, wiring Storybook stories, or writing docs pages with ComponentPreview and ComponentInstall.
+description: Create new components for the GodUI design system in @godui/components. Use when adding a component, fixing missing Tailwind styles on components, wiring Storybook stories, or writing docs pages (main page + required Learn tab) with ComponentPreview and ComponentInstall.
 ---
 
 # GodUI Component Creation
@@ -17,7 +17,8 @@ Follow this workflow when adding a component to `@godui/components`.
 | Keyframes (dev) | `packages/components/styles.css` → `@keyframes` (+ `--animate-*` in `@theme`) |
 | Keyframes (dist) | the component's own `registry.json` entry → `cssVars.theme` (token) + `css` (`@keyframes`) — **not** the shared `godui-theme` |
 | Storybook | `apps/storybook/src/stories/{name}.stories.tsx` |
-| Docs | `apps/docs/content/docs/components/{category}/{name}.mdx` |
+| Docs | `apps/docs/content/docs/components/{category}/{name}/index.mdx` |
+| Learn tab (required) | `apps/docs/content/docs/components/{category}/{name}/learn.mdx` + scenes in `apps/docs/src/components/learn/` — **use the `godui-learn-article` skill** |
 | Index card | `apps/docs/content/docs/components/index.mdx` → `<PreviewCard>` |
 | Placeholder preview | `apps/docs/src/components/card-previews/previews/{name}.tsx` + slug in `registry.tsx` |
 | Nav | `apps/docs/content/docs/components/meta.json` |
@@ -183,8 +184,11 @@ Include stories for each variant, sizes, and disabled state.
 
 ## 5. Docs page
 
-Docs live under a **category subfolder** (e.g. `buttons/`, `text/`), not flat. Create
-`apps/docs/content/docs/components/{category}/{name}.mdx` using the Preview/Code tabs, then Installation, Usage, Props:
+Docs live under a **category subfolder** (e.g. `buttons/`, `text/`), and each component
+is its **own folder** so the Learn tab can sit beside it: create
+`apps/docs/content/docs/components/{category}/{name}/index.mdx` (the main page) — a Learn
+tab will be added as `learn.mdx` in the same folder (see §5.5). Use the Preview/Code tabs,
+then Installation, Usage, Props:
 
 ```mdx
 ---
@@ -290,6 +294,24 @@ a live **placeholder preview** on top (see §6):
 </PreviewCard>
 ```
 
+## 5.5. Learn tab (required)
+
+Every component ships a **Learn tab** — a scroll-triggered, animated deep-dive that sits
+beside the main page as `apps/docs/content/docs/components/{category}/{name}/learn.mdx`
+(same folder as `index.mdx`, which is why the page is a folder, not a flat `.mdx`).
+
+**Invoke the `godui-learn-article` skill to build it** — it owns the routing, the tab
+wiring, the `ScrollScene` primitive, scene patterns, and the gotchas. Don't hand-roll it.
+
+Non-negotiable when authoring the scenes (the learn skill covers this in full, repeated
+here because it's the most common review bounce): **use the black/white pattern and verify
+BOTH themes.** Illustrative shapes use theme tokens (`--foreground`, `--background`,
+`--card`, `--muted`) — **never** fixed-luminance colors (`bg-black/*`, `bg-white/*`,
+`border-white/*`, `text-white`, hex), which only contrast in one theme and vanish in the
+other. Contrast a `--foreground` surface with `--background` overlays/icons (and vice-versa),
+and border same-colored plates with `border-[var(--foreground)]/20`. Toggle light↔dark and
+confirm nothing disappears before finishing.
+
 ## 6. Component index placeholder preview (required)
 
 Every index card shows a uniform **skeleton placeholder** — muted gray blocks + a single
@@ -346,6 +368,8 @@ slug.
 - **NEVER** use arbitrary z-index — use the scale: `z-base`, `z-raised`, `z-overlay`, `z-sticky`, `z-popover`, `z-modal`, `z-toast`.
 - **NEVER** put bare text on its own line inside a block tag in `ComponentPreview` children — MDX wraps it in a `<p>`, causing `<p>`-in-`<p>` hydration errors. Keep text inline (see §5).
 - **NEVER** rely on folder auto-nav for docs — register the page in the root `apps/docs/content/docs/meta.json` (slug `components/{category}/{name}`) and add a `<PreviewCard>` in `components/index.mdx`, or it won't appear (see §5).
+- **NEVER** ship a component without a Learn tab — every component needs `{name}/learn.mdx`, built via the `godui-learn-article` skill (see §5.5).
+- **NEVER** use fixed-luminance colors (`bg-black/*`, `bg-white/*`, `border-white/*`, `text-white`, hex) in a Learn scene — they only contrast in one theme. Use theme tokens and verify light **and** dark (see §5.5).
 - **NEVER** ship a `<PreviewCard>` without its placeholder preview — create `card-previews/previews/{name}.tsx` (filename = href slug) and add the slug to `CURATED_SLUGS`, or the card renders text-only and breaks the uniform grid (see §6).
 - **NEVER** give a demo (or the component itself) a fixed width wider than the mobile preview — `ComponentPreview` has a mobile toggle that renders the demo in a **360px** iframe, so a hard `w-[26rem]`/`w-96`/`min-w-[...]` overflows and clips. Use fluid widths: `w-full max-w-[26rem]` (shrinks on mobile, still 26rem on desktop). Gate any extra edge padding/margin to mobile with `max-sm:` so **desktop stays unchanged** — never add flat `px-4`/`mx-4` that also alters desktop (see §5).
 
@@ -367,7 +391,8 @@ slug.
 - [ ] Styles authored as inline Tailwind utilities — no CSS file / no `@layer components` (only `@keyframes` + `@theme` may touch `styles.css`)
 - [ ] Motion uses the guideline tokens (DURATION/EASE/SPRING/STAGGER/ENTER/EXIT) inline — no invented numbers; transform/opacity only; reduced-motion handled (see "Motion")
 - [ ] Storybook story with `tags: ["autodocs"]`
-- [ ] Docs MDX under `components/{category}/` with ComponentPreview + ComponentInstall
+- [ ] Docs MDX under `components/{category}/{name}/index.mdx` with ComponentPreview + ComponentInstall
+- [ ] Learn tab `components/{category}/{name}/learn.mdx` built via the `godui-learn-article` skill — scenes use the black/white pattern and are verified in **both** light and dark theme (see §5.5)
 - [ ] `date: YYYY-MM-DD` (today) in the MDX frontmatter — required; drives the "New" sidebar badge for one month
 - [ ] ComponentPreview children: text inline in its tag (no `<p>`-in-`<p>` — see §5)
 - [ ] Registered in root `apps/docs/content/docs/meta.json` as `components/{category}/{name}`

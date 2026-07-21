@@ -44,7 +44,7 @@ const LEGEND: { name: string; desc: string; swatch: string }[] = [
   {
     name: "Spring shell",
     desc: "170 / 12 / 0.1 — lags, then overshoots",
-    swatch: "border border-white/10 bg-[var(--card)]",
+    swatch: "border border-fd-border bg-[var(--card)]",
   },
 ];
 
@@ -73,7 +73,7 @@ export function MagneticPull() {
             </div>
 
             <div className="relative flex h-10 items-center justify-center">
-              <span className="mpull-shell absolute h-9 w-24 rounded-[10px] border border-white/10 bg-[var(--card)] shadow-sm" />
+              <span className="mpull-shell absolute h-9 w-24 rounded-[10px] border border-fd-border bg-[var(--card)] shadow-sm" />
             </div>
           </div>
 

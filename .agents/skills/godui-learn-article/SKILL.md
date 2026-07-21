@@ -164,9 +164,28 @@ export function MyScene() {
   `top`/`width`/`box-shadow`/`clip-path`. (The CI motion-lint gate only scans
   `packages/components`, so docs scenes aren't enforced — hold the rule anyway; it's
   the whole point of the article.)
-- **Grayscale by default.** Illustrative plates/shapes use `bg-[var(--card)]`,
-  `bg-[var(--muted)]`, `bg-black/50`, etc. Reserve real color for a scene whose
-  *subject is color* (e.g. a gradient), and for the live component in the result panel.
+- **Grayscale by default, and theme-safe.** Illustrative plates/shapes use the
+  theme tokens `bg-[var(--card)]`, `bg-[var(--muted)]`, `bg-[var(--foreground)]`,
+  `bg-[var(--background)]`. Reserve real color for a scene whose *subject is color*
+  (e.g. a gradient), and for the live component in the result panel.
+- **Black/white pattern — every scene MUST work in BOTH light and dark theme.**
+  This is the #1 source of bugs: a shape that's fine in dark mode goes invisible in
+  light (or vice-versa). Rules:
+  - **Never** use a fixed-luminance color on a theme-colored surface:
+    `bg-black/*`, `bg-white/*`, `border-white/*`, `border-black/*`, `text-white`,
+    `text-black`, hex like `#000`/`#fff`. Each only contrasts in ONE theme.
+    (e.g. a black button `bg-[var(--foreground)]` on light theme is black; a
+    `bg-black/25` fill over it is black-on-black → invisible.)
+  - **Contrast a surface with the OPPOSITE token.** A surface painted
+    `bg-[var(--foreground)]` inverts per theme (black on light, white on dark); an
+    overlay/fill/icon on top of it must use `--background` (`bg-[var(--background)]/30`,
+    `text-[var(--background)]`) so it inverts the same way and always contrasts.
+    Same in reverse for a `--card`/`--background` surface: tint with `--foreground`.
+  - **Borders on same-colored fills** (white plate on white canvas): a neutral
+    `border-fd-border` is often too faint. Use `border-[var(--foreground)]/20` — a
+    foreground-tinted border reads in both themes.
+  - **Verify both themes before finishing.** Toggle the docs theme and look at every
+    scene; nothing may disappear, and the first/lowest layer must stay visible.
 - **No copy on the diagram shapes.** Never put button text ("Hold to delete",
   "Slide to confirm", "Get started") on the animated pieces — it reads as instructional
   UI and distracts from the motion. Where a shape needs to stand in for a label/content,

@@ -1,0 +1,81 @@
+---
+title: Anatomy of Pixel Grid
+description: How stochastic flicker, a smoothstep cursor reveal, and intensity lerping turn a canvas of squares into an automatic field or a spotlight.
+---
+
+`PixelGrid` is a canvas lattice of tiny squares. In auto mode they flicker
+on a probability clock; in interactive mode a soft spotlight reveals them
+under the cursor. Defaults favor the spotlight (`interactive={true}`,
+`cursorReveal="hidden"`).
+
+## The lattice
+
+```tsx
+squareSize = 4
+gridGap = 6
+maxOpacity = 0.3
+// color defaults to --foreground, re-probed on theme change
+```
+
+Each cell is a filled rect. Opacity is the only animated channel — no
+transforms, no layout.
+
+<PixelGridAnatomy />
+
+## Flicker probability
+
+In auto mode (or inside the spotlight), each second a square re-rolls with
+probability scaled by frame delta:
+
+```tsx
+// P(re-roll) ≈ flickerChance * dt   (default flickerChance = 0.3 / s)
+if (Math.random() < flickerChance * dt) {
+  opacity = Math.random() * maxOpacity;
+}
+```
+
+That keeps the field alive without a fixed phase on every cell.
+
+<PixelGridFlicker />
+
+## Smoothstep reveal
+
+Interactive mode tracks the pointer and eases an `intensity` toward a
+target (1 while over the surface, 0 on leave):
+
+```tsx
+pointer.intensity +=
+  (pointer.target - pointer.intensity) * Math.min(dt * 8, 1);
+
+const t = /* 0..1 distance falloff inside interactionRadius */;
+const reveal =
+  t * t * (3 - 2 * t) * interactionStrength * pointer.intensity;
+// smoothstep — soft edge, not a hard disc
+```
+
+`cursorReveal` picks the baseline outside the disc:
+
+| Mode | Baseline |
+| --- | --- |
+| `"hidden"` | `0` — pure spotlight |
+| `"dim"` | `maxOpacity * 0.18` — faint field always visible |
+
+Default radius is `120`. Reduced motion stops the rAF and paints one still
+frame.
+
+<PixelGridReveal />
+
+## Lifecycle
+
+`ResizeObserver` (when width/height are unset) and `IntersectionObserver`
+gate the loop. There is no `visibilitychange` listener here — unlike Flow
+Field — so keep that in mind if you leave a tab open on a huge grid.
+
+## The result
+
+Move across the stage — squares bloom under the pointer.
+
+<PixelGridResult />
+
+Probability flicker, smoothstep falloff, intensity lerp. A spotlight that
+costs almost nothing when it is off screen.

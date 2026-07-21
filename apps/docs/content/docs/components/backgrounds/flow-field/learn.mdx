@@ -1,0 +1,71 @@
+---
+title: Anatomy of Flow Field
+description: How value noise becomes a vector field, how a translucent wipe leaves silk trails, and how observers keep the rAF loop cheap when idle.
+---
+
+`FlowField` paints particles on a canvas that stream along an evolving noise
+field. There is no SVG path and no retained trail geometry — each frame
+samples noise for an angle, steps the particle, then fades the whole buffer
+a hair so yesterday's stroke lingers as silk.
+
+## Noise → angle → step
+
+Per particle, every frame:
+
+```tsx
+const angle =
+  valueNoise(p.x * noiseScale, p.y * noiseScale + z) * Math.PI * 4;
+p.x += Math.cos(angle) * 1.6 * speed;
+p.y += Math.sin(angle) * 1.6 * speed;
+z += 0.0008 * speed; // field evolves slowly
+```
+
+`noiseScale` defaults to `0.0016` — smaller means broader, smoother
+currents. `speed` scales both the step and the z drift.
+
+<FlowFieldAnatomy />
+
+Particle count defaults to `900`, then clamps so dense viewports don't melt
+the main thread:
+
+```tsx
+Math.max(120, Math.min(particleCount, Math.round((w * h) / 1400)))
+```
+
+## Fade wipe trails
+
+Instead of storing polylines, every frame fills the canvas with a translucent
+rect in the background color:
+
+```tsx
+ctx.fillStyle = `rgba(${br}, ${bg}, ${bb}, ${fade})`; // default fade = 0.06
+ctx.fillRect(0, 0, w, h);
+// then stroke each particle's latest segment in --primary
+```
+
+Lower `fade` → longer, silkier wakes. Higher → crisp, short ticks. Theme
+colors re-resolve via a `MutationObserver` on `<html>` (`class` /
+`data-theme` / `style`) so light and dark both stay correct.
+
+<FlowFieldTrails />
+
+## Cheap when offscreen
+
+Three gates stop the loop when work would be wasted:
+
+| Gate | Behavior |
+| --- | --- |
+| `IntersectionObserver` | pause when the canvas leaves the viewport |
+| `visibilitychange` | pause when `document.hidden` |
+| `prefers-reduced-motion` | run ~240 frozen steps, then stop on a still frame |
+
+`ResizeObserver` rebuilds the buffer when the container changes size.
+
+<FlowFieldLifecycle />
+
+## The result
+
+<FlowFieldResult />
+
+Sample → step → wipe. A living field that refuses to burn frames when nobody
+is looking.

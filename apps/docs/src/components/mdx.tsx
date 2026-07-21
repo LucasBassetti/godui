@@ -54,6 +54,10 @@ import { BentoGridAnatomy } from "@/components/learn/bento-grid-anatomy";
 import { BentoGridGlow } from "@/components/learn/bento-grid-glow";
 import { BentoGridResult } from "@/components/learn/bento-grid-result";
 import { BentoGridStagger } from "@/components/learn/bento-grid-stagger";
+import { BlueprintGridAnatomy } from "@/components/learn/blueprint-grid-anatomy";
+import { BlueprintGridPerspective } from "@/components/learn/blueprint-grid-perspective";
+import { BlueprintGridResult } from "@/components/learn/blueprint-grid-result";
+import { BlueprintGridSweep } from "@/components/learn/blueprint-grid-sweep";
 import { BorderBeamAnatomy } from "@/components/learn/border-beam-anatomy";
 import { BorderBeamPath } from "@/components/learn/border-beam-path";
 import { BorderBeamRainbow } from "@/components/learn/border-beam-rainbow";
@@ -97,6 +101,10 @@ import { ConversationThreadStream } from "@/components/learn/conversation-thread
 import { CoverFlowAnatomy } from "@/components/learn/cover-flow-anatomy";
 import { CoverFlowFan } from "@/components/learn/cover-flow-fan";
 import { CoverFlowResult } from "@/components/learn/cover-flow-result";
+import { DecorativeBackgroundAnatomy } from "@/components/learn/decorative-background-anatomy";
+import { DecorativeBackgroundPresets } from "@/components/learn/decorative-background-presets";
+import { DecorativeBackgroundResult } from "@/components/learn/decorative-background-result";
+import { DecorativeBackgroundStack } from "@/components/learn/decorative-background-stack";
 import { DockAnatomy } from "@/components/learn/dock-anatomy";
 import { DockMagnify } from "@/components/learn/dock-magnify";
 import { DockResult } from "@/components/learn/dock-result";
@@ -112,6 +120,10 @@ import { DynamicIslandAnatomy } from "@/components/learn/dynamic-island-anatomy"
 import { DynamicIslandCrossfade } from "@/components/learn/dynamic-island-crossfade";
 import { DynamicIslandResult } from "@/components/learn/dynamic-island-result";
 import { DynamicIslandShell } from "@/components/learn/dynamic-island-shell";
+import { EffectBackgroundAlive } from "@/components/learn/effect-background-alive";
+import { EffectBackgroundAnatomy } from "@/components/learn/effect-background-anatomy";
+import { EffectBackgroundResult } from "@/components/learn/effect-background-result";
+import { EffectBackgroundStack } from "@/components/learn/effect-background-stack";
 import { ElasticTextAnatomy } from "@/components/learn/elastic-text-anatomy";
 import { ElasticTextResult } from "@/components/learn/elastic-text-result";
 import { ElasticTextSpotlight } from "@/components/learn/elastic-text-spotlight";
@@ -127,12 +139,20 @@ import { FloatingToolbarAnatomy } from "@/components/learn/floating-toolbar-anat
 import { FloatingToolbarEnter } from "@/components/learn/floating-toolbar-enter";
 import { FloatingToolbarMagnetic } from "@/components/learn/floating-toolbar-magnetic";
 import { FloatingToolbarResult } from "@/components/learn/floating-toolbar-result";
+import { FlowFieldAnatomy } from "@/components/learn/flow-field-anatomy";
+import { FlowFieldLifecycle } from "@/components/learn/flow-field-lifecycle";
+import { FlowFieldResult } from "@/components/learn/flow-field-result";
+import { FlowFieldTrails } from "@/components/learn/flow-field-trails";
 import { FluidCursorAnatomy } from "@/components/learn/fluid-cursor-anatomy";
 import { FluidCursorLerp } from "@/components/learn/fluid-cursor-lerp";
 import { FluidCursorLifecycle } from "@/components/learn/fluid-cursor-lifecycle";
 import { FluidCursorResult } from "@/components/learn/fluid-cursor-result";
 import { FoldProgress } from "@/components/learn/fold-progress";
 import { FoldStages } from "@/components/learn/fold-stages";
+import { GeometricBackgroundAnatomy } from "@/components/learn/geometric-background-anatomy";
+import { GeometricBackgroundComposite } from "@/components/learn/geometric-background-composite";
+import { GeometricBackgroundMask } from "@/components/learn/geometric-background-mask";
+import { GeometricBackgroundResult } from "@/components/learn/geometric-background-result";
 import { GlobeAnatomy } from "@/components/learn/globe-anatomy";
 import { GlobeLifecycle } from "@/components/learn/globe-lifecycle";
 import { GlobeResult } from "@/components/learn/globe-result";
@@ -145,6 +165,10 @@ import { GooeyStackAnatomy } from "@/components/learn/gooey-stack-anatomy";
 import { GooeyStackFilter } from "@/components/learn/gooey-stack-filter";
 import { GooeyStackNearness } from "@/components/learn/gooey-stack-nearness";
 import { GooeyStackResult } from "@/components/learn/gooey-stack-result";
+import { GradientBackgroundAnatomy } from "@/components/learn/gradient-background-anatomy";
+import { GradientBackgroundOwnership } from "@/components/learn/gradient-background-ownership";
+import { GradientBackgroundResult } from "@/components/learn/gradient-background-result";
+import { GradientBackgroundStack } from "@/components/learn/gradient-background-stack";
 import { GravityAnatomy } from "@/components/learn/gravity-anatomy";
 import { GravityLifecycle } from "@/components/learn/gravity-lifecycle";
 import { GravityResult } from "@/components/learn/gravity-result";
@@ -181,11 +205,27 @@ import { LampIgnite } from "@/components/learn/lamp-ignite";
 import { LampResult } from "@/components/learn/lamp-result";
 import { LampRise } from "@/components/learn/lamp-rise";
 import { LayerReveal } from "@/components/learn/layer-reveal";
+import { LightRaysAnatomy } from "@/components/learn/light-rays-anatomy";
+import { LightRaysGrain } from "@/components/learn/light-rays-grain";
+import { LightRaysResult } from "@/components/learn/light-rays-result";
+import { LightRaysSweep } from "@/components/learn/light-rays-sweep";
+import { LiquidGlassCardAnatomy } from "@/components/learn/liquid-glass-card-anatomy";
+import { LiquidGlassCardDispersion } from "@/components/learn/liquid-glass-card-dispersion";
+import { LiquidGlassCardResult } from "@/components/learn/liquid-glass-card-result";
+import { LiquidGlassCardSheen } from "@/components/learn/liquid-glass-card-sheen";
+import { LiquidGlassLensAnatomy } from "@/components/learn/liquid-glass-lens-anatomy";
+import { LiquidGlassLensMap } from "@/components/learn/liquid-glass-lens-map";
+import { LiquidGlassLensParent } from "@/components/learn/liquid-glass-lens-parent";
+import { LiquidGlassLensResult } from "@/components/learn/liquid-glass-lens-result";
 import { LiquidImageAnatomy } from "@/components/learn/liquid-image-anatomy";
 import { LiquidImageEdge } from "@/components/learn/liquid-image-edge";
 import { LiquidImageLerp } from "@/components/learn/liquid-image-lerp";
 import { LiquidImageResult } from "@/components/learn/liquid-image-result";
 import { LiquidImageTrigger } from "@/components/learn/liquid-image-trigger";
+import { LiquidMetaballsAnatomy } from "@/components/learn/liquid-metaballs-anatomy";
+import { LiquidMetaballsCursor } from "@/components/learn/liquid-metaballs-cursor";
+import { LiquidMetaballsGoo } from "@/components/learn/liquid-metaballs-goo";
+import { LiquidMetaballsResult } from "@/components/learn/liquid-metaballs-result";
 import { LiveCursorsAnatomy } from "@/components/learn/live-cursors-anatomy";
 import { LiveCursorsPresence } from "@/components/learn/live-cursors-presence";
 import { LiveCursorsResult } from "@/components/learn/live-cursors-result";
@@ -243,6 +283,10 @@ import { ParticleDissolveAnatomy } from "@/components/learn/particle-dissolve-an
 import { ParticleDissolveCycle } from "@/components/learn/particle-dissolve-cycle";
 import { ParticleDissolveResult } from "@/components/learn/particle-dissolve-result";
 import { ParticleDissolveTrigger } from "@/components/learn/particle-dissolve-trigger";
+import { PixelGridAnatomy } from "@/components/learn/pixel-grid-anatomy";
+import { PixelGridFlicker } from "@/components/learn/pixel-grid-flicker";
+import { PixelGridResult } from "@/components/learn/pixel-grid-result";
+import { PixelGridReveal } from "@/components/learn/pixel-grid-reveal";
 import { PresenceFacepileAnatomy } from "@/components/learn/presence-facepile-anatomy";
 import { PresenceFacepileEnter } from "@/components/learn/presence-facepile-enter";
 import { PresenceFacepileResult } from "@/components/learn/presence-facepile-result";
@@ -354,10 +398,18 @@ import { ToastAnatomy } from "@/components/learn/toast-anatomy";
 import { ToastExpand } from "@/components/learn/toast-expand";
 import { ToastResult } from "@/components/learn/toast-result";
 import { ToastSwipe } from "@/components/learn/toast-swipe";
+import { TopographicDriftAnatomy } from "@/components/learn/topographic-drift-anatomy";
+import { TopographicDriftDrift } from "@/components/learn/topographic-drift-drift";
+import { TopographicDriftMarch } from "@/components/learn/topographic-drift-march";
+import { TopographicDriftResult } from "@/components/learn/topographic-drift-result";
 import { VoiceOrbAmpSplit } from "@/components/learn/voice-orb-amp-split";
 import { VoiceOrbAnatomy } from "@/components/learn/voice-orb-anatomy";
 import { VoiceOrbResult } from "@/components/learn/voice-orb-result";
 import { VoiceOrbStates } from "@/components/learn/voice-orb-states";
+import { WarpStarfieldAnatomy } from "@/components/learn/warp-starfield-anatomy";
+import { WarpStarfieldParallax } from "@/components/learn/warp-starfield-parallax";
+import { WarpStarfieldResult } from "@/components/learn/warp-starfield-result";
+import { WarpStarfieldWarp } from "@/components/learn/warp-starfield-warp";
 import { WorldMapAnatomy } from "@/components/learn/world-map-anatomy";
 import { WorldMapDraw } from "@/components/learn/world-map-draw";
 import { WorldMapPulse } from "@/components/learn/world-map-pulse";
@@ -455,6 +507,10 @@ export function getMDXComponents(components?: MDXComponents) {
     BentoGridGlow,
     BentoGridResult,
     BentoGridStagger,
+    BlueprintGridAnatomy,
+    BlueprintGridPerspective,
+    BlueprintGridResult,
+    BlueprintGridSweep,
     BorderBeamAnatomy,
     BorderBeamPath,
     BorderBeamRainbow,
@@ -498,6 +554,10 @@ export function getMDXComponents(components?: MDXComponents) {
     CoverFlowAnatomy,
     CoverFlowFan,
     CoverFlowResult,
+    DecorativeBackgroundAnatomy,
+    DecorativeBackgroundPresets,
+    DecorativeBackgroundResult,
+    DecorativeBackgroundStack,
     DockAnatomy,
     DockMagnify,
     DockResult,
@@ -513,6 +573,10 @@ export function getMDXComponents(components?: MDXComponents) {
     DynamicIslandCrossfade,
     DynamicIslandResult,
     DynamicIslandShell,
+    EffectBackgroundAlive,
+    EffectBackgroundAnatomy,
+    EffectBackgroundResult,
+    EffectBackgroundStack,
     ElasticTextAnatomy,
     ElasticTextResult,
     ElasticTextSpotlight,
@@ -528,12 +592,20 @@ export function getMDXComponents(components?: MDXComponents) {
     FloatingToolbarEnter,
     FloatingToolbarMagnetic,
     FloatingToolbarResult,
+    FlowFieldAnatomy,
+    FlowFieldLifecycle,
+    FlowFieldResult,
+    FlowFieldTrails,
     FluidCursorAnatomy,
     FluidCursorLerp,
     FluidCursorLifecycle,
     FluidCursorResult,
     FoldProgress,
     FoldStages,
+    GeometricBackgroundAnatomy,
+    GeometricBackgroundComposite,
+    GeometricBackgroundMask,
+    GeometricBackgroundResult,
     GlobeAnatomy,
     GlobeLifecycle,
     GlobeResult,
@@ -546,6 +618,10 @@ export function getMDXComponents(components?: MDXComponents) {
     GooeyStackFilter,
     GooeyStackNearness,
     GooeyStackResult,
+    GradientBackgroundAnatomy,
+    GradientBackgroundOwnership,
+    GradientBackgroundResult,
+    GradientBackgroundStack,
     GravityAnatomy,
     GravityLifecycle,
     GravityResult,
@@ -582,11 +658,27 @@ export function getMDXComponents(components?: MDXComponents) {
     LampResult,
     LampRise,
     LayerReveal,
+    LightRaysAnatomy,
+    LightRaysGrain,
+    LightRaysResult,
+    LightRaysSweep,
+    LiquidGlassCardAnatomy,
+    LiquidGlassCardDispersion,
+    LiquidGlassCardResult,
+    LiquidGlassCardSheen,
+    LiquidGlassLensAnatomy,
+    LiquidGlassLensMap,
+    LiquidGlassLensParent,
+    LiquidGlassLensResult,
     LiquidImageAnatomy,
     LiquidImageEdge,
     LiquidImageLerp,
     LiquidImageResult,
     LiquidImageTrigger,
+    LiquidMetaballsAnatomy,
+    LiquidMetaballsCursor,
+    LiquidMetaballsGoo,
+    LiquidMetaballsResult,
     LiveCursorsAnatomy,
     LiveCursorsPresence,
     LiveCursorsResult,
@@ -644,6 +736,10 @@ export function getMDXComponents(components?: MDXComponents) {
     ParticleDissolveCycle,
     ParticleDissolveResult,
     ParticleDissolveTrigger,
+    PixelGridAnatomy,
+    PixelGridFlicker,
+    PixelGridResult,
+    PixelGridReveal,
     PresenceFacepileAnatomy,
     PresenceFacepileEnter,
     PresenceFacepileResult,
@@ -755,10 +851,18 @@ export function getMDXComponents(components?: MDXComponents) {
     ToastExpand,
     ToastResult,
     ToastSwipe,
+    TopographicDriftAnatomy,
+    TopographicDriftDrift,
+    TopographicDriftMarch,
+    TopographicDriftResult,
     VoiceOrbAmpSplit,
     VoiceOrbAnatomy,
     VoiceOrbResult,
     VoiceOrbStates,
+    WarpStarfieldAnatomy,
+    WarpStarfieldParallax,
+    WarpStarfieldResult,
+    WarpStarfieldWarp,
     WorldMapAnatomy,
     WorldMapDraw,
     WorldMapPulse,

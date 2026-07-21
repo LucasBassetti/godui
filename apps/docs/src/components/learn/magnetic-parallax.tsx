@@ -31,7 +31,7 @@ const LEGEND: { name: string; desc: string; swatch: string }[] = [
   {
     name: "Shell",
     desc: "the whole button, full spring offset",
-    swatch: "border border-white/10 bg-[var(--card)]",
+    swatch: "border border-fd-border bg-[var(--card)]",
   },
   {
     name: "Label",
@@ -53,7 +53,7 @@ export function MagneticParallax() {
           >
             <div className="flex flex-col items-center gap-3">
               <div className="relative flex h-14 w-28 items-center justify-center">
-                <span className="mpar-shell absolute h-11 w-24 rounded-[10px] border border-white/10 bg-[var(--card)]" />
+                <span className="mpar-shell absolute h-11 w-24 rounded-[10px] border border-fd-border bg-[var(--card)]" />
               </div>
               <p className="font-mono text-[11px] text-fd-muted-foreground">
                 shell only
@@ -71,7 +71,7 @@ export function MagneticParallax() {
 
             <div className="flex flex-col items-center gap-3">
               <div className="relative flex h-14 w-28 items-center justify-center">
-                <div className="mpar-shell absolute flex h-11 w-24 items-center justify-center rounded-[10px] border border-white/10 bg-[var(--card)]">
+                <div className="mpar-shell absolute flex h-11 w-24 items-center justify-center rounded-[10px] border border-fd-border bg-[var(--card)]">
                   <span className="mpar-label h-2 w-12 rounded-full bg-[var(--foreground)]/30" />
                 </div>
               </div>

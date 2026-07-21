@@ -5,8 +5,10 @@ import { Monitor, Smartphone } from "lucide-react";
 import type { ReactNode } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { BorderBeam } from "@/components/border-beam";
 import { CopyButton } from "@/components/copy-button";
 import { DocsPanel, Segmented } from "@/components/docs-tabs";
+import { ReplayButton } from "@/components/replay-button";
 import { cn } from "@/lib/cn";
 import { formatCode } from "@/lib/format-code";
 
@@ -253,10 +255,11 @@ export function ComponentPreview({
   return (
     <DocsPanel
       className={cn(
-        "component-preview my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card",
+        "component-preview relative my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card",
         className,
       )}
     >
+      <BorderBeam play={replayKey} />
       <div className="component-preview-bar flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
         <Segmented
           tabs={[
@@ -277,29 +280,7 @@ export function ComponentPreview({
           ) : null}
           {story ? <PlaygroundLink story={story} /> : null}
           {tab === "preview" ? (
-            <button
-              type="button"
-              onClick={() => setReplayKey((key) => key + 1)}
-              aria-label="Replay animation"
-              title="Replay"
-              className="inline-flex size-8 items-center justify-center rounded-[10px] border border-fd-border bg-fd-card text-fd-muted-foreground transition-colors hover:text-fd-foreground"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="15"
-                height="15"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-                <path d="M3 3v5h5" />
-              </svg>
-            </button>
+            <ReplayButton onReplay={() => setReplayKey((key) => key + 1)} />
           ) : (
             <CopyButton value={formattedCode} className="rounded-[10px]" />
           )}

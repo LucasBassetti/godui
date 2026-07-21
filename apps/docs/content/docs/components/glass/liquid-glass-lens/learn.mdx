@@ -1,0 +1,114 @@
+---
+title: Anatomy of the Liquid Glass Lens
+description: How a parent-owned pointer, a band=0 displacement map, and a fixed sphere glint turn the same refraction stack into a floating magnifier that never steals clicks.
+---
+
+`LiquidGlassLens` shares `RefractionFilter` and `buildDisplacementMap` with
+the card — but the **geometry**, **pointer contract**, and **reduced-motion
+policy** are different. It is a `pointer-events-none` circle that follows the
+cursor over a positioned parent, and it disappears entirely under
+`prefers-reduced-motion`.
+
+Think of the card as a frosted pane on your UI; the lens is a loupe you drag
+across it.
+
+## Disc, fixed glint, full map
+
+The root is `rounded-full` with frost via `backdrop-filter`. Unlike the
+card's pointer-tracked sheen, the specular is a **fixed** radial at
+`32% 28%` — a sphere highlight that stays put relative to the disc, plus an
+inset depth shadow:
+
+```tsx
+backgroundImage: `radial-gradient(
+  circle at 32% 28%,
+  rgba(255,255,255,${0.7 * sheen}) 0%,
+  rgba(255,255,255,0) 55%
+)`
+boxShadow: `inset 0 2px 2px …, inset 0 -6px 12px …`
+```
+
+The displacement map uses `band={0}`: a continuous ramp from edge to edge,
+so the bend feels like a solid converging lens rather than a flat pane with
+soft rims.
+
+```tsx
+buildDisplacementMap(size, size, 0); // full lens, not rim-only
+```
+
+Defaults push harder than the card (`strength={80}` vs `60`, `size={160}`)
+because a smaller circular optic needs more bend to read. Storybook demos
+often use `size={220}`.
+
+<LiquidGlassLensAnatomy />
+
+## Parent owns the pointer
+
+Listeners attach to `rootRef.current.parentElement`, **not** the lens. The
+parent must be `relative`; the lens never blocks clicks
+(`pointer-events-none`). On move it writes **pixel** offsets relative to the
+parent box — different units from the card's percentages:
+
+```tsx
+node.style.setProperty("--lg-px", `${e.clientX - rect.left}px`);
+node.style.setProperty("--lg-py", `${e.clientY - rect.top}px`);
+```
+
+Centering is a transform that subtracts half the lens size:
+
+```tsx
+transform:
+  "translate(calc(var(--lg-px, 0px) - 50%), calc(var(--lg-py, 0px) - 50%))"
+className="… [will-change:transform] z-popover …"
+```
+
+Opacity fades with `duration-200` while `hovering` is true (enter / leave on
+the parent).
+
+<LiquidGlassLensParent />
+
+```tsx
+parent.addEventListener("pointermove", move);
+parent.addEventListener("pointerenter", enter);
+parent.addEventListener("pointerleave", leave);
+// cleanup removes all three
+```
+
+## Rim band vs lens band
+
+Same builder, different `band`. This is the entire optical difference in one
+number. Diagrams use a grayscale ramp (dashed mid = no shift) — the real SVG
+map still packs X into red and Y into green under the hood, but Learn stays
+token-neutral:
+
+| | Card | Lens |
+| --- | --- | --- |
+| `band` | `0.3` | `0` |
+| Map | neutral mid, bend at rim | continuous ramp edge-to-edge |
+| Feel | flat frosted pane | converging loupe |
+| Specular | pointer-tracked sheen | fixed sphere glint |
+| Pointer vars | `--lg-x/y` as `%` | `--lg-px/py` as `px` |
+| Reduced motion | hide sheen, keep frost | hide **entire** lens |
+
+<LiquidGlassLensMap />
+
+## Accessibility
+
+The entire root is `motion-reduce:hidden`. When reduced motion matches,
+pointer updates are skipped too — there is nothing to track. Frost / glint /
+SVG stay `aria-hidden`. There is no keyboard mode: this is a decorative
+optic, not a control. Prefer the card when you need a persistent glass
+surface for content.
+
+Same `useRefractionSupport` probe as the card — without
+`backdrop-filter: url()`, frost is blur + saturate only.
+
+## The result
+
+Hover the stage. The lens tracks without stealing clicks from the content
+beneath.
+
+<LiquidGlassLensResult />
+
+Same refraction chain as the card — different map, different owner of the
+pointer, different contract with reduced motion.

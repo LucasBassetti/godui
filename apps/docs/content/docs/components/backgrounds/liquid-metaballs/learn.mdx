@@ -1,0 +1,85 @@
+---
+title: Anatomy of Liquid Metaballs
+description: How SVG circles, a classic goo filter, toroidal drift, and a cursor blob merge without React re-renders per frame.
+---
+
+`LiquidMetaballs` is physics on SVG circles under a blur + contrast filter.
+Positions update with `setAttribute` so React stays out of the hot path —
+the rAF loop never calls `setState`.
+
+## Circles, not meshes
+
+Defaults: `blobCount={7}`, colors cycling
+`#6366f1 / #a855f7 / #ec4899 / #06b6d4`, radii roughly `8–16%` of the short
+side, velocity `(rand - 0.5) * 0.6 * speed`.
+
+```tsx
+b.r = min * (0.08 + Math.random() * 0.08);
+b.vx = (Math.random() - 0.5) * 0.6 * speed;
+b.vy = (Math.random() - 0.5) * 0.6 * speed;
+```
+
+Edges wrap toroidally — leave left, enter right — so the field never piles
+up in a corner.
+
+<LiquidMetaballsAnatomy />
+
+## Why `setAttribute`, not React
+
+```tsx
+const paint = () => {
+  for (const b of blobsRef.current) {
+    b.el?.setAttribute("cx", `${b.x}`);
+    b.el?.setAttribute("cy", `${b.y}`);
+  }
+};
+```
+
+Writing attributes skips reconciliation. The circles are created once; the
+loop only mutates geometry.
+
+## The goo chain
+
+Classic metaball filter — blur, then punch alpha back up with a contrast
+matrix:
+
+```tsx
+<feGaussianBlur stdDeviation={gooeyness} />  {/* default 16 */}
+<feColorMatrix values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -9" />
+```
+
+Overlapping discs fuse into one liquid silhouette. Higher `gooeyness` =
+softer merge.
+
+<LiquidMetaballsGoo />
+
+## Cursor merge
+
+With `interactive` (default), an extra circle follows the pointer. While
+active its radius is `min(w,h) * 0.1`; on leave it collapses to `0` so no
+orphan disc remains:
+
+```tsx
+cursorRef.current?.setAttribute("r", active ? `${min * 0.1}` : "0");
+cursorRef.current?.setAttribute("cx", `${cursor.x}`);
+cursorRef.current?.setAttribute("cy", `${cursor.y}`);
+```
+
+It shares the same goo filter, so it melts into neighbors on contact.
+
+<LiquidMetaballsCursor />
+
+## Lifecycle + a11y
+
+`ResizeObserver`, `IntersectionObserver`, and `visibilitychange` gate the
+loop. `prefers-reduced-motion` stops motion (no still-frame bake — the last
+positions simply freeze). Root is `aria-hidden`; the SVG is
+`role="presentation"`.
+
+## The result
+
+Move to merge. Leave and the cursor blob vanishes.
+
+<LiquidMetaballsResult />
+
+Physics on attributes, fusion in a filter, zero React re-renders per frame.

@@ -1,0 +1,69 @@
+---
+title: Anatomy of Effect Background
+description: How stacked radial ellipses and a linear wash create an aurora-like field with no animation loop — just CSS paint and the same ownership shell as the other presets.
+---
+
+`EffectBackground` looks "alive" because soft colored blobs overlap, not
+because anything moves. Same absolute shell and `BACKGROUND_KEYS` probe as
+`GradientBackground` — the difference is a multi-stop `backgroundImage`
+stack that fuses into an aurora wash.
+
+## Multi-blob bake
+
+The default layers four translucent ellipses over a pastel vertical wash,
+then a solid base color underneath:
+
+```tsx
+backgroundImage: `
+  radial-gradient(ellipse 85% 65% at 8% 8%, rgba(175, 109, 255, 0.42), transparent 60%),
+  radial-gradient(ellipse 75% 60% at 75% 35%, rgba(255, 235, 170, 0.55), transparent 62%),
+  radial-gradient(ellipse 70% 60% at 15% 80%, rgba(255, 100, 180, 0.40), transparent 62%),
+  radial-gradient(ellipse 70% 60% at 92% 92%, rgba(120, 190, 255, 0.45), transparent 62%),
+  linear-gradient(180deg, #f7eaff 0%, #fde2ea 100%)
+`,
+backgroundSize: "100% 100%",
+backgroundColor: "#f7eaff",
+```
+
+Each stop is translucent so they **fuse** instead of banding. Corners of the
+frame get different hues; the linear wash ties them together.
+
+<EffectBackgroundAnatomy />
+
+## Why static still reads as motion
+
+Overlapping low-contrast ellipses create depth and a sense of volume —
+your eye invents drift that is not there. The component pays nothing at
+runtime: no `requestAnimationFrame`, no observers, no keyframes.
+
+(The Learn diagram's soft pulse is pedagogical only — the shipped component
+does not breathe.)
+
+<EffectBackgroundAlive />
+
+That is the design bet: spend authoring time on the paint stack, spend zero
+CPU after paint.
+
+## Ownership + stacking
+
+Same probe as every CSS preset:
+
+```tsx
+const ownsBackground =
+  style != null && BACKGROUND_KEYS.some((key) => key in style);
+style={ownsBackground ? style : { ...baseStyle, ...style }}
+
+className={`absolute inset-0 z-base ${className ?? ""}`}
+aria-hidden="true"
+```
+
+Pass `effectBackgroundPresets["aurora-dream-corner-whispers"]` (or any
+preset with a background key) and the bake drops cleanly.
+
+<EffectBackgroundStack />
+
+## The result
+
+<EffectBackgroundResult />
+
+Four ellipses, one wash, one ownership rule — aurora without a loop.
