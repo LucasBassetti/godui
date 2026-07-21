@@ -81,8 +81,8 @@ export function ImageTrailWaapi() {
           </div>
 
           <p className="text-center font-mono text-[11px] text-fd-muted-foreground">
-            img.animate([…], {"{"} duration, easing:
-            "cubic-bezier(0.22,1,0.36,1)" {"}"})
+            img.animate([…], {"{ duration, easing: "}
+            {'"cubic-bezier(0.22,1,0.36,1)" }'})
           </p>
 
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">

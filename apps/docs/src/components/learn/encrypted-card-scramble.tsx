@@ -48,7 +48,6 @@ function ScrambleCard({ cycle, reduced }: { cycle: number; reduced: boolean }) {
   const [stream, setStream] = useState(() => randomString(STREAM_LEN));
 
   useEffect(() => {
-    setStream(randomString(STREAM_LEN));
     if (reduced || cycle === 0) return;
     const id = window.setInterval(() => {
       setStream(randomString(STREAM_LEN));
@@ -88,7 +87,7 @@ export function EncryptedCardScramble() {
         <div className="flex w-full max-w-[400px] flex-col items-center gap-8">
           {/* biome-ignore lint/security/noDangerouslySetInnerHtml: static keyframes, no user input */}
           <style dangerouslySetInnerHTML={{ __html: CSS }} />
-          <ScrambleCard cycle={cycle} reduced={reduced} />
+          <ScrambleCard key={cycle} cycle={cycle} reduced={reduced} />
 
           <p className="text-center font-mono text-[11px] text-fd-muted-foreground">
             setInterval(() =&gt; setStream(randomString(1500, chars)), speed)
