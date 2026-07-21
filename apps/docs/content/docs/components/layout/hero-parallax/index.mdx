@@ -69,10 +69,11 @@ Pass `header` to replace the default headline block with your own.
 
 ## Props
 
-| Prop       | Type                 | Default        | Description                                        |
-| ---------- | -------------------- | -------------- | -------------------------------------------------- |
-| `products` | `HeroParallaxItem[]` | —              | Cards to scatter across the rows (best with ~15).  |
-| `header`   | `React.ReactNode`    | Default block  | Replaces the default headline.                     |
+| Prop              | Type                                | Default       | Description                                                       |
+| ----------------- | ----------------------------------- | ------------- | ----------------------------------------------------------------- |
+| `products`        | `HeroParallaxItem[]`                | —             | Cards to scatter across the rows (best with ~15).                 |
+| `header`          | `React.ReactNode`                   | Default block | Replaces the default headline.                                    |
+| `scrollContainer` | `RefObject<HTMLElement \| null>`    | viewport      | Scrollport for progress — use when embedding in an overflow frame. |
 
 Each item is `{ title: string; thumbnail: string; href?: string }`.
 `HeroParallax` also forwards every standard `<div>` attribute to the root.

@@ -1,0 +1,115 @@
+---
+title: Anatomy of Morph Gallery
+description: How one shared layoutId, a spring, and an independent backdrop tween combine so a grid tile morphs into a fullscreen detail view with no cross-fade seam.
+---
+
+Morph Gallery doesn't cross-fade between a thumbnail and a lightbox — it
+morphs the *same* image element between two boxes. Here's the identity that
+makes that work, and the two independent timelines riding on top of it.
+
+## One layoutId, two measured boxes
+
+Every tile's `motion.img` and the detail view's `motion.img` share a single
+Framer Motion `layoutId`, generated once per gallery with `React.useId()` so
+multiple galleries on a page never collide. Framer measures whichever one is
+mounted before the transition and whichever one mounts after, then
+interpolates the image's box between them every frame. There's no "morph"
+animation to write by hand — mounting the detail view *is* the animation.
+
+<MorphGalleryAnatomy />
+
+```tsx
+<motion.img
+  layoutId={reduce ? undefined : `${uid}-${i}`}
+  src={item.src}
+  alt={item.alt}
+  transition={MORPH_SPRING}
+  className="size-full object-cover"
+/>
+```
+
+```tsx
+<motion.img
+  layoutId={reduce ? undefined : `${uid}-${open}`}
+  src={current.src}
+  alt={current.alt}
+  transition={MORPH_SPRING}
+  className="max-h-[70vh] w-auto max-w-full rounded-2xl object-contain"
+/>
+```
+
+Nothing else carries the `layoutId`. The prev/next/close buttons, the
+caption, and the backdrop are ordinary markup layered around the one element
+that actually moves.
+
+## The morph: one spring, one tween
+
+`MORPH_SPRING` — `{ stiffness: 320, damping: 32, mass: 0.9 }` — is the only
+transition on the image itself. The backdrop that dims the page behind it is
+a completely separate `motion.div` with its own `transition={{ duration: 0.2
+}}`. Those two timers don't wait for each other: the backdrop's flat 0.2s
+tween finishes well before the spring has fully settled the image into the
+detail box, and on close the backdrop is already gone before the image
+finishes travelling back to its grid slot.
+
+<MorphGalleryMorph />
+
+```tsx
+// SPRING.smooth — shared-layout morph.
+const MORPH_SPRING = { type: "spring", stiffness: 320, damping: 32, mass: 0.9 } as const;
+```
+
+```tsx
+<motion.div
+  className="fixed inset-0 z-modal grid place-items-center bg-background/80 backdrop-blur-sm"
+  initial={{ opacity: 0 }}
+  animate={{ opacity: 1 }}
+  exit={{ opacity: 0 }}
+  transition={{ duration: 0.2 }}
+/>
+```
+
+## Why a shared layoutId instead of a manual tween
+
+Framer's layout animation doesn't tween `width`/`height` directly — under the
+hood it applies a `scale` + `translate` correction on the compositor each
+frame, then un-scales the content so it doesn't stretch. That's exactly why
+this technique is cheap: the browser never re-lays-out the image mid-morph,
+it just repaints a transformed layer. Writing the equivalent by hand would
+mean measuring both boxes with `getBoundingClientRect` and driving your own
+FLIP animation — `layoutId` gets you the same result for one line per image.
+
+## Cheap when closed
+
+When `open` is `null`, the `AnimatePresence` around the backdrop renders
+nothing — no dialog markup, no image clone, no listeners beyond the grid's
+own `onClick` handlers. The gallery's idle cost is just the grid of buttons.
+
+## Accessibility and reduced motion
+
+The detail view is a real `role="dialog"` with `aria-modal="true"`: opening
+focuses the close button, closing restores focus to the tile that was
+clicked, <kbd>←</kbd>/<kbd>→</kbd> step between photos, <kbd>Esc</kbd> closes,
+and <kbd>Tab</kbd> cycles through a three-item focus trap (prev, next,
+close) so focus can never escape the modal while it's open.
+
+```tsx
+} else if (e.key === "Tab") {
+  const focusables = [prevButton, nextButton, closeButton];
+  const idx = focusables.indexOf(document.activeElement as HTMLElement);
+  const dir = e.shiftKey ? -1 : 1;
+  focusables[(idx + dir + focusables.length) % focusables.length]?.focus();
+}
+```
+
+Under `prefers-reduced-motion`, `layoutId` is passed as `undefined` on both
+ends — Framer never bridges the two boxes, so the detail image just fades in
+with a plain opacity tween instead of morphing across the screen.
+
+## The result
+
+<MorphGalleryResult />
+
+One `layoutId`, one spring, one independent backdrop tween — that's the whole
+illusion. The browser never measures a manual FLIP; it just morphs a
+transformed layer and dims the page underneath it.

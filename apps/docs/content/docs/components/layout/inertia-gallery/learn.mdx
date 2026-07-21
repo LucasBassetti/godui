@@ -1,0 +1,105 @@
+---
+title: Anatomy of the Inertia Gallery
+description: How a throwable gallery gets momentum, elasticity, and distance-based scale/opacity/blur from a single motion value, and why none of it triggers a React re-render while it's moving.
+---
+
+`InertiaGallery` is one draggable `motion.div` and one `MotionValue`. Every
+slide's scale, opacity, and blur are `useTransform` chains reading that
+same value — there's no per-slide state, no `onDrag` re-render loop, and no
+manual momentum math. Framer's own animation loop drives all of it.
+
+## One track, one motion value
+
+The whole strip is a single flex row wrapped in a masked, `overflow-hidden`
+viewport. `x` is the one `MotionValue` everything downstream reads —
+dragging the track never touches React state:
+
+<InertiaGalleryAnatomy />
+
+```tsx
+const x = useMotionValue(-start * pitch);
+
+<div className="overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
+  <motion.div
+    style={{ x, gap, paddingLeft: pad, paddingRight: pad }}
+    drag="x"
+    dragConstraints={{ left: -(count - 1) * pitch, right: 0 }}
+    dragElastic={0.16}
+    onDragEnd={handleDragEnd}
+  />
+</div>
+```
+
+The viewport pads each side by half the free space (measured with a
+`ResizeObserver`), which is what lets the first and last slide land dead
+center instead of pinned to an edge.
+
+## The throw
+
+`dragElastic: 0.16` lets the track travel a little past its constraints
+while you're still holding it — a small give, not a hard wall. Release, and
+`onDragEnd` either commits the nearest slide (`commit`) or, with `snap`,
+animates `x` to it on a spring:
+
+```tsx
+const SETTLE_SPRING = { type: "spring", stiffness: 320, damping: 32, mass: 0.9 };
+
+const handleDragEnd = () => {
+  if (snap) goTo(nearest());
+  else commit(nearest());
+};
+```
+
+<InertiaGalleryDrag />
+
+Stiffness `320` with damping `32` is tuned to slightly underdamp — the
+strip overshoots the target by a few pixels before it settles, rather than
+arriving dead-on. `mass: 0.9` keeps that overshoot small; it's felt, not
+seen.
+
+## The falloff
+
+Every slide runs the same three-curve chain off its own distance from
+center, computed from the shared `x` value with `useTransform` — nothing
+here is per-slide state, it's a pure function re-evaluated on every frame
+`x` changes:
+
+```tsx
+const nd = useTransform(x, (xv) =>
+  Math.min(Math.abs(offset + xv) / pitch, 2.4),
+);
+const scale = useTransform(nd, (d) => 1 - d * 0.14 * falloff);
+const opacity = useTransform(nd, (d) => clamp(1 - d * 0.3 * falloff, 0.4, 1));
+const blurPx = useTransform(nd, (d) => (reduce ? 0 : Math.min(d * 3.2, 5) * falloff));
+```
+
+<InertiaGalleryFalloff />
+
+Because `scale`, `opacity`, and `filter` are all compositor properties,
+Framer can update every slide's falloff every frame without asking the
+browser to lay anything out — the whole strip can be dragged at 60fps+
+regardless of how many slides are off-screen.
+
+## Cheap when idle
+
+Nothing here runs a `requestAnimationFrame` loop of its own. `useTransform`
+only recomputes when its input `MotionValue` changes, and `x` only changes
+while a drag or a settle animation is in flight — a gallery sitting still
+costs nothing beyond the one `ResizeObserver` watching the viewport.
+
+## Accessibility
+
+The viewport is a labelled `role="group"` with
+`aria-roledescription="carousel"`; <kbd>←</kbd> / <kbd>→</kbd> on the
+viewport and the prev/next buttons both call the same `goTo`, so keyboard
+and pointer paths always land on the same index. `useReducedMotion` forces
+`falloff` to `0` — scale, opacity, and blur all flatten to their resting
+values, and the strip becomes a plain scrollable row with the spring/elastic
+feel switched off.
+
+## The result
+
+<InertiaGalleryResult />
+
+One motion value, three distance curves, one settle spring — throw the
+strip above, or use the buttons.

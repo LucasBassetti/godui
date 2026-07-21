@@ -1,0 +1,87 @@
+---
+title: Anatomy of the Image Accordion
+description: How a hover-expand gallery gets away with animating flex-grow directly — a layout property — instead of chasing the usual transform-only rule, and why that's the right trade here.
+---
+
+Most "grows on hover" UI fakes width with a `scale` transform, because
+animating layout properties is expensive. `ImageAccordion` doesn't bother —
+it transitions `flex-grow` on the panel itself. That's only safe because the
+whole system is small, bounded, and interaction-driven rather than
+continuous: five panels, one property, triggered once per hover.
+
+## One panel, two states
+
+Every panel is a single button (or anchor) that carries all of its own
+state through `data-active`. There's no separate "expanded" component —
+the image, the scrim, the label, and the caption are always in the DOM;
+only their filters and opacity/transform swap:
+
+<ImageAccordionAnatomy />
+
+```tsx
+<Tag
+  data-active={isActive}
+  aria-expanded={isActive}
+  style={{ flexGrow: isActive ? activeGrow : 1, flexBasis: 0 }}
+  className="[transition:flex-grow_550ms_cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none"
+>
+  <img
+    className="scale-105 brightness-90 saturate-[0.6] [transition:transform_700ms_ease,filter_550ms_ease]
+                group-data-[active=true]:scale-100 group-data-[active=true]:brightness-100 group-data-[active=true]:saturate-100"
+  />
+  {/* collapsed vertical label, opacity-only */}
+  {/* expanded caption: opacity + translateY, underline delayed 120ms */}
+</Tag>
+```
+
+The image gets its own timeline (700ms transform, 550ms filter) — slightly
+slower than the panel's own grow, so the zoom keeps drifting for a beat
+after the width settles instead of finishing in lockstep with it.
+
+## The grow
+
+`flexGrow` flips between `1` and `activeGrow` (default `5`) on
+`onPointerEnter` / `onClick` / `onFocus`, and the whole row redistributes
+along one 550ms `cubic-bezier(0.22,1,0.36,1)` transition — the same
+snappy-then-settling curve used across GodUI for anything that "arrives."
+`onPointerLeave` resets to `defaultIndex`, so moving off the whole strip
+always returns to a known panel rather than leaving whichever was last
+active stuck open.
+
+<ImageAccordionGrow />
+
+The diagram loops the same mutual handoff: one slot takes the `5fr`, the
+other three stay at `1fr`, so the outgoing panel visibly compresses as the
+incoming one expands. (It drives that with `grid-template-columns` so a
+continuous loop doesn't thrash `flex-grow` forever.) The real component
+only pays the layout cost for 550ms per hover — then the row is stable
+again. That's the trade that makes it fine to break the transform-only
+rule here: bounded, discrete, and it buys a change that `transform`
+genuinely can't express cleanly.
+
+## Why not just scale the active panel?
+
+A `scale()` on the active panel would zoom its content without changing
+how much horizontal space it actually occupies — the neighbors wouldn't
+compress, and the image would need a matching inverse-scale correction to
+avoid distorting alongside the container. Real `flex-grow` gets both effects
+— growth and compression — from a single property, at the cost of one
+bounded reflow instead of zero.
+
+## Accessibility
+
+Each panel is a real `<button>` (or `<a>` when `href` is set), so the whole
+strip is keyboard-reachable in document order — no roving tabindex, no
+custom key handling. `onFocus` opens a panel exactly the way `onPointerEnter`
+does, so tabbing through the strip previews every caption in turn.
+`aria-expanded` mirrors `data-active` for assistive tech, and
+`motion-reduce:transition-none` on both the panel and the image drops every
+transition to an instant switch under `prefers-reduced-motion`.
+
+## The result
+
+<ImageAccordionResult />
+
+One state (`active`), one CSS transition, and every visual — width, image
+color, caption — reads it independently through `data-[active=true]`. Hover
+or tab across the panels above to feel the full 550ms settle.

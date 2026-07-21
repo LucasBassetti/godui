@@ -1,0 +1,123 @@
+---
+title: Anatomy of the Avatar Group
+description: An overlapping stack built from ordinary flex flow, and two hover-triggered springs — one on the whole row, one on a single avatar — that layer on top of each other.
+---
+
+Overlapping avatar stacks are usually faked with `position: absolute` and
+manually offset `left` values. `AvatarGroup` doesn't reach for absolute
+positioning at all — it overlaps avatars with plain flex flow and negative
+margin, which is what lets the "fan out on hover" motion be a single
+`marginLeft` spring instead of a layout rewrite.
+
+## Negative margin, not absolute position
+
+Every avatar past the first pulls itself left into its neighbor by a fixed
+overlap, and `zIndex: i` stacks later avatars on top:
+
+<AvatarGroupAnatomy />
+
+```tsx
+const overlap = { sm: 10, md: 12, lg: 14 };
+const margin = -overlap[size];
+
+<motion.div
+  variants={{ rest: { marginLeft: i === 0 ? 0 : margin, y: 0 } }}
+  style={{ zIndex: i }}
+  className="relative size-10 ring-2 ring-background rounded-full overflow-hidden bg-background"
+>
+  <Initials avatar={avatar} />
+</motion.div>
+```
+
+Because it's real flow layout, the `+N` overflow chip is just one more item
+in the same row with the same negative-margin treatment — not a
+specially-positioned badge bolted onto the end. `ring-2 ring-background`
+around each circle is what makes the overlap read as *stacked coins*
+instead of clipped rectangles — the ring is the same color as the page
+background, so it fakes a gap between avatars that don't actually have one
+in the DOM.
+
+## Two springs, two independent triggers
+
+<AvatarGroupSpread />
+
+```tsx
+<motion.div
+  initial="rest"
+  whileHover={spreadOnHover && !reduceMotion ? "spread" : undefined}
+  animate="rest"
+>
+  {visible.map((avatar, i) => (
+    <motion.div
+      variants={{
+        rest:   { marginLeft: i === 0 ? 0 : margin, y: 0 },
+        spread: { marginLeft: i === 0 ? 0 : 4, y: -2 },
+      }}
+      transition={{ type: "spring", stiffness: 520, damping: 32 }}
+      whileHover={reduceMotion ? undefined : { y: -6, scale: 1.06 }}
+    >
+      <Initials avatar={avatar} />
+    </motion.div>
+  ))}
+</motion.div>
+```
+
+Hovering anywhere over the outer `motion.div` flips every avatar's
+`variants` from `rest` to `spread` — `marginLeft` relaxes from a tight
+overlap to a small positive gap, on `{ stiffness: 520, damping: 32 }`.
+Hovering one *specific* avatar fires a second, independent animation on
+that same element: `whileHover={{ y: -6, scale: 1.06 }}`, using Framer's
+default spring since no `transition` is passed for it. Nothing coordinates
+these two — they're triggered by different pointer targets (the container
+vs. the individual avatar), and Framer resolves both onto the same node.
+Move the pointer across the row and you get the fan-out; stop over one
+avatar and it additionally pops up above its neighbors.
+
+## The overflow chip spreads, but never lifts
+
+The `+N` chip shares the row's `spread` variant — hover the group and it
+slides right along with everything else — but it has no `whileHover` of its
+own, so it never gets the individual `y`/`scale` lift. It communicates
+"more people, not a person" by opting out of exactly one of the two
+animations everything else has both of.
+
+## Reduced motion removes the trigger, not just the transition
+
+```tsx
+const reduceMotion = useReducedMotion();
+whileHover={spreadOnHover && !reduceMotion ? "spread" : undefined}
+whileHover={reduceMotion ? undefined : { y: -6, scale: 1.06 }}
+```
+
+Both `whileHover` props become `undefined` outright under reduced motion —
+not a zero-duration transition. Framer never registers a hover animation to
+skip; the avatars simply render their `rest` styles and stay there,
+regardless of pointer movement. Interactive behavior (the `href` link,
+`focus-visible` ring) is untouched — only the two springs are removed.
+
+## Accessibility rides the same DOM
+
+```tsx
+<a
+  href={avatar.href}
+  aria-label={avatar.alt}
+  className="focus:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-full"
+>
+  {inner}
+</a>
+```
+
+When an avatar has an `href`, the whole animated `motion.div` is wrapped in
+a real anchor with its own `aria-label` and `focus-visible` ring — keyboard
+focus lands on the same element a mouse would hover, so tabbing through the
+group triggers the identical spread/lift motion a pointer would, one avatar
+at a time.
+
+## The result
+
+<AvatarGroupResult />
+
+Ordinary flex flow with negative margins for the overlap, one spring on the
+group's hover and a second, independent spring on each avatar's own hover —
+sweep the row, then rest on one avatar, and watch both springs settle
+without ever touching each other's state.

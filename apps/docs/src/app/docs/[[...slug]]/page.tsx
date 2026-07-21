@@ -87,9 +87,11 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
     >
       {isLearnPage && docsHref ? <SidebarActiveLink href={docsHref} /> : null}
       {crumbs.length > 1 || tabs ? (
-        <div className="-mb-2 flex items-center justify-between gap-4">
+        <div className="-mb-2 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
           <Breadcrumbs crumbs={crumbs} />
-          {tabs ? <ComponentTabs tabs={tabs} /> : null}
+          {tabs ? (
+            <ComponentTabs tabs={tabs} className="self-start sm:self-auto" />
+          ) : null}
         </div>
       ) : null}
       {isComponentDocsPage ? (

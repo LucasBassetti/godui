@@ -1,0 +1,143 @@
+---
+title: Anatomy of the Accordion
+description: How a spring-driven height animation and a flat CSS rotate can share one click without ever touching each other's timing.
+---
+
+An accordion looks like a single animation — click, and the panel opens.
+It's actually two unrelated timing systems firing off the same state change:
+Framer Motion drives the panel, plain CSS drives the chevron, and neither
+knows the other exists.
+
+## One border, N rows, one open flag
+
+`Accordion` isn't a stack of cards. It's a single `rounded-xl border`
+wrapper with `divide-y` between rows, and each row's "open-ness" lives in one
+piece of state — an array of open values, not a boolean per item:
+
+<AccordionAnatomy />
+
+```tsx
+const [open, setOpen] = React.useState<string[]>(/* … */);
+
+<div className="w-full divide-y divide-border overflow-hidden rounded-xl border border-border">
+  {items.map((item) => {
+    const isOpen = open.includes(item.value);
+    return (
+      <div key={item.value} className="group" data-open={isOpen}>
+        <button aria-expanded={isOpen} aria-controls={panelId}>
+          {item.title}
+          {ChevronIcon}
+        </button>
+        <AnimatePresence initial={false}>
+          {isOpen && <motion.div id={panelId} role="region">{item.content}</motion.div>}
+        </AnimatePresence>
+      </div>
+    );
+  })}
+</div>
+```
+
+`type="single"` collapses that array to at most one value; `type="multiple"`
+just lets it grow. Same render tree, same toggle function — the mode is a
+three-line branch inside `toggle()`, not a different component.
+
+## A spring for height, a flat ease for the chevron
+
+The panel's entrance and exit are one `motion.div` inside `AnimatePresence`,
+and its `height`/`opacity` are driven by two different transitions on the
+*same* animate call:
+
+<AccordionHeight />
+
+```tsx
+<motion.div
+  initial={reduceMotion ? false : { height: 0, opacity: 0 }}
+  animate={{ height: "auto", opacity: 1 }}
+  exit={reduceMotion ? undefined : { height: 0, opacity: 0 }}
+  transition={{
+    height: { type: "spring", stiffness: 500, damping: 40 },
+    opacity: { duration: 0.2 },
+  }}
+  className="overflow-hidden"
+>
+  {item.content}
+</motion.div>
+```
+
+`stiffness: 500` with `damping: 40` is slightly underdamped — the panel
+overshoots its resting height by a hair before settling, instead of easing
+to a stop. `opacity` isn't part of that spring at all; it's a flat
+`duration: 0.2`, so the content fades in well before the height animation
+finishes its overshoot. Framer Motion can animate the string `"auto"` for
+`height` directly because it's a layout value it measures and interpolates
+per frame — a rule most CSS engines can't do, which is why this needs
+Framer rather than a `@keyframes` scaleY like the illustration above.
+
+The chevron never enters that `transition` object. It rotates because of one
+Tailwind class living directly on the `<svg>`:
+
+```tsx
+className="[transition:transform_250ms_ease] group-data-[open=true]:rotate-180"
+```
+
+`data-open` lives on the row's wrapper `<div className="group">`, and
+`group-data-[open=true]` reads it from any descendant — no prop drilling,
+no shared animation controller. The chevron's `250ms ease` and the panel's
+spring are unrelated curves that happen to start on the same click; nothing
+keeps them in lockstep, and nothing needs to.
+
+## `overflow-hidden` does the real clipping
+
+The panel's `className="overflow-hidden"` isn't decoration — it's what
+makes animating a growing/shrinking `height` look clean instead of showing
+un-clipped content flash at the edges mid-animation. Framer measures the
+child's natural height for `"auto"`, but the visible box is clipped by that
+one utility for the whole transition.
+
+## Reduced motion skips the spring, not the state
+
+`useReducedMotion()` from Framer Motion gates both `initial` and `exit`:
+
+```tsx
+const reduceMotion = useReducedMotion();
+// ...
+initial={reduceMotion ? false : { height: 0, opacity: 0 }}
+exit={reduceMotion ? undefined : { height: 0, opacity: 0 }}
+```
+
+`initial={false}` tells Framer to skip the mount animation and render the
+resolved styles immediately; `exit={undefined}` means there's nothing to
+animate on removal either. The toggle logic and the `AnimatePresence` mount/
+unmount are unaffected — only the motion is opted out, so keyboard and
+screen-reader behavior stay identical either way.
+
+## Accessibility is structural, not bolted on
+
+Every row wires the WAI-ARIA disclosure pattern directly into the markup
+that already exists — no extra `<span className="sr-only">` scaffolding:
+
+```tsx
+<button
+  id={triggerId}
+  aria-expanded={isOpen}
+  aria-controls={panelId}
+  disabled={item.disabled}
+  className="… focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring …"
+>
+```
+
+`aria-controls` points at the panel's `id`, and the panel itself carries
+`role="region"` and `aria-labelledby={triggerId}` — so the relationship
+holds even while the panel is unmounted between opens (`AnimatePresence`
+removes it from the DOM entirely when closed, rather than hiding it with
+`display: none`). The `disabled` prop reaches the native `<button
+disabled>`, which removes it from the tab order for free.
+
+## The result
+
+<AccordionResult />
+
+One `open` array, one `AnimatePresence` panel per row, one spring for the
+height and a completely separate 250ms ease for the chevron — click through
+the questions above and watch the two curves run independently on the same
+click.

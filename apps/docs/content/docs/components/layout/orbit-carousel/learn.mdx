@@ -1,0 +1,102 @@
+---
+title: Anatomy of Orbit Carousel
+description: How one signed offset drives position, tilt, scale, and opacity for every slide on the arc, and how a drag rewrites that offset live before a spring settles it.
+---
+
+Orbit Carousel doesn't animate five slides independently — it derives all
+five from a single number per slide (`offset = i - active`) fed through one
+arc formula. Here's that formula, and the drag that keeps rewriting it in
+real time.
+
+## One offset, five properties
+
+Each slide reads its own `offset` and turns it into `angle = offset *
+angleStep`. Everything else — `x`, `y`, `scale`, `opacity`, `rotate` — is a
+function of that one angle. The front slide (`offset = 0`) sits full-size and
+upright; every step away curves along the arc, shrinks, dims, and tilts.
+
+<OrbitCarouselAnatomy />
+
+```tsx
+const a = offset * angleStep;
+const rad = (a * Math.PI) / 180;
+const x = radius * Math.sin(rad);
+const y = radius * (1 - Math.cos(rad));
+const scale = 1 - Math.min(Math.abs(a) / 70, 1) * 0.42;
+const opacity = Math.max(0, 1 - Math.min(Math.abs(a) / 82, 1) * 0.85);
+```
+
+```tsx
+<motion.div
+  animate={{ x, y, rotate: reduce ? 0 : a * 0.5, scale, opacity }}
+  transition={MORPH_SPRING}
+/>
+```
+
+`scale` and `opacity` fall off on their *own* curves (denominators 70 and
+82), not a shared one — opacity has more room before it starts dimming, so a
+slide is visibly smaller before it's visibly faded. That's a deliberate
+two-stage falloff, not one number reused twice.
+
+## The motion: pan rewrites `active`, a spring settles it
+
+Dragging doesn't move any slide directly. `onPan` recomputes `active` on
+every pointer move — `goTo(dragFrom - offset.x / 120)` — and every slide's
+`animate` re-targets from that new offset. Framer's spring is what actually
+moves the DOM; the pointer just keeps changing where the spring is chasing.
+Release past the fling threshold and `active` gets one more nudge before the
+spring even starts settling toward it.
+
+<OrbitCarouselOrbit />
+
+```tsx
+const handlePan = (_e: unknown, info: PanInfo) => {
+  goTo(Math.round(dragFrom.current - info.offset.x / 120));
+};
+const handlePanEnd = (_e: unknown, info: PanInfo) => {
+  if (Math.abs(info.velocity.x) > 500) {
+    goTo(active - Math.sign(info.velocity.x));
+  }
+};
+```
+
+Because `active` is a plain rounded integer even mid-drag, every slide is
+already animating toward its next resting angle as soon as the pointer
+crosses the halfway point to the next slot — there's no separate "commit"
+step; the drag handler and the settle spring share the exact same state.
+
+## Why transform, not layout
+
+Every property `OrbitItem` animates — `x`, `y`, `rotate`, `scale`, `opacity`
+— is a `transform`/`opacity` pair, set directly in the `style` object as
+`width`/`height`/`marginLeft` once and never touched again. Five slides
+re-animating on every pointer move never triggers a single layout
+recalculation; the browser only repaints transformed layers.
+
+```tsx
+<motion.div
+  className="absolute top-0 left-1/2"
+  style={{ width, height, marginLeft: -width / 2, zIndex: Math.round(300 - abs) }}
+  animate={{ x, y, rotate, scale, opacity }}
+  transition={MORPH_SPRING}
+/>
+```
+
+## Accessibility and reduced motion
+
+The stage is `role="group"` with `aria-roledescription="carousel"`, and the
+prev/next buttons duplicate the drag and keyboard affordances for anyone who
+can't or doesn't want to drag — <kbd>←</kbd>/<kbd>→</kbd> work whenever a
+control has focus. Under `prefers-reduced-motion`, `rotate` drops to `0` on
+every slide — the arc still curves in `x`/`y`, but nothing tilts.
+
+```tsx
+animate={{ x, y, rotate: reduce ? 0 : a * 0.5, scale, opacity }}
+```
+
+## The result
+
+<OrbitCarouselResult />
+
+One offset, one formula, one spring chasing whatever `active` the drag or
+the keyboard last set — that's the entire wheel.

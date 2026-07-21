@@ -1,0 +1,135 @@
+---
+title: Anatomy of the App Showcase
+description: A device frame built entirely from width ratios, an entrance and a scroll pan sharing one spring config, and a loop mode that never touches JavaScript per frame.
+---
+
+A device mockup that looks convincing at every size usually means someone
+hand-tuned the notch and corner radius for 2–3 fixed breakpoints.
+`AppShowcase` doesn't have breakpoints — every radius, every inset, the
+notch itself, is a ratio of one `width` prop, computed once per render.
+
+## The whole frame is derived from one number
+
+`PhoneFrame` reads a `DEVICE` table keyed by `shellR`, `padR`, and `screenR`
+— ratios, not pixels — and multiplies them by `width` to get every geometric
+value the frame needs:
+
+<AppShowcaseAnatomy />
+
+```tsx
+const DEVICE = {
+  iphone: { aspect: "aspect-[433/882]", shellR: 0.17, padR: 0.035, screenR: 0.13 },
+  android: { aspect: "aspect-[9/19.5]", shellR: 0.11, padR: 0.028, screenR: 0.085 },
+};
+
+const geo = DEVICE[device];
+const pad = w * geo.padR;
+const shellRadius = w * geo.shellR;
+const screenRadius = w * geo.screenR;
+const notchW = w * 0.3;
+```
+
+Nothing here is a fixed `rem` value. Render the same `AppShowcase` at
+`width={140}` and `width={400}` and the shell radius, the padding gap, and
+the notch all scale together — a hand-picked radius would look chunky at
+140 and hairline at 400. The Android variant is a second row in the same
+table (`shellR: 0.11`, hole-punch instead of a notch), not a fork of the
+component.
+
+## One `SPRING`, two motion sources
+
+`scroll` mode — the default — runs Framer twice off the same config,
+for two unrelated things:
+
+<AppShowcaseScroll />
+
+```tsx
+const SPRING = { stiffness: 320, damping: 32, mass: 0.9 };
+
+// 1. Entrance — fires once, on scroll-into-view
+<motion.div
+  initial={{ opacity: 0, y: 48, rotateX: 10 }}
+  whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
+  viewport={{ once: true, amount: 0.3 }}
+  transition={{ type: "spring", ...SPRING }}
+  className="[transform-style:preserve-3d] [perspective:1200px]"
+/>
+
+// 2. Scroll pan — tracks scroll position continuously
+const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start end", "end start"] });
+const y = useSpring(useTransform(scrollYProgress, [0, 1], ["0%", "-45%"]), SPRING);
+```
+
+The entrance is a one-shot spring gated by `viewport={{ once: true }}` — it
+plays exactly once and never re-triggers on re-scroll. The pan is the
+opposite: `scrollYProgress` recomputes every scroll tick, and wrapping it in
+`useSpring` smooths that raw, sometimes-jumpy scroll value into something
+that eases rather than jitters — the same physics config reused for a
+completely different job. `rotateX: 10 → 0` on the entrance, combined with
+`[perspective:1200px]` on the wrapper, is what gives the phone a slight
+"tilting up out of the page" feel rather than a flat slide-up.
+
+## `loop` mode skips Framer entirely
+
+<AppShowcaseLoop />
+
+```tsx
+<div
+  className={`flex flex-col ${running ? "animate-app-showcase-scroll" : ""} motion-reduce:animate-none`}
+  style={{ willChange: "transform", ["--as-loop"]: `${interval * 6}s` }}
+>
+  <img src={src} className="w-full" />
+  {/* Duplicate for a seamless wrap. */}
+  <img src={src} aria-hidden className="w-full" />
+</div>
+```
+
+```css
+@keyframes app-showcase-scroll {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-50%); }
+}
+```
+
+Two identical copies of the screenshot stacked in a track exactly twice the
+image's height. Sliding that track up by `-50%` moves exactly one copy's
+height — so the instant the animation loops back to `0%`, the pixels on
+screen are identical to the frame before the loop, and the seam is
+invisible. `running` gates the class with plain boolean logic (`autoplay &&
+inView && !reduce && !videoSrc`) rather than a `useAnimationFrame` loop —
+once the class is attached, the browser's compositor drives every frame with
+zero React re-renders and zero Framer Motion overhead.
+
+## Idle when it can't be seen
+
+```tsx
+const io = new IntersectionObserver(
+  ([entry]) => setInView(entry.isIntersecting),
+  { threshold: 0.2 },
+);
+```
+
+`inView` folds into `running` alongside `autoplay` and `reduce` — scroll a
+showcase off-screen and its class drops, the CSS animation pauses, and the
+compositor has nothing left to do for that element. No `requestAnimationFrame`
+loop to cancel, because there never was one.
+
+## Reduced motion, mode by mode
+
+Every mode reads `useReducedMotion()` once at the top of `AppShowcase` and
+threads a single `reduce` boolean down, but each mode answers it
+differently: `scroll` renders the static assembled frame with no entrance
+and no pan; `loop`'s `running` check folds `!reduce` directly into whether
+the class is attached at all, and `motion-reduce:animate-none` backs that up
+at the CSS layer in case JS hasn't hydrated yet; `carousel` drops its
+`AnimatePresence` transition duration to `0`; `cluster` skips wiring the
+pointer-parallax spring altogether. Four different mechanisms, one shared
+boolean, no mode left animating for a user who asked it to stop.
+
+## The result
+
+<AppShowcaseResult />
+
+One ratio table building the whole shell, one shared spring config doing two
+unrelated jobs in `scroll` mode, and a `loop` mode that hands the browser's
+compositor a two-copy track and gets out of the way entirely.

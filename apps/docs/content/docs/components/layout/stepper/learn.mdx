@@ -1,0 +1,91 @@
+---
+title: Anatomy of Stepper
+description: How Stepper mixes three different motion techniques — a CSS color transition, a spring-filled connector, and an SVG pathLength draw — into one clean step-forward beat.
+---
+
+`Stepper` looks like one animation when a step completes, but it's three
+independent techniques layered together, each picked for what it's
+animating rather than for consistency's sake.
+
+## One `stateFor(i)`, three tones
+
+Every circle's tone comes from a single comparison against `active` — no
+per-step config, no variants map:
+
+<StepperAnatomy />
+
+```tsx
+const stateFor = (i: number): StepState =>
+  i < active ? "complete" : i === active ? "active" : "upcoming";
+```
+
+Connectors follow the same logic: the one between step `i` and `i + 1`
+fills only once `active > i` — the step before it is actually done, not
+just reached.
+
+## The motion
+
+Advancing a step fires three different animations at once, and each one
+is deliberately the "wrong" technique for the other two jobs:
+
+<StepperProgress />
+
+```tsx
+// the circle's border/background/text color — a plain CSS transition
+className="[transition:background-color_250ms_ease,border-color_250ms_ease,color_250ms_ease,box-shadow_250ms_ease]"
+
+// the connector fill — a spring, so it can overshoot slightly
+<motion.span
+  animate={{ scaleX: filled ? 1 : 0 }}
+  transition={{ type: "spring", stiffness: 320, damping: 32, mass: 0.9 }}
+/>
+
+// the checkmark — a pathLength tween, drawing the stroke rather than fading it in
+<motion.path
+  d="M5 13l4 4L19 7"
+  initial={{ pathLength: 0 }}
+  animate={{ pathLength: 1 }}
+  transition={{ duration: 0.3, ease: "easeOut" }}
+/>
+```
+
+## Why three techniques, not one
+
+A color swap has no meaningful "motion" to it — a `transition` is cheaper
+than mounting a `motion` component for a property that's either on or off.
+The connector *is* motion — it's a line growing across visible space — so
+it gets the spring that gives every other GodUI surface transition its
+felt weight. The checkmark isn't a fade or a scale at all; `pathLength`
+draws the stroke the way a pen would, which a spring or an opacity fade
+can't reproduce. Each animation type is chosen for the shape of the change,
+not applied uniformly across the component.
+
+## Horizontal vs. vertical
+
+The same `Connector` component renders either orientation from one prop —
+only the animated axis and its origin flip:
+
+```tsx
+animate={horizontal ? { scaleX: filled ? 1 : 0 } : { scaleY: filled ? 1 : 0 }}
+className={horizontal ? "mt-[17px] h-0.5 flex-1" : "my-1 w-0.5 flex-1 self-center"}
+```
+
+`scaleX` from `origin-left` reads as "filling left to right"; `scaleY`
+from `origin-top` reads as "filling downward" — the same spring, aimed
+along whichever axis the layout actually flows.
+
+## Accessibility
+
+The active step carries `aria-current="step"` so assistive tech announces
+where the user is without relying on visual state alone. Under
+`prefers-reduced-motion`, every `transition` collapses to `{ duration: 0 }`
+and the checkmark's `initial` is skipped (`reduceMotion ? false : { pathLength: 0 }`)
+— steps switch instantly, with the check already fully drawn rather than
+animating in.
+
+## The result
+
+<StepperResult />
+
+One state comparison, three purpose-built animations, and a stepper that
+never feels like it's animating for animation's sake.

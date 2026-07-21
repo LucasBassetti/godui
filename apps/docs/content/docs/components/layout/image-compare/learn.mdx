@@ -1,0 +1,94 @@
+---
+title: Anatomy of the Image Compare
+description: How a before/after slider stays a single clip-path on the top layer, why the drag transition disappears while you're actually dragging, and what the slider role buys you for free.
+---
+
+`ImageCompare` looks like it needs two synced images and a lot of pointer
+math. It's actually one number — `pos`, 0 to 100 — read by three things: a
+`clip-path` on the top layer, the divider's `left`, and the handle's `left`.
+Nothing else in the component cares where the handle is.
+
+## Two layers, one boundary
+
+The "after" image sits underneath, full-bleed, always fully painted. The
+"before" image sits on top of it, clipped to `` inset(0 ${100 - pos}% 0 0) ``
+so only the region left of the handle is visible — everything to the right
+is still there in the DOM, just clipped away:
+
+<ImageCompareAnatomy />
+
+```tsx
+const clip = horizontal
+  ? `inset(0 ${100 - pos}% 0 0)`
+  : `inset(0 0 ${100 - pos}% 0)`;
+
+<div className="[&_img]:size-full [&_img]:object-cover">{after}</div>
+<div style={{ clipPath: clip }} className="absolute inset-0">
+  {before}
+</div>
+```
+
+Both `<img>`s decode and paint up front — dragging never swaps sources or
+triggers a repaint of the image itself, only the clip boundary moves.
+
+## The drag has no transition — on purpose
+
+While `dragging` is true, `pos` updates with zero transition: the clip
+boundary tracks the pointer 1:1, every pixel of pointer movement becomes a
+pixel of clip movement, with no easing lag to fight. The 120ms
+`ease-out` only turns on once the pointer lets go:
+
+```tsx
+const transition = dragging ? "" : "[transition:clip-path_120ms_ease-out]";
+```
+
+That's the opposite of most "smoothed" drag UI: smoothing here would mean
+the boundary visibly lags the cursor, which reads as latency. The eased
+transition exists for the *other* way `pos` changes — keyboard steps — where
+a discrete jump benefits from a little easing to feel intentional rather
+than teleported.
+
+<ImageCompareScrub />
+
+The loop above swaps the literal `clip-path` for an opacity crossfade so it
+can run forever without a timed layout property — the real component only
+ever transitions `clip-path` for 120ms per keyboard press, never
+continuously, so this substitution doesn't change the mechanism, just how
+it's illustrated.
+
+## The handle is a slider, not a button
+
+The grabber is a `role="slider"` with `aria-valuemin`/`max`/`now`, so a
+screen reader announces it as a position control, not a generic clickable
+icon. `onKeyDown` moves it by `2` normally or `10` with <kbd>Shift</kbd>
+held, clamped to `[0, 100]` the same way the pointer handler is — one
+`clamp()` shared by both input paths, so keyboard and pointer can never
+disagree about the valid range:
+
+```tsx
+const step = e.shiftKey ? 10 : 2;
+if (e.key === dec) setPos((p) => clamp(p - step));
+if (e.key === inc) setPos((p) => clamp(p + step));
+```
+
+The handle itself scales on hover (`110%`) and press (`95%`) over 150ms —
+a much shorter, snappier timeline than the drag itself, so the grab
+affordance feels immediate even while the boundary it's attached to is
+still catching up.
+
+## Accessibility
+
+`role="slider"` plus the value attributes give the handle a real
+accessibility-tree identity; `aria-orientation` mirrors the `horizontal` /
+`vertical` prop. `focus-visible:ring-2` marks the handle for keyboard users
+without adding a ring on pointer interaction. There's no
+`prefers-reduced-motion` check in this component — the only animated
+property is the 120ms clip easing, already short enough that GodUI treats
+it as a discrete state change rather than motion to gate.
+
+## The result
+
+<ImageCompareResult />
+
+One `pos` value, one `clip-path`, one `role="slider"` — drag the handle
+above or tab to it and use the arrow keys.

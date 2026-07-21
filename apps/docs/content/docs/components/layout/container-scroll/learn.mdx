@@ -1,0 +1,99 @@
+---
+title: Anatomy of the Container Scroll
+description: How a product-hero device frame un-tilts from 3D as you scroll, driven by one scroll-progress value feeding three independent springs.
+---
+
+A hero that un-tilts as you scroll past it looks like it needs a scroll
+listener, some math, and a `requestAnimationFrame` loop. `ContainerScroll` is
+one `useScroll` call and three `useTransform`s riding it.
+
+## Header and frame, sharing one section
+
+`ContainerScroll` renders two children into the same tall section: a
+`header` block above, and the device `frame` below it in its own
+`[perspective:1000px]` stage. Neither knows about the other — both just read
+transforms handed down from the same scroll progress:
+
+<ContainerScrollAnatomy />
+
+```tsx
+<div ref={containerRef} className="relative flex h-[60rem] items-center justify-center md:h-[80rem]">
+  <div className="relative w-full [perspective:1000px]">
+    <motion.div style={{ translateY }} className="mx-auto mb-10 max-w-3xl text-center">
+      {header}
+    </motion.div>
+    <motion.div style={{ rotateX, scale }} className="[transform-style:preserve-3d]">
+      {frame /* the border + aspect-[16/10] screen */}
+    </motion.div>
+  </div>
+</div>
+```
+
+The section is deliberately tall (`60rem`, `80rem` on `md:`) — there has to be
+enough scroll distance for `scrollYProgress` to move from `0` to `1` at a
+readable pace, or the whole animation resolves in a couple of frames.
+
+## One progress value, three springs
+
+`useScroll({ target: containerRef })` returns `scrollYProgress` — `0` when
+the section's top hits the bottom of the viewport, `1` when its bottom hits
+the top. Three `useTransform`s remap that single number to three different
+ranges, and each gets its own `useSpring` for the smoothing, so all three
+settle with the same feel without being coupled to each other's code:
+
+<ContainerScrollScrub />
+
+```tsx
+const SPRING = { stiffness: 320, damping: 32, mass: 0.9 } as const;
+
+const { scrollYProgress } = useScroll({ target: containerRef });
+
+const rotateX    = useSpring(useTransform(scrollYProgress, [0, 1], [20, 0]), SPRING);
+const scale      = useSpring(useTransform(scrollYProgress, [0, 1], [1.05, 1]), SPRING);
+const translateY = useSpring(useTransform(scrollYProgress, [0, 1], [0, -100]), SPRING);
+```
+
+Scroll down and `rotateX`, `scale`, and `translateY` all move together
+because they're three views onto the same underlying `scrollYProgress` motion
+value — there's no explicit synchronization code because there's nothing to
+synchronize.
+
+## Why the frame gets its own perspective stage
+
+`rotateX` only reads as "tilting back in 3D" if the browser has a vanishing
+point to rotate toward — that's what `[perspective:1000px]` on the *parent*
+of the rotated element provides, and `[transform-style:preserve-3d]` on the
+frame itself keeps its own children (the border, the screen) flat against it
+instead of each getting their own independent 3D space. Get the perspective
+container wrong — put it too close, or nest it one level off — and the tilt
+looks like a lopsided `scaleY` instead of a plane rotating in depth.
+
+## Reduced motion is a different tree, not a toggle
+
+Unlike most GodUI components, `ContainerScroll` doesn't disable transforms
+under `prefers-reduced-motion` — it renders an entirely different, shorter
+tree: no `containerRef`-driven `useScroll`, no 3D stage, just the header and
+an upright frame stacked in normal flow.
+
+```tsx
+if (reduce) {
+  return (
+    <div className="flex flex-col items-center px-4 py-16">
+      {header ? <div className="mb-10 text-center">{header}</div> : null}
+      {frame}
+    </div>
+  );
+}
+```
+
+That's a deliberate trade: a shorter, non-scroll-driven section instead of a
+tall one with its motion quietly zeroed out. Readers who've asked for less
+motion also don't get asked to scroll through `60rem` of empty tilt to reach
+whatever comes next.
+
+## The result
+
+<ContainerScrollResult />
+
+One `useScroll`, three `useTransform`s, three springs for the smoothing — the
+entire "product hero" moment, tied to nothing but how far you've scrolled.

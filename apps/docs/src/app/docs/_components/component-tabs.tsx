@@ -4,11 +4,20 @@ import { cn } from "@/lib/cn";
 export type ComponentTab = { label: string; href: string; active: boolean };
 
 /**
- * Segmented Docs | Learn control shown at the right of the breadcrumb row on
- * component pages that have a Learn article. Tabs are real routes, so they
- * render as links (not buttons). Visual language matches <Segmented>.
+ * Segmented Docs | Learn control shown with the breadcrumb on component pages
+ * that have a Learn article. Tabs are real routes, so they render as links
+ * (not buttons). Visual language matches <Segmented>.
+ *
+ * On mobile the parent stacks this below the breadcrumb so long component
+ * names aren't forced to wrap beside the control.
  */
-export function ComponentTabs({ tabs }: { tabs: ComponentTab[] }) {
+export function ComponentTabs({
+  tabs,
+  className,
+}: {
+  tabs: ComponentTab[];
+  className?: string;
+}) {
   const activeIndex = Math.max(
     0,
     tabs.findIndex((t) => t.active),
@@ -16,7 +25,10 @@ export function ComponentTabs({ tabs }: { tabs: ComponentTab[] }) {
 
   return (
     <div
-      className="relative inline-grid h-8 shrink-0 rounded-[10px] border border-fd-border bg-[var(--muted)] p-[3px]"
+      className={cn(
+        "relative inline-grid h-8 shrink-0 rounded-[10px] border border-fd-border bg-[var(--muted)] p-[3px]",
+        className,
+      )}
       style={{ gridTemplateColumns: `repeat(${tabs.length}, minmax(0, 1fr))` }}
     >
       <span
@@ -33,7 +45,7 @@ export function ComponentTabs({ tabs }: { tabs: ComponentTab[] }) {
           href={tab.href}
           aria-current={tab.active ? "page" : undefined}
           className={cn(
-            "relative z-[1] inline-flex items-center justify-center rounded-[7px] px-3 py-[3px] text-[13px] font-medium leading-[18px] transition-colors",
+            "relative z-[1] inline-flex items-center justify-center whitespace-nowrap rounded-[7px] px-2.5 py-[3px] font-medium text-[13px] leading-[18px] transition-colors sm:px-3",
             tab.active
               ? "text-[var(--foreground)]"
               : "text-[var(--muted-foreground)] hover:text-[var(--foreground)]",

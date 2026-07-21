@@ -21,6 +21,11 @@ export type HeroParallaxProps = React.HTMLAttributes<HTMLDivElement> & {
   products: HeroParallaxItem[];
   /** Replaces the default headline block. */
   header?: React.ReactNode;
+  /**
+   * Scrollport for measuring progress. Defaults to the viewport — pass a
+   * ref to an overflow container when embedding the hero in a framed demo.
+   */
+  scrollContainer?: React.RefObject<HTMLElement | null>;
 };
 
 // SPRING.smooth — surfaces / shared-layout feel.
@@ -57,7 +62,7 @@ function ProductCard({
 }
 
 const HeroParallax = React.forwardRef<HTMLDivElement, HeroParallaxProps>(
-  ({ products, header, className, ...props }, ref) => {
+  ({ products, header, className, scrollContainer, ...props }, ref) => {
     const reduce = useReducedMotion();
     const containerRef = React.useRef<HTMLDivElement>(null);
     React.useImperativeHandle(
@@ -71,6 +76,7 @@ const HeroParallax = React.forwardRef<HTMLDivElement, HeroParallaxProps>(
 
     const { scrollYProgress } = useScroll({
       target: containerRef,
+      container: scrollContainer,
       offset: ["start start", "end start"],
     });
 

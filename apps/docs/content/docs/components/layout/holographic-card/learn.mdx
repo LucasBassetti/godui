@@ -1,0 +1,125 @@
+---
+title: Anatomy of Holographic Card
+description: How the same spring that tilts Tilt Card also slides an iridescent foil across a dark base, and why one blend mode makes it read as light instead of paint.
+---
+
+Holographic Card reuses Tilt Card's entire pointer-to-spring pipeline —
+same normalized coordinates, same spring constants — and spends its own
+complexity on one thing: making the tilt also drive a foil that looks like
+it's catching real light. Here's the layer stack and the blend mode that
+sells it.
+
+## Four masks, one blend mode
+
+The card is a dark base with three `absolute inset-0` layers stacked on top:
+a diagonal foil gradient, a glitter dot mask, and a soft radial glare —
+foil and glitter both use `mix-blend-color-dodge`, which lightens the dark
+base wherever the layer above it is bright and leaves it untouched where the
+layer is dark. That's what makes a flat gradient read as light hitting foil
+instead of a color painted over the card.
+
+<HolographicCardAnatomy />
+
+```tsx
+const FOIL_LAYER =
+  "pointer-events-none absolute inset-0 mix-blend-color-dodge " +
+  "[background-size:200%_200%] [background-position:var(--holo-x)_var(--holo-y)] " +
+  "[mask-image:radial-gradient(75%_75%_at_var(--holo-x)_var(--holo-y),#000_0%,rgba(0,0,0,0.4)_55%,transparent_100%)]";
+```
+
+The `mask-image` is the other half of the trick: the foil is masked to a
+radial gradient centered on the same pointer position, so the iridescence
+concentrates where the "light" is hitting rather than flooding the whole
+card evenly.
+
+## The tilt, borrowed wholesale
+
+`rotateX`/`rotateY` come from the identical spring pipeline as Tilt Card —
+same normalized pointer, same `{ stiffness: 170, damping: 12, mass: 0.1 }`
+spring:
+
+```tsx
+const rotateX = useTransform(sy, [-0.5, 0.5], [maxTilt, -maxTilt]);
+const rotateY = useTransform(sx, [-0.5, 0.5], [-maxTilt, maxTilt]);
+```
+
+What's new is that the same `sx`/`sy` pair also feeds a CSS variable instead
+of just a rotation:
+
+```tsx
+const holoX = useTransform(sx, [-0.5, 0.5], ["0%", "100%"]);
+const holoY = useTransform(sy, [-0.5, 0.5], ["0%", "100%"]);
+// …
+style={{ rotateX, rotateY, "--holo-x": holoX, "--holo-y": holoY }}
+```
+
+## The foil that catches the light
+
+`--holo-x`/`--holo-y` land on `background-position` for the foil, the
+sparkle mask, and the glare's `radial-gradient` center all at once. One
+pointer value moves the card *and* slides the foil across it in the same
+gesture — turn the card and the color visibly travels with the tilt, exactly
+like a real trading-card holo catching the light at an angle.
+
+<HolographicCardFoil />
+
+Each `variant` swaps the gradient stops but keeps the mechanism identical:
+
+```tsx
+const FOIL: Record<HolographicVariant, string> = {
+  rainbow: "[background-image:linear-gradient(115deg,#ff2d95,#ffd84d,#4dff9e,#4dd2ff,#a24dff,#ff2d95)]",
+  aurora:  "[background-image:linear-gradient(115deg,#22d3ee,#34d399,#a3e635,#38bdf8,#22d3ee)]",
+  galaxy:  "[background-image:linear-gradient(115deg,#a855f7,#ec4899,#3b82f6,#c026d3,#a855f7)]",
+  gold:    "[background-image:linear-gradient(115deg,#b45309,#fbbf24,#fffbeb,#fbbf24,#b45309)]",
+};
+```
+
+## Optional: the gyroscope
+
+On a touch device there's no pointer to move, so `gyroscope` opts into
+reading `deviceorientation` instead — `gamma`/`beta` map onto the same
+`px`/`py` motion values the pointer would have set. iOS gates the sensor
+behind a permission prompt that must fire from a user gesture, so the
+listener requests it lazily on the first tap rather than on mount:
+
+```tsx
+const requestOnTap = () => {
+  orientationEvent.requestPermission?.().then((state) => {
+    if (state === "granted") attach();
+  });
+};
+if (typeof orientationEvent.requestPermission === "function") {
+  window.addEventListener("pointerdown", requestOnTap);
+} else {
+  attach();
+}
+```
+
+Because it writes into the same `px`/`py` values as the pointer handler, the
+spring, the tilt, and the foil don't need to know which input drove them.
+
+## Accessibility
+
+Under `prefers-reduced-motion`, the card renders still — no spring, no
+pointer listener, no gyroscope — with the foil and glare pinned to a fixed
+resting position instead of centered dynamically:
+
+```tsx
+if (reduceMotion) {
+  return (
+    <div style={{ "--holo-x": "50%", "--holo-y": "40%" }}>
+      {/* base, foil, children, edge — no glare, no motion */}
+    </div>
+  );
+}
+```
+
+## The result
+
+Move your pointer across each card — the foil, the glitter, and the glare
+all shift together as it tilts.
+
+<HolographicCardResult />
+
+Borrow the spring, add a CSS variable, mask a gradient to it — that's the
+whole holo effect.

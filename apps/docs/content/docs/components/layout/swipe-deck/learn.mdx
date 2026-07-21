@@ -1,0 +1,109 @@
+---
+title: Anatomy of the Swipe Deck
+description: A card stack built from a rank formula instead of absolute layout, a drag gesture that maps distance straight to rotation, and a release that keeps the throw's own momentum through the exit spring.
+---
+
+Swipeable decks are often built by absolutely positioning every card and
+recomputing offsets on each swipe. `SwipeDeck` keeps the stack as one
+formula applied to whatever rank a card currently holds, so "the next card
+moves up" is a spring on a number, not a layout recalculation.
+
+## A stack is a formula, not a deck of positioned cards
+
+<SwipeDeckAnatomy />
+
+```tsx
+const BehindCard: React.FC<{ rank: number; children: React.ReactNode }> = ({ rank, children }) => (
+  <motion.div
+    style={{ zIndex: 30 - rank, transformOrigin: "top center" }}
+    animate={{
+      scale: 1 - rank * 0.05,
+      y: rank * 16,
+      opacity: rank > 2 ? 0 : 1,
+    }}
+    transition={STACK_SPRING} // { type: "spring", stiffness: 320, damping: 32, mass: 0.9 }
+  >
+    {children}
+  </motion.div>
+);
+```
+
+Only the front card (`rank === 0`) is a `FrontCard` with drag handlers;
+everything behind it is a `BehindCard` whose entire visual state — scale,
+vertical offset, whether it's even visible — falls out of its `rank`. When a
+swipe commits, `order` shifts by one and every remaining card's `rank` drops
+by one; React re-renders with new `rank` props, and the *same* spring
+animates each card from its old slot to its new one. There's no separate
+"promote" animation — it's the identical `STACK_SPRING` the deck already uses
+for steady state.
+
+## Drag maps to rotation, release keeps the throw
+
+<SwipeDeckFling />
+
+```tsx
+const rotate = useTransform(x, [-320, 0, 320], [-18, 0, 18], { clamp: true });
+
+const handleDragEnd = (_e, info: PanInfo) => {
+  const power = info.offset.x + info.velocity.x * 0.2;
+  if (power > threshold || info.velocity.x > 700) {
+    onDecide("right", info.velocity.x);
+  } else if (power < -threshold || info.velocity.x < -700) {
+    onDecide("left", info.velocity.x);
+  } else {
+    animate(x, 0, { type: "spring", stiffness: 520, damping: 32, velocity: info.velocity.x });
+  }
+};
+```
+
+`rotate` is a live `useTransform` of the drag's `x` motion value, so the tilt
+tracks the finger in real time with zero extra state. On release, `power`
+blends distance and velocity into one number — a short, fast flick can commit
+a swipe even if it never crossed the raw `threshold` (110px), and a slow drag
+that overshoots the threshold but is decelerating still counts as a real
+commit rather than requiring a minimum speed.
+
+## The exit continues the gesture, it doesn't restart it
+
+```tsx
+const controls = animate(x, sign * (width * 0.9 + 360), {
+  type: "spring",
+  velocity: leaving.velocity,
+  stiffness: 60,
+  damping: 16,
+  restDelta: 2,
+  onComplete: () => onLeftRef.current(),
+});
+```
+
+The exit spring's `velocity` is seeded with the *release* velocity from the
+drag, not zero. A fast flick flies off fast; a slow drag past threshold
+drifts off slowly — the card's exit speed is a direct continuation of how it
+was moving the instant you let go, which is why `{ stiffness: 60, damping:
+16 }` reads as "thrown" rather than "faded out." A snapped-back drag (one
+that didn't clear the threshold) uses a different, snappier spring (`520 /
+32`) seeded the same way, so even an aborted swipe still feels like it
+remembers your hand.
+
+## Keyboard parity
+
+```tsx
+const handleKey = (e: React.KeyboardEvent) => {
+  if (e.key === "ArrowLeft") beginLeave("left", -1200);
+  if (e.key === "ArrowRight") beginLeave("right", 1200);
+};
+```
+
+Arrow keys call the exact same `beginLeave` a completed drag would, just with
+a hardcoded velocity (±1200) standing in for a fast flick — so a keyboard
+user gets the same momentum-driven exit spring a mouse or touch gesture
+would produce, not a instant cut or a separate fade transition.
+
+## The result
+
+<SwipeDeckResult />
+
+One rank formula drives the whole stack, one `useTransform` maps drag to
+rotation, and one seeded spring makes the exit feel like it's still being
+thrown after you've let go — drag the front card, or use the buttons or arrow
+keys below.

@@ -1,0 +1,97 @@
+---
+title: Anatomy of Cover Flow
+description: How a 3D album-cover carousel derives every slide's rotation, depth, and scale from one signed distance, and turns a drag into a spring-settled index.
+---
+
+Cover Flow doesn't animate five slides — it animates one number, `active`,
+and lets every slide read its own distance from it. Here's how that single
+signal becomes a 3D fan you can throw.
+
+## One signed distance, five slides
+
+Each slide's `offset` is just `index - active`. Everything else — position,
+rotation, depth, scale, fade — is a pure function of that one signed number.
+The center slide (`offset === 0`) sits flat and full-scale; neighbours peel
+away in perspective the farther their offset runs.
+
+<CoverFlowAnatomy />
+
+Position telescopes instead of scrolling off-screen: the first unit of
+distance moves a full pitch, everything past that compresses to 55% of a
+pitch, so far slides keep queuing toward the edge instead of vanishing.
+
+```tsx
+const near = Math.min(abs, 1);
+const far = Math.max(abs - 1, 0);
+const x = sign * (near * spacing + far * spacing * 0.55);
+const rotateY = -Math.max(-1, Math.min(1, offset)) * 52;
+const z = -Math.min(abs, 3) * 130;
+const scale = 1 - Math.min(abs, 3) * 0.08;
+```
+
+## Dragging rewrites the index, not the slides
+
+There's no per-slide drag handler. A single `motion.div` wraps the whole
+stage and reads one pan gesture; every frame it rewrites `active` from the
+drag offset, and the slides above just re-render off their new `offset`.
+Release fast enough — `|velocity.x| > 600` — and the index nudges one extra
+slide in the throw direction, so a flick keeps going past where your finger
+stopped.
+
+<CoverFlowFan />
+
+```tsx
+const handlePan = (_e, info: PanInfo) => {
+  goTo(Math.round(dragFrom.current - info.offset.x / spacing));
+};
+const handlePanEnd = (_e, info: PanInfo) => {
+  if (Math.abs(info.velocity.x) > 600) {
+    goTo(active - Math.sign(info.velocity.x));
+  }
+};
+```
+
+## One spring for every slide
+
+Every slide animates under the same spring — `stiffness: 320, damping: 32,
+mass: 0.9` — so a drag, a click, or an arrow key all resolve with the same
+settle. There's no per-slide timing to keep in sync; changing `active`
+changes the target `offset` for all five slides at once, and Motion
+interpolates each one from wherever it currently sits.
+
+```tsx
+const MORPH_SPRING = { type: "spring", stiffness: 320, damping: 32, mass: 0.9 };
+// …
+animate={{ x, rotateY, z, scale, opacity }}
+transition={MORPH_SPRING}
+```
+
+## Why transform, not layout
+
+`x`, `rotateY`, `z`, `scale`, and `opacity` are the only properties that
+ever change. All five compose onto one GPU layer per slide — the browser
+never re-measures or re-paints the stage while it drags or settles, no
+matter how many slides are stacked in depth.
+
+## Accessibility
+
+The stage carries `role="group"` and `aria-roledescription="carousel"`, and
+`←`/`→` step `active` the same way a drag does. When
+`prefers-reduced-motion` is set, `rotateY` and `z` are zeroed for every
+slide — the 3D fan flattens into a plain cross-fade, same index logic, no
+rotation.
+
+```tsx
+const rotateY = reduce ? 0 : -Math.max(-1, Math.min(1, offset)) * 52;
+const z = reduce ? 0 : -Math.min(abs, 3) * 130;
+```
+
+## The result
+
+Every piece, assembled — drag it, click a side slide, or tab in and use the
+arrow keys.
+
+<CoverFlowResult />
+
+One signed distance, one spring, and a drag gesture that never touches a
+slide directly — that's the whole carousel.

@@ -1,0 +1,103 @@
+---
+title: Anatomy of the 3D Marquee
+description: A wall of flat images that reads as a tilted 3D plane from two CSS transforms, with per-column drift durations tuned so the grid never repeats in visible sync.
+---
+
+`ThreeDMarquee` looks like it needs a 3D scene graph — a tilted grid of
+images drifting at different speeds with real depth. It's actually two CSS
+transforms on a flat grid of `<img>` tags, and a duration offset per column
+that keeps the drift from ever looking mechanical.
+
+## Two rotations fake a 3D wall
+
+<ThreeDMarqueeAnatomy />
+
+```tsx
+<div className="relative ... [perspective:1200px]">
+  <div className="w-[140%] scale-110">
+    <div
+      className="grid size-full origin-center gap-4 [transform:rotateX(55deg)_rotateZ(-45deg)]"
+      style={{ transformStyle: "preserve-3d" }}
+    >
+      {/* columns of <img> */}
+    </div>
+  </div>
+</div>
+```
+
+`perspective: 1200px` on the outer container is what gives the child's
+rotation any depth at all — without it, `rotateX`/`rotateZ` would just
+flatten to a 2D skew. `rotateX(55deg)` tips the grid back into the isometric
+angle, `rotateZ(-45deg)` spins it into the diamond orientation, and
+`preserve-3d` keeps the grid's own children (the columns) sharing that same
+3D space instead of each being flattened into the parent's plane individually.
+The `w-[140%] scale-110` wrapper is pure overscan: a tilted rectangle's
+corners project outside its own bounding box, so the grid is rendered oversize
+and re-scaled down to guarantee it still covers every corner of the visible
+container after rotation.
+
+## Per-column drift, never in sync
+
+<ThreeDMarqueeBob />
+
+```tsx
+<motion.div
+  animate={{ y: colIndex % 2 === 0 ? [0, -40, 0] : [0, 40, 0] }}
+  transition={{
+    duration: 10 + colIndex,
+    ease: [0.65, 0, 0.35, 1],
+    repeat: Number.POSITIVE_INFINITY,
+  }}
+>
+```
+
+Every column loops the identical shape — up-and-back or down-and-back — but
+`duration: 10 + colIndex` gives column 0 a 10s cycle, column 1 an 11s cycle,
+column 2 a 12s cycle, and so on. Four columns with four different periods
+means their relative phase keeps sliding rather than repeating, so the wall
+never visibly "resets" all at once the way it would if every column shared
+one duration. `ease: [0.65, 0, 0.35, 1]` is a symmetric in-out curve — the
+same shape decelerating into the turnaround as accelerating out of it — which
+is what keeps a `repeat: Infinity` bob from having a visible seam at the loop
+point.
+
+## `toColumns()` splits by position, not by image
+
+```tsx
+function toColumns<T>(items: T[], count: number): T[][] {
+  const columns: T[][] = Array.from({ length: count }, () => []);
+  const perColumn = Math.ceil(items.length / count);
+  items.forEach((item, i) => {
+    columns[Math.min(count - 1, Math.floor(i / perColumn))].push(item);
+  });
+  return columns;
+}
+```
+
+`images` is just a flat array — the component doesn't know or care what's in
+it. `toColumns` chunks it into `columns` sequential groups of
+`Math.ceil(length / columns)` each, and the `Math.min` clamp is what
+absorbs the remainder into the last column instead of ever producing a
+`columns + 1`'th bucket when the count doesn't divide evenly.
+
+## Accessibility
+
+```tsx
+animate={reduce ? undefined : { y: ... }}
+<img alt="" draggable={false} />
+```
+
+Under `prefers-reduced-motion`, `animate` is `undefined` outright — Framer
+never registers the loop, so the grid holds perfectly still instead of
+playing a zero-duration version of the drift. Every tile's `alt=""` marks the
+grid as decorative (it's a showcase background, not content to be read
+aloud), and `draggable={false}` stops the browser's native image-drag
+affordance from fighting the tilted layout.
+
+## The result
+
+<ThreeDMarqueeResult />
+
+Two transforms and one overscan wrapper turn a flat grid into a tilted plane,
+and a duration offset per column is the entire trick behind a drift that
+never looks like it's repeating.

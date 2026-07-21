@@ -1,0 +1,116 @@
+---
+title: Anatomy of the Card Swap
+description: How a 3D card stack cycles through a showcase loop with one array rotation, a shared spring, and a pointer-driven tilt — no per-card timers.
+---
+
+A stack that fans out and cycles through itself looks like it needs one
+timeline per card. It doesn't. `CardSwap` keeps a single `order` array; every
+card reads its own position out of it and springs there.
+
+## Rank, not position
+
+Nothing about a card's depth lives on the card. `CardSwap` keeps one `order`
+array — `order[r]` is the item index currently at rank `r`, `0` being the
+front — and derives each card's `rank` by inverting it:
+
+```tsx
+const rankOf = React.useMemo(() => {
+  const m = new Array<number>(n);
+  order.forEach((itemIndex, rank) => {
+    m[itemIndex] = rank;
+  });
+  return m;
+}, [order, n]);
+```
+
+That one number then drives four transforms at once — `x`, `y`, `scale`,
+`rotateZ` all step together as rank increases, so the whole fan reads as one
+consistent recession into the stack:
+
+<CardSwapAnatomy />
+
+```tsx
+animate={{
+  x: r * offsetX,
+  y: -r * offsetY,
+  scale: 1 - r * scaleStep,
+  rotateZ: r * -2.5,
+  opacity: r > 3 ? 0 : 1,
+}}
+```
+
+## The swap is an array rotation
+
+Advancing doesn't tween anyone's position directly — it rewrites `order` so
+the front item's index moves to the back, and lets every card's `rank`
+(and therefore its `animate` target) fall out of that new array on the next
+render:
+
+<CardSwapCycle />
+
+```tsx
+const advance = React.useCallback(() => {
+  setOrder((o) => (o.length ? [...o.slice(1), o[0] as number] : o));
+}, []);
+
+React.useEffect(() => {
+  if (!interval || paused || n < 2) return;
+  const t = setInterval(advance, interval);
+  return () => clearInterval(t);
+}, [interval, paused, n, advance]);
+```
+
+Because every card's `animate` prop is just "whatever `rankOf[i]` says right
+now," Framer's own diffing handles the transition — there's no manual
+tween between old and new slot, just a spring (`stiffness 320 / damping 32 /
+mass 0.9`) chasing a new target.
+
+## Why the whole stack tilts, not each card
+
+The pointer parallax lives one level up from the cards — on the
+`[transform-style:preserve-3d]` wrapper that holds all of them, not on any
+individual card:
+
+<CardSwapTilt />
+
+```tsx
+const handleMove = (e: React.PointerEvent<HTMLDivElement>) => {
+  const rect = ref.current?.getBoundingClientRect();
+  if (!rect) return;
+  const px = (e.clientX - rect.left) / rect.width - 0.5;
+  const py = (e.clientY - rect.top) / rect.height - 0.5;
+  setTilt({ x: -py * 12, y: px * 14 });
+};
+
+<motion.div
+  className="[transform-style:preserve-3d]"
+  animate={{ rotateX: tilt.x, rotateY: tilt.y }}
+  transition={{ type: "spring", stiffness: 170, damping: 12, mass: 0.1 }}
+>
+  {/* every card, already offset by its own rank */}
+</motion.div>
+```
+
+One spring, applied once, tilts the entire fan together — cards don't fight
+each other for depth because their individual `rotateZ` offsets and the
+group's `rotateX`/`rotateY` compose on the same 3D stage.
+
+## Accessibility
+
+`useReducedMotion` is read once, at the top: reduced-motion swaps every
+card's `transition` to `{ duration: 0 }` (the position still updates, it just
+doesn't spring) and short-circuits `handleMove` before it ever calls
+`setTilt`. The prev/next controls are always real `<button>`s with
+`aria-label`s — they work identically whether or not motion is enabled, and
+they're the only way to drive the stack when `interval={0}`.
+
+```tsx
+transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 320, damping: 32, mass: 0.9 }}
+```
+
+## The result
+
+<CardSwapResult />
+
+One array, one lookup from index to rank, two springs (fast for the tilt,
+smooth for the re-flow) — that's the entire stack, cycling itself forever.

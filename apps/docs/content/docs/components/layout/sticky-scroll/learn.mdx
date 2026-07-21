@@ -1,0 +1,97 @@
+---
+title: Anatomy of Sticky Scroll
+description: How one IntersectionObserver line and one active index drive a dimming list on the left and a crossfading sticky panel on the right — no scroll math, no per-item listeners.
+---
+
+`StickyScroll` never reads a scroll offset. It watches for one thing —
+which item's element is crossing the container's vertical center — and
+every visual response, on both sides of the layout, follows from that
+single `active` index.
+
+## One active index, two columns
+
+The left column is a plain scrolling list; the right column is a
+`position: sticky` panel that always renders `items[active].content`.
+Neither column knows the other exists — they only share the index:
+
+<StickyScrollAnatomy />
+
+```tsx
+<div className="grid gap-x-10 md:grid-cols-2">
+  <div>{items.map((item, i) => <Section key={item.title} isActive={i === active} {...item} />)}</div>
+  <div className="hidden md:block">
+    <div className="sticky top-0 h-[30rem]">{items[active]?.content}</div>
+  </div>
+</div>
+```
+
+## The trigger
+
+The detection is one `IntersectionObserver`, scoped to the component's own
+scroll container, with a `rootMargin` that collapses the entire viewport
+down to a single horizontal line at its center:
+
+<StickyScrollIo />
+
+```tsx
+const observer = new IntersectionObserver(
+  (entries) => {
+    for (const entry of entries) {
+      if (entry.isIntersecting) {
+        const index = itemRefs.current.indexOf(entry.target);
+        if (index !== -1) setActive(index);
+      }
+    }
+  },
+  { root: containerRef.current, rootMargin: "-50% 0px -50% 0px", threshold: 0 },
+);
+```
+
+`-50%` off both the top and bottom of the root leaves nothing but a
+zero-height strip in the middle — an item only ever reports "intersecting"
+for the instant it's crossing that strip, so `active` always tracks
+whichever section is nearest the panel's vertical center.
+
+## Two springs, one state
+
+Once `active` changes, the left column and the right panel both react to
+it, on the same tuning, but through different Motion primitives — the
+list dims/brightens in place, while the panel replaces its content
+outright:
+
+```tsx
+// left column — same element stays mounted, values animate
+<motion.span animate={{ scaleY: isActive ? 1 : 0.4, opacity: isActive ? 1 : 0.3 }} transition={SPRING} />
+
+// right panel — content is keyed by `active`, so it mounts/unmounts
+<AnimatePresence mode="wait">
+  <motion.div key={active} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 8 }} transition={SPRING} />
+</AnimatePresence>
+```
+
+Both read the same `SPRING` constant (`stiffness: 320, damping: 32, mass:
+0.9`), so even though one is a value animation and the other is an
+enter/exit swap, they resolve on the same beat and never feel like two
+separate systems.
+
+## Mobile falls back to inline
+
+Below the `md` breakpoint the sticky panel is simply `hidden` — there
+isn't room for a pinned column next to a scrolling one on a narrow
+screen. Each list item instead renders its own `content` inline,
+directly beneath its copy, so nothing is lost — it's just laid out
+top-to-bottom instead of side-by-side.
+
+## Accessibility
+
+Under `prefers-reduced-motion`, every `transition` becomes `{ duration: 0
+}` — the dimming and the crossfade both still happen, they just resolve
+instantly instead of easing, so the state change stays legible without
+any motion.
+
+## The result
+
+<StickyScrollResult />
+
+One observer line, one active index, two independent renderers reading
+the same spring — scroll inside the panel above to watch it work.

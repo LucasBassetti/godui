@@ -1,0 +1,85 @@
+---
+title: Anatomy of Spin Viewer
+description: How dragging a 360° product shot down to a rounded division and an array index — no 3D, no Framer Motion, just a discrete frame swap.
+---
+
+`SpinViewer` doesn't simulate a 3D object at all. It's an ordered array of
+photos and a `<img src={frames[index]} />` — "rotating" the object is
+nothing but changing `index`. Every mechanism in the component exists to
+make that one `src` swap feel physical.
+
+## An array and an index
+
+On mount, every frame preloads with a plain `new Image()` before the
+viewer marks itself `ready` — that's what makes the first drag instant
+instead of a flash of broken/loading images:
+
+<SpinViewerAnatomy />
+
+```tsx
+for (const src of frames) {
+  const img = new Image();
+  img.onload = done;
+  img.onerror = done;
+  img.src = src;
+}
+```
+
+Once ready, the whole visible surface is one `<img>` whose `src` swaps —
+never a tween, never an opacity cross-fade between two frames. That's why
+the scene above steps discretely instead of easing: a real frame swap has
+no in-between state to animate through.
+
+## The drag
+
+`onPointerDown` snapshots the pointer's `clientX` and the current `index`.
+`onPointerMove` does the only math in the whole gesture — how many
+`sensitivity`-px ticks the pointer has crossed since then, rounded to a
+whole step:
+
+<SpinViewerDrag />
+
+```tsx
+const dx = e.clientX - drag.current.x;
+const stepped = Math.round(dx / sensitivity) * (reverse ? -1 : 1);
+setIndex(mod(drag.current.i + stepped, count));
+```
+
+With the default `sensitivity={6}`, a 60px drag steps through 10 frames —
+drag slower and nothing moves until you cross the next 6px tick, which is
+exactly why a slow, deliberate drag feels more "mechanical" than a fast
+flick: the fast flick blurs past ticks the eye never resolves.
+
+## Idle auto-rotate, until grabbed
+
+`autoRotate` runs its own tiny `requestAnimationFrame` loop, independent
+of the drag math — it accumulates `(dt / 1000) * autoRotateSpeed` frames
+per tick and steps `index` whenever that accumulator crosses `1`:
+
+```tsx
+acc += ((t - last) / 1000) * autoRotateSpeed * dir;
+if (Math.abs(acc) >= 1) {
+  const inc = Math.trunc(acc);
+  acc -= inc;
+  setIndex((i) => mod(i + inc, count));
+}
+```
+
+The loop bails out the moment `dragging`, `reduced`, or `!ready` is true —
+grabbing the viewer or preferring reduced motion stops it outright, it
+never fights the user's drag.
+
+## Accessibility
+
+The root is `role="img"` with a descriptive `aria-label`, so screen
+readers get one coherent object instead of an unlabeled, constantly
+mutating `<img>`. `touch-action: pan-y` keeps vertical page scroll working
+over the viewer — only horizontal drags are captured. Auto-rotate checks
+`prefers-reduced-motion` and simply never starts; dragging is untouched,
+since it's a deliberate user action rather than motion the page imposed.
+
+## The result
+
+<SpinViewerResult />
+
+One array, one index, one preload pass — drag above, or watch it idle.

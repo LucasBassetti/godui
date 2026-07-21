@@ -1,0 +1,139 @@
+---
+title: Anatomy of Animated Testimonials
+description: A stack that never slides, a quote that fades as a block and dissolves word by word at the same time — two independent motion layers on one 5-second clock.
+---
+
+Testimonial carousels usually fake depth with a sliding track and a fixed
+crop. `AnimatedTestimonials` doesn't slide anything — every portrait is
+mounted in the same box for the component's whole lifetime, and "advancing"
+is just every plate re-targeting the same four properties on a spring.
+
+## Every portrait, one box, always mounted
+
+`testimonials.map` renders every image up front, absolutely positioned on
+top of each other inside one `relative` box with `[perspective:1000px]`.
+`isActive` is the only thing that differs per render — there's no separate
+"current slide" node swapped in and out:
+
+<AnimatedTestimonialsAnatomy />
+
+```tsx
+<div className="relative h-72 [perspective:1000px]">
+  <AnimatePresence>
+    {testimonials.map((t, i) => {
+      const isActive = i === active;
+      return (
+        <motion.img
+          key={t.src + i}
+          initial={{ opacity: 0, scale: 0.9, rotate: rotations[i] }}
+          animate={{
+            opacity: isActive ? 1 : 0.5,
+            scale: isActive ? 1 : 0.92,
+            rotate: isActive ? 0 : rotations[i],
+            zIndex: isActive ? count : count - Math.abs(active - i),
+            y: isActive ? 0 : 8,
+          }}
+          className="absolute inset-0 size-full rounded-2xl object-cover shadow-lg"
+        />
+      );
+    })}
+  </AnimatePresence>
+</div>
+```
+
+`rotations` is computed once with `useMemo` — `Math.floor(Math.random() * 16)
+- 8` per testimonial — and reused as both the `initial` and the resting
+`rotate` for every inactive card. That's why the fan looks organic instead
+of a uniform deck: each portrait has its own fixed tilt for the component's
+whole life, not a fresh random value every re-render.
+
+## Advancing re-targets, it doesn't slide
+
+<AnimatedTestimonialsStack />
+
+```tsx
+transition={{ type: "spring", stiffness: 320, damping: 32, mass: 0.9 }}
+```
+
+When `active` changes, React re-renders every `motion.img` with new
+`animate` values — the previously-active plate's `scale`/`rotate`/`zIndex`
+relax back toward its `rotations[i]` resting state while the new active
+plate's animate toward `1`/`0`/`count`. Framer interpolates each property on
+the same spring independently, which is why the stack looks like it's
+shuffling depth rather than crossfading a slide.
+
+`zIndex: count - Math.abs(active - i)` is the detail that keeps the ordering
+readable: cards near the active index stay closer to the front than ones
+several positions away, so even mid-transition the depth order never looks
+scrambled.
+
+## The quote fades as a block *and* dissolves per word
+
+The name/role/quote block and the individual words inside it are two
+separate `AnimatePresence` layers with two separate transitions:
+
+<AnimatedTestimonialsWords />
+
+```tsx
+<AnimatePresence mode="wait">
+  <motion.div
+    key={active}
+    initial={{ opacity: 0, y: 12 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0, y: -12 }}
+    transition={{ duration: 0.2 }}
+  >
+    <p>
+      {current.quote.split(" ").map((word, i) => (
+        <motion.span
+          key={`${active}-${i}`}
+          initial={{ opacity: 0, filter: "blur(6px)", y: 6 }}
+          animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
+          transition={{ duration: 0.2, delay: 0.02 * i }}
+        >
+          {word}&nbsp;
+        </motion.span>
+      ))}
+    </p>
+    {/* name / role, part of the same block */}
+  </motion.div>
+</AnimatePresence>
+```
+
+`mode="wait"` on the outer `AnimatePresence` means the *previous* quote
+block fully exits (`y: -12`, fading out) before the next one mounts — so the
+per-word cascade always starts from a clean, empty frame. The words
+themselves don't have an `exit` — they're not independently removed, they
+just disappear with their parent block's exit animation. Only the entrance
+is staggered; the departure is one motion, not twenty-four unwinding in
+reverse.
+
+## The clock resets on every navigation, not just autoplay
+
+```tsx
+const next = React.useCallback(
+  () => setActive((prev) => (prev + 1) % count),
+  [count],
+);
+
+React.useEffect(() => {
+  if (!autoplay || count <= 1) return;
+  const id = setTimeout(next, interval);
+  return () => clearTimeout(id);
+}, [autoplay, interval, next, count, active]);
+```
+
+The effect is keyed on `active`, not mounted once with a `setInterval`.
+Every time `active` changes — autoplay *or* a manual arrow click — the old
+timeout is cleared and a fresh 5-second one starts. Click "next" right
+before autoplay would have fired, and you get a full 5 seconds again instead
+of an almost-immediate second flip.
+
+## The result
+
+<AnimatedTestimonialsResult />
+
+One stack of always-mounted portraits re-targeting a shared spring, one
+quote block that fades as a unit while its words dissolve on their own
+staggered clock, one timeout that restarts on any navigation — three
+independent timing systems that read as a single, cohesive carousel.
