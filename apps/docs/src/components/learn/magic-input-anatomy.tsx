@@ -32,7 +32,7 @@ const PLATES: Plate[] = [
     key: "front",
     tz: 74,
     delay: 240,
-    cls: "flex items-center border border-[var(--foreground)]/20 bg-[var(--card)] px-4",
+    cls: "flex items-center border-2 border-[var(--foreground)]/40 bg-[var(--card)] px-4",
   },
 ];
 
