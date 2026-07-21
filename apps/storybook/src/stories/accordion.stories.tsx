@@ -33,12 +33,14 @@ const meta = {
     defaultValue: hidden(),
     type: select(["single", "multiple"], "Behavior"),
     collapsible: toggle("Behavior"),
+    animation: select(["smooth", "spring", "bounce"], "Appearance"),
   },
   args: {
     items,
     type: "single",
     defaultValue: "what",
     collapsible: true,
+    animation: "smooth",
   },
 } satisfies Meta<typeof Accordion>;
 
