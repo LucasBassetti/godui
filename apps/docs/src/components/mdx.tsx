@@ -46,10 +46,18 @@ import { AuroraTextSweep } from "@/components/learn/aurora-text-sweep";
 import { AvatarGroupAnatomy } from "@/components/learn/avatar-group-anatomy";
 import { AvatarGroupResult } from "@/components/learn/avatar-group-result";
 import { AvatarGroupSpread } from "@/components/learn/avatar-group-spread";
+import { BeamDrawAnatomy } from "@/components/learn/beam-draw-anatomy";
+import { BeamDrawResult } from "@/components/learn/beam-draw-result";
+import { BeamDrawScroll } from "@/components/learn/beam-draw-scroll";
+import { BeamDrawSpring } from "@/components/learn/beam-draw-spring";
 import { BentoGridAnatomy } from "@/components/learn/bento-grid-anatomy";
 import { BentoGridGlow } from "@/components/learn/bento-grid-glow";
 import { BentoGridResult } from "@/components/learn/bento-grid-result";
 import { BentoGridStagger } from "@/components/learn/bento-grid-stagger";
+import { BorderBeamAnatomy } from "@/components/learn/border-beam-anatomy";
+import { BorderBeamPath } from "@/components/learn/border-beam-path";
+import { BorderBeamRainbow } from "@/components/learn/border-beam-rainbow";
+import { BorderBeamResult } from "@/components/learn/border-beam-result";
 import { BreadcrumbsAnatomy } from "@/components/learn/breadcrumbs-anatomy";
 import { BreadcrumbsCollapse } from "@/components/learn/breadcrumbs-collapse";
 import { BreadcrumbsPill } from "@/components/learn/breadcrumbs-pill";
@@ -71,6 +79,10 @@ import { CommentPinAnatomy } from "@/components/learn/comment-pin-anatomy";
 import { CommentPinResolved } from "@/components/learn/comment-pin-resolved";
 import { CommentPinResult } from "@/components/learn/comment-pin-result";
 import { CommentPinSpring } from "@/components/learn/comment-pin-spring";
+import { ConfettiAnatomy } from "@/components/learn/confetti-anatomy";
+import { ConfettiApi } from "@/components/learn/confetti-api";
+import { ConfettiOrigin } from "@/components/learn/confetti-origin";
+import { ConfettiResult } from "@/components/learn/confetti-result";
 import { ContainerScrollAnatomy } from "@/components/learn/container-scroll-anatomy";
 import { ContainerScrollResult } from "@/components/learn/container-scroll-result";
 import { ContainerScrollScrub } from "@/components/learn/container-scroll-scrub";
@@ -104,6 +116,10 @@ import { ElasticTextAnatomy } from "@/components/learn/elastic-text-anatomy";
 import { ElasticTextResult } from "@/components/learn/elastic-text-result";
 import { ElasticTextSpotlight } from "@/components/learn/elastic-text-spotlight";
 import { ElasticTextSpring } from "@/components/learn/elastic-text-spring";
+import { EncryptedCardAnatomy } from "@/components/learn/encrypted-card-anatomy";
+import { EncryptedCardMask } from "@/components/learn/encrypted-card-mask";
+import { EncryptedCardResult } from "@/components/learn/encrypted-card-result";
+import { EncryptedCardScramble } from "@/components/learn/encrypted-card-scramble";
 import { FilterBarAnatomy } from "@/components/learn/filter-bar-anatomy";
 import { FilterBarResult } from "@/components/learn/filter-bar-result";
 import { FilterBarSpring } from "@/components/learn/filter-bar-spring";
@@ -111,6 +127,10 @@ import { FloatingToolbarAnatomy } from "@/components/learn/floating-toolbar-anat
 import { FloatingToolbarEnter } from "@/components/learn/floating-toolbar-enter";
 import { FloatingToolbarMagnetic } from "@/components/learn/floating-toolbar-magnetic";
 import { FloatingToolbarResult } from "@/components/learn/floating-toolbar-result";
+import { FluidCursorAnatomy } from "@/components/learn/fluid-cursor-anatomy";
+import { FluidCursorLerp } from "@/components/learn/fluid-cursor-lerp";
+import { FluidCursorLifecycle } from "@/components/learn/fluid-cursor-lifecycle";
+import { FluidCursorResult } from "@/components/learn/fluid-cursor-result";
 import { FoldProgress } from "@/components/learn/fold-progress";
 import { FoldStages } from "@/components/learn/fold-stages";
 import { GlobeAnatomy } from "@/components/learn/globe-anatomy";
@@ -148,11 +168,24 @@ import { ImageAccordionResult } from "@/components/learn/image-accordion-result"
 import { ImageCompareAnatomy } from "@/components/learn/image-compare-anatomy";
 import { ImageCompareResult } from "@/components/learn/image-compare-result";
 import { ImageCompareScrub } from "@/components/learn/image-compare-scrub";
+import { ImageTrailAnatomy } from "@/components/learn/image-trail-anatomy";
+import { ImageTrailResult } from "@/components/learn/image-trail-result";
+import { ImageTrailThreshold } from "@/components/learn/image-trail-threshold";
+import { ImageTrailWaapi } from "@/components/learn/image-trail-waapi";
 import { InertiaGalleryAnatomy } from "@/components/learn/inertia-gallery-anatomy";
 import { InertiaGalleryDrag } from "@/components/learn/inertia-gallery-drag";
 import { InertiaGalleryFalloff } from "@/components/learn/inertia-gallery-falloff";
 import { InertiaGalleryResult } from "@/components/learn/inertia-gallery-result";
+import { LampAnatomy } from "@/components/learn/lamp-anatomy";
+import { LampIgnite } from "@/components/learn/lamp-ignite";
+import { LampResult } from "@/components/learn/lamp-result";
+import { LampRise } from "@/components/learn/lamp-rise";
 import { LayerReveal } from "@/components/learn/layer-reveal";
+import { LiquidImageAnatomy } from "@/components/learn/liquid-image-anatomy";
+import { LiquidImageEdge } from "@/components/learn/liquid-image-edge";
+import { LiquidImageLerp } from "@/components/learn/liquid-image-lerp";
+import { LiquidImageResult } from "@/components/learn/liquid-image-result";
+import { LiquidImageTrigger } from "@/components/learn/liquid-image-trigger";
 import { LiveCursorsAnatomy } from "@/components/learn/live-cursors-anatomy";
 import { LiveCursorsPresence } from "@/components/learn/live-cursors-presence";
 import { LiveCursorsResult } from "@/components/learn/live-cursors-result";
@@ -169,6 +202,10 @@ import { MagicTabResult } from "@/components/learn/magic-tab-result";
 import { MagneticParallax } from "@/components/learn/magnetic-parallax";
 import { MagneticPull } from "@/components/learn/magnetic-pull";
 import { MagneticResult } from "@/components/learn/magnetic-result";
+import { MarqueeAnatomy } from "@/components/learn/marquee-anatomy";
+import { MarqueeFade } from "@/components/learn/marquee-fade";
+import { MarqueeResult } from "@/components/learn/marquee-result";
+import { MarqueeTrack } from "@/components/learn/marquee-track";
 import { MaskFlipbook } from "@/components/learn/mask-flipbook";
 import { MaskResult } from "@/components/learn/mask-result";
 import { MaskTwinLabels } from "@/components/learn/mask-twin-labels";
@@ -202,6 +239,10 @@ import { OtpAnatomy } from "@/components/learn/otp-anatomy";
 import { OtpCaret } from "@/components/learn/otp-caret";
 import { OtpResult } from "@/components/learn/otp-result";
 import { OtpShake } from "@/components/learn/otp-shake";
+import { ParticleDissolveAnatomy } from "@/components/learn/particle-dissolve-anatomy";
+import { ParticleDissolveCycle } from "@/components/learn/particle-dissolve-cycle";
+import { ParticleDissolveResult } from "@/components/learn/particle-dissolve-result";
+import { ParticleDissolveTrigger } from "@/components/learn/particle-dissolve-trigger";
 import { PresenceFacepileAnatomy } from "@/components/learn/presence-facepile-anatomy";
 import { PresenceFacepileEnter } from "@/components/learn/presence-facepile-enter";
 import { PresenceFacepileResult } from "@/components/learn/presence-facepile-result";
@@ -228,6 +269,14 @@ import { ResizableHeaderMorph } from "@/components/learn/resizable-header-morph"
 import { ResizableHeaderPills } from "@/components/learn/resizable-header-pills";
 import { ResizableHeaderResult } from "@/components/learn/resizable-header-result";
 import { ResultPreview } from "@/components/learn/result-preview";
+import { ScrollProgressAnatomy } from "@/components/learn/scroll-progress-anatomy";
+import { ScrollProgressCircle } from "@/components/learn/scroll-progress-circle";
+import { ScrollProgressResult } from "@/components/learn/scroll-progress-result";
+import { ScrollProgressSpring } from "@/components/learn/scroll-progress-spring";
+import { ScrollRevealAnatomy } from "@/components/learn/scroll-reveal-anatomy";
+import { ScrollRevealResult } from "@/components/learn/scroll-reveal-result";
+import { ScrollRevealSkew } from "@/components/learn/scroll-reveal-skew";
+import { ScrollRevealSpring } from "@/components/learn/scroll-reveal-spring";
 import { ScrollScene } from "@/components/learn/scroll-scene";
 import { ScrollStackAnatomy } from "@/components/learn/scroll-stack-anatomy";
 import { ScrollStackBury } from "@/components/learn/scroll-stack-bury";
@@ -256,6 +305,14 @@ import { SourceCitationsTooltip } from "@/components/learn/source-citations-tool
 import { SpinViewerAnatomy } from "@/components/learn/spin-viewer-anatomy";
 import { SpinViewerDrag } from "@/components/learn/spin-viewer-drag";
 import { SpinViewerResult } from "@/components/learn/spin-viewer-result";
+import { SpotlightCardAnatomy } from "@/components/learn/spotlight-card-anatomy";
+import { SpotlightCardBorder } from "@/components/learn/spotlight-card-border";
+import { SpotlightCardFollow } from "@/components/learn/spotlight-card-follow";
+import { SpotlightCardResult } from "@/components/learn/spotlight-card-result";
+import { SpotlightRevealAnatomy } from "@/components/learn/spotlight-reveal-anatomy";
+import { SpotlightRevealFollow } from "@/components/learn/spotlight-reveal-follow";
+import { SpotlightRevealMask } from "@/components/learn/spotlight-reveal-mask";
+import { SpotlightRevealResult } from "@/components/learn/spotlight-reveal-result";
 import { StackBadgeAnatomy } from "@/components/learn/stack-badge-anatomy";
 import { StackBadgeResult } from "@/components/learn/stack-badge-result";
 import { StackBadgeStagger } from "@/components/learn/stack-badge-stagger";
@@ -275,6 +332,10 @@ import { TabBarAnatomy } from "@/components/learn/tab-bar-anatomy";
 import { TabBarBlob } from "@/components/learn/tab-bar-blob";
 import { TabBarPop } from "@/components/learn/tab-bar-pop";
 import { TabBarResult } from "@/components/learn/tab-bar-result";
+import { TerminalAnatomy } from "@/components/learn/terminal-anatomy";
+import { TerminalLifecycle } from "@/components/learn/terminal-lifecycle";
+import { TerminalResult } from "@/components/learn/terminal-result";
+import { TerminalTyping } from "@/components/learn/terminal-typing";
 import { TextAnimateAnatomy } from "@/components/learn/text-animate-anatomy";
 import { TextAnimatePresets } from "@/components/learn/text-animate-presets";
 import { TextAnimateResult } from "@/components/learn/text-animate-result";
@@ -386,10 +447,18 @@ export function getMDXComponents(components?: MDXComponents) {
     AvatarGroupAnatomy,
     AvatarGroupResult,
     AvatarGroupSpread,
+    BeamDrawAnatomy,
+    BeamDrawResult,
+    BeamDrawScroll,
+    BeamDrawSpring,
     BentoGridAnatomy,
     BentoGridGlow,
     BentoGridResult,
     BentoGridStagger,
+    BorderBeamAnatomy,
+    BorderBeamPath,
+    BorderBeamRainbow,
+    BorderBeamResult,
     BreadcrumbsAnatomy,
     BreadcrumbsCollapse,
     BreadcrumbsPill,
@@ -411,6 +480,10 @@ export function getMDXComponents(components?: MDXComponents) {
     CommentPinResolved,
     CommentPinResult,
     CommentPinSpring,
+    ConfettiAnatomy,
+    ConfettiApi,
+    ConfettiOrigin,
+    ConfettiResult,
     ContainerScrollAnatomy,
     ContainerScrollResult,
     ContainerScrollScrub,
@@ -444,6 +517,10 @@ export function getMDXComponents(components?: MDXComponents) {
     ElasticTextResult,
     ElasticTextSpotlight,
     ElasticTextSpring,
+    EncryptedCardAnatomy,
+    EncryptedCardMask,
+    EncryptedCardResult,
+    EncryptedCardScramble,
     FilterBarAnatomy,
     FilterBarResult,
     FilterBarSpring,
@@ -451,6 +528,10 @@ export function getMDXComponents(components?: MDXComponents) {
     FloatingToolbarEnter,
     FloatingToolbarMagnetic,
     FloatingToolbarResult,
+    FluidCursorAnatomy,
+    FluidCursorLerp,
+    FluidCursorLifecycle,
+    FluidCursorResult,
     FoldProgress,
     FoldStages,
     GlobeAnatomy,
@@ -488,11 +569,24 @@ export function getMDXComponents(components?: MDXComponents) {
     ImageCompareAnatomy,
     ImageCompareResult,
     ImageCompareScrub,
+    ImageTrailAnatomy,
+    ImageTrailResult,
+    ImageTrailThreshold,
+    ImageTrailWaapi,
     InertiaGalleryAnatomy,
     InertiaGalleryDrag,
     InertiaGalleryFalloff,
     InertiaGalleryResult,
+    LampAnatomy,
+    LampIgnite,
+    LampResult,
+    LampRise,
     LayerReveal,
+    LiquidImageAnatomy,
+    LiquidImageEdge,
+    LiquidImageLerp,
+    LiquidImageResult,
+    LiquidImageTrigger,
     LiveCursorsAnatomy,
     LiveCursorsPresence,
     LiveCursorsResult,
@@ -509,6 +603,10 @@ export function getMDXComponents(components?: MDXComponents) {
     MagneticParallax,
     MagneticPull,
     MagneticResult,
+    MarqueeAnatomy,
+    MarqueeFade,
+    MarqueeResult,
+    MarqueeTrack,
     MaskFlipbook,
     MaskResult,
     MaskTwinLabels,
@@ -542,6 +640,10 @@ export function getMDXComponents(components?: MDXComponents) {
     OtpCaret,
     OtpResult,
     OtpShake,
+    ParticleDissolveAnatomy,
+    ParticleDissolveCycle,
+    ParticleDissolveResult,
+    ParticleDissolveTrigger,
     PresenceFacepileAnatomy,
     PresenceFacepileEnter,
     PresenceFacepileResult,
@@ -568,6 +670,14 @@ export function getMDXComponents(components?: MDXComponents) {
     ResizableHeaderPills,
     ResizableHeaderResult,
     ResultPreview,
+    ScrollProgressAnatomy,
+    ScrollProgressCircle,
+    ScrollProgressResult,
+    ScrollProgressSpring,
+    ScrollRevealAnatomy,
+    ScrollRevealResult,
+    ScrollRevealSkew,
+    ScrollRevealSpring,
     ScrollScene,
     ScrollStackAnatomy,
     ScrollStackBury,
@@ -596,6 +706,14 @@ export function getMDXComponents(components?: MDXComponents) {
     SpinViewerAnatomy,
     SpinViewerDrag,
     SpinViewerResult,
+    SpotlightCardAnatomy,
+    SpotlightCardBorder,
+    SpotlightCardFollow,
+    SpotlightCardResult,
+    SpotlightRevealAnatomy,
+    SpotlightRevealFollow,
+    SpotlightRevealMask,
+    SpotlightRevealResult,
     StackBadgeAnatomy,
     StackBadgeResult,
     StackBadgeStagger,
@@ -615,6 +733,10 @@ export function getMDXComponents(components?: MDXComponents) {
     TabBarBlob,
     TabBarPop,
     TabBarResult,
+    TerminalAnatomy,
+    TerminalLifecycle,
+    TerminalResult,
+    TerminalTyping,
     TextAnimateAnatomy,
     TextAnimatePresets,
     TextAnimateResult,

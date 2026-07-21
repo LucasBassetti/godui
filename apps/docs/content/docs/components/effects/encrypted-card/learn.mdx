@@ -1,0 +1,96 @@
+---
+title: Anatomy of Encrypted Card
+description: How a radial mask and a re-scrambling glyph stream turn a static card into a live ciphertext reveal that follows the pointer.
+---
+
+`EncryptedCard` doesn't animate ciphertext across the surface — it keeps a
+full glyph field painted underneath the content and reveals it through a soft
+radial mask centered on the pointer. Two layers, one CSS variable pair, and
+an interval that only runs while you hover.
+
+## Stream under, content over
+
+The root is a `group relative overflow-hidden` card. An absolute, `aria-hidden`
+glyph layer fills the inset with `STREAM_LEN` (1500) characters drawn from
+`DEFAULT_CHARS`. Children sit in a sibling at `z-raised`, so real content
+never fights the stream for stacking order.
+
+<EncryptedCardAnatomy />
+
+```tsx
+<div className="group relative overflow-hidden …">
+  <div aria-hidden className={STREAM_BASE} style={{ color: streamColor }}>
+    {stream}
+  </div>
+  <div className="relative z-raised">{children}</div>
+</div>
+```
+
+The stream is filled client-side on mount so SSR markup stays deterministic —
+`randomString` never runs during the first server render.
+
+## The reveal is a mask, not a clip of content
+
+Pointer position never moves the glyphs. `onPointerMove` writes `--x` and
+`--y` as pixel offsets from the card's bounding rect; the stream's
+`mask-image` is a radial gradient whose center reads those variables (and
+`--reveal` for radius). Defaults are `50%` / `50%`, so the first paint isn't
+a corner flash.
+
+<EncryptedCardMask />
+
+```tsx
+el.style.setProperty("--x", `${e.clientX - rect.left}px`);
+el.style.setProperty("--y", `${e.clientY - rect.top}px`);
+
+// STREAM_BASE includes:
+// [mask-image:radial-gradient(var(--reveal) circle at var(--x,50%) var(--y,50%),#000_0%,transparent_100%)]
+```
+
+Opacity is separate from the mask: the stream starts at `opacity-0` and fades
+to `--stream-opacity` on `group-hover` over 300ms. The mask only decides
+*where* the faded-in stream is visible.
+
+## Scramble only while hovered
+
+While `hovered` is true and reduced motion is off, a `setInterval` re-rolls
+the entire 1500-character string every `speed` ms (default 55). Leaving the
+card clears the interval; entering starts it again. That's why the ciphertext
+looks alive under the spotlight without a forever-running timer in the
+background.
+
+<EncryptedCardScramble />
+
+```tsx
+React.useEffect(() => {
+  setStream(randomString(STREAM_LEN, characters));
+  if (reduced || !hovered) return;
+  const id = window.setInterval(() => {
+    setStream(randomString(STREAM_LEN, characters));
+  }, speed);
+  return () => window.clearInterval(id);
+}, [characters, speed, hovered, reduced]);
+```
+
+## Reduced motion
+
+Under `prefers-reduced-motion`, the stream still paints and the mask still
+tracks — you can see the ciphertext — but the interval never starts, and
+`motion-reduce:[transition:none]` kills the 300ms opacity fade. Reveal
+without the tick.
+
+```tsx
+const reduced = usePrefersReducedMotion();
+// …interval skipped when reduced || !hovered
+// STREAM_BASE: motion-reduce:[transition:none]
+```
+
+## The result
+
+Hover the card and move across it — the spotlight and the scramble are the
+same two mechanisms from above.
+
+<EncryptedCardResult />
+
+One glyph field, one radial mask on `--x`/`--y`, and an interval that only
+lives for the length of the hover.

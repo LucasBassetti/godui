@@ -1,0 +1,129 @@
+---
+title: Anatomy of Particle Dissolve
+description: How an offscreen canvas samples text or an image into particles, then a rAF loop assembles, disperses, or loops them with per-particle delay — triggered by mount, in-view, or hover.
+---
+
+`ParticleDissolve` is not a CSS effect. It rasterizes text (or an image) onto
+an offscreen canvas, samples opaque pixels into a `Particle[]`, then animates
+each particle from a random scatter point `(sx, sy)` toward its target
+`(tx, ty)` inside a canvas `requestAnimationFrame` loop.
+
+## Sample once, animate forever
+
+`build()` creates an offscreen canvas matching `width` × `height`. For text it
+fills white glyphs centered with the given `font`; for `src` it contain-fits
+the image. Then it walks the pixel buffer in `density` steps:
+
+```tsx
+for (let y = 0; y < height; y += density) {
+  for (let x = 0; x < width; x += density) {
+    const i = (y * width + x) * 4;
+    if ((data[i + 3] as number) > 128) {
+      next.push({
+        tx: x,
+        ty: y,
+        sx: Math.random() * width,
+        sy: Math.random() * height,
+        delay: Math.random() * 0.4,
+        jitter: Math.random() * Math.PI * 2,
+        color: src ? `rgb(${r},${g},${b})` : resolvedColor,
+      });
+    }
+  }
+}
+```
+
+Smaller `density` → denser (and heavier) clouds. Alpha threshold 128 keeps
+anti-aliased edges from spawning ghost particles.
+
+<ParticleDissolveAnatomy />
+
+Each particle carries its own `delay` (0–0.4) and `jitter` so the cloud never
+moves as a rigid sheet.
+
+## Progress, ease, and modes
+
+Runtime state is two refs: `p` (current progress) and `goal` (desired). Every
+frame:
+
+```tsx
+p.current += (goal.current - p.current) * 0.06;
+```
+
+Per particle, effective progress is eased:
+
+```tsx
+const eff = easeInOut(
+  Math.max(0, Math.min(1, (prog - pt.delay) / (1 - pt.delay))),
+);
+const x = pt.sx + (pt.tx - pt.sx) * eff + breathe;
+const y = pt.sy + (pt.ty - pt.sy) * eff + breathe;
+```
+
+`easeInOut` is the standard smoothstep quadratic. Once `eff > 0.98`, a tiny
+`sin(time / 600 + jitter)` breath keeps the formed shape alive.
+
+Modes set the goal differently:
+
+- **assemble** — goal → 1 (scatter → form)
+- **disperse** — starts formed (`p = 1`), goal → 0 on trigger
+- **loop** — flips goal every 2600ms
+
+<ParticleDissolveCycle />
+
+Drawing is `fillRect` at `particleSize` with `globalAlpha = max(0.1, eff)` —
+cheap enough for thousands of dots at 60fps when density is sane.
+
+## Three triggers
+
+After particles are built, `start()` runs according to `trigger`:
+
+| Trigger | Behavior |
+| --- | --- |
+| `mount` | `start()` immediately |
+| `in-view` | `IntersectionObserver` at `threshold: 0.3`, then disconnect |
+| `hover` | pointer enter/leave flips `goal` (assemble ↔ disperse semantics) |
+
+<ParticleDissolveTrigger />
+
+```tsx
+if (trigger === "in-view") {
+  const io = new IntersectionObserver(
+    (entries) => {
+      if (entries.some((e) => e.isIntersecting)) {
+        start();
+        io.disconnect();
+      }
+    },
+    { threshold: 0.3 },
+  );
+  io.observe(canvas);
+}
+```
+
+Hover does not use Framer Motion — it mutates `goal.current` directly so the
+existing rAF loop picks up the new destination without a React re-render.
+
+## Reduced motion
+
+If `useReducedMotion()` is true, the effect skips the loop entirely: set
+`p.current = 1`, `draw` once, done. The formed glyph or image still appears;
+only the scatter animation is removed.
+
+```tsx
+if (reduce) {
+  p.current = 1;
+  draw(ctx, 0);
+  return;
+}
+```
+
+Cleanup cancels both `raf` and the loop-mode `setTimeout` so unmount never
+leaks timers.
+
+## The result
+
+<ParticleDissolveResult />
+
+One offscreen sample, one progress lerp, per-particle delay and jitter —
+triggered when you choose, quiet when motion is reduced.

@@ -1,0 +1,101 @@
+---
+title: Anatomy of Fluid Cursor
+description: How a portal-rendered dot and lagging trail chase the pointer with three lerps — and why the rAF loop stops the moment everything settles.
+---
+
+`FluidCursor` isn't a CSS `cursor:` swap. It portals a custom stack into the
+page (or a scoped container), hides the system cursor in that region, and
+drives two circles with a `requestAnimationFrame` loop that only runs while
+there's catching-up left to do.
+
+## Dot, trail, portal
+
+When enabled, the component `createPortal`s a `pointer-events-none` overlay
+into `containerRef.current` (or `document.body`). Inside: an optional soft
+trail (`size × 2.4`, `blur-md`) and a sharp leading dot. With `blend` on, the
+whole stack uses `mix-blend-mode: difference` so a white fill inverts whatever
+sits underneath.
+
+<FluidCursorAnatomy />
+
+```tsx
+return createPortal(
+  <div
+    aria-hidden
+    className={`pointer-events-none ${scoped ? "absolute" : "fixed"} inset-0 z-toast … ${blend ? "mix-blend-difference" : ""}`}
+  >
+    {trail ? <div ref={trailRef} className="… blur-md" style={{ width: size * 2.4, … }} /> : null}
+    <div ref={dotRef} style={{ width: size, height: size, background: color }} />
+  </div>,
+  target,
+);
+```
+
+## Three lerps, one loop
+
+Every frame the loop nudges three values toward their targets: position for
+the dot (`0.25`), position for the trail (`0.12`), and a hover amount
+(`0.15`). Interactive targets — `a`, `button`, `[role='button']`,
+`[data-cursor]` by default — set `thover` to `1`, which scales the dot to
+`1 + hover × 1.6` (trail to `1 + hover × 0.8`).
+
+<FluidCursorLerp />
+
+```tsx
+s.x += (s.tx - s.x) * 0.25;
+s.y += (s.ty - s.y) * 0.25;
+s.sx += (s.tx - s.sx) * 0.12;
+s.sy += (s.ty - s.sy) * 0.12;
+s.hover += (s.thover - s.hover) * 0.15;
+
+dot.style.transform = `translate3d(${s.x}px, ${s.y}px, 0) translate(-50%, -50%) scale(${1 + s.hover * 1.6})`;
+```
+
+Direct style writes — no React re-render per move. The first `pointermove`
+snaps all positions to the pointer so the cursor doesn't fly in from `(0,0)`.
+
+## Cheap when idle
+
+`SETTLE` is `0.01`. When every delta is under that threshold — or the tab is
+hidden — the loop sets `raf = 0` and returns. The next `pointermove` /
+`pointerover` / visibility restore calls `start()` again. A resting cursor
+costs zero frames.
+
+<FluidCursorLifecycle />
+
+```tsx
+const SETTLE = 0.01;
+const settled = () =>
+  Math.abs(s.tx - s.x) < SETTLE &&
+  Math.abs(s.ty - s.y) < SETTLE &&
+  /* …trail + hover… */;
+
+if (settled() || document.hidden) {
+  raf = 0;
+  return;
+}
+```
+
+## Who gets a custom cursor
+
+Enablement is gated at mount: `(pointer: fine)` and **not**
+`prefers-reduced-motion`. Touch, stylus-coarse, and reduced-motion users get
+`null` — no overlay, no listeners. Scoped mode also tracks
+`pointerenter`/`pointerleave` so the cursor fades out when you leave the
+container.
+
+```tsx
+const fine = window.matchMedia("(pointer: fine)").matches;
+const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+setEnabled(fine && !reduce);
+```
+
+## The result
+
+Move inside the card — hover the button and the `[data-cursor]` chip to feel
+the scale lerp.
+
+<FluidCursorResult />
+
+Two circles, three lerps, and an rAF loop that refuses to spin when nothing
+is moving.

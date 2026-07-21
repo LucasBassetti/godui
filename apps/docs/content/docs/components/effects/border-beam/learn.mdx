@@ -1,0 +1,87 @@
+---
+title: Anatomy of Border Beam
+description: How a masked square rides an offset-path rectangle around a border ring, with rainbow or two-color paint and an optional glow echo.
+---
+
+`BorderBeam` never draws a travelling stroke. A square sits on
+`offsetPath: rect(...)`, `offsetDistance` loops forever, and a dual-layer
+mask reveals only the border ring — so the square looks like light skating
+the edge.
+
+## Mask ring + riding square
+
+The host is `absolute inset-0`, `pointer-events-none`,
+`rounded-[inherit]`. Its border is transparent but sized via
+`--border-beam-width`. The mask composite is the trick: one layer clips to
+`padding-box`, the other to `border-box`, intersected — everything inside the
+padding edge disappears, leaving a hollow ring where the beam can show.
+
+<BorderBeamAnatomy />
+
+```tsx
+className="pointer-events-none absolute inset-0 rounded-[inherit] border-(length:--border-beam-width) border-transparent mask-[linear-gradient(transparent,transparent),linear-gradient(#000,#000)] mask-intersect [mask-clip:padding-box,border-box]"
+```
+
+Inside that ring, an `aspect-square` `motion.div` gets:
+
+```tsx
+offsetPath: `rect(0 auto auto 0 round ${size}px)`,
+```
+
+Larger `size` → longer streak along the perimeter. The square isn't clipped
+to a thin line; the mask does that job for free.
+
+## Offset distance, not direction flags
+
+Motion is a single property: `offsetDistance`. Default travel runs
+`[initialOffset%, 100 + initialOffset%]` on an infinite linear loop.
+`reverse` doesn't set `direction: "reverse"` — it swaps the tween to
+`[100 − initialOffset%, −initialOffset%]` so the timeline still plays
+forward through opposite percentages.
+
+<BorderBeamPath />
+
+```tsx
+const animate = reduceMotion
+  ? { offsetDistance: `${initialOffset}%` }
+  : {
+      offsetDistance: reverse
+        ? [`${100 - initialOffset}%`, `${-initialOffset}%`]
+        : [`${initialOffset}%`, `${100 + initialOffset}%`],
+    };
+```
+
+`delay` is applied as `delay: -delay` so a late start still looks mid-loop
+instead of waiting from rest.
+
+## Rainbow, two-color, and the glow echo
+
+With `rainbow` (the default), the square paints
+`RAINBOW_BEAM` — the same hue order as MagicButton
+(`rainbow-1 → 5 → 3 → 4 → transparent`), trailing off so the streak reads as
+a comet. Flip `rainbow={false}` and the utilities
+`from-(--color-from) via-(--color-to) to-transparent` take over.
+
+`glow` duplicates the square behind the main beam at `opacity-60 blur-md`,
+same `animate` / `transition` — a soft neon echo without a second motion
+timeline to keep in sync.
+
+<BorderBeamRainbow />
+
+```tsx
+const RAINBOW_BEAM =
+  "linear-gradient(to left, var(--rainbow-1), var(--rainbow-5), var(--rainbow-3), var(--rainbow-4), transparent)";
+```
+
+## Reduced motion
+
+`useReducedMotion()` freezes `offsetDistance` at `${initialOffset}%` with
+`duration: 0`. The ring still shows a colored tick at the start position —
+no orbit.
+
+## The result
+
+<BorderBeamResult />
+
+Mask the ring, park a gradient square on `offsetPath`, loop
+`offsetDistance`. Everything else is paint.

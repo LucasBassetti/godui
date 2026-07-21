@@ -1,0 +1,147 @@
+---
+title: Anatomy of Liquid Image
+description: How an SVG turbulence + displacement filter, a zero-rerender rAF lerp, and pointer velocity compose a liquid ripple that falls back cleanly when filters or motion are unavailable.
+---
+
+`LiquidImage` does not animate the `<img>` in React. It attaches an SVG
+`feTurbulence` + `feDisplacementMap` filter, then eases the displacement
+`scale` toward a target inside a single `requestAnimationFrame` loop —
+writing attributes directly so the image never re-renders.
+
+## Filter chain: noise, then displace
+
+A zero-size `<svg>` holds a `<filter>` whose id comes from `useId()`
+(colons stripped). Think of it as three stages of the **same** image:
+
+1. **Source** — the `<img>` enters the filter as `SourceGraphic`.
+2. **Noise** — `feTurbulence` builds a fractal noise field (slowly drifted by
+   an SMIL `<animate>` on `baseFrequency` so it never freezes).
+3. **Displaced** — `feDisplacementMap` uses that noise's R/G channels to
+   push each source pixel, with live `scale` controlling how hard.
+
+<LiquidImageAnatomy />
+
+```tsx
+const id = `liquid-${React.useId().replace(/:/g, "")}`;
+
+<img style={active ? { filter: `url(#${id})` } : undefined} … />
+
+<feTurbulence
+  type="fractalNoise"
+  baseFrequency={frequency}
+  numOctaves={2}
+  seed={2}
+  result="noise"
+>
+  <animate
+    attributeName="baseFrequency"
+    dur="16s"
+    values={`${frequency};${frequency * 1.7};${frequency}`}
+    repeatCount="indefinite"
+  />
+</feTurbulence>
+<feDisplacementMap
+  ref={dispRef}
+  in="SourceGraphic"
+  in2="noise"
+  scale="0"
+  xChannelSelector="R"
+  yChannelSelector="G"
+/>
+```
+
+The filter's region is padded (`x/y −20%`, `width/height 140%`) so edge
+pixels have room to displace without clipping hard against the image bounds.
+
+## Why the border boils
+
+The irregular silhouette you see on hover isn't a separate mask or
+`clip-path`. Displacement pushes the photo's own edge pixels outward using
+the noise field. Two animations keep it alive:
+
+1. **Noise drift** — SMIL slowly changes `baseFrequency`, so the push
+   directions keep shifting.
+2. **Scale** — the rAF lerp (next section) raises `feDisplacementMap`'s
+   `scale` on interaction. Higher scale → wilder fringe.
+
+<LiquidImageEdge />
+
+```tsx
+<feTurbulence …>
+  <animate
+    attributeName="baseFrequency"
+    dur="16s"
+    values={`${frequency};${frequency * 1.7};${frequency}`}
+    repeatCount="indefinite"
+  />
+</feTurbulence>
+<feDisplacementMap … scale="0" /* rAF writes this */ />
+```
+
+## The loop: lerp 0.12, no setState
+
+`current` and `target` live in refs. Each frame:
+
+```tsx
+const next = current.current + (target.current - current.current) * 0.12;
+current.current = next;
+if (el) el.setAttribute("scale", next.toFixed(2));
+```
+
+That is the whole animation. No React state, no style recalculation on the
+img — only an SVG attribute write. The loop keeps running while
+`target > 0.01` or `current > 0.05`, then cancels itself so idle images cost
+nothing.
+
+<LiquidImageLerp />
+
+`ensureLoop()` starts a frame only when `raf.current == null`, so enter /
+move / always-mode never stack competing loops.
+
+## Who writes the target
+
+Three writers feed the same lerp:
+
+| Mode / event | Target |
+| --- | --- |
+| `trigger="hover"` enter | `strength * 0.5` |
+| `trigger="hover"` leave | `0` |
+| `trigger="always"` | `strength * 0.45` |
+| Pointer move (velocity) | `min(strength, strength * 0.5 + speed * 60)` |
+
+Velocity is `hypot(Δx, Δy) / dt` with a 16ms floor on `dt`. Faster cursors
+spike the ripple briefly; the lerp settles it back. On `always`, boosts only
+raise the target when they exceed the current hold.
+
+<LiquidImageTrigger />
+
+```tsx
+const speed = Math.hypot(e.clientX - prev.x, e.clientY - prev.y) / dt;
+const boost = Math.min(strength, strength * 0.5 + speed * 60);
+if (trigger === "hover" || boost > target.current) {
+  target.current = boost;
+  ensureLoop();
+}
+```
+
+## Fallback: unsupported filter or reduced motion
+
+`active = supported && !reduce`. Support is probed once with
+`CSS.supports("filter", "url(#a)")`. When inactive, the SVG filter is omitted
+and the img gets a cheap CSS hover: `scale(1.04)` + `brightness(105%)`, gated
+by `motion-reduce:` utilities so reduced-motion users see a still image.
+
+```tsx
+className={`… ${
+  active
+    ? ""
+    : "[transition:transform_500ms_ease,filter_500ms_ease] group-hover:scale-[1.04] group-hover:brightness-105 motion-reduce:transform-none motion-reduce:transition-none"
+}`}
+```
+
+## The result
+
+<LiquidImageResult />
+
+One filter id, one rAF lerp, three target writers — and a CSS fallback when
+the GPU path is unavailable.

@@ -16,7 +16,7 @@ export function ImageTrailDemo() {
     <ImageTrail
       images={IMAGES}
       size={150}
-      className="grid h-[26rem] w-full place-items-center rounded-xl border border-border bg-background"
+      className="grid h-[26rem] w-full place-items-center"
     >
       <div className="pointer-events-none text-center">
         <h2 className="text-2xl font-semibold text-foreground">

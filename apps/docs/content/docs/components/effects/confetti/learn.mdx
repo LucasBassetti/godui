@@ -1,0 +1,92 @@
+---
+title: Anatomy of Confetti
+description: How a thin canvas-confetti wrapper shares one DEFAULTS object across a button trigger, an imperative ref, and a bare helper — and why origin is normalized to the viewport.
+---
+
+`Confetti` is intentionally thin. GodUI doesn't reimplement particle physics —
+it wraps `canvas-confetti` with shared defaults, three call sites, and one
+accessibility flag that the library already understands.
+
+## One DEFAULTS object
+
+Every fire path merges the same base options. Spread, velocity, count, and a
+default origin height are tuned once; call sites only override what they need.
+
+<ConfettiAnatomy />
+
+```tsx
+const DEFAULTS: ConfettiOptions = {
+  spread: 70,
+  startVelocity: 45,
+  particleCount: 120,
+  origin: { y: 0.7 },
+  disableForReducedMotion: true,
+};
+```
+
+`origin.y: 0.7` parks bursts in the lower third of the viewport when no
+explicit origin is passed — celebration from "below," not raining from the
+top chrome.
+
+## ConfettiButton: rect → viewport fractions
+
+The button doesn't fire from a hard-coded point. On click it measures itself,
+normalizes the center into `0…1` viewport space, and passes that as
+`origin: { x, y }` — so the burst reads as coming from the control, wherever
+it sits after layout, scroll, or resize.
+
+<ConfettiOrigin />
+
+```tsx
+const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const rect = e.currentTarget.getBoundingClientRect();
+  const x = (rect.left + rect.width / 2) / window.innerWidth;
+  const y = (rect.top + rect.height / 2) / window.innerHeight;
+  canvasConfetti({ ...DEFAULTS, origin: { x, y }, ...options });
+  onClick?.(e);
+};
+```
+
+`options` still win last — you can widen the spread or bump the count without
+losing the positional origin unless you override it.
+
+## Three APIs, one core
+
+Same merge, three ergonomics:
+
+1. **`ConfettiButton`** — declarative trigger, origin from the click target.
+2. **`<Confetti ref />` + `fire()`** — imperative, toast-style; returns
+   `null` (no DOM).
+3. **`confetti(options?)`** — bare helper for non-React call sites.
+
+<ConfettiApi />
+
+```tsx
+React.useImperativeHandle(
+  ref,
+  () => ({
+    fire: (override?: ConfettiOptions) => {
+      canvasConfetti({ ...DEFAULTS, ...options, ...override });
+    },
+  }),
+  [options],
+);
+
+function confetti(options?: ConfettiOptions) {
+  canvasConfetti({ ...DEFAULTS, ...options });
+}
+```
+
+## Reduced motion
+
+`disableForReducedMotion: true` is in `DEFAULTS`, so every path opts in.
+`canvas-confetti` suppresses the burst when the user prefers reduced motion —
+no GodUI-side `useReducedMotion` branch required, and no empty animation to
+maintain.
+
+## The result
+
+<ConfettiResult />
+
+Defaults once, origin from layout, three ways to pull the trigger — that's
+the whole wrapper.

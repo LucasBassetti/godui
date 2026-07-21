@@ -1,0 +1,95 @@
+---
+title: Anatomy of Spotlight Card
+description: How a radial glow tracks the pointer via CSS variables with no React state, and how the same gradient is masked down to a 1px border ring.
+---
+
+`SpotlightCard` never re-renders on pointer move. It writes `--x` / `--y`
+straight onto the root with `style.setProperty`, and two absolute layers —
+a fill glow and an optional border ring — read those vars from a shared
+radial gradient. Content sits above both at `z-raised`.
+
+## Three layers, one surface
+
+The root is a `group relative overflow-hidden` card. Inside: a
+pointer-events-none glow, an optional border twin, and a relative content
+wrapper. The glow defaults `--x`/`--y` to `50%` so the first paint isn't a
+hard corner flash.
+
+<SpotlightCardAnatomy />
+
+```tsx
+const GLOW_BASE =
+  "… opacity-0 … group-hover:opacity-100 … [transition:opacity_400ms_ease] " +
+  "[background:radial-gradient(var(--spotlight-radius)_circle_at_var(--x,50%)_var(--y,50%),…)]";
+
+<div aria-hidden className={GLOW_BASE} />
+{border ? <div aria-hidden className={BORDER_BASE} /> : null}
+<div className="relative z-raised">{children}</div>
+```
+
+## Follow without React state
+
+On every `pointermove`, the handler measures the card rect and writes
+pixel offsets. No `useState`, no context — the compositor just repaints
+the gradient at the new center. Hover fades the glow in over `400ms ease`;
+`motion-reduce` kills the transition.
+
+<SpotlightCardFollow />
+
+```tsx
+const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+  const el = ref.current;
+  if (el) {
+    const rect = el.getBoundingClientRect();
+    el.style.setProperty("--x", `${e.clientX - rect.left}px`);
+    el.style.setProperty("--y", `${e.clientY - rect.top}px`);
+  }
+  onPointerMove?.(e);
+};
+```
+
+`glowColor` and `radius` land as `--spotlight-color` / `--spotlight-radius`
+on the root style, so the same class string works for any tint or size.
+
+## The border is the glow, masked to 1px
+
+When `border` is true (the default), a second layer reuses the identical
+radial gradient, then punches out the interior with a dual-layer mask and
+`p-px`. `mask-composite: exclude` (and `-webkit-mask-composite: xor`)
+leaves only the 1px ring lit — so the edge brightens where the pointer is
+closest without a separate stroke color.
+
+<SpotlightCardBorder />
+
+```tsx
+const BORDER_BASE =
+  "… [background:radial-gradient(…_at_var(--x,50%)_var(--y,50%),…)] " +
+  "[-webkit-mask:linear-gradient(#fff_0_0)_content-box,linear-gradient(#fff_0_0)] " +
+  "[-webkit-mask-composite:xor] " +
+  "[mask:linear-gradient(#fff_0_0)_content-box,linear-gradient(#fff_0_0)] " +
+  "[mask-composite:exclude] p-px";
+```
+
+Pass `border={false}` and the ring layer is omitted entirely — fill glow
+only.
+
+## Why setProperty wins here
+
+Driving `--x`/`--y` through React state would re-render the whole card
+(and its children) on every pointer frame. Writing CSS variables on the
+DOM node keeps React out of the hot path: the glow and border are pure
+paint, content never reconciles, and the hover opacity transition stays a
+CSS animation.
+
+## Reduced motion
+
+Both glow layers use `motion-reduce:[transition:none]`. The spotlight
+still tracks if the pointer moves — position isn't motion theater — but
+the 400ms fade snaps instead of easing.
+
+## The result
+
+Two CSS variables, one radial, an optional masked ring, and content that
+never re-renders for the pointer. Move across either card.
+
+<SpotlightCardResult />

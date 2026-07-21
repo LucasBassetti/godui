@@ -1,0 +1,98 @@
+---
+title: Anatomy of Scroll Reveal
+description: How useInView flips a spring from offset+blur to settled, and how scroll velocity optionally skews the plate.
+---
+
+`ScrollReveal` waits until 30% of its node is on screen, then springs from
+a directional offset (plus optional blur) to rest. Optionally, scroll
+velocity skews the plate on the Y axis for a fluid, reactive feel —
+disabled entirely under reduced motion.
+
+## Direction is a unit vector
+
+`OFFSET` maps each direction to `{ x, y }` multipliers. Hidden state is
+`offset * distance` (default 40px) with `opacity: 0` and, when `blur` is
+on, `filter: blur(10px)`. Visible zeros the translate, clears the blur,
+and sets opacity to 1.
+
+<ScrollRevealAnatomy />
+
+```tsx
+const OFFSET = {
+  up: { x: 0, y: 1 },
+  down: { x: 0, y: -1 },
+  left: { x: 1, y: 0 },
+  right: { x: -1, y: 0 },
+};
+
+const hidden = reduceMotion
+  ? { opacity: 0 }
+  : {
+      opacity: 0,
+      x: offset.x * distance,
+      y: offset.y * distance,
+      filter: blur ? "blur(10px)" : "blur(0px)",
+    };
+```
+
+## useInView drives the spring
+
+`useInView(ref, { once, amount: 0.3 })` flips `isInView`. That boolean
+selects `animate={isInView ? visible : hidden}`. The spring is
+`damping: 32`, `stiffness: 320`, `mass: 0.9`, plus an optional `delay` for
+staggering siblings. With `once` (the default), the plate never re-hides
+after the first reveal.
+
+<ScrollRevealSpring />
+
+```tsx
+const isInView = useInView(ref, { once, amount: 0.3 });
+
+<motion.div
+  initial={hidden}
+  animate={isInView ? visible : hidden}
+  transition={{
+    type: "spring",
+    damping: 32,
+    stiffness: 320,
+    mass: 0.9,
+    delay,
+  }}
+/>
+```
+
+## Velocity skew (optional)
+
+When `velocitySkew` is on, `useVelocity(scrollY)` feeds the same spring
+config, then `useTransform` maps `[-2000, 0, 2000]` → `[6, 0, -6]` degrees
+of `skewY` (clamped). Fast scroll tips the plate; settling returns it to
+square. Reduced motion skips the skew entirely — only opacity animates.
+
+<ScrollRevealSkew />
+
+```tsx
+const scrollVelocity = useVelocity(scrollY);
+const smoothVelocity = useSpring(scrollVelocity, {
+  damping: 32,
+  stiffness: 320,
+  mass: 0.9,
+});
+const skew = useTransform(smoothVelocity, [-2000, 0, 2000], [6, 0, -6], {
+  clamp: true,
+});
+
+style={velocitySkew && !reduceMotion ? { skewY: skew, ...style } : style}
+```
+
+## Reduced motion
+
+Under `prefers-reduced-motion`, hidden/visible collapse to opacity alone —
+no translate, no blur, no skew. The spring still runs, so the fade isn't
+instant, but the plate never slides or warps.
+
+## The result
+
+<ScrollRevealResult />
+
+One intersection threshold, one spring recipe, and an optional velocity
+skew — compositor transforms from the first pixel to the last.

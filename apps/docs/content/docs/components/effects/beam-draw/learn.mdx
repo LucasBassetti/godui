@@ -1,0 +1,86 @@
+---
+title: Anatomy of Beam Draw
+description: How scroll progress becomes a spring-smoothed SVG pathLength, and why four fan paths share one motion value.
+---
+
+`BeamDraw` doesn't animate a stroke dash by hand each frame. It maps the SVG's
+own scroll progress through a spring, then hands the result to every path as
+`pathLength`. Geometry is static; only how much of each path is revealed
+changes.
+
+## Four paths, one origin
+
+The default set lives on a `1000×400` viewBox. All four cubics start at
+`(0, 200)` and fan to the right edge at `y = 40 / 150 / 250 / 360` — a left
+core feeding four destinations. Pass your own `paths` array to replace them;
+the motion plumbing stays identical.
+
+<BeamDrawAnatomy />
+
+```tsx
+const DEFAULT_PATHS = [
+  "M0 200 C 250 200, 350 60, 600 60 S 900 40, 1000 40",
+  "M0 200 C 250 200, 350 140, 600 140 S 900 150, 1000 150",
+  "M0 200 C 250 200, 350 260, 600 260 S 900 250, 1000 250",
+  "M0 200 C 250 200, 350 340, 600 340 S 900 360, 1000 360",
+];
+```
+
+Each `<motion.path>` gets the same `pathLength` MotionValue. There's no
+per-path stagger in the component — the fan reads as simultaneous draw
+because the curves diverge spatially, not temporally.
+
+## Scroll window → pathLength
+
+`useScroll` tracks the SVG with `offset: ["start end", "end start"]` — the
+full travel from entering the viewport bottom to leaving the top.
+`useTransform` then squeezes that into a narrower active band:
+
+<BeamDrawScroll />
+
+```tsx
+const { scrollYProgress } = useScroll({
+  target: containerRef as unknown as React.RefObject<HTMLElement>,
+  offset: ["start end", "end start"],
+});
+const pathLength = useSpring(
+  useTransform(scrollYProgress, [0.1, 0.8], [0, 1]),
+  SPRING,
+);
+```
+
+Below `0.1` the beams stay empty; above `0.8` they're fully drawn. The dead
+zones keep the stroke from flickering on the first/last pixels of scroll —
+you're past "just entered" before ink starts, and finished before the element
+exits.
+
+## Spring first, then glow
+
+Raw scroll progress is jerky. The mapped value feeds
+`useSpring({ stiffness: 320, damping: 32, mass: 0.9 })` — `SPRING.smooth` —
+so pathLength eases instead of tracking the wheel 1:1. The SVG itself carries
+a primary-tinted drop-shadow; color-mix keeps the glow on-theme without a
+second paint layer.
+
+<BeamDrawSpring />
+
+```tsx
+const SPRING = { stiffness: 320, damping: 32, mass: 0.9 } as const;
+
+// …
+className={`w-full [filter:drop-shadow(0_0_8px_color-mix(in_oklch,var(--primary)_50%,transparent))] ${className ?? ""}`}
+style={{ pathLength: reduce ? 1 : pathLength }}
+```
+
+## Reduced motion
+
+`useReducedMotion()` short-circuits the spring entirely: every path renders
+at `pathLength: 1`. The glow stays; the draw-on-scroll gesture doesn't. You
+still see the fan — it just arrives complete.
+
+## The result
+
+<BeamDrawResult />
+
+One MotionValue, four static paths, a spring between scroll and stroke —
+that's the whole machine.

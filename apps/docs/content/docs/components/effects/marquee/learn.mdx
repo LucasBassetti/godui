@@ -1,0 +1,84 @@
+---
+title: Anatomy of Marquee
+description: How duplicated tracks, a CSS translate loop, and an edge mask make an infinite scroll that never paints twice.
+---
+
+`Marquee` doesn't measure content or run a JS ticker. It clones its children
+into enough identical tracks to tile the overflow box, then lets CSS
+`translateX` / `translateY` carry them — one duration token, reverse via
+`animation-direction`, pause via `animation-play-state`.
+
+## Duplicated tracks, not a longer row
+
+Children are rendered `Math.max(2, repeat)` times. Each copy is its own
+flex track with the same gap; track `i > 0` is `aria-hidden` so assistive
+tech only announces the first. When the lead track has scrolled exactly
+one copy plus the gap, the next track has slid into the same visual slot
+and the loop restarts without a seam.
+
+<MarqueeAnatomy />
+
+```tsx
+{Array.from({ length: Math.max(2, repeat) }, (_, i) => (
+  <div key={i} aria-hidden={i > 0} className={trackClass}>
+    {children}
+  </div>
+))}
+```
+
+## Pure CSS motion
+
+Horizontal tracks get `animate-marquee`; vertical get
+`animate-marquee-vertical`. Both read `--duration` from the `speed` prop
+(seconds — higher is slower). `right` / `down` set
+`[animation-direction:reverse]`. `pauseOnHover` adds
+`group-hover:[animation-play-state:paused]` on the tracks inside the
+`group` root. `motion-reduce:animate-none` kills the animation entirely.
+
+<MarqueeTrack />
+
+```tsx
+style={{ ["--duration" as string]: `${speed}s`, ...style }}
+
+const trackClass = [
+  TRACK_BASE,
+  vertical ? "flex-col animate-marquee-vertical" : "flex-row animate-marquee",
+  reverse ? "[animation-direction:reverse]" : "",
+  pauseOnHover ? "group-hover:[animation-play-state:paused]" : "",
+].filter(Boolean).join(" ");
+```
+
+The keyframes themselves are compositor-only — `translateX(0)` to
+`translateX(calc(-100% - var(--gap)))` — so the browser never lays out
+between frames.
+
+## Edge fade via mask, not an overlay
+
+When `fade` is on, the root gets a `mask-image` linear gradient:
+transparent → black at 12% / 88% → transparent. Horizontal uses
+`to_right`; vertical uses `to_bottom`. The same string is mirrored onto
+`-webkit-mask-image`. Nothing sits on top of the content — the pixels at
+the edges simply aren't drawn.
+
+<MarqueeFade />
+
+```tsx
+const fadeClass = fade
+  ? vertical
+    ? "[mask-image:linear-gradient(to_bottom,transparent,black_12%,black_88%,transparent)] …"
+    : "[mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)] …"
+  : "";
+```
+
+## Reduced motion
+
+`motion-reduce:animate-none` on every track freezes the loop. The duplicated
+content is still there — readers see a static strip instead of a scrolling
+one — and `aria-hidden` on the clones still holds.
+
+## The result
+
+<MarqueeResult />
+
+Duplicate tracks, one CSS translate loop, a mask for soft edges — and
+nothing on the main thread after mount.

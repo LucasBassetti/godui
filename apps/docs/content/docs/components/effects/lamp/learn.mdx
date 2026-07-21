@@ -1,0 +1,105 @@
+---
+title: Anatomy of Lamp
+description: How two mirrored conic cones, a glowing seam, and a delayed children rise compose a scroll-triggered lamp that ignites once and stays lit.
+---
+
+`Lamp` is a viewport-triggered light: two mirrored conic gradients widen from
+a center seam, a glowing bar and radial wash bloom where they meet, and the
+children rise into that light a beat later. Everything is compositor motion —
+`scaleX`, `opacity`, `y` — driven by Framer Motion `whileInView`.
+
+## Two cones, one seam
+
+The silhouette is four layers stacked in a single `isolate` stage. A right
+cone (`conic-gradient(from 70deg…)`, `origin-right`) mirrors a left cone
+(`from 290deg`, `origin-left`). Where they meet, a thin blurred bar scales
+on the X axis, and a radial ellipse wash softens the join. Children sit in a
+raised slot below the light.
+
+Accent color flows through one CSS variable: `--lamp`, set from the `color`
+prop (default `var(--primary)`). Cones mix it at 60% into transparent; the
+wash mixes at 25%.
+
+<LampAnatomy />
+
+```tsx
+style={{ ["--lamp" as string]: color, ...style }}
+
+// Right cone — mirrored from the left
+className="… origin-right [background-image:conic-gradient(from_70deg_at_center_top,color-mix(in_oklch,var(--lamp)_60%,transparent),transparent,transparent)] [mask-image:linear-gradient(to_top,transparent,white)]"
+
+// Left cone
+className="… origin-left [background-image:conic-gradient(from_290deg_at_center_top,transparent,transparent,color-mix(in_oklch,var(--lamp)_60%,transparent))] …"
+```
+
+Masks fade each cone toward the bottom so the light reads as a beam falling
+onto the stage, not a hard triangle.
+
+## The ignite: scaleX from half to full
+
+Both cones start unlit — `scaleX: 0.5`, `opacity: 0.5` — and tween to
+`scaleX: 1`, `opacity: 1` over **0.8s `easeInOut`**. The bar uses the same
+duration but only animates `scaleX`. Because origins sit on opposite sides of
+the seam, the light blooms *outward* from the center rather than growing from
+a shared pivot.
+
+<LampIgnite />
+
+```tsx
+const lit = { scaleX: 1, opacity: 1 };
+const unlit = { scaleX: 0.5, opacity: 0.5 };
+const VIEWPORT = { once: true, margin: "-20%" } as const;
+
+<motion.div
+  initial={reduceMotion ? lit : unlit}
+  whileInView={lit}
+  viewport={VIEWPORT}
+  transition={{ duration: 0.8, ease: "easeInOut" }}
+/>
+```
+
+`viewport.once: true` with `margin: "-20%"` means the section must be well
+into the viewport before ignition, and it never re-runs on scroll-away. That
+is intentional: a lamp that flickers every time you scroll past feels broken;
+a lamp that lights once feels like an entrance.
+
+## Why scaleX, not width
+
+Animating `width` on a 30rem cone would thrash layout every frame. `scaleX`
+stays on the compositor, keeps the conic gradient resolution stable, and
+lets `origin-left` / `origin-right` do the directional work for free. The
+radial wash is a static div — it does not need to animate independently; its
+opacity reads brighter as the cones cover more of it.
+
+## Children rise after the light
+
+The headline slot starts at `opacity: 0`, `y: 40` and settles to
+`opacity: 1`, `y: 0` on the same 0.8s ease — but with a **0.2s delay**. The
+light arrives first; content follows into an already-lit stage.
+
+<LampRise />
+
+```tsx
+<motion.div
+  initial={reduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  viewport={VIEWPORT}
+  transition={{ duration: 0.8, delay: 0.2, ease: "easeInOut" }}
+>
+  {children}
+</motion.div>
+```
+
+## Reduced motion
+
+`useReducedMotion()` swaps every `initial` to the lit / risen end state. The
+lamp still paints — cones, bar, wash, children — it just never animates. No
+alternate "static poster"; the resolved composition *is* the reduced-motion
+experience.
+
+## The result
+
+<LampResult />
+
+Two mirrored cones, one seam, one delayed rise — ignited once by
+`whileInView`, colored by `--lamp`, and compositor-cheap the whole way.
