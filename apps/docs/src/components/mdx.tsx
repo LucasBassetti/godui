@@ -27,6 +27,10 @@ import { AppShowcaseAnatomy } from "@/components/learn/app-showcase-anatomy";
 import { AppShowcaseLoop } from "@/components/learn/app-showcase-loop";
 import { AppShowcaseResult } from "@/components/learn/app-showcase-result";
 import { AppShowcaseScroll } from "@/components/learn/app-showcase-scroll";
+import { AuroraTextAnatomy } from "@/components/learn/aurora-text-anatomy";
+import { AuroraTextLifecycle } from "@/components/learn/aurora-text-lifecycle";
+import { AuroraTextResult } from "@/components/learn/aurora-text-result";
+import { AuroraTextSweep } from "@/components/learn/aurora-text-sweep";
 import { AvatarGroupAnatomy } from "@/components/learn/avatar-group-anatomy";
 import { AvatarGroupResult } from "@/components/learn/avatar-group-result";
 import { AvatarGroupSpread } from "@/components/learn/avatar-group-spread";
@@ -76,6 +80,10 @@ import { DynamicIslandAnatomy } from "@/components/learn/dynamic-island-anatomy"
 import { DynamicIslandCrossfade } from "@/components/learn/dynamic-island-crossfade";
 import { DynamicIslandResult } from "@/components/learn/dynamic-island-result";
 import { DynamicIslandShell } from "@/components/learn/dynamic-island-shell";
+import { ElasticTextAnatomy } from "@/components/learn/elastic-text-anatomy";
+import { ElasticTextResult } from "@/components/learn/elastic-text-result";
+import { ElasticTextSpotlight } from "@/components/learn/elastic-text-spotlight";
+import { ElasticTextSpring } from "@/components/learn/elastic-text-spring";
 import { FilterBarAnatomy } from "@/components/learn/filter-bar-anatomy";
 import { FilterBarResult } from "@/components/learn/filter-bar-result";
 import { FilterBarSpring } from "@/components/learn/filter-bar-spring";
@@ -96,6 +104,10 @@ import { GooeyStackResult } from "@/components/learn/gooey-stack-result";
 import { HeroParallaxAnatomy } from "@/components/learn/hero-parallax-anatomy";
 import { HeroParallaxResult } from "@/components/learn/hero-parallax-result";
 import { HeroParallaxScrub } from "@/components/learn/hero-parallax-scrub";
+import { HighlighterAnatomy } from "@/components/learn/highlighter-anatomy";
+import { HighlighterDraw } from "@/components/learn/highlighter-draw";
+import { HighlighterLifecycle } from "@/components/learn/highlighter-lifecycle";
+import { HighlighterResult } from "@/components/learn/highlighter-result";
 import { HoldCancel } from "@/components/learn/hold-cancel";
 import { HoldConfirmResult } from "@/components/learn/hold-confirm-result";
 import { HoldFill } from "@/components/learn/hold-fill";
@@ -139,6 +151,10 @@ import { MorphingDialogAnatomy } from "@/components/learn/morphing-dialog-anatom
 import { MorphingDialogBackdrop } from "@/components/learn/morphing-dialog-backdrop";
 import { MorphingDialogResult } from "@/components/learn/morphing-dialog-result";
 import { MorphingDialogSpring } from "@/components/learn/morphing-dialog-spring";
+import { NumberTickerAnatomy } from "@/components/learn/number-ticker-anatomy";
+import { NumberTickerResult } from "@/components/learn/number-ticker-result";
+import { NumberTickerSpring } from "@/components/learn/number-ticker-spring";
+import { NumberTickerView } from "@/components/learn/number-ticker-view";
 import { OrbitCarouselAnatomy } from "@/components/learn/orbit-carousel-anatomy";
 import { OrbitCarouselOrbit } from "@/components/learn/orbit-carousel-orbit";
 import { OrbitCarouselResult } from "@/components/learn/orbit-carousel-result";
@@ -164,6 +180,10 @@ import { ScrollScene } from "@/components/learn/scroll-scene";
 import { ScrollStackAnatomy } from "@/components/learn/scroll-stack-anatomy";
 import { ScrollStackBury } from "@/components/learn/scroll-stack-bury";
 import { ScrollStackResult } from "@/components/learn/scroll-stack-result";
+import { ScrollTextRevealAnatomy } from "@/components/learn/scroll-text-reveal-anatomy";
+import { ScrollTextRevealLatch } from "@/components/learn/scroll-text-reveal-latch";
+import { ScrollTextRevealResult } from "@/components/learn/scroll-text-reveal-result";
+import { ScrollTextRevealScrub } from "@/components/learn/scroll-text-reveal-scrub";
 import { SegmentedControlAnatomy } from "@/components/learn/segmented-control-anatomy";
 import { SegmentedControlResult } from "@/components/learn/segmented-control-result";
 import { SegmentedControlSlide } from "@/components/learn/segmented-control-slide";
@@ -195,6 +215,14 @@ import { TabBarAnatomy } from "@/components/learn/tab-bar-anatomy";
 import { TabBarBlob } from "@/components/learn/tab-bar-blob";
 import { TabBarPop } from "@/components/learn/tab-bar-pop";
 import { TabBarResult } from "@/components/learn/tab-bar-result";
+import { TextAnimateAnatomy } from "@/components/learn/text-animate-anatomy";
+import { TextAnimatePresets } from "@/components/learn/text-animate-presets";
+import { TextAnimateResult } from "@/components/learn/text-animate-result";
+import { TextAnimateStagger } from "@/components/learn/text-animate-stagger";
+import { TextScrambleAnatomy } from "@/components/learn/text-scramble-anatomy";
+import { TextScrambleCycle } from "@/components/learn/text-scramble-cycle";
+import { TextScrambleResult } from "@/components/learn/text-scramble-result";
+import { TextScrambleTrigger } from "@/components/learn/text-scramble-trigger";
 import { ThreeDMarqueeAnatomy } from "@/components/learn/three-d-marquee-anatomy";
 import { ThreeDMarqueeBob } from "@/components/learn/three-d-marquee-bob";
 import { ThreeDMarqueeResult } from "@/components/learn/three-d-marquee-result";
@@ -271,6 +299,10 @@ export function getMDXComponents(components?: MDXComponents) {
     AppShowcaseLoop,
     AppShowcaseResult,
     AppShowcaseScroll,
+    AuroraTextAnatomy,
+    AuroraTextLifecycle,
+    AuroraTextResult,
+    AuroraTextSweep,
     AvatarGroupAnatomy,
     AvatarGroupResult,
     AvatarGroupSpread,
@@ -320,6 +352,10 @@ export function getMDXComponents(components?: MDXComponents) {
     DynamicIslandCrossfade,
     DynamicIslandResult,
     DynamicIslandShell,
+    ElasticTextAnatomy,
+    ElasticTextResult,
+    ElasticTextSpotlight,
+    ElasticTextSpring,
     FilterBarAnatomy,
     FilterBarResult,
     FilterBarSpring,
@@ -340,6 +376,10 @@ export function getMDXComponents(components?: MDXComponents) {
     HeroParallaxAnatomy,
     HeroParallaxResult,
     HeroParallaxScrub,
+    HighlighterAnatomy,
+    HighlighterDraw,
+    HighlighterLifecycle,
+    HighlighterResult,
     HoldCancel,
     HoldConfirmResult,
     HoldFill,
@@ -383,6 +423,10 @@ export function getMDXComponents(components?: MDXComponents) {
     MorphingDialogBackdrop,
     MorphingDialogResult,
     MorphingDialogSpring,
+    NumberTickerAnatomy,
+    NumberTickerResult,
+    NumberTickerSpring,
+    NumberTickerView,
     OrbitCarouselAnatomy,
     OrbitCarouselOrbit,
     OrbitCarouselResult,
@@ -408,6 +452,10 @@ export function getMDXComponents(components?: MDXComponents) {
     ScrollStackAnatomy,
     ScrollStackBury,
     ScrollStackResult,
+    ScrollTextRevealAnatomy,
+    ScrollTextRevealLatch,
+    ScrollTextRevealResult,
+    ScrollTextRevealScrub,
     SegmentedControlAnatomy,
     SegmentedControlResult,
     SegmentedControlSlide,
@@ -439,6 +487,14 @@ export function getMDXComponents(components?: MDXComponents) {
     TabBarBlob,
     TabBarPop,
     TabBarResult,
+    TextAnimateAnatomy,
+    TextAnimatePresets,
+    TextAnimateResult,
+    TextAnimateStagger,
+    TextScrambleAnatomy,
+    TextScrambleCycle,
+    TextScrambleResult,
+    TextScrambleTrigger,
     ThreeDMarqueeAnatomy,
     ThreeDMarqueeBob,
     ThreeDMarqueeResult,

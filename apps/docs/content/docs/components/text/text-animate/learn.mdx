@@ -1,0 +1,163 @@
+---
+title: Anatomy of Text Animate
+description: How text is split into segments, staggered through a preset, and gated by the viewport — with a plain fallback for reduced motion.
+---
+
+TextAnimate doesn't animate a string as one blob. It flattens children to
+text, splits that string by `by`, then hands each segment to Framer Motion
+as a child of a container with `staggerChildren`. The entrance you pick —
+`fadeIn`, `blurInUp`, `slideUp`, and friends — is just the item variant.
+Everything else is orchestration.
+
+## Split first
+
+`getTextContent(children)` collapses the tree to a string. Then
+`splitTextAnimate(text, by)` produces `{ key, segment }[]`:
+
+- `word` — `split(/(\s+)/)` so spaces stay as their own segments
+- `character` — `[...text]` (Unicode-aware)
+- `line` — split on `\n`
+- `text` — a single segment, the whole string
+
+Each segment becomes a `motion.span` with a class from
+`getSegmentClassName` (`inline-block` for words/characters, `block` for
+lines). Keys encode split mode, offset, and content so remounts stay
+stable.
+
+<TextAnimateAnatomy />
+
+```tsx
+const segments = React.useMemo(
+  () => splitTextAnimate(textContent, by),
+  [textContent, by],
+);
+
+{segments.map(({ key, segment }) => (
+  <motion.span
+    key={key}
+    variants={finalVariants.item}
+    className={getSegmentClassName(by, segmentClassName)}
+    aria-hidden={accessible ? true : undefined}
+  >
+    {segment}
+  </motion.span>
+))}
+```
+
+Fewer segments (words) feel like a cascade of phrases. Characters feel like
+typewriter grit. Same preset, different density.
+
+## Stagger is the cascade
+
+The container variants own the timing. `staggerChildren` defaults to
+`duration / segments.length` when there's more than one segment; otherwise
+it falls back to `STAGGER_BY_SPLIT[by]` (`word: 0.05`, `character: 0.03`,
+…). An optional `stagger` prop overrides both. `delay` becomes
+`delayChildren` on the show transition.
+
+Exit reverses the cascade (`staggerDirection: -1`) inside
+`AnimatePresence mode="popLayout"`.
+
+<TextAnimateStagger />
+
+```tsx
+const staggerChildren =
+  stagger ??
+  (segments.length > 1 ? duration / segments.length : STAGGER_BY_SPLIT[by]);
+
+const finalVariants = resolveTextAnimateVariants({
+  animation,
+  delay,
+  staggerChildren,
+  customVariants: variants,
+});
+```
+
+Pass your own `variants` and the resolver swaps the item map while keeping
+the same delay/stagger container shell.
+
+## Presets are item variants
+
+Ten named presets live in `TEXT_ANIMATE_PRESETS`. They share the same
+container shell; only the item `hidden` / `show` / `exit` differ. Two
+useful contrasts:
+
+- **`blurInUp`** — `opacity 0`, `filter: blur(10px)`, `y: 20` → rest
+  (filter and `y` at 0.3s, opacity slightly longer at 0.4s)
+- **`slideUp`** — `opacity 0`, `y: 20` → rest (no blur)
+
+`scaleUp` / `scaleDown` swap the linear duration for a spring on `scale`
+(`damping: 32`, `stiffness: 320`, `mass: 0.9`). Everything stays on the
+compositor: opacity, transform, filter.
+
+<TextAnimatePresets />
+
+```tsx
+blurInUp: {
+  item: {
+    hidden: { opacity: 0, filter: "blur(10px)", y: 20 },
+    show: {
+      opacity: 1,
+      filter: "blur(0px)",
+      y: 0,
+      transition: {
+        y: { duration: 0.3 },
+        opacity: { duration: 0.4 },
+        filter: { duration: 0.3 },
+      },
+    },
+  },
+},
+```
+
+## In view, once
+
+Default `startOnView` is `true`. The motion root uses
+`whileInView="show"` with `viewport={{ once, amount: viewportAmount }}`
+(`once` defaults to `true`, amount to `0.3`). Flip `startOnView` off and
+it animates on mount via `animate="show"` instead.
+
+The root element itself is pluggable through `as` — `p`, `h1`–`h6`,
+`span`, `div`, and a few more — mapped to the matching `motion.*`
+component so a hero can be a real `h1` without losing the stagger.
+
+```tsx
+<MotionComponent
+  variants={finalVariants.container}
+  initial="hidden"
+  whileInView={startOnView ? "show" : undefined}
+  animate={startOnView ? undefined : "show"}
+  exit="exit"
+  viewport={{ once, amount: viewportAmount }}
+  aria-label={accessible && textContent ? textContent : undefined}
+>
+```
+
+## Accessibility
+
+When `accessible` is true (default), the root gets `aria-label` with the
+full string, an `sr-only` span carries the same text for readers that
+prefer it, and every animated segment is `aria-hidden`. Sighted users see
+the cascade; assistive tech hears the sentence once.
+
+`useReducedMotion()` short-circuits the whole path: no
+`AnimatePresence`, no segments — just the plain `as` element with the
+full textContent. Not a slower stagger. Not a faded reveal. The words,
+immediately.
+
+```tsx
+if (reducedMotion) {
+  return React.createElement(
+    Component,
+    { ref, className: rootClassName },
+    textContent,
+  );
+}
+```
+
+## The result
+
+Word blur-in, character slide-up, and a spring scale on a real heading —
+same splitter, three presets.
+
+<TextAnimateResult />

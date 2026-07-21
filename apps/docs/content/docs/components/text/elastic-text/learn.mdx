@@ -1,0 +1,150 @@
+---
+title: Anatomy of Elastic Text
+description: How a variable-font weight spotlight sweeps across characters on a spring — auto or pointer-driven — without layout thrash.
+---
+
+ElasticText doesn't animate font-size or scale. It animates the `wght` axis
+of a variable font — one CSS custom property per character — chased by a
+spring. The "elastic" feel is that spring settling as a spotlight (or your
+pointer) moves across the string.
+
+## Characters become segments
+
+`getTextContent(children)` flattens the tree to a string, then
+`[...textContent]` splits it into one segment per character (including
+spaces). Each segment is its own `motion.span` writing
+`--et-wght` into `font-variation-settings`. On Geist (or any `wght`-axis
+sans) the weight interpolates continuously; on a static font it snaps to
+the nearest cut.
+
+<ElasticTextAnatomy />
+
+```tsx
+const textContent = getTextContent(children);
+const segments = textContent ? [...textContent] : null;
+
+// …
+<span
+  className="… [font-variation-settings:'wght'_var(--et-wght,400)]"
+  style={{ "--et-wght": weight }}
+>
+  {segment}
+</span>
+```
+
+The container itself is an `inline-block` so the per-character spans stay
+on one baseline. Whitespace segments get `aria-hidden` so screen readers
+don't announce empty nodes.
+
+## Auto spotlight
+
+In `mode="auto"` (the default), a single `MotionValue` called `spotlight`
+is the index of the emphasis. Each segment computes influence from its
+distance to that index:
+
+```tsx
+const AUTO_SPREAD = 2.5;
+
+const autoWeight = useTransform(spotlight, (position) => {
+  const distance = Math.abs(index - position);
+  const influence = clamp(1 - distance / AUTO_SPREAD, 0, 1);
+  return lerp(minWeight, maxWeight, influence);
+});
+```
+
+`AUTO_SPREAD = 2.5` means roughly five characters feel the bump at once —
+full weight under the spotlight, falling off over ±2.5 indices. The
+spotlight itself animates with Framer's `animate`:
+
+<ElasticTextSpotlight />
+
+```tsx
+// Rest off the left edge so the first paint is uniform weight —
+// position 0 would flash the leading character at maxWeight.
+spotlight.set(-AUTO_SPREAD);
+
+loop
+  ? animate(spotlight, [0, last], {
+      duration,
+      repeat: Number.POSITIVE_INFINITY,
+      repeatType: "mirror",
+      ease: "easeInOut",
+    })
+  : animate(spotlight, [-AUTO_SPREAD, last + AUTO_SPREAD], {
+      duration,
+      ease: "easeInOut",
+    });
+```
+
+Starting at `-AUTO_SPREAD` (not `0`) avoids the "big first letter" flash
+before the sweep begins. A one-shot run pads both ends the same way so
+weight settles back to `minWeight` everywhere instead of parking on the
+trailing characters. With `startOnView` (default `true`), an
+`IntersectionObserver` at threshold `0.3` holds the sweep until the text
+is on screen, then disconnects.
+
+## The spring between target and paint
+
+Raw influence is the *target*. What you see is a spring chasing it:
+
+<ElasticTextSpring />
+
+```tsx
+const SPRING = { stiffness: 150, damping: 18, mass: 1 } as const;
+const weight = useSpring(rawWeight, SPRING);
+```
+
+Stiffness 150 / damping 18 / mass 1 is deliberately a bit underdamped —
+weight overshoots the target slightly and settles, which is why characters
+feel rubbery instead of rigidly locked to the spotlight. Because
+`--et-wght` is a CSS variable on `font-variation-settings`, the browser
+repaints glyphs without touching layout geometry.
+
+## Hover mode
+
+`mode="hover"` swaps the spotlight for pointer distance. Segment centers
+are cached from `getBoundingClientRect` on enter/resize; on `mousemove`
+each segment maps `|pointerX − center|` through the same clamp/lerp with
+`radius` (default `120px`) instead of `AUTO_SPREAD`:
+
+```tsx
+const hoverWeight = useTransform([pointerX, pointerActive], (latest) => {
+  const [x, active] = latest as [number, number];
+  if (!active) return minWeight;
+  const distance = Math.abs(x - getCenter(index));
+  const influence = clamp(1 - distance / radius, 0, 1);
+  return lerp(minWeight, maxWeight, influence);
+});
+```
+
+`pointerActive` is `0` until `mouseenter` and back to `0` on leave, so
+leaving the text relaxes every character to `minWeight` through the same
+spring — no separate exit timeline.
+
+## Accessibility
+
+`useReducedMotion()` short-circuits the whole motion path: no springs, no
+spotlight animation, every segment pinned to `minWeight` as a static
+`--et-wght`. Hover listeners aren't attached either. The text remains
+readable as ordinary variable-font (or fallback) weight — not a faded or
+stripped-out version of itself.
+
+```tsx
+if (reducedMotion) {
+  return (
+    <span
+      style={{ "--et-wght": minWeight }}
+      className={SEGMENT_CLASS}
+    >
+      {segment}
+    </span>
+  );
+}
+```
+
+## The result
+
+Auto sweep on top; hover on the muted line underneath. Same spring, two
+drivers.
+
+<ElasticTextResult />

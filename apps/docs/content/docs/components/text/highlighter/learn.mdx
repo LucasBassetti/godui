@@ -1,0 +1,120 @@
+---
+title: Anatomy of the Highlighter
+description: How an inline span gets a rough-notation sketch overlay, why draw-in waits for the viewport, and how resize keeps the mark glued to the text.
+---
+
+Highlighter doesn't paint with CSS. It hands a real DOM span to
+[`rough-notation`](https://roughnotation.com/)'s `annotate()`, which injects
+an SVG sketch and animates the stroke in. The React wrapper is a thin lifecycle
+around that: when to create the annotation, when to redraw it, and when to tear
+it down.
+
+## Two layers, one span
+
+The component renders a single `inline-block` span. The children are ordinary
+text. The annotation is a separate SVG layer Rough Notation attaches to that
+element — not a background, not a pseudo-element.
+
+<HighlighterAnatomy />
+
+```tsx
+return (
+  <span
+    ref={mergedRef}
+    className={`relative inline-block bg-transparent ${actionTextClass} ${className ?? ""}`}
+    {...props}
+  >
+    {children}
+  </span>
+);
+```
+
+`annotate(element, { type: action, color, … })` measures the span and draws
+over it. Actions map 1:1 to Rough Notation types: `highlight`, `underline`,
+`box`, `circle`, `strike-through`, `crossed-off`, `bracket`.
+
+## The draw-in
+
+`show()` runs Rough Notation's built-in draw animation — typically a left-to-right
+stroke that lands in `animationDuration` milliseconds (default `600`). The scene
+below is a compositor stand-in: `scaleX` from `transform-origin: left`, the same
+direction the sketch grows.
+
+<HighlighterDraw />
+
+```tsx
+const currentAnnotation = annotate(element, {
+  type: action,
+  color,
+  strokeWidth,
+  animationDuration,
+  iterations,
+  padding,
+  multiline,
+});
+annotation = currentAnnotation;
+currentAnnotation.show();
+```
+
+`iterations` (default `2`) is how many sketch passes Rough Notation takes —
+higher looks more hand-drawn. `padding` keeps the stroke off the glyphs;
+`multiline` lets the mark wrap with the text.
+
+## When it draws — and when it redraws
+
+Two gates keep the sketch honest.
+
+**In-view.** With `isView`, Framer Motion's `useInView` (once, `margin: "-10%"`)
+holds off until the span crosses into the padded viewport. `shouldShow` is
+`!isView || isInView`, and the layout effect only calls `annotate` when that's
+true — so off-screen highlights don't burn animation budget on first paint.
+
+**Resize.** A `ResizeObserver` watches the span *and* `document.body`. On any
+size change it `hide()`s then `show()`s the same annotation, so the SVG remeasures
+instead of drifting when type reflows or the window resizes.
+
+Cleanup always runs `annotation.remove()` and disconnects the observer.
+
+<HighlighterLifecycle />
+
+```tsx
+const isInView = useInView(elementRef, {
+  once: true,
+  margin: "-10%",
+});
+
+const shouldShow = !isView || isInView;
+
+React.useLayoutEffect(() => {
+  // …
+  resizeObserver = new ResizeObserver(() => {
+    currentAnnotation.hide();
+    currentAnnotation.show();
+  });
+  resizeObserver.observe(element);
+  resizeObserver.observe(document.body);
+
+  return () => {
+    annotation?.remove();
+    resizeObserver?.disconnect();
+  };
+}, [shouldShow, action, color, /* … */]);
+```
+
+## Dark ink on a pale fill
+
+`highlight` paints a soft marker *behind* the glyphs. On a dark theme that
+would leave light text on a light wash — unreadable. So that action alone
+forces `text-neutral-950`, like real highlighter ink on paper. Every other
+action draws around the text and keeps the inherited color.
+
+```tsx
+const actionTextClass = action === "highlight" ? "text-neutral-950" : "";
+```
+
+## The result
+
+One span, one SVG overlay, a viewport gate, and a resize redraw. Wrap a word
+and the sketch draws itself.
+
+<HighlighterResult />

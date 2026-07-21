@@ -1,0 +1,109 @@
+---
+title: Anatomy of Aurora Text
+description: How a looping linear-gradient becomes drifting rainbow text via background-clip, and why the animation pauses the moment it leaves the viewport.
+---
+
+AuroraText isn't a canvas, a SVG filter, or a font trick. It's a span with a
+200%-wide rainbow painted behind the letters, clipped so you only see the
+gradient through the glyphs — then one CSS keyframe that slides
+`background-position` back and forth. Here's the whole stack.
+
+## Fill, clip, together
+
+The component renders two nested spans inside a relative wrapper. The first
+is `sr-only` — the real children for screen readers. The second is
+`aria-hidden` and carries the aurora: a `linear-gradient(135deg, …)` with
+every stop listed, then the first color repeated so the loop seams cleanly.
+
+<AuroraTextAnatomy />
+
+```tsx
+const stops = [...colors, colors[0]].join(", ");
+
+<span className="sr-only">{children}</span>
+<span
+  aria-hidden="true"
+  className="animate-aurora-text bg-[length:200%_auto] bg-clip-text text-transparent motion-reduce:animate-none"
+  style={{
+    backgroundImage: `linear-gradient(135deg, ${stops})`,
+    "--aurora-text-speed": `${10 / speed}s`,
+  }}
+>
+  {children}
+</span>
+```
+
+`bg-clip-text` plus `text-transparent` is the whole clip. The gradient fills
+a box twice as wide as the text; only the letter shapes stay visible. Default
+stops are the system rainbow — `#ff2d55` through `#bf5af2` — but any
+`colors` array works the same way.
+
+## The background-position sweep
+
+The motion is one keyframe. `aurora-text` walks `background-position` from
+`0% 50%` to `100% 50%` and back, `linear infinite`, timed by
+`--aurora-text-speed` (defaults to `10s`; `speed` is just `10 / speed`).
+
+<AuroraTextSweep />
+
+```css
+@keyframes aurora-text {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+--animate-aurora-text: aurora-text var(--aurora-text-speed, 10s) infinite linear;
+```
+
+Nothing else moves. No `transform`, no opacity pulse, no layout thrash —
+just the paint position of a gradient that's already there. Because the
+stops loop back to the first color, the turnaround at either end reads as
+continuous drift rather than a hard bounce.
+
+## Cheap when idle
+
+A forever-running `background-position` animation is main-thread paint work.
+AuroraText doesn't leave it spinning off-screen. An `IntersectionObserver`
+with `rootMargin: "128px"` watches the gradient span and flips
+`animationPlayState` the moment it clears that margin — paused outside,
+running again on the way back in, timeline intact.
+
+<AuroraTextLifecycle />
+
+```tsx
+const io = new IntersectionObserver(
+  ([entry]) => {
+    el.style.animationPlayState = entry.isIntersecting ? "" : "paused";
+  },
+  { rootMargin: "128px" },
+);
+io.observe(el);
+```
+
+Clearing `animationPlayState` (empty string) restores the stylesheet
+default — it doesn't restart the keyframe, so scroll-in resumes wherever
+the aurora left off. The 128px pad means the sweep is already moving before
+the text fully enters the viewport.
+
+## Accessibility
+
+Two spans, two jobs. Screen readers hit the `sr-only` copy and never see
+the decorative twin (`aria-hidden`). Sighted users who prefer reduced
+motion get `motion-reduce:animate-none` on the gradient span — the rainbow
+still paints, but it sits still. No slower fallback, no partial sweep.
+
+```tsx
+className="animate-aurora-text … motion-reduce:animate-none"
+```
+
+The observer still mounts under reduced motion; pausing a no-op animation
+is harmless, and removing the effect would just add a branch for no gain.
+
+## The result
+
+A clipped gradient, one background-position keyframe, an observer that
+kills the cost when you're not looking, and a sr-only twin so the light
+show never replaces the words. That's the whole aurora.
+
+<AuroraTextResult />

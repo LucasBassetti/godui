@@ -1,0 +1,101 @@
+---
+title: Anatomy of the Number Ticker
+description: How a MotionValue, a spring, and an in-view gate turn a static span into a counting number — without re-rendering on every frame.
+---
+
+Number Ticker looks like a counter. Internally it's three hooks and a DOM
+write: a MotionValue holds the target, `useSpring` smooths the chase, and a
+change listener formats the latest value into the span's `textContent`. The
+spring never starts until the element is in view — and even then, only after
+an optional delay.
+
+## Anatomy
+
+The public surface is a single `<span>`. Everything interesting lives in the
+hooks wired behind it:
+
+<NumberTickerAnatomy />
+
+```tsx
+const motionValue = useMotionValue(
+  direction === "down" ? value : startValue,
+);
+const springValue = useSpring(motionValue, { damping, stiffness });
+const isInView = useInView(ref, { once: true, margin: "0px" });
+```
+
+Direction flips the endpoints. `"up"` starts at `startValue` and springs
+toward `value`; `"down"` starts at `value` and springs toward `startValue`.
+The initial render paints that start endpoint as formatted text so the span
+isn't empty before the first spring frame lands.
+
+## The spring
+
+Defaults are deliberately calm — `damping: 60`, `stiffness: 100`. That's
+enough to feel physical without the underdamped bounce of a tooltip mount.
+Each frame, the spring emits a float; the change listener snaps it to the
+requested decimal places and hands it to `Intl.NumberFormat`:
+
+<NumberTickerSpring />
+
+```tsx
+React.useEffect(
+  () =>
+    springValue.on("change", (latest) => {
+      if (ref.current) {
+        ref.current.textContent = Intl.NumberFormat("en-US", {
+          minimumFractionDigits: decimalPlaces,
+          maximumFractionDigits: decimalPlaces,
+        }).format(Number(latest.toFixed(decimalPlaces)));
+      }
+    }),
+  [springValue, decimalPlaces],
+);
+```
+
+Writing `textContent` keeps React out of the per-frame path. The span also
+carries `tabular-nums tracking-wider` so digit widths stay stable while the
+glyphs swap — no layout thrash as `9` becomes `1`.
+
+## The in-view gate
+
+Mounting alone does nothing. `useInView` with `once: true` opens the gate
+the first time the span crosses the viewport; a `setTimeout` then waits
+`delay` seconds before calling `motionValue.set(target)`:
+
+<NumberTickerView />
+
+```tsx
+React.useEffect(() => {
+  if (!isInView) return;
+
+  const target = direction === "down" ? startValue : value;
+  const timer = setTimeout(() => {
+    motionValue.set(target);
+    if (reduceMotion) springValue.jump(target);
+  }, delay * 1000);
+
+  return () => clearTimeout(timer);
+}, [/* … */]);
+```
+
+`once: true` means scrolling away and back won't re-run the count — the
+ticker is a reveal, not a perpetual odometer. The cleanup clears the timer
+so a fast unmount mid-delay never fires into a detached node.
+
+## Reduced motion
+
+When `useReducedMotion()` is true, the same gate still waits for in-view and
+delay — but instead of letting the spring chase, `springValue.jump(target)`
+lands on the final value in one frame. Users who asked for less motion get
+the number, not the journey.
+
+```tsx
+if (reduceMotion) springValue.jump(target);
+```
+
+## The result
+
+Three live instances: a plain count-up, decimals, and a delayed countdown.
+
+<NumberTickerResult />

@@ -1,0 +1,117 @@
+---
+title: Anatomy of Text Scramble
+description: How a per-character cell queue flickers through a glyph pool and locks into the target — gated by mount, in-view, or hover.
+---
+
+TextScramble isn't a CSS animation. It's a frame loop over a queue of cells:
+each character gets a random `start` / `end` window, picks from a charset
+while unresolved, then locks to `to`. Unresolved glyphs glow
+`text-primary` for 120ms; assistive tech always sees the stable string.
+
+## Cell states
+
+`run(toText)` builds one `Cell` per index — `from` (what's on screen),
+`to` (the new glyph), plus staggered `start` / `end` frames derived from
+`spread`. Before `start` the slot holds `from`; between them it picks a
+random character from the pool; at `end` it settles on `to`.
+
+<TextScrambleAnatomy />
+
+```tsx
+type Cell = { from: string; to: string; start: number; end: number };
+
+for (let i = 0; i < len; i++) {
+  const start = Math.floor(Math.random() * spread);
+  const end = start + 10 + Math.floor(Math.random() * spread);
+  queue.push({ from: from[i] ?? "", to: toText[i] ?? "", start, end });
+}
+```
+
+Only differing positions matter on a text change: `from` is
+`displayed.current`, so identical characters stay quiet while the rest
+re-scramble.
+
+## The scramble cycle
+
+An `setInterval` ticks every `speed` ms (default `28`). Each frame maps
+the queue: unresolved cells pull `pool[Math.floor(Math.random() * length)]`
+and render with `text-primary [transition:color_120ms_ease]`; done cells
+get `to` and drop the accent. When every cell is complete the timer
+clears and `displayed.current` updates.
+
+<TextScrambleCycle />
+
+```tsx
+timer.current = setInterval(() => {
+  const next = queue.map((c) => {
+    if (frame >= c.end) return { ch: c.to, done: true };
+    if (frame >= c.start) {
+      const ch = p[Math.floor(Math.random() * p.length)];
+      return { ch, done: false };
+    }
+    return { ch: c.from, done: true };
+  });
+  setCells(next);
+  frame++;
+}, speed);
+```
+
+The root is `inline-block tabular-nums` so mono glyphs don't shift width
+as the pool cycles. Charsets are named pools (`alphanumeric`, `symbols`,
+`katakana`, `binary`) or any custom string passed as `charset`.
+
+## When it starts
+
+The first scramble is gated by `trigger`. Later `text` changes always
+call `run` — only the initial pass waits.
+
+<TextScrambleTrigger />
+
+```tsx
+if (trigger === "mount") {
+  started.current = true;
+  run(text);
+} else if (trigger === "in-view") {
+  const io = new IntersectionObserver(
+    (entries) => {
+      if (entries.some((e) => e.isIntersecting)) {
+        started.current = true;
+        run(text);
+        io.disconnect();
+      }
+    },
+    { threshold: 0.4 },
+  );
+  io.observe(el);
+}
+// hover: onPointerEnter sets started + run(text)
+```
+
+`mount` fires in the effect. `in-view` observes at `threshold: 0.4`, runs
+once, then disconnects. `hover` waits for `onPointerEnter` — and every
+subsequent hover re-runs, so the decrypt can replay on demand.
+
+## Accessibility
+
+Two spans, two jobs. `sr-only` carries the resolved `text` for screen
+readers and copy/paste. The visual twin is `aria-hidden` and owns the
+flickering cells. With `prefers-reduced-motion`, `run` skips the queue
+entirely and jumps to final characters — no interval, no primary flash.
+
+```tsx
+<span className="sr-only">{text}</span>
+<span aria-hidden>
+  {cells.map((cell, i) => (
+    <span className={cell.done ? undefined : "text-primary [transition:color_120ms_ease]"}>
+      {cell.ch}
+    </span>
+  ))}
+</span>
+```
+
+## The result
+
+A cell queue, a charset pool, three trigger gates, and a stable sr-only
+string. Hover either line to watch it decrypt again.
+
+<TextScrambleResult />
