@@ -54,7 +54,7 @@ export function StickyScrollIo() {
             />
           </div>
           <p className="font-mono text-[11px] text-fd-muted-foreground">
-            rootMargin: "-50% 0px -50% 0px"
+            {'rootMargin: "-50% 0px -50% 0px"'}
           </p>
 
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">

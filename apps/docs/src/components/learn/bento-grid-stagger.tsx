@@ -53,8 +53,9 @@ export function BentoGridStagger() {
           </div>
 
           <p className="text-center font-mono text-[11px] text-fd-muted-foreground">
-            transition: {"{"} type: "spring", stiffness: 320, damping: 32, mass:
-            0.9 {"}"}
+            {
+              'transition: { type: "spring", stiffness: 320, damping: 32, mass: 0.9 }'
+            }
           </p>
 
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">

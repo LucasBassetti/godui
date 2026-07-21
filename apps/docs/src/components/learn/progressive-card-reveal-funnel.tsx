@@ -63,7 +63,7 @@ export function ProgressiveCardRevealFunnel() {
           </div>
 
           <p className="text-center font-mono text-[11px] text-fd-muted-foreground">
-            width: expanded ? "100%" : collapsedWidth(depth)
+            {'width: expanded ? "100%" : collapsedWidth(depth)'}
           </p>
 
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">

@@ -108,7 +108,7 @@ export function SpinViewerDrag() {
                 Pointer
               </dt>
               <dd className="text-[12px] text-fd-muted-foreground">
-                dx tracked from onPointerDown's clientX
+                {"dx tracked from onPointerDown's clientX"}
               </dd>
             </div>
             <div className="flex flex-col gap-1.5">

@@ -54,7 +54,7 @@ export function TiltCardSpring() {
           </div>
 
           <p className="text-center font-mono text-[11px] text-fd-muted-foreground">
-            useTransform(sx, [-0.5, 0.5], ["0%", "100%"]) → --gx / --gy
+            {'useTransform(sx, [-0.5, 0.5], ["0%", "100%"]) → --gx / --gy'}
           </p>
 
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
