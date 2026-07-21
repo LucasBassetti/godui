@@ -54,7 +54,7 @@ export function BorderBeam({ play, radius = 16 }: BorderBeamProps) {
       height={h}
       viewBox={`0 0 ${w} ${h}`}
       fill="none"
-      className="pointer-events-none absolute inset-0 z-10 text-fd-primary/35 motion-reduce:hidden"
+      className="pointer-events-none absolute inset-0 z-10 text-fd-foreground/20 motion-reduce:hidden"
     >
       {w > 0 && play > 0 ? (
         <>

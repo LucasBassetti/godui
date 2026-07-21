@@ -155,7 +155,7 @@ const MegaMenu = React.forwardRef<HTMLElement, MegaMenuProps>(
                     ? { duration: 0 }
                     : { duration: 0.2, ease: [0.22, 1, 0.36, 1] }
                 }
-                className="absolute top-full left-1/2 z-popover mt-2 max-h-[70vh] w-72 max-w-[calc(100vw-1.5rem)] -translate-x-1/2 overflow-y-auto rounded-2xl border border-border bg-background shadow-2xl"
+                className="absolute top-full left-1/2 z-popover mt-2 max-h-[70vh] w-72 max-w-[calc(100vw-1.5rem)] -translate-x-1/2 overflow-y-auto rounded-2xl border border-border bg-background shadow-lg"
               >
                 <ul className="flex flex-col p-1">
                   {items.map((item, index) => {
@@ -350,7 +350,7 @@ const MegaMenu = React.forwardRef<HTMLElement, MegaMenuProps>(
                   : { duration: 0.2, ease: [0.22, 1, 0.36, 1] }
               }
               onMouseEnter={() => clearTimeout(closeTimer.current)}
-              className="absolute top-full left-0 z-popover mt-2 origin-top-left rounded-2xl border border-border bg-background shadow-2xl"
+              className="absolute top-full left-0 z-popover mt-2 origin-top-left rounded-2xl border border-border bg-background shadow-lg"
             >
               <motion.div
                 animate={{
