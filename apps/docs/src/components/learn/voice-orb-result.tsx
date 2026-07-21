@@ -15,8 +15,9 @@ export function VoiceOrbResult() {
 
   React.useEffect(() => {
     if (state === "idle") {
-      setAmp(0);
-      return;
+      // Defer to rAF so we never setState synchronously in the effect body.
+      const reset = requestAnimationFrame(() => setAmp(0));
+      return () => cancelAnimationFrame(reset);
     }
     let raf = 0;
     const loop = () => {
