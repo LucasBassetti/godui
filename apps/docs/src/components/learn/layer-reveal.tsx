@@ -26,12 +26,12 @@ const PLATES: Plate[] = [
     key: "face",
     tz: 78,
     delay: 240,
-    cls: "border border-white/10 bg-[var(--card)]",
+    cls: "bg-primary",
   },
 ];
 
 const LEGEND: { name: string; desc: string; swatch: string }[] = [
-  { name: "Front face", desc: "what you press", swatch: "bg-[var(--card)]" },
+  { name: "Front face", desc: "what you press", swatch: "bg-primary" },
   {
     name: "Edge",
     desc: "fakes the thickness",
