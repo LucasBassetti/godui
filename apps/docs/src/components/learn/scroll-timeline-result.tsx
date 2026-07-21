@@ -37,8 +37,8 @@ export function ScrollTimelineResult() {
               title: "One hundred components",
               content: (
                 <p className="text-sm text-muted-foreground md:text-base">
-                  Every surface, polished — you're looking at the rail right
-                  now.
+                  Every surface, polished — you&apos;re looking at the rail
+                  right now.
                 </p>
               ),
             },
