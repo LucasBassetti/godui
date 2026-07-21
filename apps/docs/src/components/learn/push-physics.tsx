@@ -39,7 +39,7 @@ export function PushPhysics() {
         >
           <div className="relative h-[64px] w-[150px]">
             <span className="pp-shadow absolute inset-0 rounded-xl bg-black blur-[4px]" />
-            <span className="absolute inset-0 rounded-xl bg-[var(--muted)]" />
+            <span className="absolute inset-0 rounded-xl bg-zinc-500 dark:bg-zinc-600" />
             <span className="pp-face absolute inset-0 flex items-center justify-center rounded-xl bg-primary font-semibold text-[13px] text-primary-foreground">
               Push me
             </span>
