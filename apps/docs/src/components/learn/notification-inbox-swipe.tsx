@@ -35,23 +35,41 @@ const CSS = `
 .nis-static .nis-strip { animation: none; opacity: 0; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "row" | "threshold" | "archive";
+}[] = [
   {
     name: "Row",
     desc: 'drag="x" · dragElastic left 0.7, right 0',
-    swatch: "bg-[var(--foreground)]/25",
+    kind: "row",
   },
   {
     name: "Threshold",
     desc: "offset.x < -80",
-    swatch: "bg-[var(--foreground)]/40",
+    kind: "threshold",
   },
   {
     name: "Archive strip",
     desc: "sits behind the row, revealed while dragging",
-    swatch: "bg-destructive",
+    kind: "archive",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "threshold") {
+    return <span className="h-4 w-px bg-[var(--foreground)]/35" />;
+  }
+  if (kind === "archive") {
+    return (
+      <span className="h-3.5 w-6 rounded-sm bg-destructive ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-3.5 w-8 rounded-md border border-fd-border bg-[var(--card)]" />
+  );
+}
 
 export function NotificationInboxSwipe() {
   return (
@@ -90,9 +108,7 @@ export function NotificationInboxSwipe() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

@@ -62,7 +62,7 @@ export function InertiaGalleryAnatomy() {
 
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full border-2 border-dashed border-[var(--foreground)]/50 bg-transparent" />
+              <span className="h-3 w-6 rounded-lg border border-[var(--foreground)]/20 bg-transparent ring-1 ring-fd-border ring-inset" />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Viewport
               </dt>
@@ -71,7 +71,7 @@ export function InertiaGalleryAnatomy() {
               </dd>
             </div>
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--foreground)]/30 ring-1 ring-fd-border ring-inset" />
+              <span className="h-3 w-4 rounded-lg bg-[var(--foreground)]/30 ring-1 ring-fd-border ring-inset" />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Track
               </dt>
@@ -80,7 +80,7 @@ export function InertiaGalleryAnatomy() {
               </dd>
             </div>
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--foreground)] ring-1 ring-fd-border ring-inset" />
+              <span className="h-4 w-5 rounded-lg bg-[var(--foreground)] ring-1 ring-fd-border ring-inset" />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Centered slide
               </dt>

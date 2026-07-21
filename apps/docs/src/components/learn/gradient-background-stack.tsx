@@ -41,7 +41,14 @@ export function GradientBackgroundStack() {
           </div>
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+              <span
+                className="h-3 w-8 rounded-lg ring-1 ring-fd-border ring-inset"
+                style={{
+                  backgroundColor: "#020617",
+                  backgroundImage:
+                    "radial-gradient(circle 100px at 50% 30%, #444, transparent)",
+                }}
+              />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Background
               </dt>
@@ -50,7 +57,10 @@ export function GradientBackgroundStack() {
               </dd>
             </div>
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+              <span className="flex flex-col gap-0.5">
+                <span className="h-1 w-8 rounded-full bg-[var(--foreground)]/40" />
+                <span className="h-0.5 w-6 rounded-full bg-[var(--foreground)]/20" />
+              </span>
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Content
               </dt>

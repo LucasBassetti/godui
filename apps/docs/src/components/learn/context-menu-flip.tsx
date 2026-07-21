@@ -84,7 +84,10 @@ export function ContextMenuFlip() {
 
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--foreground)]/30 ring-1 ring-fd-border ring-inset" />
+              <span className="relative h-3 w-6">
+                <span className="absolute top-0 left-0 size-1.5 rounded-sm bg-[var(--foreground)]" />
+                <span className="absolute top-1 left-2 h-2.5 w-4 rounded-lg border border-border bg-background ring-1 ring-fd-border ring-inset" />
+              </span>
               <dt className="font-medium font-mono text-[12px] text-fd-foreground">
                 no flip
               </dt>
@@ -93,7 +96,10 @@ export function ContextMenuFlip() {
               </dd>
             </div>
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--foreground)]/30 ring-1 ring-fd-border ring-inset" />
+              <span className="relative h-3 w-6">
+                <span className="absolute right-0 bottom-0 h-2.5 w-4 rounded-lg border border-border bg-background ring-1 ring-fd-border ring-inset" />
+                <span className="absolute right-0 bottom-0 size-1.5 rotate-180 rounded-sm bg-[var(--foreground)]" />
+              </span>
               <dt className="font-medium font-mono text-[12px] text-fd-foreground">
                 flipX · flipY
               </dt>

@@ -27,18 +27,33 @@ const CSS = `
 .psh-static .psh-arrow { animation: none; opacity: 0; transform: translateX(-4px); }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "chips" | "grid";
+}[] = [
   {
     name: "Chip",
     desc: "translateY −1px only, no shadow, no arrow",
-    swatch: "bg-[var(--foreground)]/25",
+    kind: "chips",
   },
   {
     name: "Card",
     desc: "translateY −2px + shadow layer opacity .22→.5, arrow slides in",
-    swatch: "bg-[var(--foreground)]/40",
+    kind: "grid",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "grid") {
+    return (
+      <span className="h-4 w-5 rounded-lg border border-border bg-[var(--card)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-2.5 w-7 rounded-full border border-border bg-[var(--card)] ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function PromptSuggestionsHover() {
   return (
@@ -94,9 +109,7 @@ export function PromptSuggestionsHover() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

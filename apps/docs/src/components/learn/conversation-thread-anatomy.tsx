@@ -19,23 +19,43 @@ const CSS = `
 .cta-static .cta-msg { opacity: 1; animation: none; transform: none; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "user" | "assistant" | "actions";
+}[] = [
   {
     name: "User bubble",
     desc: "bg-primary, row reversed, rounded-br-md",
-    swatch: "bg-[var(--foreground)]/70",
+    kind: "user",
   },
   {
     name: "Assistant bubble",
     desc: "bg-muted, rounded-bl-md",
-    swatch: "bg-[var(--muted)]",
+    kind: "assistant",
   },
   {
     name: "Actions row",
     desc: "opacity-0 → 100 on hover, px-1 below the bubble",
-    swatch: "bg-[var(--foreground)]/15",
+    kind: "actions",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "user") {
+    return (
+      <span className="h-3.5 w-6 rounded-md bg-[var(--foreground)]/70 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "assistant") {
+    return (
+      <span className="h-3.5 w-6 rounded-md bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="size-2.5 rounded-md bg-[var(--foreground)]/15 ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function ConversationThreadAnatomy() {
   return (
@@ -96,9 +116,7 @@ export function ConversationThreadAnatomy() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ring-1 ring-fd-border ring-inset ${item.swatch}`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

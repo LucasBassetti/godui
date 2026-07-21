@@ -24,14 +24,25 @@ const LEGEND = [
   {
     name: "Glyph stream",
     desc: "absolute inset-0 · STREAM_LEN 1500 · aria-hidden",
-    swatch: "bg-[var(--muted)]",
+    kind: "stream" as const,
   },
   {
     name: "Content",
     desc: "relative z-raised — children always on top",
-    swatch: "bg-[var(--card)]",
+    kind: "content" as const,
   },
 ] as const;
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "stream") {
+    return (
+      <span className="h-3 w-6 rounded-lg bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-3 w-6 rounded-lg bg-[var(--card)] ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function EncryptedCardAnatomy() {
   return (
@@ -86,9 +97,7 @@ export function EncryptedCardAnatomy() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

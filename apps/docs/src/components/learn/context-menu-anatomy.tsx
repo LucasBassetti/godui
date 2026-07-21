@@ -26,28 +26,51 @@ function Bar({
   return <span className={`h-2 rounded-full ${w} ${tone}`} />;
 }
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "label" | "item" | "separator" | "destructive";
+}[] = [
   {
     name: "label",
     desc: "muted header, not focusable",
-    swatch: "bg-[var(--foreground)]/20",
+    kind: "label",
   },
   {
     name: "item",
     desc: "icon · label · shortcut",
-    swatch: "bg-[var(--foreground)]/30",
+    kind: "item",
   },
   {
     name: "separator",
     desc: "a hairline <hr>",
-    swatch: "bg-[var(--foreground)]/15",
+    kind: "separator",
   },
   {
     name: "destructive",
     desc: "red tint, same row",
-    swatch: "bg-destructive/70",
+    kind: "destructive",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "separator") {
+    return <span className="h-px w-8 bg-border" />;
+  }
+  if (kind === "destructive") {
+    return (
+      <span className="h-1.5 w-8 rounded-full bg-destructive/70 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "label") {
+    return (
+      <span className="h-1.5 w-8 rounded-full bg-[var(--foreground)]/20 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-1.5 w-8 rounded-full bg-[var(--foreground)]/30 ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function ContextMenuAnatomy() {
   return (
@@ -118,9 +141,7 @@ export function ContextMenuAnatomy() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5 sm:grid-cols-4">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium font-mono text-[12px] text-fd-foreground">
                   {item.name}
                 </dt>

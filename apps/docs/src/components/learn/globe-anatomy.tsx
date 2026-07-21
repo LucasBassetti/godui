@@ -46,19 +46,35 @@ const LEGEND = [
   {
     name: "Canvas",
     desc: "cobe WebGL surface — createGlobe(canvas, config)",
-    swatch: "bg-[var(--muted)]",
+    kind: "canvas" as const,
   },
   {
     name: "Markers",
     desc: "config.markers — location + size, glowColor tint",
-    swatch: "bg-[var(--foreground)]/50",
+    kind: "marker" as const,
   },
   {
     name: "Drag",
     desc: "pointerMovement offsets phi while held",
-    swatch: "bg-transparent ring-1 ring-[var(--foreground)]/40 ring-inset",
+    kind: "drag" as const,
   },
 ] as const;
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "canvas") {
+    return (
+      <span className="size-3.5 rounded-full shadow-inner [background:radial-gradient(circle_at_35%_30%,var(--card),var(--muted)_65%)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "marker") {
+    return (
+      <span className="size-2 rounded-full bg-[var(--foreground)]/60 shadow-[0_0_4px_var(--foreground)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="size-3.5 rounded-full border border-[var(--foreground)]/40 bg-transparent" />
+  );
+}
 
 export function GlobeAnatomy() {
   return (
@@ -115,9 +131,7 @@ export function GlobeAnatomy() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

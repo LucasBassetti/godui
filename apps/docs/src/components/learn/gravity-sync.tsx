@@ -21,18 +21,33 @@ const CSS = `
 .grv-static .grv-ghost, .grv-static .grv-plate { animation: none; transform: translate(0px, 4px) rotate(-4deg); }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "body" | "plate";
+}[] = [
   {
     name: "Body (physics)",
     desc: "Matter.Body position + angle — never rendered",
-    swatch: "bg-transparent ring-1 ring-dashed ring-[var(--foreground)]/50",
+    kind: "body",
   },
   {
     name: "DOM plate",
     desc: "style.transform, rewritten every rAF",
-    swatch: "bg-[var(--foreground)]/60",
+    kind: "plate",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "body") {
+    return (
+      <span className="size-3.5 rounded-[10px] border-2 border-dashed border-[var(--foreground)]/50" />
+    );
+  }
+  return (
+    <span className="size-3.5 rounded-[10px] bg-[var(--foreground)]/60 ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function GravitySync() {
   return (
@@ -64,7 +79,7 @@ export function GravitySync() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span className={`h-1.5 w-8 rounded-full ${item.swatch}`} />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

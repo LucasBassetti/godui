@@ -29,6 +29,38 @@ const CSS = `
 .tcs-glare-anim { animation: tcs-glare 4s cubic-bezier(0.34,1.4,0.64,1) infinite; }
 `;
 
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "tilt" | "glare";
+}[] = [
+  {
+    name: "Card tilt",
+    desc: "rotateX/rotateY, spring mass 0.1 · stiffness 170 · damping 12",
+    kind: "tilt",
+  },
+  {
+    name: "Glare",
+    desc: "same sx/sy, mapped to a radial-gradient position",
+    kind: "glare",
+  },
+];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "glare") {
+    return (
+      <span className="relative h-4 w-6 overflow-hidden rounded-lg border border-fd-border bg-[var(--card)] ring-1 ring-fd-border ring-inset">
+        <span className="tcs-glare pointer-events-none absolute inset-0 opacity-80" />
+      </span>
+    );
+  }
+  return (
+    <span className="relative flex h-4 w-6 items-center justify-center rounded-lg border border-fd-border bg-[var(--card)] shadow-sm ring-1 ring-fd-border ring-inset">
+      <span className="h-0.5 w-3 rounded-full bg-[var(--foreground)]/30" />
+    </span>
+  );
+}
+
 export function TiltCardSpring() {
   return (
     <ScrollScene label="The tilt" note="rotateX/Y and glare, one signal">
@@ -58,24 +90,17 @@ export function TiltCardSpring() {
           </p>
 
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                Card tilt
-              </dt>
-              <dd className="text-[12px] text-fd-muted-foreground">
-                rotateX/rotateY, spring mass 0.1 · stiffness 170 · damping 12
-              </dd>
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-white/70 ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                Glare
-              </dt>
-              <dd className="text-[12px] text-fd-muted-foreground">
-                same sx/sy, mapped to a radial-gradient position
-              </dd>
-            </div>
+            {LEGEND.map((item) => (
+              <div key={item.name} className="flex flex-col gap-1.5">
+                <LegendSwatch kind={item.kind} />
+                <dt className="font-medium text-[13px] text-fd-foreground">
+                  {item.name}
+                </dt>
+                <dd className="text-[12px] text-fd-muted-foreground">
+                  {item.desc}
+                </dd>
+              </div>
+            ))}
           </dl>
         </div>
       )}

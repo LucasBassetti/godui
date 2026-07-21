@@ -24,6 +24,36 @@ const CSS = `
 .ssio-static .ssio-h1 { animation: none; opacity: 1; }
 `;
 
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "idle" | "crossing";
+}[] = [
+  {
+    name: "Idle",
+    desc: "not intersecting — index unchanged",
+    kind: "idle",
+  },
+  {
+    name: "Crossing",
+    desc: "intersecting — setActive(index) fires",
+    kind: "crossing",
+  },
+];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "crossing") {
+    return (
+      <span className="relative h-3.5 w-8 overflow-hidden rounded-lg bg-[var(--muted)] ring-1 ring-fd-border ring-inset">
+        <span className="absolute inset-0 bg-[var(--foreground)]/70" />
+      </span>
+    );
+  }
+  return (
+    <span className="h-3.5 w-8 rounded-lg bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+  );
+}
+
 export function StickyScrollIo() {
   return (
     <ScrollScene label="The trigger" note="one line, whichever item crosses it">
@@ -58,24 +88,17 @@ export function StickyScrollIo() {
           </p>
 
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                Idle
-              </dt>
-              <dd className="text-[12px] text-fd-muted-foreground">
-                not intersecting — index unchanged
-              </dd>
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--foreground)]/70 ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                Crossing
-              </dt>
-              <dd className="text-[12px] text-fd-muted-foreground">
-                intersecting — setActive(index) fires
-              </dd>
-            </div>
+            {LEGEND.map((item) => (
+              <div key={item.name} className="flex flex-col gap-1.5">
+                <LegendSwatch kind={item.kind} />
+                <dt className="font-medium text-[13px] text-fd-foreground">
+                  {item.name}
+                </dt>
+                <dd className="text-[12px] text-fd-muted-foreground">
+                  {item.desc}
+                </dd>
+              </div>
+            ))}
           </dl>
         </div>
       )}

@@ -69,7 +69,7 @@ export function FlowFieldAnatomy() {
           </div>
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+              <span className="h-0.5 w-8 rounded-full bg-[var(--foreground)]/30 ring-1 ring-fd-border ring-inset" />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Noise
               </dt>
@@ -78,7 +78,7 @@ export function FlowFieldAnatomy() {
               </dd>
             </div>
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+              <span className="h-0.5 w-8 rotate-[-25deg] rounded-full bg-[var(--foreground)]/50 ring-1 ring-fd-border ring-inset" />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Angle
               </dt>
@@ -87,7 +87,7 @@ export function FlowFieldAnatomy() {
               </dd>
             </div>
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+              <span className="h-0.5 w-8 rounded-full bg-[var(--foreground)]/50 ring-1 ring-fd-border ring-inset" />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Step
               </dt>

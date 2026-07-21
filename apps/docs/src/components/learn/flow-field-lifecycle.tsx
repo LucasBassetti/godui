@@ -155,6 +155,45 @@ const GLYPHS = {
   reduce: ReduceGlyph,
 } as const;
 
+function LegendSwatch({ id }: { id: (typeof CARDS)[number]["id"] }) {
+  if (id === "io") {
+    return (
+      <span
+        className="h-3 w-5 rounded-sm bg-[var(--foreground)]/25 ring-1 ring-fd-border ring-inset"
+        style={{
+          backgroundImage:
+            "linear-gradient(135deg, transparent 40%, rgba(0,0,0,0.12) 40%, rgba(0,0,0,0.12) 60%, transparent 60%)",
+          backgroundSize: "8px 8px",
+        }}
+      />
+    );
+  }
+  if (id === "vis") {
+    return (
+      <span className="relative h-3.5 w-5 overflow-hidden rounded-md border border-fd-border bg-[var(--card)] ring-1 ring-fd-border ring-inset">
+        <span className="absolute inset-x-0 top-0 h-1 border-fd-border border-b bg-[var(--muted)]" />
+        <span className="absolute inset-x-1 bottom-1 h-px rounded-full bg-[var(--foreground)]/35" />
+      </span>
+    );
+  }
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 32 12"
+      className="h-3 w-8 text-[var(--foreground)]"
+    >
+      <path
+        d="M2 8 C8 4, 12 4, 16 8 S24 10, 30 6"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        opacity={0.85}
+      />
+    </svg>
+  );
+}
+
 export function FlowFieldLifecycle() {
   return (
     <ScrollScene label="Lifecycle" note="IO · visibility · reduced">
@@ -187,7 +226,7 @@ export function FlowFieldLifecycle() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {CARDS.map((card) => (
               <div key={card.id} className="flex flex-col gap-1.5">
-                <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+                <LegendSwatch id={card.id} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {card.name}
                 </dt>

@@ -16,23 +16,43 @@ const CSS = `
 .grv-static .grv-body { opacity: 1; animation: none; transform: rotate(var(--r)); }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "world" | "walls" | "body";
+}[] = [
   {
     name: "World",
     desc: "relative overflow-hidden container, sized by CSS",
-    swatch: "bg-[var(--card)] ring-1 ring-fd-border ring-inset",
+    kind: "world",
   },
   {
     name: "Walls",
     desc: "static 200px-thick rectangles just past each edge",
-    swatch: "bg-[var(--muted)]",
+    kind: "walls",
   },
   {
     name: "Body",
     desc: "one MatterBody = one rectangle or circle body",
-    swatch: "bg-[var(--foreground)]/60",
+    kind: "body",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "world") {
+    return (
+      <span className="h-3 w-6 rounded-md bg-[var(--card)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "walls") {
+    return (
+      <span className="h-1 w-6 rounded-sm bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="size-3 rounded-full bg-[var(--foreground)]/60 ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function GravityAnatomy() {
   return (
@@ -72,9 +92,7 @@ export function GravityAnatomy() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ring-1 ring-fd-border ring-inset ${item.swatch}`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

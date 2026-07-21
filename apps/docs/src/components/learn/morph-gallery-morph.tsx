@@ -32,18 +32,35 @@ const CSS = `
 .mgm-static .mgm-backdrop { animation: none; opacity: 1; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "image" | "backdrop";
+}[] = [
   {
     name: "Image box",
     desc: "shared layoutId, spring 320 / 32 / 0.9",
-    swatch: "bg-[var(--muted)]",
+    kind: "image",
   },
   {
     name: "Backdrop",
     desc: "flat opacity tween, 0.2s — finishes on its own",
-    swatch: "bg-black/50",
+    kind: "backdrop",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "backdrop") {
+    return (
+      <span className="h-3.5 w-8 rounded-sm bg-black/50 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="relative h-4 w-7 overflow-hidden rounded-lg bg-[var(--card)] shadow-sm ring-1 ring-fd-border ring-inset">
+      <span className="absolute inset-1 rounded-md bg-[var(--muted)]" />
+    </span>
+  );
+}
 
 export function MorphGalleryMorph() {
   return (
@@ -66,9 +83,7 @@ export function MorphGalleryMorph() {
           <dl className="grid w-full max-w-[420px] grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

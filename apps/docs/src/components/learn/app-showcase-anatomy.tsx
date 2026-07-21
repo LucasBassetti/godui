@@ -24,23 +24,43 @@ const CSS = `
 .asa-static .asa-panel { opacity: 1; animation: none; transform: none; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "shell" | "screen" | "notch";
+}[] = [
   {
     name: "Shell",
     desc: "radius = width × 0.17, holds the padding",
-    swatch: "bg-[var(--muted)]",
+    kind: "shell",
   },
   {
     name: "Screen",
     desc: "radius = width × 0.13, inset by width × 0.035",
-    swatch: "bg-[var(--foreground)]/25",
+    kind: "screen",
   },
   {
     name: "Notch",
     desc: "width × 0.3, top-centered on the screen",
-    swatch: "bg-[var(--foreground)]/60",
+    kind: "notch",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "notch") {
+    return (
+      <span className="h-1.5 w-5 rounded-full bg-[var(--foreground)]/60 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "shell") {
+    return (
+      <span className="h-4 w-3 rounded-md bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-3.5 w-5 rounded-md bg-[var(--foreground)]/25 ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function AppShowcaseAnatomy() {
   return (
@@ -117,9 +137,7 @@ export function AppShowcaseAnatomy() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

@@ -30,18 +30,33 @@ const CSS = `
 .rhp-static .rhp-underline { animation: none; transform: translateX(${PITCH * 2}px); }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "hoverPill" | "underline";
+}[] = [
   {
     name: "Hover pill",
     desc: "layoutId span, fills the item under the pointer",
-    swatch: "bg-[var(--foreground)]/12",
+    kind: "hoverPill",
   },
   {
     name: "Active underline",
     desc: "separate layoutId — tracks the clicked link only",
-    swatch: "bg-[var(--foreground)]",
+    kind: "underline",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "underline") {
+    return (
+      <span className="h-0.5 w-8 rounded-full bg-[var(--foreground)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-2 w-8 rounded-full bg-[var(--foreground)]/12 ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function ResizableHeaderPills() {
   return (
@@ -77,9 +92,7 @@ export function ResizableHeaderPills() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

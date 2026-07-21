@@ -21,23 +21,43 @@ const CSS = `
 .ats-static .ats-panel { animation: none; opacity: 1; transform: none; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "panel" | "overshoot" | "trigger";
+}[] = [
   {
-    name: "opacity",
-    desc: "0 → 1, tied to the same spring",
-    swatch: "bg-[var(--foreground)]/30",
+    name: "Tooltip panel",
+    desc: "opacity 0 → 1, tied to the same spring",
+    kind: "panel",
   },
   {
-    name: "scale",
-    desc: "0.85 → 1, overshoots to ~1.09 first",
-    swatch: "bg-[var(--foreground)]/60",
+    name: "Overshoot",
+    desc: "scale 0.85 → 1, overshoots to ~1.09 first",
+    kind: "overshoot",
   },
   {
-    name: "y",
+    name: "Trigger",
     desc: "8px → 0, settles a beat after scale peaks",
-    swatch: "bg-[var(--foreground)]",
+    kind: "trigger",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "trigger") {
+    return (
+      <span className="size-3 rounded-full border border-border bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "overshoot") {
+    return (
+      <span className="h-3.5 w-8 rounded-lg bg-[var(--foreground)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-3 w-7 rounded-lg bg-[var(--foreground)]/80 ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function AnimatedTooltipSpring() {
   return (
@@ -67,9 +87,7 @@ export function AnimatedTooltipSpring() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

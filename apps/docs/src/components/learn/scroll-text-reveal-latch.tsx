@@ -75,18 +75,32 @@ const CSS = `
 const REV = ["strl-rev0", "strl-rev1", "strl-rev2", "strl-rev3"] as const;
 const LAT = ["strl-lat0", "strl-lat1", "strl-lat2", "strl-lat3"] as const;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "dim" | "lit";
+}[] = [
   {
     name: "Scrub",
     desc: "reveal tracks raw progress — dims on scroll-up",
-    swatch: "bg-[var(--foreground)]/30",
+    kind: "dim",
   },
   {
     name: "Latch",
     desc: "Math.max(prev, v) — stays lit once revealed",
-    swatch: "bg-[var(--foreground)]",
+    kind: "lit",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  return (
+    <span
+      className={`h-2 w-8 rounded-full bg-[var(--foreground)] ring-1 ring-fd-border ring-inset ${
+        kind === "dim" ? "opacity-15" : ""
+      }`}
+    />
+  );
+}
 
 function SlotRow({ classes }: { classes: readonly string[] }) {
   return (
@@ -141,9 +155,7 @@ export function ScrollTextRevealLatch() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ring-1 ring-fd-border ring-inset ${item.swatch}`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

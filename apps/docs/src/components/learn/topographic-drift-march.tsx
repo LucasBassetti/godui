@@ -26,6 +26,57 @@ const CSS = `
 .tdm-static .tdm-line { animation: none; stroke-dashoffset: 0; opacity: 1; }
 `;
 
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "cases" | "alpha";
+}[] = [
+  {
+    name: "Cases",
+    desc: "16 configs · skip 0 and 15",
+    kind: "cases",
+  },
+  {
+    name: "Alpha",
+    desc: "0.1 + 0.25×(1−|0.5−level|×2)",
+    kind: "alpha",
+  },
+];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "cases") {
+    return (
+      <span className="relative flex size-7 items-center justify-center">
+        <span className="absolute inset-0 rounded-sm border border-[var(--foreground)]/20" />
+        <span className="absolute top-0 left-0 size-1.5 rounded-full bg-[var(--foreground)]" />
+        <span className="absolute top-0 right-0 size-1.5 rounded-full bg-[var(--foreground)]" />
+        <span className="absolute h-px w-4 bg-[var(--foreground)]" />
+      </span>
+    );
+  }
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 32 16"
+      className="h-4 w-8 text-[var(--foreground)]"
+      fill="none"
+    >
+      <path
+        d="M0 12 C8 8, 12 6, 20 8 S28 4, 32 6"
+        stroke="currentColor"
+        strokeWidth="1.4"
+        opacity={0.75}
+      />
+      <path
+        d="M0 14 C8 11, 12 9, 20 11 S28 8, 32 10"
+        stroke="currentColor"
+        strokeWidth="1.1"
+        opacity={0.4}
+      />
+    </svg>
+  );
+}
+
 export function TopographicDriftMarch() {
   return (
     <ScrollScene label="Marching squares" note="4-bit mask · 16 edge cases">
@@ -138,24 +189,23 @@ export function TopographicDriftMarch() {
           </p>
 
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                Cases
-              </dt>
-              <dd className="text-[12px] text-fd-muted-foreground">
-                16 configs · skip 0 and 15
-              </dd>
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                Alpha
-              </dt>
-              <dd className="font-mono text-[12px] text-fd-muted-foreground">
-                0.1 + 0.25×(1−|0.5−level|×2)
-              </dd>
-            </div>
+            {LEGEND.map((item) => (
+              <div key={item.name} className="flex flex-col gap-1.5">
+                <LegendSwatch kind={item.kind} />
+                <dt className="font-medium text-[13px] text-fd-foreground">
+                  {item.name}
+                </dt>
+                <dd
+                  className={
+                    item.kind === "alpha"
+                      ? "font-mono text-[12px] text-fd-muted-foreground"
+                      : "text-[12px] text-fd-muted-foreground"
+                  }
+                >
+                  {item.desc}
+                </dd>
+              </div>
+            ))}
           </dl>
         </div>
       )}

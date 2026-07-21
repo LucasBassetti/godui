@@ -39,6 +39,39 @@ const CSS = `
 
 const TICKS = Array.from({ length: TICKS_N }, (_, i) => i);
 
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "pointer" | "frame";
+}[] = [
+  {
+    name: "Pointer",
+    desc: "dx tracked from onPointerDown's clientX",
+    kind: "pointer",
+  },
+  {
+    name: "Frame",
+    desc: "index += stepped, wrapped mod frame count",
+    kind: "frame",
+  },
+];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "frame") {
+    return (
+      <span className="relative flex h-4 w-4 items-end justify-center">
+        <span className="absolute inset-x-1 top-0 rounded-full border border-[var(--foreground)]/15" />
+        <span className="h-3 w-0.5 origin-bottom rounded-full bg-[var(--foreground)]/70" />
+      </span>
+    );
+  }
+  return (
+    <span className="grid size-3 place-items-center rounded-full border border-fd-border bg-[var(--foreground)] ring-1 ring-fd-border ring-inset">
+      <span className="size-1 rounded-full bg-[var(--background)]" />
+    </span>
+  );
+}
+
 export function SpinViewerDrag() {
   return (
     <ScrollScene label="The drag" note="dx ÷ sensitivity, rounded — that's it">
@@ -102,24 +135,17 @@ export function SpinViewerDrag() {
           </div>
 
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--foreground)]/30 ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                Pointer
-              </dt>
-              <dd className="text-[12px] text-fd-muted-foreground">
-                {"dx tracked from onPointerDown's clientX"}
-              </dd>
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--foreground)] ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                Frame
-              </dt>
-              <dd className="text-[12px] text-fd-muted-foreground">
-                index += stepped, wrapped mod frame count
-              </dd>
-            </div>
+            {LEGEND.map((item) => (
+              <div key={item.name} className="flex flex-col gap-1.5">
+                <LegendSwatch kind={item.kind} />
+                <dt className="font-medium text-[13px] text-fd-foreground">
+                  {item.name}
+                </dt>
+                <dd className="text-[12px] text-fd-muted-foreground">
+                  {item.desc}
+                </dd>
+              </div>
+            ))}
           </dl>
         </div>
       )}

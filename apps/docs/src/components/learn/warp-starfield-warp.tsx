@@ -33,6 +33,37 @@ const CSS = `
 .wsw-static .wsw-d { animation: none; opacity: 0.8; transform: none; }
 `;
 
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "cruise" | "hyperspace";
+}[] = [
+  {
+    name: "Cruise",
+    desc: "arc + fill · warp=false",
+    kind: "cruise",
+  },
+  {
+    name: "Hyperspace",
+    desc: "stroke previous → current projection",
+    kind: "hyperspace",
+  },
+];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "hyperspace") {
+    return (
+      <span
+        className="block h-px w-7 origin-left bg-[var(--foreground)]/70"
+        style={{ transform: "rotate(-24deg)" }}
+      />
+    );
+  }
+  return (
+    <span className="size-1.5 rounded-full bg-[var(--foreground)] ring-1 ring-fd-border ring-inset" />
+  );
+}
+
 export function WarpStarfieldWarp() {
   return (
     <ScrollScene label="Warp" note="points · or prev→curr strokes">
@@ -99,24 +130,17 @@ export function WarpStarfieldWarp() {
           </p>
 
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                Cruise
-              </dt>
-              <dd className="text-[12px] text-fd-muted-foreground">
-                arc + fill · warp=false
-              </dd>
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                Hyperspace
-              </dt>
-              <dd className="text-[12px] text-fd-muted-foreground">
-                stroke previous → current projection
-              </dd>
-            </div>
+            {LEGEND.map((item) => (
+              <div key={item.name} className="flex flex-col gap-1.5">
+                <LegendSwatch kind={item.kind} />
+                <dt className="font-medium text-[13px] text-fd-foreground">
+                  {item.name}
+                </dt>
+                <dd className="text-[12px] text-fd-muted-foreground">
+                  {item.desc}
+                </dd>
+              </div>
+            ))}
           </dl>
         </div>
       )}

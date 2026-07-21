@@ -41,7 +41,7 @@ export function PixelGridAnatomy() {
           </div>
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+              <span className="size-2 rounded-[1px] bg-[var(--foreground)]/35 ring-1 ring-fd-border ring-inset" />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Cell
               </dt>
@@ -50,7 +50,7 @@ export function PixelGridAnatomy() {
               </dd>
             </div>
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+              <span className="size-2 rounded-[1px] bg-[var(--foreground)]/15 ring-1 ring-fd-border ring-inset" />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Cap
               </dt>
@@ -59,7 +59,7 @@ export function PixelGridAnatomy() {
               </dd>
             </div>
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+              <span className="size-2 rounded-[1px] border border-dashed border-[var(--foreground)]/30 ring-1 ring-fd-border ring-inset" />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Mode
               </dt>

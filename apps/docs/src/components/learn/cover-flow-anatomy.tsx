@@ -33,18 +33,33 @@ const CSS = `
 .cfa-static .cfa-slide { animation: none; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "center" | "neighbour";
+}[] = [
   {
     name: "Center slide",
     desc: "offset 0 — flat, full scale, faces the camera",
-    swatch: "bg-[var(--foreground)]/70",
+    kind: "center",
   },
   {
     name: "Neighbours",
     desc: "offset ±1, ±2 — rotateY, translateZ, and scale by distance",
-    swatch: "bg-[var(--muted)]",
+    kind: "neighbour",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "center") {
+    return (
+      <span className="h-3.5 w-5 rounded-md bg-[var(--foreground)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-3.5 w-5 rounded-md bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function CoverFlowAnatomy() {
   return (
@@ -94,9 +109,7 @@ export function CoverFlowAnatomy() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

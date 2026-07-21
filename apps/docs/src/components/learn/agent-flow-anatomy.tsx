@@ -75,23 +75,43 @@ const CSS = `
 .afa-static .afa-packet { animation: none; opacity: 0.85; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "node" | "edge" | "packet";
+}[] = [
   {
     name: "Node card",
     desc: "absolute (x, y) centre, size measured live",
-    swatch: "border-2 border-[var(--foreground)]/50 bg-transparent",
+    kind: "node",
   },
   {
     name: "Edge path",
     desc: "quadratic curve, right-centre → left-centre",
-    swatch: "bg-[var(--foreground)]/40",
+    kind: "edge",
   },
   {
     name: "Packet",
     desc: "gradient beam that rides the curve",
-    swatch: "bg-[var(--foreground)]",
+    kind: "packet",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "node") {
+    return (
+      <span className="h-3.5 w-6 rounded-md border border-fd-border bg-[var(--card)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "edge") {
+    return (
+      <span className="h-0.5 w-8 rounded-full bg-[var(--foreground)]/40 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="size-2.5 rounded-full bg-[var(--foreground)] ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 function Card({ x, y, delay }: { x: number; y: number; delay: string }) {
   return (
@@ -171,9 +191,7 @@ export function AgentFlowAnatomy() {
           <dl className="grid w-full max-w-[400px] grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

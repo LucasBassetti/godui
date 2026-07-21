@@ -20,18 +20,33 @@ const CSS = `
 .swdf-static .swdf-card { animation: none; transform: none; opacity: 1; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "front" | "behind";
+}[] = [
   {
-    name: "Drag → rotate",
-    desc: "x [−320,0,320] maps to rotate [−18°,0,18°]",
-    swatch: "bg-[var(--foreground)]",
+    name: "Front card",
+    desc: "drag → rotate · x maps to ±18°",
+    kind: "front",
   },
   {
-    name: "Exit spring",
-    desc: "stiffness 60 / damping 16, seeded with release velocity",
-    swatch: "bg-[var(--foreground)]/30",
+    name: "Behind card",
+    desc: "exit spring 60/16 seeded with velocity",
+    kind: "behind",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "front") {
+    return (
+      <span className="h-4 w-5 rounded-md border border-[var(--foreground)]/60 bg-[var(--card)] shadow-sm" />
+    );
+  }
+  return (
+    <span className="h-4 w-5 rounded-md border border-fd-border bg-[var(--muted)]" />
+  );
+}
 
 export function SwipeDeckFling() {
   return (
@@ -55,9 +70,7 @@ export function SwipeDeckFling() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

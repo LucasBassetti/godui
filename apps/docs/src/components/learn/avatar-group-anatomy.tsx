@@ -19,18 +19,29 @@ const CSS = `
 .aga-static .aga-avatar { opacity: 1; animation: none; transform: none; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: { name: string; desc: string; kind: "avatar" | "chip" }[] = [
   {
     name: "Avatar",
     desc: "marginLeft: -12px (except the first), zIndex: i",
-    swatch: "bg-[var(--muted)]",
+    kind: "avatar",
   },
   {
     name: "+N chip",
     desc: "same row, same negative margin, one extra item",
-    swatch: "bg-[var(--foreground)]/30",
+    kind: "chip",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "avatar") {
+    return (
+      <span className="size-3 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="size-3 rounded-full bg-[var(--foreground)]/30 ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function AvatarGroupAnatomy() {
   return (
@@ -75,9 +86,7 @@ export function AvatarGroupAnatomy() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

@@ -35,14 +35,27 @@ const LEGEND = [
   {
     name: "Opacity in",
     desc: "300ms ease · group-hover:[opacity:var(--stream-opacity)]",
-    swatch: "bg-[var(--foreground)]/40",
+    kind: "opacity" as const,
   },
   {
     name: "Re-randomize",
     desc: "setInterval(speed) · default 55ms · glyphs change, opacity steady",
-    swatch: "bg-[var(--muted)]",
+    kind: "scramble" as const,
   },
 ] as const;
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "scramble") {
+    return (
+      <span className="h-3.5 w-6 rounded-lg border border-fd-border bg-[var(--card)] font-mono text-[6px] leading-none text-[var(--foreground)]/50 ring-1 ring-fd-border ring-inset">
+        Xy7#
+      </span>
+    );
+  }
+  return (
+    <span className="h-3.5 w-6 rounded-lg bg-[var(--foreground)]/50 ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 function ScrambleCard({ cycle, reduced }: { cycle: number; reduced: boolean }) {
   const [stream, setStream] = useState(() => randomString(STREAM_LEN));
@@ -96,9 +109,7 @@ export function EncryptedCardScramble() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

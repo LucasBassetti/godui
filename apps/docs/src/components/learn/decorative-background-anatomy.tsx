@@ -38,7 +38,10 @@ export function DecorativeBackgroundAnatomy() {
           </div>
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+              <span
+                className="h-3.5 w-5 rounded-md ring-1 ring-fd-border ring-inset [background:radial-gradient(125%_125%_at_50%_10%,#fff_40%,#a1a1aa_100%)]"
+                aria-hidden="true"
+              />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Wash
               </dt>
@@ -47,7 +50,10 @@ export function DecorativeBackgroundAnatomy() {
               </dd>
             </div>
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+              <span
+                className="h-3.5 w-5 rounded-md border border-fd-border bg-transparent ring-1 ring-fd-border ring-inset"
+                aria-hidden="true"
+              />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Shell
               </dt>

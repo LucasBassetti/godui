@@ -26,18 +26,33 @@ const CSS = `
 .da-static .da-ptr { opacity: 1; animation: none; transform: none; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "bus" | "item";
+}[] = [
   {
     name: "Pointer signal",
     desc: "one mouseX MotionValue, set on every mousemove",
-    swatch: "bg-[var(--foreground)]/30",
+    kind: "bus",
   },
   {
     name: "Dock items",
     desc: "each reads its own distance off that one value",
-    swatch: "bg-[var(--muted)]",
+    kind: "item",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "bus") {
+    return (
+      <span className="h-1 w-8 rounded-full bg-[var(--foreground)]/30 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="size-3.5 rounded-md border border-border bg-[var(--muted)] shadow-sm" />
+  );
+}
 
 export function DockAnatomy() {
   return (
@@ -91,9 +106,7 @@ export function DockAnatomy() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

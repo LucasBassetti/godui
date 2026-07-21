@@ -34,18 +34,37 @@ const CSS = `
 .ags-static .ags-lift { animation: none; transform: none; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "spread" | "lift";
+}[] = [
   {
     name: "Group spread",
     desc: "marginLeft -12 → 4, stiffness 520 · damping 32",
-    swatch: "bg-[var(--muted)]",
+    kind: "spread",
   },
   {
     name: "Avatar lift",
     desc: "y: -6, scale: 1.06 on the hovered avatar only",
-    swatch: "bg-[var(--foreground)]/60",
+    kind: "lift",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "spread") {
+    return (
+      <span className="relative h-3 w-7">
+        <span className="absolute inset-y-0 left-0 size-3 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+        <span className="absolute inset-y-0 left-2 size-3 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+        <span className="absolute inset-y-0 left-4 size-3 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+      </span>
+    );
+  }
+  return (
+    <span className="relative size-3 rounded-full bg-[var(--muted)] ring-2 ring-background ring-inset [transform:translateY(-2px)_scale(1.06)]" />
+  );
+}
 
 export function AvatarGroupSpread() {
   return (
@@ -90,9 +109,7 @@ export function AvatarGroupSpread() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

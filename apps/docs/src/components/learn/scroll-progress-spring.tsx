@@ -29,23 +29,43 @@ const CSS = `
 .sps-static .sps-spring { animation: none; transform: scaleX(0.65); }
 `;
 
-const LEGEND = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "raw" | "spring" | "reduced";
+}[] = [
   {
     name: "Raw",
     desc: "scrollYProgress — jumps with scroll",
-    swatch: "bg-[var(--foreground)]/30",
+    kind: "raw",
   },
   {
     name: "Spring",
     desc: "stiffness 120 · damping 24",
-    swatch: "bg-[var(--foreground)]/70",
+    kind: "spring",
   },
   {
     name: "Reduced",
     desc: "stiffness 1000 · damping 100",
-    swatch: "bg-[var(--muted)]",
+    kind: "reduced",
   },
-] as const;
+];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "spring") {
+    return (
+      <span className="h-1 w-8 rounded-full bg-[var(--foreground)]/70 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "reduced") {
+    return (
+      <span className="h-1 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-1 w-8 rounded-full bg-[var(--foreground)]/30 ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function ScrollProgressSpring() {
   return (
@@ -81,9 +101,7 @@ export function ScrollProgressSpring() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

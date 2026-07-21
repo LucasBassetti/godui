@@ -24,18 +24,38 @@ const HARD =
 const SOFT =
   "radial-gradient(circle 48px at 50% 50%, transparent 0, transparent 22px, #000 48px)";
 
-const LEGEND = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "hard" | "soft";
+}[] = [
   {
     name: "Hard edge",
     desc: "softness → 0 · inner ≈ radius",
-    swatch: "bg-[var(--foreground)]/80",
+    kind: "hard",
   },
   {
     name: "Soft feather",
     desc: "softness 0.55 · inner = radius × 0.45",
-    swatch: "bg-[var(--foreground)]/35",
+    kind: "soft",
   },
-] as const;
+];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  const mask =
+    kind === "hard"
+      ? "radial-gradient(circle 6px at 50% 50%, transparent 0, transparent 5px, #000 6px)"
+      : "radial-gradient(circle 6px at 50% 50%, transparent 0, transparent 2px, #000 6px)";
+  return (
+    <span className="relative h-5 w-7 overflow-hidden rounded-lg border border-fd-border ring-1 ring-fd-border ring-inset">
+      <span className="absolute inset-0 bg-[var(--foreground)]/75" />
+      <span
+        className="absolute inset-0 bg-[var(--card)]"
+        style={{ maskImage: mask, WebkitMaskImage: mask }}
+      />
+    </span>
+  );
+}
 
 export function SpotlightRevealMask() {
   return (
@@ -78,9 +98,7 @@ export function SpotlightRevealMask() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

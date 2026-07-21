@@ -43,18 +43,39 @@ function chipStyle(index: number): CSSProperties {
   } as CSSProperties;
 }
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "stagger" | "glow";
+}[] = [
   {
     name: "Stagger in",
     desc: "delay index × 40ms · spring 320/32/0.9",
-    swatch: "bg-[var(--foreground)]/25",
+    kind: "stagger",
   },
   {
     name: "Hover glow",
     desc: "y −3px snappy 520/32 · glow 240ms",
-    swatch: "bg-[var(--foreground)]/50",
+    kind: "glow",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "glow") {
+    return (
+      <span className="relative inline-flex h-3.5 w-8 items-center gap-1 rounded-full border border-transparent bg-[var(--muted)] px-1.5 shadow-[0_4px_10px_-6px_var(--foreground)] ring-1 ring-fd-border ring-inset">
+        <span className="size-1.5 shrink-0 rounded-[3px] bg-[var(--foreground)]/50" />
+        <span className="h-1 w-3 rounded-full bg-[var(--foreground)]/25" />
+      </span>
+    );
+  }
+  return (
+    <span className="inline-flex h-3.5 w-8 items-center gap-1 rounded-full border border-transparent bg-[var(--muted)] px-1.5 ring-1 ring-fd-border ring-inset">
+      <span className="size-1.5 shrink-0 rounded-[3px] bg-[var(--foreground)]/50" />
+      <span className="h-1 w-3 rounded-full bg-[var(--foreground)]/25" />
+    </span>
+  );
+}
 
 export function StackBadgeStagger() {
   return (
@@ -88,9 +109,7 @@ export function StackBadgeStagger() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

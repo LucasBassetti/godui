@@ -36,23 +36,43 @@ const PLATES: Plate[] = [
   },
 ];
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "front" | "edge" | "shadow";
+}[] = [
   {
     name: "Front",
     desc: "the real <input> you type in",
-    swatch: "bg-[var(--card)]",
+    kind: "front",
   },
   {
     name: "Edge",
     desc: "colored gradient, fakes the 3D wall",
-    swatch: "bg-[var(--foreground)]/15",
+    kind: "edge",
   },
   {
     name: "Shadow",
     desc: "blurred, grounds the lift",
-    swatch: "bg-black/60",
+    kind: "shadow",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "front") {
+    return (
+      <span className="h-3.5 w-7 rounded-[4px] border-2 border-[var(--foreground)]/40 bg-[var(--card)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "edge") {
+    return (
+      <span className="h-3.5 w-7 rounded-[4px] bg-[var(--foreground)]/15 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-3.5 w-7 rounded-[4px] bg-black/60 ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function MagicInputAnatomy() {
   return (
@@ -88,9 +108,7 @@ export function MagicInputAnatomy() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

@@ -51,14 +51,28 @@ const LEGEND = [
   {
     name: "Threshold",
     desc: "Math.hypot(dx, dy) < 64 → return early",
-    swatch: "bg-transparent ring-1 ring-[var(--foreground)]/40 ring-inset",
+    kind: "threshold" as const,
   },
   {
     name: "Spawn",
     desc: "place slot · tilt from atan2(dy, dx)",
-    swatch: "bg-[var(--muted)]",
+    kind: "spawn" as const,
   },
 ] as const;
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "threshold") {
+    return (
+      <span className="relative h-3 w-8">
+        <span className="absolute inset-x-0 top-1/2 border-t border-dashed border-[var(--foreground)]/20" />
+        <span className="absolute top-1/2 left-1/2 size-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[var(--foreground)]" />
+      </span>
+    );
+  }
+  return (
+    <span className="size-3.5 rounded-[10px] bg-[var(--muted)] shadow-sm ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function ImageTrailThreshold() {
   return (
@@ -106,9 +120,7 @@ export function ImageTrailThreshold() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

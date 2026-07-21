@@ -91,7 +91,7 @@ export function AuroraTextLifecycle() {
 
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[linear-gradient(90deg,#ff2d55,#ffd60a,#0a84ff)] ring-1 ring-fd-border ring-inset" />
+              <span className="h-3 w-7 rounded-xl bg-[linear-gradient(135deg,#ff2d55,#ffd60a,#0a84ff)] ring-1 ring-fd-border ring-inset" />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Playing
               </dt>
@@ -100,7 +100,7 @@ export function AuroraTextLifecycle() {
               </dd>
             </div>
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[linear-gradient(90deg,#ff2d55,#ffd60a,#0a84ff)] opacity-35 ring-1 ring-fd-border ring-inset" />
+              <span className="h-3 w-7 rounded-xl bg-[linear-gradient(135deg,#ff2d55,#ffd60a,#0a84ff)] opacity-35 ring-1 ring-fd-border ring-inset" />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Paused
               </dt>

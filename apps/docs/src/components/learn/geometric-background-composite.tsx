@@ -35,7 +35,14 @@ export function GeometricBackgroundComposite() {
           />
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+              <span
+                className="h-3 w-8 rounded-md ring-1 ring-fd-border ring-inset"
+                style={{
+                  backgroundImage:
+                    "linear-gradient(to right, #e5e5e5 1px, transparent 1px), linear-gradient(to bottom, #e5e5e5 1px, transparent 1px)",
+                  backgroundSize: "6px 6px",
+                }}
+              />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Grid
               </dt>
@@ -44,7 +51,13 @@ export function GeometricBackgroundComposite() {
               </dd>
             </div>
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+              <span
+                className="h-3 w-8 rounded-md ring-1 ring-fd-border ring-inset"
+                style={{
+                  backgroundImage:
+                    "radial-gradient(circle at 100% 40%, rgba(0,0,0,0.08), transparent 45%)",
+                }}
+              />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Glow
               </dt>

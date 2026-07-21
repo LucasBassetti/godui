@@ -67,23 +67,43 @@ function Connector({ fill }: { fill: string }) {
   );
 }
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "ring" | "connector" | "body";
+}[] = [
   {
     name: "Ring",
     desc: "border-color + fill keyed by status",
-    swatch: "border-2 border-[var(--foreground)] bg-transparent",
+    kind: "ring",
   },
   {
     name: "Connector",
     desc: "scaleY 0 → 0.5 → 1, spring 320/32/0.9",
-    swatch: "bg-[var(--foreground)]",
+    kind: "connector",
   },
   {
     name: "Body",
     desc: "height + opacity, collapsible per step",
-    swatch: "bg-[var(--foreground)]/30",
+    kind: "body",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "ring") {
+    return (
+      <span className="size-3 rounded-full border-2 border-[var(--foreground)] bg-transparent ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "connector") {
+    return (
+      <span className="h-3.5 w-0.5 rounded-full bg-[var(--foreground)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-3.5 w-6 rounded-md border border-fd-border bg-[var(--muted)]/40 ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function AgentTimelineAnatomy() {
   return (
@@ -158,7 +178,7 @@ export function AgentTimelineAnatomy() {
           <dl className="mt-3 grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span className={`size-3 rounded-full ${item.swatch}`} />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

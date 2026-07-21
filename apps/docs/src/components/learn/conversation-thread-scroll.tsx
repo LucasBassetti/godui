@@ -30,24 +30,45 @@ const CSS = `
 
 const ROWS: string[] = ["w-24", "w-32", "w-20", "w-28", "w-16", "w-32"];
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "row" | "threshold" | "pill";
+}[] = [
   {
     name: "Message row",
     desc: "content taller than the viewport, scrolls under it",
-    swatch: "bg-[var(--foreground)]/25",
+    kind: "row",
   },
   {
     name: "48px threshold",
     desc: "scrollHeight − scrollTop − clientHeight",
-    swatch:
-      "border-t border-dashed border-[var(--foreground)]/40 bg-transparent",
+    kind: "threshold",
   },
   {
     name: "Jump-to-latest pill",
     desc: "sticky bottom-2, spring opacity/y/scale",
-    swatch: "bg-[var(--popover)]",
+    kind: "pill",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "row") {
+    return (
+      <span className="h-2.5 w-10 rounded-full bg-[var(--foreground)]/25 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "threshold") {
+    return (
+      <span className="h-px w-8 border-t border-dashed border-[var(--foreground)]/40" />
+    );
+  }
+  return (
+    <span className="flex size-4 items-center justify-center rounded-full border border-fd-border bg-[var(--popover)] shadow-sm">
+      <span className="size-1.5 rounded-full bg-[var(--foreground)]/70" />
+    </span>
+  );
+}
 
 function ArrowDownIcon({ className }: { className?: string }) {
   return (
@@ -106,9 +127,7 @@ export function ConversationThreadScroll() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ring-1 ring-fd-border ring-inset ${item.swatch}`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

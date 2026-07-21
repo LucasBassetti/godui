@@ -29,6 +29,34 @@ const CSS = `
 .stlsp-static .stlsp-spring { animation: none; transform: scaleY(1); }
 `;
 
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "raw" | "spring";
+}[] = [
+  {
+    name: "scrollYProgress",
+    desc: "matches the scroll position exactly, every event",
+    kind: "raw",
+  },
+  {
+    name: "Spring-smoothed",
+    desc: "lags slightly, settles instead of snapping",
+    kind: "spring",
+  },
+];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "spring") {
+    return (
+      <span className="h-4 w-0.5 rounded-full bg-[var(--foreground)]/70 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-4 w-0.5 rounded-full bg-[var(--foreground)]/45 ring-1 ring-fd-border ring-inset" />
+  );
+}
+
 export function ScrollTimelineSpring() {
   return (
     <ScrollScene label="Why a spring" note="raw scroll vs. smoothed">
@@ -64,24 +92,17 @@ export function ScrollTimelineSpring() {
           </p>
 
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--foreground)]/45 ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                scrollYProgress
-              </dt>
-              <dd className="text-[12px] text-fd-muted-foreground">
-                matches the scroll position exactly, every event
-              </dd>
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--foreground)]/70 ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                Spring-smoothed
-              </dt>
-              <dd className="text-[12px] text-fd-muted-foreground">
-                lags slightly, settles instead of snapping
-              </dd>
-            </div>
+            {LEGEND.map((item) => (
+              <div key={item.name} className="flex flex-col gap-1.5">
+                <LegendSwatch kind={item.kind} />
+                <dt className="font-medium text-[13px] text-fd-foreground">
+                  {item.name}
+                </dt>
+                <dd className="text-[12px] text-fd-muted-foreground">
+                  {item.desc}
+                </dd>
+              </div>
+            ))}
           </dl>
         </div>
       )}

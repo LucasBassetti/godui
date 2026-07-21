@@ -68,18 +68,39 @@ function Pill({ fillClass }: { fillClass: string }) {
   );
 }
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "cancel" | "confirm";
+}[] = [
   {
     name: "Cancel",
     desc: "spring(320, 32, 0.9) back to 0",
-    swatch: "bg-[var(--foreground)]/30",
+    kind: "cancel",
   },
   {
     name: "Confirm",
     desc: "linear to 1, then check draws in 0.3s",
-    swatch: "bg-[var(--foreground)]/50",
+    kind: "confirm",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "cancel") {
+    return (
+      <span className="relative h-3.5 w-8 overflow-hidden rounded-lg ring-1 ring-fd-border ring-inset">
+        <span className="absolute inset-0 bg-[var(--foreground)]" />
+        <span className="absolute inset-y-0 left-0 w-[55%] bg-[var(--background)]/30" />
+      </span>
+    );
+  }
+  return (
+    <span className="relative h-3.5 w-8 overflow-hidden rounded-lg ring-1 ring-fd-border ring-inset">
+      <span className="absolute inset-0 bg-[var(--foreground)]" />
+      <span className="absolute inset-0 bg-[var(--background)]/30" />
+    </span>
+  );
+}
 
 export function HoldCancel() {
   return (
@@ -98,9 +119,7 @@ export function HoldCancel() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

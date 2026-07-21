@@ -34,19 +34,39 @@ const CSS = `
 }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
-  { name: "Cursor", desc: "clientX inside the sensor", swatch: "bg-black/70" },
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "cursor" | "target" | "shell";
+}[] = [
+  { name: "Cursor", desc: "clientX inside the sensor", kind: "cursor" },
   {
     name: "Raw target",
     desc: "(x − cx) × strength, no easing",
-    swatch: "border-2 border-dashed border-black/50 bg-transparent",
+    kind: "target",
   },
   {
     name: "Spring shell",
     desc: "170 / 12 / 0.1 — lags, then overshoots",
-    swatch: "border border-fd-border bg-[var(--card)]",
+    kind: "shell",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "cursor") {
+    return (
+      <span className="size-2.5 rounded-full bg-black/70 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "target") {
+    return (
+      <span className="h-3.5 w-6 rounded-[10px] border-2 border-dashed border-black/50 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-3.5 w-6 rounded-[10px] border border-fd-border bg-[var(--card)] shadow-sm ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function MagneticPull() {
   return (
@@ -80,9 +100,7 @@ export function MagneticPull() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`size-3.5 rounded-full ring-1 ring-fd-border ring-inset ${item.swatch}`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

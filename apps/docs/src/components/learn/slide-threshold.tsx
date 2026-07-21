@@ -71,23 +71,43 @@ const CSS = `
 .st-static .st-icon-check      { animation: none; opacity: 1; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "fill" | "thumb" | "threshold";
+}[] = [
   {
     name: "Falls short",
     desc: "released below 216px → spring(500,40) back to 0",
-    swatch: "bg-[var(--foreground)]/20",
+    kind: "fill",
   },
   {
     name: "Past the line",
     desc: "released past 216px → confirm() springs to maxX",
-    swatch: "bg-[var(--foreground)]",
+    kind: "thumb",
   },
   {
     name: "Threshold",
     desc: "maxX × 0.9 = 216px",
-    swatch: "bg-[var(--foreground)]/40",
+    kind: "threshold",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "thumb") {
+    return (
+      <span className="size-3 rounded-full bg-[var(--foreground)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "threshold") {
+    return (
+      <span className="h-3 w-0.5 rounded-full bg-[var(--foreground)]/40 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-2 w-8 rounded-full bg-[var(--foreground)]/20 ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function SlideThreshold() {
   return (
@@ -164,9 +184,7 @@ export function SlideThreshold() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

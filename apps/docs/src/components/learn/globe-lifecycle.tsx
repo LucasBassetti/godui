@@ -36,19 +36,37 @@ const LEGEND = [
   {
     name: "Mount",
     desc: "createGlobe(canvas, config) + rAF loop starts",
-    swatch: "bg-[var(--foreground)]/60",
+    kind: "mount" as const,
   },
   {
     name: "Idle spin",
     desc: "tick → phi += 0.005 → globe.update(), forever",
-    swatch: "bg-[var(--foreground)]/30",
+    kind: "spin" as const,
   },
   {
     name: "Destroy",
     desc: "cleanup: cancelAnimationFrame + globe.destroy()",
-    swatch: "border border-dashed border-[var(--foreground)]/40 bg-transparent",
+    kind: "destroy" as const,
   },
 ] as const;
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "destroy") {
+    return (
+      <span className="size-4 rounded-full border border-dashed border-[var(--foreground)]/30 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "spin") {
+    return (
+      <span className="size-4 rounded-full [background:conic-gradient(from_0deg,var(--foreground)_0deg,transparent_60deg,transparent_360deg)] opacity-30 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="relative flex size-4 items-center justify-center rounded-full border border-fd-border bg-[var(--card)] ring-1 ring-fd-border ring-inset">
+      <span className="size-2 rounded-full bg-[var(--muted)]" />
+    </span>
+  );
+}
 
 export function GlobeLifecycle() {
   return (
@@ -107,9 +125,7 @@ export function GlobeLifecycle() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

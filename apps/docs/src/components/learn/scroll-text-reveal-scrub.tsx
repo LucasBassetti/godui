@@ -64,23 +64,44 @@ const SEG_CLASS = [
   "strs-s4",
 ] as const;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "slice" | "dim" | "lit";
+}[] = [
   {
     name: "Progress",
     desc: "scrollYProgress 0 → 1 → 0",
-    swatch: "bg-[var(--foreground)]/55",
+    kind: "slice",
   },
   {
     name: "Opacity",
     desc: "dimOpacity → 1 per slice",
-    swatch: "bg-[var(--foreground)]/30",
+    kind: "dim",
   },
   {
     name: "Blur",
     desc: "blur(6px) → blur(0) in sync",
-    swatch: "bg-[var(--foreground)]/15",
+    kind: "lit",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "slice") {
+    return (
+      <span className="relative h-1 w-8 overflow-hidden rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset">
+        <span className="absolute inset-y-0 left-0 w-1/2 rounded-full bg-[var(--foreground)]/55" />
+      </span>
+    );
+  }
+  return (
+    <span
+      className={`h-2 w-8 rounded-full bg-[var(--foreground)] ring-1 ring-fd-border ring-inset ${
+        kind === "dim" ? "opacity-30" : "opacity-15"
+      }`}
+    />
+  );
+}
 
 export function ScrollTextRevealScrub() {
   return (
@@ -116,9 +137,7 @@ export function ScrollTextRevealScrub() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ring-1 ring-fd-border ring-inset ${item.swatch}`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

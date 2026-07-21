@@ -18,18 +18,31 @@ const CSS = `
 .csra-static .csra-frame { opacity: 1; animation: none; transform: none; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: { name: string; desc: string; kind: "header" | "frame" }[] = [
   {
     name: "Header",
     desc: "translateY 0 → -100 as the section scrolls",
-    swatch: "bg-[var(--foreground)]/30",
+    kind: "header",
   },
   {
     name: "Frame",
     desc: "rotateX 20° → 0°, scale 1.05 → 1, in its own 3D stage",
-    swatch: "bg-[var(--muted)]",
+    kind: "frame",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "header") {
+    return (
+      <span className="h-1.5 w-8 rounded-full bg-[var(--foreground)]/30 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-3.5 w-6 rounded-md border border-fd-border bg-[var(--card)] p-0.5 ring-1 ring-fd-border ring-inset">
+      <span className="block h-full w-full rounded-[3px] bg-[var(--muted)]" />
+    </span>
+  );
+}
 
 export function ContainerScrollAnatomy() {
   return (
@@ -57,9 +70,7 @@ export function ContainerScrollAnatomy() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

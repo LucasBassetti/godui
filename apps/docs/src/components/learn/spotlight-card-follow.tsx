@@ -64,23 +64,43 @@ const CSS = `
 }
 `;
 
-const LEGEND = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "glow" | "cursor" | "fade";
+}[] = [
   {
     name: "Glow layer",
     desc: "inset-0 radial at --x/--y · defaults 50%/50%",
-    swatch: "bg-[var(--foreground)]/30",
+    kind: "glow",
   },
   {
     name: "setProperty",
     desc: "direct DOM write on pointer move — zero re-renders",
-    swatch: "bg-[var(--muted)]",
+    kind: "cursor",
   },
   {
     name: "Hover fade",
     desc: "opacity 0→100, 400ms ease (group-hover)",
-    swatch: "bg-transparent ring-1 ring-[var(--foreground)]/40 ring-inset",
+    kind: "fade",
   },
-] as const;
+];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "cursor") {
+    return (
+      <span className="size-2.5 rounded-full bg-[var(--foreground)]/55 ring-4 ring-[var(--foreground)]/10 ring-inset" />
+    );
+  }
+  if (kind === "fade") {
+    return (
+      <span className="h-5 w-7 rounded-xl border border-fd-border bg-[var(--card)] opacity-40 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-5 w-7 rounded-xl bg-[radial-gradient(circle_at_70%_40%,color-mix(in_oklab,var(--foreground)_28%,transparent),transparent_65%)] ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function SpotlightCardFollow() {
   return (
@@ -118,9 +138,7 @@ export function SpotlightCardFollow() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

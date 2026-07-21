@@ -24,23 +24,43 @@ const CSS = `
 .rha-static .rha-piece { opacity: 1; animation: none; transform: none; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "logo" | "links" | "cta";
+}[] = [
   {
     name: "Logo",
     desc: "brand mark, shrink-0 on the left",
-    swatch: "bg-[var(--foreground)]/40",
+    kind: "logo",
   },
   {
     name: "Links",
     desc: "nav row — carries the hover pill + active underline",
-    swatch: "bg-[var(--foreground)]/25",
+    kind: "links",
   },
   {
     name: "CTA",
     desc: "shrink-0 action slot on the right",
-    swatch: "bg-[var(--foreground)]/25",
+    kind: "cta",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "logo") {
+    return (
+      <span className="size-3 rounded-full bg-[var(--foreground)]/45 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "links") {
+    return (
+      <span className="h-1.5 w-8 rounded-full bg-[var(--foreground)]/28 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-2.5 w-8 rounded-full bg-[var(--foreground)]/25 ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function ResizableHeaderAnatomy() {
   return (
@@ -77,9 +97,7 @@ export function ResizableHeaderAnatomy() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

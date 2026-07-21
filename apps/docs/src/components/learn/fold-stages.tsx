@@ -122,7 +122,7 @@ export function FoldStages() {
 
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--card)] ring-1 ring-[var(--foreground)]/15 ring-inset" />
+              <span className="h-3.5 w-6 rounded-lg border border-[var(--foreground)]/15 bg-[var(--card)] ring-1 ring-fd-border ring-inset" />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Front face
               </dt>
@@ -131,7 +131,9 @@ export function FoldStages() {
               </dd>
             </div>
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--foreground)]/20 ring-1 ring-fd-border ring-inset" />
+              <span className="relative h-3.5 w-6 overflow-hidden rounded-lg bg-[var(--foreground)]/[0.07] ring-1 ring-fd-border ring-inset">
+                <span className="absolute inset-y-0 left-0 w-[55%] bg-[var(--foreground)]/25" />
+              </span>
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Back layer
               </dt>

@@ -19,6 +19,34 @@ const CSS = `
 .pgf-static .pgf-c { animation: none; opacity: 0.25; }
 `;
 
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "cell" | "dimCell";
+}[] = [
+  {
+    name: "Chance",
+    desc: "flickerChance=0.3 / second",
+    kind: "cell",
+  },
+  {
+    name: "Draw",
+    desc: "opacity re-rolled when triggered",
+    kind: "dimCell",
+  },
+];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "cell") {
+    return (
+      <span className="size-2 rounded-[1px] bg-[var(--foreground)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="size-2 rounded-[1px] bg-[var(--foreground)]/15 ring-1 ring-fd-border ring-inset" />
+  );
+}
+
 export function PixelGridFlicker() {
   return (
     <ScrollScene label="Flicker" note="P(re-roll) = chance × dt">
@@ -47,24 +75,17 @@ export function PixelGridFlicker() {
             ))}
           </div>
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                Chance
-              </dt>
-              <dd className="text-[12px] text-fd-muted-foreground">
-                flickerChance=0.3 / second
-              </dd>
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                Draw
-              </dt>
-              <dd className="text-[12px] text-fd-muted-foreground">
-                opacity re-rolled when triggered
-              </dd>
-            </div>
+            {LEGEND.map((item) => (
+              <div key={item.name} className="flex flex-col gap-1.5">
+                <LegendSwatch kind={item.kind} />
+                <dt className="font-medium text-[13px] text-fd-foreground">
+                  {item.name}
+                </dt>
+                <dd className="text-[12px] text-fd-muted-foreground">
+                  {item.desc}
+                </dd>
+              </div>
+            ))}
           </dl>
         </div>
       )}

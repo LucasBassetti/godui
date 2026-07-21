@@ -36,22 +36,22 @@ const LEGEND = [
   {
     name: "Left cone",
     desc: "conic from 290deg, origin-left",
-    swatch: "bg-[var(--muted)]",
+    swatch: "bg-[var(--foreground)]/35",
   },
   {
     name: "Right cone",
     desc: "conic from 70deg, origin-right",
-    swatch: "bg-[var(--card)] ring-1 ring-fd-border ring-inset",
+    swatch: "bg-[var(--foreground)]/35",
   },
   {
     name: "Bar + wash",
     desc: "scaleX seam + radial ellipse",
-    swatch: "bg-[var(--foreground)]/50",
+    swatch: "bg-[var(--foreground)]/70",
   },
   {
     name: "Children",
     desc: "slot rises into the light",
-    swatch: "bg-[var(--foreground)]/25",
+    swatch: "bg-[var(--foreground)]/30",
   },
 ] as const;
 

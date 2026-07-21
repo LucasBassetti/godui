@@ -39,7 +39,18 @@ export function GeometricBackgroundMask() {
           />
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+              <span
+                className="h-3 w-8 rounded-md ring-1 ring-fd-border ring-inset"
+                style={{
+                  backgroundImage:
+                    "linear-gradient(to right, #d4d4d8 1px, transparent 1px), linear-gradient(to bottom, #d4d4d8 1px, transparent 1px)",
+                  backgroundSize: "6px 6px",
+                  WebkitMaskImage:
+                    "linear-gradient(to bottom, black 30%, transparent 95%)",
+                  maskImage:
+                    "linear-gradient(to bottom, black 30%, transparent 95%)",
+                }}
+              />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Mask
               </dt>
@@ -48,7 +59,13 @@ export function GeometricBackgroundMask() {
               </dd>
             </div>
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+              <span
+                className="h-3 w-8 rounded-md ring-1 ring-fd-border ring-inset"
+                style={{
+                  backgroundImage:
+                    "repeating-linear-gradient(90deg, transparent 0 3px, #d4d4d8 3px 4px), repeating-linear-gradient(0deg, transparent 0 3px, #d4d4d8 3px 4px)",
+                }}
+              />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Presets
               </dt>

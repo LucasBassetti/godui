@@ -37,18 +37,30 @@ const CSS = `
 .cr-static .cr-reject  { opacity: 0; animation: none; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "current" | "stale";
+}[] = [
   {
     name: "Current request",
     desc: "id === reqId.current — result applied",
-    swatch: "bg-[var(--foreground)]/30",
+    kind: "current",
   },
   {
     name: "Stale request",
     desc: "resolves late — dropped by the id guard",
-    swatch: "bg-[var(--foreground)]/10",
+    kind: "stale",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  return (
+    <span
+      className={`h-2 w-6 rounded-md ring-1 ring-fd-border ring-inset ${kind === "current" ? "bg-[var(--foreground)]/30" : "bg-[var(--foreground)]/10"}`}
+    />
+  );
+}
 
 function Track({
   pillClass,
@@ -130,9 +142,7 @@ export function ComboboxRace() {
           <dl className="grid w-full max-w-[320px] grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

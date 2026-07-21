@@ -27,6 +27,34 @@ const CSS = `
 
 const NODES = [0.12, 0.5, 0.88];
 
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "rail" | "progress";
+}[] = [
+  {
+    name: "Base rail",
+    desc: "fixed line, always full height",
+    kind: "rail",
+  },
+  {
+    name: "Progress fill",
+    desc: "scaleY overlay, grows with scroll",
+    kind: "progress",
+  },
+];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "progress") {
+    return (
+      <span className="h-4 w-0.5 rounded-full bg-[var(--primary)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-4 w-0.5 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+  );
+}
+
 export function ScrollTimelineScrub() {
   return (
     <ScrollScene label="The motion" note="scaleY, origin-top — not height">
@@ -58,24 +86,17 @@ export function ScrollTimelineScrub() {
           </p>
 
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                Base rail
-              </dt>
-              <dd className="text-[12px] text-fd-muted-foreground">
-                fixed line, always full height
-              </dd>
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--primary)] ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                Progress fill
-              </dt>
-              <dd className="text-[12px] text-fd-muted-foreground">
-                scaleY overlay, grows with scroll
-              </dd>
-            </div>
+            {LEGEND.map((item) => (
+              <div key={item.name} className="flex flex-col gap-1.5">
+                <LegendSwatch kind={item.kind} />
+                <dt className="font-medium text-[13px] text-fd-foreground">
+                  {item.name}
+                </dt>
+                <dd className="text-[12px] text-fd-muted-foreground">
+                  {item.desc}
+                </dd>
+              </div>
+            ))}
           </dl>
         </div>
       )}

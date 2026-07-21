@@ -35,23 +35,44 @@ const SLOTS: { id: string; opacity: number; blur: number }[] = [
   { id: "s4", opacity: 0.15, blur: 6 },
 ];
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "dim" | "lit" | "slice";
+}[] = [
   {
     name: "Dim",
     desc: "reveal 0 — opacity dimOpacity, blur 6px",
-    swatch: "bg-[var(--foreground)]/15",
+    kind: "dim",
   },
   {
     name: "Lit",
     desc: "reveal 1 — opacity 1, blur 0",
-    swatch: "bg-[var(--foreground)]",
+    kind: "lit",
   },
   {
     name: "Slice",
     desc: "segment i owns progress [i/n, (i+1)/n]",
-    swatch: "bg-[var(--foreground)]/45",
+    kind: "slice",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "slice") {
+    return (
+      <span className="relative h-1 w-8 overflow-hidden rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset">
+        <span className="absolute inset-y-0 left-0 w-1/2 rounded-full bg-[var(--foreground)]/55" />
+      </span>
+    );
+  }
+  return (
+    <span
+      className={`h-2 w-8 rounded-full bg-[var(--foreground)] ring-1 ring-fd-border ring-inset ${
+        kind === "dim" ? "opacity-15" : ""
+      }`}
+    />
+  );
+}
 
 export function ScrollTextRevealAnatomy() {
   return (
@@ -103,9 +124,7 @@ export function ScrollTextRevealAnatomy() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ring-1 ring-fd-border ring-inset ${item.swatch}`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

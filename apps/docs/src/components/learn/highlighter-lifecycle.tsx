@@ -51,18 +51,33 @@ const CSS = `
 .hl-life-static .hl-life-mark { animation: none; opacity: 1; transform: none; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "gate" | "resize";
+}[] = [
   {
     name: "In-view gate",
     desc: "useInView once, margin −10% — annotate only when shouldShow",
-    swatch: "bg-[var(--foreground)]/35",
+    kind: "gate",
   },
   {
     name: "Resize redraw",
     desc: "ResizeObserver: hide() then show() on the same annotation",
-    swatch: "border border-dashed border-[var(--foreground)]/50 bg-transparent",
+    kind: "resize",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "resize") {
+    return (
+      <span className="h-3 w-6 rounded-lg border border-dashed border-[var(--foreground)]/30 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-3 w-6 rounded-sm bg-black/20 ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function HighlighterLifecycle() {
   return (
@@ -130,9 +145,7 @@ export function HighlighterLifecycle() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ring-1 ring-fd-border ring-inset ${item.swatch}`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

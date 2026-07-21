@@ -31,6 +31,34 @@ const CURSORS = [
   { id: "b", top: "58%", left: "62%", delay: "90ms" },
 ];
 
+const LEGEND = [
+  {
+    name: "Enter",
+    desc: "opacity 0 → 1, scale 0.5 → 1, 150ms",
+    kind: "enter" as const,
+  },
+  {
+    name: "Exit",
+    desc: "the mirror transition, then unmounts — no manual timer",
+    kind: "exit" as const,
+  },
+] as const;
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "exit") {
+    return (
+      <span className="flex size-4 items-center justify-center rounded-full bg-[var(--foreground)]/40 shadow-sm ring-1 ring-fd-border ring-inset">
+        <span className="size-1.5 rounded-full bg-[var(--background)]/80" />
+      </span>
+    );
+  }
+  return (
+    <span className="flex size-4 items-center justify-center rounded-full bg-[var(--foreground)]/70 shadow-sm ring-1 ring-fd-border ring-inset">
+      <span className="size-1.5 rounded-full bg-[var(--background)]" />
+    </span>
+  );
+}
+
 export function LiveCursorsPresence() {
   return (
     <ScrollScene
@@ -73,24 +101,17 @@ export function LiveCursorsPresence() {
           </div>
 
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--foreground)]/70 ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                Enter
-              </dt>
-              <dd className="text-[12px] text-fd-muted-foreground">
-                opacity 0 → 1, scale 0.5 → 1, 150ms
-              </dd>
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--foreground)]/40 ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                Exit
-              </dt>
-              <dd className="text-[12px] text-fd-muted-foreground">
-                the mirror transition, then unmounts — no manual timer
-              </dd>
-            </div>
+            {LEGEND.map((item) => (
+              <div key={item.name} className="flex flex-col gap-1.5">
+                <LegendSwatch kind={item.kind} />
+                <dt className="font-medium text-[13px] text-fd-foreground">
+                  {item.name}
+                </dt>
+                <dd className="text-[12px] text-fd-muted-foreground">
+                  {item.desc}
+                </dd>
+              </div>
+            ))}
           </dl>
         </div>
       )}

@@ -23,6 +23,52 @@ const CSS = `
 .tdd-static .tdd-map { animation: none; }
 `;
 
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "offset" | "lifecycle";
+}[] = [
+  {
+    name: "z-offset",
+    desc: "z += 0.0015 × speed",
+    kind: "offset",
+  },
+  {
+    name: "Lifecycle",
+    desc: "IO · visibility · reduced freeze",
+    kind: "lifecycle",
+  },
+];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "lifecycle") {
+    return (
+      <span className="h-8 w-12 rounded-2xl border border-fd-border bg-[var(--card)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 32 12"
+      className="h-3 w-8 text-[var(--foreground)]"
+      fill="none"
+    >
+      <path
+        d="M0 6 Q8 2 16 6 T32 6"
+        stroke="currentColor"
+        strokeWidth="1.2"
+        opacity={0.75}
+      />
+      <path
+        d="M0 9 Q8 6 16 9 T32 9"
+        stroke="currentColor"
+        strokeWidth="1"
+        opacity={0.45}
+      />
+    </svg>
+  );
+}
+
 export function TopographicDriftDrift() {
   return (
     <ScrollScene label="Drift" note="z += 0.0015 × speed each frame">
@@ -78,24 +124,23 @@ export function TopographicDriftDrift() {
           </p>
 
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                z-offset
-              </dt>
-              <dd className="font-mono text-[12px] text-fd-muted-foreground">
-                z += 0.0015 × speed
-              </dd>
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                Lifecycle
-              </dt>
-              <dd className="text-[12px] text-fd-muted-foreground">
-                IO · visibility · reduced freeze
-              </dd>
-            </div>
+            {LEGEND.map((item) => (
+              <div key={item.name} className="flex flex-col gap-1.5">
+                <LegendSwatch kind={item.kind} />
+                <dt className="font-medium text-[13px] text-fd-foreground">
+                  {item.name}
+                </dt>
+                <dd
+                  className={
+                    item.kind === "offset"
+                      ? "font-mono text-[12px] text-fd-muted-foreground"
+                      : "text-[12px] text-fd-muted-foreground"
+                  }
+                >
+                  {item.desc}
+                </dd>
+              </div>
+            ))}
           </dl>
         </div>
       )}

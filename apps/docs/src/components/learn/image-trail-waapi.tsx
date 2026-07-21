@@ -46,19 +46,35 @@ const LEGEND = [
   {
     name: "Scale",
     desc: "0.4 → 1 (at 18%) → 0.92",
-    swatch: "bg-[var(--muted)]",
+    kind: "scale" as const,
   },
   {
     name: "Opacity",
     desc: "0 → 1 → 0 · fill: forwards",
-    swatch: "bg-[var(--foreground)]/40",
+    kind: "opacity" as const,
   },
   {
     name: "Drift + tilt",
     desc: "−50% → −65% Y · rotate(tilt)",
-    swatch: "bg-[var(--foreground)]/20",
+    kind: "drift" as const,
   },
 ] as const;
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "opacity") {
+    return (
+      <span className="size-4 rounded-xl bg-[var(--foreground)]/25 ring-1 ring-fd-border/40 ring-inset" />
+    );
+  }
+  if (kind === "drift") {
+    return (
+      <span className="size-4 rounded-xl bg-[var(--muted)] ring-1 ring-fd-border/40 ring-inset [transform:rotate(-8deg)]" />
+    );
+  }
+  return (
+    <span className="size-4 rounded-xl bg-[var(--muted)] ring-1 ring-fd-border/40 ring-inset" />
+  );
+}
 
 export function ImageTrailWaapi() {
   return (
@@ -88,9 +104,7 @@ export function ImageTrailWaapi() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

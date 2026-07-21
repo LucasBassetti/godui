@@ -25,17 +25,19 @@ const LEGEND: { name: string; desc: string; swatch: string }[] = [
   {
     name: "From",
     desc: "frame < start — previous glyph, done",
-    swatch: "bg-[var(--foreground)]/25",
+    swatch:
+      "size-2.5 rounded-sm bg-[var(--foreground)]/25 ring-1 ring-fd-border ring-inset",
   },
   {
     name: "Scrambling",
     desc: "start ≤ frame < end — random from pool",
-    swatch: "bg-primary",
+    swatch: "size-2.5 rounded-sm bg-primary ring-1 ring-fd-border ring-inset",
   },
   {
     name: "Resolved",
     desc: "frame ≥ end — locked to `to`",
-    swatch: "bg-[var(--foreground)]/70",
+    swatch:
+      "size-2.5 rounded-sm bg-[var(--foreground)]/70 ring-1 ring-fd-border ring-inset",
   },
 ];
 
@@ -108,9 +110,7 @@ export function TextScrambleAnatomy() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ring-1 ring-fd-border ring-inset ${item.swatch}`}
-                />
+                <span className={item.swatch} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

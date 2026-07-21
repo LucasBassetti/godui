@@ -42,18 +42,37 @@ const CSS = `
 }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "unresolved" | "resolved";
+}[] = [
   {
     name: "Unresolved",
     desc: "random pool glyph + text-primary, 120ms color",
-    swatch: "bg-primary",
+    kind: "unresolved",
   },
   {
     name: "Resolved",
     desc: "locked `to` — inherits foreground",
-    swatch: "bg-[var(--foreground)]/60",
+    kind: "resolved",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "unresolved") {
+    return (
+      <span className="inline-flex w-[1.1ch] justify-center font-mono text-sm text-primary">
+        ░
+      </span>
+    );
+  }
+  return (
+    <span className="inline-flex w-[1.1ch] justify-center font-mono text-sm text-[var(--foreground)]">
+      ░
+    </span>
+  );
+}
 
 export function TextScrambleCycle() {
   return (
@@ -91,9 +110,7 @@ export function TextScrambleCycle() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ring-1 ring-fd-border ring-inset ${item.swatch}`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

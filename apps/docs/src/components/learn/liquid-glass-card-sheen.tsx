@@ -37,6 +37,40 @@ const CSS = `
 .lgcs-static .lgcs-glow { animation: none; opacity: 1; --sx: 35%; --sy: 30%; }
 `;
 
+const LEGEND = [
+  {
+    name: "CSS vars",
+    desc: "--lg-x / --lg-y as %",
+    kind: "vars" as const,
+  },
+  {
+    name: "Fade",
+    desc: "transition-opacity duration-200",
+    kind: "fade" as const,
+  },
+] as const;
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "fade") {
+    return (
+      <span className="relative h-4 w-7 overflow-hidden rounded-2xl border border-fd-border bg-[var(--card)] ring-1 ring-fd-border ring-inset">
+        <span
+          className="absolute inset-0 mix-blend-screen"
+          style={{
+            background:
+              "radial-gradient(circle at 35% 30%, color-mix(in oklab, var(--foreground) 40%, transparent) 0%, transparent 45%)",
+          }}
+        />
+      </span>
+    );
+  }
+  return (
+    <span className="relative h-4 w-7 overflow-hidden rounded-2xl border border-fd-border bg-[var(--card)] ring-1 ring-fd-border ring-inset">
+      <span className="absolute inset-0 bg-[var(--muted)]/35" />
+    </span>
+  );
+}
+
 export function LiquidGlassCardSheen() {
   return (
     <ScrollScene label="Sheen" note="--lg-x · --lg-y · 200ms fade">
@@ -66,24 +100,17 @@ export function LiquidGlassCardSheen() {
           </div>
 
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                CSS vars
-              </dt>
-              <dd className="font-mono text-[12px] text-fd-muted-foreground">
-                --lg-x / --lg-y as %
-              </dd>
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                Fade
-              </dt>
-              <dd className="font-mono text-[12px] text-fd-muted-foreground">
-                transition-opacity duration-200
-              </dd>
-            </div>
+            {LEGEND.map((item) => (
+              <div key={item.name} className="flex flex-col gap-1.5">
+                <LegendSwatch kind={item.kind} />
+                <dt className="font-medium text-[13px] text-fd-foreground">
+                  {item.name}
+                </dt>
+                <dd className="font-mono text-[12px] text-fd-muted-foreground">
+                  {item.desc}
+                </dd>
+              </div>
+            ))}
           </dl>
         </div>
       )}

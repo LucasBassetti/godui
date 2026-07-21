@@ -36,19 +36,35 @@ const LEGEND = [
   {
     name: "Mask ring",
     desc: "mask-intersect: padding-box + border-box — only the border shows",
-    swatch: "bg-transparent ring-2 ring-[var(--foreground)]/40 ring-inset",
+    kind: "mask",
   },
   {
     name: "Beam square",
     desc: "aspect-square, size px — longer streak when size grows",
-    swatch: "bg-[var(--foreground)]/45",
+    kind: "beam",
   },
   {
     name: "Host",
     desc: "absolute inset-0, rounded-[inherit], pointer-events-none",
-    swatch: "bg-[var(--muted)]",
+    kind: "host",
   },
 ] as const;
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "mask") {
+    return (
+      <span className="h-3.5 w-5 rounded-md bg-transparent ring-2 ring-[var(--foreground)]/40 ring-inset" />
+    );
+  }
+  if (kind === "beam") {
+    return (
+      <span className="size-2.5 rounded-sm bg-[var(--foreground)]/50 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-3.5 w-5 rounded-md bg-[var(--muted)]/40 ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function BorderBeamAnatomy() {
   return (
@@ -87,9 +103,7 @@ export function BorderBeamAnatomy() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

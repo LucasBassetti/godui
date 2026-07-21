@@ -23,18 +23,38 @@ const CSS = `
 .tdmb-static .tdmb-col-2, .tdmb-static .tdmb-col-3 { animation: none; transform: none; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "tile" | "alt";
+}[] = [
   {
     name: "Column loop",
     desc: "y [0,∓40,0], ease [0.65,0,0.35,1]",
-    swatch: "bg-[var(--foreground)]/50",
+    kind: "tile",
   },
   {
     name: "Alternating direction",
     desc: "colIndex % 2 === 0 ? up-first : down-first",
-    swatch: "bg-[var(--foreground)]/25",
+    kind: "alt",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "alt") {
+    return (
+      <span className="flex items-center gap-0.5">
+        <span className="size-2.5 rounded-[3px] bg-[var(--foreground)]/25 [transform:rotateX(55deg)_rotateZ(-45deg)]" />
+        <span className="size-2.5 translate-y-1 rounded-[3px] bg-[var(--foreground)]/25 [transform:rotateX(55deg)_rotateZ(-45deg)]" />
+      </span>
+    );
+  }
+  return (
+    <span className="flex h-5 w-7 items-center justify-center">
+      <span className="size-3.5 rounded-[3px] bg-[var(--foreground)]/25 [transform:rotateX(55deg)_rotateZ(-45deg)]" />
+    </span>
+  );
+}
 
 export function ThreeDMarqueeBob() {
   return (
@@ -48,38 +68,38 @@ export function ThreeDMarqueeBob() {
           <style dangerouslySetInnerHTML={{ __html: CSS }} />
 
           <div
-            className={`relative flex h-52 w-full items-center justify-center overflow-hidden [perspective:1200px] ${reduced ? "tdmb-static" : ""}`}
+            className={`relative flex h-52 w-full items-center justify-center overflow-hidden rounded-sm border border-dashed border-[var(--foreground)]/25 [perspective:1200px] ${reduced ? "tdmb-static" : ""}`}
           >
-            <div
-              key={cycle}
-              className="grid w-[130%] scale-110 grid-cols-4 gap-2.5 [transform:rotateX(55deg)_rotateZ(-45deg)]"
-              style={{ transformStyle: "preserve-3d" }}
-            >
-              {Array.from({ length: COLS }).map((_, col) => (
-                <div
-                  // biome-ignore lint/suspicious/noArrayIndexKey: columns are positional and static
-                  key={col}
-                  className={`tdmb-col-${col} flex flex-col gap-2.5`}
-                  style={{ "--dur": `${2.4 + col * 0.4}s` } as CSSProperties}
-                >
-                  {Array.from({ length: ROWS }).map((_, row) => (
-                    <span
-                      // biome-ignore lint/suspicious/noArrayIndexKey: rows are positional and static
-                      key={row}
-                      className="aspect-square w-full rounded-md bg-[var(--foreground)]/25"
-                    />
-                  ))}
-                </div>
-              ))}
+            <div className="w-[140%] scale-110">
+              <div
+                key={cycle}
+                className="grid w-full grid-cols-4 gap-2.5 [transform:rotateX(55deg)_rotateZ(-45deg)]"
+                style={{ transformStyle: "preserve-3d" }}
+              >
+                {Array.from({ length: COLS }).map((_, col) => (
+                  <div
+                    // biome-ignore lint/suspicious/noArrayIndexKey: columns are positional and static
+                    key={col}
+                    className={`tdmb-col-${col} flex flex-col gap-2.5`}
+                    style={{ "--dur": `${2.4 + col * 0.4}s` } as CSSProperties}
+                  >
+                    {Array.from({ length: ROWS }).map((_, row) => (
+                      <span
+                        // biome-ignore lint/suspicious/noArrayIndexKey: rows are positional and static
+                        key={row}
+                        className="aspect-square w-full rounded-md bg-[var(--foreground)]/25"
+                      />
+                    ))}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

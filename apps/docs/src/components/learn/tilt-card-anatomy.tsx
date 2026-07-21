@@ -26,17 +26,19 @@ const LEGEND: { name: string; desc: string; swatch: string }[] = [
   {
     name: "Card (z 0)",
     desc: "rotateX/Y from the spring-smoothed pointer",
-    swatch: "bg-[var(--card)]",
+    swatch:
+      "h-3 w-8 rounded-2xl border border-fd-border bg-[var(--card)] ring-1 ring-fd-border ring-inset",
   },
   {
     name: "Content (translateZ 40px)",
     desc: "children float toward the viewer for parallax",
-    swatch: "bg-[var(--muted)]",
+    swatch:
+      "h-3 w-8 rounded-2xl border border-white/10 bg-[var(--muted)] ring-1 ring-fd-border ring-inset",
   },
   {
     name: "Glare (topmost)",
     desc: "radial highlight centered on the pointer",
-    swatch: "bg-white/70",
+    swatch: "h-3 w-8 rounded-2xl bg-white/70 ring-1 ring-fd-border ring-inset",
   },
 ];
 
@@ -90,9 +92,7 @@ export function TiltCardAnatomy() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <span className={item.swatch} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

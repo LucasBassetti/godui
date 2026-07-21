@@ -37,19 +37,35 @@ const LEGEND = [
   {
     name: "Dot lerp 0.25",
     desc: "x += (tx − x) × 0.25 each frame",
-    swatch: "bg-[var(--foreground)]",
+    kind: "dot" as const,
   },
   {
     name: "Trail lerp 0.12",
     desc: "sx += (tx − sx) × 0.12 — soft lag",
-    swatch: "bg-[var(--foreground)]/25",
+    kind: "trail" as const,
   },
   {
     name: "Hover lerp 0.15",
     desc: "scale(1 + hover × 1.6) on interactive",
-    swatch: "bg-[var(--muted)]",
+    kind: "hover" as const,
   },
 ] as const;
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "trail") {
+    return (
+      <span className="size-4 rounded-full bg-[var(--foreground)]/20 blur-[1px] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "hover") {
+    return (
+      <span className="h-3.5 w-5 rounded-lg border border-fd-border bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="size-3.5 rounded-full bg-[var(--foreground)] ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function FluidCursorLerp() {
   return (
@@ -79,9 +95,7 @@ export function FluidCursorLerp() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

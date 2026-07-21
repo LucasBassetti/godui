@@ -36,6 +36,34 @@ const DOTS = Array.from({ length: 20 }, (_, i) => ({
   top: 14 + ((i * 53) % 72),
 }));
 
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "lerp" | "center";
+}[] = [
+  {
+    name: "Lerp",
+    desc: "pointer.x += (tx − x) × 0.06",
+    kind: "lerp",
+  },
+  {
+    name: "Center",
+    desc: "cx = w/2 + x × parallax",
+    kind: "center",
+  },
+];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "center") {
+    return (
+      <span className="size-3 rounded-full border-2 border-[var(--foreground)]/45 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="size-1.5 rounded-full bg-[var(--foreground)]/55 ring-1 ring-fd-border ring-inset" />
+  );
+}
+
 export function WarpStarfieldParallax() {
   return (
     <ScrollScene label="Parallax" note="lerp 0.06 · parallax=30">
@@ -76,24 +104,17 @@ export function WarpStarfieldParallax() {
           </p>
 
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                Lerp
-              </dt>
-              <dd className="font-mono text-[12px] text-fd-muted-foreground">
-                {"pointer.x += (tx − x) × 0.06"}
-              </dd>
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                Center
-              </dt>
-              <dd className="font-mono text-[12px] text-fd-muted-foreground">
-                {"cx = w/2 + x × parallax"}
-              </dd>
-            </div>
+            {LEGEND.map((item) => (
+              <div key={item.name} className="flex flex-col gap-1.5">
+                <LegendSwatch kind={item.kind} />
+                <dt className="font-medium text-[13px] text-fd-foreground">
+                  {item.name}
+                </dt>
+                <dd className="font-mono text-[12px] text-fd-muted-foreground">
+                  {item.desc}
+                </dd>
+              </div>
+            ))}
           </dl>
         </div>
       )}

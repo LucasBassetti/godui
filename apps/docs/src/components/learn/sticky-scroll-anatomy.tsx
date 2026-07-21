@@ -18,18 +18,20 @@ const LEGEND: { name: string; desc: string; swatch: string }[] = [
   {
     name: "List",
     desc: "scrolls; each item dims when it isn't active",
-    swatch: "bg-[var(--foreground)]/25",
+    swatch:
+      "h-1.5 w-8 rounded-full bg-[var(--foreground)]/30 ring-1 ring-fd-border ring-inset",
   },
   {
     name: "Center line",
     desc: "rootMargin -50%/-50% — the one trigger line",
     swatch:
-      "border-t-2 border-dashed border-[var(--foreground)]/50 bg-transparent",
+      "h-0 w-8 border-t-2 border-dashed border-[var(--foreground)]/40 bg-transparent",
   },
   {
     name: "Panel",
     desc: "sticky, crossfades to match the active item",
-    swatch: "bg-[var(--foreground)]",
+    swatch:
+      "relative h-3 w-8 rounded-md border border-fd-border bg-[var(--card)] ring-1 ring-fd-border ring-inset",
   },
 ];
 
@@ -79,7 +81,13 @@ export function StickyScrollAnatomy() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span className={`h-1.5 w-8 rounded-full ${item.swatch}`} />
+                {item.name === "Panel" ? (
+                  <span className={item.swatch}>
+                    <span className="absolute top-1/2 left-1/2 size-2 -translate-x-1/2 -translate-y-1/2 rounded-sm bg-[var(--foreground)]" />
+                  </span>
+                ) : (
+                  <span className={item.swatch} />
+                )}
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

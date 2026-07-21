@@ -41,20 +41,35 @@ const LEGEND = [
   {
     name: "Rainbow",
     desc: "RAINBOW_BEAM — same hue order as MagicButton, trails to transparent",
-    swatch:
-      "bg-[linear-gradient(90deg,var(--rainbow-1),var(--rainbow-5),var(--rainbow-3),var(--rainbow-4))]",
+    kind: "rainbow",
   },
   {
     name: "Two-color",
     desc: "from-(--color-from) via-(--color-to) to-transparent",
-    swatch: "bg-[linear-gradient(90deg,var(--chart-1),var(--chart-5))]",
+    kind: "twoColor",
   },
   {
     name: "Glow echo",
     desc: "second square: opacity-60 blur-md, same animate/transition",
-    swatch: "bg-[var(--foreground)]/25 blur-[2px]",
+    kind: "glow",
   },
 ] as const;
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "rainbow") {
+    return (
+      <span className="size-2.5 rounded-sm bg-[linear-gradient(90deg,var(--rainbow-1),var(--rainbow-5),var(--rainbow-3),var(--rainbow-4))] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "twoColor") {
+    return (
+      <span className="size-2.5 rounded-sm bg-[linear-gradient(90deg,var(--chart-1),var(--chart-5))] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="size-3 rounded-sm bg-[var(--foreground)]/25 blur-[2px] ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function BorderBeamRainbow() {
   return (
@@ -99,9 +114,7 @@ export function BorderBeamRainbow() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

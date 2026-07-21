@@ -27,18 +27,33 @@ const CSS = `
 }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "shell" | "label";
+}[] = [
   {
     name: "Shell",
     desc: "the whole button, full spring offset",
-    swatch: "border border-fd-border bg-[var(--card)]",
+    kind: "shell",
   },
   {
     name: "Label",
     desc: "nested inside — adds its own ×0.4 (0 if staticLabel)",
-    swatch: "bg-[var(--foreground)]",
+    kind: "label",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "label") {
+    return (
+      <span className="h-1.5 w-6 rounded-full bg-[var(--foreground)]/30 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-3.5 w-6 rounded-[10px] border border-fd-border bg-[var(--card)] ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function MagneticParallax() {
   return (
@@ -84,9 +99,7 @@ export function MagneticParallax() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ring-1 ring-fd-border ring-inset ${item.swatch}`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

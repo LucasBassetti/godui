@@ -18,18 +18,33 @@ const CSS = `
 .lca-static .lca-el { animation: none; opacity: 1; transform: none; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "pointer" | "flag";
+}[] = [
   {
     name: "Pointer",
     desc: "SVG path, presence-color fill, white stroke",
-    swatch: "bg-[var(--foreground)]/70",
+    kind: "pointer",
   },
   {
     name: "Name flag",
     desc: "mt-3 -ml-1, rounded-tl-sm — the tail points at the pointer",
-    swatch: "bg-[var(--foreground)]/70",
+    kind: "flag",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "pointer") {
+    return (
+      <span className="size-2.5 rounded-full bg-[var(--foreground)]/70 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-3 w-7 rounded-[5px] rounded-tl-sm bg-[var(--foreground)]/70 ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function LiveCursorsAnatomy() {
   return (
@@ -71,9 +86,7 @@ export function LiveCursorsAnatomy() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

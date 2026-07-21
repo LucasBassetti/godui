@@ -35,18 +35,33 @@ const CSS = `
 .ate-static .ate-title   { animation: none; opacity: 1; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "body" | "chevron";
+}[] = [
   {
     name: "Body",
     desc: "scaleY + opacity, spring 320/32/0.9",
-    swatch: "bg-[var(--foreground)]/30",
+    kind: "body",
   },
   {
     name: "Chevron",
     desc: "rotate 0 → 90deg, independent curve",
-    swatch: "bg-[var(--foreground)]/60",
+    kind: "chevron",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "chevron") {
+    return (
+      <span className="size-2 border-fd-muted-foreground border-r-2 border-b-2 [transform:rotate(-45deg)]" />
+    );
+  }
+  return (
+    <span className="h-3 w-7 rounded-lg border border-fd-border bg-[var(--muted)]/40 ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function AgentTimelineExpand() {
   return (
@@ -98,9 +113,7 @@ export function AgentTimelineExpand() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

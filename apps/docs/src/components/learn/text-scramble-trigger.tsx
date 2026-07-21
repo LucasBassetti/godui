@@ -52,23 +52,54 @@ const CSS = `
 .tst-static .tst-hover-ring { animation: none; opacity: 1; transform: none; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "mount" | "in-view" | "hover";
+}[] = [
   {
     name: "mount",
     desc: "first effect — run(text) immediately",
-    swatch: "bg-[var(--foreground)]/50",
+    kind: "mount",
   },
   {
     name: "in-view",
     desc: "IO threshold 0.4, then disconnect",
-    swatch: "border border-dashed border-[var(--foreground)]/45 bg-transparent",
+    kind: "in-view",
   },
   {
     name: "hover",
     desc: "onPointerEnter sets started + run",
-    swatch: "bg-[var(--foreground)]/20 ring-1 ring-[var(--foreground)]/40",
+    kind: "hover",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "mount") {
+    return (
+      <span className="flex h-4 items-end gap-0.5">
+        <span className="h-2 w-1.5 rounded-sm bg-[var(--foreground)]/45" />
+        <span className="h-3 w-1.5 rounded-sm bg-[var(--foreground)]/45" />
+        <span className="h-2.5 w-1.5 rounded-sm bg-[var(--foreground)]/45" />
+      </span>
+    );
+  }
+  if (kind === "in-view") {
+    return (
+      <span className="relative flex h-7 w-10 items-center justify-center overflow-hidden rounded-md border border-fd-border bg-[var(--card)]">
+        <span className="pointer-events-none absolute inset-x-0 top-[30%] bottom-[30%] border-y border-dashed border-[var(--foreground)]/25" />
+        <span className="relative h-1 w-5 rounded-full bg-[var(--foreground)]/35" />
+      </span>
+    );
+  }
+  return (
+    <span className="relative flex size-7 items-center justify-center">
+      <span className="absolute size-6 rounded-full border border-[var(--foreground)]/30" />
+      <span className="absolute size-4 rounded-full bg-[var(--foreground)]/10" />
+      <span className="relative h-1 w-4 rounded-full bg-[var(--foreground)]/40" />
+    </span>
+  );
+}
 
 const COLUMNS: {
   key: string;
@@ -170,9 +201,7 @@ export function TextScrambleTrigger() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ring-1 ring-fd-border ring-inset ${item.swatch}`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

@@ -35,7 +35,7 @@ export function GeometricBackgroundAnatomy() {
           />
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+              <span className="h-1.5 w-8 rounded-full bg-[#e5e5e5] ring-1 ring-fd-border ring-inset" />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 X lines
               </dt>
@@ -44,7 +44,7 @@ export function GeometricBackgroundAnatomy() {
               </dd>
             </div>
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+              <span className="h-1.5 w-8 rounded-full bg-[#e5e5e5] ring-1 ring-fd-border ring-inset" />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Y lines
               </dt>

@@ -28,19 +28,35 @@ const LEGEND = [
   {
     name: "Path",
     desc: "showPath — a faint static circle at radius*2",
-    swatch: "border border-dashed border-[var(--foreground)]/40 bg-transparent",
+    kind: "path" as const,
   },
   {
     name: "Ring",
     desc: "invisible motion.div, rotates 360° and carries every slot",
-    swatch: "bg-transparent ring-1 ring-[var(--foreground)]/40 ring-inset",
+    kind: "ring" as const,
   },
   {
     name: "Slot",
     desc: "rotate(angle) translateY(−radius), one per child",
-    swatch: "bg-[var(--foreground)]/50",
+    kind: "slot" as const,
   },
 ] as const;
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "path") {
+    return (
+      <span className="size-3.5 rounded-full border border-dashed border-[var(--foreground)]/40" />
+    );
+  }
+  if (kind === "ring") {
+    return (
+      <span className="size-3.5 rounded-full bg-transparent ring-1 ring-[var(--foreground)]/40 ring-inset" />
+    );
+  }
+  return (
+    <span className="size-3.5 rounded-full border border-fd-border bg-[var(--card)] shadow-sm" />
+  );
+}
 
 export function OrbitingCirclesAnatomy() {
   return (
@@ -147,9 +163,7 @@ export function OrbitingCirclesAnatomy() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

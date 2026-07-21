@@ -30,18 +30,29 @@ function plateStyle(rank: number): CSSProperties {
   } as CSSProperties;
 }
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: { name: string; desc: string; kind: "front" | "back" }[] = [
   {
     name: "rank 0 (front)",
     desc: "x 0 · y 0 · scale 1 · rotate 0°",
-    swatch: "bg-[var(--card)]",
+    kind: "front",
   },
   {
     name: "rank 1–3 (back)",
     desc: "each step: +22px x, −28px y, −0.06 scale, −2.5°",
-    swatch: "bg-[var(--muted)]",
+    kind: "back",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "front") {
+    return (
+      <span className="h-4 w-6 rounded-md border border-fd-border bg-[var(--card)] shadow-sm" />
+    );
+  }
+  return (
+    <span className="h-4 w-6 rounded-md border border-fd-border bg-[var(--card)] opacity-70 shadow-sm" />
+  );
+}
 
 export function CardSwapAnatomy() {
   return (
@@ -66,9 +77,7 @@ export function CardSwapAnatomy() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

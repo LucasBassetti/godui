@@ -16,18 +16,33 @@ const CSS = `
 .hl-anat-static .hl-anat-col { opacity: 1; animation: none; transform: none; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "text" | "annotation";
+}[] = [
   {
     name: "Text span",
     desc: "inline-block children, always in the DOM",
-    swatch: "bg-[var(--foreground)]/40",
+    kind: "text",
   },
   {
     name: "Annotation",
     desc: "rough-notation SVG, drawn over the span",
-    swatch: "border-2 border-black/50 bg-transparent",
+    kind: "annotation",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "annotation") {
+    return (
+      <span className="h-3 w-6 rounded-md border-2 border-black/45 bg-transparent ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-1.5 w-8 rounded-full bg-[var(--foreground)]/35 ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 function TokenBar() {
   return <span className="h-2 w-14 rounded-full bg-[var(--foreground)]/35" />;
@@ -112,9 +127,7 @@ export function HighlighterAnatomy() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ring-1 ring-fd-border ring-inset ${item.swatch}`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

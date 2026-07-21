@@ -27,17 +27,19 @@ const LEGEND = [
   {
     name: "Bar",
     desc: "scaleX(progress), origin-left",
-    swatch: "bg-[var(--foreground)]/60",
+    swatch: "h-1 w-8 rounded-full bg-[var(--foreground)]/70",
   },
   {
     name: "Pin",
     desc: "fixed · or sticky with container",
-    swatch: "bg-[var(--muted)]",
+    swatch:
+      "h-3 w-8 rounded-md border border-fd-border bg-[var(--card)] ring-1 ring-fd-border ring-inset",
   },
   {
     name: "A11y",
     desc: 'role="progressbar"',
-    swatch: "bg-[var(--card)] ring-1 ring-fd-border ring-inset",
+    swatch:
+      "h-1 w-8 rounded-full bg-[var(--foreground)]/70 ring-1 ring-[var(--foreground)]/40 ring-inset",
   },
 ] as const;
 
@@ -71,9 +73,7 @@ export function ScrollProgressAnatomy() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <span className={`${item.swatch}`} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

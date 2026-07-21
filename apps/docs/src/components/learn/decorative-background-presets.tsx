@@ -41,7 +41,13 @@ export function DecorativeBackgroundPresets() {
           </div>
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+              <span
+                className="h-3 w-5 rounded-xl border border-fd-border ring-1 ring-fd-border ring-inset"
+                style={{
+                  background:
+                    "radial-gradient(125% 125% at 50% 10%, #fff 40%, #a1a1aa 100%)",
+                }}
+              />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Top
               </dt>
@@ -50,7 +56,13 @@ export function DecorativeBackgroundPresets() {
               </dd>
             </div>
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+              <span
+                className="h-3 w-5 rounded-xl border border-fd-border ring-1 ring-fd-border ring-inset"
+                style={{
+                  background:
+                    "radial-gradient(125% 125% at 50% 90%, #fff 40%, #a1a1aa 100%)",
+                }}
+              />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Bottom
               </dt>
@@ -59,7 +71,13 @@ export function DecorativeBackgroundPresets() {
               </dd>
             </div>
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+              <span
+                className="h-3 w-5 rounded-xl border border-fd-border ring-1 ring-fd-border ring-inset"
+                style={{
+                  background:
+                    "radial-gradient(ellipse at 100% 0%, #d4d4d8 0%, transparent 55%), #fafafa",
+                }}
+              />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Corner
               </dt>

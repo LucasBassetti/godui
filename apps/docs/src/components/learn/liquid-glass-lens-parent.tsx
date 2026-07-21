@@ -24,6 +24,36 @@ const CSS = `
 .lglp-static .lglp-lens { animation: none; transform: translate(40%, 35%); }
 `;
 
+const LEGEND = [
+  {
+    name: "Parent events",
+    desc: "pointermove / enter / leave",
+    kind: "parent" as const,
+  },
+  {
+    name: "Centering",
+    desc: "translate(calc(var(--lg-px) - 50%), …)",
+    kind: "lens" as const,
+  },
+] as const;
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "lens") {
+    return (
+      <span
+        className="size-4 rounded-full border border-fd-border bg-[var(--muted)]/70 shadow-sm ring-1 ring-fd-border ring-inset backdrop-blur-[2px]"
+        style={{
+          boxShadow:
+            "inset 0 2px 2px color-mix(in oklab, var(--foreground) 18%, transparent), inset 0 -4px 8px color-mix(in oklab, var(--foreground) 10%, transparent)",
+        }}
+      />
+    );
+  }
+  return (
+    <span className="h-4 w-7 rounded-2xl border border-fd-border bg-[var(--card)] ring-1 ring-fd-border ring-inset" />
+  );
+}
+
 export function LiquidGlassLensParent() {
   return (
     <ScrollScene label="Parent pointer" note="listeners on offsetParent">
@@ -58,24 +88,17 @@ export function LiquidGlassLensParent() {
           </div>
 
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                Parent events
-              </dt>
-              <dd className="font-mono text-[12px] text-fd-muted-foreground">
-                pointermove / enter / leave
-              </dd>
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                Centering
-              </dt>
-              <dd className="font-mono text-[12px] text-fd-muted-foreground">
-                {"translate(calc(var(--lg-px) - 50%), …)"}
-              </dd>
-            </div>
+            {LEGEND.map((item) => (
+              <div key={item.name} className="flex flex-col gap-1.5">
+                <LegendSwatch kind={item.kind} />
+                <dt className="font-medium text-[13px] text-fd-foreground">
+                  {item.name}
+                </dt>
+                <dd className="font-mono text-[12px] text-fd-muted-foreground">
+                  {item.desc}
+                </dd>
+              </div>
+            ))}
           </dl>
         </div>
       )}

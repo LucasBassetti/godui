@@ -37,23 +37,43 @@ const CSS = `
 .mma-static .mma-link { opacity: 1; animation: none; transform: none; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "triggers" | "pill" | "panel";
+}[] = [
   {
     name: "Triggers",
     desc: "plain buttons/links — one per top-level item",
-    swatch: "bg-[var(--foreground)]/25",
+    kind: "triggers",
   },
   {
     name: "Highlight pill",
     desc: "one layoutId span, rendered only under the hot trigger",
-    swatch: "bg-[var(--foreground)]/12",
+    kind: "pill",
   },
   {
     name: "Panel",
     desc: "opens below a trigger that carries sections",
-    swatch: "bg-[var(--card)]",
+    kind: "panel",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "triggers") {
+    return (
+      <span className="h-1.5 w-6 rounded-full bg-[var(--foreground)]/25 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "pill") {
+    return (
+      <span className="h-3 w-7 rounded-md bg-[var(--foreground)]/12 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-4 w-8 rounded-lg border border-fd-border bg-[var(--card)] ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function MegaMenuAnatomy() {
   return (
@@ -119,9 +139,7 @@ export function MegaMenuAnatomy() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

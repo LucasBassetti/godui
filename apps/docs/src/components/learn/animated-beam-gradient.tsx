@@ -51,19 +51,35 @@ const LEGEND = [
   {
     name: "Gradient",
     desc: "x1/x2 tween 10%→110%, linear, 3s, infinite",
-    swatch: "bg-[var(--primary)]",
+    kind: "gradient",
   },
   {
     name: "Path",
     desc: "static, pathOpacity 0.2 — never redrawn for this",
-    swatch: "bg-transparent ring-1 ring-[var(--foreground)]/40 ring-inset",
+    kind: "path",
   },
   {
     name: "Reverse",
     desc: "flips the array: 90%→−10% instead",
-    swatch: "bg-[var(--primary)]/40",
+    kind: "reverse",
   },
 ] as const;
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "gradient") {
+    return (
+      <span className="size-3.5 rounded-full bg-[var(--primary)] blur-[2px] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "path") {
+    return (
+      <span className="h-0.5 w-8 rounded-full bg-[var(--foreground)]/20 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="size-3 rounded-full bg-[var(--primary)]/40 ring-1 ring-fd-border ring-inset [transform:scaleX(-1)]" />
+  );
+}
 
 export function AnimatedBeamGradient() {
   return (
@@ -156,9 +172,7 @@ export function AnimatedBeamGradient() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

@@ -20,23 +20,45 @@ const CSS = `
 .sct-static .sct-card { animation: none; opacity: 1; transform: none; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "opacity" | "scale" | "y";
+}[] = [
   {
     name: "opacity",
     desc: "0 → 1, tied to the same spring",
-    swatch: "bg-[var(--foreground)]/25",
+    kind: "opacity",
   },
   {
     name: "scale",
     desc: "0.96 → 1, a hair of overshoot near 1.015",
-    swatch: "bg-[var(--foreground)]/55",
+    kind: "scale",
   },
   {
     name: "y",
     desc: "6px → 0, mass 0.9 keeps it from bouncing",
-    swatch: "bg-[var(--foreground)]",
+    kind: "y",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "scale") {
+    return (
+      <span className="h-4 w-7 origin-center scale-[0.96] rounded-lg border border-fd-border bg-[var(--popover)] opacity-80 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "y") {
+    return (
+      <span className="relative h-4 w-7">
+        <span className="absolute inset-x-0 top-1 h-3.5 w-full rounded-lg border border-fd-border bg-[var(--popover)] ring-1 ring-fd-border ring-inset" />
+      </span>
+    );
+  }
+  return (
+    <span className="h-4 w-7 rounded-lg border border-fd-border bg-[var(--popover)] opacity-40 ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function SourceCitationsTooltip() {
   return (
@@ -74,9 +96,7 @@ export function SourceCitationsTooltip() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

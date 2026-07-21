@@ -29,6 +29,40 @@ const SLIDES: Slide[] = [
   { d: 2, scale: 0.72, opacity: 0.4, blur: 5 },
 ];
 
+const LEGEND = [
+  {
+    name: "Scale",
+    desc: "1 − distance × 0.14 × falloff",
+    kind: "scale" as const,
+  },
+  {
+    name: "Opacity",
+    desc: "clamped 0.4–1",
+    kind: "opacity" as const,
+  },
+  {
+    name: "Blur",
+    desc: "0 when reduced-motion",
+    kind: "blur" as const,
+  },
+] as const;
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "opacity") {
+    return (
+      <span className="h-4 w-2.5 rounded-lg bg-[var(--foreground)]/45 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "blur") {
+    return (
+      <span className="h-4 w-2.5 rounded-lg bg-[var(--foreground)]/20 blur-[2px] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-4 w-2.5 rounded-lg bg-[var(--foreground)] ring-1 ring-fd-border ring-inset" />
+  );
+}
+
 export function InertiaGalleryFalloff() {
   return (
     <ScrollScene label="The falloff" note="distance → scale / opacity / blur">
@@ -58,33 +92,17 @@ export function InertiaGalleryFalloff() {
           </div>
 
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--foreground)] ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                Scale
-              </dt>
-              <dd className="text-[12px] text-fd-muted-foreground">
-                1 − distance × 0.14 × falloff
-              </dd>
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--foreground)]/45 ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                Opacity
-              </dt>
-              <dd className="text-[12px] text-fd-muted-foreground">
-                clamped 0.4–1
-              </dd>
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--foreground)]/20 ring-1 ring-fd-border ring-inset blur-[2px]" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                Blur
-              </dt>
-              <dd className="text-[12px] text-fd-muted-foreground">
-                0 when reduced-motion
-              </dd>
-            </div>
+            {LEGEND.map((item) => (
+              <div key={item.name} className="flex flex-col gap-1.5">
+                <LegendSwatch kind={item.kind} />
+                <dt className="font-medium text-[13px] text-fd-foreground">
+                  {item.name}
+                </dt>
+                <dd className="text-[12px] text-fd-muted-foreground">
+                  {item.desc}
+                </dd>
+              </div>
+            ))}
           </dl>
         </div>
       )}

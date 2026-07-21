@@ -56,7 +56,14 @@ export function GradientBackgroundOwnership() {
           </div>
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+              <span
+                className="h-3 w-8 rounded-lg ring-1 ring-fd-border ring-inset"
+                style={{
+                  backgroundColor: "#020617",
+                  backgroundImage:
+                    "radial-gradient(circle 80px at 50% 40%, #3e3e3e, transparent)",
+                }}
+              />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Probe
               </dt>
@@ -65,7 +72,12 @@ export function GradientBackgroundOwnership() {
               </dd>
             </div>
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+              <span
+                className="h-3 w-8 rounded-lg ring-1 ring-fd-border ring-inset"
+                style={{
+                  backgroundImage: "linear-gradient(135deg, #0f172a, #312e81)",
+                }}
+              />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Merge
               </dt>

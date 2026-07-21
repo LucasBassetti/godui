@@ -40,18 +40,33 @@ const CSS = `
 .hps-static .hps-row-rev { animation: none; transform: none; opacity: 1; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "plane" | "rows";
+}[] = [
   {
     name: "Plane",
     desc: "rotateX 15→0 · rotateZ 14→0 · translateY, opacity .2→1 — first 20% of scroll",
-    swatch: "bg-[var(--foreground)]/70",
+    kind: "plane",
   },
   {
     name: "Rows",
     desc: "translateX / translateXReverse spread across the full scroll",
-    swatch: "bg-[var(--muted)]",
+    kind: "rows",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "plane") {
+    return (
+      <span className="h-3 w-8 rounded-lg border border-border bg-[var(--muted)]/60 ring-1 ring-fd-border ring-inset [transform:rotateX(12deg)_rotateZ(6deg)]" />
+    );
+  }
+  return (
+    <span className="h-3 w-5 rounded-lg border border-border bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function HeroParallaxScrub() {
   return (
@@ -91,9 +106,7 @@ export function HeroParallaxScrub() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

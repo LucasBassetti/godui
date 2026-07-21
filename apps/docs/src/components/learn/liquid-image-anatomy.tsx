@@ -170,16 +170,35 @@ const LEGEND = [
   {
     name: "Source",
     desc: "the img — SourceGraphic into the filter",
+    kind: "source" as const,
   },
   {
     name: "Noise",
     desc: "feTurbulence · baseFrequency drifts so it never freezes",
+    kind: "noise" as const,
   },
   {
     name: "Displaced",
     desc: "scale pushes pixels — edges fray into the liquid border",
+    kind: "displaced" as const,
   },
 ] as const;
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "noise") {
+    return (
+      <span className="h-4 w-3 rounded-xl bg-[var(--foreground)]/20 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "displaced") {
+    return (
+      <span className="h-4 w-3 rounded-xl bg-[var(--foreground)]/18 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-4 w-3 rounded-xl bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function LiquidImageAnatomy() {
   const uid = useId().replace(/:/g, "");
@@ -239,7 +258,7 @@ export function LiquidImageAnatomy() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

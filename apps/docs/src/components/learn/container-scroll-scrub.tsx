@@ -25,6 +25,24 @@ const CSS = `
 .csrs-static .csrs-track { animation: none; transform: scaleX(0.5); }
 `;
 
+function LegendSwatch({ kind }: { kind: "frame" | "header" | "track" }) {
+  if (kind === "header") {
+    return (
+      <span className="h-1.5 w-8 rounded-full bg-[var(--foreground)]/50 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "track") {
+    return (
+      <span className="relative h-1 w-8 overflow-hidden rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset">
+        <span className="absolute inset-y-0 left-0 w-1/2 rounded-full bg-[var(--foreground)]/60" />
+      </span>
+    );
+  }
+  return (
+    <span className="h-3 w-6 rounded-xl border border-fd-border bg-[var(--card)] [transform:rotateX(12deg)_scale(1.05)] ring-1 ring-fd-border ring-inset" />
+  );
+}
+
 export function ContainerScrollScrub() {
   return (
     <ScrollScene label="The scrub" note="one scrollYProgress, three transforms">
@@ -56,25 +74,29 @@ export function ContainerScrollScrub() {
 
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--foreground)]/30 ring-1 ring-fd-border ring-inset" />
+              <LegendSwatch kind="frame" />
               <dt className="font-medium font-mono text-[12px] text-fd-foreground">
-                rotateX
+                frame
               </dt>
-              <dd className="text-[11px] text-fd-muted-foreground">20° → 0°</dd>
+              <dd className="text-[11px] text-fd-muted-foreground">
+                rotateX 20°→0° · scale 1.05→1
+              </dd>
             </div>
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--foreground)]/50 ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium font-mono text-[12px] text-fd-foreground">
-                scale
-              </dt>
-              <dd className="text-[11px] text-fd-muted-foreground">1.05 → 1</dd>
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--foreground)] ring-1 ring-fd-border ring-inset" />
+              <LegendSwatch kind="header" />
               <dt className="font-medium font-mono text-[12px] text-fd-foreground">
                 header y
               </dt>
               <dd className="text-[11px] text-fd-muted-foreground">0 → -100</dd>
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <LegendSwatch kind="track" />
+              <dt className="font-medium font-mono text-[12px] text-fd-foreground">
+                progress
+              </dt>
+              <dd className="text-[11px] text-fd-muted-foreground">
+                scrollYProgress fill
+              </dd>
             </div>
           </dl>
         </div>

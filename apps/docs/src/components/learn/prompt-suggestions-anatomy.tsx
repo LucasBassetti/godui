@@ -25,23 +25,43 @@ function TokenBar({ w = "w-10", tone = 30 }: { w?: string; tone?: number }) {
   );
 }
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "grid" | "chips" | "list";
+}[] = [
   {
     name: "Grid",
     desc: "grid grid-cols-1 sm:grid-cols-2 · card + hint + arrow",
-    swatch: "bg-[var(--foreground)]/25",
+    kind: "grid",
   },
   {
     name: "Chips",
     desc: "flex flex-wrap · rounded-full pill, no hint",
-    swatch: "bg-[var(--foreground)]/40",
+    kind: "chips",
   },
   {
     name: "List",
     desc: "flex flex-col · full-width row + arrow",
-    swatch: "bg-[var(--foreground)]/15",
+    kind: "list",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "grid") {
+    return (
+      <span className="h-4 w-5 rounded-lg border border-border bg-[var(--card)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "chips") {
+    return (
+      <span className="h-2.5 w-7 rounded-full border border-border bg-[var(--card)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-2.5 w-8 rounded-lg border border-border bg-[var(--card)] ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function PromptSuggestionsAnatomy() {
   return (
@@ -118,9 +138,7 @@ export function PromptSuggestionsAnatomy() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

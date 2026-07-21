@@ -36,23 +36,43 @@ const CSS = `
 .dmsub-static .dmsub-child { opacity: 1; transform: none; animation: none; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "row" | "panel" | "origin";
+}[] = [
   {
     name: "Parent row",
     desc: "hover or ArrowRight sets openSub",
-    swatch: "bg-[var(--muted)]",
+    kind: "row",
   },
   {
     name: "Nested panel",
     desc: "side=right, align=start, left-full ml-1",
-    swatch: "bg-[var(--card)]",
+    kind: "panel",
   },
   {
     name: "origin-top-left",
     desc: "the corner it springs from",
-    swatch: "bg-[var(--foreground)]/40",
+    kind: "origin",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "row") {
+    return (
+      <span className="h-2 w-7 rounded-md bg-[var(--foreground)]/[0.08] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "panel") {
+    return (
+      <span className="h-3.5 w-6 rounded-xl border border-border bg-[var(--background)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="size-2 rounded-full bg-[var(--foreground)]/60 ring-2 ring-fd-card ring-inset" />
+  );
+}
 
 function Row({ w, active }: { w: string; active?: boolean }) {
   return (
@@ -101,9 +121,7 @@ export function DropdownMenuSubmenu() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

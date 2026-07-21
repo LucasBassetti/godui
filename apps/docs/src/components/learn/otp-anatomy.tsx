@@ -26,18 +26,33 @@ const CSS = `
 .oa-static .oa-ghost { opacity: 1; animation: none; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "cells" | "input";
+}[] = [
   {
     name: "Display cells",
     desc: "what you see — driven by value[i]",
-    swatch: "bg-[var(--card)]",
+    kind: "cells",
   },
   {
     name: "Hidden input",
     desc: "one size-0 field catches every key",
-    swatch: "bg-[var(--foreground)]/15",
+    kind: "input",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "cells") {
+    return (
+      <span className="size-3 rounded-md border border-border bg-[var(--card)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="size-3 rounded-md border-2 border-[var(--foreground)]/40 border-dashed bg-[var(--foreground)]/[0.06] ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function OtpAnatomy() {
   return (
@@ -65,9 +80,7 @@ export function OtpAnatomy() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

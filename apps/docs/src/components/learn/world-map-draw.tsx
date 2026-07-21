@@ -30,6 +30,37 @@ const CSS = `
 .wmd-static .wmd-seg { opacity: 1; animation: none; }
 `;
 
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "track" | "reveal";
+}[] = [
+  {
+    name: "Track",
+    desc: "the full arc, always faintly visible",
+    kind: "track",
+  },
+  {
+    name: "Reveal",
+    desc: "travels start pin → end pin, then loops",
+    kind: "reveal",
+  },
+];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "reveal") {
+    return (
+      <span className="relative flex items-center gap-1">
+        <span className="size-1.5 rounded-full bg-[var(--foreground)]" />
+        <span className="h-[2.5px] w-5 rounded-full bg-[var(--primary)]" />
+      </span>
+    );
+  }
+  return (
+    <span className="h-[2px] w-8 rounded-full bg-[var(--muted-foreground)]/25 ring-1 ring-fd-border ring-inset" />
+  );
+}
+
 export function WorldMapDraw() {
   return (
     <ScrollScene label="The draw-in" note="pathLength 0→1, staggered per arc">
@@ -81,24 +112,17 @@ export function WorldMapDraw() {
           </p>
 
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted-foreground)]/25 ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                Track
-              </dt>
-              <dd className="text-[12px] text-fd-muted-foreground">
-                the full arc, always faintly visible
-              </dd>
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--primary)] ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                Reveal
-              </dt>
-              <dd className="text-[12px] text-fd-muted-foreground">
-                travels start pin → end pin, then loops
-              </dd>
-            </div>
+            {LEGEND.map((item) => (
+              <div key={item.name} className="flex flex-col gap-1.5">
+                <LegendSwatch kind={item.kind} />
+                <dt className="font-medium text-[13px] text-fd-foreground">
+                  {item.name}
+                </dt>
+                <dd className="text-[12px] text-fd-muted-foreground">
+                  {item.desc}
+                </dd>
+              </div>
+            ))}
           </dl>
         </div>
       )}

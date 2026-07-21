@@ -93,6 +93,30 @@ const PANELS = [
   { tone: "iag-p3", cap: "iag-c3" },
 ] as const;
 
+const LEGEND = [
+  {
+    name: "Idle panels",
+    desc: "flexGrow: 1 — share the leftover space",
+    kind: "idle" as const,
+  },
+  {
+    name: "Active panel",
+    desc: "flexGrow: 5 · 550ms cubic-bezier(0.22,1,0.36,1)",
+    kind: "active" as const,
+  },
+] as const;
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "active") {
+    return (
+      <span className="h-4 w-3 rounded-2xl bg-[var(--foreground)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-4 w-2 rounded-2xl bg-[var(--foreground)]/40 ring-1 ring-fd-border ring-inset [filter:saturate(0.45)_brightness(0.72)]" />
+  );
+}
+
 export function ImageAccordionGrow() {
   return (
     <ScrollScene label="The grow" note="one grows · the rest compress">
@@ -124,24 +148,17 @@ export function ImageAccordionGrow() {
           </div>
 
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--foreground)]/35 ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                Idle panels
-              </dt>
-              <dd className="text-[12px] text-fd-muted-foreground">
-                flexGrow: 1 — share the leftover space
-              </dd>
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--foreground)] ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                Active panel
-              </dt>
-              <dd className="text-[12px] text-fd-muted-foreground">
-                flexGrow: 5 · 550ms cubic-bezier(0.22,1,0.36,1)
-              </dd>
-            </div>
+            {LEGEND.map((item) => (
+              <div key={item.name} className="flex flex-col gap-1.5">
+                <LegendSwatch kind={item.kind} />
+                <dt className="font-medium text-[13px] text-fd-foreground">
+                  {item.name}
+                </dt>
+                <dd className="text-[12px] text-fd-muted-foreground">
+                  {item.desc}
+                </dd>
+              </div>
+            ))}
           </dl>
         </div>
       )}

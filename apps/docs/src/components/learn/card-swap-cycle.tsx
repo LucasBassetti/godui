@@ -84,7 +84,7 @@ export function CardSwapCycle() {
 
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--foreground)]/30 ring-1 ring-fd-border ring-inset" />
+              <span className="h-4 w-5 rounded-2xl border border-fd-border bg-[var(--card)] shadow-md ring-1 ring-fd-border ring-inset" />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Front → back
               </dt>
@@ -93,7 +93,10 @@ export function CardSwapCycle() {
               </dd>
             </div>
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--foreground)] ring-1 ring-fd-border ring-inset" />
+              <span className="relative h-4 w-5">
+                <span className="absolute inset-0 translate-x-1 -translate-y-1 scale-[0.94] rounded-2xl border border-fd-border bg-[var(--card)] opacity-70 ring-1 ring-fd-border ring-inset" />
+                <span className="absolute inset-0 rounded-2xl border border-fd-border bg-[var(--card)] shadow-sm ring-1 ring-fd-border ring-inset" />
+              </span>
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Everyone else
               </dt>

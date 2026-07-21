@@ -24,18 +24,37 @@ const CSS = `
 .tas-static .tas-bar { opacity: 1; animation: none; transform: none; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "stagger" | "default";
+}[] = [
   {
     name: "staggerChildren",
     desc: "delay between each segment's start",
-    swatch: "bg-[var(--foreground)]/30",
+    kind: "stagger",
   },
   {
     name: "default stagger",
     desc: "duration / segments.length · or STAGGER_BY_SPLIT",
-    swatch: "bg-[var(--foreground)]/70",
+    kind: "default",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "stagger") {
+    return (
+      <span className="flex flex-col gap-1">
+        <span className="h-1.5 w-6 rounded-full bg-[var(--foreground)]/30" />
+        <span className="h-1.5 w-8 translate-x-1 rounded-full bg-[var(--foreground)]/30" />
+        <span className="h-1.5 w-5 translate-x-2 rounded-full bg-[var(--foreground)]/30" />
+      </span>
+    );
+  }
+  return (
+    <span className="h-1.5 w-8 rounded-full bg-[var(--foreground)]/30 ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 const WIDTHS = [40, 28, 52, 24, 44, 36];
 
@@ -77,9 +96,7 @@ export function TextAnimateStagger() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ring-1 ring-fd-border ring-inset ${item.swatch}`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

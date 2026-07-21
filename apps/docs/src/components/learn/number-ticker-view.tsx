@@ -39,23 +39,49 @@ const CSS = `
 .ntv-static .ntv-fire   { animation: none; opacity: 1; transform: none; }
 `;
 
-const STEPS: { name: string; desc: string; swatch: string }[] = [
+const STEPS: {
+  name: string;
+  desc: string;
+  kind: "gate" | "delay" | "fire";
+}[] = [
   {
     name: "in view",
     desc: "useInView(ref, { once: true })",
-    swatch: "bg-[var(--foreground)]/30",
+    kind: "gate",
   },
   {
     name: "delay",
     desc: "setTimeout(delay * 1000)",
-    swatch: "bg-[var(--foreground)]/55",
+    kind: "delay",
   },
   {
     name: "set target",
     desc: "motionValue.set(target)",
-    swatch: "bg-[var(--foreground)]",
+    kind: "fire",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof STEPS)[number]["kind"] }) {
+  if (kind === "fire") {
+    return (
+      <span className="flex size-6 items-center justify-center rounded-lg border border-fd-border bg-[var(--card)]">
+        <span className="size-2.5 rounded-full bg-[var(--foreground)]" />
+      </span>
+    );
+  }
+  if (kind === "delay") {
+    return (
+      <span className="flex h-6 w-10 items-center justify-center rounded-lg border border-fd-border bg-[var(--card)] px-1.5">
+        <span className="h-1.5 w-full rounded-full bg-[var(--foreground)]/65" />
+      </span>
+    );
+  }
+  return (
+    <span className="flex h-6 w-10 items-center justify-center rounded-lg border border-fd-border bg-[var(--card)] px-1.5">
+      <span className="h-1.5 w-full rounded-full bg-[var(--foreground)]/45" />
+    </span>
+  );
+}
 
 export function NumberTickerView() {
   return (
@@ -116,9 +142,7 @@ export function NumberTickerView() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {STEPS.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ring-1 ring-fd-border ring-inset ${item.swatch}`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

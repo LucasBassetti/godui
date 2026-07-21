@@ -32,18 +32,37 @@ function barVars(i: number): CSSProperties {
   return { "--delay": `${(i / (CHARS - 1)) * -2.4}s` } as CSSProperties;
 }
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "spotlight" | "influence";
+}[] = [
   {
     name: "Spotlight",
     desc: "MotionValue · starts at −AUTO_SPREAD",
-    swatch: "bg-[var(--foreground)]/30",
+    kind: "spotlight",
   },
   {
     name: "Influence",
     desc: "clamp(1 − |i − pos| / 2.5, 0, 1)",
-    swatch: "bg-[var(--foreground)]",
+    kind: "influence",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "influence") {
+    return (
+      <span className="flex h-6 items-end">
+        <span className="h-6 w-2 rounded-sm bg-[var(--foreground)] ring-1 ring-fd-border ring-inset" />
+      </span>
+    );
+  }
+  return (
+    <span className="flex h-6 items-end">
+      <span className="h-2.5 w-2 rounded-sm bg-[var(--foreground)]/35 ring-1 ring-fd-border ring-inset" />
+    </span>
+  );
+}
 
 export function ElasticTextSpotlight() {
   return (
@@ -77,9 +96,7 @@ export function ElasticTextSpotlight() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ring-1 ring-fd-border ring-inset ${item.swatch}`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

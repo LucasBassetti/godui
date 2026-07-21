@@ -60,7 +60,9 @@ export function CommentPinResolved() {
 
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--primary)] ring-1 ring-fd-border ring-inset" />
+              <span className="flex size-4 items-center justify-center rounded-full rounded-bl-sm bg-[var(--primary)] shadow-sm ring-2 ring-fd-card">
+                <span className="size-1 rounded-full bg-white" />
+              </span>
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Active
               </dt>
@@ -69,7 +71,9 @@ export function CommentPinResolved() {
               </dd>
             </div>
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--primary)] opacity-60 [filter:grayscale(1)] ring-1 ring-fd-border ring-inset" />
+              <span className="flex size-4 scale-[0.85] items-center justify-center rounded-full rounded-bl-sm bg-[var(--primary)] shadow-sm ring-2 ring-fd-card [filter:grayscale(1)] [opacity:0.6]">
+                <span className="size-1 rounded-full bg-white" />
+              </span>
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Resolved
               </dt>

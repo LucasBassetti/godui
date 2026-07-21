@@ -47,23 +47,43 @@ const CSS = `
 }
 `;
 
-const LEGEND = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "plate" | "offset" | "blur";
+}[] = [
   {
     name: "In view",
     desc: "useInView once · amount 0.3",
-    swatch: "bg-[var(--foreground)]/50",
+    kind: "plate",
   },
   {
     name: "Spring",
     desc: "damping 32 · stiffness 320 · mass 0.9",
-    swatch: "bg-[var(--muted)]",
+    kind: "offset",
   },
   {
     name: "Hidden",
     desc: "opacity 0 + offset + blur(10px)",
-    swatch: "bg-[var(--card)] ring-1 ring-fd-border ring-inset",
+    kind: "blur",
   },
-] as const;
+];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "plate") {
+    return (
+      <span className="h-3 w-8 rounded-md border border-fd-border bg-[var(--card)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "offset") {
+    return (
+      <span className="size-3 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-3 w-8 rounded-md bg-[var(--card)] opacity-60 ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function ScrollRevealSpring() {
   return (
@@ -96,9 +116,7 @@ export function ScrollRevealSpring() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

@@ -17,28 +17,53 @@ const CSS = `
 .mga-static .mga-el { opacity: 1; animation: none; transform: none; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "tile" | "layoutId" | "detail" | "nav";
+}[] = [
   {
     name: "Tile",
     desc: "grid button, layoutId starts here",
-    swatch: "bg-[var(--card)]",
+    kind: "tile",
   },
   {
     name: "layoutId",
     desc: "one id, measured on both ends",
-    swatch: "bg-[var(--foreground)]/40",
+    kind: "layoutId",
   },
   {
     name: "Detail",
     desc: 'role="dialog", same image element',
-    swatch: "bg-[var(--muted)]",
+    kind: "detail",
   },
   {
     name: "Nav",
     desc: "prev / next / close, fade in on their own",
-    swatch: "bg-[var(--foreground)]/25",
+    kind: "nav",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "tile") {
+    return (
+      <span className="size-3 rounded-md bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "layoutId") {
+    return (
+      <span className="size-3 rounded-md bg-[var(--foreground)]/40 ring-2 ring-[var(--foreground)]/60 ring-inset" />
+    );
+  }
+  if (kind === "detail") {
+    return (
+      <span className="h-4 w-7 rounded-lg border border-border bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="size-3 rounded-full border border-border bg-[var(--card)] shadow-sm ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function MorphGalleryAnatomy() {
   return (
@@ -102,9 +127,7 @@ export function MorphGalleryAnatomy() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5 sm:grid-cols-4">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

@@ -51,7 +51,7 @@ export function EffectBackgroundAlive() {
           </p>
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+              <span className="size-7 rounded-full bg-black/15 blur-[2px] ring-1 ring-fd-border ring-inset" />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Overlap
               </dt>
@@ -60,7 +60,7 @@ export function EffectBackgroundAlive() {
               </dd>
             </div>
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+              <span className="h-3 w-8 rounded-2xl border border-fd-border bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Cost
               </dt>

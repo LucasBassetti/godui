@@ -21,23 +21,43 @@ const CSS = `
 .fte-static .fte-shell { animation: none; opacity: 1; transform: none; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "enter" | "exit" | "reduced";
+}[] = [
   {
     name: "enter",
     desc: "opacity 0, y 12, scale 0.92 → spring 520/32",
-    swatch: "bg-[var(--foreground)]/60",
+    kind: "enter",
   },
   {
     name: "exit",
     desc: "opacity 0, y 8, scale 0.95 — a plain tween",
-    swatch: "bg-[var(--foreground)]/25",
+    kind: "exit",
   },
   {
     name: "reduced motion",
     desc: "collapses to an opacity-only fade",
-    swatch: "bg-[var(--foreground)]/12",
+    kind: "reduced",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "enter") {
+    return (
+      <span className="size-3.5 rounded-lg bg-[var(--foreground)]/60 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "exit") {
+    return (
+      <span className="size-3.5 rounded-lg bg-[var(--foreground)]/25 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="size-3.5 rounded-lg bg-[var(--foreground)]/12 ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function FloatingToolbarEnter() {
   return (
@@ -69,9 +89,7 @@ export function FloatingToolbarEnter() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

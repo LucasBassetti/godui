@@ -34,28 +34,48 @@ const CSS = `
 .dma-static .dma-row { opacity: 1; animation: none; transform: none; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "label" | "item" | "separator" | "submenu";
+}[] = [
   {
     name: "label",
     desc: "muted, non-interactive heading",
-    swatch: "bg-[var(--foreground)]/15",
+    kind: "label",
   },
   {
     name: "item",
     desc: "icon · text · shortcut",
-    swatch: "bg-[var(--card)]",
+    kind: "item",
   },
   {
     name: "separator",
     desc: "a hairline <hr> between groups",
-    swatch: "bg-[var(--foreground)]/30",
+    kind: "separator",
   },
   {
     name: "submenu",
     desc: "an item with a chevron + nested list",
-    swatch: "bg-[var(--muted)]",
+    kind: "submenu",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "label") {
+    return (
+      <span className="h-1.5 w-8 rounded-full bg-[var(--foreground)]/20 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "separator") {
+    return (
+      <span className="h-px w-8 rounded-full bg-[var(--border)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-1.5 w-8 rounded-full bg-[var(--foreground)]/35 ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function DropdownMenuAnatomy() {
   return (
@@ -118,9 +138,7 @@ export function DropdownMenuAnatomy() {
           <dl className="grid w-full grid-cols-4 gap-3 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium font-mono text-[12px] text-fd-foreground">
                   {item.name}
                 </dt>

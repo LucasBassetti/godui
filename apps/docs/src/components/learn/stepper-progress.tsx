@@ -78,7 +78,7 @@ export function StepperProgress() {
 
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--foreground)]/30 ring-1 ring-fd-border ring-inset" />
+              <span className="size-3 rounded-full border border-[var(--foreground)]/25 bg-[var(--foreground)]/30" />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Circle
               </dt>
@@ -87,7 +87,7 @@ export function StepperProgress() {
               </dd>
             </div>
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--foreground)]/60 ring-1 ring-fd-border ring-inset" />
+              <span className="h-4 w-px bg-[var(--foreground)]/60" />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Connector
               </dt>
@@ -96,7 +96,7 @@ export function StepperProgress() {
               </dd>
             </div>
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--foreground)] ring-1 ring-fd-border ring-inset" />
+              <span className="size-3 rounded-full bg-[var(--foreground)] ring-1 ring-fd-border ring-inset" />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Check
               </dt>

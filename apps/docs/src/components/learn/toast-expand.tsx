@@ -20,18 +20,36 @@ const CSS = `
 .te-static .te-fill { animation: none; transform: scaleX(0); transform-origin: left; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "collapsed" | "expanded";
+}[] = [
   {
     name: "Collapsed",
     desc: "y = dir × index × PEEK, timers run",
-    swatch: "bg-[var(--foreground)]/20",
+    kind: "collapsed",
   },
   {
     name: "Expanded",
     desc: "hover → real offsets, timers pause",
-    swatch: "bg-[var(--card)]",
+    kind: "expanded",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "expanded") {
+    return (
+      <span className="flex h-4 w-9 flex-col justify-center gap-1 rounded-xl border border-border bg-[var(--card)] p-1 shadow-sm ring-1 ring-fd-border ring-inset">
+        <span className="h-0.5 w-2/5 rounded-full bg-[var(--foreground)]/35" />
+        <span className="h-px w-full rounded-full bg-[var(--foreground)]/10" />
+      </span>
+    );
+  }
+  return (
+    <span className="h-3 w-8 rounded-xl border border-border bg-[var(--foreground)]/15 ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function ToastExpand() {
   return (
@@ -67,9 +85,7 @@ export function ToastExpand() {
           <dl className="grid w-full max-w-[380px] grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

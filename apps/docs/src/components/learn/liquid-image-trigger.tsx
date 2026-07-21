@@ -58,6 +58,20 @@ const COLS = [
   },
 ] as const;
 
+function LegendSwatch({ kind }: { kind: (typeof COLS)[number]["name"] }) {
+  if (kind === "Velocity") {
+    return (
+      <span className="relative h-4 w-3">
+        <span className="absolute inset-x-0 bottom-0 h-full w-2 rounded-md bg-[var(--foreground)]/40" />
+        <span className="absolute top-0 right-0 size-2 rounded-full border border-fd-border bg-[var(--muted)] shadow-sm" />
+      </span>
+    );
+  }
+  return (
+    <span className="h-4 w-2 rounded-md bg-[var(--foreground)]/40 ring-1 ring-fd-border ring-inset" />
+  );
+}
+
 export function LiquidImageTrigger() {
   return (
     <ScrollScene label="Targets" note="hover · always · velocity boost">
@@ -94,7 +108,7 @@ export function LiquidImageTrigger() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {COLS.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span className="h-1.5 w-8 rounded-full bg-[var(--foreground)]/40 ring-1 ring-fd-border ring-inset" />
+                <LegendSwatch kind={item.name} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

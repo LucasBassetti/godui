@@ -28,18 +28,33 @@ const CSS = `
 .hl-draw-static .hl-draw-panel { opacity: 1; animation: none; transform: none; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "highlight" | "underline";
+}[] = [
   {
     name: "Highlight",
     desc: "pale fill grows left → right behind the text",
-    swatch: "bg-[#ffd1dc]",
+    kind: "highlight",
   },
   {
     name: "Underline",
     desc: "stroke grows left → right under the text",
-    swatch: "bg-[#60a5fa]",
+    kind: "underline",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "underline") {
+    return (
+      <span className="h-0.5 w-8 rounded-full bg-[#60a5fa] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-3 w-6 rounded-sm bg-[#ffd1dc] ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function HighlighterDraw() {
   return (
@@ -89,9 +104,7 @@ export function HighlighterDraw() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ring-1 ring-fd-border ring-inset ${item.swatch}`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

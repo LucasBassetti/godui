@@ -55,19 +55,35 @@ const LEGEND = [
   {
     name: "spread",
     desc: "70° cone — how wide the burst fans",
-    swatch: "bg-[var(--muted)]",
+    kind: "spread",
   },
   {
     name: "startVelocity",
     desc: "45 — how far chips travel from origin",
-    swatch: "bg-[var(--foreground)]/40",
+    kind: "velocity",
   },
   {
     name: "particleCount",
     desc: "120 pieces per fire(); origin.y defaults to 0.7",
-    swatch: "bg-[var(--card)] ring-1 ring-fd-border ring-inset",
+    kind: "particle",
   },
 ] as const;
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "spread") {
+    return (
+      <span className="h-3.5 w-5 bg-[var(--foreground)]/12 ring-1 ring-[var(--foreground)]/30 ring-inset [clip-path:polygon(50%_100%,0_0,100%_0)]" />
+    );
+  }
+  if (kind === "velocity") {
+    return (
+      <span className="h-2 w-3 rounded-[2px] bg-[var(--foreground)]/45 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-2 w-2.5 rounded-[2px] bg-[var(--foreground)]/45 ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function ConfettiAnatomy() {
   return (
@@ -131,9 +147,7 @@ export function ConfettiAnatomy() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

@@ -36,17 +36,19 @@ const LEGEND: { name: string; desc: string; swatch: string }[] = [
     name: "frames[]",
     desc: "ordered image URLs, preloaded once on mount",
     swatch:
-      "border-2 border-dashed border-[var(--foreground)]/50 bg-transparent",
+      "h-3 w-8 rounded-md border-2 border-dashed border-[var(--foreground)]/50 bg-transparent ring-1 ring-fd-border ring-inset",
   },
   {
     name: "index",
     desc: "React state — which frame is current",
-    swatch: "bg-[var(--foreground)]/30",
+    swatch:
+      "size-2 rounded-full bg-[var(--foreground)]/50 ring-1 ring-fd-border ring-inset",
   },
   {
     name: "img src",
     desc: "frames[index], swapped — never interpolated",
-    swatch: "bg-[var(--foreground)]",
+    swatch:
+      "size-2.5 rounded-full bg-[var(--foreground)] ring-1 ring-fd-border ring-inset",
   },
 ];
 
@@ -97,7 +99,7 @@ export function SpinViewerAnatomy() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span className={`h-1.5 w-8 rounded-full ${item.swatch}`} />
+                <span className={item.swatch} />
                 <dt className="font-medium font-mono text-[12px] text-fd-foreground">
                   {item.name}
                 </dt>

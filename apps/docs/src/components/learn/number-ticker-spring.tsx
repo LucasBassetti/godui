@@ -33,23 +33,43 @@ const CSS = `
 
 const HEIGHTS = [28, 44, 62, 78, 92];
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "overshoot" | "stagger" | "defaults";
+}[] = [
   {
     name: "overshoot",
     desc: "scaleY past 1, then settle — spring feel",
-    swatch: "bg-[var(--foreground)]/40",
+    kind: "overshoot",
   },
   {
     name: "stagger",
     desc: "each slot delayed 90ms — digits cascade in",
-    swatch: "bg-[var(--foreground)]/70",
+    kind: "stagger",
   },
   {
     name: "defaults",
     desc: "damping 60 · stiffness 100",
-    swatch: "bg-[var(--foreground)]",
+    kind: "defaults",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "stagger") {
+    return (
+      <span className="h-4 w-2.5 rounded-sm bg-[var(--foreground)]/65 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "defaults") {
+    return (
+      <span className="h-5 w-2.5 rounded-sm bg-[var(--foreground)]/65 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-3.5 w-2.5 origin-bottom rounded-sm bg-[var(--foreground)]/65 ring-1 ring-fd-border ring-inset [transform:scaleY(1.08)]" />
+  );
+}
 
 export function NumberTickerSpring() {
   return (
@@ -87,9 +107,7 @@ export function NumberTickerSpring() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ring-1 ring-fd-border ring-inset ${item.swatch}`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

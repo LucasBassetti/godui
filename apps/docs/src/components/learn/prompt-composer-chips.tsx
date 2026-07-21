@@ -37,18 +37,33 @@ const CSS = `
 .pcc-static .pcc-wrap, .pcc-static .pcc-a, .pcc-static .pcc-b { animation: none; opacity: 1; transform: none; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "field" | "chips";
+}[] = [
   {
     name: "Wrapper",
     desc: "outer AnimatePresence, height 0 → auto + opacity",
-    swatch: "bg-[var(--foreground)]/20",
+    kind: "field",
   },
   {
     name: "Chip",
     desc: "scale 0.8 → 1 spring (520/32) + opacity, layout on exit",
-    swatch: "bg-[var(--foreground)]/40",
+    kind: "chips",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "field") {
+    return (
+      <span className="h-3 w-8 rounded-lg border border-border bg-[var(--card)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="inline-flex h-3.5 w-7 items-center rounded-lg border border-border bg-[var(--background)] ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function PromptComposerChips() {
   return (
@@ -77,9 +92,7 @@ export function PromptComposerChips() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ring-1 ring-fd-border ring-inset ${item.swatch}`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

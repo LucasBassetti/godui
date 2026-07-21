@@ -28,23 +28,43 @@ const CSS = `
 .spc-static .spc-arc { animation: none; stroke-dashoffset: ${CIRC * 0.25}; }
 `;
 
-const LEGEND = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "bar" | "track" | "pin";
+}[] = [
   {
     name: "Ring",
     desc: "strokeDashoffset from progress",
-    swatch: "bg-[var(--foreground)]/60",
+    kind: "bar",
   },
   {
     name: "showAfter",
     desc: "visible when raw progress > threshold",
-    swatch: "bg-[var(--muted)]",
+    kind: "track",
   },
   {
     name: "Enter",
     desc: "AnimatePresence spring 520/32",
-    swatch: "bg-[var(--card)] ring-1 ring-fd-border ring-inset",
+    kind: "pin",
   },
-] as const;
+];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "bar") {
+    return (
+      <span className="h-1 w-8 rounded-full bg-[var(--foreground)]/60 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "track") {
+    return (
+      <span className="h-1 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="size-3 rounded-full border border-fd-border bg-[var(--card)] ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function ScrollProgressCircle() {
   return (
@@ -119,9 +139,7 @@ export function ScrollProgressCircle() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

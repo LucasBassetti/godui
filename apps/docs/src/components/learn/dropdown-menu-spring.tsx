@@ -27,23 +27,43 @@ const CSS = `
 .dms-static .dms-dot   { animation: none; opacity: 1; transform: none; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "trigger" | "panel" | "origin";
+}[] = [
   {
     name: "Trigger",
     desc: "the panel hangs off its edge",
-    swatch: "bg-[var(--muted)]",
+    kind: "trigger",
   },
   {
     name: "Panel",
     desc: "scale 0.94 → 1, opacity 0 → 1 on a spring",
-    swatch: "bg-[var(--card)]",
+    kind: "panel",
   },
   {
     name: "transform-origin",
     desc: "the corner it grows from",
-    swatch: "bg-[var(--foreground)]/40",
+    kind: "origin",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "trigger") {
+    return (
+      <span className="h-2 w-7 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "panel") {
+    return (
+      <span className="h-3.5 w-6 rounded-xl border border-border bg-[var(--background)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="size-2 rounded-full bg-[var(--foreground)]/60 ring-2 ring-fd-card ring-inset" />
+  );
+}
 
 export function DropdownMenuSpring() {
   return (
@@ -82,9 +102,7 @@ export function DropdownMenuSpring() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

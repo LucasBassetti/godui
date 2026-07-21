@@ -26,6 +26,36 @@ const CSS = `
 .lmg-static .lmg-b { animation: none; transform: translate(-20px, 0); }
 `;
 
+const LEGEND = [
+  {
+    name: "Blur",
+    desc: "feGaussianBlur stdDeviation={gooeyness}",
+    kind: "blur" as const,
+  },
+  {
+    name: "Punch",
+    desc: "alpha ×20 − 9",
+    kind: "punch" as const,
+  },
+] as const;
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "punch") {
+    return (
+      <span className="relative flex h-4 w-8 items-center justify-center">
+        <span className="absolute size-3 rounded-full bg-[var(--foreground)]/75" />
+        <span className="absolute size-3 translate-x-2 rounded-full bg-[var(--foreground)]/75" />
+      </span>
+    );
+  }
+  return (
+    <span className="relative flex h-4 w-8 items-center justify-center">
+      <span className="absolute left-1 size-3 rounded-full bg-[var(--foreground)]/75" />
+      <span className="absolute right-1 size-3 rounded-full bg-[var(--foreground)]/75" />
+    </span>
+  );
+}
+
 export function LiquidMetaballsGoo() {
   return (
     <ScrollScene label="Goo filter" note="blur + contrast matrix">
@@ -86,24 +116,23 @@ export function LiquidMetaballsGoo() {
             </div>
           </div>
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                Blur
-              </dt>
-              <dd className="font-mono text-[12px] text-fd-muted-foreground">
-                {"feGaussianBlur stdDeviation={gooeyness}"}
-              </dd>
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                Punch
-              </dt>
-              <dd className="text-[12px] text-fd-muted-foreground">
-                alpha ×20 − 9
-              </dd>
-            </div>
+            {LEGEND.map((item) => (
+              <div key={item.name} className="flex flex-col gap-1.5">
+                <LegendSwatch kind={item.kind} />
+                <dt className="font-medium text-[13px] text-fd-foreground">
+                  {item.name}
+                </dt>
+                <dd
+                  className={
+                    item.kind === "blur"
+                      ? "font-mono text-[12px] text-fd-muted-foreground"
+                      : "text-[12px] text-fd-muted-foreground"
+                  }
+                >
+                  {item.desc}
+                </dd>
+              </div>
+            ))}
           </dl>
         </div>
       )}

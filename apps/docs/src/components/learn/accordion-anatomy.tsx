@@ -15,23 +15,43 @@ const CSS = `
 .aa-static .aa-row { opacity: 1; animation: none; transform: none; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "trigger" | "chevron" | "panel";
+}[] = [
   {
     name: "Trigger",
     desc: "button, aria-expanded + aria-controls",
-    swatch: "bg-[var(--muted)]",
+    kind: "trigger",
   },
   {
     name: "Chevron",
     desc: "group-data-[open=true]:rotate-180, 250ms ease",
-    swatch: "bg-[var(--foreground)]/50",
+    kind: "chevron",
   },
   {
     name: "Panel",
     desc: "role=region, mounted only while open",
-    swatch: "bg-[var(--foreground)]/30",
+    kind: "panel",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "trigger") {
+    return (
+      <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "chevron") {
+    return (
+      <span className="size-2 border-[var(--foreground)]/50 border-r-2 border-b-2 [transform:rotate(45deg)]" />
+    );
+  }
+  return (
+    <span className="h-1.5 w-8 rounded-full bg-[var(--foreground)]/30 ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 function Chevron({ open }: { open: boolean }) {
   return (
@@ -96,9 +116,7 @@ export function AccordionAnatomy() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

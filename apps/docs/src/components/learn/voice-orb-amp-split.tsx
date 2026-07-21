@@ -28,18 +28,33 @@ const CSS = `
 .voas-static .voas-scale { transform: scale(1.05); }
 `;
 
-const LEGEND = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "wrapper" | "inner";
+}[] = [
   {
     name: "Wrapper",
     desc: "inline scale(--amp)",
-    swatch: "bg-[var(--foreground)]/25",
+    kind: "wrapper",
   },
   {
     name: "Inner",
     desc: "animate-voice-orb-spin",
-    swatch: "bg-[var(--muted)]",
+    kind: "inner",
   },
-] as const;
+];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "wrapper") {
+    return (
+      <span className="relative size-7 rounded-full bg-[conic-gradient(from_0deg,var(--foreground)_0%,transparent_40%,var(--foreground)_70%,transparent_100%)] opacity-40 blur-[2px]" />
+    );
+  }
+  return (
+    <span className="size-4 rounded-full border border-border bg-[var(--card)] ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function VoiceOrbAmpSplit() {
   return (
@@ -89,9 +104,7 @@ export function VoiceOrbAmpSplit() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

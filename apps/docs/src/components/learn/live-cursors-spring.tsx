@@ -48,6 +48,43 @@ const LANES = [
   },
 ];
 
+const LEGEND = [
+  {
+    name: "Raw",
+    desc: "position snaps — no interpolation between updates",
+    kind: "raw" as const,
+  },
+  {
+    name: "Spring",
+    desc: "chases the target, arrives with a touch of overshoot",
+    kind: "spring" as const,
+  },
+] as const;
+
+function LegendSwatch({
+  kind: _kind,
+}: {
+  kind: (typeof LEGEND)[number]["kind"];
+}) {
+  if (kind === "spring") {
+    return (
+      <span className="relative h-3 w-8">
+        <span className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-[var(--foreground)]/15" />
+        <span className="absolute left-0 top-1/2 size-2.5 -translate-y-1/2 rounded-full border-2 border-dashed border-[var(--foreground)]/30" />
+        <span className="absolute right-1 top-1/2 size-2.5 -translate-y-1/2 rounded-full bg-[var(--foreground)]/70 shadow-sm" />
+        <span className="absolute right-0 top-1/2 size-1.5 -translate-y-1/2 rounded-full bg-[var(--foreground)]/35" />
+      </span>
+    );
+  }
+  return (
+    <span className="relative h-3 w-8">
+      <span className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-[var(--foreground)]/15" />
+      <span className="absolute left-0 top-1/2 size-2.5 -translate-y-1/2 rounded-full border-2 border-dashed border-[var(--foreground)]/30" />
+      <span className="absolute right-0 top-1/2 size-2.5 -translate-y-1/2 rounded-full bg-[var(--foreground)]/70 shadow-sm" />
+    </span>
+  );
+}
+
 export function LiveCursorsSpring() {
   return (
     <ScrollScene label="The motion" note="same update, two ways to land it">
@@ -80,24 +117,17 @@ export function LiveCursorsSpring() {
           </div>
 
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--foreground)]/70 ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                Raw
-              </dt>
-              <dd className="text-[12px] text-fd-muted-foreground">
-                position snaps — no interpolation between updates
-              </dd>
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--foreground)]/70 ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                Spring
-              </dt>
-              <dd className="text-[12px] text-fd-muted-foreground">
-                chases the target, arrives with a touch of overshoot
-              </dd>
-            </div>
+            {LEGEND.map((item) => (
+              <div key={item.name} className="flex flex-col gap-1.5">
+                <LegendSwatch kind={item.kind} />
+                <dt className="font-medium text-[13px] text-fd-foreground">
+                  {item.name}
+                </dt>
+                <dd className="text-[12px] text-fd-muted-foreground">
+                  {item.desc}
+                </dd>
+              </div>
+            ))}
           </dl>
         </div>
       )}

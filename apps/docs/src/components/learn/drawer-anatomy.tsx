@@ -16,23 +16,43 @@ const CSS = `
 .dwa-static .dwa-row { opacity: 1; animation: none; transform: none; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "backdrop" | "panel" | "handle";
+}[] = [
   {
     name: "backdrop",
     desc: "click-through scrim, closes on click",
-    swatch: "bg-[var(--foreground)]/10",
+    kind: "backdrop",
   },
   {
     name: "panel",
     desc: "role=dialog, pinned to one edge",
-    swatch: "bg-[var(--card)] ring-1",
+    kind: "panel",
   },
   {
     name: "handle",
     desc: "bottom only — drag target",
-    swatch: "bg-[var(--muted-foreground)]/40",
+    kind: "handle",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "backdrop") {
+    return (
+      <span className="h-3.5 w-7 rounded-md bg-[var(--foreground)]/[0.04] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "handle") {
+    return (
+      <span className="h-1.5 w-6 rounded-full bg-[var(--muted-foreground)]/40" />
+    );
+  }
+  return (
+    <span className="h-3.5 w-7 rounded-md border border-border bg-card shadow-sm" />
+  );
+}
 
 export function DrawerAnatomy() {
   return (
@@ -71,9 +91,7 @@ export function DrawerAnatomy() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium font-mono text-[12px] text-fd-foreground">
                   {item.name}
                 </dt>

@@ -30,6 +30,36 @@ const CSS = `
 .hcf-foil-anim { animation: hcf-foil 4s cubic-bezier(0.34,1.4,0.64,1) infinite; }
 `;
 
+const LEGEND = [
+  {
+    name: "Tilt",
+    desc: "rotateX/rotateY from the shared spring",
+    kind: "tilt" as const,
+  },
+  {
+    name: "Foil",
+    desc: "same sx/sy, mapped to a background position",
+    kind: "foil" as const,
+  },
+] as const;
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "foil") {
+    return (
+      <span
+        className="h-4 w-7 rounded-2xl border border-white/10 ring-1 ring-fd-border ring-inset"
+        style={{
+          backgroundImage:
+            "linear-gradient(115deg,#ff2d95,#ffd84d,#4dff9e,#4dd2ff,#a24dff,#ff2d95)",
+        }}
+      />
+    );
+  }
+  return (
+    <span className="h-4 w-7 rounded-2xl border border-white/10 ring-1 ring-fd-border ring-inset [background:radial-gradient(120%_120%_at_30%_15%,#312e81_0%,#0b1020_55%,#020617_100%)]" />
+  );
+}
+
 export function HolographicCardFoil() {
   return (
     <ScrollScene label="The foil" note="one signal, tilt + color together">
@@ -62,30 +92,17 @@ export function HolographicCardFoil() {
           </p>
 
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                Tilt
-              </dt>
-              <dd className="text-[12px] text-fd-muted-foreground">
-                rotateX/rotateY from the shared spring
-              </dd>
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <span
-                className="h-1.5 w-8 rounded-full ring-1 ring-fd-border ring-inset"
-                style={{
-                  backgroundImage:
-                    "linear-gradient(115deg,#ff2d95,#ffd84d,#4dff9e,#4dd2ff,#a24dff,#ff2d95)",
-                }}
-              />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                Foil
-              </dt>
-              <dd className="text-[12px] text-fd-muted-foreground">
-                same sx/sy, mapped to a background position
-              </dd>
-            </div>
+            {LEGEND.map((item) => (
+              <div key={item.name} className="flex flex-col gap-1.5">
+                <LegendSwatch kind={item.kind} />
+                <dt className="font-medium text-[13px] text-fd-foreground">
+                  {item.name}
+                </dt>
+                <dd className="text-[12px] text-fd-muted-foreground">
+                  {item.desc}
+                </dd>
+              </div>
+            ))}
           </dl>
         </div>
       )}

@@ -19,6 +19,41 @@ const CSS = `
 const FAN =
   "repeating-conic-gradient(from 0deg at 50% 0%, transparent 0deg, rgba(0,0,0,0.3) 4deg, transparent 26deg)";
 
+const LEGEND = [
+  {
+    name: "Noise",
+    desc: "fractalNoise · baseFrequency 0.9",
+    kind: "noise" as const,
+  },
+  {
+    name: "Blend",
+    desc: "mix-blend-overlay · opacity = grain",
+    kind: "blend" as const,
+  },
+] as const;
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "blend") {
+    return (
+      <span className="relative h-4 w-8 overflow-hidden rounded-md ring-1 ring-fd-border ring-inset">
+        <span
+          className="absolute inset-0"
+          style={{
+            backgroundImage: FAN,
+            WebkitMaskImage:
+              "linear-gradient(to bottom, black 8%, transparent 78%)",
+            maskImage: "linear-gradient(to bottom, black 8%, transparent 78%)",
+          }}
+        />
+        <span className="absolute inset-0 bg-[var(--foreground)]/20 mix-blend-overlay" />
+      </span>
+    );
+  }
+  return (
+    <span className="h-4 w-8 rounded-md bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+  );
+}
+
 export function LightRaysGrain() {
   const uid = useId().replace(/:/g, "");
   const noiseId = `lrg-noise-${uid}`;
@@ -127,24 +162,17 @@ export function LightRaysGrain() {
           </p>
 
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                Noise
-              </dt>
-              <dd className="font-mono text-[12px] text-fd-muted-foreground">
-                fractalNoise · baseFrequency 0.9
-              </dd>
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                Blend
-              </dt>
-              <dd className="font-mono text-[12px] text-fd-muted-foreground">
-                mix-blend-overlay · opacity = grain
-              </dd>
-            </div>
+            {LEGEND.map((item) => (
+              <div key={item.name} className="flex flex-col gap-1.5">
+                <LegendSwatch kind={item.kind} />
+                <dt className="font-medium text-[13px] text-fd-foreground">
+                  {item.name}
+                </dt>
+                <dd className="font-mono text-[12px] text-fd-muted-foreground">
+                  {item.desc}
+                </dd>
+              </div>
+            ))}
           </dl>
         </div>
       )}

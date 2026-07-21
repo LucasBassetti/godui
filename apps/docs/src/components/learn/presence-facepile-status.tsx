@@ -55,6 +55,48 @@ const CSS = `
 .pfs-static .pfs-dot { animation: none; transform: none; }
 `;
 
+function LegendSwatch({
+  kind,
+  color,
+}: {
+  kind: (typeof STATES)[number]["kind"];
+  color: string;
+}) {
+  if (kind === "typing") {
+    return (
+      <span className="flex gap-0.5 rounded-full bg-background px-0.5 py-0.5 ring-1 ring-fd-border ring-inset">
+        {[0, 1, 2].map((d) => (
+          <span
+            key={d}
+            className="size-1 rounded-full"
+            style={{ backgroundColor: color }}
+          />
+        ))}
+      </span>
+    );
+  }
+  if (kind === "ping") {
+    return (
+      <span className="relative size-2.5 rounded-full ring-2 ring-background ring-inset">
+        <span
+          className="absolute inset-0 rounded-full opacity-40 scale-150"
+          style={{ backgroundColor: color }}
+        />
+        <span
+          className="absolute inset-0 rounded-full"
+          style={{ backgroundColor: color }}
+        />
+      </span>
+    );
+  }
+  return (
+    <span
+      className="size-2.5 rounded-full ring-2 ring-background ring-inset"
+      style={{ backgroundColor: color }}
+    />
+  );
+}
+
 export function PresenceFacepileStatus() {
   return (
     <ScrollScene label="The showpiece" note="status color · typing bounces">
@@ -114,10 +156,7 @@ export function PresenceFacepileStatus() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5 sm:grid-cols-4">
             {STATES.map((state) => (
               <div key={state.name} className="flex flex-col gap-1.5">
-                <span
-                  className="h-1.5 w-8 rounded-full ring-1 ring-fd-border ring-inset"
-                  style={{ backgroundColor: state.color }}
-                />
+                <LegendSwatch kind={state.kind} color={state.color} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {state.name}
                 </dt>

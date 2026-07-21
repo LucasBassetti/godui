@@ -28,17 +28,20 @@ const LEGEND: { name: string; desc: string; swatch: string }[] = [
   {
     name: "Dots",
     desc: "static SVG grid, drawn once with currentColor",
-    swatch: "bg-[var(--muted-foreground)]/40",
+    swatch:
+      "size-2 rounded-full bg-[var(--muted-foreground)]/40 ring-1 ring-fd-border ring-inset",
   },
   {
     name: "Pin",
     desc: "one per arc endpoint, deduped by coordinate",
-    swatch: "bg-[var(--foreground)]/60",
+    swatch:
+      "size-3 rounded-full bg-[var(--foreground)] ring-1 ring-fd-border ring-inset",
   },
   {
     name: "Arc",
     desc: "quadratic Bézier bow between two pins",
-    swatch: "bg-[var(--primary)]",
+    swatch:
+      "h-0.5 w-8 rounded-full bg-[var(--primary)] ring-1 ring-fd-border ring-inset",
   },
 ];
 
@@ -109,7 +112,7 @@ export function WorldMapAnatomy() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span className={`h-1.5 w-8 rounded-full ${item.swatch}`} />
+                <span className={item.swatch} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

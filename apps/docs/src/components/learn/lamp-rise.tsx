@@ -25,19 +25,41 @@ const LEGEND = [
   {
     name: "Light",
     desc: "cones + bar ignite first (t=0)",
-    swatch: "bg-[var(--muted)]",
+    kind: "light" as const,
   },
   {
     name: "Children",
     desc: "opacity + y:40→0, delay 0.2s",
-    swatch: "bg-[var(--foreground)]/30",
+    kind: "children" as const,
   },
   {
     name: "Reduced motion",
     desc: "start at lit + risen state",
-    swatch: "bg-transparent ring-1 ring-[var(--foreground)]/40 ring-inset",
+    kind: "reduced" as const,
   },
 ] as const;
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "children") {
+    return (
+      <span className="h-2 w-8 rounded-full bg-[var(--foreground)]/35 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "reduced") {
+    return (
+      <span className="h-3.5 w-6 rounded-2xl ring-1 ring-[var(--foreground)]/40 ring-inset" />
+    );
+  }
+  return (
+    <span
+      className="h-4 w-8 rounded-t-full ring-1 ring-fd-border ring-inset"
+      style={{
+        backgroundImage:
+          "conic-gradient(from 70deg at 50% 100%, color-mix(in oklch, var(--foreground) 28%, transparent), transparent 55%)",
+      }}
+    />
+  );
+}
 
 export function LampRise() {
   return (
@@ -79,9 +101,7 @@ export function LampRise() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

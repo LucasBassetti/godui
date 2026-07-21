@@ -78,23 +78,55 @@ const EXTRA: { titleW: string; hostW: string; delay: string }[] = [
   { titleW: "w-32", hostW: "w-12", delay: "70ms" },
 ];
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "row" | "stagger" | "toggle";
+}[] = [
   {
     name: "Row",
     desc: "chip · title · host, fades up on mount",
-    swatch: "bg-[var(--card)]",
+    kind: "row",
   },
   {
     name: "Stagger",
     desc: "delay min(i, previewCount) × 0.05s",
-    swatch: "bg-[var(--foreground)]/40",
+    kind: "stagger",
   },
   {
     name: "+N more",
     desc: "toggles the rows past previewCount",
-    swatch: "bg-[var(--foreground)]/70",
+    kind: "toggle",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "stagger") {
+    return (
+      <span className="flex flex-col gap-0.5">
+        <span className="h-1 w-6 rounded-full bg-[var(--foreground)]/40" />
+        <span className="ml-1.5 h-1 w-5 rounded-full bg-[var(--foreground)]/25" />
+      </span>
+    );
+  }
+  if (kind === "toggle") {
+    return (
+      <span className="inline-flex items-center gap-0.5">
+        <span className="h-1 w-4 rounded-full bg-[var(--foreground)]/70" />
+        <span className="size-1.5 rotate-180 border-[var(--foreground)]/70 border-t border-r" />
+      </span>
+    );
+  }
+  return (
+    <span className="inline-flex items-center gap-1 rounded-lg border border-transparent px-0.5 py-0.5">
+      <span className="size-2 shrink-0 rounded bg-[var(--muted)]" />
+      <span className="flex flex-col gap-0.5">
+        <span className="h-1 w-4 rounded-full bg-[var(--foreground)]/40" />
+        <span className="h-0.5 w-2.5 rounded-full bg-[var(--foreground)]/20" />
+      </span>
+    </span>
+  );
+}
 
 export function SourceCitationsList() {
   return (
@@ -156,9 +188,7 @@ export function SourceCitationsList() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

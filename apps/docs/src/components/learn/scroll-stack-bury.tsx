@@ -78,23 +78,43 @@ const CSS = `
 }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "buried" | "mid" | "front";
+}[] = [
   {
     name: "Back (depth 2)",
     desc: "scale 0.86 · brightness 0.84 · blur 4px",
-    swatch: "bg-[var(--muted)]",
+    kind: "buried",
   },
   {
     name: "Mid (depth 1)",
     desc: "scale 0.93 · brightness 0.92 · blur 2px",
-    swatch: "bg-[var(--foreground)]/25",
+    kind: "mid",
   },
   {
     name: "Front (depth 0)",
     desc: "stays at scale 1 — never buries",
-    swatch: "bg-[var(--card)] ring-1 ring-fd-border ring-inset",
+    kind: "front",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "buried") {
+    return (
+      <span className="h-3 w-8 rounded-md bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "mid") {
+    return (
+      <span className="h-3 w-8 rounded-md border border-fd-border bg-[var(--card)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-3 w-8 rounded-md border border-fd-border bg-[var(--card)] shadow-sm ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function ScrollStackBury() {
   return (
@@ -135,7 +155,7 @@ export function ScrollStackBury() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span className={`h-1.5 w-8 rounded-full ${item.swatch}`} />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

@@ -21,23 +21,43 @@ const CSS = `
 .ftm-static .ftm-hovered { animation: none; transform: none; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "idle" | "hover" | "press";
+}[] = [
   {
     name: "idle",
     desc: "resting scale, no transform",
-    swatch: "bg-[var(--foreground)]/12",
+    kind: "idle",
   },
   {
     name: "hover",
     desc: "y: -2, scale: 1.08",
-    swatch: "bg-[var(--foreground)]/60",
+    kind: "hover",
   },
   {
     name: "press",
     desc: "whileTap scale: 0.94",
-    swatch: "bg-[var(--foreground)]",
+    kind: "press",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "hover") {
+    return (
+      <span className="size-3.5 translate-y-[-1px] scale-110 rounded-lg bg-[var(--foreground)]/60 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "press") {
+    return (
+      <span className="size-3.5 scale-95 rounded-lg bg-[var(--foreground)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="size-3.5 rounded-lg bg-[var(--foreground)]/12 ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function FloatingToolbarMagnetic() {
   return (
@@ -75,9 +95,7 @@ export function FloatingToolbarMagnetic() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

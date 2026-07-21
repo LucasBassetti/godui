@@ -36,23 +36,45 @@ const CSS = `
 .mdb-static .mdb-close    { animation: none; opacity: 1; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "backdrop" | "panel" | "close";
+}[] = [
   {
     name: "Backdrop",
     desc: "opacity 0 → 1, 0.2s tween",
-    swatch: "bg-black/50",
+    kind: "backdrop",
   },
   {
     name: "Panel",
     desc: "spring settle, 0.9 → 1.04 → 1",
-    swatch: "bg-[var(--card)]",
+    kind: "panel",
   },
   {
     name: "Close",
     desc: "opacity fade, delay 0.1s",
-    swatch: "bg-[var(--foreground)]/25",
+    kind: "close",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "backdrop") {
+    return (
+      <span className="h-3.5 w-8 rounded-sm bg-black/50 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "close") {
+    return (
+      <span className="size-4 rounded-full bg-background/80 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="relative h-3.5 w-6 overflow-hidden rounded-xl bg-[var(--card)] shadow-sm ring-1 ring-fd-border ring-inset">
+      <span className="absolute inset-x-1 top-1 h-2 rounded-md bg-[var(--muted)]" />
+    </span>
+  );
+}
 
 export function MorphingDialogBackdrop() {
   return (
@@ -77,9 +99,7 @@ export function MorphingDialogBackdrop() {
           <dl className="grid w-full max-w-[420px] grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

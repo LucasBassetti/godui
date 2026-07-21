@@ -50,23 +50,43 @@ const COLUMNS: {
   { key: "both", label: "together", delay: 240 },
 ];
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "after" | "before" | "handle";
+}[] = [
   {
     name: "After",
     desc: "base layer, always full",
-    swatch: "bg-[var(--muted)]",
+    kind: "after",
   },
   {
     name: "Before",
     desc: "clip-path: inset(...) on top",
-    swatch: "bg-[var(--foreground)]/30",
+    kind: "before",
   },
   {
     name: "Handle",
     desc: "role=slider, drag or arrow keys",
-    swatch: "border-2 border-white bg-transparent",
+    kind: "handle",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "handle") {
+    return (
+      <span className="size-3 rounded-full border-2 border-white bg-white/30 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "before") {
+    return (
+      <span className="h-3 w-5 rounded-lg bg-[var(--foreground)]/30 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-3 w-5 rounded-lg bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function ImageCompareAnatomy() {
   return (
@@ -96,9 +116,7 @@ export function ImageCompareAnatomy() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ring-1 ring-fd-border ring-inset ${item.swatch}`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

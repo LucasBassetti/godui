@@ -23,17 +23,20 @@ const LEGEND = [
   {
     name: "Chrome",
     desc: "showChrome — traffic lights + optional title",
-    swatch: "bg-red-500/70",
+    swatch:
+      "size-2.5 rounded-full bg-red-500/80 ring-1 ring-fd-border ring-inset",
   },
   {
     name: "Body",
     desc: "mono 13px, space-y-1, ligatures off",
-    swatch: "bg-[var(--card)]",
+    swatch:
+      "h-3 w-8 rounded-md border border-fd-border bg-[var(--card)] ring-1 ring-fd-border ring-inset",
   },
   {
     name: "Lines",
     desc: "command · output · comment color roles",
-    swatch: "bg-[var(--foreground)]/35",
+    swatch:
+      "h-1.5 w-8 rounded-full bg-[var(--foreground)]/35 ring-1 ring-fd-border ring-inset",
   },
 ] as const;
 
@@ -88,9 +91,7 @@ export function TerminalAnatomy() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <span className={item.swatch} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

@@ -39,23 +39,43 @@ const CHUNKS: { w: string; delay: string }[] = [
   { w: "w-12", delay: "450ms" },
 ];
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "chunk" | "caret" | "cadence";
+}[] = [
   {
     name: "Token chunk",
     desc: "count += chunk (2 chars) per tick",
-    swatch: "bg-[var(--foreground)]/45",
+    kind: "chunk",
   },
   {
     name: "Caret",
     desc: "animate-pulse, only while streaming is true",
-    swatch: "bg-[var(--foreground)]",
+    kind: "caret",
   },
   {
     name: "Cadence",
     desc: "setInterval every speed (24ms)",
-    swatch: "bg-[var(--foreground)]/20",
+    kind: "cadence",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "caret") {
+    return (
+      <span className="inline-block h-3 w-[2px] rounded-full bg-[var(--foreground)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "cadence") {
+    return (
+      <span className="h-1.5 w-5 rounded-full bg-[var(--foreground)]/20 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-1.5 w-6 rounded-full bg-[var(--foreground)]/45 ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function ConversationThreadStream() {
   return (
@@ -92,9 +112,7 @@ export function ConversationThreadStream() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ring-1 ring-fd-border ring-inset ${item.swatch}`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

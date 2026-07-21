@@ -39,23 +39,69 @@ const CSS = `
 .tl-static .tl-loop-tag { animation: none; opacity: 0; }
 `;
 
-const LEGEND = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "view" | "loop" | "reduced";
+}[] = [
   {
     name: "startOnView",
     desc: "IO threshold 0.35 → setActive(true), disconnect",
-    swatch: "bg-[var(--muted)]",
+    kind: "view",
   },
   {
     name: "Loop",
     desc: "2s pause, then count=0 / typed=0",
-    swatch: "bg-[var(--foreground)]/35",
+    kind: "loop",
   },
   {
     name: "Reduced",
     desc: "dump lines.length immediately, no caret",
-    swatch: "bg-transparent ring-1 ring-[var(--foreground)]/40 ring-inset",
+    kind: "reduced",
   },
-] as const;
+];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "view") {
+    return (
+      <span className="flex h-7 w-10 flex-col justify-center gap-0.5 rounded-lg border border-dashed border-fd-border bg-[var(--card)] px-1.5 ring-1 ring-fd-border ring-inset">
+        <span className="h-1 w-full rounded-full bg-[var(--foreground)]/40" />
+        <span className="h-1 w-4/5 rounded-full bg-[var(--foreground)]/18" />
+      </span>
+    );
+  }
+  if (kind === "loop") {
+    return (
+      <svg
+        aria-hidden="true"
+        className="size-4 text-fd-muted-foreground"
+        viewBox="0 0 16 16"
+        fill="none"
+      >
+        <path
+          d="M3 8a5 5 0 0 1 8.5-3.5M13 8a5 5 0 0 1-8.5 3.5"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+        />
+        <path
+          d="M11 2.5v2.5H13.5M5 13.5V11H2.5"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    );
+  }
+  return (
+    <span className="flex flex-col gap-0.5">
+      <span className="h-1 w-7 rounded-full bg-[var(--foreground)]/40" />
+      <span className="h-1 w-8 rounded-full bg-[var(--foreground)]/18" />
+      <span className="h-1 w-5 rounded-full bg-[var(--foreground)]/40" />
+    </span>
+  );
+}
 
 export function TerminalLifecycle() {
   return (
@@ -118,9 +164,7 @@ export function TerminalLifecycle() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

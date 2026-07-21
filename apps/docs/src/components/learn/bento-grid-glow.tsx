@@ -25,18 +25,33 @@ const CSS = `
 .bgg-static .bgg-glow { animation: none; opacity: 0; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "lift" | "spotlight";
+}[] = [
   {
     name: "Lift",
     desc: "translate -4px, 300ms cubic-bezier(0.3,0.7,0.4,1)",
-    swatch: "bg-[var(--card)]",
+    kind: "lift",
   },
   {
     name: "Spotlight",
     desc: "radial-gradient at --x/--y, opacity 0→1",
-    swatch: "bg-[var(--foreground)]/40",
+    kind: "spotlight",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "lift") {
+    return (
+      <span className="h-3 w-7 rounded-xl border border-fd-border bg-[var(--card)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="size-3.5 rounded-full bg-[var(--foreground)]/25 blur-[2px] ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function BentoGridGlow() {
   return (
@@ -58,9 +73,7 @@ export function BentoGridGlow() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

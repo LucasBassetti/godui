@@ -26,23 +26,44 @@ const CSS = `
 .tsw-static .tsw-card { animation: none; transform: translateX(0); opacity: 0.35; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "card" | "threshold" | "dismissed";
+}[] = [
   {
     name: "Card",
     desc: 'drag="x", elastic 0.6',
-    swatch: "bg-[var(--card)]",
+    kind: "card",
   },
   {
     name: "Threshold",
     desc: "|offset.x| > 80",
-    swatch: "bg-[var(--foreground)]/40",
+    kind: "threshold",
   },
   {
     name: "Dismissed",
     desc: "no spring back, just exits",
-    swatch: "bg-[var(--foreground)]/15",
+    kind: "dismissed",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "threshold") {
+    return <span className="h-4 w-px bg-[var(--foreground)]/35" />;
+  }
+  if (kind === "dismissed") {
+    return (
+      <span className="flex h-4 w-8 flex-col justify-center gap-1 rounded-xl border border-border bg-[var(--card)] p-1 opacity-35 shadow-sm" />
+    );
+  }
+  return (
+    <span className="flex h-4 w-8 flex-col justify-center gap-1 rounded-xl border border-border bg-[var(--card)] p-1 shadow-sm ring-1 ring-fd-border ring-inset">
+      <span className="h-0.5 w-2/5 rounded-full bg-[var(--foreground)]/35" />
+      <span className="h-0.5 w-3/5 rounded-full bg-[var(--foreground)]/20" />
+    </span>
+  );
+}
 
 export function ToastSwipe() {
   return (
@@ -76,9 +97,7 @@ export function ToastSwipe() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

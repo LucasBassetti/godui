@@ -29,18 +29,33 @@ const CSS = `
 .pcsm-static .pcsm-stop { animation: none; opacity: 0; transform: scale(0.6); }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "send" | "stop";
+}[] = [
   {
     name: "Send",
     desc: 'key="send" · scale 1 → 0.6 out, 0.15s',
-    swatch: "bg-[var(--foreground)]/40",
+    kind: "send",
   },
   {
     name: "Stop",
     desc: 'key="stop" · scale 0.6 → 1 in, 0.15s, after send exits',
-    swatch: "bg-[var(--foreground)]/25",
+    kind: "stop",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "stop") {
+    return (
+      <span className="size-2.5 rounded-sm bg-[var(--foreground)]/50 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="size-3 rounded-xl bg-[var(--foreground)]/80 ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function PromptComposerSendMorph() {
   return (
@@ -81,9 +96,7 @@ export function PromptComposerSendMorph() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ring-1 ring-fd-border ring-inset ${item.swatch}`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

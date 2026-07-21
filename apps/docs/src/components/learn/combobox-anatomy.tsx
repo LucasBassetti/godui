@@ -30,23 +30,38 @@ const CSS = `
 .ca-static .ca-row { opacity: 1; animation: none; transform: none; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "input" | "listbox" | "row";
+}[] = [
   {
     name: "Input",
     desc: "role=combobox · aria-autocomplete=list",
-    swatch: "bg-[var(--card)]",
+    kind: "input",
   },
   {
     name: "Listbox popover",
     desc: "AnimatePresence sibling · origin-top",
-    swatch: "bg-[var(--foreground)]/15",
+    kind: "listbox",
   },
   {
     name: "Option row",
     desc: "label + description · check when selected",
-    swatch: "bg-[var(--foreground)]/30",
+    kind: "row",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "input" || kind === "listbox") {
+    return (
+      <span className="h-3.5 w-7 rounded-md border border-fd-border bg-[var(--card)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-1.5 w-8 rounded-full bg-[var(--foreground)]/30 ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function ComboboxAnatomy() {
   return (
@@ -117,9 +132,7 @@ export function ComboboxAnatomy() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

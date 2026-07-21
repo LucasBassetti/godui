@@ -18,18 +18,37 @@ const CSS = `
 .bgs-static .bgs-cell { opacity: 1; animation: none; transform: none; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "stagger" | "spring";
+}[] = [
   {
     name: "staggerChildren",
     desc: "0.08s between each card's start",
-    swatch: "bg-[var(--foreground)]/30",
+    kind: "stagger",
   },
   {
     name: "Item spring",
     desc: "stiffness 320 · damping 32 · mass 0.9",
-    swatch: "bg-[var(--foreground)]",
+    kind: "spring",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "stagger") {
+    return (
+      <span className="flex gap-0.5">
+        <span className="h-2.5 w-2 rounded-md border border-fd-border bg-[var(--card)] opacity-40 ring-1 ring-fd-border ring-inset" />
+        <span className="h-2.5 w-2 rounded-md border border-fd-border bg-[var(--card)] opacity-70 ring-1 ring-fd-border ring-inset" />
+        <span className="h-2.5 w-2 rounded-md border border-fd-border bg-[var(--card)] ring-1 ring-fd-border ring-inset" />
+      </span>
+    );
+  }
+  return (
+    <span className="h-3 w-5 rounded-xl border border-fd-border bg-[var(--card)] ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function BentoGridStagger() {
   return (
@@ -61,9 +80,7 @@ export function BentoGridStagger() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

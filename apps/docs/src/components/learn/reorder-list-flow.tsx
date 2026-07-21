@@ -69,18 +69,33 @@ const CSS = `
 .rlf-static .rlf-shadow { animation: none; opacity: 0; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "lift" | "item";
+}[] = [
   {
     name: "Dragged",
     desc: "follows the pointer, lift via data-dragging",
-    swatch: "bg-[var(--foreground)]/55",
+    kind: "lift",
   },
   {
     name: "Neighbor",
     desc: "springs into the vacated slot — same REORDER_SPRING",
-    swatch: "bg-[var(--foreground)]/22",
+    kind: "item",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "lift") {
+    return (
+      <span className="h-2.5 w-8 scale-[1.03] rounded-lg border border-border bg-[var(--card)] shadow-lg ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-2.5 w-8 rounded-lg border border-border bg-[var(--card)] ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 function Row({
   className,
@@ -163,9 +178,7 @@ export function ReorderListFlow() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

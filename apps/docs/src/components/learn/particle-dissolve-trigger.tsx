@@ -49,20 +49,45 @@ const COLS = [
     desc: "start() on effect resolve",
     bar: "pdt-mount",
     badge: null,
+    kind: "mount" as const,
   },
   {
     name: "In-view",
     desc: "IO threshold 0.3 · once",
     bar: "pdt-view",
     badge: "pdt-io",
+    kind: "inView" as const,
   },
   {
     name: "Hover",
     desc: "enter/leave flips goal",
     bar: "pdt-hover",
     badge: "pdt-ptr",
+    kind: "hover" as const,
   },
 ] as const;
+
+function LegendSwatch({ kind }: { kind: (typeof COLS)[number]["kind"] }) {
+  if (kind === "mount") {
+    return (
+      <span className="relative flex h-3.5 w-6 items-end justify-center rounded-md bg-[var(--foreground)]/40 ring-1 ring-fd-border ring-inset">
+        <span className="absolute top-0 size-1.5 rounded-full bg-[var(--foreground)]/50" />
+      </span>
+    );
+  }
+  if (kind === "inView") {
+    return (
+      <span className="relative flex h-3.5 w-6 items-end justify-center rounded-md bg-[var(--foreground)]/40 ring-1 ring-fd-border ring-inset">
+        <span className="absolute top-0 size-2.5 rounded-full border border-fd-border bg-[var(--muted)]" />
+      </span>
+    );
+  }
+  return (
+    <span className="relative flex h-3.5 w-6 items-end justify-center rounded-md bg-[var(--foreground)]/40 ring-1 ring-fd-border ring-inset">
+      <span className="absolute top-0 size-1.5 rounded-full bg-[var(--foreground)]/50" />
+    </span>
+  );
+}
 
 export function ParticleDissolveTrigger() {
   return (
@@ -106,7 +131,7 @@ export function ParticleDissolveTrigger() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {COLS.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span className="h-1.5 w-8 rounded-full bg-[var(--foreground)]/40 ring-1 ring-fd-border ring-inset" />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

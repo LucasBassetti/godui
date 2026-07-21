@@ -28,18 +28,33 @@ function cellVars(i: number): CSSProperties {
   return { "--delay": `${(i - 2) * 0.16}s` } as CSSProperties;
 }
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "base" | "magnified";
+}[] = [
   {
     name: "Distance map",
     desc: "[-distance, 0, distance] → [baseSize, magnification, baseSize]",
-    swatch: "bg-[var(--foreground)]/30",
+    kind: "base",
   },
   {
     name: "Spring",
     desc: "mass 0.1 · stiffness 170 · damping 12 chases the target size",
-    swatch: "bg-[var(--foreground)]",
+    kind: "magnified",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "magnified") {
+    return (
+      <span className="size-4 rounded-xl bg-[var(--muted)] shadow-sm ring-1 ring-fd-border ring-inset [transform:scale(1.45)]" />
+    );
+  }
+  return (
+    <span className="size-3.5 rounded-xl bg-[var(--muted)] shadow-sm ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function DockMagnify() {
   return (
@@ -75,9 +90,7 @@ export function DockMagnify() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

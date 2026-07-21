@@ -20,28 +20,53 @@ const CSS = `
 const ROWS = [0, 1, 2, 3];
 const LIFTED = 1;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "group" | "item" | "lift" | "shadow";
+}[] = [
   {
     name: "Group",
     desc: "Reorder.Group, holds values + axis",
-    swatch: "bg-[var(--muted)]",
+    kind: "group",
   },
   {
     name: "Item",
     desc: "Reorder.Item, one value each",
-    swatch: "bg-[var(--card)]",
+    kind: "item",
   },
   {
     name: "Lift",
     desc: "data-dragging → scale 1.03, CSS transition",
-    swatch: "bg-[var(--foreground)]/40",
+    kind: "lift",
   },
   {
     name: "Shadow",
     desc: "sibling overlay, opacity fade only",
-    swatch: "bg-[var(--foreground)]/20",
+    kind: "shadow",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "group") {
+    return (
+      <span className="h-4 w-8 rounded-lg border border-dashed border-border bg-transparent ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "item") {
+    return (
+      <span className="h-2.5 w-8 rounded-lg border border-border bg-[var(--card)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "lift") {
+    return (
+      <span className="h-2.5 w-8 scale-[1.03] rounded-lg border border-border bg-[var(--card)] shadow-lg ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-2.5 w-8 rounded-lg bg-[var(--foreground)]/20 ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function ReorderListAnatomy() {
   return (
@@ -87,9 +112,7 @@ export function ReorderListAnatomy() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

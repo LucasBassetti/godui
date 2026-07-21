@@ -96,7 +96,7 @@ export function TopographicDriftAnatomy() {
 
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+              <span className="h-0 w-8 border-t border-[var(--foreground)]/10 bg-transparent ring-1 ring-fd-border ring-inset" />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Grid
               </dt>
@@ -105,7 +105,7 @@ export function TopographicDriftAnatomy() {
               </dd>
             </div>
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+              <span className="size-2 rounded-full bg-[var(--foreground)]/50 ring-1 ring-fd-border ring-inset" />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Field
               </dt>
@@ -114,7 +114,7 @@ export function TopographicDriftAnatomy() {
               </dd>
             </div>
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+              <span className="h-0 w-8 border-t border-dashed border-[var(--foreground)]/25 bg-transparent ring-1 ring-fd-border ring-inset" />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Levels
               </dt>

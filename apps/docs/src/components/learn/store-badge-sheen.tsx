@@ -22,18 +22,35 @@ const CSS = `
 .stbs-static .stbs-sheen { animation: none; opacity: 0; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "lift" | "sheen";
+}[] = [
   {
     name: "Lift",
     desc: "translateY −2px, 200ms cubic-bezier(0.22,1,0.36,1)",
-    swatch: "bg-[var(--foreground)]/25",
+    kind: "lift",
   },
   {
     name: "Sheen",
     desc: "skewed strip, −130% → 130%, 700ms ease-out",
-    swatch: "bg-[var(--foreground)]/60",
+    kind: "sheen",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "sheen") {
+    return (
+      <span className="relative h-4 w-8 overflow-hidden rounded-xl bg-black/80 ring-1 ring-fd-border ring-inset">
+        <span className="absolute inset-0 [background:linear-gradient(105deg,transparent_20%,rgba(255,255,255,0.45)_50%,transparent_80%)] [transform:skewX(-12deg)_scaleX(1.4)]" />
+      </span>
+    );
+  }
+  return (
+    <span className="h-4 w-8 rounded-xl bg-black/80 ring-1 ring-white/20 ring-inset" />
+  );
+}
 
 export function StoreBadgeSheen() {
   return (
@@ -63,9 +80,7 @@ export function StoreBadgeSheen() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

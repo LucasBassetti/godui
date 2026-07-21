@@ -28,18 +28,33 @@ const CSS = `
 .ah-static .ah-chevron { animation: none; transform: rotate(180deg); }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "panel" | "chevron";
+}[] = [
   {
     name: "Panel",
     desc: "height + opacity, spring stiffness 500 · damping 40",
-    swatch: "bg-[var(--foreground)]/30",
+    kind: "panel",
   },
   {
     name: "Chevron",
     desc: "transform: rotate, plain 250ms ease — no spring",
-    swatch: "bg-[var(--foreground)]/60",
+    kind: "chevron",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "chevron") {
+    return (
+      <span className="size-2 border-[var(--foreground)]/60 border-r-2 border-b-2 [transform:rotate(45deg)]" />
+    );
+  }
+  return (
+    <span className="h-3 w-7 rounded-md bg-[var(--foreground)]/30 ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function AccordionHeight() {
   return (
@@ -88,9 +103,7 @@ export function AccordionHeight() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

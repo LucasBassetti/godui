@@ -57,23 +57,46 @@ const CSS = `
 .tt-static .tt-caret { animation: none; opacity: 0; }
 `;
 
-const LEGEND = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "command" | "output" | "caret";
+}[] = [
   {
     name: "Command",
     desc: "typed++ every typingSpeed ms (38)",
-    swatch: "bg-[var(--foreground)]/50",
+    kind: "command",
   },
   {
     name: "Output",
     desc: "lands after delay (default 380ms)",
-    swatch: "bg-[var(--foreground)]/20",
+    kind: "output",
   },
   {
     name: "Caret",
     desc: "animate-pulse on the active command",
-    swatch: "bg-[var(--foreground)]",
+    kind: "caret",
   },
-] as const;
+];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "command") {
+    return (
+      <span className="flex items-center gap-1">
+        <span className="size-2 shrink-0 rounded-sm bg-[var(--foreground)]/45" />
+        <span className="h-1.5 w-6 rounded-full bg-[var(--foreground)]/45" />
+      </span>
+    );
+  }
+  if (kind === "output") {
+    return (
+      <span className="ml-2 h-1.5 w-7 rounded-full bg-[var(--foreground)]/18" />
+    );
+  }
+  return (
+    <span className="inline-block h-3 w-[3px] bg-[var(--foreground)]/70" />
+  );
+}
 
 export function TerminalTyping() {
   return (
@@ -129,9 +152,7 @@ export function TerminalTyping() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

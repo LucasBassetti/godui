@@ -49,19 +49,46 @@ const CSS = `
 .vos-static .vos-core-swell { animation: none; }
 `;
 
-const LEGEND = [
-  { name: "Idle", desc: "amp → 0 · breathe only", swatch: "bg-[var(--muted)]" },
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "idle" | "listening" | "speaking";
+}[] = [
+  {
+    name: "Idle",
+    desc: "amp → 0 · breathe only",
+    kind: "idle",
+  },
   {
     name: "Listening",
     desc: "ring duration ∝ amp",
-    swatch: "bg-[var(--foreground)]/20",
+    kind: "listening",
   },
   {
     name: "Speaking",
     desc: "core + corona swell",
-    swatch: "bg-[var(--card)]",
+    kind: "speaking",
   },
-] as const;
+];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "listening") {
+    return (
+      <span className="size-3 rounded-full border border-[var(--ring)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "speaking") {
+    return (
+      <span className="relative flex size-3 items-center justify-center">
+        <span className="absolute inset-0 scale-125 rounded-full bg-[var(--foreground)]/10 blur-[2px]" />
+        <span className="relative size-3 rounded-full border border-border bg-[var(--card)] shadow-sm" />
+      </span>
+    );
+  }
+  return (
+    <span className="size-3 rounded-full border border-border bg-[var(--card)] ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function VoiceOrbStates() {
   return (
@@ -95,9 +122,7 @@ export function VoiceOrbStates() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

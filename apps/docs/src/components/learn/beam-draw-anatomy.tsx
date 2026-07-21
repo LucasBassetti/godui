@@ -35,19 +35,35 @@ const LEGEND = [
   {
     name: "Origin",
     desc: "shared left endpoint at (0, 200) on the 1000×400 viewBox",
-    swatch: "bg-[var(--muted)]",
+    kind: "origin",
   },
   {
     name: "Fan paths",
     desc: "DEFAULT_PATHS — four cubics ending at y 40 / 150 / 250 / 360",
-    swatch: "bg-transparent ring-1 ring-[var(--foreground)]/50 ring-inset",
+    kind: "path",
   },
   {
     name: "Ends",
     desc: "right-edge destinations; token bars stand in for node labels",
-    swatch: "bg-[var(--card)] ring-1 ring-fd-border ring-inset",
+    kind: "end",
   },
 ] as const;
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "origin") {
+    return (
+      <span className="size-3.5 rounded-lg border border-fd-border bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "path") {
+    return (
+      <span className="h-0.5 w-8 rounded-full bg-[var(--foreground)]/55 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-3 w-5 rounded-md border border-fd-border bg-[var(--card)] ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function BeamDrawAnatomy() {
   return (
@@ -114,9 +130,7 @@ export function BeamDrawAnatomy() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

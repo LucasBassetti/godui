@@ -17,18 +17,33 @@ const CSS = `
 .sba-static .sba-chip { opacity: 1; animation: none; transform: none; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "icon" | "label";
+}[] = [
   {
     name: "Icon token",
     desc: "24×24 mono SVG, currentColor",
-    swatch: "bg-[var(--foreground)]/50",
+    kind: "icon",
   },
   {
     name: "Label token",
     desc: "font-medium text, same row",
-    swatch: "bg-[var(--foreground)]/25",
+    kind: "label",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "icon") {
+    return (
+      <span className="size-3 rounded-[5px] bg-[var(--foreground)]/50 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-1.5 w-8 rounded-full bg-[var(--foreground)]/25 ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function StackBadgeAnatomy() {
   return (
@@ -58,9 +73,7 @@ export function StackBadgeAnatomy() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

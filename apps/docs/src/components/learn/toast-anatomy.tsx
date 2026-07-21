@@ -21,17 +21,20 @@ const LEGEND: { name: string; desc: string; swatch: string }[] = [
   {
     name: "Front",
     desc: "index 0 · y 0 · scale 1",
-    swatch: "bg-[var(--card)]",
+    swatch:
+      "h-3 w-8 rounded-md border border-border bg-[var(--card)] ring-1 ring-fd-border ring-inset",
   },
   {
     name: "Peek 1",
     desc: "index 1 · y −16 · scale 0.95",
-    swatch: "bg-[var(--foreground)]/25",
+    swatch:
+      "h-3 w-8 rounded-md border border-border bg-[var(--foreground)]/15 ring-1 ring-fd-border ring-inset",
   },
   {
     name: "Peek 2",
     desc: "index 2 · y −32 · scale 0.90",
-    swatch: "bg-[var(--foreground)]/15",
+    swatch:
+      "h-3 w-8 rounded-md border border-border bg-[var(--foreground)]/10 ring-1 ring-fd-border ring-inset",
   },
 ];
 
@@ -81,9 +84,7 @@ export function ToastAnatomy() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <span className={item.swatch} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

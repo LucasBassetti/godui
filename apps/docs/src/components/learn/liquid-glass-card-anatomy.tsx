@@ -17,10 +17,38 @@ const CSS = `
 `;
 
 const LEGEND = [
-  { name: "Frost", desc: "backdrop-filter blur + optional url(#filter)" },
-  { name: "Sheen", desc: "pointer-tracked radial · mix-blend-screen" },
-  { name: "Rim map", desc: "band=0.3 — neutral mid, bend only at edges" },
+  {
+    name: "Frost",
+    desc: "backdrop-filter blur + optional url(#filter)",
+    kind: "frost" as const,
+  },
+  {
+    name: "Sheen",
+    desc: "pointer-tracked radial · mix-blend-screen",
+    kind: "sheen" as const,
+  },
+  {
+    name: "Rim map",
+    desc: "band=0.3 — neutral mid, bend only at edges",
+    kind: "rim" as const,
+  },
 ] as const;
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "frost") {
+    return (
+      <span className="h-4 w-3 rounded-xl bg-[var(--muted)]/80 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "sheen") {
+    return (
+      <span className="h-4 w-3 rounded-xl bg-[var(--foreground)]/25 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-3 w-4 rounded-md border border-[var(--foreground)]/25 border-dashed bg-transparent ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function LiquidGlassCardAnatomy() {
   return (
@@ -108,7 +136,7 @@ export function LiquidGlassCardAnatomy() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

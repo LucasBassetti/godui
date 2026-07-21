@@ -59,18 +59,43 @@ ${Array.from({ length: COUNT })
 .cff-static .cff-card { animation: none !important; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "pointer" | "active" | "neighbor";
+}[] = [
   {
-    name: "Drag",
-    desc: "active = dragFrom − offset.x / spacing, live while dragging",
-    swatch: "bg-[var(--foreground)]/30",
+    name: "Pointer",
+    desc: "pan live — active ← offset.x / spacing",
+    kind: "pointer",
   },
   {
-    name: "Flick",
-    desc: "|velocity.x| > 600 nudges one extra slide on release",
-    swatch: "bg-[var(--foreground)]",
+    name: "Active slide",
+    desc: "foreground plate at offset 0",
+    kind: "active",
+  },
+  {
+    name: "Neighbours",
+    desc: "muted plates · flick |vx| > 600 nudges +1",
+    kind: "neighbor",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "pointer") {
+    return (
+      <span className="size-2.5 rounded-full bg-[var(--foreground)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "active") {
+    return (
+      <span className="h-3.5 w-5 rounded-md bg-[var(--foreground)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-3.5 w-5 rounded-md bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function CoverFlowFan() {
   return (
@@ -144,12 +169,10 @@ export function CoverFlowFan() {
             </div>
           </div>
 
-          <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
+          <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

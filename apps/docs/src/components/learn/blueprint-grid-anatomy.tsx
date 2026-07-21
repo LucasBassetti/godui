@@ -52,7 +52,10 @@ export function BlueprintGridAnatomy() {
           </div>
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+              <span
+                className="h-3.5 w-5 rounded-md border border-fd-border ring-1 ring-fd-border ring-inset [background-image:linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] [background-size:6px_6px]"
+                aria-hidden="true"
+              />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Lines
               </dt>
@@ -61,7 +64,10 @@ export function BlueprintGridAnatomy() {
               </dd>
             </div>
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+              <span
+                className="h-3.5 w-5 rounded-md border border-fd-border ring-1 ring-fd-border ring-inset [background-image:radial-gradient(var(--border)_1px,transparent_1.5px)] [background-size:5px_5px]"
+                aria-hidden="true"
+              />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Dots
               </dt>

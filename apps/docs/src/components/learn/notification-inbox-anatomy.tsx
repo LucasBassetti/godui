@@ -24,28 +24,53 @@ const CSS = `
 .nia-static .nia-part { opacity: 1; animation: none; transform: none; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "header" | "group" | "row" | "dot";
+}[] = [
   {
     name: "Header",
     desc: "title + unread badge + mark-all-read",
-    swatch: "bg-[var(--foreground)]/40",
+    kind: "header",
   },
   {
     name: "Group label",
     desc: "sticky top-0, one per group() bucket",
-    swatch: "bg-[var(--muted)]",
+    kind: "group",
   },
   {
     name: "Row",
     desc: "avatar + two text lines + time",
-    swatch: "bg-[var(--foreground)]/25",
+    kind: "row",
   },
   {
     name: "Unread dot",
     desc: "primary, only while notification.read is falsy",
-    swatch: "bg-primary",
+    kind: "dot",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "header") {
+    return (
+      <span className="h-1.5 w-8 rounded-full bg-[var(--foreground)]/40 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "group") {
+    return (
+      <span className="h-2 w-8 rounded-sm bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "row") {
+    return (
+      <span className="size-3 rounded-full bg-[var(--foreground)]/15 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="size-2 rounded-full bg-primary ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function NotificationInboxAnatomy() {
   return (
@@ -114,9 +139,7 @@ export function NotificationInboxAnatomy() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

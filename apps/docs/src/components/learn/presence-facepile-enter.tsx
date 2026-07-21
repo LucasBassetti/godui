@@ -36,23 +36,43 @@ const CSS = `
 .pfe-static .pfe-joiner { animation: none; opacity: 0; transform: scale(0.5) translateX(-8px); }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "leave" | "reflow" | "join";
+}[] = [
   {
     name: "Leave",
     desc: "popLayout removes it immediately, opacity/scale down",
-    swatch: "bg-[var(--foreground)]/25",
+    kind: "leave",
   },
   {
     name: "Reflow",
     desc: "siblings shift on the same spring — a transform, not a resize",
-    swatch: "bg-[var(--foreground)]/40",
+    kind: "reflow",
   },
   {
     name: "Join",
     desc: "enters from opacity 0, scale 0.5, x -8",
-    swatch: "bg-[var(--muted)]",
+    kind: "join",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "leave") {
+    return (
+      <span className="size-3 rounded-full bg-[var(--muted)] opacity-40 ring-2 ring-background ring-inset" />
+    );
+  }
+  if (kind === "join") {
+    return (
+      <span className="size-3 rounded-full bg-[var(--foreground)]/30 ring-2 ring-background ring-inset" />
+    );
+  }
+  return (
+    <span className="size-3 rounded-full bg-[var(--muted)] ring-2 ring-background ring-inset" />
+  );
+}
 
 export function PresenceFacepileEnter() {
   return (
@@ -81,9 +101,7 @@ export function PresenceFacepileEnter() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

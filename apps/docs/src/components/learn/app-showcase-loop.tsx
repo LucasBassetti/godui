@@ -17,18 +17,36 @@ const CSS = `
 .asl-static .asl-track { animation: none; transform: translateY(-22%); }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "duplicate" | "wrap";
+}[] = [
   {
     name: "Duplicate copy",
     desc: "same screenshot rendered twice, 200% track height",
-    swatch: "bg-[var(--foreground)]/25",
+    kind: "duplicate",
   },
   {
     name: "Seamless wrap",
     desc: "translateY 0 → -50%, linear — one copy's height, no seam",
-    swatch: "bg-[var(--foreground)]/60",
+    kind: "wrap",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "duplicate") {
+    return (
+      <span className="flex h-3 w-5 flex-col justify-between">
+        <span className="h-1 w-full rounded-sm bg-[var(--foreground)]/25" />
+        <span className="h-1 w-full rounded-sm bg-[var(--foreground)]/25" />
+      </span>
+    );
+  }
+  return (
+    <span className="h-4 w-3 rounded-md border border-fd-border bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 function TrackContent() {
   return (
@@ -73,9 +91,7 @@ export function AppShowcaseLoop() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

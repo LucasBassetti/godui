@@ -29,19 +29,42 @@ const LEGEND = [
   {
     name: "Mask",
     desc: "linear-gradient transparent → black 12%/88%",
-    swatch: "bg-[var(--foreground)]/25",
+    kind: "mask" as const,
   },
   {
     name: "Horizontal",
     desc: "to_right on both mask-image props",
-    swatch: "bg-[var(--muted)]",
+    kind: "horizontal" as const,
   },
   {
     name: "Vertical",
     desc: "to_bottom when direction is up/down",
-    swatch: "bg-[var(--card)] ring-1 ring-fd-border ring-inset",
+    kind: "vertical" as const,
   },
 ] as const;
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "mask") {
+    return (
+      <span
+        className="h-3 w-5 rounded-md ring-1 ring-fd-border ring-inset"
+        style={{
+          backgroundImage:
+            "linear-gradient(to right, transparent, var(--foreground) 12%, var(--foreground) 88%, transparent)",
+          opacity: 0.25,
+        }}
+      />
+    );
+  }
+  if (kind === "vertical") {
+    return (
+      <span className="h-3 w-5 rounded-md border border-fd-border bg-[var(--card)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-3 w-5 rounded-md bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function MarqueeFade() {
   return (
@@ -99,9 +122,7 @@ export function MarqueeFade() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

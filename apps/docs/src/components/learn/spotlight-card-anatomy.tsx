@@ -25,17 +25,20 @@ const LEGEND = [
   {
     name: "Glow",
     desc: "radial at var(--x)/var(--y), opacity 0→100 on group-hover",
-    swatch: "bg-[var(--foreground)]/25",
+    swatch:
+      "h-3 w-8 rounded-md border border-fd-border bg-[var(--card)] [background:radial-gradient(circle_at_30%_40%,rgba(0,0,0,0.28),transparent_65%),var(--card)] ring-1 ring-fd-border ring-inset",
   },
   {
     name: "Border",
     desc: "same gradient, masked to 1px ring (mask-composite exclude)",
-    swatch: "bg-transparent ring-1 ring-[var(--foreground)]/50 ring-inset",
+    swatch:
+      "h-3 w-8 rounded-md border border-[var(--foreground)]/35 bg-transparent ring-1 ring-fd-border ring-inset",
   },
   {
     name: "Content",
     desc: "relative z-raised — sits above both glow layers",
-    swatch: "bg-[var(--card)]",
+    swatch:
+      "h-3 w-8 rounded-md bg-[var(--muted)]/85 ring-1 ring-fd-border ring-inset",
   },
 ] as const;
 
@@ -89,9 +92,7 @@ export function SpotlightCardAnatomy() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <span className={item.swatch} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

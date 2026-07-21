@@ -49,6 +49,26 @@ const CHANNELS = [
   },
 ] as const;
 
+function LegendSwatch({
+  fill,
+  ox,
+  oy,
+}: {
+  fill: number;
+  ox: string;
+  oy: string;
+}) {
+  return (
+    <span
+      className="h-4 w-5 rounded-2xl border border-[var(--foreground)]/20 ring-1 ring-fd-border ring-inset"
+      style={{
+        backgroundColor: `color-mix(in oklab, var(--foreground) ${fill * 100}%, transparent)`,
+        transform: `translate(${ox}, ${oy})`,
+      }}
+    />
+  );
+}
+
 export function LiquidGlassCardDispersion() {
   return (
     <ScrollScene label="Dispersion" note="three scales · then screen-blend">
@@ -97,7 +117,7 @@ export function LiquidGlassCardDispersion() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {CHANNELS.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+                <LegendSwatch fill={item.fill} ox={item.ox} oy={item.oy} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

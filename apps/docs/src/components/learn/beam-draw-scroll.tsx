@@ -40,19 +40,37 @@ const LEGEND = [
   {
     name: "Dead zone",
     desc: "scrollYProgress < 0.1 → pathLength stays 0",
-    swatch: "bg-[var(--muted)]",
+    kind: "dead",
   },
   {
     name: "Active window",
     desc: "useTransform([0.1, 0.8], [0, 1])",
-    swatch: "bg-[var(--foreground)]/35",
+    kind: "active",
   },
   {
     name: "pathLength",
     desc: "SVG stroke fill fraction — 0 empty, 1 complete",
-    swatch: "bg-transparent ring-1 ring-[var(--foreground)]/50 ring-inset",
+    kind: "path",
   },
 ] as const;
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "dead") {
+    return (
+      <span className="relative h-3 w-10 overflow-hidden rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset">
+        <span className="absolute inset-y-0 left-[10%] w-[70%] rounded-full bg-[var(--muted)]" />
+      </span>
+    );
+  }
+  if (kind === "active") {
+    return (
+      <span className="relative h-3 w-10 overflow-hidden rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset">
+        <span className="absolute inset-y-0 left-[15%] w-[55%] rounded-full bg-[var(--foreground)]/30" />
+      </span>
+    );
+  }
+  return <span className="h-0.5 w-8 rounded-full bg-[var(--foreground)]/70" />;
+}
 
 export function BeamDrawScroll() {
   return (
@@ -111,9 +129,7 @@ export function BeamDrawScroll() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

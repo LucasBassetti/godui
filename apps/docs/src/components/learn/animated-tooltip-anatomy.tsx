@@ -19,23 +19,43 @@ function Bar({ w, tone }: { w: string; tone: string }) {
   return <span className={`h-2 rounded-full ${w} ${tone}`} />;
 }
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "trigger" | "panel" | "caret";
+}[] = [
   {
     name: "trigger",
     desc: "always mounted — hover/focus flips `open`",
-    swatch: "bg-[var(--muted)]",
+    kind: "trigger",
   },
   {
     name: "panel",
     desc: "role=tooltip, only in the DOM while open",
-    swatch: "bg-[var(--foreground)]",
+    kind: "panel",
   },
   {
     name: "caret",
     desc: "2px square rotated 45°, same fill as the panel",
-    swatch: "bg-[var(--foreground)]",
+    kind: "caret",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "trigger") {
+    return (
+      <span className="size-3 rounded-full border border-border bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "caret") {
+    return (
+      <span className="size-2.5 rotate-45 bg-[var(--foreground)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-3.5 w-7 rounded-md bg-[var(--foreground)] ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function AnimatedTooltipAnatomy() {
   return (
@@ -75,9 +95,7 @@ export function AnimatedTooltipAnatomy() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium font-mono text-[12px] text-fd-foreground">
                   {item.name}
                 </dt>

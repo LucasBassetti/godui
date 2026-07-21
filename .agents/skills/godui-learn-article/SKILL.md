@@ -193,9 +193,37 @@ export function MyScene() {
   on dark surfaces). Leave faces blank when the shape alone carries the point. Explanation
   lives in the legend, the mono captions, and the prose — not on the shape. Real component
   labels are fine (and expected) only in the `Result` panel, since that's the live product.
-- **Label with a grounded legend, not floating tags.** Put a bottom legend row (tone
-  swatch + name + one-liner per element). Floating absolutely-positioned tags read as
-  broken — avoid them.
+- **Legend swatches MUST match the diagram (color + shape).** This is the #1 legend bug.
+  Every bottom-legend entry names a **concrete piece the reader can see** in the scene —
+  not an abstract CSS concept with no visual counterpart.
+
+  | Rule | Pass | Fail |
+  |------|------|------|
+  | **Color** | Swatch fill/border/opacity appears on that diagram piece | Opacity-only ramps (`/30` vs `/60` vs solid) that never appear as distinct pieces; `primary` / white / black that aren't on the diagram |
+  | **Shape** | Swatch silhouette matches the piece | Same `h-1.5 w-8 rounded-full` pill for a card, a pointer, a dashed frame, and a hairline |
+  | **Meaning** | Name = visible piece (Viewport, Tile, Active plate, Pointer) | Temporal labels (Pan / Settle / Flick) or CSS props (Perspective / Tilt) with no matching cue |
+
+  **Shape vocabulary** (pick the one that matches the piece):
+  - **Circle / dot** — pointer, avatar, orb, status, thumb
+  - **Plate** (`rounded-md` / `rounded-xl` / card border) — cards, panels, tiles
+  - **Pill / bar** — only when the diagram itself uses a pill/bar (token label, progress fill, dock bus)
+  - **Dashed rect / ring** — clip viewport, dashed guide, idle/ghost outline
+  - **Hairline** — separator, connector, threshold, SVG stroke
+  - **Diamond / isometric** — caret, or a tile that *reads* diamond because of `rotateX`/`rotateZ` (draw the swatch with the same transform + fill)
+
+  Prefer a local `LegendSwatch({ kind })` helper (or full shape classes on `swatch`) over always wrapping `item.swatch` in `h-1.5 w-8 rounded-full`. If two legend items would get identical swatches, either differentiate shapes or merge the items.
+
+  **If a concept isn't visible, make it visible first** — then swatch it. Example: a
+  `perspective` / overflow clip that has no border → add a dashed viewport outline on
+  the diagram, then use a matching dashed-frame swatch. Do **not** invent a circle or
+  dotted pill that doesn't exist in the scene (classic 3D Marquee failure).
+
+  Temporal / motion phases (drag → settle → fling) need a **visible cue** for each
+  phase (pointer dot, active plate, ghost outline at overshoot) — or rename the legend
+  to the pieces that are actually drawn.
+- **Label with a grounded legend, not floating tags.** Put a bottom legend row (swatch
+  + name + one-liner per element). Floating absolutely-positioned tags read as
+  broken — avoid them. Align legend column count with the number of pieces.
 - **3D exploded views (only when they help):** center a
   `[transform-style:preserve-3d]` stage in a fixed-size box (`[perspective:1000px]`),
   separate plates along `translateZ`. Works for stacked rectangular layers (Magic
@@ -209,6 +237,8 @@ Reference scenes (technique patterns, not templates to clone):
 - `layer-reveal.tsx` — isometric explode + legend (rectangular layers). Text-free plates.
 - `gooey-layers.tsx` — same open silhouette, split by layer (blob | control | both). Uses a `+` glyph, no words.
 - `mask-twin-labels.tsx` / `slide-anatomy.tsx` — canonical **token-bar** stand-ins for a label (`h-2 w-12 rounded-full bg-[var(--foreground)]/30`, light on dark).
+- `orbit-carousel-orbit.tsx` — motion legend with shape-matched pieces (pointer · active plate · flick ghost), not opacity pills.
+- `three-d-marquee-anatomy.tsx` — viewport dashed frame + isometric tile swatch matching the clipped diamond grid.
 - `rainbow-sweep.tsx` — the one colored scene (gradient), reuses `animate-magic-rainbow`.
 - `push-physics.tsx` — looping rest→hover→press cycle. NOTE: its face still reads "Push me" — that predates the no-copy rule; do **not** copy that, blank the face or use a token bar instead.
 
@@ -275,6 +305,9 @@ running on a non-3000 port — grep the log). Confirm:
 - Right TOC lists the article headings.
 - Scenes auto-play on scroll-in; **replay re-runs** each; reduced-motion shows the
   resolved state.
+- **Every legend swatch maps to a visible diagram piece** (same color + shape). Cover
+  anatomy *and* motion/lifecycle cards — not just anatomy. No orphan circles/pills for
+  CSS concepts that aren't drawn.
 - Component with no learn page shows **no** tabs.
 
 Headless screenshot without installing Playwright (chromium is cached):
@@ -312,3 +345,9 @@ drive CDP over the built-in global `WebSocket` (Node ≥20): click
 - **Don't animate layout/paint props** even though docs scenes aren't CI-gated.
 - **Live component import** works in docs (`@godui/components`); the docs `index.mdx`
   already imports components the same way.
+- **Legend ≠ opacity pills.** Never default every legend entry to
+  `h-1.5 w-8 rounded-full` with only `--foreground` opacity changes. Shape-match the
+  piece (plate / dot / dashed frame / hairline / isometric tile). If the concept isn't
+  on the diagram, draw the cue first (e.g. dashed viewport), then swatch it.
+- **Prose / legend / diagram stay in sync.** Same piece count; same names; Result
+  geometry matches anatomy when the article is teaching structure.

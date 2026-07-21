@@ -28,18 +28,29 @@ const PLATES: {
   { o: 1, y: "0px", s: 1, r: "0deg", z: 3, d: "180ms" },
 ];
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: { name: string; desc: string; kind: "active" | "inactive" }[] = [
   {
     name: "Active",
     desc: "scale 1 · rotate 0 · zIndex highest",
-    swatch: "bg-[var(--foreground)]/60",
+    kind: "active",
   },
   {
     name: "Inactive",
     desc: "opacity 0.5 · scale 0.92 · keeps its rotate seed",
-    swatch: "bg-[var(--muted)]",
+    kind: "inactive",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "active") {
+    return (
+      <span className="h-4 w-6 rounded-md border border-fd-border bg-[var(--card)] shadow-sm" />
+    );
+  }
+  return (
+    <span className="h-4 w-6 rounded-md border border-fd-border bg-[var(--card)] opacity-50 shadow-sm" />
+  );
+}
 
 export function AnimatedTestimonialsAnatomy() {
   return (
@@ -77,9 +88,7 @@ export function AnimatedTestimonialsAnatomy() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

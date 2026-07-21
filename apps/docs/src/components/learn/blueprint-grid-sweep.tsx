@@ -60,7 +60,7 @@ export function BlueprintGridSweep() {
           </div>
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+              <span className="h-3 w-5 origin-center rotate-[25deg] bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.35),transparent)] blur-[1px] ring-1 ring-fd-border ring-inset" />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Sweep
               </dt>
@@ -69,7 +69,13 @@ export function BlueprintGridSweep() {
               </dd>
             </div>
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+              <span
+                className="size-4 rounded-full ring-1 ring-fd-border ring-inset"
+                style={{
+                  background:
+                    "radial-gradient(circle, rgba(0,0,0,0.25) 0%, transparent 70%)",
+                }}
+              />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Spotlight
               </dt>

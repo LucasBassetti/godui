@@ -29,17 +29,20 @@ const LEGEND = [
   {
     name: "Wrapper",
     desc: "relative · owns both pill and card",
-    swatch: "border border-dashed border-[var(--foreground)]/40 bg-transparent",
+    swatch:
+      "h-3 w-8 rounded-md border border-dashed border-[var(--foreground)]/40 bg-transparent ring-1 ring-fd-border ring-inset",
   },
   {
     name: "Pill",
     desc: "numbered <a> — the anchor",
-    swatch: "bg-[var(--muted)]",
+    swatch:
+      "size-3 rounded-[5px] bg-[var(--muted)] ring-1 ring-fd-border ring-inset",
   },
   {
     name: "Card + caret",
     desc: "left-1/2 −translate-x-1/2 · centered on pill",
-    swatch: "bg-[var(--popover)]",
+    swatch:
+      "h-3 w-8 rounded-md bg-[var(--popover)] ring-1 ring-fd-border ring-inset",
   },
 ] as const;
 
@@ -166,9 +169,7 @@ export function SourceCitationsAnatomy() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ring-1 ring-fd-border ring-inset ${item.swatch}`}
-                />
+                <span className={item.swatch} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

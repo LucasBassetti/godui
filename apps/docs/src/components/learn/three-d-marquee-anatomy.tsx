@@ -20,18 +20,38 @@ const CSS = `
 .tdma-static .tdma-tile { opacity: 1; animation: none; transform: none; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "viewport" | "tile";
+}[] = [
   {
-    name: "Perspective",
-    desc: "container: [perspective:1200px]",
-    swatch: "bg-[var(--foreground)]/25",
+    name: "Viewport",
+    desc: "overflow clip · [perspective:1200px]",
+    kind: "viewport",
   },
   {
-    name: "Tilt",
-    desc: "grid: rotateX(55deg) rotateZ(-45deg)",
-    swatch: "bg-[var(--foreground)]/50",
+    name: "Tile grid",
+    desc: "rotateX(55deg) rotateZ(-45deg)",
+    kind: "tile",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "viewport") {
+    return (
+      <span className="flex h-5 w-9 items-center justify-center rounded-sm border border-dashed border-[var(--foreground)]/35">
+        <span className="size-2 rounded-[2px] bg-[var(--foreground)]/15" />
+      </span>
+    );
+  }
+  // Same fill as diagram tiles; slight isometric so it reads as the diamond plane.
+  return (
+    <span className="flex h-5 w-9 items-center justify-center">
+      <span className="size-3.5 rounded-[3px] bg-[var(--foreground)]/25 [transform:rotateX(55deg)_rotateZ(-45deg)]" />
+    </span>
+  );
+}
 
 export function ThreeDMarqueeAnatomy() {
   return (
@@ -42,42 +62,45 @@ export function ThreeDMarqueeAnatomy() {
           <style dangerouslySetInnerHTML={{ __html: CSS }} />
 
           <div
-            className={`relative flex h-52 w-full items-center justify-center overflow-hidden [perspective:1200px] ${reduced ? "tdma-static" : ""}`}
+            className={`relative flex h-52 w-full items-center justify-center overflow-hidden rounded-sm border border-dashed border-[var(--foreground)]/25 [perspective:1200px] ${reduced ? "tdma-static" : ""}`}
           >
-            <div
-              key={cycle}
-              className="grid w-[130%] scale-110 grid-cols-4 gap-2.5 [transform:rotateX(55deg)_rotateZ(-45deg)]"
-              style={{ transformStyle: "preserve-3d" }}
-            >
-              {Array.from({ length: COLS }).map((_, col) => (
-                <div
-                  // biome-ignore lint/suspicious/noArrayIndexKey: columns are positional and static
-                  key={col}
-                  className="flex flex-col gap-2.5"
-                >
-                  {Array.from({ length: ROWS }).map((_, row) => (
-                    <span
-                      // biome-ignore lint/suspicious/noArrayIndexKey: rows are positional and static
-                      key={row}
-                      className="tdma-tile aspect-square w-full rounded-md bg-[var(--foreground)]/25"
-                      style={
-                        {
-                          "--d": `${(col * ROWS + row) * 30}ms`,
-                        } as CSSProperties
-                      }
-                    />
-                  ))}
-                </div>
-              ))}
+            {/* Scale/width on a wrapper — same as the component. Putting
+                scale-* on the rotated grid loses it to the arbitrary
+                [transform:…] and the plane underfills the clip (diamond). */}
+            <div className="w-[140%] scale-110">
+              <div
+                key={cycle}
+                className="grid w-full grid-cols-4 gap-2.5 [transform:rotateX(55deg)_rotateZ(-45deg)]"
+                style={{ transformStyle: "preserve-3d" }}
+              >
+                {Array.from({ length: COLS }).map((_, col) => (
+                  <div
+                    // biome-ignore lint/suspicious/noArrayIndexKey: columns are positional and static
+                    key={col}
+                    className="flex flex-col gap-2.5"
+                  >
+                    {Array.from({ length: ROWS }).map((_, row) => (
+                      <span
+                        // biome-ignore lint/suspicious/noArrayIndexKey: rows are positional and static
+                        key={row}
+                        className="tdma-tile aspect-square w-full rounded-md bg-[var(--foreground)]/25"
+                        style={
+                          {
+                            "--d": `${(col * ROWS + row) * 30}ms`,
+                          } as CSSProperties
+                        }
+                      />
+                    ))}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

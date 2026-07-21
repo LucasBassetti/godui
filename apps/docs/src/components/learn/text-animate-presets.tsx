@@ -38,18 +38,33 @@ const CSS = `
 }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "blur" | "slide";
+}[] = [
   {
     name: "blurInUp",
     desc: "opacity + blur(10px) + y:20 → rest",
-    swatch: "bg-[var(--foreground)]/40",
+    kind: "blur",
   },
   {
     name: "slideUp",
     desc: "opacity + y:20 → rest · no filter",
-    swatch: "bg-[var(--foreground)]/70",
+    kind: "slide",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "blur") {
+    return (
+      <span className="h-1.5 w-8 rounded-full bg-[var(--foreground)]/30 blur-[2px] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-1.5 w-8 rounded-full bg-[var(--foreground)]/30 ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 function BarRow({ className }: { className: string }) {
   return (
@@ -103,9 +118,7 @@ export function TextAnimatePresets() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ring-1 ring-fd-border ring-inset ${item.swatch}`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

@@ -35,19 +35,32 @@ const LEGEND = [
   {
     name: "Clockwise",
     desc: "offsetDistance [initialOffset%, 100 + initialOffset%]",
-    swatch: "bg-[var(--foreground)]/50",
+    kind: "cw",
   },
   {
     name: "Reverse",
     desc: "swaps to [100 − initial%, −initial%] — still linear forward",
-    swatch: "bg-[var(--muted)] ring-1 ring-[var(--foreground)]/30 ring-inset",
+    kind: "ccw",
   },
   {
     name: "Loop",
     desc: "repeat: Infinity, ease: linear, duration (default 6s)",
-    swatch: "bg-transparent ring-1 ring-fd-border ring-inset",
+    kind: "loop",
   },
 ] as const;
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "loop") {
+    return (
+      <span className="size-3 rounded-md border border-fd-border bg-transparent ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span
+      className={`size-2.5 rounded-sm bg-[var(--foreground)]/55 ring-1 ring-fd-border ring-inset ${kind === "ccw" ? "[transform:rotate(180deg)]" : ""}`}
+    />
+  );
+}
 
 function Track({ beamClass }: { beamClass: string }) {
   return (
@@ -86,9 +99,7 @@ export function BorderBeamPath() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

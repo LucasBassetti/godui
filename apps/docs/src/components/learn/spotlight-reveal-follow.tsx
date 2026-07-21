@@ -35,23 +35,45 @@ const CSS = `
 const MASK =
   "radial-gradient(circle 40px at 50% 50%, transparent 0, transparent 18px, #000 40px)";
 
-const LEGEND = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "drift" | "follow" | "pinned";
+}[] = [
   {
     name: "Idle drift",
     desc: "ellipse when !hovering && !pinned",
-    swatch: "bg-[var(--foreground)]/25",
+    kind: "drift",
   },
   {
     name: "Eased follow",
     desc: "cur += (target − cur) × 0.16 per frame",
-    swatch: "bg-[var(--muted)]",
+    kind: "follow",
   },
   {
     name: "Pinned",
     desc: "click toggles — target freezes until unpin",
-    swatch: "bg-[var(--foreground)]/55",
+    kind: "pinned",
   },
-] as const;
+];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "follow") {
+    return (
+      <span className="relative h-5 w-7 overflow-hidden rounded-lg border border-fd-border bg-[var(--foreground)]/80 ring-1 ring-fd-border ring-inset">
+        <span className="absolute top-1/2 left-1/2 h-1 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[var(--background)]/40" />
+      </span>
+    );
+  }
+  if (kind === "pinned") {
+    return (
+      <span className="size-2 rounded-full bg-[var(--foreground)]/50 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-5 w-7 rounded-lg border border-fd-border bg-[var(--card)] ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function SpotlightRevealFollow() {
   return (
@@ -97,9 +119,7 @@ export function SpotlightRevealFollow() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

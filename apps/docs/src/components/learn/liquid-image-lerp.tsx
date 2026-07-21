@@ -40,19 +40,40 @@ const LEGEND = [
   {
     name: "current",
     desc: "lerp: current += (target − current) × 0.12",
-    swatch: "bg-[var(--foreground)]/50",
+    kind: "current" as const,
   },
   {
     name: "target",
     desc: "hover / always / velocity write here",
-    swatch: "bg-transparent ring-1 ring-[var(--foreground)]/50 ring-inset",
+    kind: "target" as const,
   },
   {
     name: "setAttribute",
     desc: "scale written on dispRef — no setState",
-    swatch: "bg-[var(--muted)]",
+    kind: "tick" as const,
   },
 ] as const;
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "target") {
+    return (
+      <span className="relative flex h-4 w-8 items-end justify-center">
+        <span className="h-3 w-px bg-[var(--foreground)]/70" />
+        <span className="absolute bottom-0 size-1.5 rounded-full bg-[var(--foreground)]" />
+      </span>
+    );
+  }
+  if (kind === "tick") {
+    return (
+      <span className="size-2 rounded-full bg-[var(--foreground)]/60 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="relative h-3 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset">
+      <span className="absolute inset-y-0 left-0 w-[45%] rounded-full bg-[var(--foreground)]/45" />
+    </span>
+  );
+}
 
 export function LiquidImageLerp() {
   return (
@@ -96,9 +117,7 @@ export function LiquidImageLerp() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

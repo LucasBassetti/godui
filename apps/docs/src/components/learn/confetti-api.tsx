@@ -50,19 +50,37 @@ const LEGEND = [
   {
     name: "ConfettiButton",
     desc: "click → rect origin → fire",
-    swatch: "bg-[var(--muted)]",
+    kind: "btn",
   },
   {
     name: "Confetti.fire()",
     desc: "imperative ref — toast()-style ergonomics",
-    swatch: "bg-[var(--foreground)]/40",
+    kind: "ref",
   },
   {
     name: "confetti()",
     desc: "bare helper; all three honor disableForReducedMotion",
-    swatch: "bg-[var(--card)] ring-1 ring-fd-border ring-inset",
+    kind: "fn",
   },
 ] as const;
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "btn") {
+    return (
+      <span className="h-2.5 w-7 rounded-md bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "ref") {
+    return (
+      <span className="relative flex size-3 items-center justify-center rounded-full border border-fd-border bg-[var(--muted)] ring-1 ring-fd-border ring-inset">
+        <span className="size-1.5 rounded-full bg-[var(--foreground)]/50" />
+      </span>
+    );
+  }
+  return (
+    <span className="flex size-3 items-center justify-center rounded-lg border border-dashed border-fd-border bg-[var(--muted)]/50 ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function ConfettiApi() {
   return (
@@ -107,9 +125,7 @@ export function ConfettiApi() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

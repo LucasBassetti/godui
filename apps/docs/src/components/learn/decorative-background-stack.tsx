@@ -40,7 +40,13 @@ export function DecorativeBackgroundStack() {
           </div>
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+              <span
+                className="h-3 w-8 rounded-md ring-1 ring-fd-border ring-inset"
+                style={{
+                  background:
+                    "radial-gradient(125% 125% at 50% 10%, #fff 40%, #a1a1aa 100%)",
+                }}
+              />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Layer
               </dt>
@@ -49,7 +55,10 @@ export function DecorativeBackgroundStack() {
               </dd>
             </div>
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+              <span className="flex h-3 w-8 flex-col justify-end gap-0.5 rounded-md border border-fd-border bg-[var(--card)] p-0.5 ring-1 ring-fd-border ring-inset">
+                <span className="h-0.5 w-3 rounded-full bg-[var(--foreground)]/35" />
+                <span className="h-0.5 w-5 rounded-full bg-[var(--foreground)]/18" />
+              </span>
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Copy
               </dt>

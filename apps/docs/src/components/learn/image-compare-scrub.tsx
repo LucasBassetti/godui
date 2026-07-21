@@ -59,7 +59,7 @@ export function ImageCompareScrub() {
 
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+              <span className="h-3.5 w-6 rounded-lg bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 After
               </dt>
@@ -68,7 +68,7 @@ export function ImageCompareScrub() {
               </dd>
             </div>
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--foreground)]/60 ring-1 ring-fd-border ring-inset" />
+              <span className="h-3.5 w-6 rounded-lg bg-[var(--foreground)]/60 ring-1 ring-fd-border ring-inset" />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Before
               </dt>
@@ -77,7 +77,9 @@ export function ImageCompareScrub() {
               </dd>
             </div>
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full border-2 border-white/90 ring-1 ring-fd-border ring-inset" />
+              <span className="relative flex size-3.5 items-center justify-center rounded-full border-2 border-white/90 bg-white/20 ring-1 ring-fd-border ring-inset">
+                <span className="absolute inset-y-0 w-px bg-white/90" />
+              </span>
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Handle
               </dt>

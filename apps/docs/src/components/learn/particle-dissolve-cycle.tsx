@@ -58,23 +58,43 @@ const CSS = `
 }
 `;
 
-const LEGEND = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "assemble" | "disperse" | "loop";
+}[] = [
   {
     name: "Assemble",
     desc: "goal → 1 · easeInOut per particle",
-    swatch: "bg-[var(--foreground)]/50",
+    kind: "assemble",
   },
   {
     name: "Disperse",
     desc: "goal → 0 · back to sx, sy",
-    swatch: "bg-[var(--muted)]",
+    kind: "disperse",
   },
   {
     name: "Loop",
     desc: "flip goal every 2600ms",
-    swatch: "bg-transparent ring-1 ring-[var(--foreground)]/40 ring-inset",
+    kind: "loop",
   },
-] as const;
+];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "assemble") {
+    return (
+      <span className="size-1.5 rounded-[1px] bg-[var(--foreground)]/75 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "disperse") {
+    return (
+      <span className="size-1.5 rounded-[1px] bg-transparent opacity-20 ring-1 ring-[var(--foreground)]/40 ring-inset" />
+    );
+  }
+  return (
+    <span className="size-1.5 rounded-[1px] bg-transparent ring-1 ring-[var(--foreground)]/40 ring-inset" />
+  );
+}
 
 export function ParticleDissolveCycle() {
   return (
@@ -118,9 +138,7 @@ export function ParticleDissolveCycle() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

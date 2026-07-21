@@ -25,18 +25,37 @@ const CSS = `
 .ashs-static .ashs-screen { animation: none; transform: translateY(-22%); }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "entrance" | "pan";
+}[] = [
   {
     name: "Entrance",
     desc: "opacity + y + rotateX, one whileInView spring",
-    swatch: "bg-[var(--foreground)]/30",
+    kind: "entrance",
   },
   {
     name: "Scroll pan",
     desc: "y: 0% → -45%, driven by scrollYProgress",
-    swatch: "bg-[var(--foreground)]/60",
+    kind: "pan",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "entrance") {
+    return (
+      <span className="h-4 w-3 rounded-md border border-fd-border bg-[var(--muted)] [transform:rotateX(12deg)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="flex h-4 w-3 flex-col gap-0.5 overflow-hidden rounded-md border border-fd-border bg-[var(--foreground)]/10 ring-1 ring-fd-border ring-inset">
+      <span className="h-1 w-full shrink-0 rounded-sm bg-[var(--foreground)]/25" />
+      <span className="h-1 w-full shrink-0 rounded-sm bg-[var(--foreground)]/15" />
+      <span className="h-1 w-full shrink-0 rounded-sm bg-[var(--foreground)]/25" />
+    </span>
+  );
+}
 
 export function AppShowcaseScroll() {
   return (
@@ -74,9 +93,7 @@ export function AppShowcaseScroll() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

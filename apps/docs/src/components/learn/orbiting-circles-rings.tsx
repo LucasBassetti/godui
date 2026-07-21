@@ -35,19 +35,37 @@ const LEGEND = [
   {
     name: "Inner ring",
     desc: `radius ${INNER.radius} · ${INNER.duration}s · forward`,
-    swatch: "bg-[var(--foreground)]/45",
+    kind: "inner" as const,
   },
   {
     name: "Outer ring",
     desc: `radius ${OUTER.radius} · ${OUTER.duration}s · reverse`,
-    swatch: "bg-[var(--foreground)]/70",
+    kind: "outer" as const,
   },
   {
     name: "Center",
     desc: "shared anchor — each ring is its own instance",
-    swatch: "bg-[var(--foreground)]/15",
+    kind: "center" as const,
   },
 ] as const;
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "center") {
+    return (
+      <span className="flex h-3.5 w-6 items-center justify-center rounded-xl bg-[var(--foreground)]/10 ring-1 ring-fd-border ring-inset">
+        <span className="h-1 w-4 rounded-full bg-[var(--foreground)]/40" />
+      </span>
+    );
+  }
+  if (kind === "outer") {
+    return (
+      <span className="size-4 rounded-full border border-dashed border-[var(--foreground)]/15 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="size-3 rounded-full border border-dashed border-[var(--foreground)]/15 ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 function Slots({
   radius,
@@ -164,9 +182,7 @@ export function OrbitingCirclesRings() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

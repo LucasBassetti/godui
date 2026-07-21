@@ -48,7 +48,7 @@ export function LiquidMetaballsAnatomy() {
           </div>
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+              <span className="size-3.5 rounded-full bg-[var(--foreground)]/70 ring-1 ring-fd-border ring-inset" />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Blobs
               </dt>
@@ -57,7 +57,7 @@ export function LiquidMetaballsAnatomy() {
               </dd>
             </div>
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+              <span className="size-3 rounded-full bg-[var(--foreground)]/60 ring-1 ring-fd-border ring-inset" />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Paint
               </dt>
@@ -66,7 +66,7 @@ export function LiquidMetaballsAnatomy() {
               </dd>
             </div>
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+              <span className="size-3.5 rounded-full border border-dashed border-[var(--foreground)]/40 bg-transparent" />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Wrap
               </dt>

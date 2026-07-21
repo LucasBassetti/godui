@@ -45,18 +45,37 @@ const CSS = `
 }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "target" | "spring";
+}[] = [
   {
     name: "Raw target",
     desc: "useTransform(spotlight → influence)",
-    swatch: "bg-[var(--foreground)]/30",
+    kind: "target",
   },
   {
     name: "Spring",
     desc: "stiffness 150 · damping 18 · mass 1",
-    swatch: "bg-[var(--foreground)]",
+    kind: "spring",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "spring") {
+    return (
+      <span className="flex h-6 items-end">
+        <span className="h-6 w-2 rounded-sm bg-[var(--foreground)] ring-1 ring-fd-border ring-inset" />
+      </span>
+    );
+  }
+  return (
+    <span className="flex h-6 items-end">
+      <span className="h-2 w-2 rounded-sm bg-[var(--foreground)]/35 ring-1 ring-fd-border ring-inset" />
+    </span>
+  );
+}
 
 export function ElasticTextSpring() {
   return (
@@ -91,9 +110,7 @@ export function ElasticTextSpring() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ring-1 ring-fd-border ring-inset ${item.swatch}`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

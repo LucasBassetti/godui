@@ -67,14 +67,31 @@ const LEGEND = [
   {
     name: "Stream (full)",
     desc: "always painted · opacity gated by group-hover",
-    swatch: "bg-[var(--muted)]",
+    kind: "stream" as const,
   },
   {
     name: "Radial mask",
     desc: "#000 inside → transparent outside · reveals, doesn't hide",
-    swatch: "bg-[var(--foreground)]/40",
+    kind: "mask" as const,
   },
 ] as const;
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "mask") {
+    return (
+      <span
+        className="size-6 rounded-full ring-1 ring-fd-border ring-inset"
+        style={{
+          boxShadow:
+            "0 0 0 1px color-mix(in oklab, var(--foreground) 22%, transparent)",
+        }}
+      />
+    );
+  }
+  return (
+    <span className="h-3.5 w-6 rounded-lg border border-fd-border bg-[var(--card)] ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function EncryptedCardMask() {
   return (
@@ -124,9 +141,7 @@ export function EncryptedCardMask() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

@@ -34,23 +34,43 @@ const CSS = `
 .tb-a-static .tb-a-label { opacity: 1; animation: none; transform: none; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "blob" | "icon" | "label";
+}[] = [
   {
     name: "Blob",
-    desc: "one bg-primary pill, only under the active tab",
-    swatch: "bg-[var(--foreground)]",
+    desc: "one foreground pill, only under the active tab",
+    kind: "blob",
   },
   {
     name: "Icon",
     desc: "always shown; pops on selection",
-    swatch: "bg-[var(--foreground)]/40",
+    kind: "icon",
   },
   {
     name: "Label",
     desc: "revealed on the active tab only",
-    swatch: "bg-[var(--foreground)]/25",
+    kind: "label",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "blob") {
+    return (
+      <span className="h-3 w-8 rounded-full bg-[var(--foreground)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "icon") {
+    return (
+      <span className="size-3 rounded-full bg-[var(--foreground)]/40 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-1.5 w-8 rounded-full bg-[var(--background)]/80 ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function TabBarAnatomy() {
   return (
@@ -100,9 +120,7 @@ export function TabBarAnatomy() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

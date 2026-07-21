@@ -39,6 +39,41 @@ const CSS = `
 const FAN =
   "repeating-conic-gradient(from 0deg at 50% 0%, transparent 0deg, rgba(0,0,0,0.42) 3.5deg, transparent 24deg)";
 
+const LEGEND = [
+  {
+    name: "Transform",
+    desc: "rotate(±6deg) scale(1→1.08)",
+    kind: "transform" as const,
+  },
+  {
+    name: "Timing",
+    desc: "ease-in-out alternate · --rays-speed",
+    kind: "timing" as const,
+  },
+] as const;
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "timing") {
+    return (
+      <span className="relative h-3 w-8">
+        <span className="absolute inset-x-0 top-0 h-px border-t border-dashed border-[var(--foreground)]/25" />
+        <span className="absolute top-0 left-1/2 h-3 w-px -translate-x-1/2 bg-[var(--foreground)]/45" />
+      </span>
+    );
+  }
+  return (
+    <span
+      className="h-4 w-8 rounded-t-full ring-1 ring-fd-border ring-inset"
+      style={{
+        backgroundImage: FAN,
+        WebkitMaskImage:
+          "linear-gradient(to bottom, black 5%, transparent 80%)",
+        maskImage: "linear-gradient(to bottom, black 5%, transparent 80%)",
+      }}
+    />
+  );
+}
+
 export function LightRaysSweep() {
   return (
     <ScrollScene label="Sweep" note="±6° rotate · scale 1→1.08 · alternate">
@@ -107,24 +142,17 @@ export function LightRaysSweep() {
           </p>
 
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                Transform
-              </dt>
-              <dd className="font-mono text-[12px] text-fd-muted-foreground">
-                rotate(±6deg) scale(1→1.08)
-              </dd>
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                Timing
-              </dt>
-              <dd className="font-mono text-[12px] text-fd-muted-foreground">
-                ease-in-out alternate · --rays-speed
-              </dd>
-            </div>
+            {LEGEND.map((item) => (
+              <div key={item.name} className="flex flex-col gap-1.5">
+                <LegendSwatch kind={item.kind} />
+                <dt className="font-medium text-[13px] text-fd-foreground">
+                  {item.name}
+                </dt>
+                <dd className="font-mono text-[12px] text-fd-muted-foreground">
+                  {item.desc}
+                </dd>
+              </div>
+            ))}
           </dl>
         </div>
       )}

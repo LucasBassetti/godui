@@ -21,17 +21,20 @@ const LEGEND = [
   {
     name: "Corona",
     desc: "conic spin · amp scale",
-    swatch: "bg-[var(--foreground)]/20",
+    swatch:
+      "size-3 rounded-full bg-[var(--foreground)]/15 blur-[2px] ring-1 ring-fd-border ring-inset",
   },
   {
     name: "Core",
     desc: "breathe + amp swell",
-    swatch: "bg-[var(--card)]",
+    swatch:
+      "size-3 rounded-full border border-border bg-[var(--card)] ring-1 ring-fd-border ring-inset",
   },
   {
     name: "Ring",
     desc: "listening only",
-    swatch: "bg-transparent ring-1 ring-[var(--ring)]",
+    swatch:
+      "size-3 rounded-full border border-[var(--ring)]/60 bg-transparent ring-1 ring-fd-border ring-inset",
   },
 ] as const;
 
@@ -69,9 +72,7 @@ export function VoiceOrbAnatomy() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <span className={item.swatch} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

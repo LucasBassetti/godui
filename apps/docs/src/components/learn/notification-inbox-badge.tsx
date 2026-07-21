@@ -27,23 +27,43 @@ const CSS = `
 .nib-static .nib-press { animation: none; transform: none; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "badge" | "markAll" | "dot";
+}[] = [
   {
     name: "Badge",
     desc: "AnimatePresence, scale 0.6 → 1 spring",
-    swatch: "bg-primary",
+    kind: "badge",
   },
   {
     name: "Mark all read",
     desc: "flips every notification.read at once",
-    swatch: "bg-[var(--foreground)]/20",
+    kind: "markAll",
   },
   {
     name: "Unread dot",
     desc: "clears in the same frame as the badge",
-    swatch: "bg-primary",
+    kind: "dot",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "markAll") {
+    return (
+      <span className="h-2 w-8 rounded-full bg-[var(--foreground)]/20 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "dot") {
+    return (
+      <span className="size-2 rounded-full bg-primary ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="size-5 rounded-full bg-primary ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function NotificationInboxBadge() {
   return (
@@ -84,9 +104,7 @@ export function NotificationInboxBadge() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

@@ -39,19 +39,35 @@ const LEGEND = [
   {
     name: "From",
     desc: "fromRef center, +startXOffset/startYOffset",
-    swatch: "bg-[var(--muted)]",
+    kind: "from",
   },
   {
     name: "To",
     desc: "toRef center, +endXOffset/endYOffset",
-    swatch: "bg-[var(--card)] ring-1 ring-fd-border ring-inset",
+    kind: "to",
   },
   {
     name: "Path",
     desc: "M start Q (mid, mid − curvature) end",
-    swatch: "bg-transparent ring-1 ring-[var(--foreground)]/50 ring-inset",
+    kind: "path",
   },
 ] as const;
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "from") {
+    return (
+      <span className="size-3 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "to") {
+    return (
+      <span className="size-3 rounded-full border border-fd-border bg-[var(--card)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-0.5 w-8 rounded-full bg-[var(--foreground)]/55 ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function AnimatedBeamAnatomy() {
   return (
@@ -116,9 +132,7 @@ export function AnimatedBeamAnatomy() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

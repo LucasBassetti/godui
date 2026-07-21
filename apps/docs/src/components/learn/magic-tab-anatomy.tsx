@@ -26,23 +26,43 @@ const CSS = `
 .mta-static .mta-col { opacity: 1; animation: none; transform: none; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "front" | "edge" | "shadow";
+}[] = [
   {
     name: "Front",
     desc: "label face — lifts −4px when selected",
-    swatch: "bg-[var(--card)]",
+    kind: "front",
   },
   {
     name: "Edge",
     desc: "gradient wall, fakes the 3D side",
-    swatch: "bg-[var(--muted)]",
+    kind: "edge",
   },
   {
     name: "Shadow",
     desc: "blurred, grounds the raised tab",
-    swatch: "bg-black/60",
+    kind: "shadow",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "front") {
+    return (
+      <span className="h-3 w-6 rounded-lg border border-border bg-[var(--card)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "edge") {
+    return (
+      <span className="h-3 w-6 rounded-lg bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-3 w-6 rounded-lg bg-black/60 ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 function TokenBar({ className = "" }: { className?: string }) {
   return (
@@ -152,9 +172,7 @@ export function MagicTabAnatomy() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

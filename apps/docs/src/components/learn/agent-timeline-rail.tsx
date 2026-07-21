@@ -38,23 +38,45 @@ const CSS = `
 .atr-static .atr-ping-el { animation: none; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "pending" | "running" | "success";
+}[] = [
   {
     name: "Pending",
     desc: "hollow ring, dot",
-    swatch: "border-2 border-fd-border bg-transparent",
+    kind: "pending",
   },
   {
     name: "Running",
     desc: "spinner + ping, half fill",
-    swatch: "border-2 border-[var(--primary)] bg-[var(--primary)]/10",
+    kind: "running",
   },
   {
     name: "Success",
     desc: "solid ring, check, full fill",
-    swatch: "border-2 border-[var(--primary)] bg-[var(--primary)]",
+    kind: "success",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "pending") {
+    return (
+      <span className="relative flex size-3 items-center justify-center rounded-full border-2 border-fd-border bg-[var(--background)]">
+        <span className="size-1 rounded-full bg-fd-muted-foreground" />
+      </span>
+    );
+  }
+  if (kind === "running") {
+    return (
+      <span className="size-3 rounded-full border-2 border-[var(--primary)] bg-[var(--primary)]/10" />
+    );
+  }
+  return (
+    <span className="size-3 rounded-full border-2 border-[var(--primary)] bg-[var(--primary)]" />
+  );
+}
 
 export function AgentTimelineRail() {
   return (
@@ -110,7 +132,7 @@ export function AgentTimelineRail() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span className={`size-3 rounded-full ${item.swatch}`} />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

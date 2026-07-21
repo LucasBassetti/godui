@@ -23,17 +23,20 @@ const LEGEND = [
   {
     name: "Reveal",
     desc: "absolute inset-0 underneath — the hidden layer",
-    swatch: "bg-[var(--foreground)]/70",
+    swatch:
+      "h-3 w-8 rounded-md bg-[var(--foreground)]/80 ring-1 ring-fd-border ring-inset",
   },
   {
     name: "Cover",
     desc: "children on top, punched by the radial mask",
-    swatch: "bg-[var(--card)]",
+    swatch:
+      "h-3 w-8 rounded-md border border-fd-border bg-[var(--card)] ring-1 ring-fd-border ring-inset",
   },
   {
     name: "Together",
     desc: "mask hole follows --x/--y on the cover",
-    swatch: "bg-[var(--muted)]",
+    swatch:
+      "relative h-3 w-8 overflow-hidden rounded-md border border-fd-border ring-1 ring-fd-border ring-inset",
   },
 ] as const;
 
@@ -102,9 +105,22 @@ export function SpotlightRevealAnatomy() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                {item.name === "Together" ? (
+                  <span className={item.swatch}>
+                    <span className="absolute inset-0 bg-[var(--foreground)]/80" />
+                    <span
+                      className="absolute inset-0 bg-[var(--card)]"
+                      style={{
+                        maskImage:
+                          "radial-gradient(circle 6px at 55% 45%, transparent 0, transparent 4px, #000 6px)",
+                        WebkitMaskImage:
+                          "radial-gradient(circle 6px at 55% 45%, transparent 0, transparent 4px, #000 6px)",
+                      }}
+                    />
+                  </span>
+                ) : (
+                  <span className={item.swatch} />
+                )}
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

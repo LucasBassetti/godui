@@ -25,23 +25,43 @@ function TokenBar({ w = "w-10", tone = 30 }: { w?: string; tone?: number }) {
   );
 }
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "chips" | "field" | "send";
+}[] = [
   {
     name: "Chips",
     desc: "AnimatePresence height, collapses to 0 when empty",
-    swatch: "bg-[var(--foreground)]/25",
+    kind: "chips",
   },
   {
     name: "Field",
     desc: "textarea, auto-grows to maxRows then scrolls",
-    swatch: "bg-[var(--foreground)]/40",
+    kind: "field",
   },
   {
     name: "Send",
     desc: "attach + model left, count + send right",
-    swatch: "bg-[var(--foreground)]/15",
+    kind: "send",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "chips") {
+    return (
+      <span className="inline-flex h-3.5 w-7 items-center rounded-lg border border-border bg-[var(--background)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "field") {
+    return (
+      <span className="h-1.5 w-8 rounded-full bg-[var(--foreground)]/35 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="size-3 rounded-xl bg-[var(--foreground)]/80 ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function PromptComposerAnatomy() {
   return (
@@ -104,9 +124,7 @@ export function PromptComposerAnatomy() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ring-1 ring-fd-border ring-inset ${item.swatch}`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

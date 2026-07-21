@@ -33,23 +33,43 @@ const CSS = `
 .sl-static .sl-spark { animation: none; transform: rotate(35deg); }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "spark" | "cut" | "label";
+}[] = [
   {
     name: "Spark",
     desc: "conic gradient, blurred, spinning",
-    swatch: "bg-[var(--foreground)]/70",
+    kind: "spark",
   },
   {
     name: "Cut",
     desc: "solid inset that hides the middle",
-    swatch: "border-2 border-[var(--foreground)]/50 bg-[var(--card)]",
+    kind: "cut",
   },
   {
     name: "Label",
     desc: "text, always on top",
-    swatch: "bg-transparent",
+    kind: "label",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "cut") {
+    return (
+      <span className="h-3 w-8 rounded-[9px] border-2 border-[var(--foreground)]/50 bg-[var(--card)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "label") {
+    return (
+      <span className="h-2 w-6 rounded-full bg-[var(--foreground)]/40 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-3 w-8 rounded-md bg-[var(--foreground)]/70 blur-[1px] ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 function ButtonStage({
   spark,
@@ -144,9 +164,7 @@ export function ShimmerLayers() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ring-1 ring-fd-border ring-inset ${item.swatch}`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

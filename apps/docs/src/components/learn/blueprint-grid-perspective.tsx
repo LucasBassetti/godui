@@ -50,7 +50,14 @@ export function BlueprintGridPerspective() {
           </div>
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+              <span
+                className="h-3 w-8 rounded-sm ring-1 ring-fd-border ring-inset [transform:rotateX(72deg)]"
+                style={{
+                  backgroundImage:
+                    "linear-gradient(to right, var(--border) 1px, transparent 1px), linear-gradient(to bottom, var(--border) 1px, transparent 1px)",
+                  backgroundSize: "6px 6px",
+                }}
+              />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Tilt
               </dt>
@@ -59,7 +66,13 @@ export function BlueprintGridPerspective() {
               </dd>
             </div>
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+              <span
+                className="h-3 w-8 rounded-sm ring-1 ring-fd-border ring-inset"
+                style={{
+                  backgroundImage:
+                    "linear-gradient(to top, var(--foreground)/35 20%, transparent 95%)",
+                }}
+              />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Fade
               </dt>
@@ -68,7 +81,7 @@ export function BlueprintGridPerspective() {
               </dd>
             </div>
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+              <span className="h-3 w-8 rounded-2xl border border-dashed border-fd-border bg-[var(--card)] ring-1 ring-fd-border ring-inset" />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Note
               </dt>

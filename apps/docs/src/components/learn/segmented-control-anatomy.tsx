@@ -33,17 +33,20 @@ const LEGEND: { name: string; desc: string; swatch: string }[] = [
   {
     name: "Track",
     desc: 'role="tablist" — bg-muted, rounded, p-1',
-    swatch: "bg-[var(--muted)]",
+    swatch:
+      "h-3 w-8 rounded-md bg-[var(--muted)] ring-1 ring-fd-border ring-inset",
   },
   {
     name: "Segment buttons",
     desc: 'one role="tab" per option',
-    swatch: "bg-[var(--foreground)]/30",
+    swatch:
+      "h-1.5 w-8 rounded-full bg-[var(--foreground)]/30 ring-1 ring-fd-border ring-inset",
   },
   {
     name: "Sliding pill",
     desc: "bg-background, absolute inset-0 of the active tab",
-    swatch: "bg-[var(--background)]",
+    swatch:
+      "h-3 w-8 rounded-md bg-[var(--background)] shadow-sm ring-1 ring-fd-border ring-inset",
   },
 ];
 
@@ -82,9 +85,7 @@ export function SegmentedControlAnatomy() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <span className={item.swatch} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

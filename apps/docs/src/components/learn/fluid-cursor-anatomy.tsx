@@ -26,14 +26,25 @@ const LEGEND = [
   {
     name: "Trail",
     desc: "size × 2.4 · blur-md · lerp 0.12",
-    swatch: "bg-[var(--foreground)]/25",
+    kind: "trail" as const,
   },
   {
     name: "Dot",
     desc: "leading circle · lerp 0.25 · same center at rest",
-    swatch: "bg-[var(--foreground)]",
+    kind: "dot" as const,
   },
 ] as const;
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "trail") {
+    return (
+      <span className="size-4 rounded-full bg-[var(--foreground)]/20 blur-sm ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="size-2.5 rounded-full bg-[var(--foreground)] ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function FluidCursorAnatomy() {
   return (
@@ -78,9 +89,7 @@ export function FluidCursorAnatomy() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

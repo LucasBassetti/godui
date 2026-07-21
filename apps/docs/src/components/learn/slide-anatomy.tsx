@@ -43,22 +43,26 @@ const LEGEND: { name: string; desc: string; swatch: string }[] = [
   {
     name: "Track",
     desc: "rounded-full border, bg-muted",
-    swatch: "bg-[var(--muted)]",
+    swatch:
+      "h-3 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset",
   },
   {
     name: "Fill",
     desc: "trails thumb, width = x + thumb",
-    swatch: "bg-[var(--foreground)]/20",
+    swatch:
+      "h-2 w-8 rounded-full bg-[var(--foreground)]/20 ring-1 ring-fd-border ring-inset",
   },
   {
     name: "Thumb",
     desc: "draggable, x is a motion value",
-    swatch: "bg-[var(--foreground)]",
+    swatch:
+      "size-3 rounded-full bg-[var(--foreground)] ring-1 ring-fd-border ring-inset",
   },
   {
     name: "Label",
     desc: "fades over first 60% of travel",
-    swatch: "bg-[var(--foreground)]/40",
+    swatch:
+      "h-1.5 w-8 rounded-full bg-[var(--foreground)]/25 ring-1 ring-fd-border ring-inset",
   },
 ];
 
@@ -118,9 +122,7 @@ export function SlideAnatomy() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5 sm:grid-cols-4">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <span className={item.swatch} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

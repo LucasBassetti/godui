@@ -18,23 +18,43 @@ const CSS = `
 .fta-static .fta-cell { opacity: 1; animation: none; transform: none; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "shell" | "action" | "active";
+}[] = [
   {
     name: "shell",
     desc: "backdrop-blur pill, role=toolbar",
-    swatch: "bg-[var(--muted)]",
+    kind: "shell",
   },
   {
     name: "action",
     desc: "an idle motion.button",
-    swatch: "bg-[var(--foreground)]/12",
+    kind: "action",
   },
   {
     name: "active",
     desc: "aria-pressed, filled fill",
-    swatch: "bg-[var(--foreground)]",
+    kind: "active",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "shell") {
+    return (
+      <span className="h-3.5 w-7 rounded-lg bg-[var(--muted)]/90 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "active") {
+    return (
+      <span className="size-3.5 rounded-lg bg-[var(--foreground)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="size-3.5 rounded-lg bg-[var(--foreground)]/12 ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function FloatingToolbarAnatomy() {
   return (
@@ -68,9 +88,7 @@ export function FloatingToolbarAnatomy() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium font-mono text-[12px] text-fd-foreground">
                   {item.name}
                 </dt>

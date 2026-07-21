@@ -18,23 +18,43 @@ const CSS = `
 .gsa-static .gsa-col { opacity: 1; animation: none; transform: none; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "merge" | "native" | "content";
+}[] = [
   {
     name: "Merge surface",
     desc: "blurred silhouettes, fused by the goo filter",
-    swatch: "bg-[var(--foreground)]/25 blur-[2px]",
+    kind: "merge",
   },
   {
     name: "Native surface",
     desc: "crisp bg-card + border, pixel-perfect at rest",
-    swatch: "border border-[var(--foreground)]/50 bg-transparent",
+    kind: "native",
   },
   {
     name: "Content",
     desc: "your children — never filtered, never faded flat",
-    swatch: "bg-[var(--foreground)]/70",
+    kind: "content",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "merge") {
+    return (
+      <span className="h-3 w-6 rounded-[10px] bg-[var(--foreground)]/25 blur-[2px] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "native") {
+    return (
+      <span className="h-3 w-6 rounded-[10px] border border-[var(--foreground)]/50 bg-[var(--card)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-1.5 w-5 rounded-full bg-[var(--foreground)]/70 ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 function StackPair({
   merge,
@@ -134,9 +154,7 @@ export function GooeyStackAnatomy() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ring-1 ring-fd-border ring-inset ${item.swatch}`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

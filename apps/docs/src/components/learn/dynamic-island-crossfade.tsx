@@ -27,18 +27,39 @@ const CSS = `
 .dic-static .dic-b { animation: none; opacity: 1; transform: scale(1); filter: blur(0px); }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "exit" | "enter";
+}[] = [
   {
     name: "Exiting view",
     desc: "opacity 1→0 · scale 1→0.9 · blur 0→4px",
-    swatch: "bg-black/50",
+    kind: "exit",
   },
   {
     name: "Entering view",
     desc: "same curve, reversed, same 0.2s",
-    swatch: "bg-black",
+    kind: "enter",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "exit") {
+    return (
+      <span className="flex h-2.5 w-7 items-center gap-1 rounded-full bg-black px-1.5 opacity-70 blur-[0.5px] ring-1 ring-fd-border ring-inset">
+        <span className="size-1 rounded-full bg-white/70" />
+        <span className="h-1 w-3 rounded-full bg-white/50" />
+      </span>
+    );
+  }
+  return (
+    <span className="flex h-2.5 w-7 items-center gap-1 rounded-full bg-black px-1.5 ring-1 ring-fd-border ring-inset">
+      <span className="size-1 rounded-full bg-white" />
+      <span className="h-1 w-4 rounded-full bg-white/80" />
+    </span>
+  );
+}
 
 export function DynamicIslandCrossfade() {
   return (
@@ -65,9 +86,7 @@ export function DynamicIslandCrossfade() {
           <dl className="grid w-full max-w-[400px] grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

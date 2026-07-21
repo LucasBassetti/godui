@@ -46,23 +46,43 @@ const CSS = `
 .pda-static .pda-frame { animation: none; opacity: 1; transform: none; }
 `;
 
-const LEGEND = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "sample" | "targets" | "scatter";
+}[] = [
   {
     name: "Sample",
     desc: "offscreen canvas · alpha > 128",
-    swatch: "bg-[var(--muted)]",
+    kind: "sample",
   },
   {
     name: "Targets",
     desc: "tx, ty from pixel grid",
-    swatch: "bg-[var(--foreground)]/50",
+    kind: "targets",
   },
   {
     name: "Scatter",
     desc: "sx, sy random across canvas",
-    swatch: "bg-transparent ring-1 ring-[var(--foreground)]/40 ring-inset",
+    kind: "scatter",
   },
-] as const;
+];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "sample") {
+    return (
+      <span className="h-3.5 w-8 rounded-lg border border-dashed border-[var(--foreground)]/25 bg-[var(--card)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "targets") {
+    return (
+      <span className="size-1.5 rounded-[1px] bg-[var(--foreground)]/70 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="size-1.5 rounded-[1px] bg-transparent ring-1 ring-[var(--foreground)]/40 ring-inset" />
+  );
+}
 
 export function ParticleDissolveAnatomy() {
   return (
@@ -106,9 +126,7 @@ export function ParticleDissolveAnatomy() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

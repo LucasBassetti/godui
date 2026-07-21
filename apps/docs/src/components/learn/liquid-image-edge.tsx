@@ -22,19 +22,38 @@ const LEGEND = [
   {
     name: "Noise drift",
     desc: "SMIL animates baseFrequency over ~16s — field never freezes",
-    swatch: "bg-[var(--muted)]",
+    kind: "noise" as const,
   },
   {
     name: "Scale",
     desc: "feDisplacementMap scale — how hard pixels are pushed",
-    swatch: "bg-[var(--foreground)]/40",
+    kind: "scale" as const,
   },
   {
     name: "Padded filter",
     desc: "x/y −20%, 140% size — edge pixels can spill past the rect",
-    swatch: "bg-transparent ring-1 ring-[var(--foreground)]/40 ring-inset",
+    kind: "filter" as const,
   },
 ] as const;
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "scale") {
+    return (
+      <span className="h-3.5 w-6 rounded-[5px] bg-[var(--foreground)]/14 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "filter") {
+    return (
+      <span className="h-3.5 w-6 rounded-[5px] ring-1 ring-[var(--foreground)]/40 ring-inset" />
+    );
+  }
+  return (
+    <span className="relative h-3.5 w-6 overflow-hidden rounded-[5px] ring-1 ring-fd-border ring-inset">
+      <span className="absolute inset-x-0 top-0 h-1/3 bg-[var(--muted)]" />
+      <span className="absolute inset-x-0 bottom-0 h-2/3 bg-[var(--card)]" />
+    </span>
+  );
+}
 
 export function LiquidImageEdge() {
   const uid = useId().replace(/:/g, "");
@@ -158,9 +177,7 @@ export function LiquidImageEdge() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

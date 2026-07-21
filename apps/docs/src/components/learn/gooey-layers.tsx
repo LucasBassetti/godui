@@ -26,18 +26,35 @@ const CSS = `
 .gl-static .gl-col { opacity: 1; animation: none; transform: none; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "blob" | "control";
+}[] = [
   {
     name: "Blob layer",
     desc: "soft discs under the goo filter",
-    swatch: "bg-[var(--foreground)]/20",
+    kind: "blob",
   },
   {
     name: "Control layer",
     desc: "sharp icons + hit targets",
-    swatch: "border-2 border-[var(--foreground)]/50 bg-transparent",
+    kind: "control",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "blob") {
+    return (
+      <span className="size-3.5 rounded-full bg-[var(--foreground)]/20 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="relative flex size-3.5 items-center justify-center rounded-full border-2 border-[var(--foreground)]/50 bg-transparent ring-1 ring-fd-border ring-inset">
+      <span className="size-1 rounded-full bg-[var(--foreground)]/70" />
+    </span>
+  );
+}
 
 function FabStage({
   blobs,
@@ -145,9 +162,7 @@ export function GooeyLayers() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`size-3.5 rounded-full ring-1 ring-fd-border ring-inset ${item.swatch}`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

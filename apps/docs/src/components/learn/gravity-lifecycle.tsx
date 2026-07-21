@@ -56,7 +56,7 @@ export function GravityLifecycle() {
 
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--foreground)]/60 ring-1 ring-fd-border ring-inset" />
+              <span className="size-3.5 rounded-[10px] bg-[var(--foreground)]/60 ring-1 ring-fd-border ring-inset" />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Running
               </dt>
@@ -65,7 +65,7 @@ export function GravityLifecycle() {
               </dd>
             </div>
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--foreground)]/25 ring-1 ring-fd-border ring-inset" />
+              <span className="size-3.5 rounded-[10px] bg-[var(--foreground)]/25 ring-1 ring-fd-border ring-inset" />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Paused
               </dt>

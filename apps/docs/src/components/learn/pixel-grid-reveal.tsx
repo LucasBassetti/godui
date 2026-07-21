@@ -62,6 +62,34 @@ const GRID_STYLE = {
   gridTemplateColumns: "repeat(16, 0.5rem)",
 } as CSSProperties;
 
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "dimCell" | "cell";
+}[] = [
+  {
+    name: "Hidden",
+    desc: "baseline off — cells only under the disc",
+    kind: "dimCell",
+  },
+  {
+    name: "Falloff",
+    desc: "interactionRadius=120 · smoothstep edge",
+    kind: "cell",
+  },
+];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "dimCell") {
+    return (
+      <span className="size-2 rounded-[1px] bg-[var(--foreground)]/15 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="size-2 rounded-[1px] bg-[var(--foreground)]/75 ring-1 ring-fd-border ring-inset" />
+  );
+}
+
 export function PixelGridReveal() {
   return (
     <ScrollScene label="Reveal" note="smoothstep spotlight · intensity lerp">
@@ -118,24 +146,17 @@ export function PixelGridReveal() {
           </p>
 
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                Hidden
-              </dt>
-              <dd className="text-[12px] text-fd-muted-foreground">
-                baseline off — cells only under the disc
-              </dd>
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                Falloff
-              </dt>
-              <dd className="text-[12px] text-fd-muted-foreground">
-                interactionRadius=120 · smoothstep edge
-              </dd>
-            </div>
+            {LEGEND.map((item) => (
+              <div key={item.name} className="flex flex-col gap-1.5">
+                <LegendSwatch kind={item.kind} />
+                <dt className="font-medium text-[13px] text-fd-foreground">
+                  {item.name}
+                </dt>
+                <dd className="text-[12px] text-fd-muted-foreground">
+                  {item.desc}
+                </dd>
+              </div>
+            ))}
           </dl>
         </div>
       )}

@@ -27,23 +27,46 @@ const CSS = `
 .att-static .att-panel { animation: none; transform: none; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "pointer" | "rotate" | "translate";
+}[] = [
   {
-    name: "pointer x",
+    name: "Pointer",
     desc: "clientX − trigger center, raw px",
-    swatch: "bg-[var(--foreground)]/40",
+    kind: "pointer",
   },
   {
-    name: "rotate",
+    name: "Rotate",
     desc: "useTransform [-60,60] → [-14,14]",
-    swatch: "bg-[var(--foreground)]/70",
+    kind: "rotate",
   },
   {
-    name: "translateX",
+    name: "TranslateX",
     desc: "useTransform [-60,60] → [-12,12]",
-    swatch: "bg-[var(--foreground)]",
+    kind: "translate",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "pointer") {
+    return (
+      <span className="size-2 rounded-full bg-[var(--foreground)]/50 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  if (kind === "rotate") {
+    return (
+      <span className="h-3 w-6 rounded-lg bg-[var(--foreground)] [transform:rotate(8deg)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="relative h-3 w-7">
+      <span className="absolute inset-y-0 left-0 w-5 rounded-lg bg-[var(--foreground)] ring-1 ring-fd-border ring-inset" />
+      <span className="absolute inset-y-1 left-3 w-3 rounded-lg bg-[var(--foreground)]/70 ring-1 ring-fd-border ring-inset" />
+    </span>
+  );
+}
 
 export function AnimatedTooltipTilt() {
   return (
@@ -81,9 +104,7 @@ export function AnimatedTooltipTilt() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

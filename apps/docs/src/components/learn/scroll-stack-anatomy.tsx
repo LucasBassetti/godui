@@ -22,17 +22,20 @@ const LEGEND: { name: string; desc: string; swatch: string }[] = [
   {
     name: "Front card",
     desc: "index N-1, sticky top: pinTop, scale 1",
-    swatch: "bg-[var(--card)] ring-1 ring-fd-border ring-inset",
+    swatch:
+      "h-3 w-8 rounded-md border border-fd-border bg-[var(--card)] ring-1 ring-fd-border ring-inset",
   },
   {
     name: "Buried card",
     desc: "same pinTop, dimmed + scaled toward baseScale",
-    swatch: "bg-[var(--muted)]",
+    swatch:
+      "h-3 w-8 rounded-md bg-[var(--muted)] ring-1 ring-fd-border ring-inset",
   },
   {
     name: "Peek",
     desc: "translateY = index × peek — the sliver that shows below",
-    swatch: "bg-[var(--foreground)]/30",
+    swatch:
+      "h-3 w-4 rounded-md bg-[var(--muted)] ring-1 ring-fd-border ring-inset",
   },
 ];
 
@@ -67,7 +70,7 @@ export function ScrollStackAnatomy() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span className={`h-1.5 w-8 rounded-full ${item.swatch}`} />
+                <span className={`${item.swatch}`} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

@@ -67,19 +67,37 @@ const LEGEND = [
   {
     name: "Idle",
     desc: "phi += 0.005 every frame, nobody's touching it",
-    swatch: "bg-[var(--foreground)]/30",
+    kind: "idle" as const,
   },
   {
     name: "Drag",
     desc: "pointerMovement / 200 drives phi instead",
-    swatch: "bg-[var(--foreground)]/70",
+    kind: "drag" as const,
   },
   {
     name: "Phi",
     desc: "the one angle globe.update() sets, every frame",
-    swatch: "bg-transparent ring-1 ring-[var(--foreground)]/40 ring-inset",
+    kind: "phi" as const,
   },
 ] as const;
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "drag") {
+    return (
+      <span className="relative flex size-4 items-center justify-center rounded-full [background:repeating-linear-gradient(90deg,transparent_0px_4px,var(--foreground)_4px_5px)] opacity-[0.35] ring-1 ring-fd-border ring-inset">
+        <span className="absolute -top-0.5 size-1.5 rounded-full bg-[var(--foreground)]/70" />
+      </span>
+    );
+  }
+  if (kind === "phi") {
+    return (
+      <span className="size-4 rounded-full ring-1 ring-[var(--foreground)]/10 ring-inset" />
+    );
+  }
+  return (
+    <span className="size-4 rounded-full [background:repeating-linear-gradient(90deg,transparent_0px_4px,var(--foreground)_4px_5px)] opacity-[0.16] ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 function GrabHand({ className }: { className?: string }) {
   return (
@@ -142,9 +160,7 @@ export function GlobeRotate() {
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

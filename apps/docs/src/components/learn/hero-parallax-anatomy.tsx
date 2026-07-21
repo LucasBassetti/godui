@@ -25,7 +25,7 @@ const LEGEND: { name: string; desc: string; swatch: string }[] = [
   {
     name: "translateX",
     desc: "rows 1 & 3 — scrollYProgress [0,1] → [0, 1000]",
-    swatch: "bg-[var(--foreground)]/70",
+    swatch: "bg-[var(--muted)]",
   },
   {
     name: "translateXReverse",
@@ -91,7 +91,7 @@ export function HeroParallaxAnatomy() {
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
                 <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
+                  className={`h-3 w-5 rounded-lg ${item.swatch} ring-1 ring-fd-border ring-inset`}
                 />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}

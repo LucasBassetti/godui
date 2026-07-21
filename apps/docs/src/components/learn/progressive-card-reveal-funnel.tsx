@@ -41,6 +41,34 @@ const CSS = `
 
 const CARDS = [0, 1, 2];
 
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "expanded" | "collapsed";
+}[] = [
+  {
+    name: "Active card",
+    desc: "100% width, 20px radius",
+    kind: "expanded",
+  },
+  {
+    name: "Collapsed cards",
+    desc: "narrower per step away, pill radius",
+    kind: "collapsed",
+  },
+];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "expanded") {
+    return (
+      <span className="h-2.5 w-8 rounded-2xl border border-border bg-[var(--card)] ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="h-1.5 w-6 rounded-full bg-[var(--foreground)]/20 ring-1 ring-fd-border ring-inset" />
+  );
+}
+
 export function ProgressiveCardRevealFunnel() {
   return (
     <ScrollScene label="The funnel morph" note="width + radius, layout-driven">
@@ -67,24 +95,17 @@ export function ProgressiveCardRevealFunnel() {
           </p>
 
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--card)] ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                Active card
-              </dt>
-              <dd className="text-[12px] text-fd-muted-foreground">
-                100% width, 20px radius
-              </dd>
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--foreground)]/20 ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                Collapsed cards
-              </dt>
-              <dd className="text-[12px] text-fd-muted-foreground">
-                narrower per step away, pill radius
-              </dd>
-            </div>
+            {LEGEND.map((item) => (
+              <div key={item.name} className="flex flex-col gap-1.5">
+                <LegendSwatch kind={item.kind} />
+                <dt className="font-medium text-[13px] text-fd-foreground">
+                  {item.name}
+                </dt>
+                <dd className="text-[12px] text-fd-muted-foreground">
+                  {item.desc}
+                </dd>
+              </div>
+            ))}
           </dl>
         </div>
       )}

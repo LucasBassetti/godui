@@ -21,18 +21,36 @@ const CSS = `
 .stba-static .stba-shell { opacity: 1; animation: none; transform: none; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "icon" | "label";
+}[] = [
   {
     name: "Icon slot",
     desc: "iconSize = height × 0.52",
-    swatch: "bg-[var(--foreground)]/45",
+    kind: "icon",
   },
   {
     name: "Two-line label",
     desc: "caption (0.17h) + name (0.3h), stacked",
-    swatch: "bg-[var(--foreground)]/25",
+    kind: "label",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "icon") {
+    return (
+      <span className="size-3 rounded-[6px] bg-[var(--foreground)]/45 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="flex h-3 w-8 flex-col justify-center gap-0.5">
+      <span className="h-1 w-5 rounded-full bg-[var(--foreground)]/40 ring-1 ring-fd-border ring-inset" />
+      <span className="h-1.5 w-7 rounded-full bg-[var(--foreground)]/80 ring-1 ring-fd-border ring-inset" />
+    </span>
+  );
+}
 
 export function StoreBadgeAnatomy() {
   return (
@@ -64,9 +82,7 @@ export function StoreBadgeAnatomy() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

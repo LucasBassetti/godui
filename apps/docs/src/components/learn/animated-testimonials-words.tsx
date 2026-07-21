@@ -22,18 +22,37 @@ const CSS = `
 .tw-static .tw-word { animation: none; opacity: 1; filter: none; transform: none; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "word" | "stagger";
+}[] = [
   {
     name: "Per-word entrance",
     desc: "blur 6px → 0 · y 6px → 0 · opacity 0 → 1",
-    swatch: "bg-[var(--foreground)]/30",
+    kind: "word",
   },
   {
     name: "Stagger",
     desc: "delay: 0.02 × word index",
-    swatch: "bg-[var(--foreground)]/60",
+    kind: "stagger",
   },
 ];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "stagger") {
+    return (
+      <span className="flex items-center gap-0.5">
+        <span className="h-2 w-3 rounded-full bg-[var(--foreground)]/30 ring-1 ring-fd-border ring-inset" />
+        <span className="h-2 w-4 rounded-full bg-[var(--foreground)]/30 ring-1 ring-fd-border ring-inset" />
+        <span className="h-2 w-2.5 rounded-full bg-[var(--foreground)]/30 ring-1 ring-fd-border ring-inset" />
+      </span>
+    );
+  }
+  return (
+    <span className="h-2 w-8 rounded-full bg-[var(--foreground)]/30 ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function AnimatedTestimonialsWords() {
   return (
@@ -71,9 +90,7 @@ export function AnimatedTestimonialsWords() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

@@ -230,7 +230,7 @@ export function AgentFlowPacket() {
 
           <dl className="grid w-full max-w-[420px] grid-cols-2 gap-4 border-fd-border border-t pt-5">
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--primary)] ring-1 ring-fd-border ring-inset" />
+              <span className="size-3.5 rounded-lg border border-[var(--primary)] bg-[var(--primary)] ring-1 ring-fd-border ring-inset" />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Trace / light
               </dt>
@@ -239,7 +239,7 @@ export function AgentFlowPacket() {
               </dd>
             </div>
             <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--primary)]/50 ring-1 ring-fd-border ring-inset" />
+              <span className="size-2.5 rounded-full bg-[var(--primary)] ring-1 ring-fd-border ring-inset" />
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Beam
               </dt>

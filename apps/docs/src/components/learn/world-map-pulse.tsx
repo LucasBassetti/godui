@@ -18,6 +18,34 @@ const CSS = `
 .wmp-static .wmp-ripple { animation: none; opacity: 0; }
 `;
 
+const LEGEND: {
+  name: string;
+  desc: string;
+  kind: "pin" | "ripple";
+}[] = [
+  {
+    name: "Pin",
+    desc: "the static core circle, never animates",
+    kind: "pin",
+  },
+  {
+    name: "Ripple",
+    desc: "a second circle, scale + fade, infinite",
+    kind: "ripple",
+  },
+];
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "ripple") {
+    return (
+      <span className="size-3 rounded-full bg-[var(--primary)]/40 ring-1 ring-fd-border ring-inset" />
+    );
+  }
+  return (
+    <span className="size-3 rounded-full bg-[var(--primary)] ring-1 ring-fd-border ring-inset" />
+  );
+}
+
 export function WorldMapPulse() {
   return (
     <ScrollScene label="The pulse" note="scale 1→3 · opacity .6→0, looping">
@@ -52,24 +80,17 @@ export function WorldMapPulse() {
           </div>
 
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--primary)] ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                Pin
-              </dt>
-              <dd className="text-[12px] text-fd-muted-foreground">
-                the static core circle, never animates
-              </dd>
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--primary)]/40 ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                Ripple
-              </dt>
-              <dd className="text-[12px] text-fd-muted-foreground">
-                a second circle, scale + fade, infinite
-              </dd>
-            </div>
+            {LEGEND.map((item) => (
+              <div key={item.name} className="flex flex-col gap-1.5">
+                <LegendSwatch kind={item.kind} />
+                <dt className="font-medium text-[13px] text-fd-foreground">
+                  {item.name}
+                </dt>
+                <dd className="text-[12px] text-fd-muted-foreground">
+                  {item.desc}
+                </dd>
+              </div>
+            ))}
           </dl>
         </div>
       )}

@@ -18,6 +18,30 @@ const CSS = `
 .lmc-static .lmc-c { animation: none; transform: translate(18px, 0) scale(1); opacity: 1; }
 `;
 
+const LEGEND = [
+  {
+    name: "Active",
+    desc: "r = min(w,h)×0.1 while pointer in",
+    kind: "active" as const,
+  },
+  {
+    name: "Idle",
+    desc: "r = 0 — no leftover disc",
+    kind: "idle" as const,
+  },
+] as const;
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "idle") {
+    return (
+      <span className="size-3 rounded-full bg-[var(--foreground)]/30 ring-1 ring-fd-border ring-inset [transform:scale(0.4)]" />
+    );
+  }
+  return (
+    <span className="size-3.5 rounded-full bg-[var(--foreground)]/70 ring-1 ring-fd-border ring-inset" />
+  );
+}
+
 export function LiquidMetaballsCursor() {
   return (
     <ScrollScene label="Cursor blob" note="r grows on pointer">
@@ -55,24 +79,17 @@ export function LiquidMetaballsCursor() {
             <div className="lmc-c absolute size-12 rounded-full bg-[var(--foreground)]/65" />
           </div>
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                Active
-              </dt>
-              <dd className="text-[12px] text-fd-muted-foreground">
-                r = min(w,h)×0.1 while pointer in
-              </dd>
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                Idle
-              </dt>
-              <dd className="text-[12px] text-fd-muted-foreground">
-                r = 0 — no leftover disc
-              </dd>
-            </div>
+            {LEGEND.map((item) => (
+              <div key={item.name} className="flex flex-col gap-1.5">
+                <LegendSwatch kind={item.kind} />
+                <dt className="font-medium text-[13px] text-fd-foreground">
+                  {item.name}
+                </dt>
+                <dd className="text-[12px] text-fd-muted-foreground">
+                  {item.desc}
+                </dd>
+              </div>
+            ))}
           </dl>
         </div>
       )}

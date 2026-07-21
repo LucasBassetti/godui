@@ -40,6 +40,46 @@ function MapPlate({ band, className }: { band: number; className?: string }) {
   );
 }
 
+const LEGEND = [
+  {
+    name: "Neutral mid",
+    desc: "dashed band = no displacement",
+    kind: "band" as const,
+  },
+  {
+    name: "Converging lens",
+    desc: "continuous ramp edge-to-edge",
+    kind: "lens" as const,
+  },
+] as const;
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "lens") {
+    return (
+      <span
+        className="size-4 rounded-full border border-fd-border ring-1 ring-fd-border ring-inset"
+        style={{
+          backgroundImage:
+            "linear-gradient(90deg, var(--foreground) 0%, transparent 50%, var(--foreground) 100%)",
+          opacity: 0.55,
+        }}
+      />
+    );
+  }
+  return (
+    <span
+      className="relative h-4 w-7 overflow-hidden rounded-2xl border border-fd-border ring-1 ring-fd-border ring-inset"
+      style={{
+        backgroundImage:
+          "linear-gradient(90deg, var(--foreground) 0%, transparent 35%, transparent 65%, var(--foreground) 100%)",
+        opacity: 0.55,
+      }}
+    >
+      <span className="absolute inset-y-0 left-[35%] right-[35%] border-[var(--foreground)]/30 border-x border-dashed" />
+    </span>
+  );
+}
+
 export function LiquidGlassLensMap() {
   return (
     <ScrollScene label="Displacement map" note="band=0.3 card · band=0 lens">
@@ -85,24 +125,17 @@ export function LiquidGlassLensMap() {
           </p>
 
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                Neutral mid
-              </dt>
-              <dd className="text-[12px] text-fd-muted-foreground">
-                dashed band = no displacement
-              </dd>
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <span className="h-1.5 w-8 rounded-full bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
-              <dt className="font-medium text-[13px] text-fd-foreground">
-                Converging lens
-              </dt>
-              <dd className="text-[12px] text-fd-muted-foreground">
-                continuous ramp edge-to-edge
-              </dd>
-            </div>
+            {LEGEND.map((item) => (
+              <div key={item.name} className="flex flex-col gap-1.5">
+                <LegendSwatch kind={item.kind} />
+                <dt className="font-medium text-[13px] text-fd-foreground">
+                  {item.name}
+                </dt>
+                <dd className="text-[12px] text-fd-muted-foreground">
+                  {item.desc}
+                </dd>
+              </div>
+            ))}
           </dl>
         </div>
       )}

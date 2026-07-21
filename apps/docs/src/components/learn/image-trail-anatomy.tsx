@@ -29,14 +29,25 @@ const LEGEND = [
   {
     name: "Pool slots",
     desc: "Array.from({ length: max }) · refs into slots.current",
-    swatch: "bg-[var(--muted)]",
+    kind: "pool" as const,
   },
   {
     name: "Active write",
     desc: "slots[slotIndex % max] · round-robin reuse",
-    swatch: "bg-[var(--foreground)]/50",
+    kind: "active" as const,
   },
 ] as const;
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "active") {
+    return (
+      <span className="size-3.5 rounded-xl bg-[var(--foreground)]/35 ring-2 ring-[var(--foreground)]/55 ring-inset" />
+    );
+  }
+  return (
+    <span className="size-3.5 rounded-xl bg-[var(--muted)] ring-1 ring-fd-border ring-inset" />
+  );
+}
 
 export function ImageTrailAnatomy() {
   return (
@@ -68,9 +79,7 @@ export function ImageTrailAnatomy() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>

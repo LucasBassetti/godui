@@ -27,14 +27,29 @@ const LEGEND = [
   {
     name: "Without",
     desc: "no inner transform — content tumbles with the ring",
-    swatch: "bg-[var(--foreground)]/60",
+    kind: "without" as const,
   },
   {
     name: "With",
     desc: "rotate([-angle, -angle-360]) cancels the ring exactly",
-    swatch: "bg-[var(--foreground)]",
+    kind: "with" as const,
   },
 ] as const;
+
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
+  if (kind === "with") {
+    return (
+      <span className="relative flex size-4 items-center justify-center rounded-lg border border-fd-border bg-[var(--card)] shadow-sm ring-1 ring-fd-border ring-inset">
+        <span className="h-1.5 w-4 rounded-full bg-[var(--foreground)]/50" />
+      </span>
+    );
+  }
+  return (
+    <span className="relative flex size-4 items-center justify-center rounded-lg border border-fd-border bg-[var(--card)] shadow-sm ring-1 ring-fd-border ring-inset [transform:rotate(12deg)]">
+      <span className="h-1.5 w-4 rounded-full bg-[var(--foreground)]/50 [transform:rotate(-12deg)]" />
+    </span>
+  );
+}
 
 function Panel({
   caption,
@@ -100,9 +115,7 @@ export function OrbitingCirclesCounter() {
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (
               <div key={item.name} className="flex flex-col gap-1.5">
-                <span
-                  className={`h-1.5 w-8 rounded-full ${item.swatch} ring-1 ring-fd-border ring-inset`}
-                />
+                <LegendSwatch kind={item.kind} />
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>
