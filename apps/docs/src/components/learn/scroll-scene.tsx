@@ -98,11 +98,11 @@ export function ScrollScene({
     >
       <BorderBeam play={plays} />
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
-        <span className="inline-flex h-8 items-center rounded-[10px] border border-fd-border bg-[var(--muted)] px-3 font-medium text-[13px] text-[var(--foreground)]">
+        <span className="inline-flex h-8 shrink-0 items-center whitespace-nowrap rounded-[10px] border border-fd-border bg-[var(--muted)] px-3 font-medium text-[13px] text-[var(--foreground)]">
           {label}
         </span>
         {note ? (
-          <span className="font-mono text-fd-muted-foreground text-xs">
+          <span className="min-w-0 text-pretty font-mono text-fd-muted-foreground text-xs leading-snug">
             {note}
           </span>
         ) : null}
