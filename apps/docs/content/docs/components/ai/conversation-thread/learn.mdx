@@ -1,0 +1,225 @@
+---
+title: Anatomy of the Conversation Thread
+description: How a chat surface stays pinned to the bottom with one arithmetic check, springs each message in, and reveals tokens on a plain interval.
+---
+
+A chat thread lives or dies on one question: does it stay where the reader
+expects while new messages keep landing? `ConversationThread` answers that
+with a single boolean derived from scroll math, and hands every message's
+entrance to one repeated spring. Nothing here is a physics engine — it's a
+threshold check, a transform, and a `setInterval`.
+
+## The three pieces
+
+`ConversationThread` owns the scroll container and the pinned/jump-to-latest
+state. `ConversationMessage` renders one turn — role, bubble tint, alignment,
+hover actions. `StreamingText` is unrelated to either: a standalone string
+that reveals itself over time and reports back through `onDone`.
+
+<ConversationThreadAnatomy />
+
+```tsx
+const BUBBLE_BY_ROLE: Record<MessageRole, string> = {
+  user: "bg-primary text-primary-foreground",
+  assistant: "bg-muted text-foreground",
+  system: "bg-transparent text-muted-foreground italic",
+};
+
+<div className={`flex gap-3 ${isUser && !isDocument ? "flex-row-reverse" : ""}`}>
+  {avatar}
+  <div className={isUser ? "items-end" : "items-start"}>
+    <div className={`rounded-2xl px-3.5 py-2 ${BUBBLE_BY_ROLE[role]} ${isUser ? "rounded-br-md" : "rounded-bl-md"}`}>
+      {children}
+    </div>
+    {actions ? <div className="opacity-0 group-hover/msg:opacity-100">{/* … */}</div> : null}
+  </div>
+</div>
+```
+
+`role` decides two independent things at once — which bubble tint from
+`BUBBLE_BY_ROLE`, and whether the row reverses to sit on the right. A
+`ThreadContext` provider on the outer `ConversationThread` carries one more
+input, `variant`, down to every message without prop-drilling it through
+`children`: `document` turns off the reversal and lets the bubble go full
+width, `compact` drops the name/timestamp row and tightens the gap. Same
+component, three readings of the same `role`.
+
+## Staying pinned to the bottom
+
+`ConversationThread` recomputes "am I at the bottom" on every `onScroll` and
+stores the answer as `pinned` (mirrored into a ref so observers never read a
+stale value). New messages and streaming growth both re-stick while pinned;
+if the reader scrolls up past the threshold, it lets go and shows a pill.
+
+<ConversationThreadScroll />
+
+```tsx
+onScroll={(e) => {
+  const el = e.currentTarget;
+  const atBottom =
+    el.scrollHeight - el.scrollTop - el.clientHeight < 48;
+  setPinnedBoth(atBottom);
+}}
+```
+
+```tsx
+// New message mounts → instant stick (smooth is reserved for Jump).
+React.useEffect(() => {
+  if (autoScroll && pinnedRef.current) scrollToBottom("instant");
+}, [childCount, autoScroll, scrollToBottom]);
+
+// StreamingText / wrap growth → observe the *inner* stack. A ResizeObserver
+// on the overflow port itself does not fire when only scrollHeight grows.
+React.useEffect(() => {
+  const content = contentRef.current;
+  if (!autoScroll || !content) return;
+  const ro = new ResizeObserver(() => {
+    if (pinnedRef.current) scrollToBottom("instant");
+  });
+  ro.observe(content);
+  return () => ro.disconnect();
+}, [autoScroll, scrollToBottom]);
+```
+
+`childCount` alone only notices a new message — not every `StreamingText`
+tick that grows a bubble. The ResizeObserver on the inner content wrapper
+closes that gap without a `MutationObserver` or a rAF loop.
+
+## Why 48px, not 0
+
+A `0`px threshold would un-pin the instant a subpixel scroll event fires —
+trackpads and momentum scrolling report fractional deltas constantly, so an
+exact-bottom check flickers the pill in and out on scroll noise alone. `48`
+is generous enough to absorb that jitter while still being smaller than a
+single message row, so the thread only actually lets go once the reader has
+deliberately scrolled — never on rounding error.
+
+## Why instant scroll (and no `layout`)
+
+Streaming text changes height every few milliseconds. Smooth scrolling
+and Framer Motion `layout` both tween those changes — and they fight each
+other: the viewport eases toward the bottom while every sibling message
+re-measures and slides. Result: jump up, settle down, jump again.
+
+So the thread keeps stickiness **instant** while pinned, and messages enter
+with opacity + a short `y` spring only — no `layout` prop. `scrollToBottom
+("smooth")` is reserved for the intentional Jump-to-latest click.
+
+## The jump-to-latest pill
+
+When `pinned` flips to `false`, `AnimatePresence` mounts a button —
+`sticky bottom-2`, so it rides the current scroll position instead of a fixed
+page coordinate — off the same spring used everywhere else in GodUI's AI
+components:
+
+```tsx
+<AnimatePresence>
+  {!pinned ? (
+    <motion.button
+      initial={{ opacity: 0, y: 8, scale: 0.9 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: 8, scale: 0.9 }}
+      transition={{ type: "spring", stiffness: 320, damping: 32, mass: 0.9 }}
+      onClick={() => {
+        setPinned(true);
+        scrollToBottom("smooth");
+      }}
+    >
+      Jump to latest
+      <ArrowDownIcon />
+    </motion.button>
+  ) : null}
+</AnimatePresence>
+```
+
+Clicking it does two things, not one: it sets `pinned` back to `true` *and*
+calls `scrollToBottom` directly. Setting `pinned` alone would only affect the
+next content change — the click needs the thread to catch up immediately,
+so the imperative scroll and the state flip happen in the same handler.
+
+## The showpiece detail: streaming tokens
+
+`StreamingText` has no dependency on the thread or the message it lives in —
+it owns one `count` of how many characters to slice off `text`, and a
+`setInterval` that raises it by `chunk` every `speed` milliseconds:
+
+<ConversationThreadStream />
+
+```tsx
+React.useEffect(() => {
+  if (reduce) {
+    setCount(text.length);
+    onDone?.();
+    return;
+  }
+  setCount(0);
+  let current = 0;
+  const id = setInterval(() => {
+    current = Math.min(current + chunk, text.length);
+    setCount(current);
+    if (current >= text.length) {
+      clearInterval(id);
+      onDone?.();
+    }
+  }, speed);
+  return () => clearInterval(id);
+}, [text, chunk, speed, reduce, onDone]);
+
+return <>{text.slice(0, count)}</>;
+```
+
+`Math.min(current + chunk, text.length)` is the only bounds check in the
+whole component — without it the last tick could slice past the string's
+end (harmless in JS, but it's also what stops the interval from firing one
+extra time before `clearInterval` runs). The blinking caret isn't
+`StreamingText`'s concern at all: `ConversationMessage` renders it as a
+plain `animate-pulse` span whenever its own `streaming` prop is `true`,
+independent of how far `count` has gotten.
+
+```tsx
+{streaming ? (
+  <span className="ml-0.5 inline-block h-[1.05em] w-[2px] -translate-y-px animate-pulse bg-current align-middle motion-reduce:animate-none" />
+) : null}
+```
+
+That split matters: a consumer can drive `streaming` off their own state
+(say, "is the socket still open") independently of whether `StreamingText`
+has finished revealing the current chunk of text it already has.
+
+## Cheap when idle
+
+Every piece here is either event-driven or cleans up after itself.
+`onScroll` only runs while the user is actually scrolling. The
+`ResizeObserver` only fires when the message stack's box changes, and it
+disconnects on unmount. `StreamingText`'s `setInterval` is cleared both on
+completion and on unmount — there's no polling loop left running once a
+message has finished streaming or the component has left the tree.
+
+## Accessibility
+
+`ConversationMessage` reads `useReducedMotion()` and disables the spring's
+`initial` state (`initial={reduce ? false : { opacity: 0, y: 8 }}`) so a
+reduced-motion reader gets messages at rest instead of mid-flight. There is
+no `layout` animation to gate — position tweening on growing bubbles was
+removed because it fought auto-scroll. The caret's `animate-pulse` carries
+`motion-reduce:animate-none`, and `StreamingText` skips the interval under
+reduced motion — `setCount(text.length)` and `onDone()` fire immediately.
+
+```tsx
+initial={reduce ? false : { opacity: 0, y: 8 }}
+// no layout — streaming growth must not re-tween siblings
+```
+
+Hover actions are real `<button>`s with `aria-label`, so they're reachable
+and nameable without depending on the hover-only `opacity-0
+group-hover/msg:opacity-100` styling that reveals them visually.
+
+## The result
+
+<ConversationThreadResult />
+
+One threshold check keeps the thread pinned, a ResizeObserver sticks through
+streaming growth, one spring brings every message in and pops the jump
+pill, and one `setInterval` — with nothing smarter than `Math.min` guarding
+it — turns a finished string into something that reads like it's still being
+written.

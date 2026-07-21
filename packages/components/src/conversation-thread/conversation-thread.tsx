@@ -18,7 +18,7 @@ export type ConversationThreadProps = React.HTMLAttributes<HTMLDivElement> & {
 };
 
 const THREAD_BASE =
-  "relative flex h-full flex-col gap-4 overflow-y-auto scroll-smooth px-4 py-4";
+  "relative flex h-full flex-col gap-4 overflow-y-auto px-4 py-4";
 
 const ConversationThread = React.forwardRef<
   HTMLDivElement,
@@ -29,15 +29,25 @@ const ConversationThread = React.forwardRef<
     forwardedRef,
   ) => {
     const ref = React.useRef<HTMLDivElement>(null);
+    const contentRef = React.useRef<HTMLDivElement>(null);
     React.useImperativeHandle(
       forwardedRef,
       () => ref.current as HTMLDivElement,
     );
     const [pinned, setPinned] = React.useState(true);
+    // Ref mirror so ResizeObserver / effects never read a stale `pinned`.
+    const pinnedRef = React.useRef(true);
+
+    const setPinnedBoth = React.useCallback((next: boolean) => {
+      pinnedRef.current = next;
+      setPinned(next);
+    }, []);
 
     const scrollToBottom = React.useCallback((behavior: ScrollBehavior) => {
       const el = ref.current;
       if (!el) return;
+      // `instant` keeps streaming growth glued without fighting layout;
+      // `smooth` is reserved for the intentional Jump-to-latest click.
       if (typeof el.scrollTo === "function") {
         el.scrollTo({ top: el.scrollHeight, behavior });
       } else {
@@ -45,12 +55,27 @@ const ConversationThread = React.forwardRef<
       }
     }, []);
 
-    // Stick to the bottom while pinned and content grows.
+    // Stick to the bottom when a new message mounts.
     const childCount = React.Children.count(children);
     // biome-ignore lint/correctness/useExhaustiveDependencies: re-pin when a message is added
     React.useEffect(() => {
-      if (autoScroll && pinned) scrollToBottom("smooth");
-    }, [childCount, autoScroll, pinned, scrollToBottom]);
+      if (autoScroll && pinnedRef.current) scrollToBottom("instant");
+    }, [childCount, autoScroll, scrollToBottom]);
+
+    // Stick through *content* growth too (StreamingText ticks, wrapping) —
+    // childCount alone misses that. Observe the inner stack, not the scroll
+    // port: ResizeObserver on an overflow container does not fire when only
+    // scrollHeight grows.
+    React.useEffect(() => {
+      if (!autoScroll) return;
+      const content = contentRef.current;
+      if (!content || typeof ResizeObserver === "undefined") return;
+      const ro = new ResizeObserver(() => {
+        if (pinnedRef.current) scrollToBottom("instant");
+      });
+      ro.observe(content);
+      return () => ro.disconnect();
+    }, [autoScroll, scrollToBottom]);
 
     return (
       <ThreadContext.Provider value={{ variant }}>
@@ -63,11 +88,13 @@ const ConversationThread = React.forwardRef<
             const el = e.currentTarget;
             const atBottom =
               el.scrollHeight - el.scrollTop - el.clientHeight < 48;
-            setPinned(atBottom);
+            setPinnedBoth(atBottom);
           }}
           {...props}
         >
-          {children}
+          <div ref={contentRef} className="flex flex-col gap-4">
+            {children}
+          </div>
           <AnimatePresence>
             {!pinned ? (
               <motion.button
@@ -82,7 +109,7 @@ const ConversationThread = React.forwardRef<
                   mass: 0.9,
                 }}
                 onClick={() => {
-                  setPinned(true);
+                  setPinnedBoth(true);
                   scrollToBottom("smooth");
                 }}
                 className="sticky bottom-2 left-1/2 z-raised inline-flex -translate-x-1/2 items-center gap-1.5 self-center rounded-full border border-border bg-popover px-3 py-1.5 text-xs font-medium text-foreground shadow-lg"
@@ -146,11 +173,13 @@ const ConversationMessage = React.forwardRef<
     const isDocument = variant === "document";
     const isCompact = variant === "compact";
 
+    // No `layout` prop: streaming text grows the bubble every tick, and a
+    // layout animation on every message turns that growth into visible jumps
+    // (siblings re-measure and tween). Opacity-only enter is enough.
     return (
       <motion.div
         ref={ref}
-        layout={!reduce}
-        initial={reduce ? false : { opacity: 0, y: 12 }}
+        initial={reduce ? false : { opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: "spring", stiffness: 320, damping: 32, mass: 0.9 }}
         data-slot="conversation-message"

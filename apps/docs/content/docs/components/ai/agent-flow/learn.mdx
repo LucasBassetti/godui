@@ -1,0 +1,194 @@
+---
+title: Anatomy of Agent Flow
+description: How a node graph becomes one continuous light — length-driven speed, a border-to-beam handoff, and a sequencer that walks the graph on its own.
+---
+
+`AgentFlow` looks like a diagram tool, but the interesting part isn't the
+layout — it's the light. Every node card and every edge derives its motion
+from the same handful of numbers, so a graph of any shape reads as one
+unbroken current instead of a pile of independent animations.
+
+## The graph
+
+A node is a card at an absolute `(x, y)` centre. An edge is an SVG quadratic
+curve from its source's **right-edge centre** to its target's **left-edge
+centre** — the anchors are computed from each card's live measured size, not
+a fixed offset, so relabelling a node (a longer sublabel, a taller card) never
+misaligns the line it's plugged into.
+
+<AgentFlowAnatomy />
+
+```tsx
+const startX = from.x + fs.w / 2;
+const startY = from.y;
+const endX = to.x - ts.w / 2;
+const endY = to.y;
+const controlX = (startX + endX) / 2;
+const controlY = (startY + endY) / 2 - (edge.curvature ?? 0);
+const d = `M ${startX},${startY} Q ${controlX},${controlY} ${endX},${endY}`;
+```
+
+Card sizes come from a `ResizeObserver` over every rendered node, not from
+props — so `fitView` and every edge anchor stay correct even after the DOM
+reflows text.
+
+## One pace for every length
+
+A bigger card's border has more perimeter to draw. A longer edge has more
+distance to cover. If each animated separately by *duration*, the light would
+visibly slow down on big pieces and speed up on small ones. `AgentFlow` fixes
+the pace instead of the duration: everything shares one `flowSpeed`
+(px/second, default `280`), and each element's duration falls out of its own
+length.
+
+<AgentFlowBorderTrace />
+
+```tsx
+function borderOutlineLength(w: number, h: number): number {
+  const r = Math.min(CARD_RADIUS, w / 2, h / 2);
+  return w + h - (4 - Math.PI) * r;
+}
+
+const traceDuration = borderOutlineLength(size.w, size.h) / flowSpeed;
+```
+
+Edges do the same thing with their own geometry — chord length averaged with
+the two control-arm lengths, for a real (not straight-line) estimate of a
+curved edge:
+
+```tsx
+const chord = Math.hypot(endX - startX, endY - startY);
+const curveLen =
+  Math.hypot(controlX - startX, controlY - startY) +
+  Math.hypot(endX - controlX, endY - controlY);
+const len = (chord + curveLen) / 2;
+const edgeDuration = matchSpeed ? Math.max(0.2, len / flowSpeed) : flowDuration;
+```
+
+The border trace also uses **linear** easing, not the `EASE_OUT` the rest of
+the component reaches for. An ease-out front decelerates right as it finishes
+— which would visibly stutter the exact moment the beam is supposed to pick
+up speed and continue. Constant velocity is what makes the seam invisible.
+
+## Border → beam, one continuous light
+
+Each card's outline is really *two* paths — `borderTracePaths(w, h)` returns
+symmetric top and bottom outlines that both start at the **left-edge centre**
+and meet at the **right-edge centre**, so the trace grows outward in both
+directions from the same point an incoming beam would have landed on, and
+finishes at the exact point the outgoing beam starts from.
+
+<AgentFlowPacket />
+
+```tsx
+function borderTracePaths(w: number, h: number): [string, string] {
+  const r = Math.min(CARD_RADIUS, w / 2, h / 2);
+  const top = `M 0,${h / 2} L 0,${r} A ${r},${r} 0 0 1 ${r},0 L ${w - r},0 A ${r},${r} 0 0 1 ${w},${r} L ${w},${h / 2}`;
+  const bottom = `M 0,${h / 2} L 0,${h - r} A ${r},${r} 0 0 0 ${r},${h} L ${w - r},${h} A ${r},${r} 0 0 0 ${w},${h - r} L ${w},${h / 2}`;
+  return [top, bottom];
+}
+```
+
+The icon chip doesn't wait for the border to finish — it lights **at the
+halfway point** of the trace, off a plain timer, not an animation-complete
+event:
+
+```tsx
+const t = setTimeout(() => setIconLit(true), (traceDuration * 1000) / 2);
+```
+
+And the packet's arrival fires slightly early — `0.98` of its flight, not
+`1.0` — so the next border starts the instant the beam visually lands instead
+of a frame after:
+
+```tsx
+const t = setTimeout(() => onArrive?.(id), flowDuration * 1000 * 0.98);
+```
+
+Both timers exist for the same reason: a CSS/Motion "animation complete"
+event is one tick late and occasionally dropped entirely on a fast edge.
+Timers derived from the same duration the animation itself uses fire exactly
+when the *visual* handoff needs them to, every time — including the graph's
+last hop, which has no next element waiting to double-check it.
+
+## The sequencer
+
+`autoPlay` walks the graph with three sets — `tracing`, `lit`, `flowing` —
+managed by a small reducer, not a timeline library. A node's status is
+derived from which set contains its id; an edge only shows its beam while its
+id is in `flowing`.
+
+```tsx
+type SeqState = { tracing: Set<string>; lit: Set<string>; flowing: Set<string> };
+
+function seqReducer(state: SeqState, action: SeqAction): SeqState {
+  switch (action.type) {
+    case "reset":
+      return { tracing: new Set(action.roots), lit: new Set(), flowing: new Set() };
+    case "traceDone": {
+      // move id: tracing → lit, and queue its outgoing edges into flowing
+    }
+    case "arrive": {
+      // remove edgeId from flowing; if the target isn't lit/tracing yet, add it to tracing
+    }
+  }
+}
+```
+
+Root nodes — no incoming edge — seed `tracing` on `reset`. From there the
+graph runs itself: a card's `onTraceComplete` dispatches `traceDone`, which
+starts every outgoing edge; an edge's `onArrive` dispatches `arrive`, which
+starts tracing the node it landed on. Nothing schedules the *whole* sequence
+up front — each hop only knows how to start the next one, which is why the
+same reducer handles a straight line, a fan-out, or a diamond that
+re-converges without any graph-shape-specific code.
+
+```tsx
+const flowEdges: AgentFlowEdge[] = autoPlay
+  ? edges.map((e) => ({ ...e, animated: seq.flowing.has(e.id), loop: false }))
+  : edges;
+
+const statusOf = (n: AgentFlowNode): AgentNodeStatus => {
+  if (!autoPlay) return n.status ?? "idle";
+  if (seq.lit.has(n.id)) return "done";
+  if (seq.tracing.has(n.id)) return "running";
+  return "idle";
+};
+```
+
+`persist` edges layer on top of this for free: a persisted edge draws its own
+primary-coloured trail in sync with the packet and keeps it lit once
+`animated` drops back to `false`, so a graph that's finished a full pass shows
+its whole travelled route glowing rather than resetting to plain lines.
+
+## Reduced motion
+
+`useReducedMotion()` is read once at the top of the component and threaded
+down to every trace, sweep, and fade. Under it, every `transition` collapses
+to `{ duration: 0 }` and every timer that would have waited for a trace or
+flight to finish fires immediately instead:
+
+```tsx
+const traceT = reduce ? { duration: 0 } : { duration: traceDuration, ease: EASE_LINEAR };
+
+React.useEffect(() => {
+  if (status !== "running") return;
+  if (reduce) {
+    onTraceComplete(node.id);
+    return;
+  }
+  const t = setTimeout(() => onTraceComplete(node.id), traceDuration * 1000);
+  return () => clearTimeout(t);
+}, [status, reduce, traceDuration, node.id, onTraceComplete]);
+```
+
+A reduced-motion run still produces the exact same final graph — every node
+lit, every persisted edge drawn — it just gets there without the trip.
+
+## The result
+
+<AgentFlowResult />
+
+Same reducer, same length-driven pace, same 0.98-early arrival — running on a
+real graph instead of a two-node illustration. Watch the border meet the beam
+at every hop; that seam is the whole point of `flowSpeed`.

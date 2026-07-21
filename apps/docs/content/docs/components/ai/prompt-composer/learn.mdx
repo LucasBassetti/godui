@@ -1,0 +1,226 @@
+---
+title: Anatomy of the Prompt Composer
+description: How one form stays one form across chips, an auto-growing textarea, a model picker, and a send button that morphs into stop — no remounts, no separate layouts.
+---
+
+Every "chat input" ends up needing the same five things: attachments, a
+field that grows with what you type, a model switcher, a drag target, and a
+send button that has to become a stop button mid-stream. `PromptComposer`
+builds all five as states of one `<form>`, not five components stitched
+together. Here's how each state moves.
+
+## One form, three stacked rows
+
+The panel is a single `<form data-slot="prompt-composer">` with three rows
+that are always present in the DOM in the same order — an attachment row
+that collapses to nothing when empty, the textarea, and a toolbar. Nothing
+here remounts when attachments, streaming, or the model list change; only
+which children exist inside each row changes.
+
+<PromptComposerAnatomy />
+
+```tsx
+const PANEL_BASE =
+  "group/composer relative flex w-full flex-col gap-2 rounded-2xl border border-border bg-card/80 p-2.5 shadow-sm backdrop-blur-md transition-[box-shadow,border-color] focus-within:border-ring focus-within:shadow-md";
+```
+
+`focus-within` is doing the work a `focus` ring normally would — since the
+element that's actually focused is the `<textarea>` two levels down, not the
+`<form>` itself. The panel's border and shadow answer to whatever's focused
+anywhere inside it, which is why clicking the attach button or the model
+picker doesn't dim the "focused" look the way blurring the textarea would.
+
+## Chips spring in, spring out
+
+Attachments aren't rendered directly inside the panel — they're wrapped in
+two nested `AnimatePresence` regions. The outer one owns the row's own
+mount/unmount (`height: 0 → "auto"`, so the panel never jumps when the first
+file lands); the inner one owns each chip's own spring.
+
+<PromptComposerChips />
+
+```tsx
+<AnimatePresence initial={false}>
+  {chips.length > 0 ? (
+    <motion.div
+      initial={{ opacity: 0, height: 0 }}
+      animate={{ opacity: 1, height: "auto" }}
+      exit={{ opacity: 0, height: 0 }}
+      className="flex flex-wrap gap-1.5 overflow-hidden px-1"
+    >
+      <AnimatePresence initial={false}>
+        {chips.map((chip) => (
+          <motion.span
+            key={chip.id}
+            layout
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            transition={{ type: "spring", stiffness: 520, damping: 32 }}
+          >
+            {/* icon, name, size, remove button */}
+          </motion.span>
+        ))}
+      </AnimatePresence>
+    </motion.div>
+  ) : null}
+</AnimatePresence>
+```
+
+`layout` on each chip is what makes removing one feel physical instead of
+abrupt — Framer measures the chip row before and after a chip leaves and
+animates the survivors into their new positions on the same spring, rather
+than snapping them sideways the instant the DOM updates. `520/32` is a
+stiff, lightly-damped spring — fast enough that a chip feels like it
+_lands_, not like it fades up.
+
+## A textarea that grows without a `ResizeObserver`
+
+There's no controlled "rows" state and no `ResizeObserver`. Every time the
+text changes, a `useLayoutEffect` resets the height to `auto`, reads the
+resulting `scrollHeight`, then clamps that against `maxRows * 24`:
+
+```tsx
+React.useLayoutEffect(() => {
+  const el = textareaRef.current;
+  if (!el) return;
+  el.style.height = "auto";
+  const lineHeight = 24;
+  const max = lineHeight * maxRows;
+  el.style.height = `${Math.min(el.scrollHeight, max)}px`;
+  el.style.overflowY = el.scrollHeight > max ? "auto" : "hidden";
+}, [text, maxRows]);
+```
+
+Resetting to `auto` first matters — without it, `scrollHeight` on a
+textarea that's already been sized would just report the size you set it
+to, not what the content actually needs, so a delete would never shrink the
+field back down. `useLayoutEffect` (not `useEffect`) runs this
+synchronously before the browser paints, so there's never a frame where the
+field is the wrong height. Past `maxRows`, `overflowY` flips to `auto` and
+growth stops — the field scrolls instead of pushing the toolbar off-panel.
+
+## Send becomes stop, not a different button
+
+Streaming doesn't swap in a different `<button>` — the same element stays
+mounted (same size, same position, same `type` toggling under the hood) and
+only its icon cross-fades via `AnimatePresence mode="wait"`:
+
+<PromptComposerSendMorph />
+
+```tsx
+<AnimatePresence mode="wait" initial={false}>
+  {isStreaming ? (
+    <motion.span
+      key="stop"
+      initial={{ opacity: 0, scale: 0.6 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.6 }}
+      transition={{ duration: 0.15 }}
+    >
+      <StopIcon />
+    </motion.span>
+  ) : (
+    <motion.span
+      key="send"
+      initial={{ opacity: 0, scale: 0.6 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.6 }}
+      transition={{ duration: 0.15 }}
+    >
+      <ArrowUpIcon />
+    </motion.span>
+  )}
+</AnimatePresence>
+```
+
+`mode="wait"` is the detail that makes this read as one icon morphing
+instead of two icons crossing paths: Framer waits for the exiting `key` to
+finish its exit animation before mounting the next one, so there's a beat
+where the button is empty rather than a moment where an arrow and a stop
+square overlap mid-scale. At `0.15`s each, that gap is imperceptible in
+real use — slowed down in the scene above so the sequencing is visible.
+
+## The model picker pops from the bottom
+
+The model list lives in a popover anchored to its trigger with
+`absolute bottom-full`, so it opens _upward_ — into the space above the
+composer, never pushing the toolbar down. Its spring's `initial`/`exit`
+both push `y` and `scale` from the bottom edge:
+
+```tsx
+<motion.ul
+  initial={{ opacity: 0, y: 6, scale: 0.96 }}
+  animate={{ opacity: 1, y: 0, scale: 1 }}
+  exit={{ opacity: 0, y: 6, scale: 0.96 }}
+  transition={{ type: "spring", stiffness: 320, damping: 32, mass: 0.9 }}
+  className="absolute bottom-full left-0 z-popover mb-1.5 origin-bottom rounded-xl …"
+/>
+```
+
+`origin-bottom` matters as much as the `y` offset — without it, the
+`scale: 0.96 → 1` would grow from the popover's own center, so it'd visibly
+drift toward the trigger as it appears. Pinning the transform origin to the
+bottom edge means it only ever grows _away_ from where you clicked, which
+is what makes it feel anchored rather than floating in from nowhere.
+
+## Dropping a file anywhere on the panel
+
+Drag state isn't scoped to a drop zone inside the field — it's tracked on
+the `<form>` itself, so the whole panel is the target:
+
+```tsx
+className={`${PANEL_BASE} ${dragging ? "border-ring ring-2 ring-ring/40" : ""}`}
+onDragOver={(e) => {
+  e.preventDefault();
+  if (!dragging) setDragging(true);
+}}
+onDragLeave={(e) => {
+  if (e.currentTarget.contains(e.relatedTarget as Node)) return;
+  setDragging(false);
+}}
+onDrop={(e) => {
+  e.preventDefault();
+  setDragging(false);
+  if (e.dataTransfer.files.length) {
+    setChips([...chips, ...filesToAttachments(e.dataTransfer.files)]);
+  }
+}}
+```
+
+The `onDragLeave` guard — checking whether `relatedTarget` is still inside
+`currentTarget` — is what keeps the ring from flickering as the cursor
+crosses internal borders (the textarea, the toolbar) while dragging over
+the panel. Without it, every child boundary would fire a spurious
+drag-leave and the highlight would strobe on its way to the drop target.
+The same `filesToAttachments` helper feeds this, a paste handler, and the
+hidden file `<input>` — three entry points, one path into the chip row.
+
+## Keyboard and streaming state
+
+`⌘/Ctrl + Enter` submits from inside the textarea without needing a
+dedicated form-submit shortcut:
+
+```tsx
+onKeyDown={(e) => {
+  if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+    e.preventDefault();
+    submit();
+  }
+}}
+```
+
+`submit()` itself branches on `isStreaming` before anything else — while
+streaming, the button's `type` is `"button"` and its `onClick` calls
+`onStop`, so pressing Enter or clicking send can never fire a second
+`onSend` while a response is still in flight. The button's `aria-label`
+tracks the same branch (`"Send message"` / `"Stop generating"`), so a
+screen reader announces the swap the icon morph is showing sighted users.
+
+## The result
+
+<PromptComposerResult />
+
+One `<form>`, three rows that never remount, and every "different state" —
+chips present, streaming, a model open, a file mid-drag — expressed as
+props on the same tree instead of a different component underneath it.

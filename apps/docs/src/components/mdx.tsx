@@ -15,6 +15,14 @@ import { LangBadge } from "@/components/lang-badge";
 import { AccordionAnatomy } from "@/components/learn/accordion-anatomy";
 import { AccordionHeight } from "@/components/learn/accordion-height";
 import { AccordionResult } from "@/components/learn/accordion-result";
+import { AgentFlowAnatomy } from "@/components/learn/agent-flow-anatomy";
+import { AgentFlowBorderTrace } from "@/components/learn/agent-flow-border-trace";
+import { AgentFlowPacket } from "@/components/learn/agent-flow-packet";
+import { AgentFlowResult } from "@/components/learn/agent-flow-result";
+import { AgentTimelineAnatomy } from "@/components/learn/agent-timeline-anatomy";
+import { AgentTimelineExpand } from "@/components/learn/agent-timeline-expand";
+import { AgentTimelineRail } from "@/components/learn/agent-timeline-rail";
+import { AgentTimelineResult } from "@/components/learn/agent-timeline-result";
 import { AnimatedTestimonialsAnatomy } from "@/components/learn/animated-testimonials-anatomy";
 import { AnimatedTestimonialsResult } from "@/components/learn/animated-testimonials-result";
 import { AnimatedTestimonialsStack } from "@/components/learn/animated-testimonials-stack";
@@ -62,6 +70,10 @@ import { ContextMenuAnatomy } from "@/components/learn/context-menu-anatomy";
 import { ContextMenuFlip } from "@/components/learn/context-menu-flip";
 import { ContextMenuResult } from "@/components/learn/context-menu-result";
 import { ContextMenuSpring } from "@/components/learn/context-menu-spring";
+import { ConversationThreadAnatomy } from "@/components/learn/conversation-thread-anatomy";
+import { ConversationThreadResult } from "@/components/learn/conversation-thread-result";
+import { ConversationThreadScroll } from "@/components/learn/conversation-thread-scroll";
+import { ConversationThreadStream } from "@/components/learn/conversation-thread-stream";
 import { CoverFlowAnatomy } from "@/components/learn/cover-flow-anatomy";
 import { CoverFlowFan } from "@/components/learn/cover-flow-fan";
 import { CoverFlowResult } from "@/components/learn/cover-flow-result";
@@ -166,6 +178,14 @@ import { ProgressFoldResult } from "@/components/learn/progress-fold-result";
 import { ProgressiveCardRevealAnatomy } from "@/components/learn/progressive-card-reveal-anatomy";
 import { ProgressiveCardRevealFunnel } from "@/components/learn/progressive-card-reveal-funnel";
 import { ProgressiveCardRevealResult } from "@/components/learn/progressive-card-reveal-result";
+import { PromptComposerAnatomy } from "@/components/learn/prompt-composer-anatomy";
+import { PromptComposerChips } from "@/components/learn/prompt-composer-chips";
+import { PromptComposerResult } from "@/components/learn/prompt-composer-result";
+import { PromptComposerSendMorph } from "@/components/learn/prompt-composer-send-morph";
+import { PromptSuggestionsAnatomy } from "@/components/learn/prompt-suggestions-anatomy";
+import { PromptSuggestionsHover } from "@/components/learn/prompt-suggestions-hover";
+import { PromptSuggestionsResult } from "@/components/learn/prompt-suggestions-result";
+import { PromptSuggestionsStagger } from "@/components/learn/prompt-suggestions-stagger";
 import { PushPhysics } from "@/components/learn/push-physics";
 import { RainbowSweep } from "@/components/learn/rainbow-sweep";
 import { ReorderListAnatomy } from "@/components/learn/reorder-list-anatomy";
@@ -193,6 +213,10 @@ import { ShimmerSpeed } from "@/components/learn/shimmer-speed";
 import { SlideAnatomy } from "@/components/learn/slide-anatomy";
 import { SlideConfirmResult } from "@/components/learn/slide-confirm-result";
 import { SlideThreshold } from "@/components/learn/slide-threshold";
+import { SourceCitationsAnatomy } from "@/components/learn/source-citations-anatomy";
+import { SourceCitationsList } from "@/components/learn/source-citations-list";
+import { SourceCitationsResult } from "@/components/learn/source-citations-result";
+import { SourceCitationsTooltip } from "@/components/learn/source-citations-tooltip";
 import { SpinViewerAnatomy } from "@/components/learn/spin-viewer-anatomy";
 import { SpinViewerDrag } from "@/components/learn/spin-viewer-drag";
 import { SpinViewerResult } from "@/components/learn/spin-viewer-result";
@@ -233,6 +257,10 @@ import { ToastAnatomy } from "@/components/learn/toast-anatomy";
 import { ToastExpand } from "@/components/learn/toast-expand";
 import { ToastResult } from "@/components/learn/toast-result";
 import { ToastSwipe } from "@/components/learn/toast-swipe";
+import { VoiceOrbAmpSplit } from "@/components/learn/voice-orb-amp-split";
+import { VoiceOrbAnatomy } from "@/components/learn/voice-orb-anatomy";
+import { VoiceOrbResult } from "@/components/learn/voice-orb-result";
+import { VoiceOrbStates } from "@/components/learn/voice-orb-states";
 import { MCPInstall } from "@/components/mcp-install";
 
 function Table(props: ComponentProps<"table">) {
@@ -287,6 +315,14 @@ export function getMDXComponents(components?: MDXComponents) {
     AccordionAnatomy,
     AccordionHeight,
     AccordionResult,
+    AgentFlowAnatomy,
+    AgentFlowBorderTrace,
+    AgentFlowPacket,
+    AgentFlowResult,
+    AgentTimelineAnatomy,
+    AgentTimelineExpand,
+    AgentTimelineRail,
+    AgentTimelineResult,
     AnimatedTestimonialsAnatomy,
     AnimatedTestimonialsResult,
     AnimatedTestimonialsStack,
@@ -330,6 +366,10 @@ export function getMDXComponents(components?: MDXComponents) {
     ContainerScrollAnatomy,
     ContainerScrollResult,
     ContainerScrollScrub,
+    ConversationThreadAnatomy,
+    ConversationThreadResult,
+    ConversationThreadScroll,
+    ConversationThreadStream,
     ContextMenuAnatomy,
     ContextMenuFlip,
     ContextMenuResult,
@@ -438,6 +478,14 @@ export function getMDXComponents(components?: MDXComponents) {
     ProgressiveCardRevealAnatomy,
     ProgressiveCardRevealFunnel,
     ProgressiveCardRevealResult,
+    PromptComposerAnatomy,
+    PromptComposerChips,
+    PromptComposerResult,
+    PromptComposerSendMorph,
+    PromptSuggestionsAnatomy,
+    PromptSuggestionsHover,
+    PromptSuggestionsResult,
+    PromptSuggestionsStagger,
     PushPhysics,
     RainbowSweep,
     ReorderListAnatomy,
@@ -465,6 +513,10 @@ export function getMDXComponents(components?: MDXComponents) {
     SlideAnatomy,
     SlideConfirmResult,
     SlideThreshold,
+    SourceCitationsAnatomy,
+    SourceCitationsList,
+    SourceCitationsResult,
+    SourceCitationsTooltip,
     SpinViewerAnatomy,
     SpinViewerDrag,
     SpinViewerResult,
@@ -505,6 +557,10 @@ export function getMDXComponents(components?: MDXComponents) {
     ToastExpand,
     ToastResult,
     ToastSwipe,
+    VoiceOrbAmpSplit,
+    VoiceOrbAnatomy,
+    VoiceOrbResult,
+    VoiceOrbStates,
     ...components,
   } satisfies MDXComponents;
 }

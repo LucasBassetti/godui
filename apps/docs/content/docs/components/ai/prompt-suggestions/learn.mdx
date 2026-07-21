@@ -1,0 +1,175 @@
+---
+title: Anatomy of Prompt Suggestions
+description: Three container layouts sharing one item, a spring stagger with a single per-item variable, and a hover lift that never touches layout.
+---
+
+An empty composer is the worst state an AI product can ship — a blinking
+cursor and no idea what to type. `PromptSuggestions` fills it with a handful
+of clickable starters that stagger in, lift under the pointer, and hand
+their text straight to `onSelect`. The whole component is one array, one
+`variant` switch, and two small motion systems layered on top.
+
+## One item, three wrappers
+
+`PromptSuggestions` doesn't have three separate layouts — it has one
+`motion.button` per suggestion and a lookup table that decides how the
+_wrapper_ arranges them:
+
+<PromptSuggestionsAnatomy />
+
+```tsx
+const CONTAINER_BY_VARIANT: Record<PromptSuggestionsVariant, string> = {
+  grid: "grid grid-cols-1 gap-2 sm:grid-cols-2",
+  chips: "flex flex-wrap gap-2",
+  list: "flex flex-col gap-1.5",
+};
+
+<div className={CONTAINER_BY_VARIANT[variant]}>
+  {suggestions.map((suggestion, index) => (
+    <motion.button key={suggestion.id ?? suggestion.label} /* … */ />
+  ))}
+</div>
+```
+
+The button itself branches once, on `isChip`, to pick between a pill
+className and a card className — not a different component per variant:
+
+```tsx
+className={
+  isChip
+    ? "group inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 …"
+    : "group flex items-start gap-2.5 rounded-xl border border-border bg-card p-3 …"
+}
+```
+
+That's why `hint` only ever renders outside chips — `{suggestion.hint &&
+!isChip ? … : null}` — a chip is one line by design, a card has room for a
+second. Swapping `variant` never remounts a different tree; it just changes
+which layout classes and which of these two branches apply.
+
+## A spring stagger with one moving part
+
+Every suggestion animates in with the same spring. The only thing that
+changes per item is `delay`:
+
+<PromptSuggestionsStagger />
+
+```tsx
+<motion.button
+  initial={reduce ? false : { opacity: 0, y: 8 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{
+    delay: reduce ? 0 : index * 0.05,
+    type: "spring",
+    stiffness: 320,
+    damping: 32,
+    mass: 0.9,
+  }}
+/>
+```
+
+`320/32/0.9` is a slightly underdamped spring — the same feel used across
+GodUI's other enter animations (badges, command palette rows) — so each
+card overshoots its resting position by a hair before settling instead of
+easing to a flat stop. `index * 0.05` is the entire stagger: no
+`staggerChildren`, no parent `motion.div` orchestrating children, just each
+button computing its own 50ms offset from its position in the array.
+Reduced motion collapses `delay` to `0` and swaps `initial` to `false` in
+the same expression — the spring is gone, the layout isn't.
+
+## Hover moves the box, never the layout
+
+Hover is a second, independent motion system — plain Tailwind, not Framer —
+and it only ever touches `transform` and `opacity`:
+
+<PromptSuggestionsHover />
+
+```tsx
+// chip
+"hover:-translate-y-px hover:border-ring hover:bg-accent"
+
+// card
+"hover:-translate-y-0.5 hover:border-ring hover:shadow-md"
+
+// arrow (card only)
+"ml-auto size-4 -translate-x-1 opacity-0 transition-[transform,opacity] group-hover:translate-x-0 group-hover:opacity-100"
+```
+
+`-translate-y-px` and `-translate-y-0.5` lift the item on the compositor —
+no `top`, no `margin`, nothing the browser has to re-lay-out. The arrow
+follows the same rule from the opposite direction: it's rendered at
+`opacity-0 -translate-x-1` on every card from the start, so revealing it on
+hover is a transform + opacity flip, not a mount. Its box never changes
+size, which is why neighboring text never reflows when the arrow shows up.
+Cards additionally swap `shadow-2xs` for `shadow-md` on hover — the one
+concession to a paint property, and safe here because it's gated behind a
+single hovered element rather than something looping on scroll.
+
+## Reduced motion and the keyboard
+
+`useReducedMotion()` gates the stagger — `initial={reduce ? false : {...}}`
+and `delay: reduce ? 0 : index * 0.05` — so a reduced-motion user gets the
+finished layout on the first frame instead of a slowed-down or stripped
+version of the same animation. Nothing about focus or selection depends on
+it, because that logic lives in a completely separate path:
+
+```tsx
+const itemsRef = React.useRef<(HTMLButtonElement | null)[]>([]);
+
+const focusItem = (index: number) => {
+  const list = itemsRef.current.filter(Boolean) as HTMLButtonElement[];
+  if (list.length === 0) return;
+  const next = (index + list.length) % list.length;
+  list[next]?.focus();
+};
+
+onKeyDown={(e) => {
+  if (e.key === "ArrowDown" || e.key === "ArrowRight") {
+    e.preventDefault();
+    focusItem(index + 1);
+  } else if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
+    e.preventDefault();
+    focusItem(index - 1);
+  }
+}}
+```
+
+`focusItem` wraps with a modulo, so arrow keys cycle the row instead of
+running off either end — and it works identically across `grid`, `chips`,
+and `list`, because it walks `itemsRef` (population order), not the DOM's
+2D layout. `ArrowDown`/`ArrowRight` both move forward and
+`ArrowUp`/`ArrowLeft` both move back, so the same two key pairs make sense
+whether the items are stacked in a column or wrapped in a row.
+
+## Loading is the same grid, no items
+
+Setting `loading` doesn't hide the component behind a spinner — it renders
+the same container with skeleton placeholders sized per variant:
+
+```tsx
+<div className={CONTAINER_BY_VARIANT[variant]}>
+  {Array.from({ length: skeletonCount }).map((_, i) => (
+    <div
+      key={i}
+      className={`rounded-xl border border-border bg-muted/40 motion-safe:animate-pulse ${
+        variant === "chips" ? "h-9 w-32" : "h-16"
+      }`}
+    />
+  ))}
+</div>
+```
+
+Because it's the exact same `CONTAINER_BY_VARIANT[variant]` wrapper, the
+skeleton grid occupies the same footprint the real suggestions will once
+they arrive — swapping `loading` off never causes a layout jump.
+`motion-safe:animate-pulse` keeps the shimmer itself opt-out under reduced
+motion, same as the entrance spring above.
+
+## The result
+
+<PromptSuggestionsResult />
+
+One array of suggestions, one `variant` string picking a wrapper class, one
+spring staggered by index, and a hover system that only ever moves
+`transform`/`opacity`. Four small decisions, and an empty composer stops
+feeling empty.

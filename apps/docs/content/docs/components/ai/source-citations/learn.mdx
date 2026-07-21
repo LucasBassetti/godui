@@ -1,0 +1,155 @@
+---
+title: Anatomy of Source Citations
+description: How a numbered pill and a floating preview card share one wrapper, bridge a hover gap with two timers, and settle in with a near-critically-damped spring.
+---
+
+An AI answer is only as trustworthy as its sources, and a citation only earns
+its keep if reading it costs nothing. `SourceCitation` answers that with a
+pill small enough to sit inside a sentence and a preview card that only
+exists while you're looking at it. `SourceList` answers the same brief for
+the footer: every source, collapsed by default, staggered in when it isn't.
+
+## Anatomy of a citation
+
+Think of it as a footnote mark that grows a preview on hover — not a
+standalone tooltip widget floating somewhere else on the page.
+
+One `relative` `<span>` wraps **both** the pill and the card. That is the
+whole trick:
+
+1. **Pill** — a tiny numbered `<a>`, always mid-sentence.
+2. **Card** — mounts only while `open`, as `absolute bottom-full` on *that
+   same wrapper*, centered with `-translate-x-1/2`. So it is parked on the
+   pill, not on the paragraph.
+3. **Caret** — a rotated square at the card's bottom edge; because the card
+   is centered on the wrapper, the caret points at the number.
+
+<SourceCitationsAnatomy />
+
+```tsx
+{/* one wrapper — card is a child of this, not of the paragraph */}
+<span className="relative inline-block align-baseline" onMouseEnter={show} onMouseLeave={hide}>
+  <a href={source.url} aria-label={`Source ${index}: ${source.title}`}>
+    {index}
+  </a>
+  <AnimatePresence>
+    {open ? (
+      <motion.span
+        role="tooltip"
+        className="absolute bottom-full left-1/2 z-popover mb-2 -translate-x-1/2 ..."
+      >
+        {/* favicon · hostname · title · snippet */}
+        <span className="absolute left-1/2 top-full size-2 -translate-x-1/2 -translate-y-1 rotate-45 ..." />
+      </motion.span>
+    ) : null}
+  </AnimatePresence>
+</span>
+```
+
+Closed = pill alone. Open = the **same** wrapper with the card mounted
+above the pill. If the caret misses the number, the card is parented wrong.## Bridging the hover gap
+
+The pill and the card don't touch — there's a couple of pixels of dead air
+between them, plus the `mb-2` gap the card sits in. Close on `mouseleave`
+and moving your pointer from the pill toward the card would close it before
+you arrive. Two `setTimeout`s fix that: `show` fires after `80ms`, `hide`
+after `120ms`, and every re-entry (pill or card) clears whichever timer is
+pending. The 40ms gap between them means a hide that was already queued gets
+cancelled the moment your cursor lands anywhere in either element.
+
+```tsx
+const show = () => {
+  clearTimeout(timer.current);
+  timer.current = setTimeout(() => setOpen(true), 80);
+};
+const hide = () => {
+  clearTimeout(timer.current);
+  timer.current = setTimeout(() => setOpen(false), 120);
+};
+// the card itself repeats onMouseEnter={show} onMouseLeave={hide}
+```
+
+Keyboard users skip the timers entirely — `onFocus`/`onBlur` on the anchor
+flip `open` immediately, so tabbing to a pill opens the card exactly like a
+deliberate hover would, with no delay to wait out.
+
+## The spring pop
+
+Once `open` flips, `AnimatePresence` mounts the card off
+`initial={{ opacity: 0, y: 6, scale: 0.96 }}` into a spring —
+`stiffness: 320, damping: 32, mass: 0.9`. That ratio sits close to critically
+damped: fast, with barely a flicker of overshoot past `scale: 1`, nothing
+like a springy button's bounce. Exit runs the same shape in reverse, so
+closing doesn't feel like a different animation.
+
+<SourceCitationsTooltip />
+
+```tsx
+<motion.span
+  initial={{ opacity: 0, y: 6, scale: 0.96 }}
+  animate={{ opacity: 1, y: 0, scale: 1 }}
+  exit={{ opacity: 0, y: 6, scale: 0.96 }}
+  transition={{ type: "spring", stiffness: 320, damping: 32, mass: 0.9 }}
+/>
+```
+
+## Why a spring, not a toggle
+
+`y` and `scale` are the only two properties animating, and both are
+transforms — the browser composites the card on the GPU without touching
+layout or paint. A spring over a fixed-duration ease also means the exit
+feels continuous with whatever point the enter had reached: if you close the
+card mid-pop, the spring reverses from there instead of snapping or
+restarting a separate timeline.
+
+## The source list
+
+`SourceList` is a flatter problem: no hover, no positioning math, just an
+ordered stack that needs to feel alive without dragging every row in one at
+a time. Each row's entrance carries `delay: Math.min(i, previewCount) * 0.05`
+— capped at `previewCount` so a 20-source list still finishes staggering
+inside a quarter second. Collapsed, only the first `previewCount` rows exist;
+the "+N more" toggle mounts the rest, and they run the identical fade-up on
+their own delay.
+
+<SourceCitationsList />
+
+```tsx
+<motion.a
+  initial={{ opacity: 0, y: reduce ? 0 : 8 }}
+  animate={{ opacity: 1, y: 0 }}
+  exit={{ opacity: 0, y: reduce ? 0 : -4, transition: { duration: reduce ? 0 : 0.15, ease } }}
+  transition={{ duration: reduce ? 0 : 0.3, ease, delay: reduce ? 0 : Math.min(i, previewCount) * 0.05 }}
+/>
+```
+
+The exit is deliberately shorter than the enter (`0.15s` vs `0.3s`) — rows
+leaving on collapse shouldn't linger as long as rows arriving.
+
+## Accessibility
+
+Every pill carries `aria-label={"Source " + index + ": " + source.title}`,
+so a screen reader announces the citation's identity even without opening
+the card. The card itself is `role="tooltip"`, and it opens on `onFocus` the
+same way it opens on hover, so keyboard navigation isn't a second-class path.
+`SourceList` reads `useReducedMotion()` once and zeroes both the `y` offset
+and the stagger `delay` for anyone who's asked for less motion — the rows
+still appear, just without the settle.
+
+```tsx
+const reduce = useReducedMotion();
+// reduce ? 0 : 8   → no rise
+// reduce ? 0 : Math.min(i, previewCount) * 0.05   → no stagger
+```
+
+## The result
+
+Both pieces together — the real components. Hover a pill or tab to one to
+feel the spring; open the collapsed rows below to feel the stagger.
+
+<SourceCitationsResult />
+
+Two small mechanisms doing all the work: a wrapper that opens a card exactly
+where you're looking, bridged by two timers so the gap between them never
+trips you up, and a list that arrives one row at a time without ever making
+you wait for it.
