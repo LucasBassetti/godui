@@ -61,11 +61,7 @@ const LEGEND = [
   },
 ] as const;
 
-function LegendSwatch({
-  kind: _kind,
-}: {
-  kind: (typeof LEGEND)[number]["kind"];
-}) {
+function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
   if (kind === "spring") {
     return (
       <span className="relative h-3 w-8">
