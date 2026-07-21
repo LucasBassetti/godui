@@ -27,7 +27,7 @@ type Plate = { key: string; tz: number; delay: number; cls: string };
 
 const PLATES: Plate[] = [
   { key: "shadow", tz: -34, delay: 0, cls: "bg-black/50 blur-[6px]" },
-  { key: "edge", tz: 22, delay: 120, cls: "bg-[var(--muted)]" },
+  { key: "edge", tz: 22, delay: 120, cls: "bg-[var(--foreground)]/15" },
   {
     key: "front",
     tz: 74,
@@ -45,7 +45,7 @@ const LEGEND: { name: string; desc: string; swatch: string }[] = [
   {
     name: "Edge",
     desc: "colored gradient, fakes the 3D wall",
-    swatch: "bg-[var(--muted)]",
+    swatch: "bg-[var(--foreground)]/15",
   },
   {
     name: "Shadow",
