@@ -106,10 +106,29 @@ const GooeyFab = React.forwardRef<HTMLDivElement, GooeyFabProps>(
         style={{ width: trigger, height: trigger }}
         {...props}
       >
-        {/* Goo filter — fuses overlapping blobs into liquid metaballs. */}
-        <svg aria-hidden="true" className="pointer-events-none absolute size-0">
+        {/* Blob layer — solid circles fused by the goo filter. Rendered as
+            native SVG (circles inside the filtered <g>) rather than filtered
+            HTML: Safari promotes a transform-animated HTML child to its own
+            compositing layer, which escapes an HTML `filter: url()` and breaks
+            the merge. SVG shapes stay inside the filter, so it fuses on every
+            engine. Origin is the container center; satellites overflow it. */}
+        <svg
+          aria-hidden="true"
+          className="pointer-events-none absolute left-0 top-0"
+          style={{ overflow: "visible" }}
+          width={trigger}
+          height={trigger}
+          viewBox={`${-trigger / 2} ${-trigger / 2} ${trigger} ${trigger}`}
+        >
           <defs>
-            <filter id={filterId}>
+            <filter
+              id={filterId}
+              x="-400%"
+              y="-400%"
+              width="900%"
+              height="900%"
+              colorInterpolationFilters="sRGB"
+            >
               <feGaussianBlur
                 in="SourceGraphic"
                 stdDeviation="6"
@@ -119,50 +138,48 @@ const GooeyFab = React.forwardRef<HTMLDivElement, GooeyFabProps>(
                 in="blur"
                 mode="matrix"
                 values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -10"
-                result="goo"
               />
             </filter>
           </defs>
+          <g
+            className="fill-primary"
+            filter={reduce ? undefined : `url(#${filterId})`}
+          >
+            <circle cx={0} cy={0} r={trigger / 2} />
+            {actions.map((action, i) => {
+              const target = offsetFor(direction, step * (i + 1));
+              return (
+                <motion.circle
+                  key={action.label}
+                  cx={0}
+                  cy={0}
+                  r={sat / 2}
+                  style={{
+                    transformBox: "fill-box",
+                    transformOrigin: "center",
+                  }}
+                  initial={false}
+                  animate={
+                    open
+                      ? { x: target.x, y: target.y, scale: 1, opacity: 1 }
+                      : { x: 0, y: 0, scale: 0.2, opacity: 0 }
+                  }
+                  transition={
+                    reduce
+                      ? { duration: 0.15 }
+                      : {
+                          type: "spring",
+                          stiffness: 170,
+                          damping: 12,
+                          mass: 0.1,
+                          delay: open ? i * 0.04 : (actions.length - i) * 0.02,
+                        }
+                  }
+                />
+              );
+            })}
+          </g>
         </svg>
-
-        {/* Blob layer: solid circles that merge under the goo filter. */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 grid place-items-center"
-          style={reduce ? undefined : { filter: `url(#${filterId})` }}
-        >
-          <div
-            className="rounded-full bg-primary"
-            style={{ width: trigger, height: trigger }}
-          />
-          {actions.map((action, i) => {
-            const target = offsetFor(direction, step * (i + 1));
-            return (
-              <motion.div
-                key={action.label}
-                className="absolute rounded-full bg-primary"
-                style={{ width: sat, height: sat }}
-                initial={false}
-                animate={
-                  open
-                    ? { x: target.x, y: target.y, scale: 1, opacity: 1 }
-                    : { x: 0, y: 0, scale: 0.2, opacity: 0 }
-                }
-                transition={
-                  reduce
-                    ? { duration: 0.15 }
-                    : {
-                        type: "spring",
-                        stiffness: 170,
-                        damping: 12,
-                        mass: 0.1,
-                        delay: open ? i * 0.04 : (actions.length - i) * 0.02,
-                      }
-                }
-              />
-            );
-          })}
-        </div>
 
         {/* Control layer: sharp, clickable icon buttons over the blobs. */}
         <div className="absolute inset-0 grid place-items-center">

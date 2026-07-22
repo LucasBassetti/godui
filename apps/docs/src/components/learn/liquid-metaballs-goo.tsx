@@ -66,26 +66,6 @@ export function LiquidMetaballsGoo() {
         >
           {/* biome-ignore lint/security/noDangerouslySetInnerHtml: static keyframes, no user input */}
           <style dangerouslySetInnerHTML={{ __html: CSS }} />
-          <svg
-            aria-hidden="true"
-            className="pointer-events-none absolute size-0"
-          >
-            <defs>
-              <filter id="lmg-goo">
-                <feGaussianBlur
-                  in="SourceGraphic"
-                  stdDeviation="8"
-                  result="blur"
-                />
-                <feColorMatrix
-                  in="blur"
-                  mode="matrix"
-                  values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -9"
-                  result="goo"
-                />
-              </filter>
-            </defs>
-          </svg>
           <div className="grid w-full grid-cols-2 gap-5">
             <div
               className="lmg-el flex flex-col items-center gap-2"
@@ -103,12 +83,59 @@ export function LiquidMetaballsGoo() {
               className="lmg-el flex flex-col items-center gap-2"
               style={{ "--d": "100ms" } as CSSProperties}
             >
-              <div
-                className="relative flex h-28 w-full items-center justify-center"
-                style={{ filter: "url(#lmg-goo)" }}
-              >
-                <div className="lmg-a absolute size-12 rounded-full bg-[var(--foreground)]/75" />
-                <div className="lmg-b absolute size-12 rounded-full bg-[var(--foreground)]/75" />
+              {/* Native SVG (circles in the filtered <g>): Safari composites a
+                  transform-animated HTML child onto its own layer, escaping an
+                  HTML `filter: url()` so the metaballs never merge there. */}
+              <div className="relative flex h-28 w-full items-center justify-center">
+                <svg
+                  aria-hidden="true"
+                  className="pointer-events-none overflow-visible"
+                  width={120}
+                  height={112}
+                  viewBox="-60 -56 120 112"
+                >
+                  <defs>
+                    <filter id="lmg-goo">
+                      <feGaussianBlur
+                        in="SourceGraphic"
+                        stdDeviation="8"
+                        result="blur"
+                      />
+                      <feColorMatrix
+                        in="blur"
+                        mode="matrix"
+                        values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -9"
+                        result="goo"
+                      />
+                    </filter>
+                  </defs>
+                  <g
+                    filter="url(#lmg-goo)"
+                    fill="var(--foreground)"
+                    fillOpacity={0.75}
+                  >
+                    <circle
+                      className="lmg-a"
+                      cx={0}
+                      cy={0}
+                      r={24}
+                      style={{
+                        transformBox: "fill-box",
+                        transformOrigin: "center",
+                      }}
+                    />
+                    <circle
+                      className="lmg-b"
+                      cx={0}
+                      cy={0}
+                      r={24}
+                      style={{
+                        transformBox: "fill-box",
+                        transformOrigin: "center",
+                      }}
+                    />
+                  </g>
+                </svg>
               </div>
               <span className="font-mono text-[11px] text-fd-muted-foreground">
                 gooeyness=16

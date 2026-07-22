@@ -52,13 +52,18 @@ export function LiquidMetaballsCursor() {
         >
           {/* biome-ignore lint/security/noDangerouslySetInnerHtml: static keyframes, no user input */}
           <style dangerouslySetInnerHTML={{ __html: CSS }} />
+          {/* Goo filter lives on the blob <g> inside an SVG overlay, not on the
+              card element: Safari composites the transform-animated HTML blob
+              onto its own layer, which escapes an HTML `filter: url()` so the
+              discs never merge there. SVG shapes stay inside the filter and
+              fuse on every engine (and the card's border/bg stay crisp). */}
           <div
             className="lmc-el relative flex h-36 w-full items-center justify-center overflow-hidden rounded-2xl border border-fd-border bg-[var(--card)]"
-            style={{ "--d": "0ms", filter: "url(#lmg-goo2)" } as CSSProperties}
+            style={{ "--d": "0ms" } as CSSProperties}
           >
             <svg
               aria-hidden="true"
-              className="pointer-events-none absolute size-0"
+              className="pointer-events-none absolute inset-0 h-full w-full"
             >
               <defs>
                 <filter id="lmg-goo2">
@@ -74,9 +79,21 @@ export function LiquidMetaballsCursor() {
                   />
                 </filter>
               </defs>
+              <g filter="url(#lmg-goo2)" fill="var(--foreground)">
+                <circle cx="50%" cy="50%" r={28} fillOpacity={0.7} />
+                <circle
+                  className="lmc-c"
+                  cx="50%"
+                  cy="50%"
+                  r={24}
+                  fillOpacity={0.65}
+                  style={{
+                    transformBox: "fill-box",
+                    transformOrigin: "center",
+                  }}
+                />
+              </g>
             </svg>
-            <div className="absolute size-14 rounded-full bg-[var(--foreground)]/70" />
-            <div className="lmc-c absolute size-12 rounded-full bg-[var(--foreground)]/65" />
           </div>
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
             {LEGEND.map((item) => (

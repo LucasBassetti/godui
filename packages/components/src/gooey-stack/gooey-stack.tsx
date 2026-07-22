@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  motion,
-  useMotionValue,
-  useReducedMotion,
-  useSpring,
-  useTransform,
-} from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import * as React from "react";
 
 export type GooeyStackProps = Omit<
@@ -38,26 +32,18 @@ export type GooeyStackProps = Omit<
   radius?: number;
 };
 
-// SPRING.smooth — surfaces / morph (see motion/tokens.ts).
+// SPRING.liquid — slow, no-overshoot morph so the goo neck stays readable as
+// it forms and releases (a snappier spring blows through the merge too fast to
+// see). See motion/tokens.ts.
 const SPRING = {
   type: "spring",
-  stiffness: 320,
-  damping: 32,
-  mass: 0.9,
+  stiffness: 130,
+  damping: 24,
+  mass: 1.2,
 } as const;
 
 const clamp = (v: number, lo: number, hi: number) =>
   Math.min(hi, Math.max(lo, v));
-
-// How much the cards are *necking* at a given gap: a band-pass that is 0 at both
-// rest ends (fanned out, or fully merged) and peaks while surfaces are close.
-const nearnessAt = (
-  g: number,
-  expandedGap: number,
-  collapsedGap: number,
-): number =>
-  clamp((expandedGap - g) / Math.max(1, expandedGap - 4), 0, 1) *
-  clamp((g - collapsedGap) / 20, 0, 1);
 
 const GooeyStack = React.forwardRef<HTMLDivElement, GooeyStackProps>(
   (
@@ -122,25 +108,15 @@ const GooeyStack = React.forwardRef<HTMLDivElement, GooeyStackProps>(
     // silhouettes neck together via the goo filter.
     const merge = clamp(-g / -Math.min(collapsedGap, -1), 0, 1);
 
-    // Cross-fade the crisp native surface (rest → pixel-perfect borders) with the
-    // soft goo-fused surface (mid-transition → the liquid neck). This MUST follow
-    // the *live* animating gap, not the target `g` — at both endpoints necking is
-    // 0, so deriving it from `g` alone would make the goo never appear during the
-    // toggle. Spring a motion value toward `g` and read necking off it live.
-    const gapTarget = useMotionValue(g);
-    React.useEffect(() => {
-      gapTarget.set(g);
-    }, [g, gapTarget]);
-    const gapSpring = useSpring(gapTarget, {
-      stiffness: 320,
-      damping: 32,
-      mass: 0.9,
-    });
-    const nearness = useTransform(gapSpring, (live) =>
-      nearnessAt(live, expandedGap, collapsedGap),
-    );
-    const gooOpacity = useTransform(nearness, (v) => (reduce ? 0 : v));
-    const nativeOpacity = useTransform(nearness, (v) => (reduce ? 1 : 1 - v));
+    // The goo SVG surface is the SOLE visible card surface whenever motion is
+    // allowed: it renders every card's fill + border itself, always opaque, and
+    // fuses them into the liquid neck as they approach. There is deliberately no
+    // second (native) bordered surface underneath, because a goo filter dilates
+    // its output more on WebKit than on Blink — so any always-opaque native card
+    // beneath the goo would show a mismatched ghost/double border on Safari
+    // wherever the two edges failed to coincide. One border source = no double.
+    // The native `<div>` cards below are shown ONLY under prefers-reduced-motion
+    // (goo hidden), where there is no filter and they are the crisp fallback.
 
     // Target transform for card `i`. rank = distance from the anchor.
     const stateOf = (i: number) => {
@@ -180,44 +156,33 @@ const GooeyStack = React.forwardRef<HTMLDivElement, GooeyStackProps>(
         {/* Goo filter — fuses the card silhouettes into liquid metaballs. */}
         <svg aria-hidden="true" className="pointer-events-none absolute size-0">
           <defs>
-            <filter id={filterId}>
+            <filter
+              id={filterId}
+              x="-50%"
+              y="-50%"
+              width="200%"
+              height="200%"
+              colorInterpolationFilters="sRGB"
+            >
               <feGaussianBlur
                 in="SourceGraphic"
                 stdDeviation={gooeyness}
                 result="blur"
               />
-              {/* Hard-edged contour of the blur (razor-steep threshold), so the
-                  fused shape has a crisp edge with almost no anti-aliasing. */}
+              {/* Fused silhouette: razor-steep threshold at the α=0.5 level. That
+                  level set sits on the ORIGINAL edge for a straight run (so the
+                  card sides keep their native width) and only bulges where two
+                  cards' blur halos overlap — i.e. the concave liquid neck. One
+                  crisp shape, hard edge, almost no anti-aliasing. */}
               <feColorMatrix
                 in="blur"
                 mode="matrix"
                 values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 80 -40"
                 result="goo"
               />
-              {/* Border: offset the fused shape outward with a *small isotropic*
-                  blur + threshold. A Gaussian is radially symmetric, so the ring
-                  stays round and constant-width at corners and the neck — unlike
-                  box morphology (square corners) or a band off the main blur
-                  (width tracks curvature). */}
-              <feGaussianBlur in="goo" stdDeviation="1.2" result="edge" />
-              <feColorMatrix
-                in="edge"
-                mode="matrix"
-                values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 26 -9"
-                result="grown"
-              />
-              <feFlood
-                style={{ floodColor: "var(--border)" }}
-                result="borderColor"
-              />
-              <feComposite
-                in="borderColor"
-                in2="grown"
-                operator="in"
-                result="borderLayer"
-              />
-              {/* Fill: flat theme card color, masked by `goo` — uniform, opaque,
-                  never darkened by blur anti-aliasing. */}
+              {/* Fill the whole fused shape with the card color. On the straight
+                  sides this lands exactly on the native cards; across the gap it
+                  paints the connecting neck. */}
               <feFlood
                 style={{ floodColor: "var(--card)" }}
                 result="cardColor"
@@ -228,60 +193,46 @@ const GooeyStack = React.forwardRef<HTMLDivElement, GooeyStackProps>(
                 operator="in"
                 result="fillLayer"
               />
+              {/* One continuous outline tracing the ENTIRE fused silhouette —
+                  card sides AND the neck curves — as a single uniform stroke, so
+                  the border flows from card into neck with no seam. Built as an
+                  INNER 1px ring (goo minus a 1px-eroded goo) so it sits exactly
+                  where a CSS border-box border sits: coincident with the native
+                  side borders (no double line), continuous around the waist. */}
+              <feGaussianBlur in="goo" stdDeviation="1.1" result="edge" />
+              <feColorMatrix
+                in="edge"
+                mode="matrix"
+                values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 50 -41"
+                result="eroded"
+              />
+              <feComposite in="goo" in2="eroded" operator="out" result="ring" />
+              <feFlood
+                style={{ floodColor: "var(--border)" }}
+                result="borderColor"
+              />
+              <feComposite
+                in="borderColor"
+                in2="ring"
+                operator="in"
+                result="borderLayer"
+              />
               <feMerge result="surface">
-                <feMergeNode in="borderLayer" />
                 <feMergeNode in="fillLayer" />
+                <feMergeNode in="borderLayer" />
               </feMerge>
-              {/* Re-introduce sub-pixel anti-aliasing. The steep threshold above
-                  makes a crisp shape but with a hard, aliased (stair-stepped)
-                  edge; a tiny blur smooths the edge back to pixel-perfect without
-                  softening the shape. */}
-              <feGaussianBlur in="surface" stdDeviation="0.5" />
+              {/* Sub-pixel anti-aliasing back after the steep thresholds. */}
+              <feGaussianBlur in="surface" stdDeviation="0.4" />
             </filter>
           </defs>
         </svg>
 
-        {/* Merge surface (behind): full-size silhouettes fuse under the goo
-            filter into the liquid neck + border. Only faded in while the cards
-            are necking (`nearness`), so its soft filtered edge is never seen at
-            rest — the crisp native surface below covers it there. */}
-        <motion.div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0"
-          style={{
-            opacity: gooOpacity,
-            filter: reduce ? undefined : `url(#${filterId})`,
-          }}
-        >
-          {items.map((_, i) => {
-            const s = stateOf(i);
-            return (
-              <motion.div
-                // biome-ignore lint/suspicious/noArrayIndexKey: index identifies a stable card slot
-                key={i}
-                className="absolute inset-x-0 bg-card"
-                style={{
-                  bottom: bottomOf(i),
-                  height: heights[i] || undefined,
-                  borderRadius: radius,
-                  zIndex: i,
-                }}
-                initial={false}
-                animate={{ y: s.y, scale: s.scale, opacity: s.silOpacity }}
-                transition={transition}
-              />
-            );
-          })}
-        </motion.div>
-
-        {/* Native surface: real DOM cards with CSS borders — pixel-perfect at
-            every zoom. Shown at rest; cross-faded out (`1 - nearness`) into the
-            goo surface above while cards neck, so borders stay crisp at rest and
-            fuse seamlessly during the merge. */}
-        <motion.div
-          className="absolute inset-0"
-          style={{ opacity: nativeOpacity }}
-        >
+        {/* Reduced-motion fallback surface: real DOM cards with crisp CSS
+            borders. Shown ONLY when motion is off (the goo surface is hidden
+            then), so it never coexists with the goo — no double border. When
+            motion is on it is fully transparent and the goo below carries every
+            card's fill + border as the single source. */}
+        <div className="absolute inset-0" style={{ opacity: reduce ? 1 : 0 }}>
           {items.map((_, i) => {
             const s = stateOf(i);
             return (
@@ -301,7 +252,58 @@ const GooeyStack = React.forwardRef<HTMLDivElement, GooeyStackProps>(
               />
             );
           })}
-        </motion.div>
+        </div>
+
+        {/* Card surface (the single source of every card's fill + border): the
+            full-size silhouettes fuse under the goo filter into card-color fill
+            + one continuous outline tracing the whole fused shape (card sides
+            AND the neck waist). Always fully opaque, so it is the ONLY bordered
+            surface on screen — nothing underneath to double against. At rest the
+            rects are separate → two crisp rounded cards; as the gap shrinks they
+            neck into one liquid shape.
+
+            Rendered as native SVG rects (not filtered HTML divs): Safari
+            composites a transform-animated HTML child onto its own compositing
+            layer, which escapes an HTML `filter: url()` so the cards never neck
+            together there. SVG shapes stay inside the filter and fuse on every
+            engine. Hidden entirely under prefers-reduced-motion (the native
+            fallback above shows instead). */}
+        <motion.svg
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 overflow-visible [transform:translateZ(0)]"
+          width="100%"
+          height="100%"
+          style={{ opacity: reduce ? 0 : 1 }}
+        >
+          <g filter={reduce ? undefined : `url(#${filterId})`}>
+            {items.map((_, i) => {
+              const s = stateOf(i);
+              // Rest-position top edge (SVG y is top-down); `y` below then
+              // slides it exactly like the native card's translateY. No `scale`
+              // here: it only bites once the silhouette has faded out, and
+              // `transform-box: fill-box` (needed to scale about center)
+              // flickers the filtered border in WebKit — so the goo surface
+              // translates only, keeping the border rock-steady on every engine.
+              const top =
+                (expandedTotal || 0) - bottomOf(i) - (heights[i] ?? 0);
+              return (
+                <motion.rect
+                  // biome-ignore lint/suspicious/noArrayIndexKey: index identifies a stable card slot
+                  key={i}
+                  x={0}
+                  y={top}
+                  width="100%"
+                  height={heights[i] || 0}
+                  rx={radius}
+                  fill="#000"
+                  initial={false}
+                  animate={{ y: s.y, opacity: s.silOpacity }}
+                  transition={transition}
+                />
+              );
+            })}
+          </g>
+        </motion.svg>
 
         {/* Content: children on top of whichever surface is showing. Stays crisp
             and readable — only recedes/frosts, never cross-faded by the neck. */}

@@ -97,41 +97,58 @@ export function GooeyStackNearness() {
           {/* biome-ignore lint/security/noDangerouslySetInnerHtml: static keyframes, no user input */}
           <style dangerouslySetInnerHTML={{ __html: CSS }} />
 
-          <svg
-            aria-hidden="true"
-            className="pointer-events-none absolute size-0"
-          >
-            <defs>
-              <filter id={FILTER_ID}>
-                <feGaussianBlur
-                  in="SourceGraphic"
-                  stdDeviation="10"
-                  result="blur"
-                />
-                <feColorMatrix
-                  in="blur"
-                  mode="matrix"
-                  values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 80 -40"
-                  result="goo"
-                />
-              </filter>
-            </defs>
-          </svg>
-
           <div
             key={cycle}
             className={`relative h-[132px] w-[132px] ${reduced ? "gsn-static" : ""}`}
           >
-            {/* Goo layer — real filter, opacity gated by nearness band-pass. */}
-            <div
-              className="gsn-goo absolute inset-0"
-              style={{ filter: `url(#${FILTER_ID})` }}
+            {/* Goo layer — native SVG (rects inside the filtered <g>), opacity
+                gated by the nearness band-pass. SVG rather than filtered HTML
+                because Safari composites a transform-animated HTML child onto
+                its own layer, escaping an HTML `filter: url()` so the
+                silhouettes never neck; SVG shapes stay inside the filter. */}
+            <svg
+              aria-hidden="true"
+              className="gsn-goo pointer-events-none absolute inset-0 overflow-visible"
+              viewBox="0 0 132 132"
             >
-              <div className="absolute inset-x-0 bottom-0 h-12 rounded-[14px] bg-[var(--foreground)]/55" />
-              <div className="gsn-upper absolute inset-x-0 top-0">
-                <div className="h-12 rounded-[14px] bg-[var(--foreground)]/55" />
-              </div>
-            </div>
+              <defs>
+                <filter
+                  id={FILTER_ID}
+                  x="-50%"
+                  y="-50%"
+                  width="200%"
+                  height="200%"
+                  colorInterpolationFilters="sRGB"
+                >
+                  <feGaussianBlur
+                    in="SourceGraphic"
+                    stdDeviation="10"
+                    result="blur"
+                  />
+                  <feColorMatrix
+                    in="blur"
+                    mode="matrix"
+                    values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 80 -40"
+                    result="goo"
+                  />
+                </filter>
+              </defs>
+              <g
+                filter={`url(#${FILTER_ID})`}
+                fill="var(--foreground)"
+                fillOpacity={0.55}
+              >
+                <rect x={0} y={84} width={132} height={48} rx={14} />
+                <rect
+                  className="gsn-upper"
+                  x={0}
+                  y={0}
+                  width={132}
+                  height={48}
+                  rx={14}
+                />
+              </g>
+            </svg>
             {/* Native crisp cards — opposite opacity curve. */}
             <div className="gsn-native absolute inset-x-0 bottom-0 h-12 rounded-[14px] border border-[var(--foreground)]/50 bg-[var(--card)]" />
             <div className="gsn-upper absolute inset-x-0 top-0">

@@ -65,11 +65,52 @@ const STEPS: { cls: string; name: string; desc: string }[] = [
 ];
 
 function Pair({ filtered }: { filtered?: boolean }) {
+  // Filtered pair is native SVG (rects inside the filtered <g>): Safari
+  // composites a transform-animated HTML child onto its own layer, which
+  // escapes an HTML `filter: url()`, so the silhouettes never neck together
+  // there. SVG shapes stay inside the filter and fuse on every engine.
+  if (filtered) {
+    return (
+      <svg
+        aria-hidden="true"
+        className="pointer-events-none mx-auto overflow-visible"
+        width={96}
+        height={128}
+        viewBox="0 0 96 128"
+      >
+        <defs>
+          <filter
+            id={FILTER_ID}
+            x="-50%"
+            y="-50%"
+            width="200%"
+            height="200%"
+            colorInterpolationFilters="sRGB"
+          >
+            <feGaussianBlur
+              in="SourceGraphic"
+              stdDeviation="10"
+              result="blur"
+            />
+            <feColorMatrix
+              in="blur"
+              mode="matrix"
+              values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 80 -40"
+              result="goo"
+            />
+          </filter>
+        </defs>
+        <g filter={`url(#${FILTER_ID})`} fill="#000" fillOpacity={0.55}>
+          {/* Anchor — fixed at the bottom. */}
+          <rect x={0} y={80} width={96} height={48} rx={14} />
+          {/* Upper card — starts apart, crawls down into the anchor. */}
+          <rect className="gsf-a" x={0} y={0} width={96} height={48} rx={14} />
+        </g>
+      </svg>
+    );
+  }
   return (
-    <div
-      className="relative mx-auto h-[128px] w-24"
-      style={filtered ? { filter: `url(#${FILTER_ID})` } : undefined}
-    >
+    <div className="relative mx-auto h-[128px] w-24">
       {/* Anchor — fixed at the bottom. */}
       <div className="absolute inset-x-0 bottom-0 h-12 rounded-[14px] bg-black/55" />
       {/* Upper card — starts apart, crawls down into the anchor. */}
@@ -90,27 +131,6 @@ export function GooeyStackFilter() {
         >
           {/* biome-ignore lint/security/noDangerouslySetInnerHtml: static keyframes, no user input */}
           <style dangerouslySetInnerHTML={{ __html: CSS }} />
-
-          <svg
-            aria-hidden="true"
-            className="pointer-events-none absolute size-0"
-          >
-            <defs>
-              <filter id={FILTER_ID}>
-                <feGaussianBlur
-                  in="SourceGraphic"
-                  stdDeviation="10"
-                  result="blur"
-                />
-                <feColorMatrix
-                  in="blur"
-                  mode="matrix"
-                  values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 80 -40"
-                  result="goo"
-                />
-              </filter>
-            </defs>
-          </svg>
 
           <div className="grid w-full grid-cols-2 gap-6">
             <div className="flex flex-col items-center gap-3">

@@ -61,6 +61,9 @@ export const FLOW_SPEED = {
 export const SPRING = {
   /** Underdamped morph for surfaces — dialogs, shared-layout transitions. */
   smooth: { type: "spring", stiffness: 320, damping: 32, mass: 0.9 },
+  /** Slow, no-overshoot morph for liquid/metaball merges that need to stay
+   * readable as they form and release — gooey stack. */
+  liquid: { type: "spring", stiffness: 130, damping: 24, mass: 1.2 },
   /** Crisp height/collapse — accordion. */
   crisp: { type: "spring", stiffness: 500, damping: 40 },
   /** Snappy pop for menus and popovers — dropdown. */
