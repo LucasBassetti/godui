@@ -1,6 +1,6 @@
 "use client";
 
-import type { CSSProperties } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { ScrollScene } from "./scroll-scene";
 
 /**
@@ -21,7 +21,7 @@ const CSS = `
 .tsa-static .tsa-col { opacity: 1; animation: none; transform: none; }
 `;
 
-const LEGEND: { name: string; desc: string; swatch: string }[] = [
+const LEGEND: { name: string; desc: ReactNode; swatch: string }[] = [
   {
     name: "From",
     desc: "frame < start — previous glyph, done",
@@ -35,7 +35,14 @@ const LEGEND: { name: string; desc: string; swatch: string }[] = [
   },
   {
     name: "Resolved",
-    desc: "frame ≥ end — locked to `to`",
+    desc: (
+      <>
+        frame ≥ end — locked to{" "}
+        <code className="rounded bg-[var(--muted)] px-1 py-0.5 font-mono text-[0.9em] text-fd-foreground">
+          to
+        </code>
+      </>
+    ),
     swatch:
       "size-2.5 rounded-sm bg-[var(--foreground)]/70 ring-1 ring-fd-border ring-inset",
   },
@@ -114,7 +121,7 @@ export function TextScrambleAnatomy() {
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>
-                <dd className="text-[12px] text-fd-muted-foreground">
+                <dd className="text-[12px] text-fd-muted-foreground leading-snug">
                   {item.desc}
                 </dd>
               </div>

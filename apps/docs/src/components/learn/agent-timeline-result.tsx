@@ -9,7 +9,7 @@ import * as React from "react";
  * with a body to morph it open; hit replay to watch the connectors spring-
  * fill from the top again.
  */
-const STEPS: { title: string; meta: string; body?: string }[] = [
+const STEPS: { title: string; meta: string; body?: React.ReactNode }[] = [
   {
     title: "Read the repository",
     meta: "0.4s",
@@ -23,7 +23,19 @@ const STEPS: { title: string; meta: string; body?: string }[] = [
   {
     title: "Edit auth-middleware.ts",
     meta: "0.3s",
-    body: "Changed the expiry check from `<` to `<=`.",
+    body: (
+      <>
+        Changed the expiry check from{" "}
+        <code className="rounded bg-[var(--muted)] px-1 py-0.5 font-mono text-[0.9em] text-fd-foreground">
+          &lt;
+        </code>{" "}
+        to{" "}
+        <code className="rounded bg-[var(--muted)] px-1 py-0.5 font-mono text-[0.9em] text-fd-foreground">
+          &lt;=
+        </code>
+        .
+      </>
+    ),
   },
   { title: "Run the test suite", meta: "3.2s", body: "42 passed, 0 failed." },
 ];

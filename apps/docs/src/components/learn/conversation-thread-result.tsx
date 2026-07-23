@@ -16,7 +16,7 @@ import * as React from "react";
  * its actions row.
  */
 const ANSWER =
-  "Use a grid parent with `place-items-center` — it centers on both axes in a single declaration.";
+  "Use a grid parent with place-items-center — it centers on both axes in a single declaration.";
 
 const ACTIONS = [
   { label: "Copy", icon: <Copy className="size-4" /> },

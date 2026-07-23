@@ -1,6 +1,6 @@
 "use client";
 
-import type { CSSProperties } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { ScrollScene } from "./scroll-scene";
 
 /**
@@ -44,7 +44,7 @@ const CSS = `
 
 const LEGEND: {
   name: string;
-  desc: string;
+  desc: ReactNode;
   kind: "unresolved" | "resolved";
 }[] = [
   {
@@ -54,7 +54,15 @@ const LEGEND: {
   },
   {
     name: "Resolved",
-    desc: "locked `to` — inherits foreground",
+    desc: (
+      <>
+        locked{" "}
+        <code className="rounded bg-[var(--muted)] px-1 py-0.5 font-mono text-[0.9em] text-fd-foreground">
+          to
+        </code>{" "}
+        — inherits foreground
+      </>
+    ),
     kind: "resolved",
   },
 ];
@@ -114,7 +122,7 @@ export function TextScrambleCycle() {
                 <dt className="font-medium text-[13px] text-fd-foreground">
                   {item.name}
                 </dt>
-                <dd className="text-[12px] text-fd-muted-foreground">
+                <dd className="text-[12px] text-fd-muted-foreground leading-snug">
                   {item.desc}
                 </dd>
               </div>
