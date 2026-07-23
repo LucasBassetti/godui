@@ -62,15 +62,15 @@ export function GooeySpring() {
 
           <div className="relative flex h-[240px] w-[80px] items-end justify-center pb-2">
             <div
-              className="gs-sat-2 absolute bottom-2 size-9 rounded-full bg-black/40"
+              className="gs-sat-2 absolute bottom-2 size-9 rounded-full bg-[var(--foreground)]/40"
               style={{ "--ty": "-174px" } as CSSProperties}
             />
             <div
-              className="gs-sat-1 absolute bottom-2 size-9 rounded-full bg-black/45"
+              className="gs-sat-1 absolute bottom-2 size-9 rounded-full bg-[var(--foreground)]/45"
               style={{ "--ty": "-116px" } as CSSProperties}
             />
             <div
-              className="gs-sat-0 absolute bottom-2 size-9 rounded-full bg-black/50"
+              className="gs-sat-0 absolute bottom-2 size-9 rounded-full bg-[var(--foreground)]/50"
               style={{ "--ty": "-58px" } as CSSProperties}
             />
             <div className="relative z-10 flex size-14 items-center justify-center rounded-full border border-white/10 bg-[var(--card)] shadow-md">

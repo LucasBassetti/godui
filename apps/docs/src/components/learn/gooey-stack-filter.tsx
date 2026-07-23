@@ -100,7 +100,11 @@ function Pair({ filtered }: { filtered?: boolean }) {
             />
           </filter>
         </defs>
-        <g filter={`url(#${FILTER_ID})`} fill="#000" fillOpacity={0.55}>
+        <g
+          filter={`url(#${FILTER_ID})`}
+          fillOpacity={0.55}
+          style={{ fill: "var(--foreground)" }}
+        >
           {/* Anchor — fixed at the bottom. */}
           <rect x={0} y={80} width={96} height={48} rx={14} />
           {/* Upper card — starts apart, crawls down into the anchor. */}
@@ -112,10 +116,10 @@ function Pair({ filtered }: { filtered?: boolean }) {
   return (
     <div className="relative mx-auto h-[128px] w-24">
       {/* Anchor — fixed at the bottom. */}
-      <div className="absolute inset-x-0 bottom-0 h-12 rounded-[14px] bg-black/55" />
+      <div className="absolute inset-x-0 bottom-0 h-12 rounded-[14px] bg-[var(--foreground)]/55" />
       {/* Upper card — starts apart, crawls down into the anchor. */}
       <div className="gsf-a absolute inset-x-0 top-0">
-        <div className="h-12 rounded-[14px] bg-black/55" />
+        <div className="h-12 rounded-[14px] bg-[var(--foreground)]/55" />
       </div>
     </div>
   );

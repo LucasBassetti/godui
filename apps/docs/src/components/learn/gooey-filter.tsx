@@ -40,8 +40,8 @@ export function GooeyFilter() {
           <div className="grid w-full grid-cols-2 gap-6">
             <div className="flex flex-col items-center gap-3">
               <div className="relative flex h-[120px] w-full items-center justify-center">
-                <div className="gf-a absolute size-14 rounded-full bg-black/55" />
-                <div className="gf-b absolute size-14 rounded-full bg-black/55" />
+                <div className="gf-a absolute size-14 rounded-full bg-[var(--foreground)]/55" />
+                <div className="gf-b absolute size-14 rounded-full bg-[var(--foreground)]/55" />
               </div>
               <p className="font-mono text-[11px] text-fd-muted-foreground">
                 raw circles
@@ -85,8 +85,8 @@ export function GooeyFilter() {
                   </defs>
                   <g
                     filter={`url(#${FILTER_ID})`}
-                    fill="#000"
                     fillOpacity={0.55}
+                    style={{ fill: "var(--foreground)" }}
                   >
                     <circle
                       className="gf-a"
