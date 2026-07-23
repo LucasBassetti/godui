@@ -62,16 +62,24 @@ export function FoldProgress() {
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Determinate
               </dt>
-              <dd className="text-[12px] text-fd-muted-foreground">
-                a `progress` prop is passed
+              <dd className="text-[12px] text-fd-muted-foreground leading-snug">
+                a{" "}
+                <code className="rounded bg-[var(--muted)] px-1 py-0.5 font-mono text-[11px] text-fd-foreground">
+                  progress
+                </code>{" "}
+                prop is passed
               </dd>
             </div>
             <div className="flex flex-col gap-1.5">
               <dt className="font-medium text-[13px] text-fd-foreground">
                 Indeterminate
               </dt>
-              <dd className="text-[12px] text-fd-muted-foreground">
-                no `progress` — fixed segment sweeps
+              <dd className="text-[12px] text-fd-muted-foreground leading-snug">
+                no{" "}
+                <code className="rounded bg-[var(--muted)] px-1 py-0.5 font-mono text-[11px] text-fd-foreground">
+                  progress
+                </code>{" "}
+                — fixed segment sweeps
               </dd>
             </div>
           </dl>
