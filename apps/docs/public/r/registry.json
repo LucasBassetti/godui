@@ -1712,6 +1712,20 @@
       ]
     },
     {
+      "name": "jelly-button",
+      "type": "registry:ui",
+      "title": "Jelly Button",
+      "description": "A squishy button that deforms on press and springs back with a jelly wobble, running entirely on the compositor.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/jelly-button/jelly-button.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/jelly-button.tsx"
+        }
+      ]
+    },
+    {
       "name": "gooey-fab",
       "type": "registry:ui",
       "title": "Gooey FAB",

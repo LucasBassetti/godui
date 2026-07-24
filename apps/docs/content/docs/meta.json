@@ -11,6 +11,7 @@
     "---Buttons---",
     "components/buttons/gooey-fab",
     "components/buttons/hold-confirm-button",
+    "components/buttons/jelly-button",
     "components/buttons/magic-button",
     "components/buttons/magnetic-button",
     "components/buttons/mask-button",

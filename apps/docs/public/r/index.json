@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "generatedAt": "2026-07-21T20:25:52.430Z",
+  "generatedAt": "2026-07-24T21:13:15.351Z",
   "components": [
     {
       "name": "accordion",
@@ -407,6 +407,15 @@
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add @godui/inertia-gallery"
+    },
+    {
+      "name": "jelly-button",
+      "title": "Jelly Button",
+      "description": "A squishy button that deforms on press and springs back with a jelly wobble, running entirely on the compositor.",
+      "category": "Buttons",
+      "dependencies": [],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/jelly-button"
     },
     {
       "name": "lamp",

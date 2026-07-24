@@ -220,6 +220,12 @@ export {
   InertiaGallery,
   type InertiaGalleryProps,
 } from "./inertia-gallery";
+export {
+  JellyButton,
+  type JellyButtonProps,
+  type JellyButtonSize,
+  type JellyButtonVariant,
+} from "./jelly-button";
 export { Lamp, type LampProps } from "./lamp";
 export { LightRays, type LightRaysProps } from "./light-rays";
 export {

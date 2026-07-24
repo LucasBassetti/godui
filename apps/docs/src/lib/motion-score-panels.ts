@@ -797,6 +797,16 @@ export const MOTION_SCORE_PANELS: Record<string, MotionScorePanelEntry> = {
       },
     ],
   },
+  "jelly-button": {
+    title: "Jelly Button",
+    properties: [
+      {
+        prop: "scale",
+        label: "scale",
+        note: "the squash-and-stretch deform — the only animated property, composited on the GPU",
+      },
+    ],
+  },
   lamp: {
     title: "Lamp",
     properties: [

@@ -1,0 +1,110 @@
+---
+title: Jelly Button
+description: A squishy button that deforms on press and springs back with a jelly wobble — all on the compositor.
+date: "2026-07-24"
+---
+
+import { JellyButton } from "@godui/components";
+
+<ComponentPreview
+  story="buttons-jelly-button"
+  code={`import { JellyButton } from "@/components/godui/jelly-button";
+
+export function JellyButtonDemo() {
+  return (
+    <div className="flex flex-wrap items-center justify-center gap-6">
+      <JellyButton variant="primary">Press me</JellyButton>
+      <JellyButton variant="secondary">Press me</JellyButton>
+      <JellyButton variant="outline">Press me</JellyButton>
+    </div>
+  );
+}`}
+>
+  <div className="flex flex-wrap items-center justify-center gap-6">
+    <JellyButton variant="primary">Press me</JellyButton>
+    <JellyButton variant="secondary">Press me</JellyButton>
+    <JellyButton variant="outline">Press me</JellyButton>
+  </div>
+</ComponentPreview>
+
+## Installation
+
+<ComponentInstall name="jelly-button" />
+
+## Usage
+
+```tsx
+import { JellyButton } from "@/components/godui/jelly-button";
+```
+
+```tsx
+<JellyButton variant="primary">Press me</JellyButton>
+```
+
+## Examples
+
+### Sizes
+
+<ComponentPreview
+  code={`import { JellyButton } from "@/components/godui/jelly-button";
+
+export function JellyButtonSizes() {
+  return (
+    <div className="flex flex-wrap items-center justify-center gap-6">
+      <JellyButton size="sm">Small</JellyButton>
+      <JellyButton size="md">Medium</JellyButton>
+      <JellyButton size="lg">Large</JellyButton>
+    </div>
+  );
+}`}
+>
+  <div className="flex flex-wrap items-center justify-center gap-6">
+    <JellyButton size="sm">Small</JellyButton>
+    <JellyButton size="md">Medium</JellyButton>
+    <JellyButton size="lg">Large</JellyButton>
+  </div>
+</ComponentPreview>
+
+### Squash
+
+The `squash` prop (`0`–`1`) sets how hard the button deforms on press. Lower is subtle, higher is bouncier.
+
+<ComponentPreview
+  code={`import { JellyButton } from "@/components/godui/jelly-button";
+
+export function JellyButtonSquash() {
+  return (
+    <div className="flex flex-wrap items-center justify-center gap-6">
+      <JellyButton squash={0.2}>Subtle</JellyButton>
+      <JellyButton squash={0.6}>Default</JellyButton>
+      <JellyButton squash={1}>Extra squishy</JellyButton>
+    </div>
+  );
+}`}
+>
+  <div className="flex flex-wrap items-center justify-center gap-6">
+    <JellyButton squash={0.2}>Subtle</JellyButton>
+    <JellyButton squash={0.6}>Default</JellyButton>
+    <JellyButton squash={1}>Extra squishy</JellyButton>
+  </div>
+</ComponentPreview>
+
+### Disabled
+
+<ComponentPreview
+  code={`import { JellyButton } from "@/components/godui/jelly-button";
+
+export function JellyButtonDisabled() {
+  return <JellyButton disabled>Press me</JellyButton>;
+}`}
+>
+  <JellyButton disabled>Press me</JellyButton>
+</ComponentPreview>
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `variant` | `"primary" \| "secondary" \| "outline"` | `"primary"` | Color scheme |
+| `size` | `"sm" \| "md" \| "lg"` | `"md"` | Button padding and text size |
+| `squash` | `number` | `0.6` | How hard the button deforms on press (`0`–`1`) |
