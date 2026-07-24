@@ -46,25 +46,28 @@ export default function Home() {
         // while sharing the docs drawer on mobile.
         sidebar={{ collapsible: false, className: "md:hidden" }}
         links={[{ type: "custom", on: "menu", children: <MobileMenu /> }]}
-        containerProps={{ className: "min-h-svh", style: homeLayoutStyle }}
+        containerProps={{
+          className: "min-h-svh md:h-svh md:min-h-0 md:overflow-hidden",
+          style: homeLayoutStyle,
+        }}
         slots={{
           header: HomeHeader,
           navTitle: NullNavTitle,
           searchTrigger: false,
         }}
       >
-        <main className="relative flex min-h-svh flex-col [grid-area:main]">
+        <main className="relative flex min-h-svh flex-col [grid-area:main] md:min-h-0">
           <HeroGrid />
           <section className="relative z-10 flex flex-1 flex-col items-center justify-center gap-8 px-4 text-center">
             <Link
-              href="/docs/components/layout/gooey-stack"
+              href="/docs/components/buttons/jelly-button"
               className="group inline-flex items-center gap-2 rounded-full border bg-fd-card px-3 py-1 font-medium text-fd-muted-foreground text-xs transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground"
             >
               <span className="relative flex size-2">
                 <span className="absolute inline-flex size-full animate-ping rounded-full bg-fd-primary opacity-75" />
                 <span className="relative inline-flex size-2 rounded-full bg-fd-primary" />
               </span>
-              Introducing Gooey Stack — liquid card merging
+              Introducing Jelly Button — squishy tactile press
               <span
                 aria-hidden="true"
                 className="transition-transform group-hover:translate-x-0.5"
