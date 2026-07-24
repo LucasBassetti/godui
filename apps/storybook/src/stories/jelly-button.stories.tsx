@@ -14,7 +14,7 @@ const meta = {
     children: text("Content"),
     variant: select(["primary", "secondary", "outline"], "Appearance"),
     size: select(["sm", "md", "lg"], "Appearance"),
-    squash: range(0, 1, 0.05, "Motion"),
+    squash: range(0, 1, 0.05, "Behavior"),
     disabled: toggle("State"),
     onClick: action("click"),
   },
