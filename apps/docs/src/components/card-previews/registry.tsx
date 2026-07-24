@@ -57,6 +57,7 @@ import ImageAccordion from "./previews/image-accordion";
 import ImageCompare from "./previews/image-compare";
 import ImageTrail from "./previews/image-trail";
 import InertiaGallery from "./previews/inertia-gallery";
+import JellyButton from "./previews/jelly-button";
 import Lamp from "./previews/lamp";
 import LightRays from "./previews/light-rays";
 import LiquidGlassCard from "./previews/liquid-glass-card";
@@ -126,6 +127,7 @@ export const cardPreviews: Record<string, Preview> = {
   "gooey-fab": GooeyFab,
   "gooey-stack": GooeyStack,
   "hold-confirm-button": HoldConfirmButton,
+  "jelly-button": JellyButton,
   "magic-button": MagicButton,
   "magnetic-button": MagneticButton,
   "mask-button": MaskButton,

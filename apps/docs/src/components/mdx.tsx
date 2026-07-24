@@ -184,6 +184,9 @@ import { InertiaGalleryAnatomy } from "@/components/learn/inertia-gallery-anatom
 import { InertiaGalleryDrag } from "@/components/learn/inertia-gallery-drag";
 import { InertiaGalleryFalloff } from "@/components/learn/inertia-gallery-falloff";
 import { InertiaGalleryResult } from "@/components/learn/inertia-gallery-result";
+import { JellyAnatomy } from "@/components/learn/jelly-anatomy";
+import { JellyButtonResult } from "@/components/learn/jelly-button-result";
+import { JellySquash } from "@/components/learn/jelly-squash";
 import { LampAnatomy } from "@/components/learn/lamp-anatomy";
 import { LampIgnite } from "@/components/learn/lamp-ignite";
 import { LampResult } from "@/components/learn/lamp-result";
@@ -622,6 +625,9 @@ export function getMDXComponents(components?: MDXComponents) {
     InertiaGalleryDrag,
     InertiaGalleryFalloff,
     InertiaGalleryResult,
+    JellyAnatomy,
+    JellyButtonResult,
+    JellySquash,
     LampAnatomy,
     LampIgnite,
     LampResult,

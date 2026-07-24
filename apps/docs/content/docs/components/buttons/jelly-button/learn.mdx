@@ -1,0 +1,112 @@
+---
+title: Anatomy of the Jelly Button
+description: How a squishy, physical-feeling button is built from a single surface, one animated property, and a bezier that overshoots.
+---
+
+A button that feels _squishy_ isn't a texture or a spring library — it's one
+surface, one animated property, and a curve that springs past its target. Here's
+every trick, pulled apart.
+
+## One surface, one origin
+
+There are no layers here. Unlike a 3D push button, the Jelly Button is a single
+element that _deforms in place_. The whole trick is `transform-origin: bottom` —
+the surface is pinned to its baseline, so when it squashes it flattens _down_
+into that edge, the way a real object settles under your finger.
+
+<JellyAnatomy />
+
+The dashed frame is the envelope the surface deforms into on press: wider on X,
+shorter on Y, but anchored to the same bottom edge.
+
+```tsx
+<button className="group origin-bottom ...">{children}</button>
+```
+
+## The squash & stretch
+
+Depth is faked by deform. On press the surface snaps to `scale(1.13, 0.87)` —
+fatter and shorter — then _releases past_ its rest size before settling. That
+overshoot is the entire "jelly" read: a rigid button would just return to `1`,
+but this one springs to `scale(0.97, 1.06)` and back.
+
+<JellySquash />
+
+Two timings do the work: a near-instant `120ms` squash while held, and a slower
+`300ms` release on a bezier that overshoots.
+
+```tsx
+"[transition:scale_300ms_cubic-bezier(0.3,0.7,0.4,1.5)]
+ active:[scale:var(--jelly-press)]
+ active:[transition:scale_120ms_cubic-bezier(0.3,0.7,0.4,1)]"
+```
+
+The overshoot lives in that `1.5` — the fourth control point of
+`cubic-bezier(0.3, 0.7, 0.4, 1.5)` pushes the value past its target and lets it
+spring back, no keyframes and no JS spring required.
+
+## Why `scale`, nothing else
+
+The deform animates `scale` and _only_ `scale`. No `width`/`height` (that would
+re-flow the page every frame), no `box-shadow` (that would re-paint it). `scale`
+is a compositor property: the browser resizes an already-painted layer on the
+GPU, so the squash holds 60fps no matter how heavy the button's content is. The
+color and shadow differences between rest and press are static — they never
+transition — so nothing paints during the animation. That keeps the component at
+MotionScore **S**.
+
+```tsx
+"origin-bottom [will-change:transform]
+ [transition:scale_300ms_cubic-bezier(0.3,0.7,0.4,1.5)]"
+```
+
+## The squash knob
+
+How hard the button deforms is one prop, `squash` (`0`–`1`), mapped to the
+`scale` value the button snaps to and handed in as a CSS variable so the class
+list stays static.
+
+```tsx
+function pressScale(squash: number): string {
+  const amount = Math.min(Math.max(squash, 0), 1) * 0.22;
+  return `${(1 + amount).toFixed(3)} ${(1 - amount).toFixed(3)}`;
+}
+// …
+style={{ "--jelly-press": pressScale(squash) }}
+// active:[scale:var(--jelly-press)]
+```
+
+Driving it through `--jelly-press` means the same handful of Tailwind classes
+serve every intensity — the scanner never sees an interpolated class name.
+
+## Accessibility
+
+Real motion needs real semantics. The button tracks a `pressed` state from
+`Enter`/`Space`, so keyboard users get the same squash as a pointer press;
+`focus-visible` mirrors the hover lift so a focused button reads as raised; and
+`motion-reduce` drops every scale change back to `1`, leaving a static, instant
+button for anyone who's asked the OS to cut motion.
+
+```tsx
+const handleKeyDown = (e) => {
+  if (e.key === "Enter" || e.key === " ") setPressed(true);
+};
+// data-[pressed=true]:[scale:var(--jelly-press)]
+// motion-reduce:active:[scale:1] motion-reduce:[transition:none]
+```
+
+## Motion Score
+
+<MotionScorePanel name="jelly-button" />
+
+## The result
+
+Every piece, assembled — the real component. Hover it, tab to it, press and
+hold. The squash, the overshoot, the settle: each is `scale` on a bezier, and
+nothing else.
+
+<JellyButtonResult />
+
+That's the whole illusion: one surface pinned to its baseline, a single
+composited property, and a curve with the discipline to overshoot and spring
+back.
