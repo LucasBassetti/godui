@@ -40,7 +40,7 @@ export type MagneticButtonProps = Omit<
 const SPRING = { stiffness: 170, damping: 12, mass: 0.1 } as const;
 
 const BUTTON_BASE =
-  "relative inline-flex cursor-pointer select-none items-center justify-center rounded-[var(--button-radius)] font-medium [outline-offset:4px] [-webkit-tap-highlight-color:transparent] focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.97] [transition:background_200ms_ease,box-shadow_200ms_ease,color_200ms_ease,scale_120ms_ease] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50";
+  "relative inline-flex cursor-pointer select-none items-center justify-center rounded-[var(--button-radius)] font-medium [outline-offset:4px] [-webkit-tap-highlight-color:transparent] focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.97] [transition:background_200ms_ease,color_200ms_ease,scale_120ms_ease] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50";
 
 const variantClass: Record<MagneticButtonVariant, string> = {
   default: "bg-primary text-primary-foreground shadow-sm hover:bg-primary/90",

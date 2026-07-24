@@ -10,6 +10,7 @@ import { ComponentBadges } from "@/components/component-badges";
 import { getMDXComponents } from "@/components/mdx";
 import { DEPENDENCY_NOTES } from "@/lib/dependency-notes";
 import { MOTION_NOTES, STATIC_COMPONENTS } from "@/lib/motion-notes";
+import { motionScore } from "@/lib/motion-score";
 import { source } from "@/lib/source";
 import { Breadcrumbs, type Crumb } from "../_components/breadcrumbs";
 import { ComponentTabs } from "../_components/component-tabs";
@@ -42,6 +43,10 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
     ? DEPENDENCY_NOTES[componentName]
     : undefined;
   const isStatic = componentName ? STATIC_COMPONENTS.has(componentName) : false;
+  // Static components (the `*-background` effects) never animate — no grade to show;
+  // they keep only the green "Static" badge.
+  const score =
+    componentName && !isStatic ? motionScore(componentName) : undefined;
 
   // On the Learn page, `page.data.title` is the article title — but the
   // breadcrumb should still read the component's name (pulled from the base
@@ -96,10 +101,16 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
       ) : null}
       {isComponentDocsPage ? (
         <ComponentBadges
+          score={score}
+          scoreHref={
+            hasLearn && docsHref ? `${docsHref}/learn#motion-score` : undefined
+          }
           perf={motionNote}
           dep={dependencyNote}
           isStatic={isStatic}
         />
+      ) : isLearnPage ? (
+        <ComponentBadges placeholder />
       ) : null}
       <DocsTitle className="docs-title">{page.data.title}</DocsTitle>
       <DocsDescription className="docs-lead">

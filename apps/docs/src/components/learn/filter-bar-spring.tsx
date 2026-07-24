@@ -3,11 +3,8 @@
 import { ScrollScene } from "./scroll-scene";
 
 /**
- * The signature move: when a facet gains a selection, an inline summary springs
- * open inside the pill. Framer animates the summary from `width: 0 → auto`
- * (revealing rightward) while the clear button pops in on a spring
- * (`scale: 0.6 → 1`). Here the reveal is a compositor-only `scaleX` from the
- * left edge — same read, transform instead of layout.
+ * When a facet gains a selection: plus scales out, summary slides in on x +
+ * opacity, clear pops on scale — all compositor-only (matches the source).
  */
 const CheckIcon = (
   <svg
@@ -25,20 +22,20 @@ const CheckIcon = (
 
 const CSS = `
 @keyframes fbs-plus {
-  from { opacity: 1; transform: none; }
-  to   { opacity: 0; transform: translateX(-4px); }
+  from { opacity: 1; transform: scale(1); }
+  to   { opacity: 0; transform: scale(0.25); }
 }
 @keyframes fbs-reveal {
-  from { opacity: 0; transform: scaleX(0.15); }
-  to   { opacity: 1; transform: scaleX(1); }
+  from { opacity: 0; transform: translateX(-6px); }
+  to   { opacity: 1; transform: translateX(0); }
 }
 @keyframes fbs-pop {
   from { opacity: 0; transform: scale(0.6); }
   to   { opacity: 1; transform: scale(1); }
 }
-.fbs-plus   { animation: fbs-plus 200ms ease both; }
-.fbs-reveal { transform-origin: left center; opacity: 0; animation: fbs-reveal 380ms cubic-bezier(0.3,0.7,0.4,1.2) 140ms both; }
-.fbs-pop    { opacity: 0; animation: fbs-pop 460ms cubic-bezier(0.3,0.7,0.4,1.5) 300ms both; }
+.fbs-plus   { animation: fbs-plus 280ms cubic-bezier(0.3,0.7,0.4,1) both; }
+.fbs-reveal { opacity: 0; animation: fbs-reveal 380ms cubic-bezier(0.3,0.7,0.4,1.2) 80ms both; }
+.fbs-pop    { opacity: 0; animation: fbs-pop 460ms cubic-bezier(0.3,0.7,0.4,1.5) 120ms both; }
 .fbs-static .fbs-plus   { opacity: 0; animation: none; }
 .fbs-static .fbs-reveal { opacity: 1; animation: none; transform: none; }
 .fbs-static .fbs-pop    { opacity: 1; animation: none; transform: none; }
@@ -58,7 +55,7 @@ export function FilterBarSpring() {
   return (
     <ScrollScene
       label="Selection"
-      note="summary springs inline · clear pops in"
+      note="plus scales out · summary slides in · clear pops"
     >
       {({ cycle, reduced }) => (
         <div className="flex w-full max-w-[460px] flex-col items-center gap-9">
@@ -95,7 +92,7 @@ export function FilterBarSpring() {
           </div>
 
           <p className="text-center font-mono text-[11px] text-fd-muted-foreground">
-            width: 0 → auto reveal · clear button springs at scale 0.6 → 1
+            opacity + translateX / scale · shared spring · no width tween
           </p>
         </div>
       )}

@@ -3,10 +3,9 @@
 import { ScrollScene } from "./scroll-scene";
 
 /**
- * The bar living behind the folded face, two ways. Source drives determinate
- * fill by transitioning `width` to a CSS var, and the indeterminate sweep by
- * translating a fixed-width segment. This diagram fills with `scaleX` from a
- * left origin instead of `width` — same read, compositor-only.
+ * The bar living behind the folded face, two ways — same as the source:
+ * determinate fill via `scaleX` from a left origin, indeterminate via a
+ * translating fixed-width segment. Both compositor-only.
  */
 
 const CSS = `

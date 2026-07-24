@@ -33,10 +33,11 @@ const LAYERS_BASE = "absolute inset-0 -z-[1] overflow-hidden";
 const FRONT_BASE =
   "relative grid w-full place-items-center rounded-[inherit] [transform:rotateX(0deg)] [transform-origin:top_center] [transition:transform_0.2s] group-hover:[transform:rotateX(35deg)] group-focus-visible:[transform:rotateX(35deg)] group-data-[status=loading]:[transform:rotateX(35deg)] motion-reduce:[transition:none]";
 
-// Progress bar: determinate fills to --progress-fold-fill (transition armed a
-// frame after entering loading); indeterminate sweeps a fixed segment on a loop.
+// Progress bar: determinate scales from the left to --progress-fold-fill
+// (0–1, transition armed a frame after entering loading); indeterminate
+// sweeps a fixed 40%-wide segment on a loop.
 const BAR_BASE =
-  "absolute top-0 left-0 h-full w-0 group-data-[determinate=true]:[width:var(--progress-fold-fill,0%)] group-[&[data-determinate=true][data-armed=true]]:[transition:width_0.25s_ease] group-[&[data-status=loading]:not([data-determinate=true])]:w-[40%] group-[&[data-status=loading]:not([data-determinate=true])]:animate-progress-fold-indeterminate motion-reduce:group-[&[data-determinate=true][data-armed=true]]:[transition:none] motion-reduce:group-[&[data-status=loading]:not([data-determinate=true])]:animate-none";
+  "absolute top-0 left-0 h-full w-full origin-left [transform:scaleX(0)] group-data-[determinate=true]:[transform:scaleX(var(--progress-fold-fill,0))] group-[&[data-determinate=true][data-armed=true]]:[transition:transform_0.25s_ease] group-[&[data-status=loading]:not([data-determinate=true])]:w-[40%] group-[&[data-status=loading]:not([data-determinate=true])]:animate-progress-fold-indeterminate motion-reduce:group-[&[data-determinate=true][data-armed=true]]:[transition:none] motion-reduce:group-[&[data-status=loading]:not([data-determinate=true])]:animate-none";
 
 // Outer button + clip layer share the per-size radius (--button-radius-*).
 const radiusClasses: Record<ProgressFoldButtonSize, string> = {
@@ -120,7 +121,7 @@ const ProgressFoldButton = React.forwardRef<
           clamped != null
             ? ({
                 ...style,
-                "--progress-fold-fill": `${clamped}%`,
+                "--progress-fold-fill": clamped / 100,
               } as React.CSSProperties)
             : style
         }

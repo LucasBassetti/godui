@@ -5,7 +5,7 @@ import { ScrollScene } from "./scroll-scene";
 
 /**
  * Auto-advance, visualized: `activeIndex = min(value.length, length − 1)`. One
- * traveling highlight (ring + blinking caret) glides cell to cell as they fill,
+ * traveling highlight (outline + blinking caret) glides cell to cell as they fill,
  * and each cell reveals its dot right as the caret passes. Pure display — the
  * value moves, the highlight follows it. One-shot on scroll-in; replay re-runs.
  */
@@ -59,8 +59,8 @@ export function OtpCaret() {
               </div>
             ))}
 
-            {/* Traveling highlight — the active cell: ring + blinking caret. */}
-            <div className="oc-caret pointer-events-none absolute top-0 left-0 flex size-12 items-center justify-center rounded-lg ring-2 ring-ring">
+            {/* Traveling highlight — the active cell: outline + blinking caret. */}
+            <div className="oc-caret pointer-events-none absolute top-0 left-0 flex size-12 items-center justify-center rounded-lg outline outline-2 outline-ring outline-offset-2">
               <span className="oc-blink h-6 w-px rounded-full bg-foreground" />
             </div>
           </div>

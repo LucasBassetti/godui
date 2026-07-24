@@ -46,7 +46,7 @@ const activeIndex = Math.min(value.length, length - 1);
 ```
 
 The next character always lands at `value.length`, clamped to the last cell when
-the code is full. A single highlight — scaled up, ringed, with a blinking caret
+the code is full. A single highlight — scaled up, outlined, with a blinking caret
 bar — follows that index as the value grows.
 
 <OtpCaret />
@@ -126,6 +126,10 @@ const value = sanitize(isControlled ? valueProp : internal, type, length);
 Sanitizing on the way *out* (not just on change) means even a controlled value
 with stray characters or an over-long string renders correctly — the display can
 only ever show valid, length-bounded input.
+
+## Motion Score
+
+<MotionScorePanel name="otp-input" />
 
 ## The result
 

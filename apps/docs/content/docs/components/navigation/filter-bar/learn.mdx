@@ -1,6 +1,6 @@
 ---
 title: Anatomy of the Filter Bar
-description: How a row of facet pills stays a set of plain buttons and a popover — with an inline summary that grows to fit its content, and a spring-in clear button.
+description: How a row of facet pills stays a set of plain buttons and a popover — with a compositor-only summary slide-in, and a spring-in clear button.
 ---
 
 A filter bar reads like a form — checkboxes, a submit, a results count — but
@@ -21,7 +21,7 @@ inline, and a clear button shows up on its trailing edge:
 ```tsx
 <div className={hasSelection ? "border-foreground/15 bg-accent" : "border-dashed border-border"}>
   <button onClick={() => setOpen(isOpen ? null : facet.id)}>
-    {!hasSelection && <span>{PlusIcon}</span>}
+    {!hasSelection && <motion.span>{PlusIcon}</motion.span>}
     <span>{facet.label}</span>
     {hasSelection && <motion.span>{summarize(facet, selected)}</motion.span>}
   </button>
@@ -33,41 +33,31 @@ inline, and a clear button shows up on its trailing edge:
 the pill never grows unbounded — pick five options in one facet and the
 label still reads as one short phrase.
 
-## The summary is a width reveal — a deliberate exception
+## Presence, not a width morph
 
-Most of GodUI's motion is compositor-only: transform and opacity, never a
-layout property. The facet summary breaks that rule on purpose. When a
-selection appears, the summary span animates `width: 0 → "auto"`:
+The pill's width still changes when a selection appears — content is
+content — but that reflow is a single layout pass, not a tween. The motion
+that sells the change stays on the compositor: the plus scales out, the
+summary slides in on `x` + opacity, and the clear button pops on scale, all
+on the same spring (`stiffness: 520 / damping: 32`):
 
 ```tsx
 <motion.span
-  initial={{ opacity: 0, width: 0 }}
-  animate={{ opacity: 1, width: "auto" }}
-  exit={{ opacity: 0, width: 0 }}
-  transition={{ duration: 0.2, ease: "easeOut" }}
-  className="overflow-hidden"
+  initial={{ opacity: 0, x: -6 }}
+  animate={{ opacity: 1, x: 0 }}
+  exit={{ opacity: 0, x: -6 }}
+  transition={{ type: "spring", stiffness: 520, damping: 32 }}
 >
   <span className="h-3.5 w-px bg-border" />
   <span>{summarize(facet, selected)}</span>
 </motion.span>
 ```
 
-There's no transform equivalent for "grow to fit unknown, dynamically-sized
-content" — the summary text's width isn't known until it renders, so
-`scaleX` from a fixed value would either clip real content or leave a gap.
-Framer Motion's `width: "auto"` measures the child and animates toward that
-real number, at the cost of triggering layout on the parent flex row every
-frame. It's a 200ms animation on an infrequent, user-initiated action (making
-a selection), not a hover loop — a fine trade in that spot. The scene below
-approximates the same read with a `scaleX` reveal for illustration, but the
-real component genuinely animates `width`; that's the honest version of this
-mechanism, exception and all.
+There's no `width: 0 → "auto"` and no Framer `layout` on the row. Animating
+width to fit unknown text reflows every sibling every frame; snapping the
+pill and animating only presence reads cleaner and stays GPU-composited.
 
 <FilterBarSpring />
-
-The clear button beside it *does* stay on the transform budget — it pops in
-with `scale: 0.6 → 1` on the standard `stiffness: 520 / damping: 32` spring,
-same as the rest of the bar.
 
 ## The popover and its checkbox list
 
@@ -115,14 +105,17 @@ React.useEffect(() => {
 }, [open]);
 ```
 
-`useReducedMotion` flattens every spring and the width reveal alike down to
-opacity-only transitions — the summary still appears, it just doesn't grow
-into place.
+`useReducedMotion` flattens every spring down to opacity-only — the summary
+still appears, it just doesn't slide or scale into place.
+
+## Motion Score
+
+<MotionScorePanel name="filter-bar" />
 
 ## The result
 
 <FilterBarResult />
 
 A `facets` array in, a `FilterValue` record out — every pill is a button and
-a popover, the summary is the one place layout motion earns its keep, and
-"Clear all" is nothing more than a count check away from disappearing again.
+a popover, the summary slides in on the compositor, and "Clear all" is
+nothing more than a count check away from disappearing again.

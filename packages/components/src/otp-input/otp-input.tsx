@@ -30,7 +30,7 @@ export type OTPInputProps = Omit<
 };
 
 const CELL_BASE =
-  "relative flex size-12 items-center justify-center rounded-lg border bg-background text-lg font-medium text-foreground tabular-nums [transition:border-color_150ms_ease,box-shadow_150ms_ease,transform_150ms_ease]";
+  "relative flex size-12 items-center justify-center rounded-lg border bg-background text-lg font-medium text-foreground tabular-nums [transition:border-color_150ms_ease,transform_150ms_ease]";
 
 function sanitize(raw: string, type: OTPInputProps["type"], length: number) {
   const pattern = type === "alphanumeric" ? /[^a-zA-Z0-9]/g : /[^0-9]/g;
@@ -108,7 +108,7 @@ const OTPInput = React.forwardRef<HTMLInputElement, OTPInputProps>(
               : status === "success"
                 ? "border-primary"
                 : isActive
-                  ? "border-ring ring-2 ring-ring/30"
+                  ? "border-ring outline outline-2 outline-ring/30 outline-offset-2"
                   : filled
                     ? "border-foreground/30"
                     : "border-border";

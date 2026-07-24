@@ -29,6 +29,7 @@ Reference implementation: **Magic Button** —
 | Component-specific scenes | `apps/docs/src/components/learn/{scene}.tsx` | ✅ create |
 | Register scenes for MDX | `apps/docs/src/components/mdx.tsx` | ✅ add |
 | Reusable scene shell | `apps/docs/src/components/learn/scroll-scene.tsx` | ♻️ reuse |
+| Motion Score panel | `apps/docs/src/components/learn/motion-score-panel.tsx` + registry entry | ✅ add registry row (see §6.5) |
 | Result preview (live component) | `apps/docs/src/components/learn/result-preview.tsx` | ♻️ generalize or copy |
 | Tabs control | `apps/docs/src/app/docs/_components/component-tabs.tsx` | ♻️ generic |
 | Page routing + tab wiring | `apps/docs/src/app/docs/[[...slug]]/page.tsx` | ♻️ generic |
@@ -275,10 +276,66 @@ Suggested spine (scale to the component):
 4. **The showpiece detail** — the one flashy mechanism (often the colored scene).
 5. **Cheap when idle / lifecycle** — observers, pausing, cleanup.
 6. **Accessibility** — keyboard, `focus-visible`, `motion-reduce`.
-7. **The result** — `<ResultPreview />`.
+7. **Motion Score** — `<MotionScorePanel name="{name}" />`, the static render-cost grade (see §6.5).
+8. **The result** — `<ResultPreview />`.
 
 Headings become the right-hand TOC automatically. Use fenced ```tsx blocks with real
 excerpts from the component source.
+
+### 6.5. Motion Score panel (required)
+
+Every Learn article carries a **Motion Score** section — a small table that grades the
+component's animation by render cost (the official MotionScore S→F tiers: `S` composited
+off the main thread … `F` layout thrashing) and rolls its animated properties up to a
+final grade (worst tier wins). It sits **directly before `## The result`**, and the whole
+section is just the heading + the panel, no prose:
+
+```mdx
+## Motion Score
+
+<MotionScorePanel name="{name}" />
+```
+
+**Static components get NO Motion Score.** The `*-background` effects in
+`STATIC_COMPONENTS` render with plain CSS and never animate — there's nothing to grade, so
+they get **no** Motion Score section here **and no Motion badge** on the docs page (they
+keep only the green "Static" badge). Skip §6.5 entirely for them.
+
+**Prerequisite — the machine grade.** For an animated component, the final grade comes from
+`motionScore("{name}")` (`apps/docs/src/lib/motion-score.ts`), which reads the component's
+curated `MOTION_NOTES[{name}]` entry (`apps/docs/src/lib/motion-notes.ts`) + its
+`MOTION_ALLOWLIST` props. If the component isn't in `MOTION_NOTES`, it grades **S**
+(compositor-only). Make sure that entry exists and is honest first — it's the same signal
+that drives the docs-page **Motion** badge.
+
+**Shared panel + registry.** The UI is one reusable component —
+`apps/docs/src/components/learn/motion-score-panel.tsx` (already registered in `mdx.tsx`).
+Per-component work is only an entry in `apps/docs/src/lib/motion-score-panels.ts`:
+
+```ts
+"{name}": {
+  title: "Display Name", // same as the docs page title
+  properties: [
+    // AUDIT THE REAL SOURCE — one row per property the component actually animates.
+    // `prop` is the normalised name propTier() grades (lowercase, no hyphens); `label`
+    // is how it reads; `note` is one line on what that property drives.
+    // Optional `tier` overrides propTier() when the real cost isn't a single CSS
+    // property (SVG goo, canvas/WebGL loops) so the worst row matches the header grade.
+    { prop: "translate", label: "translate", note: "…what it drives…" },
+    { prop: "backgroundposition", label: "background-position", note: "…" },
+  ],
+},
+```
+
+Rules:
+- **Audit, don't guess.** List the properties from the component's real transitions /
+  keyframes / framer objects (the same source you read in §2). `propTier` grades each:
+  `transform`/`opacity`/`filter`/`clip-path` → **S**; `background-position`/`box-shadow`/
+  `border-radius`/color/SVG attrs → **C**; `width`/`height`/`margin`/`top`/`font-size` → **D**.
+  The header grade (`motionScore(name)`) and the worst row must agree.
+- **Do not** create a per-component `*-score.tsx` — extend the registry and drop
+  `<MotionScorePanel name="{name}" />` into the Learn MDX.
+- It is **not** a `ScrollScene` — it's a static reference table, so no replay/keyed-remount.
 
 ### 7. Verify
 
@@ -308,6 +365,11 @@ running on a non-3000 port — grep the log). Confirm:
 - **Every legend swatch maps to a visible diagram piece** (same color + shape). Cover
   anatomy *and* motion/lifecycle cards — not just anatomy. No orphan circles/pills for
   CSS concepts that aren't drawn.
+- **Motion Score panel** (§6.5) sits before `## The result` as
+  `<MotionScorePanel name="{name}" />`, its registry entry exists, its header grade
+  matches the worst property row and the docs-page Motion badge, and it reads in
+  **both** themes. Static (`*-background`) components have **no** panel and **no**
+  Motion badge.
 - Component with no learn page shows **no** tabs.
 
 Headless screenshot without installing Playwright (chromium is cached):

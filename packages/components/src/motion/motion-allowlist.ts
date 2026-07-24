@@ -43,9 +43,6 @@ export const MOTION_ALLOWLIST: Record<string, MotionAllowEntry[]> = {
   "tab-bar/tab-bar.tsx": [
     { prop: "width", reason: "active-tab label reveal to width:auto" },
   ],
-  "filter-bar/filter-bar.tsx": [
-    { prop: "width", reason: "expanding filter field morph" },
-  ],
   "dynamic-island/dynamic-island.tsx": [
     { prop: "width", reason: "signature shared-layout container morph" },
     { prop: "height", reason: "signature shared-layout container morph" },
@@ -74,9 +71,6 @@ export const MOTION_ALLOWLIST: Record<string, MotionAllowEntry[]> = {
       reason: "pagination pill 8→24px, single element, per click",
     },
   ],
-  "progress-fold-button/progress-fold-button.tsx": [
-    { prop: "width", reason: "determinate progress-fill width" },
-  ],
   "magic-input/magic-input.tsx": [
     {
       prop: "backgroundsize",
@@ -103,18 +97,6 @@ export const MOTION_ALLOWLIST: Record<string, MotionAllowEntry[]> = {
       prop: "boxshadow",
       reason:
         "node status glow shares its transition with border/background paint — isolating it wins nothing",
-    },
-  ],
-  "magnetic-button/magnetic-button.tsx": [
-    {
-      prop: "boxshadow",
-      reason: "hover shadow shares its transition with background/color paint",
-    },
-  ],
-  "otp-input/otp-input.tsx": [
-    {
-      prop: "boxshadow",
-      reason: "focus-ring shadow shares its transition with border-color paint",
     },
   ],
   "stepper/stepper.tsx": [

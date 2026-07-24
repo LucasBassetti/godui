@@ -78,7 +78,7 @@ describe("ProgressFoldButton", () => {
     );
     const button = screen.getByRole("button");
     expect(button).toHaveAttribute("data-determinate", "true");
-    expect(button.style.getPropertyValue("--progress-fold-fill")).toBe("40%");
+    expect(button.style.getPropertyValue("--progress-fold-fill")).toBe("0.4");
     const bar = screen.getByRole("progressbar");
     expect(bar).toHaveAttribute("aria-valuenow", "40");
     expect(bar).toHaveAttribute("aria-valuetext", "40%");
@@ -91,7 +91,7 @@ describe("ProgressFoldButton", () => {
       </ProgressFoldButton>,
     );
     let button = screen.getByRole("button");
-    expect(button.style.getPropertyValue("--progress-fold-fill")).toBe("100%");
+    expect(button.style.getPropertyValue("--progress-fold-fill")).toBe("1");
 
     rerender(
       <ProgressFoldButton status="loading" progress={-20}>
@@ -99,6 +99,6 @@ describe("ProgressFoldButton", () => {
       </ProgressFoldButton>,
     );
     button = screen.getByRole("button");
-    expect(button.style.getPropertyValue("--progress-fold-fill")).toBe("0%");
+    expect(button.style.getPropertyValue("--progress-fold-fill")).toBe("0");
   });
 });

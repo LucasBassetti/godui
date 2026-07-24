@@ -303,6 +303,15 @@ beside the main page as `apps/docs/content/docs/components/{category}/{name}/lea
 **Invoke the `godui-learn-article` skill to build it** — it owns the routing, the tab
 wiring, the `ScrollScene` primitive, scene patterns, and the gotchas. Don't hand-roll it.
 
+The article ends with a **Motion Score** section (a `## Motion Score` heading +
+`<MotionScorePanel name="{name}" />` before `## The result`) that grades the component's
+animated properties S→F — the learn skill's §6.5 covers the pattern (shared panel +
+registry entry in `motion-score-panels.ts`). Its grade comes from the component's
+`MOTION_NOTES` entry (`apps/docs/src/lib/motion-notes.ts`), the same signal behind the
+docs-page **Motion** badge — so add/verify that entry. **Static (`STATIC_COMPONENTS`)
+components get no Motion Score section and no Motion badge** — only the green "Static"
+badge.
+
 Non-negotiable when authoring the scenes (the learn skill covers this in full, repeated
 here because it's the most common review bounce): **use the black/white pattern and verify
 BOTH themes.** Illustrative shapes use theme tokens (`--foreground`, `--background`,
@@ -393,6 +402,7 @@ slug.
 - [ ] Storybook story with `tags: ["autodocs"]`
 - [ ] Docs MDX under `components/{category}/{name}/index.mdx` with ComponentPreview + ComponentInstall
 - [ ] Learn tab `components/{category}/{name}/learn.mdx` built via the `godui-learn-article` skill — scenes use the black/white pattern and are verified in **both** light and dark theme (see §5.5)
+- [ ] Motion Score section in the Learn article (`## Motion Score` + `<MotionScorePanel name="{name}" />` before The result, plus a `MOTION_SCORE_PANELS` registry entry) — grade matches the docs Motion badge; **skip for static (`STATIC_COMPONENTS`) components** (see learn skill §6.5)
 - [ ] `date: YYYY-MM-DD` (today) in the MDX frontmatter — required; drives the "New" sidebar badge for one month
 - [ ] ComponentPreview children: text inline in its tag (no `<p>`-in-`<p>` — see §5)
 - [ ] Registered in root `apps/docs/content/docs/meta.json` as `components/{category}/{name}`

@@ -44,10 +44,6 @@ export const MOTION_NOTES: Record<string, MotionNote> = {
     reason:
       "The active tab reveals its label by animating width to auto — a layout property.",
   },
-  "filter-bar": {
-    kind: "layout",
-    reason: "The field expands by animating its width — a layout property.",
-  },
   "dynamic-island": {
     kind: "layout",
     reason:
@@ -73,10 +69,6 @@ export const MOTION_NOTES: Record<string, MotionNote> = {
     reason:
       "The pagination pill animates its width (8→24px) — a layout property, though tiny and only on click.",
   },
-  "progress-fold-button": {
-    kind: "layout",
-    reason: "The progress fill animates its width — a layout property.",
-  },
   // ── Paint: box-shadow, clip-path, SVG geometry, background loops ───────────
   "image-compare": {
     kind: "paint",
@@ -92,16 +84,6 @@ export const MOTION_NOTES: Record<string, MotionNote> = {
     kind: "paint",
     reason:
       "Node status changes animate box-shadow alongside colors — main-thread paint.",
-  },
-  "magnetic-button": {
-    kind: "paint",
-    reason:
-      "Hover animates box-shadow alongside background and color — main-thread paint.",
-  },
-  "otp-input": {
-    kind: "paint",
-    reason:
-      "Focus animates box-shadow alongside the border color — main-thread paint.",
   },
   stepper: {
     kind: "paint",

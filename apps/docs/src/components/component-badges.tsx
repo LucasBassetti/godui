@@ -1,20 +1,26 @@
 "use client";
 
+import { MOTION_TIER_META, type MotionGrade } from "@godui/components";
 import * as React from "react";
 import type { DependencyNote } from "@/lib/dependency-notes";
 import type { MotionNote } from "@/lib/motion-notes";
 
 /**
  * The badge row shown below a component page's description. Every component
- * carries a Motion Performance badge — green when it's GPU-only (animates only
- * transform / opacity / filter), amber when it animates a layout/paint/compute
- * property by design. Components that pull in a third-party dependency also get
- * a violet badge. Each badge reveals a tooltip on hover or keyboard focus.
+ * leads with a sky MotionScore badge (its static S→F render-cost grade), then a
+ * Motion Performance badge — green when it's GPU-only (animates only transform /
+ * opacity / filter), amber when it animates a layout/paint/compute property by
+ * design. Components that pull in a third-party dependency also get a violet
+ * badge. Each badge reveals a tooltip on hover or keyboard focus.
  */
 
-type Tone = "emerald" | "amber" | "violet";
+type Tone = "emerald" | "amber" | "violet" | "sky";
 
 const TONE: Record<Tone, { pill: string; dot: string }> = {
+  sky: {
+    pill: "bg-sky-400/15 text-sky-700 ring-sky-500/30 hover:bg-sky-400/25 focus-visible:ring-sky-500/50 dark:bg-sky-400/10 dark:text-sky-300",
+    dot: "bg-sky-500",
+  },
   emerald: {
     pill: "bg-emerald-400/15 text-emerald-700 ring-emerald-500/30 hover:bg-emerald-400/25 focus-visible:ring-emerald-500/50 dark:bg-emerald-400/10 dark:text-emerald-300",
     dot: "bg-emerald-500",
@@ -33,14 +39,20 @@ function Badge({
   tone,
   label,
   title,
+  href,
+  hrefLabel,
   children,
 }: {
   tone: Tone;
   label: string;
   title: string;
+  /** When set, the tooltip becomes hoverable and ends with a "learn more" link. */
+  href?: string;
+  hrefLabel?: string;
   children: React.ReactNode;
 }) {
   const id = React.useId();
+  const external = href?.startsWith("http");
   return (
     <span className="group/badge relative inline-flex align-middle">
       <button
@@ -54,15 +66,31 @@ function Badge({
         />
         {label}
       </button>
+      {/* pt-2 (not mt-2) bridges the gap to the pill so an interactive tooltip
+          stays open while the pointer travels down to the link. */}
       <span
         role="tooltip"
         id={id}
-        className="pointer-events-none absolute top-full left-0 z-50 mt-2 w-72 max-w-[min(18rem,80vw)] rounded-lg border border-border bg-popover px-3 py-2.5 text-left font-normal text-[13px] text-popover-foreground normal-case leading-relaxed tracking-normal opacity-0 shadow-lg transition-opacity duration-150 group-hover/badge:opacity-100 group-focus-within/badge:opacity-100"
+        className={`absolute top-full left-0 z-50 w-72 max-w-[min(18rem,80vw)] pt-2 text-left opacity-0 transition-opacity duration-150 group-hover/badge:opacity-100 group-focus-within/badge:opacity-100 ${href ? "" : "pointer-events-none"}`}
       >
-        <span className="mb-0.5 block font-semibold text-foreground">
-          {title}
+        <span className="block rounded-lg border border-border bg-popover px-3 py-2.5 font-normal text-[13px] text-popover-foreground normal-case leading-relaxed tracking-normal shadow-lg">
+          <span className="mb-0.5 block font-semibold text-foreground">
+            {title}
+          </span>
+          {children}
+          {href ? (
+            <a
+              href={href}
+              {...(external
+                ? { target: "_blank", rel: "noreferrer" }
+                : undefined)}
+              className="mt-2 inline-flex items-center gap-1 font-medium text-sky-600 transition-colors hover:text-sky-500 dark:text-sky-400"
+            >
+              {hrefLabel ?? "Learn more"}
+              <span aria-hidden="true">→</span>
+            </a>
+          ) : null}
         </span>
-        {children}
       </span>
     </span>
   );
@@ -75,19 +103,62 @@ const PERF_LABEL: Record<MotionNote["kind"], string> = {
 };
 
 export function ComponentBadges({
+  score,
+  scoreHref,
   perf,
   dep,
   isStatic,
+  placeholder,
 }: {
+  /** Static MotionScore (S→F) for the component's animation render cost. */
+  score?: { grade: MotionGrade; reason: string };
+  /**
+   * Learn-page URL for the Motion Score table (with `#motion-score` anchor).
+   * When set, the Motion badge tooltip links there.
+   */
+  scoreHref?: string;
   /** Present when the component isn't 100% GPU-composited; absent means GPU-only. */
   perf?: MotionNote;
   /** Present when the component depends on a third-party package. */
   dep?: DependencyNote;
   /** True when the component renders statically with no animation at all. */
   isStatic?: boolean;
+  /**
+   * Reserve the badge-row height without showing any badge. Used on the Learn
+   * tab (which has no badges) so its title lands at the same vertical position
+   * as the Docs tab's title.
+   */
+  placeholder?: boolean;
 }) {
+  if (placeholder) {
+    return (
+      <div
+        aria-hidden="true"
+        className="not-prose invisible mt-5 mb-0 flex flex-wrap items-center gap-2"
+      >
+        <span className="inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] leading-none ring-1">
+          <span className="size-1.5 rounded-full" />
+          placeholder
+        </span>
+      </div>
+    );
+  }
   return (
     <div className="not-prose mt-5 mb-0 flex flex-wrap items-center gap-2">
+      {score ? (
+        <Badge
+          tone="sky"
+          label={`Motion ${score.grade}`}
+          title={`${score.grade} — ${MOTION_TIER_META[score.grade].name}`}
+          href={scoreHref}
+          hrefLabel="Motion Score table"
+        >
+          <span className="block">{MOTION_TIER_META[score.grade].summary}</span>
+          <span className="mt-1.5 block text-muted-foreground">
+            {score.reason}
+          </span>
+        </Badge>
+      ) : null}
       {perf ? (
         <Badge
           tone="amber"

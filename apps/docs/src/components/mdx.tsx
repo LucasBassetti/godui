@@ -101,10 +101,6 @@ import { ConversationThreadStream } from "@/components/learn/conversation-thread
 import { CoverFlowAnatomy } from "@/components/learn/cover-flow-anatomy";
 import { CoverFlowFan } from "@/components/learn/cover-flow-fan";
 import { CoverFlowResult } from "@/components/learn/cover-flow-result";
-import { DecorativeBackgroundAnatomy } from "@/components/learn/decorative-background-anatomy";
-import { DecorativeBackgroundPresets } from "@/components/learn/decorative-background-presets";
-import { DecorativeBackgroundResult } from "@/components/learn/decorative-background-result";
-import { DecorativeBackgroundStack } from "@/components/learn/decorative-background-stack";
 import { DockAnatomy } from "@/components/learn/dock-anatomy";
 import { DockMagnify } from "@/components/learn/dock-magnify";
 import { DockResult } from "@/components/learn/dock-result";
@@ -120,10 +116,6 @@ import { DynamicIslandAnatomy } from "@/components/learn/dynamic-island-anatomy"
 import { DynamicIslandCrossfade } from "@/components/learn/dynamic-island-crossfade";
 import { DynamicIslandResult } from "@/components/learn/dynamic-island-result";
 import { DynamicIslandShell } from "@/components/learn/dynamic-island-shell";
-import { EffectBackgroundAlive } from "@/components/learn/effect-background-alive";
-import { EffectBackgroundAnatomy } from "@/components/learn/effect-background-anatomy";
-import { EffectBackgroundResult } from "@/components/learn/effect-background-result";
-import { EffectBackgroundStack } from "@/components/learn/effect-background-stack";
 import { ElasticTextAnatomy } from "@/components/learn/elastic-text-anatomy";
 import { ElasticTextResult } from "@/components/learn/elastic-text-result";
 import { ElasticTextSpotlight } from "@/components/learn/elastic-text-spotlight";
@@ -149,10 +141,6 @@ import { FluidCursorLifecycle } from "@/components/learn/fluid-cursor-lifecycle"
 import { FluidCursorResult } from "@/components/learn/fluid-cursor-result";
 import { FoldProgress } from "@/components/learn/fold-progress";
 import { FoldStages } from "@/components/learn/fold-stages";
-import { GeometricBackgroundAnatomy } from "@/components/learn/geometric-background-anatomy";
-import { GeometricBackgroundComposite } from "@/components/learn/geometric-background-composite";
-import { GeometricBackgroundMask } from "@/components/learn/geometric-background-mask";
-import { GeometricBackgroundResult } from "@/components/learn/geometric-background-result";
 import { GlobeAnatomy } from "@/components/learn/globe-anatomy";
 import { GlobeLifecycle } from "@/components/learn/globe-lifecycle";
 import { GlobeResult } from "@/components/learn/globe-result";
@@ -165,10 +153,6 @@ import { GooeyStackAnatomy } from "@/components/learn/gooey-stack-anatomy";
 import { GooeyStackFilter } from "@/components/learn/gooey-stack-filter";
 import { GooeyStackNearness } from "@/components/learn/gooey-stack-nearness";
 import { GooeyStackResult } from "@/components/learn/gooey-stack-result";
-import { GradientBackgroundAnatomy } from "@/components/learn/gradient-background-anatomy";
-import { GradientBackgroundOwnership } from "@/components/learn/gradient-background-ownership";
-import { GradientBackgroundResult } from "@/components/learn/gradient-background-result";
-import { GradientBackgroundStack } from "@/components/learn/gradient-background-stack";
 import { GravityAnatomy } from "@/components/learn/gravity-anatomy";
 import { GravityLifecycle } from "@/components/learn/gravity-lifecycle";
 import { GravityResult } from "@/components/learn/gravity-result";
@@ -260,6 +244,7 @@ import { MorphingDialogAnatomy } from "@/components/learn/morphing-dialog-anatom
 import { MorphingDialogBackdrop } from "@/components/learn/morphing-dialog-backdrop";
 import { MorphingDialogResult } from "@/components/learn/morphing-dialog-result";
 import { MorphingDialogSpring } from "@/components/learn/morphing-dialog-spring";
+import { MotionScorePanel } from "@/components/learn/motion-score-panel";
 import { NotificationInboxAnatomy } from "@/components/learn/notification-inbox-anatomy";
 import { NotificationInboxBadge } from "@/components/learn/notification-inbox-badge";
 import { NotificationInboxResult } from "@/components/learn/notification-inbox-result";
@@ -554,10 +539,6 @@ export function getMDXComponents(components?: MDXComponents) {
     CoverFlowAnatomy,
     CoverFlowFan,
     CoverFlowResult,
-    DecorativeBackgroundAnatomy,
-    DecorativeBackgroundPresets,
-    DecorativeBackgroundResult,
-    DecorativeBackgroundStack,
     DockAnatomy,
     DockMagnify,
     DockResult,
@@ -573,10 +554,6 @@ export function getMDXComponents(components?: MDXComponents) {
     DynamicIslandCrossfade,
     DynamicIslandResult,
     DynamicIslandShell,
-    EffectBackgroundAlive,
-    EffectBackgroundAnatomy,
-    EffectBackgroundResult,
-    EffectBackgroundStack,
     ElasticTextAnatomy,
     ElasticTextResult,
     ElasticTextSpotlight,
@@ -602,10 +579,6 @@ export function getMDXComponents(components?: MDXComponents) {
     FluidCursorResult,
     FoldProgress,
     FoldStages,
-    GeometricBackgroundAnatomy,
-    GeometricBackgroundComposite,
-    GeometricBackgroundMask,
-    GeometricBackgroundResult,
     GlobeAnatomy,
     GlobeLifecycle,
     GlobeResult,
@@ -618,10 +591,6 @@ export function getMDXComponents(components?: MDXComponents) {
     GooeyStackFilter,
     GooeyStackNearness,
     GooeyStackResult,
-    GradientBackgroundAnatomy,
-    GradientBackgroundOwnership,
-    GradientBackgroundResult,
-    GradientBackgroundStack,
     GravityAnatomy,
     GravityLifecycle,
     GravityResult,
@@ -713,6 +682,7 @@ export function getMDXComponents(components?: MDXComponents) {
     MorphingDialogBackdrop,
     MorphingDialogResult,
     MorphingDialogSpring,
+    MotionScorePanel,
     NotificationInboxAnatomy,
     NotificationInboxBadge,
     NotificationInboxResult,

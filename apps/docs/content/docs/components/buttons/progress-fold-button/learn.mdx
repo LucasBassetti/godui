@@ -26,7 +26,7 @@ const FRONT_BASE =
 ```
 
 Behind that face, at `-z-[1]`, sits a back layer: a tint that's always
-there, plus a progress bar that's `w-0` until loading starts.
+there, plus a progress bar that's `scaleX(0)` until loading starts.
 
 <FoldStages />
 
@@ -38,14 +38,14 @@ also true; they're just three selectors pointed at one transform.
 ## The bar behind the fold
 
 Once the face is tilted, the back layer is doing one of two things. If you
-pass a `progress` number, the bar is **determinate** — it fills to that
-percentage. If you don't, it's **indeterminate** — a fixed `40%`-wide
-segment sweeps across on a loop:
+pass a `progress` number, the bar is **determinate** — it `scaleX`s from
+the left to that fraction. If you don't, it's **indeterminate** — a fixed
+`40%`-wide segment sweeps across on a loop:
 
 ```tsx
 const BAR_BASE =
-  "absolute top-0 left-0 h-full w-0 " +
-  "group-data-[determinate=true]:[width:var(--progress-fold-fill,0%)] " +
+  "absolute top-0 left-0 h-full w-full origin-left [transform:scaleX(0)] " +
+  "group-data-[determinate=true]:[transform:scaleX(var(--progress-fold-fill,0))] " +
   "group-[&[data-status=loading]:not([data-determinate=true])]:w-[40%] " +
   "group-[&[data-status=loading]:not([data-determinate=true])]:animate-progress-fold-indeterminate";
 ```
@@ -59,19 +59,15 @@ const BAR_BASE =
 
 <FoldProgress />
 
-The indeterminate sweep is pure `transform` — a fixed-width segment
-translating from off-screen left to off-screen right, `ease-in-out infinite`
-at `1.2s`. The determinate fill is the one motion in this component that
-isn't: it transitions `width` against a CSS variable set directly from the
-`progress` prop. It's contained inside `overflow-hidden` and only a few
-pixels tall, so the repaint stays cheap — and a literal percentage variable
-maps straight to `width`, no extra math to convert it into a transform.
+Both modes stay on the compositor: determinate is `scaleX` against a
+unitless CSS variable (`progress / 100`), indeterminate is a fixed-width
+segment translating left→right. No layout property moves.
 
 ## Snap, then arm
 
-Determinate progress can't just start transitioning `width` the instant
+Determinate progress can't just start transitioning `scaleX` the instant
 `status` becomes `"loading"` — the CSS variable would already be set to the
-target percentage, and the bar would jump there with no fill animation at
+target fraction, and the bar would jump there with no fill animation at
 all. The fix is a two-step state: snap the fill to `0` synchronously, then
 arm the transition one frame later with `requestAnimationFrame`:
 
@@ -89,14 +85,14 @@ React.useEffect(() => {
 ```
 
 ```tsx
-"group-[&[data-determinate=true][data-armed=true]]:[transition:width_0.25s_ease]";
+"group-[&[data-determinate=true][data-armed=true]]:[transition:transform_0.25s_ease]";
 ```
 
 Without `data-armed`, the transition rule is live from the first paint and
 the browser has nothing to animate *from* — the bar would render already
-full. With it, the first frame paints at `0%` untransitioned, and only the
-second frame turns the transition on, so there's always a "from" state to
-fill away from.
+full. With it, the first frame paints at `scaleX(0)` untransitioned, and
+only the second frame turns the transition on, so there's always a "from"
+state to fill away from.
 
 ## Accessibility
 
@@ -121,6 +117,10 @@ when determinate, a plain `"Loading"` label when not:
 `transition: none` and the indeterminate sweep's `animate-none` mean the
 face still moves to `35deg` and the bar still shows progress, just without
 the tween or the endless sweep.
+
+## Motion Score
+
+<MotionScorePanel name="progress-fold-button" />
 
 ## The result
 

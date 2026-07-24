@@ -132,6 +132,9 @@ const FilterBar = React.forwardRef<HTMLDivElement, FilterBarProps>(
       ? { duration: 0 }
       : ({ type: "spring", stiffness: 520, damping: 32 } as const);
 
+    const fadeSlide = reduceMotion ? { opacity: 0 } : { opacity: 0, x: -6 };
+    const fadeSlideIn = { opacity: 1, x: 0 };
+
     const activeCount = Object.values(value).reduce(
       (sum, list) => sum + list.length,
       0,
@@ -146,11 +149,10 @@ const FilterBar = React.forwardRef<HTMLDivElement, FilterBarProps>(
     };
 
     return (
-      <motion.div
+      <div
         ref={rootRef}
-        layout
         className={`flex flex-wrap items-center gap-2 ${className ?? ""}`}
-        {...(props as React.ComponentProps<typeof motion.div>)}
+        {...props}
       >
         {facets.map((facet) => {
           const selected = value[facet.id] ?? [];
@@ -160,7 +162,7 @@ const FilterBar = React.forwardRef<HTMLDivElement, FilterBarProps>(
             o.label.toLowerCase().includes(query.toLowerCase()),
           );
           return (
-            <motion.div key={facet.id} layout className="relative">
+            <div key={facet.id} className="relative">
               <div
                 className={`group flex items-center rounded-full border [transition:border-color_150ms_ease,background-color_150ms_ease] ${
                   hasSelection
@@ -178,9 +180,28 @@ const FilterBar = React.forwardRef<HTMLDivElement, FilterBarProps>(
                   }}
                   className="flex items-center gap-1.5 rounded-full py-1.5 pr-2 pl-3 font-medium text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
-                  {!hasSelection && (
-                    <span className="text-muted-foreground">{PlusIcon}</span>
-                  )}
+                  <AnimatePresence initial={false}>
+                    {!hasSelection && (
+                      <motion.span
+                        key="plus"
+                        initial={
+                          reduceMotion
+                            ? { opacity: 0 }
+                            : { opacity: 0, scale: 0.25 }
+                        }
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={
+                          reduceMotion
+                            ? { opacity: 0 }
+                            : { opacity: 0, scale: 0.25 }
+                        }
+                        transition={spring}
+                        className="text-muted-foreground"
+                      >
+                        {PlusIcon}
+                      </motion.span>
+                    )}
+                  </AnimatePresence>
                   <span
                     className={
                       hasSelection ? "text-foreground" : "text-muted-foreground"
@@ -191,23 +212,12 @@ const FilterBar = React.forwardRef<HTMLDivElement, FilterBarProps>(
                   <AnimatePresence initial={false}>
                     {hasSelection && (
                       <motion.span
-                        initial={
-                          reduceMotion
-                            ? { opacity: 0 }
-                            : { opacity: 0, width: 0 }
-                        }
-                        animate={{ opacity: 1, width: "auto" }}
-                        exit={
-                          reduceMotion
-                            ? { opacity: 0 }
-                            : { opacity: 0, width: 0 }
-                        }
-                        transition={
-                          reduceMotion
-                            ? { duration: 0 }
-                            : { duration: 0.2, ease: "easeOut" }
-                        }
-                        className="flex items-center gap-1.5 overflow-hidden"
+                        key="summary"
+                        initial={fadeSlide}
+                        animate={fadeSlideIn}
+                        exit={fadeSlide}
+                        transition={spring}
+                        className="flex items-center gap-1.5"
                       >
                         <span className="h-3.5 w-px bg-border" />
                         <span className="whitespace-nowrap text-foreground">
@@ -217,7 +227,7 @@ const FilterBar = React.forwardRef<HTMLDivElement, FilterBarProps>(
                     )}
                   </AnimatePresence>
                 </button>
-                <AnimatePresence>
+                <AnimatePresence initial={false}>
                   {hasSelection && (
                     <motion.button
                       type="button"
@@ -326,15 +336,14 @@ const FilterBar = React.forwardRef<HTMLDivElement, FilterBarProps>(
                   </motion.div>
                 )}
               </AnimatePresence>
-            </motion.div>
+            </div>
           );
         })}
 
-        <AnimatePresence>
+        <AnimatePresence initial={false}>
           {activeCount > 0 && (
             <motion.button
               type="button"
-              layout
               initial={
                 reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.9 }
               }
@@ -348,7 +357,7 @@ const FilterBar = React.forwardRef<HTMLDivElement, FilterBarProps>(
             </motion.button>
           )}
         </AnimatePresence>
-      </motion.div>
+      </div>
     );
   },
 );
