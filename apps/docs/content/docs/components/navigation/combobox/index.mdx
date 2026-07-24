@@ -74,6 +74,27 @@ export function FrameworkSearch() {
   <ComboboxAsyncDemo />
 </ComponentPreview>
 
+### Disabled
+
+Set `disabled` to make the field non-interactive — it dims the input and prevents
+the listbox from opening.
+
+<ComponentPreview
+  code={`"use client";
+import { Combobox } from "@/components/godui/combobox";
+
+const people = [
+  { label: "Ada Lovelace", value: "ada", description: "Owner" },
+  { label: "Linus Torvalds", value: "linus", description: "Admin" },
+];
+
+export function DisabledPicker() {
+  return <Combobox options={people} placeholder="Assign to…" disabled />;
+}`}
+>
+  <ComboboxDemo disabled />
+</ComponentPreview>
+
 ## Props
 
 | Prop | Type | Default | Description |
@@ -84,4 +105,5 @@ export function FrameworkSearch() {
 | `defaultValue` | `string` | `""` | Uncontrolled initial value |
 | `placeholder` | `string` | `"Search…"` | Input placeholder |
 | `emptyMessage` | `string` | `"No results"` | Shown when nothing matches |
+| `disabled` | `boolean` | `false` | Disables the input and prevents opening the listbox |
 | `onChange` | `(value, option) => void` | — | Called on selection |

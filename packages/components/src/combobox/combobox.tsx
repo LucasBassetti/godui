@@ -21,6 +21,8 @@ export type ComboboxProps = Omit<
   defaultValue?: string;
   placeholder?: string;
   emptyMessage?: string;
+  /** Disable the input and prevent opening the listbox. */
+  disabled?: boolean;
   onChange?: (value: string, option: ComboboxOption) => void;
 };
 
@@ -62,6 +64,7 @@ const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
       defaultValue,
       placeholder = "Search…",
       emptyMessage = "No results",
+      disabled = false,
       onChange,
       className,
       ...props
@@ -149,6 +152,7 @@ const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
             aria-expanded={open}
             aria-controls={listboxId}
             aria-autocomplete="list"
+            disabled={disabled}
             value={open ? query : (selectedOption?.label ?? query)}
             placeholder={placeholder}
             onChange={(e) => {
@@ -172,7 +176,7 @@ const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
                 setOpen(false);
               }
             }}
-            className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 pr-9 text-foreground text-sm outline-none placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
+            className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 pr-9 text-foreground text-sm outline-none placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
           />
           <span className="-translate-y-1/2 absolute top-1/2 right-3">
             {loading ? (

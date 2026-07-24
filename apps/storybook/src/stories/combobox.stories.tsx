@@ -1,7 +1,7 @@
 import { Combobox, type ComboboxOption } from "@godui/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "storybook/test";
-import { action, hidden, text } from "../playground/argtypes";
+import { action, hidden, text, toggle } from "../playground/argtypes";
 
 const frameworks: ComboboxOption[] = [
   { label: "Next.js", value: "next", description: "The React framework" },
@@ -34,6 +34,7 @@ const meta = {
     value: hidden(),
     placeholder: text("Content"),
     emptyMessage: text("Content"),
+    disabled: toggle("State"),
     onChange: action("change"),
   },
   args: {
@@ -47,3 +48,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Playground: Story = {};
+
+export const Disabled: Story = {
+  args: { disabled: true },
+};

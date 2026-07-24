@@ -41,7 +41,7 @@ const PEOPLE: ComboboxOption[] = [
   },
 ];
 
-export function ComboboxDemo() {
+export function ComboboxDemo({ disabled = false }: { disabled?: boolean }) {
   const [value, setValue] = useState("");
   const selected = PEOPLE.find((p) => p.value === value);
 
@@ -53,6 +53,7 @@ export function ComboboxDemo() {
         value={value}
         onChange={setValue}
         placeholder="Assign to…"
+        disabled={disabled}
       />
       <p className="text-muted-foreground text-xs">
         {selected ? (

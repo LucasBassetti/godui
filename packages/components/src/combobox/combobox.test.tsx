@@ -54,6 +54,19 @@ describe("Combobox", () => {
     expect(screen.getByText("Nothing here")).toBeInTheDocument();
   });
 
+  it("does not open or accept input when disabled", async () => {
+    const onChange = vi.fn();
+    render(<Combobox options={options} disabled onChange={onChange} />);
+    const input = screen.getByRole("combobox");
+    expect(input).toBeDisabled();
+    await userEvent.click(input);
+    expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("option", { name: /Apple/ }),
+    ).not.toBeInTheDocument();
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
   it("forwards the ref and sets a displayName", () => {
     const ref = createRef<HTMLDivElement>();
     render(<Combobox ref={ref} options={options} />);
