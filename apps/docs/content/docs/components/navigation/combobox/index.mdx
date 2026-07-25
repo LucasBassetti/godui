@@ -3,7 +3,7 @@ title: Combobox
 description: A type-ahead autocomplete with staggered result reveal, highlighted matches, keyboard navigation, and an async loading state.
 ---
 
-import { ComboboxDemo, ComboboxAsyncDemo, ComboboxMultiSelectDemo } from "@/components/demos/combobox-demo";
+import { ComboboxDemo, ComboboxAsyncDemo, ComboboxMultiSelectDemo, ComboboxCreatableDemo, ComboboxPlainDemo, ComboboxPinnedActionDemo, ComboboxEmptyActionDemo } from "@/components/demos/combobox-demo";
 
 <ComponentPreview
   story="navigation-combobox"
@@ -131,6 +131,135 @@ export function Reviewers() {
   <ComboboxMultiSelectDemo />
 </ComponentPreview>
 
+### Creatable
+
+Set `creatable` to offer the typed value as an “Add …” row when it isn’t already an
+option. It commits a synthetic option by default, or pass `onCreate` to persist the
+new value yourself (with `creating` for an in-flight spinner).
+
+<ComponentPreview
+  code={`"use client";
+import { Combobox } from "@/components/godui/combobox";
+import { useState } from "react";
+
+const people = [
+  { label: "Ada Lovelace", value: "ada" },
+  { label: "Grace Hopper", value: "grace" },
+];
+
+export function LabelPicker() {
+  const [options, setOptions] = useState(people);
+  const [value, setValue] = useState("");
+  return (
+    <Combobox
+      creatable
+      options={options}
+      value={value}
+      onChange={setValue}
+      onCreate={async (label) => {
+        // The create row spins until this resolves, then selects the new option.
+        await saveToServer(label);
+        const created = { label, value: label.toLowerCase() };
+        setOptions((prev) => [...prev, created]);
+        setValue(created.value);
+      }}
+      placeholder="Pick or type a new one…"
+    />
+  );
+}`}
+>
+  <ComboboxCreatableDemo />
+</ComponentPreview>
+
+### Plain dropdown
+
+A short list renders as a plain click-to-open dropdown — no search field — once it
+has `searchableThreshold` options or fewer (5 by default). Force either mode with
+`searchable`.
+
+<ComponentPreview
+  code={`"use client";
+import { Combobox } from "@/components/godui/combobox";
+import { useState } from "react";
+
+const sizes = [
+  { label: "Extra small", value: "xs" },
+  { label: "Small", value: "sm" },
+  { label: "Medium", value: "md" },
+  { label: "Large", value: "lg" },
+];
+
+export function SizePicker() {
+  const [value, setValue] = useState("md");
+  return <Combobox options={sizes} value={value} onChange={setValue} />;
+}`}
+>
+  <ComboboxPlainDemo />
+</ComponentPreview>
+
+### Pinned action
+
+Pass `pinnedAction` to keep a persistent row at the top of the list — a place for a
+“manage” or “create” affordance that’s always reachable, whatever the query.
+
+<ComponentPreview
+  code={`"use client";
+import { Combobox } from "@/components/godui/combobox";
+import { useState } from "react";
+
+const people = [
+  { label: "Ada Lovelace", value: "ada" },
+  { label: "Grace Hopper", value: "grace" },
+];
+
+export function AssigneePicker() {
+  const [value, setValue] = useState("");
+  return (
+    <Combobox
+      options={people}
+      value={value}
+      onChange={setValue}
+      placeholder="Assign to…"
+      pinnedAction={{ label: "Manage team →", onSelect: () => {} }}
+    />
+  );
+}`}
+>
+  <ComboboxPinnedActionDemo />
+</ComponentPreview>
+
+### Empty-state action
+
+Pass `emptyAction` to show a call-to-action when nothing matches — for example, to
+invite or create the thing the user was searching for.
+
+<ComponentPreview
+  code={`"use client";
+import { Combobox } from "@/components/godui/combobox";
+import { useState } from "react";
+
+const people = [
+  { label: "Ada Lovelace", value: "ada" },
+  { label: "Grace Hopper", value: "grace" },
+];
+
+export function AssigneePicker() {
+  const [value, setValue] = useState("");
+  return (
+    <Combobox
+      options={people}
+      value={value}
+      onChange={setValue}
+      placeholder="Assign to…"
+      emptyMessage="No teammates found"
+      emptyAction={{ label: "Invite someone", onSelect: () => {} }}
+    />
+  );
+}`}
+>
+  <ComboboxEmptyActionDemo />
+</ComponentPreview>
+
 ## Props
 
 | Prop | Type | Default | Description |
@@ -146,3 +275,10 @@ export function Reviewers() {
 | `multiple` | `boolean` | `false` | Multi-select: chips in the control; picking stays open |
 | `values` | `string[]` | — | Selected values (multi-select) |
 | `onToggle` | `(value, option) => void` | — | Toggle handler (multi-select) |
+| `creatable` | `boolean` | `false` | Offer an “Add …” row for a typed value with no match |
+| `onCreate` | `(label) => void \| Promise<void>` | — | Persist a created value instead of a synthetic option |
+| `creating` | `boolean` | `false` | Spinner + disabled state on the create row |
+| `searchable` | `boolean` | auto | Force the search input on/off (auto: on past `searchableThreshold`) |
+| `searchableThreshold` | `number` | `5` | Option count above which search auto-enables |
+| `pinnedAction` | `ComboboxAction` | — | A persistent row (`{ label, onSelect }`) at the top of the list |
+| `emptyAction` | `ComboboxAction` | — | A CTA button (`{ label, onSelect }`) shown in the empty state |

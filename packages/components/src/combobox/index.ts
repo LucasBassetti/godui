@@ -1,1 +1,7 @@
-export { Combobox, type ComboboxOption, type ComboboxProps } from "./combobox";
+export {
+  COMBOBOX_SEARCHABLE_THRESHOLD,
+  Combobox,
+  type ComboboxAction,
+  type ComboboxOption,
+  type ComboboxProps,
+} from "./combobox";

@@ -61,7 +61,13 @@ export {
   type BreadcrumbsProps,
 } from "./breadcrumbs";
 export { CardSwap, type CardSwapProps } from "./card-swap";
-export { Combobox, type ComboboxOption, type ComboboxProps } from "./combobox";
+export {
+  COMBOBOX_SEARCHABLE_THRESHOLD,
+  Combobox,
+  type ComboboxAction,
+  type ComboboxOption,
+  type ComboboxProps,
+} from "./combobox";
 export {
   type CommandGroup,
   type CommandItem,
