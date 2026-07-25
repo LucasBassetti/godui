@@ -100,3 +100,23 @@ export function ComboboxAsyncDemo() {
     </div>
   );
 }
+
+export function ComboboxPinnedActionDemo() {
+  const [value, setValue] = useState("");
+
+  return (
+    <div className="flex h-80 w-full max-w-sm flex-col gap-3 pt-2">
+      <span className="font-medium text-foreground text-sm">Assignee</span>
+      <Combobox
+        options={PEOPLE}
+        value={value}
+        onChange={setValue}
+        placeholder="Assign to…"
+        pinnedAction={{ label: "Manage team →", onSelect: () => {} }}
+      />
+      <p className="text-muted-foreground text-xs">
+        A pinned action stays at the top of the list, whatever the query.
+      </p>
+    </div>
+  );
+}

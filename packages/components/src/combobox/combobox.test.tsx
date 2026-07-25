@@ -34,6 +34,19 @@ describe("Combobox", () => {
     );
   });
 
+  it("pinnedAction: renders a persistent row and fires onSelect", async () => {
+    const onSelect = vi.fn();
+    render(
+      <Combobox
+        options={options}
+        pinnedAction={{ label: "Manage", onSelect }}
+      />,
+    );
+    await userEvent.click(screen.getByRole("combobox"));
+    await userEvent.click(screen.getByRole("button", { name: "Manage" }));
+    expect(onSelect).toHaveBeenCalled();
+  });
+
   it("selects the active option with the keyboard", async () => {
     const onChange = vi.fn();
     render(<Combobox options={options} onChange={onChange} />);

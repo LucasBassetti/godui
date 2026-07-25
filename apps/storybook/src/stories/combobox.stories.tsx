@@ -52,3 +52,10 @@ export const Playground: Story = {};
 export const Disabled: Story = {
   args: { disabled: true },
 };
+
+/** A persistent action pinned to the top of the list. */
+export const PinnedAction: Story = {
+  args: {
+    pinnedAction: { label: "Manage frameworks →", onSelect: fn() },
+  },
+};

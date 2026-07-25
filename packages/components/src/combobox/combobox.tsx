@@ -9,6 +9,12 @@ export type ComboboxOption = {
   description?: string;
 };
 
+/** A non-option affordance rendered inside the listbox (e.g. a pinned foot/head row). */
+export type ComboboxAction = {
+  label: React.ReactNode;
+  onSelect: (query: string) => void;
+};
+
 export type ComboboxProps = Omit<
   React.HTMLAttributes<HTMLDivElement>,
   "onChange" | "defaultValue"
@@ -24,6 +30,9 @@ export type ComboboxProps = Omit<
   /** Disable the input and prevent opening the listbox. */
   disabled?: boolean;
   onChange?: (value: string, option: ComboboxOption) => void;
+  /** A persistent row shown at the top of the list — a place for a "manage" or
+   *  "create" affordance that's always reachable, whatever the query. */
+  pinnedAction?: ComboboxAction;
 };
 
 function highlight(label: string, query: string) {
@@ -66,6 +75,7 @@ const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
       emptyMessage = "No results",
       disabled = false,
       onChange,
+      pinnedAction,
       className,
       ...props
     },
@@ -217,6 +227,17 @@ const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
               transition={spring}
               className="absolute top-full left-0 z-popover mt-2 max-h-72 w-full origin-top overflow-y-auto rounded-xl border border-border bg-background p-1 shadow-xl"
             >
+              {pinnedAction && (
+                <li className="mb-1 border-border border-b pb-1">
+                  <button
+                    type="button"
+                    onClick={() => pinnedAction.onSelect(query.trim())}
+                    className="w-full rounded-lg px-3 py-2 text-left font-medium text-primary text-sm hover:bg-accent"
+                  >
+                    {pinnedAction.label}
+                  </button>
+                </li>
+              )}
               {!loading && results.length === 0 && (
                 <li className="px-3 py-6 text-center text-muted-foreground text-sm">
                   {emptyMessage}

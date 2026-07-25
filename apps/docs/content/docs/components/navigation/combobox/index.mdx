@@ -3,7 +3,7 @@ title: Combobox
 description: A type-ahead autocomplete with staggered result reveal, highlighted matches, keyboard navigation, and an async loading state.
 ---
 
-import { ComboboxDemo, ComboboxAsyncDemo } from "@/components/demos/combobox-demo";
+import { ComboboxDemo, ComboboxAsyncDemo, ComboboxPinnedActionDemo } from "@/components/demos/combobox-demo";
 
 <ComponentPreview
   story="navigation-combobox"
@@ -95,6 +95,37 @@ export function DisabledPicker() {
   <ComboboxDemo disabled />
 </ComponentPreview>
 
+### Pinned action
+
+Pass `pinnedAction` to keep a persistent row at the top of the list — a place for a
+“manage” or “create” affordance that’s always reachable, whatever the query.
+
+<ComponentPreview
+  code={`"use client";
+import { Combobox } from "@/components/godui/combobox";
+import { useState } from "react";
+
+const people = [
+  { label: "Ada Lovelace", value: "ada" },
+  { label: "Grace Hopper", value: "grace" },
+];
+
+export function AssigneePicker() {
+  const [value, setValue] = useState("");
+  return (
+    <Combobox
+      options={people}
+      value={value}
+      onChange={setValue}
+      placeholder="Assign to…"
+      pinnedAction={{ label: "Manage team →", onSelect: () => {} }}
+    />
+  );
+}`}
+>
+  <ComboboxPinnedActionDemo />
+</ComponentPreview>
+
 ## Props
 
 | Prop | Type | Default | Description |
@@ -107,3 +138,4 @@ export function DisabledPicker() {
 | `emptyMessage` | `string` | `"No results"` | Shown when nothing matches |
 | `disabled` | `boolean` | `false` | Disables the input and prevents opening the listbox |
 | `onChange` | `(value, option) => void` | — | Called on selection |
+| `pinnedAction` | `ComboboxAction` | — | A persistent row (`{ label, onSelect }`) at the top of the list |
