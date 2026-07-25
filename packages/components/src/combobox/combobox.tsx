@@ -11,7 +11,7 @@ export type ComboboxOption = {
 
 export type ComboboxProps = Omit<
   React.HTMLAttributes<HTMLDivElement>,
-  "onChange" | "defaultValue"
+  "onChange" | "defaultValue" | "onToggle"
 > & {
   /** Static option list. Ignored when `onSearch` is provided. */
   options?: ComboboxOption[];
@@ -24,6 +24,13 @@ export type ComboboxProps = Omit<
   /** Disable the input and prevent opening the listbox. */
   disabled?: boolean;
   onChange?: (value: string, option: ComboboxOption) => void;
+  /** Multi-select mode: chosen options render as chips in the control and
+   *  picking one keeps the list open. Drive it with `values` + `onToggle`. */
+  multiple?: boolean;
+  /** Selected values (multi-select). */
+  values?: string[];
+  /** Toggle handler (multi-select). */
+  onToggle?: (value: string, option: ComboboxOption) => void;
 };
 
 function highlight(label: string, query: string) {
@@ -66,6 +73,9 @@ const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
       emptyMessage = "No results",
       disabled = false,
       onChange,
+      multiple = false,
+      values,
+      onToggle,
       className,
       ...props
     },
@@ -76,6 +86,8 @@ const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
     const isControlled = valueProp !== undefined;
     const [internal, setInternal] = React.useState(defaultValue ?? "");
     const value = isControlled ? valueProp : internal;
+
+    const selectedValues = React.useMemo(() => values ?? [], [values]);
 
     const allOptions = React.useMemo(
       () => staticOptions ?? [],
@@ -91,6 +103,7 @@ const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
       [],
     );
     const rootRef = React.useRef<HTMLDivElement>(null);
+    const inputRef = React.useRef<HTMLInputElement>(null);
     const reqId = React.useRef(0);
 
     React.useImperativeHandle(ref, () => rootRef.current as HTMLDivElement);
@@ -129,11 +142,46 @@ const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
           o.label.toLowerCase().includes(query.toLowerCase()),
         );
 
+    // Chip labels resolve from options ∪ a small cache of chosen items, so a
+    // selection still names itself when the query filters it out.
+    const labelCacheRef = React.useRef(new Map<string, string>());
+    React.useEffect(() => {
+      for (const o of results) labelCacheRef.current.set(o.value, o.label);
+    }, [results]);
+    const chipLabel = (v: string) =>
+      allOptions.find((o) => o.value === v)?.label ??
+      labelCacheRef.current.get(v) ??
+      v;
+
     const commit = (opt: ComboboxOption) => {
+      if (multiple) {
+        labelCacheRef.current.set(opt.value, opt.label);
+        onToggle?.(opt.value, opt);
+        setQuery("");
+        setActive(0);
+        inputRef.current?.focus();
+        return;
+      }
       if (!isControlled) setInternal(opt.value);
       onChange?.(opt.value, opt);
       setQuery("");
       setOpen(false);
+    };
+
+    const onInputKeyDown = (e: React.KeyboardEvent) => {
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        setOpen(true);
+        setActive((a) => Math.min(a + 1, results.length - 1));
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        setActive((a) => Math.max(a - 1, 0));
+      } else if (e.key === "Enter" && open && results[active]) {
+        e.preventDefault();
+        commit(results[active]);
+      } else if (e.key === "Escape") {
+        setOpen(false);
+      }
     };
 
     const spring = reduceMotion
@@ -146,63 +194,96 @@ const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
         className={`relative w-72 ${className ?? ""}`}
         {...props}
       >
-        <div className="relative">
-          <input
-            role="combobox"
-            aria-expanded={open}
-            aria-controls={listboxId}
-            aria-autocomplete="list"
-            disabled={disabled}
-            value={open ? query : (selectedOption?.label ?? query)}
-            placeholder={placeholder}
-            onChange={(e) => {
-              setQuery(e.target.value);
-              setActive(0);
-              setOpen(true);
-            }}
-            onFocus={() => setOpen(true)}
-            onKeyDown={(e) => {
-              if (e.key === "ArrowDown") {
-                e.preventDefault();
-                setOpen(true);
-                setActive((a) => Math.min(a + 1, results.length - 1));
-              } else if (e.key === "ArrowUp") {
-                e.preventDefault();
-                setActive((a) => Math.max(a - 1, 0));
-              } else if (e.key === "Enter" && open && results[active]) {
-                e.preventDefault();
-                commit(results[active]);
-              } else if (e.key === "Escape") {
-                setOpen(false);
-              }
-            }}
-            className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 pr-9 text-foreground text-sm outline-none placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-          />
-          <span className="-translate-y-1/2 absolute top-1/2 right-3">
-            {loading ? (
-              Spinner
-            ) : (
-              <svg
-                aria-hidden="true"
-                viewBox="0 0 24 24"
-                className="h-4 w-4 text-muted-foreground"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
+        {multiple ? (
+          // A <label> so clicking the chip area natively focuses the input (which
+          // opens the list via onFocus) — no click handler, no a11y violation.
+          <label className="flex min-h-[2.75rem] w-full flex-wrap items-center gap-1.5 rounded-xl border border-border bg-background px-2.5 py-2 text-sm focus-within:ring-2 focus-within:ring-ring">
+            {selectedValues.map((v) => (
+              <span
+                key={v}
+                className="inline-flex items-center gap-1 rounded-md bg-accent px-2 py-0.5 text-accent-foreground text-xs"
               >
-                <path d="M21 21l-4.3-4.3M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14z" />
-              </svg>
-            )}
-          </span>
-        </div>
+                {chipLabel(v)}
+                <button
+                  type="button"
+                  disabled={disabled}
+                  aria-label={`Remove ${chipLabel(v)}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (!disabled)
+                      onToggle?.(v, { value: v, label: chipLabel(v) });
+                  }}
+                  className="text-muted-foreground hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  &times;
+                </button>
+              </span>
+            ))}
+            <input
+              ref={inputRef}
+              role="combobox"
+              aria-expanded={open}
+              aria-controls={listboxId}
+              aria-autocomplete="list"
+              disabled={disabled}
+              value={query}
+              placeholder={selectedValues.length === 0 ? placeholder : ""}
+              onChange={(e) => {
+                setQuery(e.target.value);
+                setActive(0);
+                setOpen(true);
+              }}
+              onFocus={() => setOpen(true)}
+              onKeyDown={onInputKeyDown}
+              className="min-w-[6rem] flex-1 bg-transparent text-foreground outline-none placeholder:text-muted-foreground"
+            />
+          </label>
+        ) : (
+          <div className="relative">
+            <input
+              role="combobox"
+              aria-expanded={open}
+              aria-controls={listboxId}
+              aria-autocomplete="list"
+              disabled={disabled}
+              value={open ? query : (selectedOption?.label ?? query)}
+              placeholder={placeholder}
+              onChange={(e) => {
+                setQuery(e.target.value);
+                setActive(0);
+                setOpen(true);
+              }}
+              onFocus={() => setOpen(true)}
+              onKeyDown={onInputKeyDown}
+              className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 pr-9 text-foreground text-sm outline-none placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+            />
+            <span className="-translate-y-1/2 absolute top-1/2 right-3">
+              {loading ? (
+                Spinner
+              ) : (
+                <svg
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  className="h-4 w-4 text-muted-foreground"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M21 21l-4.3-4.3M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14z" />
+                </svg>
+              )}
+            </span>
+          </div>
+        )}
 
         <AnimatePresence>
           {open && (
             <motion.ul
               id={listboxId}
               role="listbox"
+              aria-multiselectable={multiple || undefined}
               initial={
                 reduceMotion
                   ? { opacity: 0 }
@@ -224,7 +305,9 @@ const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
               )}
               {results.map((opt, i) => {
                 const isActive = i === active;
-                const isSelected = opt.value === value;
+                const isSelected = multiple
+                  ? selectedValues.includes(opt.value)
+                  : opt.value === value;
                 return (
                   <motion.li
                     key={opt.value}

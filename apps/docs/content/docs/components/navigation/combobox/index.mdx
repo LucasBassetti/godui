@@ -3,7 +3,7 @@ title: Combobox
 description: A type-ahead autocomplete with staggered result reveal, highlighted matches, keyboard navigation, and an async loading state.
 ---
 
-import { ComboboxDemo, ComboboxAsyncDemo } from "@/components/demos/combobox-demo";
+import { ComboboxDemo, ComboboxAsyncDemo, ComboboxMultiSelectDemo } from "@/components/demos/combobox-demo";
 
 <ComponentPreview
   story="navigation-combobox"
@@ -95,6 +95,42 @@ export function DisabledPicker() {
   <ComboboxDemo disabled />
 </ComponentPreview>
 
+### Multi-select
+
+Set `multiple` and drive it with `values` + `onToggle` to select several options.
+Chosen options render as chips in the control, and picking one keeps the list open.
+
+<ComponentPreview
+  code={`"use client";
+import { Combobox } from "@/components/godui/combobox";
+import { useState } from "react";
+
+const people = [
+  { label: "Ada Lovelace", value: "ada" },
+  { label: "Grace Hopper", value: "grace" },
+  { label: "Alan Turing", value: "alan" },
+];
+
+export function Reviewers() {
+  const [values, setValues] = useState(["ada"]);
+  return (
+    <Combobox
+      multiple
+      options={people}
+      values={values}
+      onToggle={(v) =>
+        setValues((prev) =>
+          prev.includes(v) ? prev.filter((x) => x !== v) : [...prev, v],
+        )
+      }
+      placeholder="Add reviewers…"
+    />
+  );
+}`}
+>
+  <ComboboxMultiSelectDemo />
+</ComponentPreview>
+
 ## Props
 
 | Prop | Type | Default | Description |
@@ -106,4 +142,7 @@ export function DisabledPicker() {
 | `placeholder` | `string` | `"Search…"` | Input placeholder |
 | `emptyMessage` | `string` | `"No results"` | Shown when nothing matches |
 | `disabled` | `boolean` | `false` | Disables the input and prevents opening the listbox |
-| `onChange` | `(value, option) => void` | — | Called on selection |
+| `onChange` | `(value, option) => void` | — | Called on selection (single-select) |
+| `multiple` | `boolean` | `false` | Multi-select: chips in the control; picking stays open |
+| `values` | `string[]` | — | Selected values (multi-select) |
+| `onToggle` | `(value, option) => void` | — | Toggle handler (multi-select) |

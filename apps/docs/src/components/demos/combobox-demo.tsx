@@ -100,3 +100,28 @@ export function ComboboxAsyncDemo() {
     </div>
   );
 }
+
+export function ComboboxMultiSelectDemo() {
+  const [values, setValues] = useState<string[]>(["ada", "grace"]);
+
+  return (
+    <div className="flex h-80 w-full max-w-sm flex-col gap-3 pt-2">
+      <span className="font-medium text-foreground text-sm">Reviewers</span>
+      <Combobox
+        multiple
+        options={PEOPLE}
+        values={values}
+        onToggle={(v) =>
+          setValues((prev) =>
+            prev.includes(v) ? prev.filter((x) => x !== v) : [...prev, v],
+          )
+        }
+        placeholder="Add reviewers…"
+      />
+      <p className="text-muted-foreground text-xs">
+        {values.length} selected — chips show in the control and picking keeps
+        the list open.
+      </p>
+    </div>
+  );
+}
