@@ -53,11 +53,38 @@ function Badge({
 }) {
   const id = React.useId();
   const external = href?.startsWith("http");
+  // Touch devices have no hover, and tapping a button doesn't reliably focus it
+  // (iOS Safari), so the hover/focus-only tooltip never appeared on mobile. Tap
+  // toggles it open; an outside tap or Escape closes it.
+  const [open, setOpen] = React.useState(false);
+  const wrapRef = React.useRef<HTMLSpanElement>(null);
+
+  React.useEffect(() => {
+    if (!open) return;
+    const onPointerDown = (event: PointerEvent) => {
+      if (!wrapRef.current?.contains(event.target as Node)) setOpen(false);
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [open]);
+
   return (
-    <span className="group/badge relative inline-flex align-middle">
+    <span
+      ref={wrapRef}
+      className="group/badge relative inline-flex align-middle"
+    >
       <button
         type="button"
         aria-describedby={id}
+        aria-expanded={open}
+        onClick={() => setOpen((prev) => !prev)}
         className={`inline-flex cursor-help items-center gap-1.5 rounded-full px-2 py-0.5 font-medium text-[11px] uppercase leading-none tracking-wide ring-1 transition-colors focus:outline-none focus-visible:ring-2 ${TONE[tone].pill}`}
       >
         <span
@@ -71,7 +98,7 @@ function Badge({
       <span
         role="tooltip"
         id={id}
-        className={`pointer-events-none absolute top-full left-0 z-50 w-72 max-w-[min(18rem,80vw)] pt-2 text-left opacity-0 transition-opacity duration-150 group-hover/badge:opacity-100 group-focus-within/badge:opacity-100 ${href ? "group-hover/badge:pointer-events-auto group-focus-within/badge:pointer-events-auto" : ""}`}
+        className={`pointer-events-none absolute top-full left-0 z-50 w-72 max-w-[min(18rem,80vw)] pt-2 text-left opacity-0 transition-opacity duration-150 group-hover/badge:opacity-100 group-focus-within/badge:opacity-100 ${open ? "opacity-100" : ""} ${href ? "group-hover/badge:pointer-events-auto group-focus-within/badge:pointer-events-auto" : ""} ${open && href ? "pointer-events-auto" : ""}`}
       >
         <span className="block rounded-lg border border-border bg-popover px-3 py-2.5 font-normal text-[13px] text-popover-foreground normal-case leading-relaxed tracking-normal shadow-lg">
           <span className="mb-0.5 block font-semibold text-foreground">
