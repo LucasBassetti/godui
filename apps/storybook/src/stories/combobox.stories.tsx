@@ -1,5 +1,6 @@
 import { Combobox, type ComboboxOption } from "@godui/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import * as React from "react";
 import { fn } from "storybook/test";
 import { action, hidden, text, toggle } from "../playground/argtypes";
 
@@ -51,4 +52,24 @@ export const Playground: Story = {};
 
 export const Disabled: Story = {
   args: { disabled: true },
+};
+
+/** Multi-select: chips in the control; picking toggles and keeps the list open. */
+export const MultiSelect: Story = {
+  render: (args) => {
+    const [values, setValues] = React.useState<string[]>(["next", "astro"]);
+    return (
+      <Combobox
+        {...args}
+        multiple
+        values={values}
+        onToggle={(v) =>
+          setValues((prev) =>
+            prev.includes(v) ? prev.filter((x) => x !== v) : [...prev, v],
+          )
+        }
+        placeholder="Add frameworks…"
+      />
+    );
+  },
 };

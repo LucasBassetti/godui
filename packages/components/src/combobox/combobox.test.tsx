@@ -34,6 +34,47 @@ describe("Combobox", () => {
     );
   });
 
+  it("multi-select toggles values and keeps the list open", async () => {
+    const onToggle = vi.fn();
+    render(
+      <Combobox
+        multiple
+        options={options}
+        values={["apple"]}
+        onToggle={onToggle}
+      />,
+    );
+    // The selected value shows as a chip.
+    expect(screen.getByText("Apple")).toBeInTheDocument();
+
+    const input = screen.getByRole("combobox");
+    await userEvent.click(input);
+    await userEvent.click(screen.getByRole("option", { name: /Banana/ }));
+    expect(onToggle).toHaveBeenCalledWith(
+      "banana",
+      expect.objectContaining({ value: "banana" }),
+    );
+    // The list stays open after a pick.
+    expect(screen.getByRole("listbox")).toBeInTheDocument();
+  });
+
+  it("multi-select removes a value via its chip button", async () => {
+    const onToggle = vi.fn();
+    render(
+      <Combobox
+        multiple
+        options={options}
+        values={["apple"]}
+        onToggle={onToggle}
+      />,
+    );
+    await userEvent.click(screen.getByRole("button", { name: "Remove Apple" }));
+    expect(onToggle).toHaveBeenCalledWith(
+      "apple",
+      expect.objectContaining({ value: "apple" }),
+    );
+  });
+
   it("selects the active option with the keyboard", async () => {
     const onChange = vi.fn();
     render(<Combobox options={options} onChange={onChange} />);
