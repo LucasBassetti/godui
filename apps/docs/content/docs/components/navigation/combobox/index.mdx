@@ -3,7 +3,7 @@ title: Combobox
 description: A type-ahead autocomplete with staggered result reveal, highlighted matches, keyboard navigation, and an async loading state.
 ---
 
-import { ComboboxDemo, ComboboxAsyncDemo } from "@/components/demos/combobox-demo";
+import { ComboboxDemo, ComboboxAsyncDemo, ComboboxCreatableDemo } from "@/components/demos/combobox-demo";
 
 <ComponentPreview
   story="navigation-combobox"
@@ -95,6 +95,38 @@ export function DisabledPicker() {
   <ComboboxDemo disabled />
 </ComponentPreview>
 
+### Creatable
+
+Set `creatable` to offer the typed value as an “Add …” row when it isn’t already an
+option. It commits a synthetic option by default, or pass `onCreate` to persist the
+new value yourself (with `creating` for an in-flight spinner).
+
+<ComponentPreview
+  code={`"use client";
+import { Combobox } from "@/components/godui/combobox";
+import { useState } from "react";
+
+const people = [
+  { label: "Ada Lovelace", value: "ada" },
+  { label: "Grace Hopper", value: "grace" },
+];
+
+export function LabelPicker() {
+  const [value, setValue] = useState("");
+  return (
+    <Combobox
+      creatable
+      options={people}
+      value={value}
+      onChange={setValue}
+      placeholder="Pick or type a new one…"
+    />
+  );
+}`}
+>
+  <ComboboxCreatableDemo />
+</ComponentPreview>
+
 ## Props
 
 | Prop | Type | Default | Description |
@@ -107,3 +139,6 @@ export function DisabledPicker() {
 | `emptyMessage` | `string` | `"No results"` | Shown when nothing matches |
 | `disabled` | `boolean` | `false` | Disables the input and prevents opening the listbox |
 | `onChange` | `(value, option) => void` | — | Called on selection |
+| `creatable` | `boolean` | `false` | Offer an “Add …” row for a typed value with no match |
+| `onCreate` | `(label) => void \| Promise<void>` | — | Persist a created value instead of a synthetic option |
+| `creating` | `boolean` | `false` | Spinner + disabled state on the create row |

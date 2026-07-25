@@ -100,3 +100,23 @@ export function ComboboxAsyncDemo() {
     </div>
   );
 }
+
+export function ComboboxCreatableDemo() {
+  const [value, setValue] = useState("");
+
+  return (
+    <div className="flex h-80 w-full max-w-sm flex-col gap-3 pt-2">
+      <span className="font-medium text-foreground text-sm">Label</span>
+      <Combobox
+        creatable
+        options={PEOPLE}
+        value={value}
+        onChange={setValue}
+        placeholder="Pick a teammate or type a new label…"
+      />
+      <p className="text-muted-foreground text-xs">
+        Type something with no match to get an “Add …” row.
+      </p>
+    </div>
+  );
+}

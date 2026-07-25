@@ -24,7 +24,17 @@ export type ComboboxProps = Omit<
   /** Disable the input and prevent opening the listbox. */
   disabled?: boolean;
   onChange?: (value: string, option: ComboboxOption) => void;
+  /** Offer the typed value as an "Add …" row when it isn't already an option, so
+   *  free entry works alongside the suggestions. */
+  creatable?: boolean;
+  /** Persist a newly-typed value instead of committing a synthetic option.
+   *  Receives the trimmed label. */
+  onCreate?: (label: string) => void | Promise<void>;
+  /** Spinner + disabled state on the create row while a create is in flight. */
+  creating?: boolean;
 };
+
+const CREATE_SENTINEL = "__combobox_create__";
 
 function highlight(label: string, query: string) {
   if (!query) return label;
@@ -66,6 +76,9 @@ const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
       emptyMessage = "No results",
       disabled = false,
       onChange,
+      creatable = false,
+      onCreate,
+      creating = false,
       className,
       ...props
     },
@@ -123,13 +136,47 @@ const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
       return () => clearTimeout(t);
     }, [query, onSearch, open]);
 
-    const results = onSearch
+    const matches = onSearch
       ? asyncResults
       : allOptions.filter((o) =>
           o.label.toLowerCase().includes(query.toLowerCase()),
         );
 
+    // Creatable: offer the typed value as a "create" row when it isn't already
+    // an option, so free entry works alongside the suggestions.
+    const trimmedQuery = query.trim();
+    const canCreate =
+      creatable &&
+      trimmedQuery.length > 0 &&
+      !matches.some(
+        (o) => o.label.toLowerCase() === trimmedQuery.toLowerCase(),
+      );
+    const createRow: ComboboxOption = {
+      value: CREATE_SENTINEL,
+      label: trimmedQuery,
+      description: creating ? "Adding…" : "Add new",
+    };
+    const results: ComboboxOption[] = canCreate
+      ? [createRow, ...matches]
+      : matches;
+
+    const runCreate = async () => {
+      if (creating) return;
+      if (onCreate) {
+        await onCreate(trimmedQuery);
+        setQuery("");
+        setOpen(false);
+      } else {
+        // No handler: commit the typed value as a synthetic option.
+        commit({ value: trimmedQuery, label: trimmedQuery });
+      }
+    };
+
     const commit = (opt: ComboboxOption) => {
+      if (opt.value === CREATE_SENTINEL) {
+        void runCreate();
+        return;
+      }
       if (!isControlled) setInternal(opt.value);
       onChange?.(opt.value, opt);
       setQuery("");
@@ -153,14 +200,23 @@ const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
             aria-controls={listboxId}
             aria-autocomplete="list"
             disabled={disabled}
-            value={open ? query : (selectedOption?.label ?? query)}
+            value={
+              open
+                ? query
+                : (selectedOption?.label ?? (creatable ? (value ?? "") : query))
+            }
             placeholder={placeholder}
             onChange={(e) => {
               setQuery(e.target.value);
               setActive(0);
               setOpen(true);
             }}
-            onFocus={() => setOpen(true)}
+            onFocus={() => {
+              // Creatable fields are editable text: seed the query with the
+              // current value so focusing lets you edit rather than start blank.
+              if (creatable && !query && value) setQuery(value);
+              setOpen(true);
+            }}
             onKeyDown={(e) => {
               if (e.key === "ArrowDown") {
                 e.preventDefault();
@@ -224,7 +280,8 @@ const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
               )}
               {results.map((opt, i) => {
                 const isActive = i === active;
-                const isSelected = opt.value === value;
+                const isCreate = opt.value === CREATE_SENTINEL;
+                const isSelected = !isCreate && opt.value === value;
                 return (
                   <motion.li
                     key={opt.value}
@@ -241,7 +298,9 @@ const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
                     }`}
                   >
                     <span className="flex-1">
-                      <span className="block text-foreground">
+                      <span
+                        className={`block ${isCreate ? "text-primary" : "text-foreground"}`}
+                      >
                         {highlight(opt.label, query)}
                       </span>
                       {opt.description && (
@@ -250,6 +309,7 @@ const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
                         </span>
                       )}
                     </span>
+                    {isCreate && creating && Spinner}
                     {isSelected && (
                       <svg
                         aria-hidden="true"

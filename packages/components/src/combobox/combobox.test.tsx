@@ -34,6 +34,38 @@ describe("Combobox", () => {
     );
   });
 
+  it("creatable: commits a typed value that is not an option", async () => {
+    const onChange = vi.fn();
+    render(<Combobox options={options} creatable onChange={onChange} />);
+    const input = screen.getByRole("combobox");
+    await userEvent.click(input);
+    await userEvent.type(input, "Mango");
+    await userEvent.click(screen.getByRole("option", { name: /Mango/ }));
+    expect(onChange).toHaveBeenCalledWith(
+      "Mango",
+      expect.objectContaining({ value: "Mango" }),
+    );
+  });
+
+  it("creatable: onCreate persists the typed value instead of committing it", async () => {
+    const onCreate = vi.fn();
+    const onChange = vi.fn();
+    render(
+      <Combobox
+        options={options}
+        creatable
+        onCreate={onCreate}
+        onChange={onChange}
+      />,
+    );
+    const input = screen.getByRole("combobox");
+    await userEvent.click(input);
+    await userEvent.type(input, "Mango");
+    await userEvent.click(screen.getByRole("option", { name: /Mango/ }));
+    expect(onCreate).toHaveBeenCalledWith("Mango");
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
   it("selects the active option with the keyboard", async () => {
     const onChange = vi.fn();
     render(<Combobox options={options} onChange={onChange} />);

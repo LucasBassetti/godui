@@ -1,5 +1,6 @@
 import { Combobox, type ComboboxOption } from "@godui/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import * as React from "react";
 import { fn } from "storybook/test";
 import { action, hidden, text, toggle } from "../playground/argtypes";
 
@@ -51,4 +52,20 @@ export const Playground: Story = {};
 
 export const Disabled: Story = {
   args: { disabled: true },
+};
+
+/** Creatable: a typed value with no match becomes an "Add …" row. */
+export const Creatable: Story = {
+  render: (args) => {
+    const [value, setValue] = React.useState("");
+    return (
+      <Combobox
+        {...args}
+        creatable
+        value={value}
+        onChange={(v) => setValue(v)}
+        placeholder="Pick or type a new one…"
+      />
+    );
+  },
 };
