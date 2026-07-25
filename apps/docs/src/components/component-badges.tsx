@@ -98,7 +98,12 @@ function Badge({
       <span
         role="tooltip"
         id={id}
-        className={`pointer-events-none absolute top-full left-0 z-50 w-72 max-w-[min(18rem,80vw)] pt-2 text-left opacity-0 transition-opacity duration-150 group-hover/badge:opacity-100 group-focus-within/badge:opacity-100 ${open ? "opacity-100" : ""} ${href ? "group-hover/badge:pointer-events-auto group-focus-within/badge:pointer-events-auto" : ""} ${open && href ? "pointer-events-auto" : ""}`}
+        // While tapped-open, force pointer events on inline: a base
+        // `pointer-events-auto` utility loses to the base `pointer-events-none`
+        // by stylesheet order, which left the open tooltip (and its link)
+        // untappable, so a tap fell through and closed it. Inline wins reliably.
+        style={open ? { pointerEvents: "auto" } : undefined}
+        className={`pointer-events-none absolute top-full left-0 z-50 w-72 max-w-[min(18rem,80vw)] pt-2 text-left opacity-0 transition-opacity duration-150 group-hover/badge:opacity-100 group-focus-within/badge:opacity-100 ${open ? "opacity-100" : ""} ${href ? "group-hover/badge:pointer-events-auto group-focus-within/badge:pointer-events-auto" : ""}`}
       >
         <span className="block rounded-lg border border-border bg-popover px-3 py-2.5 font-normal text-[13px] text-popover-foreground normal-case leading-relaxed tracking-normal shadow-lg">
           <span className="mb-0.5 block font-semibold text-foreground">
