@@ -3,7 +3,7 @@ title: Combobox
 description: A type-ahead autocomplete with staggered result reveal, highlighted matches, keyboard navigation, and an async loading state.
 ---
 
-import { ComboboxDemo, ComboboxAsyncDemo } from "@/components/demos/combobox-demo";
+import { ComboboxDemo, ComboboxAsyncDemo, ComboboxPlainDemo } from "@/components/demos/combobox-demo";
 
 <ComponentPreview
   story="navigation-combobox"
@@ -95,6 +95,32 @@ export function DisabledPicker() {
   <ComboboxDemo disabled />
 </ComponentPreview>
 
+### Plain dropdown
+
+A short list renders as a plain click-to-open dropdown — no search field — once it
+has `searchableThreshold` options or fewer (5 by default). Force either mode with
+`searchable`.
+
+<ComponentPreview
+  code={`"use client";
+import { Combobox } from "@/components/godui/combobox";
+import { useState } from "react";
+
+const sizes = [
+  { label: "Extra small", value: "xs" },
+  { label: "Small", value: "sm" },
+  { label: "Medium", value: "md" },
+  { label: "Large", value: "lg" },
+];
+
+export function SizePicker() {
+  const [value, setValue] = useState("md");
+  return <Combobox options={sizes} value={value} onChange={setValue} />;
+}`}
+>
+  <ComboboxPlainDemo />
+</ComponentPreview>
+
 ## Props
 
 | Prop | Type | Default | Description |
@@ -107,3 +133,5 @@ export function DisabledPicker() {
 | `emptyMessage` | `string` | `"No results"` | Shown when nothing matches |
 | `disabled` | `boolean` | `false` | Disables the input and prevents opening the listbox |
 | `onChange` | `(value, option) => void` | — | Called on selection |
+| `searchable` | `boolean` | auto | Force the search input on/off (auto: on past `searchableThreshold`) |
+| `searchableThreshold` | `number` | `5` | Option count above which search auto-enables |

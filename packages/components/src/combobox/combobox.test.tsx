@@ -4,10 +4,22 @@ import { createRef } from "react";
 import { describe, expect, it, vi } from "vitest";
 import { Combobox, type ComboboxOption } from "./combobox";
 
+// 6 options → past the auto-searchable threshold (>5), so these render as the
+// searchable input by default.
 const options: ComboboxOption[] = [
   { label: "Apple", value: "apple" },
   { label: "Banana", value: "banana" },
   { label: "Cherry", value: "cherry" },
+  { label: "Date", value: "date" },
+  { label: "Elderberry", value: "elderberry" },
+  { label: "Fig", value: "fig" },
+];
+
+// A short fixed list (≤5) — auto-renders as a plain dropdown.
+const few: ComboboxOption[] = [
+  { label: "Small", value: "sm" },
+  { label: "Medium", value: "md" },
+  { label: "Large", value: "lg" },
 ];
 
 describe("Combobox", () => {
@@ -32,6 +44,29 @@ describe("Combobox", () => {
       "cherry",
       expect.objectContaining({ value: "cherry" }),
     );
+  });
+
+  it("non-searchable: a short list is a plain click-to-open dropdown", async () => {
+    const onChange = vi.fn();
+    render(<Combobox options={few} onChange={onChange} />);
+    const control = screen.getByRole("combobox");
+    expect(control.tagName).toBe("BUTTON");
+    await userEvent.click(control);
+    await userEvent.click(screen.getByRole("option", { name: /Large/ }));
+    expect(onChange).toHaveBeenCalledWith(
+      "lg",
+      expect.objectContaining({ value: "lg" }),
+    );
+  });
+
+  it("searchable={false} forces a dropdown even for a long list", () => {
+    render(<Combobox options={options} searchable={false} />);
+    expect(screen.getByRole("combobox").tagName).toBe("BUTTON");
+  });
+
+  it("searchableThreshold retunes the auto-search cutoff", () => {
+    render(<Combobox options={few} searchableThreshold={2} />);
+    expect(screen.getByRole("combobox").tagName).toBe("INPUT");
   });
 
   it("selects the active option with the keyboard", async () => {

@@ -100,3 +100,30 @@ export function ComboboxAsyncDemo() {
     </div>
   );
 }
+
+const SIZES: ComboboxOption[] = [
+  { label: "Extra small", value: "xs" },
+  { label: "Small", value: "sm" },
+  { label: "Medium", value: "md" },
+  { label: "Large", value: "lg" },
+];
+
+export function ComboboxPlainDemo() {
+  const [value, setValue] = useState("md");
+
+  return (
+    <div className="flex h-80 w-full max-w-sm flex-col gap-3 pt-2">
+      <span className="font-medium text-foreground text-sm">Size</span>
+      <Combobox
+        options={SIZES}
+        value={value}
+        onChange={setValue}
+        placeholder="Choose a size"
+      />
+      <p className="text-muted-foreground text-xs">
+        Four options — under the threshold, so it’s a plain click-to-open
+        dropdown (no search field).
+      </p>
+    </div>
+  );
+}

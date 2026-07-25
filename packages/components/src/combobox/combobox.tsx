@@ -24,7 +24,19 @@ export type ComboboxProps = Omit<
   /** Disable the input and prevent opening the listbox. */
   disabled?: boolean;
   onChange?: (value: string, option: ComboboxOption) => void;
+  /** When false, render a plain click-to-open dropdown (no type-ahead filtering)
+   *  — a drop-in for a fixed-enum `<select>`. Defaults smart: searchable once the
+   *  option count exceeds `searchableThreshold`. */
+  searchable?: boolean;
+  /** Option count above which search auto-enables when `searchable` is unset.
+   *  Defaults to `COMBOBOX_SEARCHABLE_THRESHOLD` (5). */
+  searchableThreshold?: number;
 };
+
+/** Lists longer than this auto-enable the type-ahead input; shorter lists render
+ *  as a plain click-to-open dropdown. Override per-instance with
+ *  `searchableThreshold`, or change here to retune globally. */
+export const COMBOBOX_SEARCHABLE_THRESHOLD = 5;
 
 function highlight(label: string, query: string) {
   if (!query) return label;
@@ -66,6 +78,8 @@ const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
       emptyMessage = "No results",
       disabled = false,
       onChange,
+      searchable,
+      searchableThreshold = COMBOBOX_SEARCHABLE_THRESHOLD,
       className,
       ...props
     },
@@ -83,6 +97,13 @@ const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
     );
     const selectedOption = allOptions.find((o) => o.value === value);
 
+    // Smart default: async search is always searchable; otherwise honor an
+    // explicit `searchable`, else auto-enable it past the threshold.
+    const isSearchable =
+      onSearch != null
+        ? true
+        : (searchable ?? allOptions.length > searchableThreshold);
+
     const [query, setQuery] = React.useState("");
     const [open, setOpen] = React.useState(false);
     const [active, setActive] = React.useState(0);
@@ -92,6 +113,7 @@ const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
     );
     const rootRef = React.useRef<HTMLDivElement>(null);
     const reqId = React.useRef(0);
+    const typeahead = React.useRef({ buf: "", at: 0 });
 
     React.useImperativeHandle(ref, () => rootRef.current as HTMLDivElement);
 
@@ -136,6 +158,51 @@ const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
       setOpen(false);
     };
 
+    // Keyboard for the non-searchable trigger button (a plain <select>-like control).
+    const onButtonKeyDown = (e: React.KeyboardEvent) => {
+      if (!open) {
+        if (["ArrowDown", "ArrowUp", "Enter", " "].includes(e.key)) {
+          e.preventDefault();
+          setActive(
+            Math.max(
+              0,
+              results.findIndex((o) => o.value === value),
+            ),
+          );
+          setOpen(true);
+        }
+        return;
+      }
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        setActive((a) => Math.min(a + 1, results.length - 1));
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        setActive((a) => Math.max(a - 1, 0));
+      } else if (e.key === "Home") {
+        e.preventDefault();
+        setActive(0);
+      } else if (e.key === "End") {
+        e.preventDefault();
+        setActive(results.length - 1);
+      } else if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        if (results[active]) commit(results[active]);
+      } else if (e.key === "Escape") {
+        e.preventDefault();
+        setOpen(false);
+      } else if (e.key.length === 1) {
+        // First-letter type-ahead, matching a native <select>.
+        const recent = Date.now() - typeahead.current.at < 600;
+        const buf = recent ? typeahead.current.buf + e.key : e.key;
+        typeahead.current = { buf, at: Date.now() };
+        const idx = results.findIndex((o) =>
+          o.label.toLowerCase().startsWith(buf.toLowerCase()),
+        );
+        if (idx >= 0) setActive(idx);
+      }
+    };
+
     const spring = reduceMotion
       ? { duration: 0 }
       : ({ type: "spring", stiffness: 520, damping: 32 } as const);
@@ -146,57 +213,90 @@ const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
         className={`relative w-72 ${className ?? ""}`}
         {...props}
       >
-        <div className="relative">
-          <input
+        {!isSearchable ? (
+          // Non-searchable: a plain click-to-open dropdown (drop-in for <select>).
+          <button
+            type="button"
             role="combobox"
+            aria-haspopup="listbox"
             aria-expanded={open}
             aria-controls={listboxId}
-            aria-autocomplete="list"
             disabled={disabled}
-            value={open ? query : (selectedOption?.label ?? query)}
-            placeholder={placeholder}
-            onChange={(e) => {
-              setQuery(e.target.value);
-              setActive(0);
-              setOpen(true);
-            }}
-            onFocus={() => setOpen(true)}
-            onKeyDown={(e) => {
-              if (e.key === "ArrowDown") {
-                e.preventDefault();
+            onClick={() => !disabled && setOpen((o) => !o)}
+            onKeyDown={onButtonKeyDown}
+            className="flex w-full items-center justify-between gap-2 rounded-xl border border-border bg-background px-3.5 py-2.5 text-left text-foreground text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <span
+              className={`truncate ${selectedOption ? "text-foreground" : "text-muted-foreground"}`}
+            >
+              {selectedOption?.label ?? placeholder}
+            </span>
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`}
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </button>
+        ) : (
+          <div className="relative">
+            <input
+              role="combobox"
+              aria-expanded={open}
+              aria-controls={listboxId}
+              aria-autocomplete="list"
+              disabled={disabled}
+              value={open ? query : (selectedOption?.label ?? query)}
+              placeholder={placeholder}
+              onChange={(e) => {
+                setQuery(e.target.value);
+                setActive(0);
                 setOpen(true);
-                setActive((a) => Math.min(a + 1, results.length - 1));
-              } else if (e.key === "ArrowUp") {
-                e.preventDefault();
-                setActive((a) => Math.max(a - 1, 0));
-              } else if (e.key === "Enter" && open && results[active]) {
-                e.preventDefault();
-                commit(results[active]);
-              } else if (e.key === "Escape") {
-                setOpen(false);
-              }
-            }}
-            className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 pr-9 text-foreground text-sm outline-none placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-          />
-          <span className="-translate-y-1/2 absolute top-1/2 right-3">
-            {loading ? (
-              Spinner
-            ) : (
-              <svg
-                aria-hidden="true"
-                viewBox="0 0 24 24"
-                className="h-4 w-4 text-muted-foreground"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M21 21l-4.3-4.3M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14z" />
-              </svg>
-            )}
-          </span>
-        </div>
+              }}
+              onFocus={() => setOpen(true)}
+              onKeyDown={(e) => {
+                if (e.key === "ArrowDown") {
+                  e.preventDefault();
+                  setOpen(true);
+                  setActive((a) => Math.min(a + 1, results.length - 1));
+                } else if (e.key === "ArrowUp") {
+                  e.preventDefault();
+                  setActive((a) => Math.max(a - 1, 0));
+                } else if (e.key === "Enter" && open && results[active]) {
+                  e.preventDefault();
+                  commit(results[active]);
+                } else if (e.key === "Escape") {
+                  setOpen(false);
+                }
+              }}
+              className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 pr-9 text-foreground text-sm outline-none placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+            />
+            <span className="-translate-y-1/2 absolute top-1/2 right-3">
+              {loading ? (
+                Spinner
+              ) : (
+                <svg
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  className="h-4 w-4 text-muted-foreground"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M21 21l-4.3-4.3M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14z" />
+                </svg>
+              )}
+            </span>
+          </div>
+        )}
 
         <AnimatePresence>
           {open && (

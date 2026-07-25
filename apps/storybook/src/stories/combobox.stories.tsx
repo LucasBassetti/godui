@@ -52,3 +52,21 @@ export const Playground: Story = {};
 export const Disabled: Story = {
   args: { disabled: true },
 };
+
+// A short fixed list (≤ threshold) — auto-renders as a plain dropdown.
+const sizes: ComboboxOption[] = [
+  { label: "Extra small", value: "xs" },
+  { label: "Small", value: "sm" },
+  { label: "Medium", value: "md" },
+  { label: "Large", value: "lg" },
+];
+
+/** A short list (≤ `searchableThreshold`) is a plain click-to-open dropdown. */
+export const PlainDropdown: Story = {
+  args: { options: sizes, placeholder: "Choose a size" },
+};
+
+/** Force a plain dropdown even for a long list with `searchable={false}`. */
+export const ForcedDropdown: Story = {
+  args: { searchable: false, placeholder: "Choose a framework" },
+};
