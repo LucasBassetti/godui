@@ -206,12 +206,14 @@ const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
                 {chipLabel(v)}
                 <button
                   type="button"
+                  disabled={disabled}
                   aria-label={`Remove ${chipLabel(v)}`}
                   onClick={(e) => {
                     e.stopPropagation();
-                    onToggle?.(v, { value: v, label: chipLabel(v) });
+                    if (!disabled)
+                      onToggle?.(v, { value: v, label: chipLabel(v) });
                   }}
-                  className="text-muted-foreground hover:text-foreground"
+                  className="text-muted-foreground hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   &times;
                 </button>

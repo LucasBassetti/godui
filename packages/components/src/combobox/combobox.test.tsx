@@ -75,6 +75,23 @@ describe("Combobox", () => {
     );
   });
 
+  it("multi-select: a disabled chip cannot be removed", async () => {
+    const onToggle = vi.fn();
+    render(
+      <Combobox
+        multiple
+        disabled
+        options={options}
+        values={["apple"]}
+        onToggle={onToggle}
+      />,
+    );
+    const remove = screen.getByRole("button", { name: "Remove Apple" });
+    expect(remove).toBeDisabled();
+    await userEvent.click(remove);
+    expect(onToggle).not.toHaveBeenCalled();
+  });
+
   it("selects the active option with the keyboard", async () => {
     const onChange = vi.fn();
     render(<Combobox options={options} onChange={onChange} />);
