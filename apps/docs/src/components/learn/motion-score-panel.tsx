@@ -50,7 +50,7 @@ function TierChip({ grade, size }: { grade: MotionGrade; size: "sm" | "md" }) {
 
 function Pill({ children }: { children: ReactNode }) {
   return (
-    <span className="ml-3 shrink-0 self-center whitespace-nowrap rounded-full bg-violet-400/20 px-2 py-0.5 font-medium text-[10px] text-violet-700 uppercase tracking-wide dark:text-violet-300">
+    <span className="ml-3 hidden shrink-0 self-center whitespace-nowrap rounded-full bg-violet-400/20 px-2 py-0.5 font-medium text-[10px] text-violet-700 uppercase tracking-wide sm:inline-block dark:text-violet-300">
       {children}
     </span>
   );
@@ -90,7 +90,7 @@ export function MotionScorePanel({ name }: { name: string }) {
               className="flex items-center gap-3 px-4 py-2.5"
             >
               <TierChip grade={tier} size="sm" />
-              <code className="w-[8.5rem] shrink-0 font-mono text-[13px] text-foreground sm:w-44">
+              <code className="w-20 shrink-0 font-mono text-[13px] text-foreground sm:w-44">
                 {a.label}
               </code>
               <span className="min-w-0 flex-1 text-[12.5px] text-fd-muted-foreground leading-snug">
