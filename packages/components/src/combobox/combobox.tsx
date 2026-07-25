@@ -34,8 +34,6 @@ export type ComboboxProps = Omit<
   creating?: boolean;
 };
 
-const CREATE_SENTINEL = "__combobox_create__";
-
 function highlight(label: string, query: string) {
   if (!query) return label;
   const idx = label.toLowerCase().indexOf(query.toLowerCase());
@@ -152,13 +150,20 @@ const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
         (o) => o.label.toLowerCase() === trimmedQuery.toLowerCase(),
       );
     const createRow: ComboboxOption = {
-      value: CREATE_SENTINEL,
+      value: trimmedQuery,
       label: trimmedQuery,
       description: creating ? "Adding…" : "Add new",
     };
+    // Create row goes last so the default highlight (and Enter) prefer a real
+    // match over creating.
     const results: ComboboxOption[] = canCreate
-      ? [createRow, ...matches]
+      ? [...matches, createRow]
       : matches;
+
+    // Keep the active index in range as the result list changes size.
+    React.useEffect(() => {
+      setActive((a) => Math.min(a, Math.max(0, results.length - 1)));
+    }, [results.length]);
 
     const runCreate = async () => {
       if (creating) return;
@@ -173,7 +178,9 @@ const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
     };
 
     const commit = (opt: ComboboxOption) => {
-      if (opt.value === CREATE_SENTINEL) {
+      // Identity check (not a magic value) so a real option whose value happens
+      // to match the query can't be mistaken for the create row.
+      if (opt === createRow) {
         void runCreate();
         return;
       }
@@ -280,16 +287,16 @@ const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
               )}
               {results.map((opt, i) => {
                 const isActive = i === active;
-                const isCreate = opt.value === CREATE_SENTINEL;
+                const isCreate = opt === createRow;
                 const isSelected = !isCreate && opt.value === value;
                 return (
                   <motion.li
-                    key={opt.value}
+                    key={isCreate ? "__create_row__" : opt.value}
                     initial={reduceMotion ? false : { opacity: 0, y: 4 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: reduceMotion ? 0 : i * 0.02 }}
                     role="option"
-                    aria-label={opt.label}
+                    aria-label={isCreate ? `Add ${opt.label}` : opt.label}
                     aria-selected={isSelected}
                     onMouseEnter={() => setActive(i)}
                     onClick={() => commit(opt)}

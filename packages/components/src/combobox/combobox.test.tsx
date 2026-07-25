@@ -66,6 +66,29 @@ describe("Combobox", () => {
     expect(onChange).not.toHaveBeenCalled();
   });
 
+  it("creatable: Enter selects the highlighted match, not the create row", async () => {
+    const onChange = vi.fn();
+    const onCreate = vi.fn();
+    render(
+      <Combobox
+        options={options}
+        creatable
+        onChange={onChange}
+        onCreate={onCreate}
+      />,
+    );
+    const input = screen.getByRole("combobox");
+    await userEvent.click(input);
+    // "Ban" partially matches "Banana" and is also creatable (no exact match).
+    await userEvent.type(input, "Ban");
+    await userEvent.keyboard("{Enter}");
+    expect(onChange).toHaveBeenCalledWith(
+      "banana",
+      expect.objectContaining({ value: "banana" }),
+    );
+    expect(onCreate).not.toHaveBeenCalled();
+  });
+
   it("selects the active option with the keyboard", async () => {
     const onChange = vi.fn();
     render(<Combobox options={options} onChange={onChange} />);
