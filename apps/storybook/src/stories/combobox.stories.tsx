@@ -73,3 +73,52 @@ export const MultiSelect: Story = {
     );
   },
 };
+
+/** Creatable: a typed value with no match becomes an "Add …" row. */
+export const Creatable: Story = {
+  render: (args) => {
+    const [value, setValue] = React.useState("");
+    return (
+      <Combobox
+        {...args}
+        creatable
+        value={value}
+        onChange={(v) => setValue(v)}
+        placeholder="Pick or type a new one…"
+      />
+    );
+  },
+};
+
+// A short fixed list (≤ threshold) — auto-renders as a plain dropdown.
+const sizes: ComboboxOption[] = [
+  { label: "Extra small", value: "xs" },
+  { label: "Small", value: "sm" },
+  { label: "Medium", value: "md" },
+  { label: "Large", value: "lg" },
+];
+
+/** A short list (≤ `searchableThreshold`) is a plain click-to-open dropdown. */
+export const PlainDropdown: Story = {
+  args: { options: sizes, placeholder: "Choose a size" },
+};
+
+/** Force a plain dropdown even for a long list with `searchable={false}`. */
+export const ForcedDropdown: Story = {
+  args: { searchable: false, placeholder: "Choose a framework" },
+};
+
+/** A persistent action pinned to the top of the list. */
+export const PinnedAction: Story = {
+  args: {
+    pinnedAction: { label: "Manage frameworks →", onSelect: fn() },
+  },
+};
+
+/** A call-to-action shown in the empty state (type something with no match). */
+export const EmptyStateAction: Story = {
+  args: {
+    emptyMessage: "No frameworks found",
+    emptyAction: { label: "Request a framework", onSelect: fn() },
+  },
+};
