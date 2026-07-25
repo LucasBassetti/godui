@@ -100,3 +100,24 @@ export function ComboboxAsyncDemo() {
     </div>
   );
 }
+
+export function ComboboxEmptyActionDemo() {
+  const [value, setValue] = useState("");
+
+  return (
+    <div className="flex h-80 w-full max-w-sm flex-col gap-3 pt-2">
+      <span className="font-medium text-foreground text-sm">Assignee</span>
+      <Combobox
+        options={PEOPLE}
+        value={value}
+        onChange={setValue}
+        placeholder="Assign to…"
+        emptyMessage="No teammates found"
+        emptyAction={{ label: "Invite someone", onSelect: () => {} }}
+      />
+      <p className="text-muted-foreground text-xs">
+        Type a name with no match to reveal the empty-state action.
+      </p>
+    </div>
+  );
+}

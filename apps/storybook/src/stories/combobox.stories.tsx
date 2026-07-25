@@ -52,3 +52,11 @@ export const Playground: Story = {};
 export const Disabled: Story = {
   args: { disabled: true },
 };
+
+/** A call-to-action shown in the empty state (type something with no match). */
+export const EmptyStateAction: Story = {
+  args: {
+    emptyMessage: "No frameworks found",
+    emptyAction: { label: "Request a framework", onSelect: fn() },
+  },
+};

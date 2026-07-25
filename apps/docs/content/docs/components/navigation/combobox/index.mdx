@@ -3,7 +3,7 @@ title: Combobox
 description: A type-ahead autocomplete with staggered result reveal, highlighted matches, keyboard navigation, and an async loading state.
 ---
 
-import { ComboboxDemo, ComboboxAsyncDemo } from "@/components/demos/combobox-demo";
+import { ComboboxDemo, ComboboxAsyncDemo, ComboboxEmptyActionDemo } from "@/components/demos/combobox-demo";
 
 <ComponentPreview
   story="navigation-combobox"
@@ -95,6 +95,38 @@ export function DisabledPicker() {
   <ComboboxDemo disabled />
 </ComponentPreview>
 
+### Empty-state action
+
+Pass `emptyAction` to show a call-to-action when nothing matches — for example, to
+invite or create the thing the user was searching for.
+
+<ComponentPreview
+  code={`"use client";
+import { Combobox } from "@/components/godui/combobox";
+import { useState } from "react";
+
+const people = [
+  { label: "Ada Lovelace", value: "ada" },
+  { label: "Grace Hopper", value: "grace" },
+];
+
+export function AssigneePicker() {
+  const [value, setValue] = useState("");
+  return (
+    <Combobox
+      options={people}
+      value={value}
+      onChange={setValue}
+      placeholder="Assign to…"
+      emptyMessage="No teammates found"
+      emptyAction={{ label: "Invite someone", onSelect: () => {} }}
+    />
+  );
+}`}
+>
+  <ComboboxEmptyActionDemo />
+</ComponentPreview>
+
 ## Props
 
 | Prop | Type | Default | Description |
@@ -107,3 +139,4 @@ export function DisabledPicker() {
 | `emptyMessage` | `string` | `"No results"` | Shown when nothing matches |
 | `disabled` | `boolean` | `false` | Disables the input and prevents opening the listbox |
 | `onChange` | `(value, option) => void` | — | Called on selection |
+| `emptyAction` | `ComboboxAction` | — | A CTA button (`{ label, onSelect }`) shown in the empty state |

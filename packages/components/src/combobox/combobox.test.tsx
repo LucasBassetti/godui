@@ -34,6 +34,23 @@ describe("Combobox", () => {
     );
   });
 
+  it("emptyAction: shows a CTA in the empty state and fires onSelect", async () => {
+    const onSelect = vi.fn();
+    render(
+      <Combobox
+        options={options}
+        emptyAction={{ label: "Invite someone", onSelect }}
+      />,
+    );
+    const input = screen.getByRole("combobox");
+    await userEvent.click(input);
+    await userEvent.type(input, "zzz");
+    await userEvent.click(
+      screen.getByRole("button", { name: "Invite someone" }),
+    );
+    expect(onSelect).toHaveBeenCalledWith("zzz");
+  });
+
   it("selects the active option with the keyboard", async () => {
     const onChange = vi.fn();
     render(<Combobox options={options} onChange={onChange} />);

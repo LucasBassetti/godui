@@ -9,6 +9,12 @@ export type ComboboxOption = {
   description?: string;
 };
 
+/** A non-option affordance rendered inside the listbox (e.g. an empty-state CTA). */
+export type ComboboxAction = {
+  label: React.ReactNode;
+  onSelect: (query: string) => void;
+};
+
 export type ComboboxProps = Omit<
   React.HTMLAttributes<HTMLDivElement>,
   "onChange" | "defaultValue"
@@ -24,6 +30,9 @@ export type ComboboxProps = Omit<
   /** Disable the input and prevent opening the listbox. */
   disabled?: boolean;
   onChange?: (value: string, option: ComboboxOption) => void;
+  /** A call-to-action button shown in the empty state — e.g. to create or invite
+   *  the thing the user was searching for. */
+  emptyAction?: ComboboxAction;
 };
 
 function highlight(label: string, query: string) {
@@ -66,6 +75,7 @@ const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
       emptyMessage = "No results",
       disabled = false,
       onChange,
+      emptyAction,
       className,
       ...props
     },
@@ -219,7 +229,16 @@ const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
             >
               {!loading && results.length === 0 && (
                 <li className="px-3 py-6 text-center text-muted-foreground text-sm">
-                  {emptyMessage}
+                  <div>{emptyMessage}</div>
+                  {emptyAction && (
+                    <button
+                      type="button"
+                      onClick={() => emptyAction.onSelect(query.trim())}
+                      className="mt-2 rounded-lg px-3 py-1.5 font-medium text-primary text-sm hover:bg-accent"
+                    >
+                      {emptyAction.label}
+                    </button>
+                  )}
                 </li>
               )}
               {results.map((opt, i) => {
