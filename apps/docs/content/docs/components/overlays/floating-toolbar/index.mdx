@@ -11,10 +11,10 @@ export const icon = (d) => (
 );
 
 export const toolbarActions = [
-  { icon: icon("M6 12h12M6 6h12M6 18h12"), label: "Align", active: true },
-  { icon: icon("M4 7V4h16v3M9 20h6M12 4v16"), label: "Text" },
-  { icon: icon("M21 15l-5-5L5 21"), label: "Image" },
-  { icon: icon("M3 6h18M3 12h18M3 18h18"), label: "List" },
+  { icon: icon("M6 4h8a4 4 0 0 1 0 8H6zM6 12h9a4 4 0 0 1 0 8H6z"), label: "Bold", active: true },
+  { icon: icon("M19 4h-9M14 20H5M15 4 9 20"), label: "Italic" },
+  { icon: icon("M6 4v6a6 6 0 0 0 12 0V4M4 20h16"), label: "Underline" },
+  { icon: icon("M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"), label: "Link" },
 ];
 
 <Workbench>
@@ -31,9 +31,10 @@ export function FloatingToolbarDemo() {
     <FloatingToolbar
       open
       actions={[
-        { icon: <AlignIcon />, label: "Align", active: true },
-        { icon: <TextIcon />, label: "Text" },
-        { icon: <ImageIcon />, label: "Image" },
+        { icon: <BoldIcon />, label: "Bold", active: true },
+        { icon: <ItalicIcon />, label: "Italic" },
+        { icon: <UnderlineIcon />, label: "Underline" },
+        { icon: <LinkIcon />, label: "Link" },
       ]}
     />
   );

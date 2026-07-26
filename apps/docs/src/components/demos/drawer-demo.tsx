@@ -100,14 +100,16 @@ export function DrawerDemo() {
             >
               <p.Icon className="size-7" strokeWidth={1.75} />
             </div>
-            <div className="text-xs font-medium text-foreground">{p.name}</div>
+            <div className="min-h-8 text-xs font-medium leading-4 text-foreground">
+              {p.name}
+            </div>
             <div className="mt-0.5 text-xs text-muted-foreground tabular-nums">
               {money(p.price)}
             </div>
             <button
               type="button"
               onClick={() => add(p.id)}
-              className="mt-2 rounded-md bg-muted px-2 py-1 text-xs font-medium text-foreground [transition:background_200ms_ease] hover:bg-accent"
+              className="mt-3 rounded-md bg-muted px-2 py-1 text-xs font-medium text-foreground [transition:background_200ms_ease] hover:bg-accent"
             >
               Add
             </button>
