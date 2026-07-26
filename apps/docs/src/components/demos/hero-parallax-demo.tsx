@@ -1,6 +1,7 @@
 "use client";
 
 import { HeroParallax } from "@godui/components";
+import { useRef } from "react";
 
 const PRODUCTS = [
   "1015",
@@ -25,5 +26,18 @@ const PRODUCTS = [
 }));
 
 export function HeroParallaxDemo() {
-  return <HeroParallax products={PRODUCTS} />;
+  // The parallax maps scroll progress onto the plane, so it needs its own tall
+  // scroll room. Inside the workbench stage the window never scrolls, so give
+  // the demo a self-contained scroll frame and point `scrollContainer` at it —
+  // now scrolling the preview drives the animation.
+  const ref = useRef<HTMLDivElement>(null);
+  return (
+    <div
+      ref={ref}
+      data-scroll-container
+      className="relative h-full w-full overflow-y-auto overflow-x-hidden"
+    >
+      <HeroParallax products={PRODUCTS} scrollContainer={ref} />
+    </div>
+  );
 }

@@ -403,6 +403,8 @@ import { WorldMapDraw } from "@/components/learn/world-map-draw";
 import { WorldMapPulse } from "@/components/learn/world-map-pulse";
 import { WorldMapResult } from "@/components/learn/world-map-result";
 import { MCPInstall } from "@/components/mcp-install";
+import { Example } from "@/components/workbench/example";
+import { Workbench } from "@/components/workbench/workbench";
 
 function Table(props: ComponentProps<"table">) {
   return (
@@ -450,6 +452,8 @@ export function getMDXComponents(components?: MDXComponents) {
     table: Table,
     ComponentPreview,
     ComponentInstall,
+    Workbench,
+    Example,
     MCPInstall,
     BackgroundShowcase,
     PreviewCard,

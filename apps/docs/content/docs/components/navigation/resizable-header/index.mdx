@@ -1,11 +1,17 @@
 ---
 title: Resizable Header
 description: A sticky navbar that springs into a compact, blurred floating pill as you scroll, with a shared-element active indicator.
+workbench: true
 ---
 
 import { ResizableHeaderDemo } from "@/components/demos/resizable-header-demo";
 
-<ComponentPreview
+<Workbench>
+
+A sticky navbar that springs into a compact, blurred floating pill as you scroll, with a shared-element active indicator.
+
+<Example
+  label="Default"
   story="navigation-resizable-header"
   code={`"use client";
 import { ResizableHeader } from "@/components/godui/resizable-header";
@@ -36,7 +42,7 @@ export function HeaderDemo() {
 }`}
 >
   <ResizableHeaderDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -82,3 +88,5 @@ const scrollRef = useRef(null);
 | `sticky` | `boolean` | `true` | Stick the header to the top |
 | `scrollRef` | `RefObject<HTMLElement>` | — | Scroll container to track (defaults to window) |
 | `onNavigate` | `(href: string) => void` | — | Called on link click (prevents default) |
+
+</Workbench>

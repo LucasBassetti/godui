@@ -1,11 +1,17 @@
 ---
 title: Elastic Text
 description: Variable-font text whose weight springs up under an automatic spotlight or the pointer.
+workbench: true
 ---
 
 import { ElasticText } from "@godui/components";
 
-<ComponentPreview
+<Workbench>
+
+Variable-font text whose weight springs up under an automatic spotlight or the pointer.
+
+<Example
+  label="Default"
   story="text-elastictext"
   code={`import { ElasticText } from "@/components/godui/elastic-text";
 
@@ -20,7 +26,7 @@ export function ElasticTextDemo() {
   <ElasticText className="text-4xl font-sans tracking-tight">
     Design for Humans
   </ElasticText>
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -71,7 +77,8 @@ The weight emphasis follows the pointer while it's over the text.
 
 `mode="hover"` ties the weight emphasis to the pointer instead of an automatic spotlight.
 
-<ComponentPreview
+<Example
+  label="Hover"
   code={`import { ElasticText } from "@/components/godui/elastic-text";
 
 export function ElasticTextHover() {
@@ -85,13 +92,14 @@ export function ElasticTextHover() {
   <ElasticText mode="hover" className="text-4xl tracking-tight">
     Move Your Mouse
   </ElasticText>
-</ComponentPreview>
+</Example>
 
 ### Plays once
 
 `loop={false}` runs a single spotlight sweep across the text, then settles back to normal weight. Use the replay button to run it again.
 
-<ComponentPreview
+<Example
+  label="Plays Once"
   code={`import { ElasticText } from "@/components/godui/elastic-text";
 
 export function ElasticTextOnce() {
@@ -105,7 +113,7 @@ export function ElasticTextOnce() {
   <ElasticText loop={false} className="text-4xl tracking-tight">
     Plays once
   </ElasticText>
-</ComponentPreview>
+</Example>
 
 ## Props
 
@@ -123,3 +131,5 @@ export function ElasticTextOnce() {
 ## Accessibility
 
 When `prefers-reduced-motion` is enabled, the animation is disabled and the text renders statically at `minWeight`.
+
+</Workbench>

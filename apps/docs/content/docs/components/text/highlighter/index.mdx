@@ -1,14 +1,18 @@
 ---
 title: Highlighter
 description: Draw hand-drawn sketch annotations over inline text — highlight, underline, box, circle, and more. Powered by Rough Notation.
+workbench: true
 ---
 
 import { Highlighter } from "@godui/components";
 
+<Workbench>
+
 Draw hand-drawn sketch annotations over inline text, powered by
 [Rough Notation](https://roughnotation.com/).
 
-<ComponentPreview
+<Example
+  label="Default"
   story="text-highlighter"
   code={`import { Highlighter } from "@/components/godui/highlighter";
 
@@ -35,7 +39,7 @@ export function HighlighterDemo() {
     <Highlighter action="crossed-off" color="#a78bfa">crossed-off</Highlighter>{" "}
     <Highlighter action="bracket" color="#fb7185">bracket</Highlighter>
   </p>
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -109,7 +113,8 @@ Set `isView` to defer the draw-in animation until the element scrolls into view.
 
 Drop it around any inline word — the sketch draws over the text in place.
 
-<ComponentPreview
+<Example
+  label="In a Sentence"
   code={`import { Highlighter } from "@/components/godui/highlighter";
 
 export function HighlighterSentence() {
@@ -122,13 +127,14 @@ export function HighlighterSentence() {
 }`}
 >
   <p className="max-w-md text-xl leading-relaxed">The quick brown <Highlighter action="underline" color="#60a5fa">fox</Highlighter> jumps over the <Highlighter action="highlight">lazy dog</Highlighter>.</p>
-</ComponentPreview>
+</Example>
 
 ### Tuning the sketch
 
 Push `strokeWidth`, `iterations`, `padding`, and `animationDuration` for a bolder, looser, slower draw.
 
-<ComponentPreview
+<Example
+  label="Tuning the Sketch"
   code={`import { Highlighter } from "@/components/godui/highlighter";
 
 export function HighlighterTuned() {
@@ -151,7 +157,7 @@ export function HighlighterTuned() {
   <p className="text-3xl font-sans">
     <Highlighter action="box" color="#22d3ee" strokeWidth={2.5} iterations={3} padding={6} animationDuration={900}>Bolder, looser, slower</Highlighter>
   </p>
-</ComponentPreview>
+</Example>
 
 ## Props
 
@@ -171,3 +177,5 @@ export function HighlighterTuned() {
 
 The annotation is a decorative SVG overlay; it does not alter the text content,
 so the underlying text remains fully readable and selectable by screen readers.
+
+</Workbench>

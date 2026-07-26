@@ -1,13 +1,17 @@
 ---
 title: World Map
 description: A dotted world map that draws animated arcs between locations, with pulsing endpoint pins.
+workbench: true
 ---
 
 import { WorldMapDemo } from "@/components/demos/world-map-demo";
 
+<Workbench>
+
 A dotted equirectangular map with animated arcs connecting any set of coordinates. Each beam draws in and loops, and every endpoint gets a pulsing pin. The land dots and lines follow your theme.
 
-<ComponentPreview
+<Example
+  label="Default"
   fullWidth
   story="visualizations-world-map"
   code={`import { WorldMap } from "@/components/godui/world-map";
@@ -30,7 +34,7 @@ export function Connections() {
 }`}
 >
   <WorldMapDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -82,3 +86,5 @@ section background.
 
 Each point is `{ lat: number; lng: number; label?: string }`. `WorldMap` also
 forwards every standard `<div>` attribute to the root element.
+
+</Workbench>

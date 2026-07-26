@@ -1,14 +1,18 @@
 ---
 title: Slide Confirm Button
 description: A drag-to-confirm thumb for high-stakes actions — slide past the threshold to commit, release early to spring back.
+workbench: true
 ---
 
 import { SlideConfirmButton } from "@godui/components";
 import { SlideConfirmButtonAsyncDemo } from "@/components/demos/slide-confirm-button-demo";
 
+<Workbench>
+
 The Slide Confirm Button is the most deliberate confirmation gesture: drag the thumb across the track, the fill trails behind it, and it snaps to confirm past the threshold. Pointer, touch, and keyboard are all supported.
 
-<ComponentPreview
+<Example
+  label="Default"
   story="buttons-slide-confirm-button"
   code={`import { SlideConfirmButton } from "@/components/godui/slide-confirm-button";
 
@@ -22,27 +26,10 @@ export function SlideConfirmButtonDemo() {
 }`}
 >
   <SlideConfirmButton label="Slide to deploy" />
-</ComponentPreview>
+</Example>
 
-## Installation
-
-<ComponentInstall name="slide-confirm-button" />
-
-## Usage
-
-```tsx
-import { SlideConfirmButton } from "@/components/godui/slide-confirm-button";
-```
-
-```tsx
-<SlideConfirmButton label="Slide to pay" onConfirm={charge} />
-```
-
-## Examples
-
-### Destructive
-
-<ComponentPreview
+<Example
+  label="Destructive"
   code={`import { SlideConfirmButton } from "@/components/godui/slide-confirm-button";
 
 export function SlideConfirmButtonDestructive() {
@@ -50,13 +37,10 @@ export function SlideConfirmButtonDestructive() {
 }`}
 >
   <SlideConfirmButton variant="destructive" label="Slide to delete" />
-</ComponentPreview>
+</Example>
 
-### Async confirm
-
-When `onConfirm` returns a promise, the thumb shows a spinner and the track swaps in `loadingLabel` while the work runs, then lands on the confirmed state once it resolves. If the promise rejects, the control springs back to idle so the action can be retried.
-
-<ComponentPreview
+<Example
+  label="Async"
   code={`import { SlideConfirmButton } from "@/components/godui/slide-confirm-button";
 
 export function SlideConfirmButtonAsync() {
@@ -74,7 +58,23 @@ export function SlideConfirmButtonAsync() {
 }`}
 >
   <SlideConfirmButtonAsyncDemo />
-</ComponentPreview>
+</Example>
+
+## Installation
+
+<ComponentInstall name="slide-confirm-button" />
+
+## Usage
+
+```tsx
+import { SlideConfirmButton } from "@/components/godui/slide-confirm-button";
+```
+
+```tsx
+<SlideConfirmButton label="Slide to pay" onConfirm={charge} />
+```
+
+When `onConfirm` returns a promise, the thumb shows a spinner and the track swaps in `loadingLabel` while the work runs, then lands on the confirmed state once it resolves. If the promise rejects, the control springs back to idle so the action can be retried.
 
 ## Props
 
@@ -87,3 +87,5 @@ export function SlideConfirmButtonAsync() {
 | `label` | `ReactNode` | `"Slide to confirm"` | Track label |
 | `loadingLabel` | `ReactNode` | `"Working…"` | Label shown while an async `onConfirm` is pending |
 | `confirmedLabel` | `ReactNode` | `"Confirmed"` | Label after confirming |
+
+</Workbench>

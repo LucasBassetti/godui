@@ -89,6 +89,32 @@ body {
     --gutter: max(0px, calc((100vw - 90rem) / 2));
     /* The header is fixed (leaves grid flow), so reserve its height here. */
     padding-top: 3.5rem;
+    /* Width of the Workbench docs rail (see stage-panel.tsx). Read here + by the
+       portaled panel via :root below so both always match. */
+    --wb-panel-w: min(440px, 34vw);
+  }
+
+  /* Expose the rail width to the body-portaled <StagePanel> too. */
+  :root {
+    --wb-panel-w: min(440px, 34vw);
+  }
+
+  /* When the docs rail is open, slide the whole app (header + sidebar + stage)
+     left by `panel − gutter` so the content sits flush against the rail WITHOUT
+     resizing. The rail only opens (via <StagePanel>) when there's enough side
+     slack for this shift not to clip (see use-side-panel-fit.ts); otherwise the
+     docs open as a bottom sheet and this attribute is never set. Transform (not
+     left/right) keeps the slide on the compositor. Each element is transformed
+     individually so the fixed header/sidebar keep their own fixed positioning. */
+  #nd-docs-layout #nd-nav,
+  #nd-docs-layout #nd-sidebar,
+  #nd-docs-layout #nd-page {
+    transition: transform 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  #nd-docs-layout[data-wb-panel="open"] #nd-nav,
+  #nd-docs-layout[data-wb-panel="open"] #nd-sidebar,
+  #nd-docs-layout[data-wb-panel="open"] #nd-page {
+    transform: translateX(calc(var(--gutter) - var(--wb-panel-w)));
   }
 
   [data-sidebar-placeholder] {
@@ -127,6 +153,12 @@ body {
   /* Tighten the gap between the header and the content. */
   #nd-page {
     padding-top: 1.5rem !important;
+  }
+
+  /* Workbench pages are full-bleed: the stage owns the whole main column, so
+     drop the content top padding (it would push past 100dvh and scroll). */
+  #nd-page.workbench-page {
+    padding-top: 0 !important;
   }
 
   /* The mobile-only "Menu" block is hidden on desktop but its wrapper's mb-4
@@ -210,6 +242,48 @@ p.docs-lead {
   margin: 0 !important;
 }
 
+/* Hide the scrollbar on horizontally-scrollable strips (e.g. the workbench
+   example tab track) while keeping them scrollable. */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Workbench Code tab — framed codebox with a left line-number gutter. */
+.workbench-code .shiki,
+.workbench-code pre {
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+.workbench-code code {
+  counter-reset: line;
+}
+
+.workbench-code .line {
+  counter-increment: line;
+}
+
+/* Inline gutter marker before each shiki line (empty lines keep their height
+   from the source newlines, so the counter still advances). */
+.workbench-code .line::before {
+  content: counter(line);
+  display: inline-block;
+  width: 2rem;
+  margin-right: 1.25rem;
+  text-align: right;
+  color: var(--color-fd-muted-foreground);
+  opacity: 0.4;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
 /* Dotted-grid demo stage with a radial fade toward the page background. */
 .component-preview-canvas {
   background-color: var(--color-fd-background);
@@ -235,6 +309,18 @@ p.docs-lead {
 .component-preview-canvas > * {
   position: relative;
   z-index: 1;
+}
+
+/* Workbench stage canvas — seamless with the page background (no contrast). */
+.workbench-canvas {
+  background-color: var(--color-fd-background);
+}
+
+/* Bounded stage frame — a clearly-visible hairline in both themes (the raw
+   --border token is nearly invisible in dark), so the canvas reads as a
+   contained panel rather than an open void. */
+.stage-frame {
+  border-color: color-mix(in srgb, var(--color-fd-foreground) 12%, transparent);
 }
 
 .component-install-cli pre {

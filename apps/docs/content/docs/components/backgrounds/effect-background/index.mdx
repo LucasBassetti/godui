@@ -1,14 +1,23 @@
 ---
 title: Effect Background
 description: Full-bleed effect backgrounds — radial glows, aurora dreams, and soft pastel washes.
+workbench: true
 ---
+
+<Workbench>
 
 A full-bleed atmospheric layer. Drop it as the first child of a `relative overflow-hidden`
 container and your content sits above it. Pick a look below — 66 patterns ported from
 [PatternCraft](https://patterncraft.fun). The component itself just takes `background`,
 `backgroundImage`, and `backgroundSize`; the picker fills them in.
 
-<BackgroundShowcase component="effect" />
+<Example label="Default" fullWidth>
+  <BackgroundShowcase component="effect" embedded />
+</Example>
+
+## Installation
+
+<ComponentInstall name="effect-background" />
 
 ## Usage
 
@@ -32,3 +41,5 @@ just the standard `div` attributes.
 | `className` | `string` | Extra classes on the layer (it is `absolute inset-0 z-base`). |
 
 All other `div` attributes are forwarded.
+
+</Workbench>

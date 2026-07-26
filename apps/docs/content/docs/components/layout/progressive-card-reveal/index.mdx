@@ -1,16 +1,20 @@
 ---
 title: Progressive Card Reveal
 description: A vertical stack of cards where one card expands to its full view while the rest collapse to compact pills, animating the morph between them.
+workbench: true
 ---
 
 import { ProgressiveCardRevealDemo } from "@/components/demos/progressive-card-reveal-demo";
+
+<Workbench>
 
 A vertical stack of cards. Exactly one card is expanded at a time — the rest
 collapse to compact pills. The parent owns which card is active; clicking a
 collapsed pill asks it to switch, and Framer Motion animates the size morph and
 crossfades the content.
 
-<ComponentPreview
+<Example
+  label="Default"
   story="layout-progressive-card-reveal"
   code={`import { ProgressiveCardReveal } from "@/components/godui/progressive-card-reveal";
 import { useState } from "react";
@@ -64,7 +68,7 @@ export function ProgressiveCardRevealDemo() {
 }`}
 >
   <ProgressiveCardRevealDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -121,3 +125,5 @@ Accepts all `div` attributes. Children must be a `CardCollapsed` and a
 ### ProgressiveCardReveal.CardCollapsed / CardExpanded
 
 Slot wrappers — their children are the collapsed (pill) and expanded views.
+
+</Workbench>

@@ -1,13 +1,17 @@
 ---
 title: Beam Draw
 description: SVG beams that draw themselves along scroll progress with a soft glow.
+workbench: true
 ---
 
 import { BeamDrawDemo } from "@/components/demos/beam-draw-demo";
 
+<Workbench>
+
 A set of flowing SVG beams that stroke themselves into existence as you scroll, trailing a soft glow — the connective, high-energy accent for a hero or section transition. Scroll the preview.
 
-<ComponentPreview
+<Example
+  label="Default"
   fullWidth
   story="effects-beam-draw"
   code={`import { BeamDraw } from "@/components/godui/beam-draw";
@@ -27,7 +31,7 @@ export function Pipeline() {
 }`}
 >
   <BeamDrawDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -61,3 +65,5 @@ viewBox.
 | `strokeWidth` | `number`   | `2`            | Stroke width of each beam.                    |
 
 `BeamDraw` also forwards every standard `<svg>` attribute to the root.
+
+</Workbench>

@@ -1,6 +1,7 @@
 ---
 title: App Showcase
 description: A realistic iPhone or Android device frame that shows your app on screen, with scroll, loop, carousel, and cluster interactions.
+workbench: true
 ---
 
 import { AppShowcaseDemo } from "@/components/demos/app-showcase-demo";
@@ -8,9 +9,12 @@ import { AppShowcaseCarouselDemo } from "@/components/demos/app-showcase-carouse
 import { AppShowcaseClusterDemo } from "@/components/demos/app-showcase-cluster-demo";
 import { AppShowcaseFramesDemo } from "@/components/demos/app-showcase-frames-demo";
 
+<Workbench>
+
 The hero shot of every mobile-app landing page: your screenshots or demo video framed in a real device. Pick a device and an interaction — the screen pans as you scroll, auto-scrolls on a loop, cross-fades a feature tour, or fans out into a parallax cluster. The screen below auto-scrolls while it is in view.
 
-<ComponentPreview
+<Example
+  label="Default"
   story="layout-app-showcase"
   code={`import { AppShowcase } from "@/components/godui/app-showcase";
 
@@ -27,7 +31,7 @@ export function Hero() {
 }`}
 >
   <AppShowcaseDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -65,37 +69,40 @@ preview at the top of this page). Swap `device` for the Android frame:
 
 Cross-fade through multiple screens with dot controls.
 
-<ComponentPreview
+<Example
+  label="Carousel"
   code={`<AppShowcase
   mode="carousel"
   screens={["/a.png", "/b.png", "/c.png"]}
 />`}
 >
   <AppShowcaseCarouselDemo />
-</ComponentPreview>
+</Example>
 
 ### Cluster — parallax centerpiece
 
 Two or three phones at different depths that react to the pointer.
 
-<ComponentPreview
+<Example
+  label="Cluster"
   code={`<AppShowcase
   mode="cluster"
   screens={["/a.png", "/b.png", "/c.png"]}
 />`}
 >
   <AppShowcaseClusterDemo />
-</ComponentPreview>
+</Example>
 
 ### Frame colors
 
 Each device comes in `black`, `silver`, and `gold` finishes.
 
-<ComponentPreview
+<Example
+  label="Frame Colors"
   code={`<AppShowcase mode="loop" frameColor="silver" src="/app-tall.png" />`}
 >
   <AppShowcaseFramesDemo />
-</ComponentPreview>
+</Example>
 
 ## Props
 
@@ -113,3 +120,5 @@ Each device comes in `black`, `silver`, and `gold` finishes.
 | `alt`        | `string`                                      | —          | Accessible label for the screen media.                         |
 
 `AppShowcase` also forwards every standard `<div>` attribute to the root.
+
+</Workbench>

@@ -1,6 +1,7 @@
 ---
 title: Segmented Control
 description: An iOS-style selector with a sliding pill that springs between options.
+workbench: true
 ---
 
 import { SegmentedControl } from "@godui/components";
@@ -11,7 +12,12 @@ export const viewOptions = [
   { label: "Month", value: "month" },
 ];
 
-<ComponentPreview
+<Workbench>
+
+An iOS-style selector with a sliding pill that springs between options.
+
+<Example
+  label="Default"
   story="navigation-segmented-control"
   code={`import { SegmentedControl } from "@/components/godui/segmented-control";
 
@@ -26,11 +32,12 @@ export function SegmentedControlDemo() {
 }`}
 >
   <SegmentedControl options={viewOptions} defaultValue="week" />
-</ComponentPreview>
+</Example>
 
 ## Sizes
 
-<ComponentPreview
+<Example
+  label="Sizes"
   code={`import { SegmentedControl } from "@/components/godui/segmented-control";
 
 export function SegmentedControlSizes() {
@@ -48,7 +55,7 @@ export function SegmentedControlSizes() {
     <SegmentedControl options={viewOptions} size="md" />
     <SegmentedControl options={viewOptions} size="lg" />
   </div>
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -80,3 +87,5 @@ const [view, setView] = useState("week");
 | `defaultValue` | `string` | first option | Uncontrolled value. |
 | `size` | `"sm" \| "md" \| "lg"` | `"md"` | Control size. |
 | `onChange` | `(value: string) => void` | — | Fires on selection. |
+
+</Workbench>

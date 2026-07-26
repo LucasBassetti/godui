@@ -1,11 +1,17 @@
 ---
 title: Dock
 description: A macOS-style dock whose items magnify with spring physics as the pointer moves across them.
+workbench: true
 ---
 
 import { DockDemo } from "@/components/demos/dock-demo";
 
-<ComponentPreview
+<Workbench>
+
+A macOS-style dock whose items magnify with spring physics as the pointer moves across them.
+
+<Example
+  label="Default"
   fullWidth
   story="navigation-dock"
   code={`import { Dock, DockItem } from "@/components/godui/dock";
@@ -33,7 +39,7 @@ export function DockDemo() {
 }`}
 >
   <DockDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -84,3 +90,5 @@ import { Dock, DockItem } from "@/components/godui/dock";
 
 Both components forward every standard `<div>` attribute to their root element.
 `DockItem` must be rendered inside a `Dock`.
+
+</Workbench>

@@ -1,14 +1,18 @@
 ---
 title: Image Accordion
 description: Horizontal image panels that expand on hover to reveal their caption — an elegant, space-efficient gallery.
+workbench: true
 ---
 
 import { ImageAccordion } from "@godui/components";
 import { ImageAccordionDemo } from "@/components/demos/image-accordion-demo";
 
+<Workbench>
+
 An elegant way to show a handful of features or images in a single band. Hover or focus a panel and it eases wide while the others compress — the image saturates and zooms, and the caption slides up. Move across the panels below.
 
-<ComponentPreview
+<Example
+  label="Default"
   story="layout-imageaccordion"
   code={`import { ImageAccordion } from "@/components/godui/image-accordion";
 
@@ -24,7 +28,7 @@ export function Gallery() {
 }`}
 >
   <ImageAccordionDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -86,3 +90,5 @@ instantly.
 | `height`       | `string`                | `"26rem"` | Height of the accordion (any CSS length).                |
 
 Each `ImageAccordionPanel` has `image`, `title`, optional `description`, and optional `href`.
+
+</Workbench>

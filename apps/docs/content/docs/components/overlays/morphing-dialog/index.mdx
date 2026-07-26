@@ -1,6 +1,7 @@
 ---
 title: Morphing Dialog
 description: A card that physically morphs into a modal through a shared layout, then springs back on close.
+workbench: true
 ---
 
 import {
@@ -11,7 +12,12 @@ import {
 } from "@godui/components";
 import { MorphingDialogDemo } from "@/components/demos/morphing-dialog-demo";
 
-<ComponentPreview
+<Workbench>
+
+A card that physically morphs into a modal through a shared layout, then springs back on close.
+
+<Example
+  label="Default"
   story="overlays-morphing-dialog"
   code={`import {
   MorphingDialog,
@@ -35,7 +41,7 @@ export function MorphingDialogDemo() {
 }`}
 >
   <MorphingDialogDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -82,3 +88,5 @@ default; pass `open` / `onOpenChange` to control it.
 `MorphingDialogTrigger`, `MorphingDialogContent`, and `MorphingDialogClose`
 forward every standard attribute to their root element. The trigger and content
 must share one `MorphingDialog` parent so they animate as a pair.
+
+</Workbench>

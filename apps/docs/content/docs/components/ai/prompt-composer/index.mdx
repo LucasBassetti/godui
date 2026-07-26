@@ -1,11 +1,17 @@
 ---
 title: Prompt Composer
 description: An AI input box with auto-growing textarea, attachment chips, an inline model picker, and a send button that morphs into a stop control while streaming.
+workbench: true
 ---
 
 import { PromptComposerDemo } from "@/components/demos/prompt-composer-demo";
 
-<ComponentPreview
+<Workbench>
+
+An AI input box with auto-growing textarea, attachment chips, an inline model picker, and a send button that morphs into a stop control while streaming.
+
+<Example
+  label="Default"
   story="ai-promptcomposer"
   code={`import { PromptComposer } from "@/components/godui/prompt-composer";
 import { useState } from "react";
@@ -28,7 +34,7 @@ export function PromptComposerDemo() {
 }`}
 >
   <PromptComposerDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -76,3 +82,5 @@ const [value, setValue] = useState("");
 | `models`              | `string[]`                                    | —                | Enables the inline model picker.                   |
 | `model`               | `string`                                      | —                | Selected model.                                    |
 | `onModelChange`       | `(model: string) => void`                     | —                | Fired when a model is chosen.                      |
+
+</Workbench>

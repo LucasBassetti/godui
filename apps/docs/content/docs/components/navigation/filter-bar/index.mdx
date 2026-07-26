@@ -1,11 +1,17 @@
 ---
 title: Filter Bar
 description: A faceted filter bar with searchable multi-select popovers, count badges, and selections that spring inline into each facet pill.
+workbench: true
 ---
 
 import { FilterBarDemo } from "@/components/demos/filter-bar-demo";
 
-<ComponentPreview
+<Workbench>
+
+A faceted filter bar with searchable multi-select popovers, count badges, and selections that spring inline into each facet pill.
+
+<Example
+  label="Default"
   story="navigation-filter-bar"
   code={`"use client";
 import { FilterBar } from "@/components/godui/filter-bar";
@@ -38,7 +44,7 @@ export function FilterBarDemo() {
 }`}
 >
   <FilterBarDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -77,3 +83,5 @@ selection inline (`Status: Open +2`) and clears with the inline `×`.
 | `onChange` | `(value) => void` | — | Called when the selection changes |
 | `searchable` | `boolean` | `true` | Show a search box in each popover |
 | `showCounts` | `boolean` | `true` | Show option count badges |
+
+</Workbench>

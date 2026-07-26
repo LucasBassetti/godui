@@ -1,11 +1,17 @@
 ---
 title: Live Cursors
 description: Smoothly interpolated multiplayer cursors with trailing name flags and optional cursor-chat — the signature "this app is alive" effect.
+workbench: true
 ---
 
 import { LiveCursorsDemo } from "@/components/demos/live-cursors-demo";
 
-<ComponentPreview
+<Workbench>
+
+Smoothly interpolated multiplayer cursors with trailing name flags and optional cursor-chat — the signature "this app is alive" effect.
+
+<Example
+  label="Default"
   fullWidth
   story="collaboration-livecursors"
   code={`import {
@@ -24,7 +30,7 @@ export function LiveCursorsDemo() {
 }`}
 >
   <LiveCursorsDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -66,3 +72,5 @@ import { LiveCursors } from "@/components/godui/live-cursors";
 | Prop    | Type       | Default                  | Description                  |
 | ------- | ---------- | ------------------------ | ---------------------------- |
 | `names` | `string[]` | four sample teammates    | Names for the drifting peers.|
+
+</Workbench>

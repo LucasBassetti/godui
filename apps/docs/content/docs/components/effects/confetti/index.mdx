@@ -1,11 +1,17 @@
 ---
 title: Confetti
 description: A physics-based confetti burst with an imperative fire API for celebratory moments.
+workbench: true
 ---
 
 import { ConfettiDemo } from "@/components/demos/confetti-demo";
 
-<ComponentPreview
+<Workbench>
+
+A physics-based confetti burst with an imperative fire API for celebratory moments.
+
+<Example
+  label="Default"
   story="effects-confetti"
   code={`import { ConfettiButton } from "@/components/godui/confetti";
 
@@ -18,7 +24,7 @@ export function ConfettiDemo() {
 }`}
 >
   <ConfettiDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -74,3 +80,5 @@ confetti({ particleCount: 200, spread: 120 });
 
 Forwards every standard `<button>` attribute. `ConfettiOptions` is re-exported
 from `canvas-confetti`.
+
+</Workbench>

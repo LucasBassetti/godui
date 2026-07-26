@@ -1,12 +1,18 @@
 ---
 title: Marquee
 description: An infinite, seamless scrolling row or column of content that pauses on hover.
+workbench: true
 ---
 
 import { Marquee } from "@godui/components";
 import { MarqueeDemo } from "@/components/demos/marquee-demo";
 
-<ComponentPreview
+<Workbench>
+
+An infinite, seamless scrolling row or column of content that pauses on hover.
+
+<Example
+  label="Default"
   story="effects-marquee"
   code={`import { Marquee } from "@/components/godui/marquee";
 
@@ -26,7 +32,7 @@ export function MarqueeDemo() {
 }`}
 >
   <MarqueeDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -72,7 +78,8 @@ the marquee a fixed height).
 
 ### Reverse direction
 
-<ComponentPreview
+<Example
+  label="Reverse Direction"
   code={`<Marquee direction="right" speed={26}>
   {["Design", "Engineering", "Motion", "Craft", "Detail", "Systems"].map((t) => (
     <span key={t} className="px-4 text-lg font-semibold text-muted-foreground">{t}</span>
@@ -84,13 +91,14 @@ the marquee a fixed height).
       <span key={t} className="px-4 text-lg font-semibold text-muted-foreground">{t}</span>
     ))}
   </Marquee>
-</ComponentPreview>
+</Example>
 
 ### Vertical
 
 Give a vertical marquee a fixed height; it scrolls along the column.
 
-<ComponentPreview
+<Example
+  label="Vertical"
   code={`<div className="flex h-64 justify-center">
   <Marquee direction="up" speed={18} className="h-full">
     {reviews.map((r) => (
@@ -106,7 +114,7 @@ Give a vertical marquee a fixed height; it scrolls along the column.
       ))}
     </Marquee>
   </div>
-</ComponentPreview>
+</Example>
 
 ## Props
 
@@ -119,3 +127,5 @@ Give a vertical marquee a fixed height; it scrolls along the column.
 | `repeat`       | `number`                                 | `4`      | Times the children are duplicated to fill the track.|
 
 `Marquee` also forwards every standard `<div>` attribute to the root element.
+
+</Workbench>

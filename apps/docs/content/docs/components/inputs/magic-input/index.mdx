@@ -1,11 +1,17 @@
 ---
 title: Magic Input
 description: A 3D layered text input that lifts on focus with an optional rainbow edge animation.
+workbench: true
 ---
 
 import { MagicInput } from "@godui/components";
 
-<ComponentPreview
+<Workbench>
+
+A 3D layered text input that lifts on focus with an optional rainbow edge animation.
+
+<Example
+  label="Default"
   story="inputs-magic-input"
   code={`import { MagicInput } from "@/components/godui/magic-input";
 
@@ -24,14 +30,15 @@ export function MagicInputDemo() {
     <MagicInput rainbow={false} placeholder="Primary" />
     <MagicInput variant="secondary" rainbow={false} placeholder="Secondary" />
   </div>
-</ComponentPreview>
+</Example>
 
 ## Variants
 
 The `variant` tints the 3D edge. It shows when `rainbow={false}` (the rainbow
 gradient otherwise overrides the edge while focused).
 
-<ComponentPreview
+<Example
+  label="Variants"
   code={`import { MagicInput } from "@/components/godui/magic-input";
 
 export function MagicInputVariants() {
@@ -47,14 +54,15 @@ export function MagicInputVariants() {
     <MagicInput variant="primary" rainbow={false} placeholder="Primary" />
     <MagicInput variant="secondary" rainbow={false} placeholder="Secondary" />
   </div>
-</ComponentPreview>
+</Example>
 
 ## Depth
 
 `depth="focus"` (default) stays flat until focused. `depth="always"` keeps the
 raised 3D look at rest.
 
-<ComponentPreview
+<Example
+  label="Depth"
   code={`import { MagicInput } from "@/components/godui/magic-input";
 
 export function MagicInputDepth() {
@@ -70,11 +78,12 @@ export function MagicInputDepth() {
     <MagicInput depth="focus" placeholder="On focus" />
     <MagicInput depth="always" placeholder="Always raised" />
   </div>
-</ComponentPreview>
+</Example>
 
 ## Sizes
 
-<ComponentPreview
+<Example
+  label="Sizes"
   code={`import { MagicInput } from "@/components/godui/magic-input";
 
 export function MagicInputSizes() {
@@ -92,7 +101,7 @@ export function MagicInputSizes() {
     <MagicInput size="md" placeholder="Medium" />
     <MagicInput size="lg" placeholder="Large" />
   </div>
-</ComponentPreview>
+</Example>
 
 ## Submit button
 
@@ -100,7 +109,8 @@ Pass `onSubmit` to render an arrow button on the right. It fires with the
 current value on click or when <kbd>Enter</kbd> is pressed. Without `onSubmit`,
 set `submitButton` to render a `type="submit"` button for an enclosing form.
 
-<ComponentPreview
+<Example
+  label="Submit Button"
   code={`import { MagicInput } from "@/components/godui/magic-input";
 
 export function MagicInputSubmit() {
@@ -116,7 +126,7 @@ export function MagicInputSubmit() {
     <MagicInput placeholder="Type and submit" submitButton />
     <MagicInput size="lg" placeholder="Larger" submitButton />
   </div>
-</ComponentPreview>
+</Example>
 
 ## Submit lifecycle
 
@@ -126,7 +136,8 @@ determinate when you pass `progress`, otherwise an indeterminate segment bounces
 end to end. The arrow turns into a circular progress / spinner. `success` and
 `error` flash a green / red sweep with a check / X icon.
 
-<ComponentPreview
+<Example
+  label="Submit Lifecycle"
   code={`import { MagicInput } from "@/components/godui/magic-input";
 
 export function MagicInputStatus() {
@@ -146,7 +157,7 @@ export function MagicInputStatus() {
     <MagicInput placeholder="Success" submitButton status="success" />
     <MagicInput placeholder="Error" submitButton status="error" />
   </div>
-</ComponentPreview>
+</Example>
 
 You drive it from your submit handler:
 
@@ -207,3 +218,5 @@ disable the animated rainbow edge.
 | `submitLabel` | `string` | `"Submit"` | Accessible label for the submit button |
 | `status` | `"idle" \| "loading" \| "success" \| "error"` | `"idle"` | Submit lifecycle state |
 | `progress` | `number` | — | 0–100; makes `loading` determinate (omit for indeterminate) |
+
+</Workbench>

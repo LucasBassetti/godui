@@ -1,12 +1,18 @@
 ---
 title: Drawer
 description: A draggable bottom sheet with rubber-band physics, snap points, and flick-to-dismiss.
+workbench: true
 ---
 
 import { DrawerDemo } from "@/components/demos/drawer-demo";
 import { DrawerBottomDemo } from "@/components/demos/drawer-bottom-demo";
 
-<ComponentPreview
+<Workbench>
+
+A draggable bottom sheet with rubber-band physics, snap points, and flick-to-dismiss.
+
+<Example
+  label="Default"
   story="overlays-drawer"
   code={`"use client";
 import { Drawer } from "@/components/godui/drawer";
@@ -33,7 +39,7 @@ export function CartDrawer({ lines, total }) {
 }`}
 >
   <DrawerDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -70,9 +76,12 @@ export function Example() {
 Set `side="bottom"` for a mobile-style sheet — drag the handle (or flick) down to
 dismiss. Great for share menus, quick actions, and confirmations.
 
-<ComponentPreview code={`<Drawer open={open} onOpenChange={setOpen} side="bottom" title="Share">…</Drawer>`}>
+<Example
+  label="Bottom Sheet"
+  code={`<Drawer open={open} onOpenChange={setOpen} side="bottom" title="Share">…</Drawer>`}
+>
   <DrawerBottomDemo />
-</ComponentPreview>
+</Example>
 
 ## Props
 
@@ -83,3 +92,5 @@ dismiss. Great for share menus, quick actions, and confirmations.
 | `side`         | `"bottom" \| "right"`      | `"bottom"` | Side the drawer slides in from.          |
 | `title`        | `ReactNode`                | —          | Accessible title rendered at the top.    |
 | `className`    | `string`                   | —          | Extra classes for the panel.             |
+
+</Workbench>

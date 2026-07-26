@@ -1,13 +1,17 @@
 ---
 title: Text Animate
 description: Staggered entrance animations for headlines and copy, split by word, character, or line.
+workbench: true
 ---
 
 import { TextAnimate } from "@godui/components";
 
+<Workbench>
+
 `TextAnimate` splits text into words, characters, or lines and staggers each fragment through an entrance animation.
 
-<ComponentPreview
+<Example
+  label="Default"
   story="text-textanimate"
   code={`import { TextAnimate } from "@/components/godui/text-animate";
 
@@ -30,7 +34,7 @@ export function TextAnimateDemo() {
   >
     Animate your ideas into reality
   </TextAnimate>
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -86,7 +90,8 @@ Hit the replay button on any preview to play the animation again.
 
 ### Word fade in
 
-<ComponentPreview
+<Example
+  label="Word Fade In"
   code={`import { TextAnimate } from "@/components/godui/text-animate";
 
 export function TextAnimateFade() {
@@ -100,11 +105,12 @@ export function TextAnimateFade() {
   <TextAnimate animation="fadeIn" by="word" className="text-4xl font-semibold tracking-tight">
     Animate your ideas into reality
   </TextAnimate>
-</ComponentPreview>
+</Example>
 
 ### Character stagger
 
-<ComponentPreview
+<Example
+  label="Character Stagger"
   code={`import { TextAnimate } from "@/components/godui/text-animate";
 
 export function TextAnimateChars() {
@@ -118,11 +124,12 @@ export function TextAnimateChars() {
   <TextAnimate animation="slideUp" by="character" stagger={0.03} className="text-3xl font-medium">
     Character by character
   </TextAnimate>
-</ComponentPreview>
+</Example>
 
 ### Scale up
 
-<ComponentPreview
+<Example
+  label="Scale Up"
   code={`import { TextAnimate } from "@/components/godui/text-animate";
 
 export function TextAnimateScale() {
@@ -136,11 +143,12 @@ export function TextAnimateScale() {
   <TextAnimate animation="scaleUp" by="word" className="text-4xl font-semibold tracking-tight">
     Scale up with spring
   </TextAnimate>
-</ComponentPreview>
+</Example>
 
 ### Slide from the right
 
-<ComponentPreview
+<Example
+  label="Slide from the Right"
   code={`import { TextAnimate } from "@/components/godui/text-animate";
 
 export function TextAnimateSlide() {
@@ -154,13 +162,14 @@ export function TextAnimateSlide() {
   <TextAnimate animation="slideLeft" by="word" className="text-4xl font-semibold tracking-tight">
     Slide from the right
   </TextAnimate>
-</ComponentPreview>
+</Example>
 
 ### Semantic heading
 
 Render a real `h1` with `as` while keeping the staggered entrance.
 
-<ComponentPreview
+<Example
+  label="Semantic Heading"
   code={`import { TextAnimate } from "@/components/godui/text-animate";
 
 export function TextAnimateHeading() {
@@ -174,7 +183,7 @@ export function TextAnimateHeading() {
   <TextAnimate as="h1" animation="blurInUp" by="word" className="text-5xl font-bold tracking-tight">
     Hero headline
   </TextAnimate>
-</ComponentPreview>
+</Example>
 
 ## Props
 
@@ -196,3 +205,5 @@ export function TextAnimateHeading() {
 | `variants` | `Variants` | — | Custom Framer Motion item variants |
 
 Respects `prefers-reduced-motion` — text renders immediately without animation when the user has reduced motion enabled.
+
+</Workbench>

@@ -1,15 +1,19 @@
 ---
 title: Warp Starfield
 description: A depth starfield you fly through — cursor parallax and an optional hyperspace warp.
+workbench: true
 ---
 
 import { WarpStarfield } from "@godui/components";
+
+<Workbench>
 
 Stars stream toward you out of the dark, with the cursor gently steering the
 field for parallax. Flip on `warp` for a hyperspace jump where the stars stretch
 into streaks. Drop it as the first child of a `relative` container.
 
-<ComponentPreview
+<Example
+  label="Default"
   fullWidth
   story="backgrounds-warp-starfield"
   code={`import { WarpStarfield } from "@/components/godui/warp-starfield";
@@ -33,7 +37,7 @@ export function WarpStarfieldDemo() {
       <p className="mt-2 text-muted-foreground">Move your cursor to steer.</p>
     </div>
   </div>
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -59,7 +63,8 @@ tabs, and renders a static frame under `prefers-reduced-motion`.
 
 ### Hyperspace
 
-<ComponentPreview
+<Example
+  label="Hyperspace"
   fullWidth
   code={`import { WarpStarfield } from "@/components/godui/warp-starfield";
 
@@ -74,7 +79,7 @@ export function WarpStarfieldHyperspace() {
   <div className="relative w-full flex-1 overflow-hidden bg-background">
     <WarpStarfield warp speed={1.6} />
   </div>
-</ComponentPreview>
+</Example>
 
 ## Props
 
@@ -88,3 +93,5 @@ export function WarpStarfieldHyperspace() {
 | `parallax` | `number` | `30` | Cursor parallax strength (px). |
 
 Also accepts standard `div` attributes (e.g. `className`, `style`).
+
+</Workbench>

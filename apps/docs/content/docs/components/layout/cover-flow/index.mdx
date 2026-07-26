@@ -1,14 +1,18 @@
 ---
 title: Cover Flow
 description: A physics 3D cover flow — the centered slide faces front while neighbours rotate away in perspective, with momentum drag and snap.
+workbench: true
 ---
 
 import { CoverFlow } from "@godui/components";
 import { CoverFlowDemo } from "@/components/demos/cover-flow-demo";
 
+<Workbench>
+
 A tactile way to browse album art, product shots, or covers. Drag across the stage — the row telescopes in 3D and snaps to the nearest slide when you let go. Drag, click a side slide, use the buttons, or the arrow keys.
 
-<ComponentPreview
+<Example
+  label="Default"
   story="layout-coverflow"
   code={`import { CoverFlow } from "@/components/godui/cover-flow";
 
@@ -23,7 +27,7 @@ export function Albums() {
 }`}
 >
   <CoverFlowDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -87,3 +91,5 @@ set, the 3D rotation and depth are dropped for a flat cross-fade.
 | `reflection`   | `boolean`                   | `true`  | Render a fading floor reflection under each slide.   |
 
 `CoverFlow` also forwards every standard `<div>` attribute to the root element.
+
+</Workbench>

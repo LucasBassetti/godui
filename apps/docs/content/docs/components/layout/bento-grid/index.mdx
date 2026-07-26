@@ -1,11 +1,17 @@
 ---
 title: Bento Grid
 description: A modular bento layout of mixed-size cards that stagger in on scroll and lift with a spotlight on hover.
+workbench: true
 ---
 
 import { BentoGridDemo } from "@/components/demos/bento-grid-demo";
 
-<ComponentPreview
+<Workbench>
+
+A modular bento layout of mixed-size cards that stagger in on scroll and lift with a spotlight on hover.
+
+<Example
+  label="Default"
   story="layout-bentogrid"
   code={`import { BentoGrid, BentoCard } from "@/components/godui/bento-grid";
 import { Sparkles, Activity, ShieldCheck, Globe2 } from "lucide-react";
@@ -42,7 +48,7 @@ export function BentoGridDemo() {
 }`}
 >
   <BentoGridDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -88,3 +94,5 @@ own `children` for full control.
 | `cta`         | `ReactNode`    | —       | Call-to-action pinned to the bottom.     |
 
 Both components forward every standard `<div>` attribute to their root element.
+
+</Workbench>

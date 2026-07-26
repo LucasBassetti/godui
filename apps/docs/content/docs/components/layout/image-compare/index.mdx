@@ -1,11 +1,17 @@
 ---
 title: Image Compare
 description: A draggable before/after slider with clip-path reveal, keyboard support, and a pulsing handle hint.
+workbench: true
 ---
 
 import { ImageCompareDemo, ImageCompareVerticalDemo } from "@/components/demos/image-compare-demo";
 
-<ComponentPreview
+<Workbench>
+
+A draggable before/after slider with clip-path reveal, keyboard support, and a pulsing handle hint.
+
+<Example
+  label="Default"
   story="layout-image-compare"
   code={`import { ImageCompare } from "@/components/godui/image-compare";
 
@@ -23,11 +29,12 @@ export function ImageCompareDemo() {
 }`}
 >
   <ImageCompareDemo />
-</ComponentPreview>
+</Example>
 
 ## Vertical
 
-<ComponentPreview
+<Example
+  label="Vertical"
   code={`import { ImageCompare } from "@/components/godui/image-compare";
 
 export function ImageCompareVertical() {
@@ -43,7 +50,7 @@ export function ImageCompareVertical() {
 }`}
 >
   <ImageCompareVerticalDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -74,3 +81,5 @@ larger steps).
 | `beforeLabel` | `string` | — | Badge over the before layer. |
 | `afterLabel` | `string` | — | Badge over the after layer. |
 | `onChange` | `(position: number) => void` | — | Fires as the handle moves. |
+
+</Workbench>

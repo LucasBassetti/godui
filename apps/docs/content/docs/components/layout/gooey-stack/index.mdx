@@ -2,6 +2,7 @@
 title: Gooey Stack
 description: A stack of cards that fuse with a liquid metaball bridge and collapse behind an anchor with a spring.
 date: "2026-07-16"
+workbench: true
 ---
 
 import { GooeyStack } from "@godui/components";
@@ -9,9 +10,12 @@ import { GooeyStackDemo } from "@/components/demos/gooey-stack-demo";
 import { GooeyNotificationsDemo } from "@/components/demos/gooey-notifications-demo";
 import { GooeyWalletDemo } from "@/components/demos/gooey-wallet-demo";
 
+<Workbench>
+
 Stack content and let the surfaces behave like liquid. As the gap between cards shrinks their rounded surfaces bulge and fuse through a gooey metaball bridge; push it negative and the upper cards frost over — heavy blur, fading opacity — and dissolve into the anchor. Toggle `collapsed`, or drive `gap` from a slider for the full continuous sweep.
 
-<ComponentPreview
+<Example
+  label="Default"
   story="layout-gooeystack"
   code={`import { GooeyStack } from "@/components/godui/gooey-stack";
 import { useState } from "react";
@@ -37,7 +41,7 @@ export function ConnectPrompt() {
 }`}
 >
   <GooeyStackDemo />
-</ComponentPreview>
+</Example>
 
 ## Examples
 
@@ -45,7 +49,8 @@ Stacks with **more than two** children collapse rank by rank — the ones furthe
 from the anchor recede and frost the most, with a staggered spring. A notification
 tray folds its history into the newest alert:
 
-<ComponentPreview
+<Example
+  label="Notifications"
   code={`import { GooeyStack } from "@/components/godui/gooey-stack";
 import { useState } from "react";
 
@@ -63,13 +68,14 @@ export function NotificationTray() {
 }`}
 >
   <GooeyNotificationsDemo />
-</ComponentPreview>
+</Example>
 
 The same shape reads as a wallet — three cards fanned out, folding into a stack.
 Keep children on the fused `bg-card` surface and let color come from small accents,
 so the metaball bridge stays seamless:
 
-<ComponentPreview
+<Example
+  label="Wallet"
   code={`import { GooeyStack } from "@/components/godui/gooey-stack";
 import { useState } from "react";
 
@@ -87,7 +93,7 @@ export function Wallet() {
 }`}
 >
   <GooeyWalletDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -159,3 +165,5 @@ and the cards snap between states instead of springing.
 | `radius`       | `number`          | `28`    | Corner radius (px) of the fused surfaces.                               |
 
 `GooeyStack` also forwards every standard `<div>` attribute to the root element.
+
+</Workbench>

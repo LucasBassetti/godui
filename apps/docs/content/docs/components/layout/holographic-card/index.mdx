@@ -2,12 +2,18 @@
 title: Holographic Card
 description: A trading-card holo effect — iridescent foil, specular glare, and glitter that tilt and shift with the pointer or device gyroscope.
 date: "2026-07-10"
+workbench: true
 ---
 
 import { HolographicCard } from "@godui/components";
 import { HolographicCardDemo } from "@/components/demos/holographic-card-demo";
 
-<ComponentPreview
+<Workbench>
+
+A trading-card holo effect — iridescent foil, specular glare, and glitter that tilt and shift with the pointer or device gyroscope.
+
+<Example
+  label="Default"
   story="layout-holographic-card"
   code={`import { HolographicCard } from "@/components/godui/holographic-card";
 
@@ -24,7 +30,7 @@ export function HolographicCardDemo() {
 }`}
 >
   <HolographicCardDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -53,7 +59,8 @@ import { HolographicCard } from "@/components/godui/holographic-card";
 
 ### Colorways
 
-<ComponentPreview
+<Example
+  label="Colorways"
   code={`<div className="flex flex-wrap items-center justify-center gap-6">
   <HolographicCard variant="aurora" className="h-40 w-28" />
   <HolographicCard variant="galaxy" className="h-40 w-28" />
@@ -65,7 +72,7 @@ import { HolographicCard } from "@/components/godui/holographic-card";
     <HolographicCard variant="galaxy" className="h-40 w-28" />
     <HolographicCard variant="gold" className="h-40 w-28" />
   </div>
-</ComponentPreview>
+</Example>
 
 ## Props
 
@@ -78,3 +85,5 @@ import { HolographicCard } from "@/components/godui/holographic-card";
 | `gyroscope`  | `boolean`                                     | `false`     | Drive the tilt from the device gyroscope on touch.    |
 
 `HolographicCard` also forwards every standard `<div>` attribute to the root element.
+
+</Workbench>

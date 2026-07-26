@@ -1,16 +1,20 @@
 ---
 title: Blueprint Grid
 description: A technical lattice — lines, dots, or a perspective floor — with a light sweep and cursor spotlight.
+workbench: true
 ---
 
 import { BlueprintGrid } from "@godui/components";
+
+<Workbench>
 
 The engineering-blueprint backdrop: a precise lattice with a diagonal light
 sweep traveling across it and a soft spotlight that follows the cursor. Choose
 ruled `lines`, a `dots` matrix, or a floor-fading `perspective` grid. Pure CSS.
 Drop it as the first child of a `relative overflow-hidden` container.
 
-<ComponentPreview
+<Example
+  label="Default"
   fullWidth
   story="backgrounds-blueprint-grid"
   code={`import { BlueprintGrid } from "@/components/godui/blueprint-grid";
@@ -34,7 +38,7 @@ export function BlueprintGridDemo() {
       <p className="mt-2 text-muted-foreground">Move your cursor across the grid.</p>
     </div>
   </div>
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -59,7 +63,8 @@ content at `z-raised`+. Color defaults to `--color-border`. The sweep hides unde
 
 ### Dots
 
-<ComponentPreview
+<Example
+  label="Dots"
   fullWidth
   code={`import { BlueprintGrid } from "@/components/godui/blueprint-grid";
 
@@ -74,11 +79,12 @@ export function BlueprintGridDots() {
   <div className="relative w-full flex-1 overflow-hidden bg-background">
     <BlueprintGrid variant="dots" />
   </div>
-</ComponentPreview>
+</Example>
 
 ### Perspective
 
-<ComponentPreview
+<Example
+  label="Perspective"
   fullWidth
   code={`import { BlueprintGrid } from "@/components/godui/blueprint-grid";
 
@@ -93,7 +99,7 @@ export function BlueprintGridPerspective() {
   <div className="relative w-full flex-1 overflow-hidden bg-background">
     <BlueprintGrid variant="perspective" color="#6366f1" />
   </div>
-</ComponentPreview>
+</Example>
 
 ## Props
 
@@ -109,3 +115,5 @@ export function BlueprintGridPerspective() {
 | `spotlightRadius` | `number` | `200` | Spotlight radius (px). |
 
 Also accepts standard `div` attributes (e.g. `className`, `style`).
+
+</Workbench>

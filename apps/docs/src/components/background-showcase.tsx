@@ -17,11 +17,13 @@ import {
 import {
   type ComponentType,
   type CSSProperties,
+  useEffect,
   useMemo,
   useState,
 } from "react";
 import { ComponentInstall } from "@/components/component-install";
 import { ComponentPreview } from "@/components/component-preview";
+import { useStageCopy } from "@/components/workbench/stage-copy-context";
 import { cn } from "@/lib/cn";
 
 type Key = "gradient" | "geometric" | "decorative" | "effect";
@@ -86,7 +88,18 @@ ${style}
 }`;
 }
 
-export function BackgroundShowcase({ component }: { component: Key }) {
+export function BackgroundShowcase({
+  component,
+  embedded = false,
+}: {
+  component: Key;
+  /**
+   * Workbench stage mode: render the live background full-bleed with the variant
+   * picker floating at the bottom, and drop the Preview/Code card + install block
+   * (the page's `## Installation` provides those in the docs drawer instead).
+   */
+  embedded?: boolean;
+}) {
   const set = SETS[component];
   const [selected, setSelected] = useState(set.variants[0]);
   const preset = set.presets[selected];
@@ -97,35 +110,57 @@ export function BackgroundShowcase({ component }: { component: Key }) {
   // one cell). Render them into a larger, scaled-down box so several tiles show.
   const dense = component === "geometric";
 
+  // Embedded (workbench) mode: publish the current variant's snippet to the rail
+  // so its copy button tracks the live selection; clear it on unmount.
+  const { setCopyValue } = useStageCopy();
+  useEffect(() => {
+    if (!embedded) return;
+    setCopyValue(code);
+    return () => setCopyValue(null);
+  }, [embedded, code, setCopyValue]);
+
+  const swatches = set.variants.map((variant) => (
+    <button
+      key={variant}
+      type="button"
+      onClick={() => setSelected(variant)}
+      aria-pressed={variant === selected}
+      title={variant}
+      className={cn(
+        "relative h-12 w-16 shrink-0 overflow-hidden rounded-md border transition",
+        variant === selected
+          ? "border-fd-primary ring-2 ring-fd-primary ring-offset-2 ring-offset-fd-background"
+          : "border-fd-border hover:border-fd-primary/50",
+      )}
+    >
+      {dense ? (
+        <span className="absolute top-0 left-0 h-[250%] w-[250%] origin-top-left scale-[0.4]">
+          <Bg style={set.presets[variant]} />
+        </span>
+      ) : (
+        <Bg style={set.presets[variant]} />
+      )}
+    </button>
+  ));
+
+  if (embedded) {
+    return (
+      <div className="not-prose relative size-full overflow-hidden">
+        <Bg style={preset} />
+        {/* Variant picker floating over the bg at the bottom of the stage. The
+            copy button lives in the rail (top-right) via StageCopyProvider. */}
+        <div className="-translate-x-1/2 absolute bottom-4 left-1/2 z-10 flex max-w-[calc(100%-2rem)] gap-2 overflow-x-auto rounded-2xl border border-fd-border bg-fd-card/80 p-2 shadow-lg backdrop-blur-md">
+          {swatches}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="not-prose my-8 flex flex-col gap-4">
       {/* horizontal variant picker — p-2 leaves room for the selected ring,
           which the overflow-x-auto row would otherwise clip */}
-      <div className="flex gap-2 overflow-x-auto p-2">
-        {set.variants.map((variant) => (
-          <button
-            key={variant}
-            type="button"
-            onClick={() => setSelected(variant)}
-            aria-pressed={variant === selected}
-            title={variant}
-            className={cn(
-              "relative h-12 w-16 shrink-0 overflow-hidden rounded-md border transition",
-              variant === selected
-                ? "border-fd-primary ring-2 ring-fd-primary ring-offset-2 ring-offset-fd-background"
-                : "border-fd-border hover:border-fd-primary/50",
-            )}
-          >
-            {dense ? (
-              <span className="absolute top-0 left-0 h-[250%] w-[250%] origin-top-left scale-[0.4]">
-                <Bg style={set.presets[variant]} />
-              </span>
-            ) : (
-              <Bg style={set.presets[variant]} />
-            )}
-          </button>
-        ))}
-      </div>
+      <div className="flex gap-2 overflow-x-auto p-2">{swatches}</div>
 
       {/* live preview — the selected variant drives both the canvas and the
           Code tab, full-bleed inside the preview box */}

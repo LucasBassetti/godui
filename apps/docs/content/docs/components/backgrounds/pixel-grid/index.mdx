@@ -1,9 +1,12 @@
 ---
 title: Pixel Grid
 description: A grid of squares that flicker their opacity — as an automatic animated background, or revealed only under the cursor.
+workbench: true
 ---
 
 import { PixelGrid } from "@godui/components";
+
+<Workbench>
 
 A field of small squares that flicker their opacity on a loop. It has two modes.
 With `interactive={false}` the whole field flickers on its own — an automatic
@@ -14,7 +17,8 @@ static dim, depending on `cursorReveal`. Drop it as the first child of a
 color defaults to the `--color-foreground` theme token and re-resolves on theme
 change, so it tracks light and dark automatically.
 
-<ComponentPreview
+<Example
+  label="Default"
   fullWidth
   story="backgrounds-pixel-grid"
   code={`import { PixelGrid } from "@/components/godui/pixel-grid";
@@ -30,7 +34,7 @@ export function PixelGridDemo() {
   <div className="relative w-full flex-1 overflow-hidden bg-background">
     <PixelGrid interactive={false} />
   </div>
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -59,7 +63,8 @@ Set `interactive` so only the squares within `interactionRadius` of the cursor
 animate. With the default `cursorReveal="hidden"`, the rest stay invisible — a
 spotlight that follows the pointer.
 
-<ComponentPreview
+<Example
+  label="Cursor Reveal"
   fullWidth
   code={`import { PixelGrid } from "@/components/godui/pixel-grid";
 
@@ -76,14 +81,15 @@ export function PixelGridCursor() {
     <PixelGrid interactive />
     <p className="relative z-10 text-sm font-medium text-foreground">Move your cursor across the grid</p>
   </div>
-</ComponentPreview>
+</Example>
 
 ### Cursor reveal over a dim field
 
 `cursorReveal="dim"` keeps the squares outside the radius visible at a static low
 opacity, so the cursor lights up an already-present grid.
 
-<ComponentPreview
+<Example
+  label="Cursor Reveal Over A Dim Field"
   fullWidth
   code={`import { PixelGrid } from "@/components/godui/pixel-grid";
 
@@ -100,13 +106,14 @@ export function PixelGridCursorDim() {
     <PixelGrid interactive cursorReveal="dim" />
     <p className="relative z-10 text-sm font-medium text-foreground">Move your cursor across the grid</p>
   </div>
-</ComponentPreview>
+</Example>
 
 ### Custom color
 
 Pass any CSS color string to `color` to override the theme token.
 
-<ComponentPreview
+<Example
+  label="Custom Color"
   fullWidth
   code={`import { PixelGrid } from "@/components/godui/pixel-grid";
 
@@ -121,13 +128,14 @@ export function PixelGridColored() {
   <div className="relative w-full flex-1 overflow-hidden bg-background">
     <PixelGrid interactive={false} color="oklch(0.7 0.18 280)" maxOpacity={0.5} />
   </div>
-</ComponentPreview>
+</Example>
 
 ### Dense grid
 
 Smaller `squareSize` and `gridGap` pack the field tighter.
 
-<ComponentPreview
+<Example
+  label="Dense Grid"
   fullWidth
   code={`import { PixelGrid } from "@/components/godui/pixel-grid";
 
@@ -142,7 +150,7 @@ export function PixelGridDense() {
   <div className="relative w-full flex-1 overflow-hidden bg-background">
     <PixelGrid interactive={false} squareSize={2} gridGap={2} flickerChance={0.2} maxOpacity={0.4} />
   </div>
-</ComponentPreview>
+</Example>
 
 ## Props
 
@@ -164,3 +172,5 @@ Also accepts standard `div` attributes (e.g. `className`, `style`).
 
 Honors `prefers-reduced-motion`: the flicker animation pauses and a single static
 frame is drawn instead.
+
+</Workbench>

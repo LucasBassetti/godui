@@ -1,15 +1,19 @@
 ---
 title: Scroll Progress
 description: A spring-smoothed reading indicator — a pinned top bar or a fading back-to-top ring.
+workbench: true
 ---
 
 import { ScrollProgressCircleDemo, ScrollProgressDemo } from "@/components/demos/scroll-progress-demo";
+
+<Workbench>
 
 The `bar` variant pins a progress line to the top of the page and fills as the
 reader scrolls. Leave `container` unset to track the whole page, or pass a ref
 to track a scrollable element (as the preview below does).
 
-<ComponentPreview
+<Example
+  label="Default"
   story="effects-scroll-progress"
   code={`import { ScrollProgress } from "@/components/godui/scroll-progress";
 
@@ -19,14 +23,15 @@ export function ScrollProgressDemo() {
 }`}
 >
   <ScrollProgressDemo />
-</ComponentPreview>
+</Example>
 
 ## Circle variant
 
 `variant="circle"` renders a circular progress ring that fades in past
 `showAfter` and scrolls back to top on click.
 
-<ComponentPreview
+<Example
+  label="Circle Variant"
   code={`import { ScrollProgress } from "@/components/godui/scroll-progress";
 
 export function ScrollProgressCircle() {
@@ -34,7 +39,7 @@ export function ScrollProgressCircle() {
 }`}
 >
   <ScrollProgressCircleDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -64,3 +69,5 @@ const ref = useRef<HTMLElement>(null);
 | `size` | `number` | `44` | Ring diameter in px. |
 | `showAfter` | `number` | `0.05` | Reveal the ring past this fraction. |
 | `position` | `"bottom-right" \| "bottom-left"` | `"bottom-right"` | Corner the ring docks to. |
+
+</Workbench>

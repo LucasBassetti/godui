@@ -1,6 +1,7 @@
 ---
 title: Animated Testimonials
 description: A testimonial carousel with a shuffling image stack and crossfading quotes.
+workbench: true
 ---
 
 import { AnimatedTestimonials } from "@godui/components";
@@ -20,7 +21,12 @@ export const demoTestimonials = [
   },
 ];
 
-<ComponentPreview
+<Workbench>
+
+A testimonial carousel with a shuffling image stack and crossfading quotes.
+
+<Example
+  label="Default"
   story="layout-animatedtestimonials"
   code={`import { AnimatedTestimonials } from "@/components/godui/animated-testimonials";
 
@@ -34,7 +40,7 @@ export function AnimatedTestimonialsDemo() {
 }`}
 >
   <AnimatedTestimonials testimonials={demoTestimonials} />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -68,3 +74,5 @@ const testimonials = [
 
 Each `Testimonial` is `{ quote, name, role, src }`. The component also forwards every
 standard `<div>` attribute to the root element.
+
+</Workbench>

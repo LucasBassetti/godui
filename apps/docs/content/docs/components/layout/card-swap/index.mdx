@@ -1,14 +1,18 @@
 ---
 title: Card Swap
 description: A 3D stack of cards that cycles through a showcase loop, with pointer parallax and spring re-flow.
+workbench: true
 ---
 
 import { CardSwap } from "@godui/components";
 import { CardSwapDemo } from "@/components/demos/card-swap-demo";
 
+<Workbench>
+
 A compact, eye-catching way to cycle product features or screens in a hero corner. Cards sit in a 3D perspective stack and spring to their new slot on each swap; the whole stack tilts toward your pointer. Hover to pause, or use the arrows.
 
-<ComponentPreview
+<Example
+  label="Default"
   story="layout-cardswap"
   code={`import { CardSwap } from "@/components/godui/card-swap";
 
@@ -32,7 +36,7 @@ export function FeatureSwap() {
 }`}
 >
   <CardSwapDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -91,3 +95,5 @@ disabled.
 | `scaleStep`    | `number`  | `0.06`   | Scale removed per card going back.                     |
 
 `CardSwap` also forwards every standard `<div>` attribute to the root element.
+
+</Workbench>

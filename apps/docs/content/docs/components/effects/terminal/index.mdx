@@ -2,13 +2,17 @@
 title: Terminal
 description: An animated terminal window that types out a scripted sequence of commands and output, with window chrome and a blinking caret.
 date: "2026-07-11"
+workbench: true
 ---
 
 import { TerminalDemo } from "@/components/demos/terminal-demo";
 
+<Workbench>
+
 Nothing says "developer tool" like a terminal that types itself. `Terminal` plays a scripted sequence — commands type out character by character with a blinking caret, output lands after a beat — inside a clean window frame. It starts when it scrolls into view, can loop, and collapses to plain text for screen readers and reduced-motion users.
 
-<ComponentPreview
+<Example
+  label="Default"
   story="effects-terminal"
   code={`import { Terminal } from "@/components/godui/terminal";
 
@@ -28,7 +32,7 @@ export function Install() {
 }`}
 >
   <TerminalDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -79,3 +83,5 @@ blink, and the full transcript is always exposed to assistive tech.
 
 `TerminalLine.type` is `"command" \| "output" \| "comment"` (default `"output"`).
 All other `div` props are forwarded to the root element.
+
+</Workbench>

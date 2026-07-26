@@ -1,13 +1,17 @@
 ---
 title: Container Scroll
 description: A device frame that un-tilts from a 3D perspective and scales to rest as you scroll — the classic product hero.
+workbench: true
 ---
 
 import { ContainerScrollDemo } from "@/components/demos/container-scroll-demo";
 
+<Workbench>
+
 The frame starts tilted back in 3D space and gently un-tilts, scales down, and settles as the section scrolls into view — while the headline rises above it. The staple hero moment for a product screenshot or demo video. Scroll the preview.
 
-<ComponentPreview
+<Example
+  label="Default"
   fullWidth
   story="layout-container-scroll"
   code={`import { ContainerScroll } from "@/components/godui/container-scroll";
@@ -21,7 +25,7 @@ export function Hero() {
 }`}
 >
   <ContainerScrollDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -56,3 +60,5 @@ UI. `img` and `video` children are stretched to cover automatically.
 | `children` | `React.ReactNode` | —       | The screen content (image, video, or UI).         |
 
 `ContainerScroll` also forwards every standard `<div>` attribute to the root.
+
+</Workbench>

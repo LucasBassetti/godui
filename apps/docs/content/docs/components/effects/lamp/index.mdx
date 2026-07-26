@@ -1,12 +1,18 @@
 ---
 title: Lamp
 description: A conic-gradient lamp that ignites and reveals a headline as it scrolls into view.
+workbench: true
 ---
 
 import { Lamp } from "@godui/components";
 import { LampDemo } from "@/components/demos/lamp-demo";
 
-<ComponentPreview
+<Workbench>
+
+A conic-gradient lamp that ignites and reveals a headline as it scrolls into view.
+
+<Example
+  label="Default"
   story="effects-lamp"
   code={`import { Lamp } from "@/components/godui/lamp";
 
@@ -19,7 +25,7 @@ export function LampDemo() {
 }`}
 >
   <LampDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -59,3 +65,5 @@ import { Lamp } from "@/components/godui/lamp";
 | `color` | `string` | `var(--primary)` | Accent color of the light.            |
 
 `Lamp` also forwards every standard `<div>` attribute to the root element.
+
+</Workbench>

@@ -1,13 +1,17 @@
 ---
 title: Hero Parallax
 description: A scroll-driven grid of cards that drift in alternating directions on a tilted perspective plane.
+workbench: true
 ---
 
 import { HeroParallaxDemo } from "@/components/demos/hero-parallax-demo";
 
+<Workbench>
+
 Three rows of cards drift in alternating directions as you scroll, while the whole plane un-tilts and rises into view. The classic hero moment for a portfolio or product reel. Scroll the preview.
 
-<ComponentPreview
+<Example
+  label="Default"
   fullWidth
   story="layout-hero-parallax"
   code={`import { HeroParallax } from "@/components/godui/hero-parallax";
@@ -25,7 +29,7 @@ export function Showcase() {
 }`}
 >
   <HeroParallaxDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -77,3 +81,5 @@ Pass `header` to replace the default headline block with your own.
 
 Each item is `{ title: string; thumbnail: string; href?: string }`.
 `HeroParallax` also forwards every standard `<div>` attribute to the root.
+
+</Workbench>

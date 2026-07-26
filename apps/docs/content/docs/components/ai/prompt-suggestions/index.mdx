@@ -1,11 +1,17 @@
 ---
 title: Prompt Suggestions
 description: Animated starter prompts for AI empty states — cards stagger in, lift on hover, and feed straight into the composer when chosen.
+workbench: true
 ---
 
 import { PromptSuggestionsDemo } from "@/components/demos/prompt-suggestions-demo";
 
-<ComponentPreview
+<Workbench>
+
+Animated starter prompts for AI empty states — cards stagger in, lift on hover, and feed straight into the composer when chosen.
+
+<Example
+  label="Default"
   story="ai-promptsuggestions"
   code={`import { PromptSuggestions } from "@/components/godui/prompt-suggestions";
 
@@ -25,7 +31,7 @@ export function PromptSuggestionsDemo() {
 }`}
 >
   <PromptSuggestionsDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -58,3 +64,5 @@ import { PromptSuggestions } from "@/components/godui/prompt-suggestions";
 | `variant`       | `"grid" \| "chips" \| "list"`     | `"grid"` | Layout style.                        |
 | `loading`       | `boolean`                         | `false`  | Render shimmer skeletons.            |
 | `skeletonCount` | `number`                          | `4`      | Skeletons shown while loading.       |
+
+</Workbench>

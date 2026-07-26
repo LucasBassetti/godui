@@ -1,6 +1,7 @@
 ---
 title: Stepper
 description: A step indicator with a spring-filled progress line and a number-to-checkmark morph.
+workbench: true
 ---
 
 import { Stepper } from "@godui/components";
@@ -13,7 +14,12 @@ export const onboarding = [
   { label: "Done", description: "All set" },
 ];
 
-<ComponentPreview
+<Workbench>
+
+A step indicator with a spring-filled progress line and a number-to-checkmark morph.
+
+<Example
+  label="Default"
   story="layout-stepper"
   code={`import { Stepper } from "@/components/godui/stepper";
 
@@ -30,14 +36,15 @@ export function StepperDemo() {
   <div className="w-full max-w-xl">
     <Stepper steps={onboarding} active={1} />
   </div>
-</ComponentPreview>
+</Example>
 
 ## Interactive
 
 Drive `active` from state to walk through the steps — the line fills and each
 completed step morphs its number into a checkmark.
 
-<ComponentPreview
+<Example
+  label="Interactive"
   code={`import { useState } from "react";
 import { Stepper } from "@/components/godui/stepper";
 
@@ -57,11 +64,12 @@ export function StepperInteractive() {
 }`}
 >
   <StepperInteractiveDemo />
-</ComponentPreview>
+</Example>
 
 ## Vertical
 
-<ComponentPreview
+<Example
+  label="Vertical"
   code={`import { Stepper } from "@/components/godui/stepper";
 
 export function StepperVertical() {
@@ -69,7 +77,7 @@ export function StepperVertical() {
 }`}
 >
   <Stepper steps={onboarding} active={2} orientation="vertical" />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -97,3 +105,5 @@ import { Stepper } from "@godui/components";
 | `steps` | `Step[]` | — | `{ label, description? }`. |
 | `active` | `number` | — | Zero-based current step; earlier steps render complete. |
 | `orientation` | `"horizontal" \| "vertical"` | `"horizontal"` | Layout direction. |
+
+</Workbench>

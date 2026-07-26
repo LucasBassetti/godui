@@ -1,14 +1,18 @@
 ---
 title: Spotlight Reveal
 description: A cursor-following flashlight that cuts through the top layer to expose a hidden layer beneath.
+workbench: true
 ---
 
 import { SpotlightReveal } from "@godui/components";
 import { SpotlightRevealDemo } from "@/components/demos/spotlight-reveal-demo";
 
+<Workbench>
+
 Two layers stacked, with a soft spotlight that follows your cursor and punches a hole in the top one — revealing whatever sits beneath. Idle, the spotlight drifts to invite a hover; click to pin it in place. Move across the panel below.
 
-<ComponentPreview
+<Example
+  label="Default"
   story="effects-spotlightreveal"
   code={`import { SpotlightReveal } from "@/components/godui/spotlight-reveal";
 
@@ -30,7 +34,7 @@ export function Reveal() {
 }`}
 >
   <SpotlightRevealDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -82,3 +86,5 @@ beneath.
 | `ease`     | `number`         | `0.16`  | Follow easing per frame, 0 (frozen) – 1 (instant).           |
 
 The cover layer is passed as `children`. `SpotlightReveal` also forwards every standard `<div>` attribute to the root element.
+
+</Workbench>

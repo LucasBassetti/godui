@@ -1,14 +1,23 @@
 ---
 title: Decorative Background
 description: Full-bleed decorative backgrounds — radial and corner gradient washes.
+workbench: true
 ---
+
+<Workbench>
 
 A full-bleed decorative wash. Drop it as the first child of a `relative overflow-hidden`
 container and your content sits above it. Pick a look below — 44 patterns ported from
 [PatternCraft](https://patterncraft.fun). The component itself just takes `background`,
 `backgroundImage`, and `backgroundSize`; the picker fills them in.
 
-<BackgroundShowcase component="decorative" />
+<Example label="Default" fullWidth>
+  <BackgroundShowcase component="decorative" embedded />
+</Example>
+
+## Installation
+
+<ComponentInstall name="decorative-background" />
 
 ## Usage
 
@@ -32,3 +41,5 @@ just the standard `div` attributes.
 | `className` | `string` | Extra classes on the layer (it is `absolute inset-0 z-base`). |
 
 All other `div` attributes are forwarded.
+
+</Workbench>

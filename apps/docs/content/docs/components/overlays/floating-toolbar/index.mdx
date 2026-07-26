@@ -1,6 +1,7 @@
 ---
 title: Floating Toolbar
 description: A context toolbar that springs into view with magnetic, morphing action buttons.
+workbench: true
 ---
 
 import { FloatingToolbar } from "@godui/components";
@@ -16,7 +17,12 @@ export const toolbarActions = [
   { icon: icon("M3 6h18M3 12h18M3 18h18"), label: "List" },
 ];
 
-<ComponentPreview
+<Workbench>
+
+A context toolbar that springs into view with magnetic, morphing action buttons.
+
+<Example
+  label="Default"
   story="overlays-floating-toolbar"
   code={`import { FloatingToolbar } from "@/components/godui/floating-toolbar";
 
@@ -34,7 +40,7 @@ export function FloatingToolbarDemo() {
 }`}
 >
   <FloatingToolbar open actions={toolbarActions} />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -62,3 +68,5 @@ const [open, setOpen] = useState(false);
 | `actions` | `ToolbarAction[]` | — | `{ icon, label, onClick?, active?, disabled? }`. |
 | `open` | `boolean` | `true` | Mount/unmount with a spring entrance. |
 | `children` | `ReactNode` | — | Trailing content (dividers, extra controls). |
+
+</Workbench>

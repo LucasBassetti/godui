@@ -1,6 +1,7 @@
 ---
 title: Avatar Group
 description: Overlapping avatars that fan apart on hover, with a +N overflow chip.
+workbench: true
 ---
 
 import { AvatarGroup } from "@godui/components";
@@ -14,7 +15,12 @@ export const people = [
   { src: "https://i.pravatar.cc/80?img=6", alt: "Jo" },
 ];
 
-<ComponentPreview
+<Workbench>
+
+Overlapping avatars that fan apart on hover, with a +N overflow chip.
+
+<Example
+  label="Default"
   story="layout-avatar-group"
   code={`import { AvatarGroup } from "@/components/godui/avatar-group";
 
@@ -32,11 +38,12 @@ export function AvatarGroupDemo() {
 }`}
 >
   <AvatarGroup avatars={people} max={4} />
-</ComponentPreview>
+</Example>
 
 ## Sizes
 
-<ComponentPreview
+<Example
+  label="Sizes"
   code={`import { AvatarGroup } from "@/components/godui/avatar-group";
 
 export function AvatarGroupSizes() {
@@ -54,7 +61,7 @@ export function AvatarGroupSizes() {
     <AvatarGroup avatars={people} max={4} size="md" />
     <AvatarGroup avatars={people} max={4} size="lg" />
   </div>
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -79,3 +86,5 @@ import { AvatarGroup } from "@godui/components";
 | `max` | `number` | `4` | Max shown before the `+N` chip. |
 | `size` | `"sm" \| "md" \| "lg"` | `"md"` | Avatar size. |
 | `spreadOnHover` | `boolean` | `true` | Fan the stack apart on hover. |
+
+</Workbench>

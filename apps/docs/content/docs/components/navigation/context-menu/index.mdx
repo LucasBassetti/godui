@@ -1,11 +1,17 @@
 ---
 title: Context Menu
 description: A right-click menu that springs open from the exact cursor point and flips to stay inside the viewport, with icons, shortcuts, and destructive actions.
+workbench: true
 ---
 
 import { ContextMenuDemo } from "@/components/demos/context-menu-demo";
 
-<ComponentPreview
+<Workbench>
+
+A right-click menu that springs open from the exact cursor point and flips to stay inside the viewport, with icons, shortcuts, and destructive actions.
+
+<Example
+  label="Default"
   story="navigation-context-menu"
   code={`"use client";
 import { ContextMenu } from "@/components/godui/context-menu";
@@ -33,7 +39,7 @@ export function FileContextMenu() {
 }`}
 >
   <ContextMenuDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -63,3 +69,5 @@ const items = [
 | ---- | ---- | ------- | ----------- |
 | `items` | `ContextMenuItem[]` | — | Items, separators, and labels |
 | `children` | `ReactNode` | — | The area that responds to right-click |
+
+</Workbench>

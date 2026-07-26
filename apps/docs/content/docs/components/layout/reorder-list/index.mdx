@@ -1,12 +1,18 @@
 ---
 title: Reorder List
 description: A drag-to-reorder list where items lift on grab, spring to place, and neighbours flow around them.
+workbench: true
 ---
 
 import { ReorderList, ReorderItem } from "@godui/components";
 import { ReorderListDemo } from "@/components/demos/reorder-list-demo";
 
-<ComponentPreview
+<Workbench>
+
+A drag-to-reorder list where items lift on grab, spring to place, and neighbours flow around them.
+
+<Example
+  label="Default"
   story="layout-reorder-list"
   code={`import { ReorderList, ReorderItem } from "@/components/godui/reorder-list";
 import { useState } from "react";
@@ -30,7 +36,7 @@ export function ReorderListDemo() {
 }`}
 >
   <ReorderListDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -78,3 +84,5 @@ Set `axis="x"` for a horizontal list.
 | `value` | `T`  | —       | The value this item represents within `values`.      |
 
 Both components forward every standard attribute to their underlying `<ul>` / `<li>`.
+
+</Workbench>

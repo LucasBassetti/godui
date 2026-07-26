@@ -2,13 +2,17 @@
 title: Spin Viewer
 description: A 360° product viewer — drag to spin an object through a sequence of frames, with optional idle auto-rotate and a touch-friendly hint.
 date: "2026-07-11"
+workbench: true
 ---
 
 import { SpinViewerDemo } from "@/components/demos/spin-viewer-demo";
 
+<Workbench>
+
 The Apple-store trick for making a product feel real: let people grab it and spin it. `SpinViewer` turns an ordered sequence of frames into a draggable 360° object — mouse or touch. It preloads every frame so the spin is buttery, idles with a slow auto-rotate until the first grab, and drops a "drag to rotate" hint for first-timers. Perfect for a product hero, an app device shot, or a portfolio centerpiece.
 
-<ComponentPreview
+<Example
+  label="Default"
   story="layout-spin-viewer"
   code={`import { SpinViewer } from "@/components/godui/spin-viewer";
 
@@ -18,7 +22,7 @@ export function Product() {
 }`}
 >
   <SpinViewerDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -67,3 +71,5 @@ auto-rotate is disabled under `prefers-reduced-motion` — dragging always works
 | `label` | `string` | `"360-degree view…"` | Accessible label for the viewer. |
 
 All other `div` props are forwarded to the root element.
+
+</Workbench>

@@ -1,11 +1,17 @@
 ---
 title: Shimmer Button
 description: A button with an animated shimmering border light effect.
+workbench: true
 ---
 
 import { ShimmerButton } from "@godui/components";
 
-<ComponentPreview
+<Workbench>
+
+A button with an animated shimmering border light effect.
+
+<Example
+  label="Default"
   story="buttons-shimmer-button"
   code={`import { ShimmerButton } from "@/components/godui/shimmer-button";
 
@@ -24,27 +30,10 @@ export function ShimmerButtonDemo() {
     <ShimmerButton variant="secondary">Secondary</ShimmerButton>
     <ShimmerButton variant="outline">Outline</ShimmerButton>
   </div>
-</ComponentPreview>
+</Example>
 
-## Installation
-
-<ComponentInstall componentName="ShimmerButton" />
-
-## Usage
-
-```tsx
-import { ShimmerButton } from "@/components/godui/shimmer-button";
-```
-
-```tsx
-<ShimmerButton variant="primary">Click me</ShimmerButton>
-```
-
-## Examples
-
-### Sizes
-
-<ComponentPreview
+<Example
+  label="Sizes"
   code={`import { ShimmerButton } from "@/components/godui/shimmer-button";
 
 export function ShimmerButtonSizes() {
@@ -62,13 +51,10 @@ export function ShimmerButtonSizes() {
     <ShimmerButton size="md">Medium</ShimmerButton>
     <ShimmerButton size="lg">Large</ShimmerButton>
   </div>
-</ComponentPreview>
+</Example>
 
-### Without shimmer
-
-Set `shimmer={false}` to keep the button styling without the animated border light.
-
-<ComponentPreview
+<Example
+  label="Static"
   code={`import { ShimmerButton } from "@/components/godui/shimmer-button";
 
 export function ShimmerButtonStatic() {
@@ -76,11 +62,10 @@ export function ShimmerButtonStatic() {
 }`}
 >
   <ShimmerButton shimmer={false}>No shimmer</ShimmerButton>
-</ComponentPreview>
+</Example>
 
-### Disabled
-
-<ComponentPreview
+<Example
+  label="Disabled"
   code={`import { ShimmerButton } from "@/components/godui/shimmer-button";
 
 export function ShimmerButtonDisabled() {
@@ -88,7 +73,23 @@ export function ShimmerButtonDisabled() {
 }`}
 >
   <ShimmerButton disabled>Disabled</ShimmerButton>
-</ComponentPreview>
+</Example>
+
+## Installation
+
+<ComponentInstall componentName="ShimmerButton" />
+
+## Usage
+
+```tsx
+import { ShimmerButton } from "@/components/godui/shimmer-button";
+```
+
+```tsx
+<ShimmerButton variant="primary">Click me</ShimmerButton>
+```
+
+Set `shimmer={false}` to keep the button styling without the animated border light.
 
 ## Props
 
@@ -100,3 +101,5 @@ export function ShimmerButtonDisabled() {
 | `shimmerColor` | `string` | variant default | Color of the shimmering light |
 | `shimmerDuration` | `string` | `"3s"` | Duration of the shimmer animation |
 | `background` | `string` | variant default | Background color override |
+
+</Workbench>

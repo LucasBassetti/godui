@@ -1,11 +1,17 @@
 ---
 title: Breadcrumbs
 description: A breadcrumb trail with a shared-element hover pill that springs between crumbs, animated path changes, and an overflow that collapses into a popover.
+workbench: true
 ---
 
 import { BreadcrumbsDemo, BreadcrumbsCollapsedDemo } from "@/components/demos/breadcrumbs-demo";
 
-<ComponentPreview
+<Workbench>
+
+A breadcrumb trail with a shared-element hover pill that springs between crumbs, animated path changes, and an overflow that collapses into a popover.
+
+<Example
+  label="Default"
   story="navigation-breadcrumbs"
   code={`"use client";
 import { Breadcrumbs } from "@/components/godui/breadcrumbs";
@@ -23,7 +29,7 @@ export function BreadcrumbsDemo() {
 }`}
 >
   <BreadcrumbsDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -53,7 +59,8 @@ Hovering crumbs slides a shared pill; the last crumb is marked as the current pa
 
 Pass `maxItems` to fold the middle into a `…` button that springs open into a popover.
 
-<ComponentPreview
+<Example
+  label="Collapsed Overflow"
   code={`"use client";
 import { Breadcrumbs } from "@/components/godui/breadcrumbs";
 
@@ -71,7 +78,7 @@ export function BreadcrumbsCollapsed() {
 }`}
 >
   <BreadcrumbsCollapsedDemo />
-</ComponentPreview>
+</Example>
 
 ## Props
 
@@ -82,3 +89,5 @@ export function BreadcrumbsCollapsed() {
 | `separator` | `ReactNode` | chevron | Node rendered between crumbs |
 | `collapsible` | `boolean` | `true` | Allow the collapsed middle to expand |
 | `onNavigate` | `(href: string) => void` | — | Called on crumb click (prevents default) |
+
+</Workbench>

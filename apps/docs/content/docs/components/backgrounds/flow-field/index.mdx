@@ -1,16 +1,20 @@
 ---
 title: Flow Field
 description: Particles streaming along an evolving noise vector field, leaving silky fading trails.
+workbench: true
 ---
 
 import { FlowField } from "@godui/components";
+
+<Workbench>
 
 Hundreds of particles ride an invisible, slowly-evolving current, leaving silky
 trails that fade behind them — generative, organic, hypnotic. It paints its own
 themed background, so drop it as the first child of a `relative` container and
 let your content sit above it.
 
-<ComponentPreview
+<Example
+  label="Default"
   fullWidth
   story="backgrounds-flow-field"
   code={`import { FlowField } from "@/components/godui/flow-field";
@@ -34,7 +38,7 @@ export function FlowFieldDemo() {
       <p className="mt-2 text-muted-foreground">Currents you never see twice.</p>
     </div>
   </div>
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -63,7 +67,8 @@ trails in `color` (default `--color-primary`); both track light/dark. Caps DPR a
 
 Lower `fade` for longer, silkier streaks.
 
-<ComponentPreview
+<Example
+  label="Long Trails"
   fullWidth
   code={`import { FlowField } from "@/components/godui/flow-field";
 
@@ -78,7 +83,7 @@ export function FlowFieldLong() {
   <div className="relative w-full flex-1 overflow-hidden">
     <FlowField fade={0.02} speed={1.2} />
   </div>
-</ComponentPreview>
+</Example>
 
 ## Props
 
@@ -91,3 +96,5 @@ export function FlowFieldLong() {
 | `fade` | `number` | `0.06` | Trail fade per frame, `0`–`1` (lower = longer trails). |
 
 Also accepts standard `div` attributes (e.g. `className`, `style`).
+
+</Workbench>

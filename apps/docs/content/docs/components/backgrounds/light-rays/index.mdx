@@ -1,16 +1,20 @@
 ---
 title: Light Rays
 description: Volumetric god-rays that slowly sweep and breathe, with optional film grain. Pure CSS.
+workbench: true
 ---
 
 import { LightRays } from "@godui/components";
+
+<Workbench>
 
 A soft fan of volumetric light rays beams down from above, slowly sweeping and
 breathing in intensity, finished with a layer of film grain. Cinematic and warm —
 the spotlight-from-the-heavens hero. Pure CSS. Drop it as the first child of a
 `relative overflow-hidden` container.
 
-<ComponentPreview
+<Example
+  label="Default"
   fullWidth
   story="backgrounds-light-rays"
   code={`import { LightRays } from "@/components/godui/light-rays";
@@ -34,7 +38,7 @@ export function LightRaysDemo() {
       <p className="mt-2 text-muted-foreground">God-rays that gently breathe.</p>
     </div>
   </div>
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -59,7 +63,8 @@ content at `z-raised`+. Color defaults to `--color-primary`. The sweep stops und
 
 ### Warm
 
-<ComponentPreview
+<Example
+  label="Warm"
   fullWidth
   code={`import { LightRays } from "@/components/godui/light-rays";
 
@@ -74,7 +79,7 @@ export function LightRaysWarm() {
   <div className="relative w-full flex-1 overflow-hidden bg-background">
     <LightRays color="#f59e0b" rayCount={18} intensity={0.7} />
   </div>
-</ComponentPreview>
+</Example>
 
 ## Props
 
@@ -88,3 +93,5 @@ export function LightRaysWarm() {
 | `grain` | `number` | `0.05` | Film-grain amount, `0`–`1` (`0` disables it). |
 
 Also accepts standard `div` attributes (e.g. `className`, `style`).
+
+</Workbench>

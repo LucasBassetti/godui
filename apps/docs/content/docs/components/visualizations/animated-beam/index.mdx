@@ -1,13 +1,19 @@
 ---
 title: Animated Beam
 description: An animated gradient beam that travels along a path connecting two separate nodes.
+workbench: true
 ---
 
 import { AnimatedBeamDemo } from "@/components/demos/animated-beam-demo";
 import { AnimatedBeamPipelineDemo } from "@/components/demos/animated-beam-pipeline-demo";
 import { AnimatedBeamSyncDemo } from "@/components/demos/animated-beam-sync-demo";
 
-<ComponentPreview
+<Workbench>
+
+An animated gradient beam that travels along a path connecting two separate nodes.
+
+<Example
+  label="Default"
   story="effects-animated-beam"
   code={`import { AnimatedBeam } from "@/components/godui/animated-beam";
 import { useRef } from "react";
@@ -26,7 +32,7 @@ export function AnimatedBeamDemo() {
 }`}
 >
   <AnimatedBeamDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -63,7 +69,8 @@ Set `pathDashArray` for a dotted or dashed resting line. Here each stage connect
 with a dotted track (`"0.1 8"` with the round cap renders as dots), and staggered
 `delay`s send the beam flowing from stage to stage.
 
-<ComponentPreview
+<Example
+  label="Dotted Data Pipeline"
   code={`const beam = { containerRef, pathDashArray: "0.1 8", duration: 4 };
 
 <AnimatedBeam {...beam} fromRef={clientRef} toRef={edgeRef} delay={0} />
@@ -71,19 +78,20 @@ with a dotted track (`"0.1 8"` with the round cap renders as dots), and staggere
 <AnimatedBeam {...beam} fromRef={computeRef} toRef={dbRef} delay={1.2} />`}
 >
   <AnimatedBeamPipelineDemo />
-</ComponentPreview>
+</Example>
 
 ### Bidirectional sync
 
 Stack two dashed beams with opposite `curvature` — and `reverse` on one — for a
 continuous two-way connection.
 
-<ComponentPreview
+<Example
+  label="Bidirectional Sync"
   code={`<AnimatedBeam containerRef={containerRef} fromRef={deviceRef} toRef={cloudRef} curvature={36} pathDashArray="4 5" />
 <AnimatedBeam containerRef={containerRef} fromRef={deviceRef} toRef={cloudRef} curvature={-36} delay={1.5} reverse pathDashArray="4 5" />`}
 >
   <AnimatedBeamSyncDemo />
-</ComponentPreview>
+</Example>
 
 ## Props
 
@@ -102,3 +110,5 @@ continuous two-way connection.
 | `pathDashArray`      | `string`              | —           | `stroke-dasharray` for the resting path (`"4 5"` dashes, `"0.1 8"` dots). |
 | `gradientStartColor` | `string`              | `var(--primary)` | Leading color of the travelling gradient.|
 | `gradientStopColor`  | `string`              | —           | Trailing color of the travelling gradient.   |
+
+</Workbench>

@@ -1,11 +1,17 @@
 ---
 title: Liquid Glass Lens
 description: A circular glass lens that floats over your content and follows the cursor, refracting everything beneath it.
+workbench: true
 ---
 
 import { LiquidGlassLens } from "@godui/components";
 
-<ComponentPreview
+<Workbench>
+
+A circular glass lens that floats over your content and follows the cursor, refracting everything beneath it.
+
+<Example
+  label="Default"
   fullWidth
   story="effects-liquid-glass-lens"
   code={`import { LiquidGlassLens } from "@/components/godui/liquid-glass-lens";
@@ -25,7 +31,7 @@ export function LiquidGlassLensDemo() {
     <h2 className="pointer-events-none select-none text-5xl font-bold tracking-tight text-white drop-shadow">Liquid Glass</h2>
     <LiquidGlassLens size={200} strength={80} />
   </div>
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -78,3 +84,5 @@ import { LiquidGlassLens } from "@/components/godui/liquid-glass-lens";
 
 `LiquidGlassLens` also forwards every standard `<div>` attribute (`className`,
 `style`, `id`, …) to the root element.
+
+</Workbench>
