@@ -10,6 +10,10 @@ type MorphingDialogContextValue = {
   close: () => void;
   layoutId: string;
   reduceMotion: boolean;
+  /** Body of the document that owns the trigger — the portal target. */
+  portalContainer: HTMLElement | null;
+  /** Called by the trigger to report which document it lives in. */
+  registerNode: (node: HTMLElement | null) => void;
 };
 
 const MorphingDialogContext =
@@ -51,6 +55,16 @@ function MorphingDialog({ children, open, onOpenChange }: MorphingDialogProps) {
   const [uncontrolled, setUncontrolled] = React.useState(false);
   const isOpen = open ?? uncontrolled;
 
+  // Portal into the document that owns the trigger, not the global `document`.
+  // When the demo renders inside an iframe (e.g. the docs mobile preview), the
+  // React tree still runs in the parent's JS context, so a hardcoded
+  // `document.body` would escape the frame. The trigger reports its ownerDocument.
+  const [portalContainer, setPortalContainer] =
+    React.useState<HTMLElement | null>(null);
+  const registerNode = React.useCallback((node: HTMLElement | null) => {
+    if (node) setPortalContainer(node.ownerDocument.body);
+  }, []);
+
   const setOpen = React.useCallback(
     (next: boolean) => {
       if (open === undefined) setUncontrolled(next);
@@ -66,8 +80,10 @@ function MorphingDialog({ children, open, onOpenChange }: MorphingDialogProps) {
       close: () => setOpen(false),
       layoutId: `morphing-dialog-${layoutId}`,
       reduceMotion,
+      portalContainer,
+      registerNode,
     }),
-    [isOpen, setOpen, layoutId, reduceMotion],
+    [isOpen, setOpen, layoutId, reduceMotion, portalContainer, registerNode],
   );
 
   return (
@@ -84,10 +100,18 @@ const MorphingDialogTrigger = React.forwardRef<
   HTMLDivElement,
   MorphingDialogTriggerProps
 >(({ className, children, onClick, onKeyDown, ...props }, ref) => {
-  const { open, layoutId, isOpen } = useMorphingDialog();
+  const { open, layoutId, isOpen, registerNode } = useMorphingDialog();
+  const setRefs = React.useCallback(
+    (node: HTMLDivElement | null) => {
+      registerNode(node);
+      if (typeof ref === "function") ref(node);
+      else if (ref) ref.current = node;
+    },
+    [ref, registerNode],
+  );
   return (
     <motion.div
-      ref={ref}
+      ref={setRefs}
       data-slot="morphing-dialog-trigger"
       layoutId={layoutId}
       role="button"
@@ -120,26 +144,28 @@ const MorphingDialogContent = React.forwardRef<
   HTMLDivElement,
   MorphingDialogContentProps
 >(({ className, children, ...props }, ref) => {
-  const { isOpen, close, layoutId, reduceMotion } = useMorphingDialog();
+  const { isOpen, close, layoutId, reduceMotion, portalContainer } =
+    useMorphingDialog();
   const [mounted, setMounted] = React.useState(false);
 
   React.useEffect(() => setMounted(true), []);
 
   React.useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen || !portalContainer) return;
+    const doc = portalContainer.ownerDocument;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") close();
     };
-    document.addEventListener("keydown", onKey);
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    doc.addEventListener("keydown", onKey);
+    const prev = portalContainer.style.overflow;
+    portalContainer.style.overflow = "hidden";
     return () => {
-      document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = prev;
+      doc.removeEventListener("keydown", onKey);
+      portalContainer.style.overflow = prev;
     };
-  }, [isOpen, close]);
+  }, [isOpen, close, portalContainer]);
 
-  if (!mounted) return null;
+  if (!mounted || !portalContainer) return null;
 
   return createPortal(
     <AnimatePresence>
@@ -171,7 +197,7 @@ const MorphingDialogContent = React.forwardRef<
         </div>
       ) : null}
     </AnimatePresence>,
-    document.body,
+    portalContainer,
   );
 });
 MorphingDialogContent.displayName = "MorphingDialogContent";
