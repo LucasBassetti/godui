@@ -35,7 +35,12 @@ export function StagePanel({
   lang?: string;
   learn?: ReactNode;
 }) {
+  // Portal target (document.body) only exists on the client; render null on the
+  // server + first hydration pass, then flip after mount. Setting state in this
+  // mount effect is the canonical portal-hydration pattern (server render must
+  // match the first client render), so the set-state-in-effect rule is expected.
   const [mounted, setMounted] = useState(false);
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- mount gate for createPortal
   useEffect(() => setMounted(true), []);
 
   // Drive the app-wide left shift by flagging the docs layout grid.

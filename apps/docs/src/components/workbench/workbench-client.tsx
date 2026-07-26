@@ -73,8 +73,13 @@ function WorkbenchInner({
   const [replayKey, setReplayKey] = useState(0);
   const [view, setView] = useState<StageView>("desktop");
   const [fullscreen, setFullscreen] = useState(false);
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const [drawerTab, setDrawerTab] = useState<DrawerTab>("docs");
+  // Deep-link routes (`…/learn`) carry initialDrawerTab — open the drawer to it
+  // from the start via lazy initial state (rather than a mount effect that sets
+  // state, which cascades an extra render).
+  const [drawerOpen, setDrawerOpen] = useState(() => Boolean(initialDrawerTab));
+  const [drawerTab, setDrawerTab] = useState<DrawerTab>(
+    () => initialDrawerTab ?? "docs",
+  );
 
   // The `…/learn` route sets initialDrawerTab; used to shape the AEO mirror
   // (learn body on the learn URL, docs + code on the component URL).
@@ -134,13 +139,12 @@ function WorkbenchInner({
     return () => window.removeEventListener("popstate", onPop);
   }, [drawerOpen]);
 
-  // Deep-link support: on the `…/learn` route (initialDrawerTab set) open the
-  // drawer to that tab on mount and scroll to the URL hash section within it —
-  // so refreshing `…/learn#motion-score` reopens the drawer at that section.
+  // Deep-link support: on the `…/learn` route (initialDrawerTab set) the drawer
+  // starts open on that tab (lazy initial state above); this effect just scrolls
+  // to the URL hash section within it — so refreshing `…/learn#motion-score`
+  // lands on that section.
   useEffect(() => {
     if (!initialDrawerTab) return;
-    setDrawerTab(initialDrawerTab);
-    setDrawerOpen(true);
     const id = window.location.hash.slice(1);
     if (!id) return;
     // Wait for the open spring + drawer content to lay out before scrolling.
