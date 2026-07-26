@@ -1,6 +1,6 @@
 "use client";
 
-import type { ComponentProps } from "react";
+import { type ComponentProps, useEffect, useState } from "react";
 import { useGitHubStars } from "@/components/github-stars-provider";
 import { cn } from "@/lib/cn";
 
@@ -28,13 +28,38 @@ function GitHubIcon(props: ComponentProps<"svg">) {
 }
 
 /**
- * GitHub badge linking to the repo, showing the star count. The count is fetched
- * server-side (see `getGitHubStars`) and passed in as a prop so it renders in the
- * initial HTML — no client-side pop-in or layout shift. The count is null only
- * when the server fetch failed, in which case the badge shows just the icon.
+ * GitHub badge linking to the repo, showing the star count. The initial count is
+ * fetched at build time (see `getGitHubStars`) and provided via context, so it
+ * renders in the initial HTML — no client pop-in or layout shift. Because the
+ * pages are fully static (no ISR revalidation, to keep ISR writes ~zero), that
+ * baked value only changes on deploy; so on mount we refresh it directly from
+ * GitHub and update the already-rendered number in place — still no layout shift.
+ * The count is null only when both the build fetch and the client refresh
+ * failed, in which case the badge shows just the icon.
  */
 export function GitHubStars({ className, ...props }: ComponentProps<"a">) {
-  const count = useGitHubStars();
+  const initialCount = useGitHubStars();
+  const [count, setCount] = useState(initialCount);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch(`https://api.github.com/repos/${REPO}`, {
+      headers: { Accept: "application/vnd.github+json" },
+    })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data: { stargazers_count?: number } | null) => {
+        if (!cancelled && typeof data?.stargazers_count === "number") {
+          setCount(data.stargazers_count);
+        }
+      })
+      .catch(() => {
+        // Keep the build-time value on any failure (offline, rate limit, …).
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   return (
     <a
       href={`https://github.com/${REPO}`}
