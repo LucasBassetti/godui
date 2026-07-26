@@ -2,6 +2,7 @@ import { CodeBlock, Pre } from "fumadocs-ui/components/codeblock";
 import defaultMdxComponents from "fumadocs-ui/mdx";
 import type { MDXComponents } from "mdx/types";
 import {
+  Children,
   type ComponentProps,
   isValidElement,
   type ReactElement,
@@ -406,10 +407,41 @@ import { MCPInstall } from "@/components/mcp-install";
 import { Example } from "@/components/workbench/example";
 import { Workbench } from "@/components/workbench/workbench";
 
-function Table(props: ComponentProps<"table">) {
+/**
+ * Count the header cells so the narrow-column restack in globals.css can target
+ * *only* the 4-column props table (name / type / default / description) and
+ * leave wider tables — the Motion Score matrix, install grids — to scroll.
+ * Server-only walk, so it costs nothing at runtime.
+ */
+function countHeaderCells(node: ReactNode): number {
+  let count = 0;
+  const walk = (n: ReactNode, depth: number) => {
+    if (depth > 4 || count > 0) return;
+    for (const child of Children.toArray(n)) {
+      if (!isValidElement(child)) continue;
+      const props = child.props as { children?: ReactNode };
+      if (child.type === "tr") {
+        count = Children.toArray(props.children).filter(
+          (cell) => isValidElement(cell) && cell.type === "th",
+        ).length;
+        if (count > 0) return;
+      }
+      walk(props.children, depth + 1);
+    }
+  };
+  walk(node, 0);
+  return count;
+}
+
+function Table({ children, ...props }: ComponentProps<"table">) {
   return (
-    <div className="docs-table-wrapper not-prose my-6 overflow-x-auto">
-      <table className="docs-table w-full text-sm" {...props} />
+    <div
+      className="docs-table-wrapper not-prose my-6"
+      data-cols={countHeaderCells(children)}
+    >
+      <table className="docs-table w-full text-sm" {...props}>
+        {children}
+      </table>
     </div>
   );
 }

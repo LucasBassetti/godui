@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { GitHubStarsProvider } from "@/components/github-stars-provider";
 import { GodSearchDialog } from "@/components/search-dialog";
+import { WorkbenchPrefsScript } from "@/components/workbench/workbench-prefs-script";
 import { getGitHubStars } from "@/lib/github-stars";
 import { AeoWidget } from "./aeo-widget";
 import { SiteStructuredData } from "./structured-data";
@@ -72,6 +73,7 @@ export default async function RootLayout({
       className={`${GeistSans.variable} ${GeistMono.variable}`}
     >
       <body className={GeistSans.className} suppressHydrationWarning>
+        <WorkbenchPrefsScript />
         <SiteStructuredData />
         <RootProvider
           theme={{

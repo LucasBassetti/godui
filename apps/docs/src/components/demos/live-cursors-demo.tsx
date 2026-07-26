@@ -4,7 +4,10 @@ import { SimulatedCursors } from "@godui/components";
 
 export function LiveCursorsDemo() {
   return (
-    <div className="relative flex h-full w-full items-center justify-center overflow-hidden bg-[radial-gradient(oklch(0.7_0_0/0.12)_1px,transparent_1px)] px-6 [background-size:18px_18px]">
+    // No dot grid here — the stage canvas (.workbench-canvas) already paints
+    // one. A second at a different pitch (18px over the stage's 16px) just
+    // moirés against it.
+    <div className="relative flex h-full w-full items-center justify-center overflow-hidden px-6">
       {/* Centered play area — kept clear of the stage header chrome (title,
           breadcrumb, badges top-left; controls top-right) by living in a
           vertically-centered band, and the cursors roam only inside it. */}
