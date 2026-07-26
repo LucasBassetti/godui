@@ -1,28 +1,32 @@
 import { MagicButton } from "@godui/components";
 import { DocsLayout } from "fumadocs-ui/layouts/docs";
+import { ChevronDown } from "lucide-react";
 import Link from "next/link";
 import type { CSSProperties } from "react";
 import { baseOptions } from "@/lib/layout.shared";
+import { siteConfig } from "@/lib/site-config";
 import { source } from "@/lib/source";
+import { AnimatedInstall } from "./_home/animated-install";
+import { CommunitySection } from "./_home/community-section";
+import { FeaturesSection } from "./_home/features-section";
+import { Footer } from "./_home/footer";
+import { McpSection } from "./_home/mcp-section";
 import { HomeHeader } from "./docs/_components/home-header";
 import { MobileMenu } from "./docs/_components/mobile-menu";
 import { NullNavTitle } from "./docs/_components/null-nav-title";
 import { HeroGrid } from "./hero-grid";
-
-const SITE_URL = "https://godui.design";
 
 const structuredData = {
   "@context": "https://schema.org",
   "@graph": [
     {
       "@type": "WebPage",
-      "@id": `${SITE_URL}/#webpage`,
-      url: SITE_URL,
+      "@id": `${siteConfig.url}/#webpage`,
+      url: siteConfig.url,
       name: "GodUI — UI Collection for Modern Interfaces",
-      description:
-        "An open-source collection of beautifully crafted motion components built with React, TypeScript, Tailwind CSS, Motion, and shadcn/ui.",
-      isPartOf: { "@id": `${SITE_URL}/#website` },
-      about: { "@id": `${SITE_URL}/#organization` },
+      description: siteConfig.description,
+      isPartOf: { "@id": `${siteConfig.url}/#website` },
+      about: { "@id": `${siteConfig.url}/#organization` },
     },
   ],
 };
@@ -46,8 +50,10 @@ export default function Home() {
         // while sharing the docs drawer on mobile.
         sidebar={{ collapsible: false, className: "md:hidden" }}
         links={[{ type: "custom", on: "menu", children: <MobileMenu /> }]}
+        // min-h-svh (not h-svh + overflow-hidden): the landing now scrolls
+        // through its marketing sections, so the document owns the scroll.
         containerProps={{
-          className: "min-h-svh md:h-svh md:min-h-0 md:overflow-hidden",
+          className: "min-h-svh",
           style: homeLayoutStyle,
         }}
         slots={{
@@ -56,12 +62,14 @@ export default function Home() {
           searchTrigger: false,
         }}
       >
-        <main className="relative flex min-h-svh flex-col [grid-area:main] md:min-h-0">
-          <HeroGrid />
-          <section className="relative z-10 flex flex-1 flex-col items-center justify-center gap-8 px-4 text-center">
+        <main className="relative flex flex-col [grid-area:main]">
+          {/* Hero — screen 1. HeroGrid lives INSIDE this section so its
+              absolute backdrop is scoped to the hero, not the sections below. */}
+          <section className="relative flex min-h-[calc(100svh-3.5rem)] flex-col items-center justify-center gap-8 overflow-hidden px-4 text-center">
+            <HeroGrid />
             <Link
               href="/docs/components/buttons/jelly-button"
-              className="group inline-flex items-center gap-2 rounded-full border bg-fd-card px-3 py-1 font-medium text-fd-muted-foreground text-xs transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground"
+              className="group relative z-10 inline-flex items-center gap-2 rounded-full border bg-fd-card px-3 py-1 font-medium text-fd-muted-foreground text-xs transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground"
             >
               <span className="relative flex size-2">
                 <span className="absolute inline-flex size-full animate-ping rounded-full bg-fd-primary opacity-75" />
@@ -75,10 +83,10 @@ export default function Home() {
                 →
               </span>
             </Link>
-            <h1 className="max-w-3xl text-balance font-semibold text-4xl text-fd-foreground tracking-tight sm:text-5xl md:text-6xl">
+            <h1 className="relative z-10 max-w-3xl text-balance font-semibold text-4xl text-fd-foreground tracking-tight sm:text-5xl md:text-6xl">
               UI Collection for Modern Interfaces
             </h1>
-            <p className="max-w-md text-balance text-fd-muted-foreground text-sm sm:text-base">
+            <p className="relative z-10 max-w-md text-balance text-fd-muted-foreground text-sm sm:text-base">
               An open-source collection of beautifully crafted motion components
               built with{" "}
               <span className="font-semibold text-fd-foreground">React</span>,{" "}
@@ -96,14 +104,17 @@ export default function Home() {
               </span>
               .
             </p>
-            <div className="flex flex-col items-center gap-4 sm:flex-row sm:gap-5">
+            <div className="relative z-10 flex w-full justify-center">
+              <AnimatedInstall />
+            </div>
+            <div className="relative z-10 flex flex-col items-center gap-4 sm:flex-row sm:gap-5">
               <Link href="/docs/components" className="inline-block">
                 <MagicButton size="lg" tabIndex={-1}>
                   Browse Components
                 </MagicButton>
               </Link>
               <a
-                href="https://github.com/LucasBassetti/godui"
+                href={siteConfig.github}
                 target="_blank"
                 rel="noreferrer noopener"
                 className="inline-block"
@@ -128,9 +139,22 @@ export default function Home() {
                 </MagicButton>
               </a>
             </div>
+            {/* Scroll cue — content continues below the fold now. */}
+            <span
+              aria-hidden="true"
+              className="-translate-x-1/2 absolute bottom-8 left-1/2 z-10 animate-bounce text-fd-muted-foreground max-md:hidden"
+            >
+              <ChevronDown className="size-5" />
+            </span>
           </section>
+
+          <McpSection />
+          <FeaturesSection />
+          <CommunitySection />
         </main>
       </DocsLayout>
+      {/* Outside #nd-docs-layout (max-w 96rem) so the footer bg is full-bleed. */}
+      <Footer />
       <script
         type="application/ld+json"
         // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD requires raw script injection.
