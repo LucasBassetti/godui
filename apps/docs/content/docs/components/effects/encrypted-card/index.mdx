@@ -2,13 +2,17 @@
 title: Encrypted Card
 description: A card whose surface hides a live stream of scrambling ciphertext, revealed only through a soft spotlight that follows the pointer.
 date: "2026-07-11"
+workbench: true
 ---
 
 import { EncryptedCardDemo } from "@/components/demos/encrypted-card-demo";
 
+<Workbench>
+
 Security and AI products love the "there's something powerful under the hood" feeling. `EncryptedCard` renders your real content on top, but the surface underneath is a living field of ciphertext that re-scrambles every frame — visible only inside a radial reveal that tracks the cursor. Move across the card and the encryption bleeds through, then re-seals.
 
-<ComponentPreview
+<Example
+  label="Default"
   story="effects-encrypted-card"
   code={`import { EncryptedCard } from "@/components/godui/encrypted-card";
 
@@ -31,7 +35,7 @@ export function ApiKeyCard() {
 }`}
 >
   <EncryptedCardDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -73,3 +77,5 @@ reveal becomes a static peek, so nothing flickers for motion-sensitive users.
 | `streamOpacity` | `number` | `1` | Opacity of the revealed glyph stream, 0–1. Lower values make the ciphertext subtler. |
 
 All other `div` props are forwarded to the root element.
+
+</Workbench>

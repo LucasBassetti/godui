@@ -2,6 +2,7 @@
 title: Scroll Text Reveal
 description: Kinetic typography that scrubs each word from dim to sharp as the paragraph scrolls through view.
 date: "2026-07-10"
+workbench: true
 ---
 
 import { ScrollTextReveal } from "@godui/components";
@@ -10,7 +11,12 @@ import {
   ScrollTextRevealKeepDemo,
 } from "@/components/demos/scroll-text-reveal-demo";
 
-<ComponentPreview
+<Workbench>
+
+Kinetic typography that scrubs each word from dim to sharp as the paragraph scrolls through view.
+
+<Example
+  label="Default"
   story="text-scroll-text-reveal"
   code={`import { ScrollTextReveal } from "@/components/godui/scroll-text-reveal";
 
@@ -23,7 +29,7 @@ export function ScrollTextRevealDemo() {
 }`}
 >
   <ScrollTextRevealDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -60,7 +66,8 @@ import { ScrollTextReveal } from "@/components/godui/scroll-text-reveal";
 With `keepRevealed`, each word latches at full presence once it lands, so the
 paragraph stays lit when the reader scrolls back up instead of re-dimming.
 
-<ComponentPreview
+<Example
+  label="Keep Revealed"
   code={`import { ScrollTextReveal } from "@/components/godui/scroll-text-reveal";
 
 export function ScrollTextRevealKeepDemo() {
@@ -72,7 +79,7 @@ export function ScrollTextRevealKeepDemo() {
 }`}
 >
   <ScrollTextRevealKeepDemo />
-</ComponentPreview>
+</Example>
 
 ## Props
 
@@ -88,3 +95,5 @@ export function ScrollTextRevealKeepDemo() {
 | `segmentClassName` | `string`                            | —                              | Class applied to every segment span.                   |
 
 `ScrollTextReveal` also forwards standard attributes to the root element.
+
+</Workbench>

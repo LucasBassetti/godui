@@ -1,13 +1,17 @@
 ---
 title: Scroll Timeline
 description: A scrollytelling timeline whose progress line grows as you scroll, revealing entries with sticky labels.
+workbench: true
 ---
 
 import { ScrollTimelineDemo } from "@/components/demos/scroll-timeline-demo";
 
+<Workbench>
+
 A vertical timeline built for storytelling: a progress line traces down the rail as you scroll, entries fade up into place, and each label sticks while its section is in view. Scroll the preview to draw the line.
 
-<ComponentPreview
+<Example
+  label="Default"
   fullWidth
   story="visualizations-scroll-timeline"
   code={`import { ScrollTimeline } from "@/components/godui/scroll-timeline";
@@ -25,7 +29,7 @@ export function Changelog() {
 }`}
 >
   <ScrollTimelineDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -67,3 +71,5 @@ import { ScrollTimeline } from "@/components/godui/scroll-timeline";
 
 Each entry is `{ title: string; date?: string; content: React.ReactNode }`.
 `ScrollTimeline` also forwards every standard `<div>` attribute to the root.
+
+</Workbench>

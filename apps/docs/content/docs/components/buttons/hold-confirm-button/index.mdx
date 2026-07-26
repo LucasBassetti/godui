@@ -1,13 +1,17 @@
 ---
 title: Hold Confirm Button
 description: Press and hold to confirm a destructive action — a radial fill commits at 100%, releasing early cancels.
+workbench: true
 ---
 
 import { HoldConfirmButton } from "@godui/components";
 
+<Workbench>
+
 The Hold Confirm Button replaces a confirmation dialog with a deliberate gesture: hold to fill the progress sweep, release early to cancel. It supports pointer and keyboard holds.
 
-<ComponentPreview
+<Example
+  label="Default"
   story="buttons-hold-confirm-button"
   code={`import { HoldConfirmButton } from "@/components/godui/hold-confirm-button";
 
@@ -20,27 +24,10 @@ export function HoldConfirmButtonDemo() {
 }`}
 >
   <HoldConfirmButton>Hold to delete</HoldConfirmButton>
-</ComponentPreview>
+</Example>
 
-## Installation
-
-<ComponentInstall name="hold-confirm-button" />
-
-## Usage
-
-```tsx
-import { HoldConfirmButton } from "@/components/godui/hold-confirm-button";
-```
-
-```tsx
-<HoldConfirmButton onConfirm={deleteAccount}>Hold to delete</HoldConfirmButton>
-```
-
-## Examples
-
-### Variants and duration
-
-<ComponentPreview
+<Example
+  label="Variants"
   code={`import { HoldConfirmButton } from "@/components/godui/hold-confirm-button";
 
 export function HoldConfirmButtonVariants() {
@@ -56,7 +43,21 @@ export function HoldConfirmButtonVariants() {
     <HoldConfirmButton variant="destructive">Hold to delete</HoldConfirmButton>
     <HoldConfirmButton variant="default" duration={1400}>Hold to publish</HoldConfirmButton>
   </div>
-</ComponentPreview>
+</Example>
+
+## Installation
+
+<ComponentInstall name="hold-confirm-button" />
+
+## Usage
+
+```tsx
+import { HoldConfirmButton } from "@/components/godui/hold-confirm-button";
+```
+
+```tsx
+<HoldConfirmButton onConfirm={deleteAccount}>Hold to delete</HoldConfirmButton>
+```
 
 ## Props
 
@@ -68,3 +69,5 @@ export function HoldConfirmButtonVariants() {
 | `duration` | `number` | `900` | ms the user must hold to confirm |
 | `holdingLabel` | `ReactNode` | `"Confirming…"` | Label while holding |
 | `confirmedLabel` | `ReactNode` | `"Confirmed"` | Label after confirming |
+
+</Workbench>

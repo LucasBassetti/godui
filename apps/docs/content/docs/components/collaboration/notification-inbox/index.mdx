@@ -1,11 +1,17 @@
 ---
 title: Notification Inbox
 description: A Linear-style notification center with time-bucketed groups, unread accent rails, swipe-to-archive, mark-all-read, and a polished empty state.
+workbench: true
 ---
 
 import { NotificationInboxDemo } from "@/components/demos/notification-inbox-demo";
 
-<ComponentPreview
+<Workbench>
+
+A Linear-style notification center with time-bucketed groups, unread accent rails, swipe-to-archive, mark-all-read, and a polished empty state.
+
+<Example
+  label="Default"
   story="collaboration-notificationinbox"
   code={`import { NotificationInbox } from "@/components/godui/notification-inbox";
 import { useState } from "react";
@@ -26,7 +32,7 @@ export function NotificationInboxDemo() {
 }`}
 >
   <NotificationInboxDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -60,3 +66,5 @@ import { NotificationInbox } from "@/components/godui/notification-inbox";
 | `onArchive`     | `(id: string) => void`    | —         | Fired when a row is swiped away.    |
 | `onMarkAllRead` | `() => void`              | —         | Fired by the mark-all-read action.  |
 | `title`         | `string`                  | `"Inbox"` | Header title.                       |
+
+</Workbench>

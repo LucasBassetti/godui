@@ -1,12 +1,18 @@
 ---
 title: Voice Orb
 description: A Siri-style audio-reactive orb that breathes when idle, pulses while listening, and swells with the voice as it speaks.
+workbench: true
 ---
 
 import { VoiceOrb } from "@godui/components";
 import { VoiceOrbDemo } from "@/components/demos/voice-orb-demo";
 
-<ComponentPreview
+<Workbench>
+
+A Siri-style audio-reactive orb that breathes when idle, pulses while listening, and swells with the voice as it speaks.
+
+<Example
+  label="Default"
   story="ai-voice-orb"
   code={`import { VoiceOrb, useAudioAmplitude } from "@/components/godui/voice-orb";
 import { useState } from "react";
@@ -19,7 +25,7 @@ export function VoiceOrbDemo() {
 }`}
 >
   <VoiceOrbDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -59,3 +65,5 @@ output level from your TTS / realtime stream.
 | `size`      | `number`                                | `160`    | Diameter in pixels.                                    |
 
 `VoiceOrb` also forwards every standard `<div>` attribute to the root element.
+
+</Workbench>

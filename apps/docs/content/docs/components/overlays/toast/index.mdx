@@ -1,11 +1,17 @@
 ---
 title: Toast
 description: Stacked, swipe-dismissible toasts with an imperative toast() API.
+workbench: true
 ---
 
 import { ToastDemo } from "@/components/demos/toast-demo";
 
-<ComponentPreview
+<Workbench>
+
+Stacked, swipe-dismissible toasts with an imperative toast() API.
+
+<Example
+  label="Default"
   story="overlays-toast"
   code={`"use client";
 import { ToastProvider, toast } from "@/components/godui/toast";
@@ -20,7 +26,7 @@ export function ToastDemo() {
 }`}
 >
   <ToastDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -78,3 +84,5 @@ toast({
 Returns the toast `id`. `toast.success` and `toast.error` set the variant;
 `toast.dismiss(id)` removes one early. `options` is
 `{ title?, description?, variant?, duration?, action? }`.
+
+</Workbench>

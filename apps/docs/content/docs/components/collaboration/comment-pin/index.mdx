@@ -1,11 +1,17 @@
 ---
 title: Comment Pin
 description: Figma-style annotation pins that spring in over any surface and expand into a threaded comment popover with a reply field.
+workbench: true
 ---
 
 import { CommentPinDemo } from "@/components/demos/comment-pin-demo";
 
-<ComponentPreview
+<Workbench>
+
+Figma-style annotation pins that spring in over any surface and expand into a threaded comment popover with a reply field.
+
+<Example
+  label="Default"
   fullWidth
   story="collaboration-commentpin"
   code={`import { CommentPin } from "@/components/godui/comment-pin";
@@ -28,7 +34,7 @@ export function CommentPinDemo() {
 }`}
 >
   <CommentPinDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -61,3 +67,5 @@ import { CommentPin } from "@/components/godui/comment-pin";
 | `open`         | `boolean`                 | —       | Controlled open state.                   |
 | `onOpenChange` | `(open: boolean) => void` | —       | Fired when the thread toggles.           |
 | `onReply`      | `(text: string) => void`  | —       | Enables and handles the reply field.     |
+
+</Workbench>

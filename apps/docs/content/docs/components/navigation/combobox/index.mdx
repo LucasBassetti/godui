@@ -1,11 +1,17 @@
 ---
 title: Combobox
 description: A type-ahead autocomplete with staggered result reveal, highlighted matches, keyboard navigation, and an async loading state.
+workbench: true
 ---
 
 import { ComboboxDemo, ComboboxAsyncDemo, ComboboxMultiSelectDemo, ComboboxCreatableDemo, ComboboxPlainDemo, ComboboxPinnedActionDemo, ComboboxEmptyActionDemo } from "@/components/demos/combobox-demo";
 
-<ComponentPreview
+<Workbench>
+
+A type-ahead autocomplete with staggered result reveal, highlighted matches, keyboard navigation, and an async loading state.
+
+<Example
+  label="Default"
   story="navigation-combobox"
   code={`"use client";
 import { Combobox } from "@/components/godui/combobox";
@@ -24,7 +30,7 @@ export function AssigneePicker() {
 }`}
 >
   <ComboboxDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -49,7 +55,8 @@ const [value, setValue] = useState("");
 Pass `onSearch` to resolve options for a query — it debounces input and shows a
 loading state while results arrive.
 
-<ComponentPreview
+<Example
+  label="Async Search"
   code={`"use client";
 import { Combobox } from "@/components/godui/combobox";
 
@@ -72,14 +79,15 @@ export function FrameworkSearch() {
 }`}
 >
   <ComboboxAsyncDemo />
-</ComponentPreview>
+</Example>
 
 ### Disabled
 
 Set `disabled` to make the field non-interactive — it dims the input and prevents
 the listbox from opening.
 
-<ComponentPreview
+<Example
+  label="Disabled"
   code={`"use client";
 import { Combobox } from "@/components/godui/combobox";
 
@@ -93,14 +101,15 @@ export function DisabledPicker() {
 }`}
 >
   <ComboboxDemo disabled />
-</ComponentPreview>
+</Example>
 
 ### Multi-select
 
 Set `multiple` and drive it with `values` + `onToggle` to select several options.
 Chosen options render as chips in the control, and picking one keeps the list open.
 
-<ComponentPreview
+<Example
+  label="Multi-select"
   code={`"use client";
 import { Combobox } from "@/components/godui/combobox";
 import { useState } from "react";
@@ -129,7 +138,7 @@ export function Reviewers() {
 }`}
 >
   <ComboboxMultiSelectDemo />
-</ComponentPreview>
+</Example>
 
 ### Creatable
 
@@ -137,7 +146,8 @@ Set `creatable` to offer the typed value as an “Add …” row when it isn’t
 option. It commits a synthetic option by default, or pass `onCreate` to persist the
 new value yourself (with `creating` for an in-flight spinner).
 
-<ComponentPreview
+<Example
+  label="Creatable"
   code={`"use client";
 import { Combobox } from "@/components/godui/combobox";
 import { useState } from "react";
@@ -169,7 +179,7 @@ export function LabelPicker() {
 }`}
 >
   <ComboboxCreatableDemo />
-</ComponentPreview>
+</Example>
 
 ### Plain dropdown
 
@@ -177,7 +187,8 @@ A short list renders as a plain click-to-open dropdown — no search field — o
 has `searchableThreshold` options or fewer (5 by default). Force either mode with
 `searchable`.
 
-<ComponentPreview
+<Example
+  label="Plain Dropdown"
   code={`"use client";
 import { Combobox } from "@/components/godui/combobox";
 import { useState } from "react";
@@ -195,14 +206,15 @@ export function SizePicker() {
 }`}
 >
   <ComboboxPlainDemo />
-</ComponentPreview>
+</Example>
 
 ### Pinned action
 
 Pass `pinnedAction` to keep a persistent row at the top of the list — a place for a
 “manage” or “create” affordance that’s always reachable, whatever the query.
 
-<ComponentPreview
+<Example
+  label="Pinned Action"
   code={`"use client";
 import { Combobox } from "@/components/godui/combobox";
 import { useState } from "react";
@@ -226,14 +238,15 @@ export function AssigneePicker() {
 }`}
 >
   <ComboboxPinnedActionDemo />
-</ComponentPreview>
+</Example>
 
 ### Empty-state action
 
 Pass `emptyAction` to show a call-to-action when nothing matches — for example, to
 invite or create the thing the user was searching for.
 
-<ComponentPreview
+<Example
+  label="Empty-state Action"
   code={`"use client";
 import { Combobox } from "@/components/godui/combobox";
 import { useState } from "react";
@@ -258,7 +271,7 @@ export function AssigneePicker() {
 }`}
 >
   <ComboboxEmptyActionDemo />
-</ComponentPreview>
+</Example>
 
 ## Props
 
@@ -282,3 +295,5 @@ export function AssigneePicker() {
 | `searchableThreshold` | `number` | `5` | Option count above which search auto-enables |
 | `pinnedAction` | `ComboboxAction` | — | A persistent row (`{ label, onSelect }`) at the top of the list |
 | `emptyAction` | `ComboboxAction` | — | A CTA button (`{ label, onSelect }`) shown in the empty state |
+
+</Workbench>

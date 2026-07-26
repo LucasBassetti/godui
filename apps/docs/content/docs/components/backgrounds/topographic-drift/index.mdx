@@ -1,15 +1,19 @@
 ---
 title: Topographic Drift
 description: Slowly drifting topographic contour lines — a living elevation map drawn with marching squares.
+workbench: true
 ---
 
 import { TopographicDrift } from "@godui/components";
+
+<Workbench>
 
 Contour lines of an imaginary landscape, slowly rising and falling as the terrain
 beneath them evolves. Editorial, cartographic, and calm — drawn with marching
 squares on one Canvas. Drop it as the first child of a `relative` container.
 
-<ComponentPreview
+<Example
+  label="Default"
   fullWidth
   story="backgrounds-topographic-drift"
   code={`import { TopographicDrift } from "@/components/godui/topographic-drift";
@@ -33,7 +37,7 @@ export function TopographicDriftDemo() {
       <p className="mt-2 text-muted-foreground">Terrain that never stops shifting.</p>
     </div>
   </div>
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -61,7 +65,8 @@ at 2, pauses off-screen and on hidden tabs, and renders a static map under
 
 More levels, finer terrain.
 
-<ComponentPreview
+<Example
+  label="Dense"
   fullWidth
   code={`import { TopographicDrift } from "@/components/godui/topographic-drift";
 
@@ -76,7 +81,7 @@ export function TopographicDriftDense() {
   <div className="relative w-full flex-1 overflow-hidden bg-background">
     <TopographicDrift lineCount={16} noiseScale={0.006} />
   </div>
-</ComponentPreview>
+</Example>
 
 ## Props
 
@@ -89,3 +94,5 @@ export function TopographicDriftDense() {
 | `weight` | `number` | `1` | Contour line width (px). |
 
 Also accepts standard `div` attributes (e.g. `className`, `style`).
+
+</Workbench>

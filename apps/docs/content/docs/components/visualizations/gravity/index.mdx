@@ -1,13 +1,17 @@
 ---
 title: Gravity
 description: A physics playground where elements fall, pile, collide, and can be dragged and flung.
+workbench: true
 ---
 
 import { GravityDemo } from "@/components/demos/gravity-demo";
 
+<Workbench>
+
 Drop any elements into a `Gravity` canvas and they become real physics bodies — they fall, stack, collide, and fling when you grab them. Powered by [matter-js](https://brm.io/matter-js/). Grab a pill and throw it.
 
-<ComponentPreview
+<Example
+  label="Default"
   story="visualizations-gravity"
   code={`import { Gravity, MatterBody } from "@/components/godui/gravity";
 
@@ -26,7 +30,7 @@ export function Playground() {
 }`}
 >
   <GravityDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -80,3 +84,5 @@ Set `gravity` to `{ x: 0, y: 0 }` for a floating, bumper-car feel.
 | `bodyType`          | `"rectangle" \| "circle"`     | `"rectangle"` | Collision shape.                                    |
 | `isDraggable`       | `boolean`                     | `true`        | Whether the pointer can grab and fling this body.   |
 | `matterBodyOptions` | `Matter.IChamferableBodyDefinition` | —       | Escape hatch for raw Matter body options.           |
+
+</Workbench>

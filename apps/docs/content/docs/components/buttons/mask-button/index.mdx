@@ -1,11 +1,17 @@
 ---
 title: Mask Button
 description: A button whose face wipes away on hover via an animated CSS sprite-sheet mask, revealing the label behind it.
+workbench: true
 ---
 
 import { MaskButton } from "@godui/components";
 
-<ComponentPreview
+<Workbench>
+
+A button whose face wipes away on hover via an animated CSS sprite-sheet mask, revealing the label behind it.
+
+<Example
+  label="Default"
   story="buttons-mask-button"
   code={`import { MaskButton } from "@godui/components";
 
@@ -24,13 +30,50 @@ export function MaskButtonDemo() {
     <MaskButton mask="urban">Hover me</MaskButton>
     <MaskButton mask="forest">Hover me</MaskButton>
   </div>
-</ComponentPreview>
+</Example>
 
-The primary face is masked by a horizontal sprite-sheet image. On hover the
-mask flipbooks frame-by-frame (`steps()` on `mask-position`), wiping the face
-away to reveal the label, then plays in reverse on mouse-leave. Each `mask`
-value uses a different sprite for a distinct transition. Inspired by
-[this Codrops article](https://tympanus.net/codrops/2016/09/29/transition-effect-with-css-masks/).
+<Example
+  label="Secondary"
+  code={`import { MaskButton } from "@godui/components";
+
+export function MaskButtonSecondary() {
+  return <MaskButton mask="nature" variant="secondary">Hover me</MaskButton>;
+}`}
+>
+  <MaskButton mask="nature" variant="secondary">Hover me</MaskButton>
+</Example>
+
+<Example
+  label="Sizes"
+  code={`import { MaskButton } from "@godui/components";
+
+export function MaskButtonSizes() {
+  return (
+    <div className="flex flex-wrap items-center justify-center gap-6">
+      <MaskButton size="sm">Small</MaskButton>
+      <MaskButton size="md">Medium</MaskButton>
+      <MaskButton size="lg">Large</MaskButton>
+    </div>
+  );
+}`}
+>
+  <div className="flex flex-wrap items-center justify-center gap-6">
+    <MaskButton size="sm">Small</MaskButton>
+    <MaskButton size="md">Medium</MaskButton>
+    <MaskButton size="lg">Large</MaskButton>
+  </div>
+</Example>
+
+<Example
+  label="Disabled"
+  code={`import { MaskButton } from "@godui/components";
+
+export function MaskButtonDisabled() {
+  return <MaskButton disabled>Hover me</MaskButton>;
+}`}
+>
+  <MaskButton disabled>Hover me</MaskButton>
+</Example>
 
 ## Installation
 
@@ -58,53 +101,11 @@ import { MaskButton } from "@godui/components";
 <MaskButton mask="nature">Hover me</MaskButton>
 ```
 
-## Examples
-
-### Secondary
-
-<ComponentPreview
-  code={`import { MaskButton } from "@godui/components";
-
-export function MaskButtonSecondary() {
-  return <MaskButton mask="nature" variant="secondary">Hover me</MaskButton>;
-}`}
->
-  <MaskButton mask="nature" variant="secondary">Hover me</MaskButton>
-</ComponentPreview>
-
-### Sizes
-
-<ComponentPreview
-  code={`import { MaskButton } from "@godui/components";
-
-export function MaskButtonSizes() {
-  return (
-    <div className="flex flex-wrap items-center justify-center gap-6">
-      <MaskButton size="sm">Small</MaskButton>
-      <MaskButton size="md">Medium</MaskButton>
-      <MaskButton size="lg">Large</MaskButton>
-    </div>
-  );
-}`}
->
-  <div className="flex flex-wrap items-center justify-center gap-6">
-    <MaskButton size="sm">Small</MaskButton>
-    <MaskButton size="md">Medium</MaskButton>
-    <MaskButton size="lg">Large</MaskButton>
-  </div>
-</ComponentPreview>
-
-### Disabled
-
-<ComponentPreview
-  code={`import { MaskButton } from "@godui/components";
-
-export function MaskButtonDisabled() {
-  return <MaskButton disabled>Hover me</MaskButton>;
-}`}
->
-  <MaskButton disabled>Hover me</MaskButton>
-</ComponentPreview>
+The primary face is masked by a horizontal sprite-sheet image. On hover the
+mask flipbooks frame-by-frame (`steps()` on `mask-position`), wiping the face
+away to reveal the label, then plays in reverse on mouse-leave. Each `mask`
+value uses a different sprite for a distinct transition. Inspired by
+[this Codrops article](https://tympanus.net/codrops/2016/09/29/transition-effect-with-css-masks/).
 
 ## Props
 
@@ -117,3 +118,5 @@ Accepts all native `<button>` attributes.
 | `size` | `"sm" \| "md" \| "lg"` | `"md"` | Size scale (padding / font / radius) |
 | `children` | `ReactNode` | — | Button label |
 | `disabled` | `boolean` | `false` | Disable the button and its animation |
+
+</Workbench>

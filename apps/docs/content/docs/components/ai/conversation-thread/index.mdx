@@ -1,11 +1,17 @@
 ---
 title: Conversation Thread
 description: A streaming AI chat surface — messages spring in, tokens reveal with a blinking caret, hover actions fade in, and the view auto-sticks to the latest message.
+workbench: true
 ---
 
 import { ConversationThreadDemo } from "@/components/demos/conversation-thread-demo";
 
-<ComponentPreview
+<Workbench>
+
+A streaming AI chat surface — messages spring in, tokens reveal with a blinking caret, hover actions fade in, and the view auto-sticks to the latest message.
+
+<Example
+  label="Default"
   story="ai-conversationthread"
   code={`import {
   ConversationThread,
@@ -27,7 +33,7 @@ export function ConversationThreadDemo() {
 }`}
 >
   <ConversationThreadDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -91,3 +97,5 @@ import {
 | `chunk`  | `number`     | `2`     | Characters revealed per tick.        |
 | `speed`  | `number`     | `24`    | Milliseconds between ticks.          |
 | `onDone` | `() => void` | —       | Fired when the full text is shown.   |
+
+</Workbench>

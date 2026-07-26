@@ -1,12 +1,18 @@
 ---
 title: Orbiting Circles
 description: Icons that orbit a center point on a configurable ring, staying upright as they travel.
+workbench: true
 ---
 
 import { OrbitingCircles } from "@godui/components";
 import { OrbitingCirclesDemo } from "@/components/demos/orbiting-circles-demo";
 
-<ComponentPreview
+<Workbench>
+
+Icons that orbit a center point on a configurable ring, staying upright as they travel.
+
+<Example
+  label="Default"
   fullWidth
   story="effects-orbiting-circles"
   code={`import { OrbitingCircles } from "@/components/godui/orbiting-circles";
@@ -31,7 +37,7 @@ export function OrbitingCirclesDemo() {
 }`}
 >
   <OrbitingCirclesDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -60,7 +66,8 @@ import { OrbitingCircles } from "@/components/godui/orbiting-circles";
 Stack two rings with different `radius`, `duration`, and `reverse` for a layered
 ecosystem diagram.
 
-<ComponentPreview
+<Example
+  label="Reversed Inner Ring"
   fullWidth
   code={`<div className="relative flex h-80 w-full items-center justify-center">
   <OrbitingCircles className="absolute" radius={60} duration={14}>
@@ -85,7 +92,7 @@ ecosystem diagram.
       <span className="flex size-full items-center justify-center rounded-full border border-border bg-card text-sm font-semibold text-foreground">5</span>
     </OrbitingCircles>
   </div>
-</ComponentPreview>
+</Example>
 
 ## Props
 
@@ -99,3 +106,5 @@ ecosystem diagram.
 | `iconSize` | `number`  | `40`    | Size of each orbiting slot in pixels.        |
 
 `OrbitingCircles` also forwards every standard `<div>` attribute to the root element.
+
+</Workbench>

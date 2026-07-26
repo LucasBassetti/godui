@@ -1,11 +1,17 @@
 ---
 title: Animated Tooltip
 description: A tooltip that springs in and tilts in 3D as the pointer moves across its trigger.
+workbench: true
 ---
 
 import { AnimatedTooltipDemo } from "@/components/demos/animated-tooltip-demo";
 
-<ComponentPreview
+<Workbench>
+
+A tooltip that springs in and tilts in 3D as the pointer moves across its trigger.
+
+<Example
+  label="Default"
   story="overlays-animatedtooltip"
   code={`import { AnimatedTooltip } from "@/components/godui/animated-tooltip";
 
@@ -34,7 +40,7 @@ export function TeamStack() {
 }`}
 >
   <AnimatedTooltipDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -72,3 +78,5 @@ import { AnimatedTooltip } from "@/components/godui/animated-tooltip";
 | `children`| `ReactNode`          | —       | The trigger the tooltip is attached to.      |
 
 `AnimatedTooltip` also forwards every standard `<span>` attribute to the root element.
+
+</Workbench>

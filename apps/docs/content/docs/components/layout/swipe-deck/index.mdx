@@ -1,14 +1,18 @@
 ---
 title: Swipe Deck
 description: A physics, Tinder-style swipeable card deck with throw-to-dismiss, directional intent, and keyboard controls.
+workbench: true
 ---
 
 import { SwipeDeck } from "@godui/components";
 import { SwipeDeckDemo } from "@/components/demos/swipe-deck-demo";
 
+<Workbench>
+
 A tactile way to page through profiles, testimonials, or onboarding screens. Drag the top card — it rotates with the throw and tints toward your intent; release past the threshold and it flies off while the next card springs forward. Drag, use the buttons, or the arrow keys.
 
-<ComponentPreview
+<Example
+  label="Default"
   story="layout-swipedeck"
   code={`import { SwipeDeck } from "@/components/godui/swipe-deck";
 
@@ -23,7 +27,7 @@ export function People() {
 }`}
 >
   <SwipeDeckDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -79,3 +83,5 @@ spring settling is removed.
 | `actions`   | `{ left: string; right: string }`           | —       | Labels for the left/right actions and intent badges.     |
 
 `SwipeDeck` also forwards every standard `<div>` attribute to the root element.
+
+</Workbench>

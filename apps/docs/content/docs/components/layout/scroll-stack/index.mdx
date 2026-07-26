@@ -1,14 +1,18 @@
 ---
 title: Scroll Stack
 description: Pinned cards that scale, recede, and stack as the page scrolls — the premium feature-reveal section.
+workbench: true
 ---
 
 import { ScrollStack } from "@godui/components";
 import { ScrollStackDemo } from "@/components/demos/scroll-stack-demo";
 
+<Workbench>
+
 Each card pins to the top of the scroller while the next one rises over it. As a card is buried it eases down to a smaller scale, dims, and blurs — so depth reads even on a flat stack. Scroll the frame below.
 
-<ComponentPreview
+<Example
+  label="Default"
   story="layout-scrollstack"
   code={`import { ScrollStack } from "@/components/godui/scroll-stack";
 
@@ -33,7 +37,7 @@ export function FeatureStack() {
 }`}
 >
   <ScrollStackDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -93,3 +97,5 @@ vertical list — no pinning, scaling, or blur.
 | `pinTop`    | `string`  | `"12vh"`  | Distance from the top of the scroller where cards pin.                      |
 
 `ScrollStack` also forwards every standard `<div>` attribute to the root element.
+
+</Workbench>

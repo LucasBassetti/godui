@@ -1,16 +1,20 @@
 ---
 title: Liquid Metaballs
 description: Gooey blobs that drift, collide, and merge under an SVG goo filter — with a cursor blob.
+workbench: true
 ---
 
 import { LiquidMetaballs } from "@godui/components";
+
+<Workbench>
 
 Soft blobs of color drift across the surface and fuse into one gooey mass
 wherever they meet, courtesy of an SVG goo filter. An extra blob follows the
 cursor and merges with the rest. Playful and organic. Drop it as the first child
 of a `relative` container.
 
-<ComponentPreview
+<Example
+  label="Default"
   fullWidth
   story="backgrounds-liquid-metaballs"
   code={`import { LiquidMetaballs } from "@/components/godui/liquid-metaballs";
@@ -34,7 +38,7 @@ export function LiquidMetaballsDemo() {
       <p className="mt-2 text-muted-foreground">Move your cursor to stir the goo.</p>
     </div>
   </div>
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -62,7 +66,8 @@ coexist safely. Pauses off-screen and on hidden tabs; freezes under
 
 Raise `gooeyness` and `blobCount`.
 
-<ComponentPreview
+<Example
+  label="Extra Gooey"
   fullWidth
   code={`import { LiquidMetaballs } from "@/components/godui/liquid-metaballs";
 
@@ -77,7 +82,7 @@ export function LiquidMetaballsGooey() {
   <div className="relative w-full flex-1 overflow-hidden bg-background">
     <LiquidMetaballs gooeyness={24} blobCount={9} />
   </div>
-</ComponentPreview>
+</Example>
 
 ## Props
 
@@ -90,3 +95,5 @@ export function LiquidMetaballsGooey() {
 | `interactive` | `boolean` | `true` | A blob follows the cursor (adds a pointer listener). |
 
 Also accepts standard `div` attributes (e.g. `className`, `style`).
+
+</Workbench>

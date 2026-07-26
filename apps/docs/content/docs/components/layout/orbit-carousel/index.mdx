@@ -1,14 +1,18 @@
 ---
 title: Orbit Carousel
 description: Slides ride an arc and rotate around a pivot, tilting and receding with angular distance from the front, with momentum drag and snap.
+workbench: true
 ---
 
 import { OrbitCarousel } from "@godui/components";
 import { OrbitCarouselDemo } from "@/components/demos/orbit-carousel-demo";
 
+<Workbench>
+
 Slides fan out on a wheel and rotate around a pivot below the stage. The front slide sits upright and full-size; the rest tilt, shrink, and dim as they curve away. Drag, click a slide, use the buttons, or the arrow keys.
 
-<ComponentPreview
+<Example
+  label="Default"
   story="layout-orbitcarousel"
   code={`import { OrbitCarousel } from "@/components/godui/orbit-carousel";
 
@@ -23,7 +27,7 @@ export function Wheel() {
 }`}
 >
   <OrbitCarouselDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -77,3 +81,5 @@ set, the per-slide tilt is dropped.
 | `onChange`     | `(index: number) => void` | —       | Fired when a new slide settles at the front.   |
 
 `OrbitCarousel` also forwards every standard `<div>` attribute to the root element.
+
+</Workbench>

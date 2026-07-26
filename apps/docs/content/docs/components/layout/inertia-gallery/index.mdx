@@ -1,14 +1,18 @@
 ---
 title: Inertia Gallery
 description: A horizontal gallery you throw with the pointer — momentum carries it, it rubber-bands at the ends, and slides scale, blur, and fade with distance from center.
+workbench: true
 ---
 
 import { InertiaGallery } from "@godui/components";
 import { InertiaGalleryDemo } from "@/components/demos/inertia-gallery-demo";
 
+<Workbench>
+
 Throw the strip and let it coast. Each slide scales up, sharpens, and brightens as it nears the center, and dims and blurs as it drifts away — the Apple-Photos feel. Drag, use the buttons, or the arrow keys.
 
-<ComponentPreview
+<Example
+  label="Default"
   story="layout-inertiagallery"
   fullWidth
   code={`import { InertiaGallery } from "@/components/godui/inertia-gallery";
@@ -24,7 +28,7 @@ export function Shots() {
 }`}
 >
   <InertiaGalleryDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -86,3 +90,5 @@ plainly.
 | `onChange`  | `(index: number) => void` | —       | Fired when a new slide reaches center.                          |
 
 `InertiaGallery` also forwards every standard `<div>` attribute to the root element.
+
+</Workbench>

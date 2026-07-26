@@ -1,11 +1,17 @@
 ---
 title: Command Palette
 description: A ⌘K command menu with fuzzy filtering, keyboard navigation, and spring enter / exit.
+workbench: true
 ---
 
 import { CommandPaletteDemo } from "@/components/demos/command-palette-demo";
 
-<ComponentPreview
+<Workbench>
+
+A ⌘K command menu with fuzzy filtering, keyboard navigation, and spring enter / exit.
+
+<Example
+  label="Default"
   story="overlays-commandpalette"
   code={`"use client";
 import { CommandPalette } from "@/components/godui/command-palette";
@@ -33,7 +39,7 @@ export function CommandPaletteDemo() {
 }`}
 >
   <CommandPaletteDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -78,3 +84,5 @@ export function Example() {
 
 A `CommandItem` is `{ id, label, icon?, shortcut?, keywords?, onSelect? }`; a
 `CommandGroup` is `{ heading?, items }`.
+
+</Workbench>

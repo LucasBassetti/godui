@@ -1,11 +1,17 @@
 ---
 title: Mega Menu
 description: A Vercel-style navigation menu with a direction-aware highlight and a panel that springs and height-morphs between triggers.
+workbench: true
 ---
 
 import { MegaMenuDemo } from "@/components/demos/mega-menu-demo";
 
-<ComponentPreview
+<Workbench>
+
+A Vercel-style navigation menu with a direction-aware highlight and a panel that springs and height-morphs between triggers.
+
+<Example
+  label="Default"
   story="navigation-mega-menu"
   code={`"use client";
 import { MegaMenu } from "@/components/godui/mega-menu";
@@ -43,7 +49,7 @@ export function MegaMenuDemo() {
 }`}
 >
   <MegaMenuDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -83,3 +89,5 @@ Hovering between triggers slides a shared highlight and morphs the panel height.
 | `openDelay` | `number` | `80` | Delay (ms) before opening on hover |
 | `closeDelay` | `number` | `140` | Delay (ms) before closing after leaving |
 | `onNavigate` | `(href: string) => void` | — | Called on link click (prevents default) |
+
+</Workbench>

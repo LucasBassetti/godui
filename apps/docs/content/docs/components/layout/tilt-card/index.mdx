@@ -1,12 +1,18 @@
 ---
 title: Tilt Card
 description: A card that tilts in 3D toward the pointer with parallax depth and a specular glare.
+workbench: true
 ---
 
 import { TiltCard } from "@godui/components";
 import { TiltCardDemo } from "@/components/demos/tilt-card-demo";
 
-<ComponentPreview
+<Workbench>
+
+A card that tilts in 3D toward the pointer with parallax depth and a specular glare.
+
+<Example
+  label="Default"
   story="layout-tilt-card"
   code={`import { TiltCard } from "@/components/godui/tilt-card";
 
@@ -20,7 +26,7 @@ export function TiltCardDemo() {
 }`}
 >
   <TiltCardDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -47,7 +53,8 @@ import { TiltCard } from "@/components/godui/tilt-card";
 
 ### Stronger tilt and depth
 
-<ComponentPreview
+<Example
+  label="Stronger Tilt"
   code={`<TiltCard maxTilt={22} depth={70} className="w-72 p-6">
   <h3 className="text-lg font-semibold text-foreground">Deeper parallax</h3>
   <p className="mt-2 text-sm text-muted-foreground">Crank maxTilt and depth for a more dramatic effect.</p>
@@ -57,7 +64,7 @@ import { TiltCard } from "@/components/godui/tilt-card";
     <h3 className="text-lg font-semibold text-foreground">Deeper parallax</h3>
     <p className="mt-2 text-sm text-muted-foreground">Crank maxTilt and depth for a more dramatic effect.</p>
   </TiltCard>
-</ComponentPreview>
+</Example>
 
 ## Props
 
@@ -69,3 +76,5 @@ import { TiltCard } from "@/components/godui/tilt-card";
 | `glare`   | `boolean` | `true`  | Render a specular glare that follows the pointer.    |
 
 `TiltCard` also forwards every standard `<div>` attribute to the root element.
+
+</Workbench>

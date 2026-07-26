@@ -1,14 +1,18 @@
 ---
 title: Liquid Image
 description: A premium hover effect that ripples and distorts an image like liquid, intensifying with cursor speed.
+workbench: true
 ---
 
 import { LiquidImage } from "@godui/components";
 import { LiquidImageDemo } from "@/components/demos/liquid-image-demo";
 
+<Workbench>
+
 Hover an image and it distorts like the surface of water — the ripple ramps in, follows your cursor speed, and settles with a damped wave when you leave. Hover the images below.
 
-<ComponentPreview
+<Example
+  label="Default"
   story="effects-liquidimage"
   code={`import { LiquidImage } from "@/components/godui/liquid-image";
 
@@ -23,7 +27,7 @@ export function Gallery() {
 }`}
 >
   <LiquidImageDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -80,3 +84,5 @@ component degrades cleanly. Always pass a meaningful `alt`.
 | `imgClassName`| `string`               | —         | Classes for the inner `<img>` (sizing, aspect, object-fit).  |
 
 `LiquidImage` also forwards every standard `<div>` attribute to the root element.
+
+</Workbench>

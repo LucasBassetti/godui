@@ -1,12 +1,18 @@
 ---
 title: Dynamic Island
 description: An Apple-inspired pill that springs between size presets while its content cross-fades.
+workbench: true
 ---
 
 import { DynamicIsland } from "@godui/components";
 import { DynamicIslandDemo } from "@/components/demos/dynamic-island-demo";
 
-<ComponentPreview
+<Workbench>
+
+An Apple-inspired pill that springs between size presets while its content cross-fades.
+
+<Example
+  label="Default"
   story="overlays-dynamic-island"
   code={`import { DynamicIsland } from "@/components/godui/dynamic-island";
 import { useState } from "react";
@@ -24,7 +30,7 @@ export function DynamicIslandDemo() {
 }`}
 >
   <DynamicIslandDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -58,3 +64,5 @@ Drive `size` and `presenceKey` from state to morph between views. Size presets:
 | `presenceKey` | `React.Key`                                                  | `size`      | Identity of the current content; change to cross-fade. |
 
 `DynamicIsland` also forwards every standard `<div>` attribute to the root element.
+
+</Workbench>

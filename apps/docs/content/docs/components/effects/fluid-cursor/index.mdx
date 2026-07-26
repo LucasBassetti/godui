@@ -1,12 +1,18 @@
 ---
 title: Fluid Cursor
 description: A spring-lagged blend-mode cursor that trails the pointer and swells over interactive elements.
+workbench: true
 ---
 
 import { FluidCursor } from "@godui/components";
 import { FluidCursorDemo } from "@/components/demos/fluid-cursor-demo";
 
-<ComponentPreview
+<Workbench>
+
+A spring-lagged blend-mode cursor that trails the pointer and swells over interactive elements.
+
+<Example
+  label="Default"
   story="effects-fluid-cursor"
   code={`import { FluidCursor } from "@/components/godui/fluid-cursor";
 import { useRef } from "react";
@@ -22,7 +28,7 @@ export function FluidCursorDemo() {
 }`}
 >
   <FluidCursorDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -69,3 +75,5 @@ const ref = useRef(null);
 | `trail`               | `boolean`                         | `true`             | Render the soft lagging smear.                         |
 | `containerRef`        | `RefObject<HTMLElement \| null>`  | —                  | Scope the cursor to a positioned element.              |
 | `interactiveSelector` | `string`                          | links, buttons, `[data-cursor]` | Elements that enlarge the cursor on hover. |
+
+</Workbench>

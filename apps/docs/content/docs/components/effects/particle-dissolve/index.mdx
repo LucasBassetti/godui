@@ -1,14 +1,18 @@
 ---
 title: Particle Dissolve
 description: Text or an image is sampled into particles that scatter and reform — a dramatic entrance or transition.
+workbench: true
 ---
 
 import { ParticleDissolve } from "@godui/components";
 import { ParticleDissolveDemo } from "@/components/demos/particle-dissolve-demo";
 
+<Workbench>
+
 The source — a headline, a logo, or an image — is sampled into thousands of particles that fly in from scatter to form the shape, hold with a subtle shimmer, then disperse and reform. A strong second-read moment for a hero.
 
-<ComponentPreview
+<Example
+  label="Default"
   story="effects-particledissolve"
   code={`import { ParticleDissolve } from "@/components/godui/particle-dissolve";
 
@@ -17,7 +21,7 @@ export function Hero() {
 }`}
 >
   <ParticleDissolveDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -80,3 +84,5 @@ animation.
 | `width` / `height` | `number`                            | `640` / `240`  | Canvas size in CSS px.                               |
 
 `ParticleDissolve` also forwards every standard `<canvas>` attribute.
+
+</Workbench>

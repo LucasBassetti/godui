@@ -1,13 +1,17 @@
 ---
 title: Sticky Scroll
 description: A pinned two-column reveal where scrolling the text steps a synced visual panel through each item.
+workbench: true
 ---
 
 import { StickyScrollDemo } from "@/components/demos/sticky-scroll-demo";
 
+<Workbench>
+
 Text scrolls in the left column while a pinned panel on the right swaps to match the item in view — the premium way to walk through features one beat at a time. Scroll the preview.
 
-<ComponentPreview
+<Example
+  label="Default"
   fullWidth
   story="layout-sticky-scroll"
   code={`import { StickyScroll } from "@/components/godui/sticky-scroll";
@@ -24,7 +28,7 @@ export function Features() {
 }`}
 >
   <StickyScrollDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -58,3 +62,5 @@ import { StickyScroll } from "@/components/godui/sticky-scroll";
 
 Each item is `{ title: string; description: React.ReactNode; content: React.ReactNode }`.
 `StickyScroll` also forwards every standard `<div>` attribute to the root.
+
+</Workbench>

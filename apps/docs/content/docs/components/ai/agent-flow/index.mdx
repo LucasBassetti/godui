@@ -2,12 +2,18 @@
 title: Agent Flow
 description: A draggable, pannable node-graph that visualizes an agent workflow — labelled nodes with live run status and data packets that flow along the edges between them.
 date: "2026-07-12"
+workbench: true
 ---
 
 import { AgentFlowDemo } from "@/components/demos/agent-flow-demo";
 import { AgentFlowPersistDemo } from "@/components/demos/agent-flow-persist-demo";
 
-<ComponentPreview
+<Workbench>
+
+A draggable, pannable node-graph that visualizes an agent workflow — labelled nodes with live run status and data packets that flow along the edges between them.
+
+<Example
+  label="Default"
   story="ai-agentflow"
   fullWidth
   code={`import { AgentFlow, type AgentFlowNode, type AgentFlowEdge } from "@/components/godui/agent-flow";
@@ -35,7 +41,7 @@ export function AgentFlowDemo() {
 }`}
 >
   <AgentFlowDemo />
-</ComponentPreview>
+</Example>
 
 With `autoPlay`, the graph plays as one continuous light: each node traces its
 border on — growing from the left-edge centre out to both sides — then its icon
@@ -94,7 +100,8 @@ Mark an edge `persist` and its line draws on as the packet travels and then
 reads as an established connection, so the whole traversed route glows once the
 flow reaches the end.
 
-<ComponentPreview
+<Example
+  label="Persistent Edges"
   story="ai-agentflow"
   fullWidth
   code={`const edges: AgentFlowEdge[] = [
@@ -111,7 +118,7 @@ export function AgentFlowPersistDemo() {
 }`}
 >
   <AgentFlowPersistDemo />
-</ComponentPreview>
+</Example>
 
 ## Driving it yourself
 
@@ -171,3 +178,5 @@ const [arrived, setArrived] = useState(new Set<string>());
 | `loop`      | `boolean` | `true`  | Repeat the packet forever. `false` sends one packet that fires `onEdgeArrive` on landing. |
 | `persist`   | `boolean` | `false` | Keep the line lit after its packet passes — draws on like a card's border and stays. |
 | `curvature` | `number`  | `0`     | Bow of the curve in pixels (positive = upward). |
+
+</Workbench>

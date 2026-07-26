@@ -1,11 +1,17 @@
 ---
 title: Tab Bar
 description: A mobile bottom navigation where a shared-element blob slides under the active tab, the icon gives a haptic-style pop, and the label reveals on selection.
+workbench: true
 ---
 
 import { TabBarDemo } from "@/components/demos/tab-bar-demo";
 
-<ComponentPreview
+<Workbench>
+
+A mobile bottom navigation where a shared-element blob slides under the active tab, the icon gives a haptic-style pop, and the label reveals on selection.
+
+<Example
+  label="Default"
   story="navigation-tab-bar"
   code={`"use client";
 import { TabBar } from "@/components/godui/tab-bar";
@@ -25,7 +31,7 @@ export function BottomNav() {
 }`}
 >
   <TabBarDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -55,3 +61,5 @@ Pass `safeArea` to add bottom safe-area padding for devices with a home indicato
 | `labelsOnActiveOnly` | `boolean` | `true` | Reveal the label only on the active tab |
 | `safeArea` | `boolean` | `false` | Add bottom safe-area padding |
 | `onChange` | `(value: string) => void` | — | Called when the active tab changes |
+
+</Workbench>

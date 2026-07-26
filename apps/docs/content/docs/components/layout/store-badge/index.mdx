@@ -1,14 +1,18 @@
 ---
 title: Store Badge
 description: App Store and Google Play download badges with light/dark finishes, a hover sheen, and an optional scan-to-download QR popover.
+workbench: true
 ---
 
 import { StoreBadgeDemo } from "@/components/demos/store-badge-demo";
 import { StoreBadgeQrDemo } from "@/components/demos/store-badge-qr-demo";
 
+<Workbench>
+
 The download CTA that sits under every app hero. Drop in an App Store or Google Play badge, or use the group for the classic dual-badge row. Badges are inline SVG, scale with a single `height` prop, carry the official hairline border, and sweep a subtle sheen on hover.
 
-<ComponentPreview
+<Example
+  label="Default"
   story="layout-store-badge"
   code={`import { StoreBadge, StoreBadgeGroup } from "@/components/godui/store-badge";
 
@@ -22,7 +26,7 @@ export function Download() {
 }`}
 >
   <StoreBadgeDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -36,14 +40,15 @@ encodes the badge's `href` (or `qrUrl`) — so a laptop visitor can install on
 their phone. On touch, the popover is skipped and the badge links normally. The
 QR is generated on the client from the URL — no image, no setup.
 
-<ComponentPreview
+<Example
+  label="Scan To Download"
   code={`<StoreBadgeGroup>
   <StoreBadge store="app-store" href="https://apps.apple.com/app/id6761287549" qr />
   <StoreBadge store="google-play" href="https://play.google.com/store/apps/details?id=lol.hivemind" qr />
 </StoreBadgeGroup>`}
 >
   <StoreBadgeQrDemo />
-</ComponentPreview>
+</Example>
 
 ## Usage
 
@@ -87,3 +92,5 @@ import { QrCode } from "@/components/godui/store-badge";
 
 `StoreBadge` forwards every standard `<a>` attribute. `StoreBadgeGroup` is a flex
 row wrapper for the dual-badge CTA and forwards `<div>` attributes.
+
+</Workbench>

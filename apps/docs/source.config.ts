@@ -13,6 +13,10 @@ export const docs = defineDocs({
     // zod instance.
     schema: frontmatterSchema.extend({
       date: frontmatterSchema.shape.title.optional(),
+      // When true, the component docs page renders in the full-bleed
+      // "Workbench" layout (live stage + dock + drawer) instead of the classic
+      // linear column. Opt-in per page so un-migrated pages keep the old layout.
+      workbench: frontmatterSchema.shape.full.optional(),
     }),
   },
 });

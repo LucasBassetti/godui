@@ -1,14 +1,18 @@
 ---
 title: Morph Gallery
 description: A thumbnail grid where a tile morphs into a fullscreen detail view via a shared-element transition, with swipe and keyboard navigation.
+workbench: true
 ---
 
 import { MorphGallery } from "@godui/components";
 import { MorphGalleryDemo } from "@/components/demos/morph-gallery-demo";
 
+<Workbench>
+
 Click a thumbnail and it morphs — the same image element grows from its grid slot into a fullscreen detail via a shared-layout transition. Move between photos with the arrows or keys; close and it morphs back into place.
 
-<ComponentPreview
+<Example
+  label="Default"
   story="layout-morphgallery"
   code={`import { MorphGallery } from "@/components/godui/morph-gallery";
 
@@ -26,7 +30,7 @@ export function Gallery() {
 }`}
 >
   <MorphGalleryDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -79,3 +83,5 @@ cross-fade.
 | `onOpenChange` | `(index: number \| null) => void` | —      | Fired when the detail view opens or closes.   |
 
 `MorphGallery` also forwards every standard `<div>` attribute to the root element.
+
+</Workbench>

@@ -1,11 +1,17 @@
 ---
 title: Dropdown Menu
 description: An accessible dropdown that springs open from its trigger edge, with submenus, icons, shortcuts, separators, and full keyboard navigation.
+workbench: true
 ---
 
 import { DropdownMenuDemo } from "@/components/demos/dropdown-menu-demo";
 
-<ComponentPreview
+<Workbench>
+
+An accessible dropdown that springs open from its trigger edge, with submenus, icons, shortcuts, separators, and full keyboard navigation.
+
+<Example
+  label="Default"
   story="navigation-dropdown-menu"
   code={`"use client";
 import { DropdownMenu } from "@/components/godui/dropdown-menu";
@@ -36,7 +42,7 @@ export function AccountMenu() {
 }`}
 >
   <DropdownMenuDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -70,3 +76,5 @@ Items can be `{ type: "separator" }`, `{ type: "label", label }`, or an action w
 | `items` | `DropdownMenuItem[]` | — | Menu items, separators, labels, submenus |
 | `side` | `"top" \| "bottom" \| "left" \| "right"` | `"bottom"` | Panel side |
 | `align` | `"start" \| "center" \| "end"` | `"start"` | Panel alignment |
+
+</Workbench>

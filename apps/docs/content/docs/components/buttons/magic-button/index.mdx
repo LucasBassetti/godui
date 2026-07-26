@@ -1,11 +1,17 @@
 ---
 title: Magic Button
 description: A pushable 3D button with rainbow edge animation and solid front face.
+workbench: true
 ---
 
 import { MagicButton } from "@godui/components";
 
-<ComponentPreview
+<Workbench>
+
+A pushable 3D button with a rainbow edge animation and a solid front face.
+
+<Example
+  label="Default"
   story="buttons-magic-button"
   code={`import { MagicButton } from "@/components/godui/magic-button";
 
@@ -22,27 +28,10 @@ export function MagicButtonDemo() {
     <MagicButton variant="default">Push me</MagicButton>
     <MagicButton variant="secondary">Push me</MagicButton>
   </div>
-</ComponentPreview>
+</Example>
 
-## Installation
-
-<ComponentInstall name="magic-button" />
-
-## Usage
-
-```tsx
-import { MagicButton } from "@/components/godui/magic-button";
-```
-
-```tsx
-<MagicButton variant="default">Push me</MagicButton>
-```
-
-## Examples
-
-### Sizes
-
-<ComponentPreview
+<Example
+  label="Sizes"
   code={`import { MagicButton } from "@/components/godui/magic-button";
 
 export function MagicButtonSizes() {
@@ -60,13 +49,10 @@ export function MagicButtonSizes() {
     <MagicButton size="md">Medium</MagicButton>
     <MagicButton size="lg">Large</MagicButton>
   </div>
-</ComponentPreview>
+</Example>
 
-### Without rainbow
-
-Set `rainbow={false}` for a static 3D edge that uses the variant color instead of the animated gradient.
-
-<ComponentPreview
+<Example
+  label="No Rainbow"
   code={`import { MagicButton } from "@/components/godui/magic-button";
 
 export function MagicButtonPlain() {
@@ -82,11 +68,10 @@ export function MagicButtonPlain() {
     <MagicButton rainbow={false}>Push me</MagicButton>
     <MagicButton variant="secondary" rainbow={false}>Push me</MagicButton>
   </div>
-</ComponentPreview>
+</Example>
 
-### Disabled
-
-<ComponentPreview
+<Example
+  label="Disabled"
   code={`import { MagicButton } from "@/components/godui/magic-button";
 
 export function MagicButtonDisabled() {
@@ -94,7 +79,23 @@ export function MagicButtonDisabled() {
 }`}
 >
   <MagicButton disabled>Push me</MagicButton>
-</ComponentPreview>
+</Example>
+
+## Installation
+
+<ComponentInstall name="magic-button" />
+
+## Usage
+
+```tsx
+import { MagicButton } from "@/components/godui/magic-button";
+```
+
+```tsx
+<MagicButton variant="default">Push me</MagicButton>
+```
+
+Set `rainbow={false}` for a static 3D edge that uses the variant color instead of the animated gradient.
 
 ## Props
 
@@ -103,3 +104,5 @@ export function MagicButtonDisabled() {
 | `variant` | `"default" \| "secondary"` | `"default"` | Front face color scheme |
 | `size` | `"sm" \| "default" \| "lg"` | `"default"` | Button padding and text size |
 | `rainbow` | `boolean` | `true` | Animate the 3D edge and shadow with a rainbow gradient |
+
+</Workbench>

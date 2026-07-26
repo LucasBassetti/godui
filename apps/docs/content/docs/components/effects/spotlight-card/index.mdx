@@ -1,12 +1,18 @@
 ---
 title: Spotlight Card
 description: A card with a radial spotlight glow that follows the pointer, optionally lighting the border.
+workbench: true
 ---
 
 import { SpotlightCard } from "@godui/components";
 import { SpotlightCardDemo } from "@/components/demos/spotlight-card-demo";
 
-<ComponentPreview
+<Workbench>
+
+A card with a radial spotlight glow that follows the pointer, optionally lighting the border.
+
+<Example
+  label="Default"
   story="effects-spotlightcard"
   code={`import { SpotlightCard } from "@/components/godui/spotlight-card";
 import { Check } from "lucide-react";
@@ -35,7 +41,7 @@ export function PricingCard() {
 }`}
 >
   <SpotlightCardDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -79,7 +85,8 @@ import { SpotlightCard } from "@/components/godui/spotlight-card";
 A standalone surface — move the pointer across it to see the glow track and the
 border light up.
 
-<ComponentPreview
+<Example
+  label="Single Card"
   code={`<SpotlightCard className="max-w-sm p-8">
   <h3 className="text-lg font-semibold text-foreground">Pointer-aware surface</h3>
   <p className="mt-2 text-sm text-muted-foreground">A soft radial glow follows the cursor and lights the 1px border.</p>
@@ -89,11 +96,12 @@ border light up.
     <h3 className="text-lg font-semibold text-foreground">Pointer-aware surface</h3>
     <p className="mt-2 text-sm text-muted-foreground">A soft radial glow follows the cursor and lights the 1px border.</p>
   </SpotlightCard>
-</ComponentPreview>
+</Example>
 
 ### Custom glow color
 
-<ComponentPreview
+<Example
+  label="Custom Glow Color"
   code={`<SpotlightCard
   glowColor="color-mix(in oklch, oklch(0.7 0.2 320) 45%, transparent)"
   radius={240}
@@ -111,14 +119,15 @@ border light up.
     <h3 className="text-lg font-semibold text-foreground">Any color you like</h3>
     <p className="mt-2 text-sm text-muted-foreground">Pass any CSS color through glowColor.</p>
   </SpotlightCard>
-</ComponentPreview>
+</Example>
 
 ### Border glow
 
 With `border` enabled (the default), the same gradient is masked to the 1px ring,
 so the border itself lights up where the pointer is closest. Move along the edges.
 
-<ComponentPreview
+<Example
+  label="Border Glow"
   code={`<SpotlightCard
   border
   radius={300}
@@ -138,7 +147,7 @@ so the border itself lights up where the pointer is closest. Move along the edge
     <h3 className="text-lg font-semibold text-foreground">Trace the edge</h3>
     <p className="mt-2 text-sm text-muted-foreground">The border brightens where the pointer is closest, then fades behind it.</p>
   </SpotlightCard>
-</ComponentPreview>
+</Example>
 
 ## Props
 
@@ -149,3 +158,5 @@ so the border itself lights up where the pointer is closest. Move along the edge
 | `border`    | `boolean` | `true`                                                  | Also light the card border on move.      |
 
 `SpotlightCard` also forwards every standard `<div>` attribute to the root element.
+
+</Workbench>

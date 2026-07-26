@@ -1,14 +1,18 @@
 ---
 title: Text Scramble
 description: Characters cycle through random glyphs and resolve into the target text — a decrypt / matrix reveal.
+workbench: true
 ---
 
 import { TextScramble } from "@godui/components";
 import { TextScrambleDemo } from "@/components/demos/text-scramble-demo";
 
+<Workbench>
+
 Each character flickers through a glyph pool then locks into place, left to right — the unresolved glyphs glow in the accent color until they settle. When the text changes, only the characters that differ re-scramble. The demo below swaps words on a timer.
 
-<ComponentPreview
+<Example
+  label="Default"
   story="text-textscramble"
   code={`import { TextScramble } from "@/components/godui/text-scramble";
 
@@ -17,7 +21,7 @@ export function Decode() {
 }`}
 >
   <TextScrambleDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -84,3 +88,5 @@ with no scramble.
 | `spread`  | `number`                                          | `28`             | Max stagger spread, in frames.                       |
 
 `TextScramble` also forwards every standard `<span>` attribute to the root element.
+
+</Workbench>

@@ -1,11 +1,17 @@
 ---
 title: Aurora Text
 description: Gradient text with a rainbow aurora that drifts across the letters.
+workbench: true
 ---
 
 import { AuroraText } from "@godui/components";
 
-<ComponentPreview
+<Workbench>
+
+Gradient text with a rainbow aurora that drifts across the letters.
+
+<Example
+  label="Default"
   story="text-auroratext"
   code={`import { AuroraText } from "@/components/godui/aurora-text";
 
@@ -20,7 +26,7 @@ export function AuroraTextDemo() {
   <h1 className="text-6xl font-bold tracking-tight">
     Ship <AuroraText>beautiful</AuroraText> UI
   </h1>
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -72,3 +78,5 @@ seamless cycle, so two or three colors are enough.
 
 `AuroraText` also forwards every standard `<span>` attribute (`className`,
 `style`, `id`, …) to the root element.
+
+</Workbench>

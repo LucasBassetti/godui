@@ -1,11 +1,17 @@
 ---
 title: Liquid Glass Card
 description: A glass panel that refracts the content behind it with a mouse-tracked specular highlight.
+workbench: true
 ---
 
 import { LiquidGlassCard } from "@godui/components";
 
-<ComponentPreview
+<Workbench>
+
+A glass panel that refracts the content behind it with a mouse-tracked specular highlight.
+
+<Example
+  label="Default"
   fullWidth
   story="effects-liquid-glass-card"
   code={`import { LiquidGlassCard } from "@/components/godui/liquid-glass-card";
@@ -27,7 +33,7 @@ export function LiquidGlassCardDemo() {
       <p className="mt-2 text-sm text-white/80">Move your cursor across the panel.</p>
     </LiquidGlassCard>
   </div>
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -90,3 +96,5 @@ for a subtle pane of frost.
 
 `LiquidGlassCard` also forwards every standard `<div>` attribute (`className`,
 `style`, `id`, …) to the root element.
+
+</Workbench>

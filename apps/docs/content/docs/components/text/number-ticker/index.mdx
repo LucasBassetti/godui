@@ -1,11 +1,17 @@
 ---
 title: Number Ticker
 description: Animates a number to its target value with spring physics when scrolled into view.
+workbench: true
 ---
 
 import { NumberTicker } from "@godui/components";
 
-<ComponentPreview
+<Workbench>
+
+Animates a number to its target value with spring physics when scrolled into view.
+
+<Example
+  label="Default"
   story="text-numberticker"
   code={`import { NumberTicker } from "@/components/godui/number-ticker";
 
@@ -16,7 +22,7 @@ export function NumberTickerDemo() {
 }`}
 >
   <NumberTicker value={100} className="text-6xl font-bold tracking-tight" />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -74,3 +80,5 @@ Set `direction="down"` to count from `value` to `startValue`.
 
 `NumberTicker` also forwards every standard `<span>` attribute (`className`,
 `style`, `id`, …) to the root element.
+
+</Workbench>

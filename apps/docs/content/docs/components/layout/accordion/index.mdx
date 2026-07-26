@@ -1,6 +1,7 @@
 ---
 title: Accordion
 description: A disclosure list with spring height animation, rotating chevrons, and single or multiple open modes.
+workbench: true
 ---
 
 import { Accordion } from "@godui/components";
@@ -24,7 +25,12 @@ export const faqItems = [
   },
 ];
 
-<ComponentPreview
+<Workbench>
+
+A disclosure list with spring height animation, rotating chevrons, and single or multiple open modes.
+
+<Example
+  label="Default"
   story="layout-accordion"
   code={`import { Accordion } from "@/components/godui/accordion";
 
@@ -40,13 +46,14 @@ export function AccordionDemo() {
   <div className="w-full max-w-lg">
     <Accordion items={faqItems} defaultValue="what" />
   </div>
-</ComponentPreview>
+</Example>
 
 ## Multiple open
 
 `type="multiple"` lets any number of panels stay open at once.
 
-<ComponentPreview
+<Example
+  label="Multiple Open"
   code={`import { Accordion } from "@/components/godui/accordion";
 
 export function AccordionMultiple() {
@@ -56,13 +63,14 @@ export function AccordionMultiple() {
   <div className="w-full max-w-lg">
     <Accordion items={faqItems} type="multiple" />
   </div>
-</ComponentPreview>
+</Example>
 
 ## Animation
 
 `animation` sets the motion feel of the height transition — `smooth` (default, no overshoot), `spring` (soft overshoot), or `bounce` (playful).
 
-<ComponentPreview
+<Example
+  label="Animation"
   code={`import { Accordion } from "@/components/godui/accordion";
 
 export function AccordionBounce() {
@@ -72,7 +80,7 @@ export function AccordionBounce() {
   <div className="w-full max-w-lg">
     <Accordion items={faqItems} defaultValue="what" animation="bounce" />
   </div>
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -99,3 +107,5 @@ import { Accordion } from "@godui/components";
 | `defaultValue` | `string \| string[]` | — | Initially open value(s). |
 | `collapsible` | `boolean` | `true` | Allow closing the open panel in single mode. |
 | `animation` | `"smooth" \| "spring" \| "bounce"` | `"smooth"` | Motion feel of the height animation. |
+
+</Workbench>

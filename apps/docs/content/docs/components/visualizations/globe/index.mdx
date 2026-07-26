@@ -1,11 +1,17 @@
 ---
 title: Globe
 description: A draggable, auto-rotating WebGL globe with glowing location markers.
+workbench: true
 ---
 
 import { GlobeDemo } from "@/components/demos/globe-demo";
 
-<ComponentPreview
+<Workbench>
+
+A draggable, auto-rotating WebGL globe with glowing location markers.
+
+<Example
+  label="Default"
   fullWidth
   story="effects-globe"
   code={`import { Globe } from "@/components/godui/globe";
@@ -39,7 +45,7 @@ export function GlobeHero() {
 }`}
 >
   <GlobeDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -83,3 +89,5 @@ import { Globe } from "@/components/godui/globe";
 | `config` | `Partial<COBEOptions>`  | —       | Override any cobe option (markers, colors, glow). |
 
 `Globe` also forwards every standard `<div>` attribute to the root element.
+
+</Workbench>

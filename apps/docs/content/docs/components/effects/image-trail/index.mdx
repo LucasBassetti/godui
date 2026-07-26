@@ -1,14 +1,18 @@
 ---
 title: Image Trail
 description: Images spawn along the pointer's path, pop in, and drift away — the signature portfolio hover effect.
+workbench: true
 ---
 
 import { ImageTrail } from "@godui/components";
 import { ImageTrailDemo } from "@/components/demos/image-trail-demo";
 
+<Workbench>
+
 As the pointer moves across the area, images are emitted along its path — each pops in, tilts toward the direction of travel, then drifts up and fades. Move your cursor across the frame below.
 
-<ComponentPreview
+<Example
+  label="Default"
   fullWidth
   story="effects-imagetrail"
   code={`import { ImageTrail } from "@/components/godui/image-trail";
@@ -27,7 +31,7 @@ export function Hero() {
 }`}
 >
   <ImageTrailDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -80,3 +84,5 @@ gallery of the images is shown instead. Trail images are decorative
 | `size`      | `number`   | `180`   | Width/height of each trail image, in px.                     |
 
 `ImageTrail` also forwards every standard `<div>` attribute to the root element.
+
+</Workbench>

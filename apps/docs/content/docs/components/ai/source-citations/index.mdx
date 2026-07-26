@@ -1,11 +1,17 @@
 ---
 title: Source Citations
 description: Inline numbered citation pills that spring out a rich preview card on hover, plus a collapsible source list for AI answers.
+workbench: true
 ---
 
 import { SourceCitationsDemo } from "@/components/demos/source-citations-demo";
 
-<ComponentPreview
+<Workbench>
+
+Inline numbered citation pills that spring out a rich preview card on hover, plus a collapsible source list for AI answers.
+
+<Example
+  label="Default"
   story="ai-sourcecitations"
   code={`import {
   SourceCitation,
@@ -31,7 +37,7 @@ export function SourceCitationsDemo() {
 }`}
 >
   <SourceCitationsDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -74,3 +80,5 @@ import {
 | `sources`      | `CitationSource[]` | —       | Sources to list.                     |
 | `collapsible`  | `boolean`          | `true`  | Collapse extras behind a toggle.     |
 | `previewCount` | `number`           | `3`     | Shown before **+N more**.            |
+
+</Workbench>

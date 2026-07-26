@@ -1,11 +1,17 @@
 ---
 title: Scroll Reveal
 description: Reveals its children with a spring as they scroll into view, with optional velocity skew.
+workbench: true
 ---
 
 import { ScrollReveal } from "@godui/components";
 
-<ComponentPreview
+<Workbench>
+
+Reveals its children with a spring as they scroll into view, with optional velocity skew.
+
+<Example
+  label="Default"
   story="effects-scrollreveal"
   code={`import { ScrollReveal } from "@/components/godui/scroll-reveal";
 
@@ -20,7 +26,7 @@ export function ScrollRevealDemo() {
   <ScrollReveal>
     <div className="rounded-xl border border-border bg-card p-8 text-lg font-semibold text-foreground shadow-sm">I reveal on scroll</div>
   </ScrollReveal>
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -72,7 +78,8 @@ Use `delay` on adjacent reveals to stagger them.
 
 Reveal a set of cards in sequence as the group scrolls into view.
 
-<ComponentPreview
+<Example
+  label="Staggered Grid"
   code={`<div className="grid grid-cols-3 gap-3">
   {items.map((item, i) => (
     <ScrollReveal key={item} delay={i * 0.1}>
@@ -88,11 +95,12 @@ Reveal a set of cards in sequence as the group scrolls into view.
       </ScrollReveal>
     ))}
   </div>
-</ComponentPreview>
+</Example>
 
 ### From the left, no blur
 
-<ComponentPreview
+<Example
+  label="From The Left"
   code={`<ScrollReveal direction="left" distance={80} blur={false}>
   <div className="rounded-xl border border-border bg-card p-8 text-lg font-semibold text-foreground shadow-sm">Slides in from the left</div>
 </ScrollReveal>`}
@@ -100,7 +108,7 @@ Reveal a set of cards in sequence as the group scrolls into view.
   <ScrollReveal direction="left" distance={80} blur={false}>
     <div className="rounded-xl border border-border bg-card p-8 text-lg font-semibold text-foreground shadow-sm">Slides in from the left</div>
   </ScrollReveal>
-</ComponentPreview>
+</Example>
 
 ## Props
 
@@ -114,3 +122,5 @@ Reveal a set of cards in sequence as the group scrolls into view.
 | `velocitySkew` | `boolean`                                | `false` | Skew the content by scroll velocity.                 |
 
 `ScrollReveal` also forwards every standard `<div>` attribute to the root element.
+
+</Workbench>

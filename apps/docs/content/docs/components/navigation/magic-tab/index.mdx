@@ -1,11 +1,17 @@
 ---
 title: Magic Tab
 description: A segmented tab bar where the selected option lifts into a 3D button with an optional rainbow edge.
+workbench: true
 ---
 
 import { MagicTab } from "@godui/components";
 
-<ComponentPreview
+<Workbench>
+
+A segmented tab bar where the selected option lifts into a 3D button with an optional rainbow edge.
+
+<Example
+  label="Default"
   story="navigation-magic-tab"
   code={`import { MagicTab } from "@/components/godui/magic-tab";
 
@@ -27,7 +33,7 @@ export function MagicTabDemo() {
     ]}
     defaultValue="overview"
   />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -61,7 +67,8 @@ const [value, setValue] = useState("overview");
 
 ### Secondary
 
-<ComponentPreview
+<Example
+  label="Secondary"
   code={`import { MagicTab } from "@/components/godui/magic-tab";
 
 const items = [
@@ -83,11 +90,12 @@ export function MagicTabSecondary() {
     defaultValue="overview"
     variant="secondary"
   />
-</ComponentPreview>
+</Example>
 
 ### Without rainbow
 
-<ComponentPreview
+<Example
+  label="Without Rainbow"
   code={`import { MagicTab } from "@/components/godui/magic-tab";
 
 const items = [
@@ -109,13 +117,14 @@ export function MagicTabPlain() {
     defaultValue="overview"
     rainbow={false}
   />
-</ComponentPreview>
+</Example>
 
 ### Disabled tab
 
 Mark any item `disabled` to skip it.
 
-<ComponentPreview
+<Example
+  label="Disabled Tab"
   code={`import { MagicTab } from "@/components/godui/magic-tab";
 
 const items = [
@@ -136,11 +145,12 @@ export function MagicTabDisabled() {
     ]}
     defaultValue="overview"
   />
-</ComponentPreview>
+</Example>
 
 ### Sizes
 
-<ComponentPreview
+<Example
+  label="Sizes"
   code={`import { MagicTab } from "@/components/godui/magic-tab";
 
 const items = [
@@ -188,7 +198,7 @@ export function MagicTabSizes() {
       size="lg"
     />
   </div>
-</ComponentPreview>
+</Example>
 
 ## Props
 
@@ -201,3 +211,5 @@ export function MagicTabSizes() {
 | `variant` | `"default" \| "secondary"` | `"default"` | Selected-tab color scheme |
 | `size` | `"sm" \| "md" \| "lg"` | `"md"` | Tab padding and text size |
 | `rainbow` | `boolean` | `true` | Animate the selected tab's 3D edge and shadow with a rainbow gradient |
+
+</Workbench>

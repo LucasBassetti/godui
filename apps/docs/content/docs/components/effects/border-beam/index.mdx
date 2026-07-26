@@ -1,17 +1,21 @@
 ---
 title: Border Beam
 description: An animated beam of light that travels around the border of its container.
+workbench: true
 ---
 
 import { BorderBeam } from "@godui/components";
 import { BorderBeamDemo } from "@/components/demos/border-beam-demo";
+
+<Workbench>
 
 A streak of light rides the border of whatever you put it in. Drop it inside a
 `relative overflow-hidden` element — most often a [shadcn
 `Card`](https://ui.shadcn.com/docs/components/card) — and it traces the rounded
 corners on a loop.
 
-<ComponentPreview
+<Example
+  label="Default"
   story="effects-border-beam"
   code={`import { BorderBeam } from "@/components/godui/border-beam";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
@@ -34,7 +38,7 @@ export function BorderBeamDemo() {
 }`}
 >
   <BorderBeamDemo />
-</ComponentPreview>
+</Example>
 
 ## Installation
 
@@ -79,7 +83,8 @@ self-contained — drop `BorderBeam` into your own `Card` the same way.
 
 Set `reverse` to send the beam counter-clockwise.
 
-<ComponentPreview
+<Example
+  label="Reverse"
   code={`import { BorderBeam } from "@/components/godui/border-beam";
 
 export function BorderBeamReverse() {
@@ -95,13 +100,14 @@ export function BorderBeamReverse() {
     <p className="text-sm text-muted-foreground">Counter-clockwise beam.</p>
     <BorderBeam size={70} reverse />
   </div>
-</ComponentPreview>
+</Example>
 
 ### Glow
 
 `glow` renders a soft blurred echo behind the beam for a neon look.
 
-<ComponentPreview
+<Example
+  label="Glow"
   code={`import { BorderBeam } from "@/components/godui/border-beam";
 
 export function BorderBeamGlow() {
@@ -117,14 +123,15 @@ export function BorderBeamGlow() {
     <p className="text-sm text-muted-foreground">Glowing beam.</p>
     <BorderBeam size={80} glow />
   </div>
-</ComponentPreview>
+</Example>
 
 ### Thick colored
 
 Turn `rainbow` off and pass `colorFrom` / `colorTo` to drive your own gradient,
 with a wider `borderWidth`.
 
-<ComponentPreview
+<Example
+  label="Thick Colored"
   code={`import { BorderBeam } from "@/components/godui/border-beam";
 
 export function BorderBeamColored() {
@@ -152,13 +159,14 @@ export function BorderBeamColored() {
       colorTo="var(--chart-4)"
     />
   </div>
-</ComponentPreview>
+</Example>
 
 ### Dual beams
 
 Render two beams with opposite `delay` values for a continuous double chase.
 
-<ComponentPreview
+<Example
+  label="Dual Beams"
   code={`import { BorderBeam } from "@/components/godui/border-beam";
 
 export function BorderBeamDual() {
@@ -176,7 +184,7 @@ export function BorderBeamDual() {
     <BorderBeam size={70} duration={6} />
     <BorderBeam size={70} duration={6} delay={3} />
   </div>
-</ComponentPreview>
+</Example>
 
 ## Props
 
@@ -194,3 +202,5 @@ export function BorderBeamDual() {
 | `glow` | `boolean` | `false` | Render a soft blurred echo behind the beam. |
 
 Also accepts standard `div` attributes (e.g. `className`, `style`).
+
+</Workbench>

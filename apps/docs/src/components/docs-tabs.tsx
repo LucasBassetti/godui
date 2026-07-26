@@ -9,6 +9,8 @@ type DocsTabsProps = {
   value: string;
   onChange: (value: string) => void;
   className?: string;
+  /** Segmented only: render the icon alone, label becomes the accessible name. */
+  iconOnly?: boolean;
 };
 
 export function DocsTabs({ tabs, value, onChange, className }: DocsTabsProps) {
@@ -108,7 +110,13 @@ export function PillTabs({ tabs, value, onChange, className }: PillTabsProps) {
  * Pill-style segmented control (e.g. Preview / Code). Unlike DocsTabs (underline
  * tabs) this renders an enclosed track with a raised active segment.
  */
-export function Segmented({ tabs, value, onChange, className }: DocsTabsProps) {
+export function Segmented({
+  tabs,
+  value,
+  onChange,
+  className,
+  iconOnly,
+}: DocsTabsProps) {
   const activeIndex = Math.max(
     0,
     tabs.findIndex((tab) => tab.value === value),
@@ -147,18 +155,21 @@ export function Segmented({ tabs, value, onChange, className }: DocsTabsProps) {
           key={tab.value}
           type="button"
           onClick={() => onChange(tab.value)}
+          aria-label={iconOnly ? tab.label : undefined}
+          title={iconOnly ? tab.label : undefined}
           className={cn(
             // h-8 track (border-box) leaves a 24px inner area; symmetric
             // py-[3px] + leading-[18px] centers the label vertically without
             // depending on grid row-stretch behavior.
-            "relative z-[1] inline-flex items-center justify-center gap-1.5 rounded-[7px] px-3 py-[3px] text-[13px] leading-[18px] font-medium transition-colors",
+            "relative z-[1] inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-[7px] py-[3px] text-[13px] leading-[18px] font-medium transition-colors",
+            iconOnly ? "px-2.5" : "px-3",
             value === tab.value
               ? "text-[var(--foreground)]"
               : "text-[var(--muted-foreground)] hover:text-[var(--foreground)]",
           )}
         >
           {tab.icon}
-          {tab.label}
+          {iconOnly ? <span className="sr-only">{tab.label}</span> : tab.label}
         </button>
       ))}
     </div>
