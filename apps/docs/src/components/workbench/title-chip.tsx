@@ -24,16 +24,20 @@ export function TitleChip() {
   const { title, badges, breadcrumbs } = useWorkbenchMeta();
 
   return (
-    <div className="pointer-events-none flex max-w-[42vw] flex-col gap-1.5 sm:max-w-md">
+    // No width cap of its own: the parent flex row hands it exactly the space
+    // the control rail doesn't need. `min-w-0` is what lets it actually shrink
+    // (flex items floor at min-content otherwise) so the title ellipsises
+    // instead of pushing into the rail.
+    <div className="pointer-events-none flex min-w-0 flex-col gap-1.5">
       {/* Breadcrumb is desktop-only — on mobile just the component title shows. */}
-      <div className="pointer-events-auto hidden sm:block">
+      <div className="pointer-events-auto hidden min-w-0 sm:block">
         <Breadcrumbs crumbs={breadcrumbs} />
       </div>
-      <h1 className="pointer-events-auto font-semibold text-fd-foreground text-lg leading-tight tracking-tight sm:text-xl">
+      <h1 className="pointer-events-auto truncate font-semibold text-fd-foreground text-lg leading-tight tracking-tight sm:text-xl">
         {title}
       </h1>
       {badges && badges.length > 0 ? (
-        <div className="pointer-events-auto flex flex-wrap items-center gap-x-3.5 gap-y-1 max-sm:hidden">
+        <div className="pointer-events-auto flex min-w-0 flex-wrap items-center gap-x-3.5 gap-y-1 max-sm:hidden">
           {badges.map((b) => (
             <BadgeChip key={b.label} badge={b} />
           ))}
@@ -69,7 +73,8 @@ function BadgeChip({ badge }: { badge: BadgeItem }) {
         className="inline-flex items-center gap-1.5 rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-fd-ring"
       >
         <span className={`size-1.5 rounded-full ${DOT[badge.tone]}`} />
-        <span className="font-medium text-[11px] text-fd-muted-foreground uppercase tracking-[0.08em]">
+        {/* A badge wraps as a whole or not at all — never mid-label. */}
+        <span className="whitespace-nowrap font-medium text-[11px] text-fd-muted-foreground uppercase tracking-[0.08em]">
           {badge.label}
         </span>
       </button>

@@ -5,7 +5,6 @@ import {
   ChevronDown,
   Code2,
   FileText,
-  GraduationCap,
   Maximize2,
   Minimize2,
   Monitor,
@@ -13,29 +12,40 @@ import {
 } from "lucide-react";
 import {
   type ReactNode,
-  useCallback,
   useEffect,
+  useLayoutEffect,
   useRef,
   useState,
 } from "react";
-import { CopyButton } from "@/components/copy-button";
 import { ScrollableSegmented, Segmented } from "@/components/docs-tabs";
 import { ReplayButton } from "@/components/replay-button";
+import { CodePane } from "@/components/workbench/code-pane";
+import { DocsPane } from "@/components/workbench/docs-pane";
 import type { ExampleProps } from "@/components/workbench/example";
-import type { DrawerTab } from "@/components/workbench/panel-body";
 import { Stage, type StageView } from "@/components/workbench/stage";
 import {
   StageCopyProvider,
   useStageCopy,
 } from "@/components/workbench/stage-copy-context";
-import { StageDrawer } from "@/components/workbench/stage-drawer";
-import { StagePanel } from "@/components/workbench/stage-panel";
 import { TitleChip } from "@/components/workbench/title-chip";
 import { useWorkbenchMeta } from "@/components/workbench/workbench-context";
 import { cn } from "@/lib/cn";
-import { useSidePanelFit } from "@/lib/use-side-panel-fit";
+import { useCodePaneToggle, useDocsPaneToggle } from "@/lib/use-pane-toggle";
+import { useWorkbenchShortcuts } from "@/lib/use-workbench-shortcuts";
 
 const STORYBOOK_URL = "https://storybook.godui.design";
+
+/** URL-safe id for an example, used by `?ex=`. Falls back to the index. */
+function exampleSlug(example: ExampleProps | undefined, index: number): string {
+  const label = example?.label?.trim();
+  if (!label) return String(index);
+  return (
+    label
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "") || String(index)
+  );
+}
 
 /**
  * The interactive workbench shell. Receives the already-partitioned `examples`
@@ -63,135 +73,122 @@ function WorkbenchInner({
   examples: ExampleProps[];
   docs: ReactNode;
 }) {
-  const { learnHref, docsHref, learn, initialDrawerTab } = useWorkbenchMeta();
-  const fitsSide = useSidePanelFit();
-  // Present when the active demo is a "static" showcase (embedded background):
-  // the rail shows a copy button instead of the Code icon and hides replay.
+  const { learnHref } = useWorkbenchMeta();
+  // Present when the active demo is a "static" showcase (an embedded background
+  // switcher): it publishes the live snippet, and there's nothing to replay.
   const { copyValue } = useStageCopy();
+  const rootRef = useRef<HTMLDivElement>(null);
+  const stageFrameRef = useRef<HTMLDivElement>(null);
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [replayKey, setReplayKey] = useState(0);
   const [view, setView] = useState<StageView>("desktop");
   const [fullscreen, setFullscreen] = useState(false);
-  // Deep-link routes (`…/learn`) carry initialDrawerTab — open the drawer to it
-  // from the start via lazy initial state (rather than a mount effect that sets
-  // state, which cascades an extra render).
-  const [drawerOpen, setDrawerOpen] = useState(() => Boolean(initialDrawerTab));
-  const [drawerTab, setDrawerTab] = useState<DrawerTab>(
-    () => initialDrawerTab ?? "docs",
-  );
-
-  // The `…/learn` route sets initialDrawerTab; used to shape the AEO mirror
-  // (learn body on the learn URL, docs + code on the component URL).
-  const isLearnRoute = initialDrawerTab === "learn";
+  // Pane open/closed lives on <html> (set by the pre-hydration prefs script), so
+  // CSS has it before first paint and React reads the same source instead of
+  // keeping a copy that can disagree.
+  const [paneOpen, setPaneOpen] = useDocsPaneToggle();
+  const [codeOpen, setCodeOpen] = useCodePaneToggle();
+  // Fullscreen means "show me the component" — collapse the pane while it lasts
+  // and give the user back whatever they had when they exit.
+  const paneBeforeFullscreen = useRef(true);
 
   const active = examples[Math.min(activeIndex, examples.length - 1)];
   // Playground points at the component's Storybook page (component-level), so keep
   // it constant across example tabs — the whole dock nav stays stable.
   const story = active?.story ?? examples.find((e) => e.story)?.story;
-  const code = active?.code ?? "";
+  const playgroundHref = story
+    ? `${STORYBOOK_URL}/?path=/docs/${story}--docs`
+    : undefined;
+  // Static showcases (an embedded background switcher) have no <Example code>;
+  // they publish the live snippet through StageCopyProvider instead. Either way
+  // the code pane has one source of truth.
+  const code = active?.code?.trim() ? active.code : (copyValue ?? "");
   const hasCode = code.trim().length > 0;
 
   const replay = () => setReplayKey((k) => k + 1);
   const selectExample = (index: number) => {
     setActiveIndex(index);
     replay();
+    // Shareable: `?ex=stronger-pull` reopens on the same variant. Slug, not
+    // index, so inserting an <Example> doesn't invalidate every link. Always
+    // replaceState — synthetic history entries would make Back mean "previous
+    // example", which is not what a back button means.
+    const url = new URL(window.location.href);
+    const slug = exampleSlug(examples[index], index);
+    if (index === 0) url.searchParams.delete("ex");
+    else url.searchParams.set("ex", slug);
+    window.history.replaceState(null, "", url);
   };
 
-  // Reflect the Learn drawer in the URL (shallow — no navigation): the Learn tab
-  // pushes `…/learn`, every other tab / closing restores the base docs route.
-  const syncUrl = useCallback(
-    (tab: DrawerTab | null) => {
-      const target = tab === "learn" && learnHref ? learnHref : docsHref;
-      if (target && window.location.pathname !== target) {
-        window.history.pushState(null, "", target);
+  // Apply `?ex=` before paint so the correct variant is the first thing drawn.
+  // This has to be a mount-time correction rather than lazy initial state: the
+  // server can't read searchParams without making all 108 pages dynamic, so
+  // seeding it during render would mean the SSR HTML and the first client render
+  // disagree about which example is on stage. One extra pre-paint render is the
+  // cheaper trade, and it only ever happens on a shared `?ex=` link.
+  useLayoutEffect(() => {
+    const wanted = new URLSearchParams(window.location.search).get("ex");
+    if (!wanted) return;
+    const index = examples.findIndex((ex, i) => exampleSlug(ex, i) === wanted);
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- deliberate one-shot mount correction; see above
+    if (index > 0) setActiveIndex(index);
+  }, [examples]);
+
+  const closeDocs = () => setPaneOpen(false);
+  const toggleFullscreen = () => {
+    setFullscreen((wasFullscreen) => {
+      if (wasFullscreen) {
+        setPaneOpen(paneBeforeFullscreen.current);
+      } else {
+        paneBeforeFullscreen.current = paneOpen;
+        setPaneOpen(false);
       }
+      return !wasFullscreen;
+    });
+  };
+
+  useWorkbenchShortcuts({
+    toggleDocs: () => setPaneOpen(!paneOpen),
+    toggleCode: () => hasCode && setCodeOpen(!codeOpen),
+    replay,
+    toggleFullscreen,
+    toggleView: () => setView(view === "desktop" ? "mobile" : "desktop"),
+    prevExample: () =>
+      examples.length > 1 &&
+      selectExample((activeIndex - 1 + examples.length) % examples.length),
+    nextExample: () =>
+      examples.length > 1 && selectExample((activeIndex + 1) % examples.length),
+    // Unwind one layer at a time, outermost first.
+    escape: () => {
+      if (fullscreen) toggleFullscreen();
+      else if (codeOpen) setCodeOpen(false);
     },
-    [learnHref, docsHref],
-  );
-
-  const openDrawer = (tab: DrawerTab) => {
-    setDrawerTab(tab);
-    setDrawerOpen(true);
-    syncUrl(tab);
-  };
-  const changeDrawerTab = (tab: DrawerTab) => {
-    setDrawerTab(tab);
-    syncUrl(tab);
-  };
-  const closeDrawer = () => {
-    setDrawerOpen(false);
-    syncUrl(null);
-  };
-  const toggleCode = () => {
-    if (drawerOpen && drawerTab === "code") {
-      closeDrawer();
-    } else {
-      openDrawer("code");
-    }
-  };
-
-  // Back button closes the drawer instead of leaving the page.
-  useEffect(() => {
-    if (!drawerOpen) return;
-    const onPop = () => setDrawerOpen(false);
-    window.addEventListener("popstate", onPop);
-    return () => window.removeEventListener("popstate", onPop);
-  }, [drawerOpen]);
-
-  // Deep-link support: on the `…/learn` route (initialDrawerTab set) the drawer
-  // starts open on that tab (lazy initial state above); this effect just scrolls
-  // to the URL hash section within it — so refreshing `…/learn#motion-score`
-  // lands on that section.
-  useEffect(() => {
-    if (!initialDrawerTab) return;
-    const id = window.location.hash.slice(1);
-    if (!id) return;
-    // Wait for the open spring + drawer content to lay out before scrolling.
-    const t = window.setTimeout(() => {
-      // Scope to the visible docs surface — the off-screen AEO mirror duplicates
-      // these ids, and it sits earlier in the DOM, so a bare getElementById would
-      // resolve to the hidden copy.
-      const surface = document.querySelector("[data-wb-surface]");
-      const el =
-        surface?.querySelector<HTMLElement>(`[id="${CSS.escape(id)}"]`) ??
-        document.getElementById(id);
-      el?.scrollIntoView({ block: "start" });
-    }, 420);
-    return () => window.clearTimeout(t);
-    // Runs once on mount; initialDrawerTab is stable for the page.
-  }, [initialDrawerTab]);
+  });
 
   return (
     <div
+      ref={rootRef}
       className={cn(
-        "workbench-root flex flex-col overflow-hidden bg-fd-background",
+        "workbench-root overflow-hidden bg-fd-background",
         fullscreen
           ? "fixed inset-0 z-50"
           : "relative h-[calc(100dvh-3.5rem)] p-3 sm:p-4",
       )}
     >
-      {/* AEO mirror — the visible docs live in a body-portaled panel (desktop)
-          or a translated drawer, which the aeo.js AI view can't reliably read.
-          This always-present, off-screen copy sits inside the <article> the widget
-          scans (it skips only display:none / visibility:hidden), so the AI page
-          shows the full docs + code on the component URL and the full learn on the
-          learn URL — regardless of whether the drawer is open. aria-hidden keeps
-          it out of the human a11y tree; `sr-only` keeps textContent readable. */}
+      {/* Source mirror for the examples the code pane isn't showing.
+          The prose needs no mirror any more — <DocsPane> is real, server-rendered
+          DOM inside the <article> that aeo.js and crawlers scan. Example source
+          still does: the pane holds one variant at a time, so the others would be
+          missing from the AI view and the built HTML. `sr-only`, not `hidden`,
+          because the widget skips only display:none / visibility:hidden. */}
       <div className="sr-only" aria-hidden data-aeo-mirror>
-        {isLearnRoute ? (
-          learn
-        ) : (
-          <>
-            {docs}
-            {examples.map((ex, i) =>
-              ex.code?.trim() ? (
-                <pre key={ex.label ?? i}>
-                  <code>{ex.code}</code>
-                </pre>
-              ) : null,
-            )}
-          </>
+        {examples.map((ex, i) =>
+          i !== activeIndex && ex.code?.trim() ? (
+            <pre key={ex.label ?? i}>
+              <code>{ex.code}</code>
+            </pre>
+          ) : null,
         )}
       </div>
 
@@ -199,208 +196,219 @@ function WorkbenchInner({
           chrome anchors to THIS frame's corners (not the viewport), so the empty
           canvas reads as intentional instead of a void. */}
       <div
+        ref={stageFrameRef}
         className={cn(
-          "stage-frame relative flex min-h-0 flex-1 flex-col overflow-hidden bg-fd-background",
+          "stage-frame relative min-h-0 min-w-0 overflow-hidden bg-fd-background",
           fullscreen
             ? ""
             : "rounded-[20px] border shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_-12px_rgba(0,0,0,0.10)]",
         )}
       >
-        <Stage
-          view={view}
-          bg="default"
-          fullWidth={active?.fullWidth ?? false}
-          replayKey={replayKey}
+        {/* Row 1 — the demo and everything that overlays it. The chrome anchors
+            to this box rather than the frame, so opening the code pane below
+            moves the example tabs up with the demo instead of burying them. */}
+        <div
+          id="wb-stage"
+          // Only a tabpanel when there is actually a tablist selecting it.
+          role={examples.length > 1 ? "tabpanel" : undefined}
+          className="relative min-h-0 overflow-hidden"
         >
-          {active?.children}
-        </Stage>
+          <Stage
+            view={view}
+            bg="default"
+            fullWidth={active?.fullWidth ?? false}
+            replayKey={replayKey}
+          >
+            {active?.children}
+          </Stage>
 
-        {/* Top scrim — a background-colored gradient fading to transparent so the
+          {/* Top scrim — a background-colored gradient fading to transparent so the
             title chip + control rail stay legible over image/full-bleed demos. On
             a plain canvas it's background-over-background (invisible); over imagery
             it restores contrast. Below the chrome (z-20), above the demo. */}
-        <div
-          aria-hidden
-          className="stage-scrim pointer-events-none absolute inset-x-0 top-0 z-10 h-40"
-        />
-
-        {/* Identity chip — top-left */}
-        <div className="absolute top-4 left-4 z-20">
-          <TitleChip />
-        </div>
-
-        {/* Control rail — top-right. Stage controls (replay / viewport) then the
-          content group (Docs / Learn / Code / Playground) then Fullscreen, all
-          icon-only bordered chips. Wraps on very narrow desktops. */}
-        <div className="absolute top-4 right-4 z-20 flex flex-wrap items-center justify-end gap-1.5">
-          {/* Static showcases (embedded background) have nothing to replay. */}
-          {copyValue === null ? (
-            <ReplayButton onReplay={replay} className="max-md:hidden" />
-          ) : null}
-          <Segmented
-            className="max-md:hidden"
-            iconOnly
-            tabs={[
-              {
-                value: "desktop",
-                label: "Desktop",
-                icon: <Monitor className="size-4" aria-hidden />,
-              },
-              {
-                value: "mobile",
-                label: "Mobile",
-                icon: <Smartphone className="size-4" aria-hidden />,
-              },
-            ]}
-            value={view}
-            onChange={(v) => setView(v as StageView)}
+          <div
+            aria-hidden
+            className="stage-scrim pointer-events-none absolute inset-x-0 top-0 z-10 h-40"
           />
-          <RailDivider />
-          <ToolButton
-            label="Docs"
-            active={drawerOpen && drawerTab === "docs"}
-            onClick={() =>
-              drawerOpen && drawerTab === "docs"
-                ? closeDrawer()
-                : openDrawer("docs")
-            }
-          >
-            <FileText className="size-4" aria-hidden />
-          </ToolButton>
-          {copyValue !== null ? (
-            // Static showcase: the Code icon becomes a copy button for the live
-            // variant snippet (updates as the user switches backgrounds).
-            <CopyButton value={copyValue} className="size-8 rounded-[10px]" />
-          ) : (
-            <ToolButton
-              label="View code"
-              active={drawerOpen && drawerTab === "code"}
-              disabled={!hasCode}
-              onClick={toggleCode}
-            >
-              <Code2 className="size-4" aria-hidden />
-            </ToolButton>
-          )}
-          {learn ? (
-            <ToolButton
-              label="Learn"
-              active={drawerOpen && drawerTab === "learn"}
-              onClick={() =>
-                drawerOpen && drawerTab === "learn"
-                  ? closeDrawer()
-                  : openDrawer("learn")
-              }
-            >
-              <GraduationCap className="size-4" aria-hidden />
-            </ToolButton>
-          ) : null}
-          {story ? (
-            <a
-              href={`${STORYBOOK_URL}/?path=/docs/${story}--docs`}
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Playground"
-              title="Playground"
-              className="inline-flex size-8 items-center justify-center rounded-[10px] border border-fd-border bg-fd-card text-fd-muted-foreground transition-colors hover:text-fd-foreground active:scale-95 max-md:hidden"
-            >
-              <PlaygroundIcon />
-            </a>
-          ) : null}
-          <RailDivider />
-          <ToolButton
-            label={fullscreen ? "Exit fullscreen" : "Fullscreen"}
-            active={fullscreen}
-            onClick={() => setFullscreen((f) => !f)}
-            className="max-md:hidden"
-          >
-            {fullscreen ? (
-              <Minimize2 className="size-4" aria-hidden />
-            ) : (
-              <Maximize2 className="size-4" aria-hidden />
-            )}
-          </ToolButton>
-        </div>
 
-        {/* Bottom cluster — example variant tabs, centered. */}
-        {examples.length > 1 ? (
-          <div className="-translate-x-1/2 absolute bottom-5 left-1/2 z-20 flex w-[calc(100%-1.25rem)] flex-col items-center sm:w-auto sm:max-w-[calc(100%-2rem)]">
-            {/* Mobile: dropdown (equal-width tabs get cramped on narrow screens). */}
-            <div className="w-full sm:hidden">
-              <ExampleSelect
-                items={examples.map((ex, i) => ex.label ?? `Example ${i + 1}`)}
-                value={Math.min(activeIndex, examples.length - 1)}
-                onSelect={selectExample}
-              />
+          {/* Chip and rail share ONE flex row rather than being two absolutely
+              positioned islands. As separate absolutes neither could see the
+              other, so they overlapped on a narrow stage — and capping them with
+              percentages only traded that for truncated labels and a rail that
+              wrapped with room to spare. In a row the rail takes exactly what it
+              needs (shrink-0, no wrap) and the chip gets the rest. */}
+          <div className="pointer-events-none absolute inset-x-4 top-4 z-20 flex items-start justify-between gap-4">
+            <div className="min-w-0 flex-1">
+              <TitleChip />
             </div>
-            {/* Desktop: a segmented tab strip. Few short variants → equal-width
+
+            {/* Stage controls (replay / viewport), then the content group
+                (Docs / Code / Learn / Playground), then Fullscreen.
+                The secondary controls stay hidden until `lg`: at 768px the
+                sidebar still costs 260px, so revealing all seven here would
+                leave the title chip nothing to truncate into. */}
+            <div className="pointer-events-auto flex shrink-0 flex-nowrap items-center gap-1.5">
+              {/* Static showcases (embedded background) have nothing to replay. */}
+              {copyValue === null ? (
+                <ReplayButton onReplay={replay} className="max-lg:hidden" />
+              ) : null}
+              <Segmented
+                className="max-lg:hidden"
+                iconOnly
+                // A viewport switch is a choice between two states, not a set of
+                // tab panels — radio is the honest role.
+                semantics="radiogroup"
+                label="Preview viewport"
+                tabs={[
+                  {
+                    value: "desktop",
+                    label: "Desktop",
+                    icon: <Monitor className="size-4" aria-hidden />,
+                  },
+                  {
+                    value: "mobile",
+                    label: "Mobile",
+                    icon: <Smartphone className="size-4" aria-hidden />,
+                  },
+                ]}
+                value={view}
+                onChange={(v) => setView(v as StageView)}
+              />
+              <RailDivider />
+              {/* Labelled, not icon-only: with the pane closed by default this is
+                the only signpost that the page has documentation at all. */}
+              <ToolButton
+                label="Docs"
+                hint="D"
+                active={paneOpen}
+                expanded={paneOpen}
+                controls="wb-docs-pane"
+                onClick={() => setPaneOpen(!paneOpen)}
+                wide
+              >
+                <FileText className="size-4" aria-hidden />
+                <span className="font-medium text-[13px]">Docs</span>
+              </ToolButton>
+              <ToolButton
+                label="View code"
+                hint="C"
+                active={codeOpen}
+                expanded={codeOpen}
+                controls="wb-code-pane"
+                disabled={!hasCode}
+                onClick={() => setCodeOpen(!codeOpen)}
+              >
+                <Code2 className="size-4" aria-hidden />
+              </ToolButton>
+              {/* Learn and Playground live in the docs pane header, where they
+                  can carry text labels — two more unlabelled icons out here
+                  read as noise, and Learn was duplicated between the two. */}
+              <RailDivider />
+              <ToolButton
+                label={fullscreen ? "Exit fullscreen" : "Fullscreen"}
+                hint="F"
+                active={fullscreen}
+                onClick={toggleFullscreen}
+                className="max-lg:hidden"
+              >
+                {fullscreen ? (
+                  <Minimize2 className="size-4" aria-hidden />
+                ) : (
+                  <Maximize2 className="size-4" aria-hidden />
+                )}
+              </ToolButton>
+            </div>
+          </div>
+
+          {/* Bottom cluster — example variant tabs, centered. */}
+          {examples.length > 1 ? (
+            <div className="-translate-x-1/2 absolute bottom-5 left-1/2 z-20 flex w-[calc(100%-1.25rem)] flex-col items-center sm:w-auto sm:max-w-[calc(100%-2rem)]">
+              {/* Mobile: dropdown (equal-width tabs get cramped on narrow screens). */}
+              <div className="w-full sm:hidden">
+                <ExampleSelect
+                  items={examples.map(
+                    (ex, i) => ex.label ?? `Example ${i + 1}`,
+                  )}
+                  value={Math.min(activeIndex, examples.length - 1)}
+                  onSelect={selectExample}
+                />
+              </div>
+              {/* Desktop: a segmented tab strip. Few short variants → equal-width
                 <Segmented>. 5+ tabs (or long labels) collide in equal columns, so
                 use a horizontally-scrollable, content-width strip instead.
                 Wrappers control visibility — Segmented's own `inline-grid`
                 would beat a `hidden` on the control itself. */}
-            {examples.length > 4 ? (
-              <div className="hidden max-w-full sm:block">
-                <ScrollableSegmented
-                  tabs={examples.map((ex, i) => ({
-                    value: String(i),
-                    label: ex.label ?? `Example ${i + 1}`,
-                  }))}
-                  value={String(Math.min(activeIndex, examples.length - 1))}
-                  onChange={(v) => selectExample(Number(v))}
-                />
-              </div>
-            ) : (
-              <div className="hidden sm:block">
-                <Segmented
-                  className="shadow-lg"
-                  tabs={examples.map((ex, i) => ({
-                    value: String(i),
-                    label: ex.label ?? `Example ${i + 1}`,
-                  }))}
-                  value={String(Math.min(activeIndex, examples.length - 1))}
-                  onChange={(v) => selectExample(Number(v))}
-                />
-              </div>
-            )}
-          </div>
-        ) : null}
+              {examples.length > 4 ? (
+                <div className="hidden max-w-full sm:block">
+                  <ScrollableSegmented
+                    semantics="tabs"
+                    label="Examples"
+                    controls="wb-stage"
+                    tabs={examples.map((ex, i) => ({
+                      value: String(i),
+                      label: ex.label ?? `Example ${i + 1}`,
+                    }))}
+                    value={String(Math.min(activeIndex, examples.length - 1))}
+                    onChange={(v) => selectExample(Number(v))}
+                  />
+                </div>
+              ) : (
+                <div className="hidden sm:block">
+                  <Segmented
+                    className="shadow-lg"
+                    semantics="tabs"
+                    label="Examples"
+                    controls="wb-stage"
+                    tabs={examples.map((ex, i) => ({
+                      value: String(i),
+                      label: ex.label ?? `Example ${i + 1}`,
+                    }))}
+                    value={String(Math.min(activeIndex, examples.length - 1))}
+                    onChange={(v) => selectExample(Number(v))}
+                  />
+                </div>
+              )}
+            </div>
+          ) : null}
+        </div>
 
-        {/* Enough side slack → full-height right rail that slides the whole app
-            left (no resize); otherwise a bottom sheet inside the stage. One
-            instance (measured, not both) so the docs DOM exists once (aeo.js +
-            #hash anchors). */}
-        {fitsSide ? (
-          <StagePanel
-            open={drawerOpen}
-            onOpenChange={(o) => (o ? setDrawerOpen(true) : closeDrawer())}
-            tab={drawerTab}
-            onTabChange={changeDrawerTab}
-            hasCode={hasCode}
-            docs={docs}
-            code={code}
-            lang={active?.lang}
-            learn={learn}
-          />
-        ) : (
-          <StageDrawer
-            open={drawerOpen}
-            onOpenChange={(o) => (o ? setDrawerOpen(true) : closeDrawer())}
-            tab={drawerTab}
-            onTabChange={changeDrawerTab}
-            hasCode={hasCode}
-            docs={docs}
-            code={code}
-            lang={active?.lang}
-            learn={learn}
-          />
-        )}
+        {/* Row 2 — source for the active example, on screen with it. */}
+        <CodePane
+          open={codeOpen}
+          onClose={() => setCodeOpen(false)}
+          code={code}
+          lang={active?.lang}
+          containerRef={stageFrameRef}
+        />
       </div>
+
+      {/* Sheet scrim — mobile only (the desktop pane is a column, not an
+          overlay, so it never dims the stage). */}
+      <button
+        type="button"
+        aria-label="Close documentation"
+        tabIndex={paneOpen ? 0 : -1}
+        onClick={closeDocs}
+        className="wb-sheet-scrim hidden cursor-default max-xl:block"
+      />
+
+      {/* Second grid column — a sibling of the stage, never an overlay. Below
+          48rem the same node is positioned as a bottom sheet (see globals.css). */}
+      <DocsPane
+        open={paneOpen}
+        onOpenChange={setPaneOpen}
+        docs={docs}
+        learnHref={learnHref}
+        playgroundHref={playgroundHref}
+        containerRef={rootRef}
+      />
     </div>
   );
 }
 
 function RailDivider() {
   return (
-    <span aria-hidden className="mx-0.5 h-5 w-px bg-fd-border max-md:hidden" />
+    <span aria-hidden className="mx-0.5 h-5 w-px bg-fd-border max-lg:hidden" />
   );
 }
 
@@ -496,6 +504,10 @@ function ExampleSelect({
 function ToolButton({
   label,
   active,
+  expanded,
+  controls,
+  hint,
+  wide,
   disabled,
   onClick,
   children,
@@ -503,6 +515,17 @@ function ToolButton({
 }: {
   label: string;
   active?: boolean;
+  /**
+   * Set for buttons that reveal a region (the panes). Those are disclosures, so
+   * they announce aria-expanded/aria-controls; aria-pressed is reserved for the
+   * genuine two-state toggles like fullscreen.
+   */
+  expanded?: boolean;
+  controls?: string;
+  /** Keyboard shortcut, surfaced in the tooltip so the bindings are findable. */
+  hint?: string;
+  /** Renders a text label beside the icon instead of a square icon chip. */
+  wide?: boolean;
   disabled?: boolean;
   onClick?: () => void;
   children: ReactNode;
@@ -512,12 +535,17 @@ function ToolButton({
     <button
       type="button"
       aria-label={label}
-      aria-pressed={active}
-      title={label}
+      aria-pressed={controls ? undefined : active}
+      aria-expanded={controls ? expanded : undefined}
+      aria-controls={controls}
+      title={hint ? `${label} (${hint})` : label}
       disabled={disabled}
       onClick={onClick}
       className={cn(
-        "inline-flex size-8 items-center justify-center rounded-[10px] border transition-colors active:scale-95 disabled:pointer-events-none disabled:opacity-40",
+        // `cn` is a plain join, not tailwind-merge — width has to be chosen
+        // here rather than overridden by a later class.
+        "inline-flex h-8 items-center justify-center rounded-[10px] border transition-colors active:scale-95 disabled:pointer-events-none disabled:opacity-40",
+        wide ? "gap-1.5 px-2.5" : "w-8",
         className,
         active
           ? "border-fd-primary/45 bg-fd-primary/10 text-fd-primary"
@@ -526,24 +554,5 @@ function ToolButton({
     >
       {children}
     </button>
-  );
-}
-
-function PlaygroundIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      className="size-4"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M15 3h6v6" />
-      <path d="M10 14 21 3" />
-      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-    </svg>
   );
 }

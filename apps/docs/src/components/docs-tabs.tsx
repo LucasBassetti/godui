@@ -3,6 +3,18 @@
 import type { ReactNode } from "react";
 import { useCallback, useLayoutEffect, useRef, useState } from "react";
 import { cn } from "@/lib/cn";
+import { useRovingTabIndex } from "@/lib/use-roving-tabindex";
+
+/**
+ * What the control *means*, which is not always "tabs".
+ *
+ * `Segmented` is reused for genuinely different widgets: switching the stage
+ * between desktop and mobile is a radio group, picking an example is a tablist,
+ * and picking a package manager is a radio group. Announcing all of them as tabs
+ * would be a regression, so semantics are opt-in per call site and the default
+ * stays the plain buttons this shipped with.
+ */
+export type SegmentedSemantics = "none" | "tabs" | "radiogroup";
 
 type DocsTabsProps = {
   tabs: Array<{ value: string; label: string; icon?: ReactNode }>;
@@ -11,6 +23,12 @@ type DocsTabsProps = {
   className?: string;
   /** Segmented only: render the icon alone, label becomes the accessible name. */
   iconOnly?: boolean;
+  /** Defaults to "none" — today's markup, no behaviour change. */
+  semantics?: SegmentedSemantics;
+  /** Accessible name for the group when semantics are set. */
+  label?: string;
+  /** `tabs` only: id of the element each tab controls. */
+  controls?: string;
 };
 
 export function DocsTabs({ tabs, value, onChange, className }: DocsTabsProps) {
@@ -116,14 +134,34 @@ export function Segmented({
   onChange,
   className,
   iconOnly,
+  semantics = "none",
+  label,
+  controls,
 }: DocsTabsProps) {
   const activeIndex = Math.max(
     0,
     tabs.findIndex((tab) => tab.value === value),
   );
 
+  const { containerProps, optionProps } = useRovingTabIndex({
+    values: tabs.map((tab) => tab.value),
+    value,
+    onChange,
+  });
+  const composite = semantics !== "none";
+
   return (
+    // biome-ignore lint/a11y/useAriaPropsSupportedByRole: `role` is set by the same `semantics` ternary that gates `aria-label`, so the label only ever renders on a tablist/radiogroup — the rule just can't follow a non-literal role.
     <div
+      {...(composite ? containerProps : null)}
+      role={
+        semantics === "tabs"
+          ? "tablist"
+          : semantics === "radiogroup"
+            ? "radiogroup"
+            : undefined
+      }
+      aria-label={composite ? label : undefined}
       className={cn(
         // NB: --color-fd-muted is aliased to muted-foreground in the GodUI
         // theme, so bg-fd-muted renders light in dark mode. Use the real
@@ -151,12 +189,26 @@ export function Segmented({
         }}
       />
       {tabs.map((tab) => (
+        // biome-ignore lint/a11y/useAriaPropsSupportedByRole: aria-selected/aria-checked are gated by the same `semantics` value that sets role="tab"/"radio"; the rule can't follow a non-literal role.
         <button
           key={tab.value}
           type="button"
           onClick={() => onChange(tab.value)}
           aria-label={iconOnly ? tab.label : undefined}
           title={iconOnly ? tab.label : undefined}
+          {...(composite ? optionProps(tab.value) : null)}
+          role={
+            semantics === "tabs"
+              ? "tab"
+              : semantics === "radiogroup"
+                ? "radio"
+                : undefined
+          }
+          aria-selected={semantics === "tabs" ? value === tab.value : undefined}
+          aria-checked={
+            semantics === "radiogroup" ? value === tab.value : undefined
+          }
+          aria-controls={semantics === "tabs" ? controls : undefined}
           className={cn(
             // h-8 track (border-box) leaves a 24px inner area; symmetric
             // py-[3px] + leading-[18px] centers the label vertically without
@@ -188,6 +240,9 @@ export function ScrollableSegmented({
   value,
   onChange,
   className,
+  semantics = "none",
+  label,
+  controls,
 }: DocsTabsProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
@@ -198,6 +253,13 @@ export function ScrollableSegmented({
     height: number;
   } | null>(null);
   const [edges, setEdges] = useState({ left: false, right: false });
+
+  const { containerProps } = useRovingTabIndex({
+    values: tabs.map((tab) => tab.value),
+    value,
+    onChange,
+  });
+  const composite = semantics !== "none";
 
   const syncEdges = useCallback(() => {
     const el = scrollRef.current;
@@ -254,7 +316,20 @@ export function ScrollableSegmented({
         onScroll={syncEdges}
         className="no-scrollbar overflow-x-auto rounded-[10px] border border-fd-border bg-[var(--muted)] shadow-lg"
       >
-        <div ref={trackRef} className="relative flex w-max gap-1 p-[3px]">
+        {/* biome-ignore lint/a11y/useAriaPropsSupportedByRole: `role` is set by the same `semantics` ternary that gates `aria-label`, so the label only ever renders on a tablist/radiogroup — the rule just can't follow a non-literal role. */}
+        <div
+          ref={trackRef}
+          {...(composite ? containerProps : null)}
+          role={
+            semantics === "tabs"
+              ? "tablist"
+              : semantics === "radiogroup"
+                ? "radiogroup"
+                : undefined
+          }
+          aria-label={composite ? label : undefined}
+          className="relative flex w-max gap-1 p-[3px]"
+        >
           {thumb ? (
             <span
               aria-hidden="true"
@@ -267,11 +342,27 @@ export function ScrollableSegmented({
             />
           ) : null}
           {tabs.map((tab) => (
+            // biome-ignore lint/a11y/useAriaPropsSupportedByRole: aria-selected/aria-checked are gated by the same `semantics` value that sets role="tab"/"radio"; the rule can't follow a non-literal role.
             <button
               key={tab.value}
               type="button"
               data-value={tab.value}
               onClick={() => onChange(tab.value)}
+              tabIndex={composite && tab.value !== value ? -1 : undefined}
+              role={
+                semantics === "tabs"
+                  ? "tab"
+                  : semantics === "radiogroup"
+                    ? "radio"
+                    : undefined
+              }
+              aria-selected={
+                semantics === "tabs" ? value === tab.value : undefined
+              }
+              aria-checked={
+                semantics === "radiogroup" ? value === tab.value : undefined
+              }
+              aria-controls={semantics === "tabs" ? controls : undefined}
               className={cn(
                 "relative z-[1] inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-[7px] px-3 py-[3px] text-[13px] leading-[18px] font-medium transition-colors",
                 value === tab.value

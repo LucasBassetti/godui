@@ -21,6 +21,7 @@ import { Breadcrumbs, type Crumb } from "../_components/breadcrumbs";
 import { ComponentTabs } from "../_components/component-tabs";
 import { SidebarActiveLink } from "../_components/sidebar-active-link";
 import { TocCta } from "../_components/toc-cta";
+import { WorkbenchPreviewCard } from "../_components/workbench-preview-card";
 
 export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
   const params = await props.params;
@@ -82,27 +83,32 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
   const tabs =
     base && hasLearn && docsHref
       ? [
-          { label: "Docs", href: docsHref, active: !isLearnPage },
-          { label: "Learn", href: `${docsHref}/learn`, active: isLearnPage },
+          {
+            label: "Docs",
+            href: docsHref,
+            active: !isLearnPage,
+            icon: "docs" as const,
+          },
+          {
+            label: "Learn",
+            href: `${docsHref}/learn`,
+            active: isLearnPage,
+            icon: "learn" as const,
+          },
         ]
       : null;
 
   // Opt-in full-bleed "Workbench" layout: the whole content area becomes the
-  // live preview stage, with docs/code/learn behind a dock + drawer. The MDX
-  // body (wrapped in <Workbench>) owns the stage examples + drawer content; the
+  // live preview stage, with the prose in a resizable pane beside it. The MDX
+  // body (wrapped in <Workbench>) owns the stage examples + pane content; the
   // page only supplies metadata the MDX doesn't have (title, badges, crumbs).
-  // The workbench renders both the component page AND its `…/learn` route: on the
-  // learn route we render the base component's workbench with the Learn drawer
-  // pre-opened, so a refresh / deep-link (e.g. `…/learn#motion-score`) reopens
-  // the drawer and scrolls to the section instead of showing a bare page.
-  const basePageData = base ? source.getPage(base) : null;
-  const baseHasWorkbench =
-    (basePageData?.data as { workbench?: boolean } | undefined)?.workbench ===
-    true;
+  //
+  // Learn is deliberately NOT a workbench route. Its articles are built from
+  // ScrollScene, which needs real width, and they're the best long-form content
+  // on the site — they get the standard doc column with a TOC below.
   const renderWorkbench =
-    (isComponentDocsPage &&
-      (page.data as { workbench?: boolean }).workbench === true) ||
-    (isLearnPage && baseHasWorkbench);
+    isComponentDocsPage &&
+    (page.data as { workbench?: boolean }).workbench === true;
   if (renderWorkbench) {
     // Compact meta items for the title chip (dot + label + hover tooltip) — the
     // workbench uses a cleaner inline row than the classic <ComponentBadges>.
@@ -152,21 +158,6 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
         detail: `Uses ${dependencyNote.pkg} to ${dependencyNote.reason}.`,
       });
     }
-    const LearnMDX = learnPage?.data.body;
-    const learn = LearnMDX ? (
-      <LearnMDX components={getMDXComponents()} />
-    ) : null;
-    // On the learn route, drive the stage from the base component's MDX and show
-    // the component's own title/description in the chip (not the article's).
-    const WorkbenchMDX =
-      (isLearnPage ? basePageData?.data.body : page.data.body) ??
-      page.data.body;
-    const chipTitle =
-      (isLearnPage ? basePageData?.data.title : page.data.title) ??
-      page.data.title;
-    const chipDescription =
-      (isLearnPage ? basePageData?.data.description : page.data.description) ??
-      page.data.description;
     return (
       <DocsPage
         full
@@ -180,32 +171,45 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
         // otherwise overflow 100dvh and cause a scroll).
         className="workbench-page max-w-none gap-0 p-0 md:p-0 xl:p-0"
       >
-        {isLearnPage && docsHref ? <SidebarActiveLink href={docsHref} /> : null}
         <WorkbenchProvider
           value={{
-            title: chipTitle,
-            description: chipDescription,
+            title: page.data.title,
+            description: page.data.description,
             badges,
             learnHref: hasLearn && docsHref ? `${docsHref}/learn` : undefined,
             docsHref,
-            learn,
-            initialDrawerTab: isLearnPage ? "learn" : undefined,
             breadcrumbs: crumbs,
           }}
         >
-          <WorkbenchMDX components={getMDXComponents()} />
+          <MDX components={getMDXComponents()} />
         </WorkbenchProvider>
       </DocsPage>
     );
   }
+
+  // Learn routes get a live miniature of the component they're about, plus a way
+  // back to its workbench — the article can't show you the thing itself.
+  const tocFooter =
+    isLearnPage && componentName && docsHref ? (
+      <>
+        <WorkbenchPreviewCard
+          slug={componentName}
+          href={docsHref}
+          title={componentCrumbTitle ?? page.data.title}
+        />
+        <TocCta />
+      </>
+    ) : (
+      <TocCta />
+    );
 
   return (
     <DocsPage
       toc={page.data.toc}
       full={page.data.full}
       breadcrumb={{ enabled: false }}
-      tableOfContent={{ footer: <TocCta /> }}
-      tableOfContentPopover={{ footer: <TocCta /> }}
+      tableOfContent={{ footer: tocFooter }}
+      tableOfContentPopover={{ footer: tocFooter }}
     >
       {isLearnPage && docsHref ? <SidebarActiveLink href={docsHref} /> : null}
       {crumbs.length > 1 || tabs ? (

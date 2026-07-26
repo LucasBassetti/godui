@@ -82,39 +82,22 @@ body {
     /* Cap + center the whole layout (header included — it's a grid area inside
        this container) so the sidenav and TOC sit close to the content instead
        of pinned to the screen edges. */
-    max-width: 90rem;
+    /* One home for the layout cap — --gutter derives from it.
+       96rem (1536px) is Tailwind's `2xl` breakpoint, so the shell stops growing
+       exactly where the largest standard breakpoint does, and common laptop
+       widths (1440, 1512) still fill it edge to edge with no dead gutter. The
+       extra 96px over the old 90rem all goes to the workbench: with the docs
+       pane open the stage gains that width directly. Prose is unaffected —
+       fumadocs caps #nd-page at 900px independently, so line length stays
+       readable no matter how wide the shell gets. */
+    --layout-max: 96rem;
+    max-width: var(--layout-max);
     margin-inline: auto;
     /* Gutter between the viewport edge and the centered layout — used to anchor
        the fixed header / sidebar / TOC to the layout's edges. */
-    --gutter: max(0px, calc((100vw - 90rem) / 2));
+    --gutter: max(0px, calc((100vw - var(--layout-max)) / 2));
     /* The header is fixed (leaves grid flow), so reserve its height here. */
     padding-top: 3.5rem;
-    /* Width of the Workbench docs rail (see stage-panel.tsx). Read here + by the
-       portaled panel via :root below so both always match. */
-    --wb-panel-w: min(440px, 34vw);
-  }
-
-  /* Expose the rail width to the body-portaled <StagePanel> too. */
-  :root {
-    --wb-panel-w: min(440px, 34vw);
-  }
-
-  /* When the docs rail is open, slide the whole app (header + sidebar + stage)
-     left by `panel − gutter` so the content sits flush against the rail WITHOUT
-     resizing. The rail only opens (via <StagePanel>) when there's enough side
-     slack for this shift not to clip (see use-side-panel-fit.ts); otherwise the
-     docs open as a bottom sheet and this attribute is never set. Transform (not
-     left/right) keeps the slide on the compositor. Each element is transformed
-     individually so the fixed header/sidebar keep their own fixed positioning. */
-  #nd-docs-layout #nd-nav,
-  #nd-docs-layout #nd-sidebar,
-  #nd-docs-layout #nd-page {
-    transition: transform 0.34s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-  #nd-docs-layout[data-wb-panel="open"] #nd-nav,
-  #nd-docs-layout[data-wb-panel="open"] #nd-sidebar,
-  #nd-docs-layout[data-wb-panel="open"] #nd-page {
-    transform: translateX(calc(var(--gutter) - var(--wb-panel-w)));
   }
 
   [data-sidebar-placeholder] {
@@ -363,6 +346,214 @@ p.docs-lead {
     var(--color-fd-background) 98%,
     var(--color-fd-foreground)
   );
+}
+
+/* ---------------------------------------------------------------------------
+   Workbench split pane
+
+   The docs pane is a real grid column inside .workbench-root — a sibling of the
+   stage frame, inside #nd-page. Nothing outside the workbench moves when it
+   opens; the stage reflows, which is what a split pane means. Keeping the pane
+   in normal (non-portaled) DOM is also what puts the docs prose in the server
+   HTML for crawlers + aeo.js, which scans #nd-page.
+
+   Width lives in a CSS var written on <html> by three producers that must agree:
+   the pre-hydration prefs script, the resize drag, and this default.
+   --------------------------------------------------------------------------- */
+:root {
+  --wb-panel-min: 360px;
+  --wb-panel-default: 440px;
+  --wb-panel-w: clamp(
+    var(--wb-panel-min),
+    var(--wb-panel-user, var(--wb-panel-default)),
+    min(720px, 55vw)
+  );
+  /* Breathing room between the two panels when both are showing. */
+  --wb-panel-gap: 0.75rem;
+  --wb-code-min: 180px;
+  --wb-code-default: 320px;
+  --wb-code-h: clamp(
+    var(--wb-code-min),
+    var(--wb-code-user, var(--wb-code-default)),
+    60vh
+  );
+}
+
+.workbench-root {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) var(--wb-panel-col, 0px);
+  --wb-panel-col: 0px;
+  column-gap: 0px;
+}
+
+:root[data-wb-panel="open"] .workbench-root {
+  --wb-panel-col: var(--wb-panel-w);
+  column-gap: var(--wb-panel-gap);
+}
+
+/* Column width isn't compositor-accelerated — keep it short, and off entirely
+   for users who asked for less motion. */
+@media (prefers-reduced-motion: no-preference) {
+  .workbench-root {
+    transition:
+      grid-template-columns 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+      column-gap 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+}
+
+/* During a drag the column must track the cursor exactly, and the stage is full
+   of pointer-tracking demos that would otherwise swallow the pointermove. */
+:root[data-wb-resizing] {
+  cursor: col-resize;
+  user-select: none;
+}
+
+:root[data-wb-resizing] .workbench-root {
+  transition: none;
+}
+
+:root[data-wb-resizing] .stage-frame * {
+  pointer-events: none;
+}
+
+/* The pane holds its full text width while the grid column narrows, so the prose
+   never reflows character-by-character during the open/close animation.
+
+   That overflow can't be left to the parent to clip: `overflow` clips at the
+   PADDING box, and .workbench-root is padded, so a 0px column would still leak
+   the pane's first ~16px into the gutter. Translating it out by its own width
+   puts it decisively off-stage — and rides the compositor while it goes. */
+.wb-docs-pane {
+  min-width: var(--wb-panel-w);
+  overflow: hidden;
+}
+
+/* Media-scoped: below the split cutover the same element is a sheet that leaves
+   downward, and an unscoped rule here would out-specify it and send it
+   sideways. */
+@media (width >= 80rem) {
+  :root:not([data-wb-panel="open"]) .wb-docs-pane {
+    transform: translateX(101%);
+    pointer-events: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .wb-docs-pane {
+    transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+}
+
+/* The stage frame splits the same way vertically: demo on top, source below.
+   Code and the thing it renders belong on screen together. */
+.stage-frame {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) var(--wb-code-row, 0px);
+}
+
+:root[data-wb-code="open"] .stage-frame {
+  --wb-code-row: var(--wb-code-h);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .stage-frame {
+    transition: grid-template-rows 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+}
+
+:root[data-wb-resizing] .stage-frame {
+  transition: none;
+}
+
+.wb-code-pane {
+  min-height: var(--wb-code-h);
+  overflow: hidden;
+}
+
+/* Make the code scroll inside the pane.
+
+   fumadocs' CodeBlock wrapper is `overflow-hidden` and puts the scroller on its
+   inner <pre>, which also carries `max-h-[600px]`. Left alone, the pre is taller
+   than the pane, the wrapper clips it, and its scrollbar sits below the fold —
+   you see the first lines and nothing moves. So the height has to be pushed all
+   the way down to the pre, through markup we don't own; hence a descendant
+   selector rather than a utility class on the wrapper. */
+.wb-code-pane .workbench-code,
+.wb-code-pane .workbench-code > * {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.wb-code-pane .workbench-code > * {
+  flex: 1;
+}
+
+.wb-code-pane .workbench-code pre {
+  flex: 1;
+  min-height: 0;
+  max-height: none;
+  overscroll-behavior: contain;
+}
+
+/* The pane is a peer of the stage, so it wears the same chrome: identical
+   hairline, radius and shadow. A flat slab welded to the stage's rounded edge
+   was the thing that looked wrong. */
+@media (width >= 80rem) {
+  .wb-docs-pane {
+    border: 1px solid
+      color-mix(in srgb, var(--color-fd-foreground) 12%, transparent);
+    border-radius: 20px;
+    box-shadow:
+      0 1px 2px rgb(0 0 0 / 0.04),
+      0 8px 24px -12px rgb(0 0 0 / 0.1);
+  }
+}
+
+/* Below the desktop cutover the same DOM node becomes a bottom sheet — one docs
+   surface in the tree, presented two ways. The column collapses and the pane is
+   taken out of flow, so "closed" has to mean translated-away rather than a 0px
+   column. Transform (not height) keeps the slide on the compositor. */
+/* Below 80rem the sidebar (260px) plus a 360px minimum pane leaves the stage
+   too narrow to be a preview — the title chip and control rail start colliding.
+   Tablets therefore get the mobile presentation, not a squeezed split. */
+@media (width < 80rem) {
+  .workbench-root {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .wb-docs-pane {
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: 30;
+    min-width: 0;
+    width: 100%;
+    height: 92%;
+    border-radius: 1rem 1rem 0 0;
+  }
+
+  :root:not([data-wb-panel="open"]) .wb-docs-pane {
+    transform: translateY(100%);
+  }
+
+  /* Scrim over the stage while the sheet is up. */
+  .wb-sheet-scrim {
+    position: absolute;
+    inset: 0;
+    z-index: 25;
+    opacity: 0;
+    pointer-events: none;
+    background-color: color-mix(in srgb, var(--foreground) 25%, transparent);
+    backdrop-filter: blur(2px);
+    transition: opacity 0.2s linear;
+  }
+
+  :root[data-wb-panel="open"] .wb-sheet-scrim {
+    opacity: 1;
+    pointer-events: auto;
+  }
 }
 
 .component-install-cli pre {
@@ -643,6 +834,10 @@ figure.shiki div:has(> button[aria-label]) {
   /* Scroll horizontally instead of crushing columns on narrow screens; still
      clips the rounded corners (auto establishes a clipping context). */
   overflow-x: auto;
+  /* Query the wrapper's own width, not the viewport: this table lives in a
+     user-resizable pane, so "narrow" is a property of the container. */
+  container-type: inline-size;
+  container-name: docstable;
 }
 
 .docs-table {
@@ -752,6 +947,79 @@ figure.shiki div:has(> button[aria-label]) {
   );
   font-size: 0.875rem;
   text-wrap: pretty;
+}
+
+/* Narrow container — restack the props table into cards rather than making the
+   reader scroll a 40rem grid sideways inside a 360px pane. Scoped to
+   [data-cols="4"] so only the name/type/default/description table restacks;
+   anything wider keeps the horizontal scroll, where the header still matters.
+
+   The four columns are self-identifying at a glance (bold mono name, muted mono
+   type, pill default, prose description), so the header row is only visually
+   removed — it stays in the DOM for assistive tech and for aeo.js, which skips
+   display:none. */
+@container docstable (max-width: 560px) {
+  .docs-table-wrapper[data-cols="4"] {
+    overflow-x: visible;
+  }
+
+  [data-cols="4"] .docs-table {
+    min-width: 0;
+  }
+
+  [data-cols="4"] .docs-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  [data-cols="4"] .docs-table tbody tr {
+    display: grid;
+    grid-template-areas:
+      "name default"
+      "type type"
+      "desc desc";
+    grid-template-columns: 1fr auto;
+    gap: 0.25rem 0.75rem;
+    padding: 0.875rem 1rem;
+    border-bottom: 1px solid
+      color-mix(in srgb, var(--color-fd-border) 75%, transparent);
+  }
+
+  [data-cols="4"] .docs-table tbody tr:last-child {
+    border-bottom: none;
+  }
+
+  [data-cols="4"] .docs-table tbody td {
+    padding: 0;
+    border: 0;
+    max-width: none;
+  }
+
+  [data-cols="4"] .docs-table tbody td:nth-child(1) {
+    grid-area: name;
+  }
+
+  [data-cols="4"] .docs-table tbody td:nth-child(2) {
+    grid-area: type;
+  }
+
+  [data-cols="4"] .docs-table tbody td:nth-child(3) {
+    grid-area: default;
+    justify-self: end;
+  }
+
+  [data-cols="4"] .docs-table tbody td:nth-child(4) {
+    grid-area: desc;
+  }
+
+  /* Empty default / description cells would otherwise leave a phantom gap. */
+  [data-cols="4"] .docs-table tbody td:empty {
+    display: none;
+  }
 }
 
 /* --- Focus outlines ---------------------------------------------------------

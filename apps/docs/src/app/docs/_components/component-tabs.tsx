@@ -1,7 +1,19 @@
 import Link from "fumadocs-core/link";
+import { FileText, GraduationCap } from "lucide-react";
 import { cn } from "@/lib/cn";
 
-export type ComponentTab = { label: string; href: string; active: boolean };
+export type ComponentTab = {
+  label: string;
+  href: string;
+  active: boolean;
+  /** Which glyph to pair with the label; omit for a text-only tab. */
+  icon?: "docs" | "learn";
+};
+
+const ICONS = {
+  docs: FileText,
+  learn: GraduationCap,
+} as const;
 
 /**
  * Segmented Docs | Learn control shown with the breadcrumb on component pages
@@ -39,21 +51,25 @@ export function ComponentTabs({
           transform: `translateX(${activeIndex * 100}%)`,
         }}
       />
-      {tabs.map((tab) => (
-        <Link
-          key={tab.href}
-          href={tab.href}
-          aria-current={tab.active ? "page" : undefined}
-          className={cn(
-            "relative z-[1] inline-flex items-center justify-center whitespace-nowrap rounded-[7px] px-2.5 py-[3px] font-medium text-[13px] leading-[18px] transition-colors sm:px-3",
-            tab.active
-              ? "text-[var(--foreground)]"
-              : "text-[var(--muted-foreground)] hover:text-[var(--foreground)]",
-          )}
-        >
-          {tab.label}
-        </Link>
-      ))}
+      {tabs.map((tab) => {
+        const Icon = tab.icon ? ICONS[tab.icon] : null;
+        return (
+          <Link
+            key={tab.href}
+            href={tab.href}
+            aria-current={tab.active ? "page" : undefined}
+            className={cn(
+              "relative z-[1] inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-[7px] px-2.5 py-[3px] font-medium text-[13px] leading-[18px] transition-colors sm:px-3",
+              tab.active
+                ? "text-[var(--foreground)]"
+                : "text-[var(--muted-foreground)] hover:text-[var(--foreground)]",
+            )}
+          >
+            {Icon ? <Icon className="size-3.5 shrink-0" aria-hidden /> : null}
+            {tab.label}
+          </Link>
+        );
+      })}
     </div>
   );
 }

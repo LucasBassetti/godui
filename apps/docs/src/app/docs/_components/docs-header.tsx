@@ -17,22 +17,34 @@ const iconButton =
   "inline-flex size-9 items-center justify-center rounded-full text-fd-muted-foreground transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground";
 
 /**
+ * Labelled pill in the header bar. `h-9` is stated here AND on the search
+ * trigger: the trigger's own height is content-driven (padding + the ⌘K kbd),
+ * so pinning only one side would let them drift apart the moment either
+ * changes.
+ */
+const headerPill =
+  "inline-flex h-9 items-center gap-1.5 rounded-[11px] border border-fd-border bg-fd-card px-2.5 font-medium text-[13px] text-fd-muted-foreground transition-colors hover:text-fd-foreground active:scale-95";
+
+/**
  * Opens the aeo.js AI-view overlay (LLM-optimized markdown of the current page)
  * by clicking the hidden widget's AI button. The floating widget toggle itself
  * is hidden via CSS (`.aeo-toggle`) so this header button is the only entry.
+ *
+ * Labelled rather than icon-only: a bare robot glyph doesn't tell anyone this
+ * hands them a page they can paste into an LLM.
  */
 function AeoTrigger({ className }: { className?: string }) {
   return (
     <button
       type="button"
-      aria-label="View AI-optimized version"
       title="View for AI / LLMs"
       onClick={() => {
         document.querySelector<HTMLButtonElement>(".aeo-ai-btn")?.click();
       }}
-      className={cn(iconButton, className)}
+      className={cn(headerPill, className)}
     >
-      <Bot className="size-4" />
+      <Bot className="size-4 shrink-0" aria-hidden />
+      AI
     </button>
   );
 }
@@ -116,7 +128,7 @@ export function DocsHeader({
           {/* Desktop: full search bar */}
           <FullSearchTrigger
             hideIfDisabled
-            className="ps-2.5 w-[220px] max-md:hidden rounded-[11px]"
+            className="h-9 ps-2.5 w-[220px] max-md:hidden rounded-[11px]"
           />
           {/* Mobile: search icon only */}
           <SearchTrigger

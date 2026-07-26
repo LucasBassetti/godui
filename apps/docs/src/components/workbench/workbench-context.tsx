@@ -28,15 +28,8 @@ export type WorkbenchMeta = {
   badges?: BadgeItem[];
   /** Route to the component's Learn article, when one exists. */
   learnHref?: string;
-  /** Base docs route (used to restore the URL when the Learn drawer closes). */
+  /** Base docs route for this component. */
   docsHref?: string;
-  /** Pre-rendered Learn article body, shown in the Learn drawer tab. */
-  learn?: ReactNode;
-  /**
-   * When set, the drawer opens to this tab on mount (used by the `…/learn`
-   * route so a refresh/deep-link opens the Learn drawer + scrolls to the hash).
-   */
-  initialDrawerTab?: "docs" | "code" | "learn";
   breadcrumbs: Crumb[];
 };
 
