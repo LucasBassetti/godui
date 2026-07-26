@@ -311,9 +311,23 @@ p.docs-lead {
   z-index: 1;
 }
 
-/* Workbench stage canvas — seamless with the page background (no contrast). */
+/* Workbench stage canvas — a hair off the page background so the card reads as
+   a distinct surface (lighter in dark, darker in light) without real contrast.
+   The color lives on a var (see .stage-frame) so the top scrim fades the same
+   surface. */
 .workbench-canvas {
-  background-color: var(--color-fd-background);
+  background-color: var(--workbench-canvas-bg);
+}
+
+/* Top scrim — fades the card surface (not the page bg) to transparent so the
+   title chip + control rail stay legible over full-bleed / image demos. */
+.stage-scrim {
+  background-image: linear-gradient(
+    to bottom,
+    color-mix(in oklch, var(--workbench-canvas-bg) 90%, transparent),
+    color-mix(in oklch, var(--workbench-canvas-bg) 60%, transparent),
+    transparent
+  );
 }
 
 /* Bounded stage frame — a clearly-visible hairline in both themes (the raw
@@ -321,6 +335,11 @@ p.docs-lead {
    contained panel rather than an open void. */
 .stage-frame {
   border-color: color-mix(in srgb, var(--color-fd-foreground) 12%, transparent);
+  --workbench-canvas-bg: color-mix(
+    in oklch,
+    var(--color-fd-background) 98%,
+    var(--color-fd-foreground)
+  );
 }
 
 .component-install-cli pre {
@@ -790,6 +809,13 @@ figure.shiki div:has(> button[aria-label]) {
   background: currentColor;
   -webkit-mask: var(--godui-close-icon) center / contain no-repeat;
   mask: var(--godui-close-icon) center / contain no-repeat;
+}
+
+/* aeo.js ships a fixed floating Human/AI toggle. We drive its overlay from a
+   custom header button instead (see DocsHeader → AeoTrigger), so hide the
+   default widget while keeping its DOM (the header button clicks .aeo-ai-btn). */
+.aeo-toggle {
+  display: none !important;
 }
 
 /* "Built with GodUI" TOC card — subtle primary-tinted gradient surface. */

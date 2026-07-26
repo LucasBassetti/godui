@@ -6,7 +6,7 @@ import {
   FullSearchTrigger,
   SearchTrigger,
 } from "fumadocs-ui/layouts/shared/slots/search-trigger";
-import { ArrowUpRight, Menu } from "lucide-react";
+import { ArrowUpRight, Bot, Menu } from "lucide-react";
 import { type ComponentProps, useEffect, useState } from "react";
 import { cn } from "@/lib/cn";
 import { GitHubStars } from "./github-stars";
@@ -15,6 +15,27 @@ import { ThemeToggle } from "./theme-toggle";
 
 const iconButton =
   "inline-flex size-9 items-center justify-center rounded-full text-fd-muted-foreground transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground";
+
+/**
+ * Opens the aeo.js AI-view overlay (LLM-optimized markdown of the current page)
+ * by clicking the hidden widget's AI button. The floating widget toggle itself
+ * is hidden via CSS (`.aeo-toggle`) so this header button is the only entry.
+ */
+function AeoTrigger({ className }: { className?: string }) {
+  return (
+    <button
+      type="button"
+      aria-label="View AI-optimized version"
+      title="View for AI / LLMs"
+      onClick={() => {
+        document.querySelector<HTMLButtonElement>(".aeo-ai-btn")?.click();
+      }}
+      className={cn(iconButton, className)}
+    >
+      <Bot className="size-4" />
+    </button>
+  );
+}
 
 export const ANIMATED_ICONS_URL = "https://svg-animated-icons.vercel.app/";
 
@@ -88,6 +109,10 @@ export function DocsHeader({
         </nav>
         <div className="flex-1" />
         <div className="flex items-center gap-1 sm:gap-2">
+          {/* Desktop: open the aeo.js "AI view" overlay (markdown for this page).
+              The floating widget toggle is hidden via CSS; this triggers its AI
+              button. Desktop-only — the overlay isn't useful on small screens. */}
+          <AeoTrigger className="max-md:hidden" />
           {/* Desktop: full search bar */}
           <FullSearchTrigger
             hideIfDisabled
