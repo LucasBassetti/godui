@@ -74,6 +74,11 @@ export type ScrollTextRevealProps = Omit<
   keepRevealed?: boolean;
   /** Scroll offset that maps element position to progress (framer `useScroll`). */
   offset?: [string, string];
+  /**
+   * Track scroll of a scrollable element instead of the window. Pass a ref to
+   * the overflow container when the copy lives inside an inner scroll area.
+   */
+  container?: React.RefObject<HTMLElement | null>;
   /** Class applied to every segment span. */
   segmentClassName?: string;
 };
@@ -130,6 +135,7 @@ const ScrollTextReveal = React.forwardRef<HTMLElement, ScrollTextRevealProps>(
       dimOpacity = 0.15,
       keepRevealed = false,
       offset = ["start 0.85", "end 0.35"],
+      container,
       className,
       segmentClassName,
       ...props
@@ -148,6 +154,8 @@ const ScrollTextReveal = React.forwardRef<HTMLElement, ScrollTextRevealProps>(
 
     const { scrollYProgress } = useScroll({
       target: localRef as React.RefObject<HTMLElement>,
+      // Track an inner scroll container when provided; otherwise the window.
+      container,
       offset: offset as never,
     });
 

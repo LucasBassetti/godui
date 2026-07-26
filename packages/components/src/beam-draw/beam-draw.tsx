@@ -14,6 +14,11 @@ export type BeamDrawProps = Omit<React.SVGProps<SVGSVGElement>, "ref"> & {
   paths?: string[];
   /** Stroke width of each beam. Defaults to 2. */
   strokeWidth?: number;
+  /**
+   * Track scroll of a scrollable element instead of the window. Pass a ref to
+   * the overflow container when the beam lives inside an inner scroll area.
+   */
+  container?: React.RefObject<HTMLElement | null>;
 };
 
 // SPRING.smooth — surfaces / shared-layout feel.
@@ -28,7 +33,10 @@ const DEFAULT_PATHS = [
 ];
 
 const BeamDraw = React.forwardRef<SVGSVGElement, BeamDrawProps>(
-  ({ paths = DEFAULT_PATHS, strokeWidth = 2, className, ...props }, ref) => {
+  (
+    { paths = DEFAULT_PATHS, strokeWidth = 2, container, className, ...props },
+    ref,
+  ) => {
     const reduce = useReducedMotion();
     const containerRef = React.useRef<SVGSVGElement>(null);
     React.useImperativeHandle(ref, () => containerRef.current as SVGSVGElement);
@@ -37,6 +45,8 @@ const BeamDraw = React.forwardRef<SVGSVGElement, BeamDrawProps>(
       // useScroll's target types expect an HTMLElement ref; the SVG root works
       // the same at runtime (getBoundingClientRect).
       target: containerRef as unknown as React.RefObject<HTMLElement>,
+      // Track an inner scroll container when provided; otherwise the window.
+      container,
       offset: ["start end", "end start"],
     });
     const pathLength = useSpring(
