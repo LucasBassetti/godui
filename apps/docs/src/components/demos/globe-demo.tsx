@@ -38,7 +38,7 @@ const STATS = [
 
 export function GlobeDemo() {
   return (
-    <div className="relative w-full overflow-hidden rounded-none border-0 bg-[#04060f] [background:radial-gradient(120%_120%_at_50%_-20%,#13204a_0%,#04060f_55%)]">
+    <div className="relative flex h-full w-full flex-col overflow-hidden rounded-none border-0 bg-[#04060f] [background:radial-gradient(120%_120%_at_50%_-20%,#13204a_0%,#04060f_55%)]">
       {/* Faint grid that fades toward the globe. */}
       <div className="pointer-events-none absolute inset-0 [background-image:linear-gradient(to_right,rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.04)_1px,transparent_1px)] [background-size:44px_44px] [mask-image:radial-gradient(100%_55%_at_50%_0%,black,transparent)]" />
 
@@ -83,8 +83,9 @@ export function GlobeDemo() {
         </div>
       </div>
 
-      {/* Globe sits at the bottom, glowing and masked into the band. */}
-      <div className="relative mx-auto -mt-4 h-[330px] w-full max-w-[560px] [mask-image:linear-gradient(to_bottom,black_62%,transparent)]">
+      {/* Globe fills the rest of the card, anchored to the bottom, glowing and
+          masked into the band. */}
+      <div className="relative mx-auto mt-auto w-full max-w-[620px] [mask-image:linear-gradient(to_bottom,black_62%,transparent)]">
         <div className="absolute left-1/2 top-12 size-[400px] -translate-x-1/2 rounded-full bg-[#2b50b8]/25 blur-3xl" />
         <Globe config={GLOBE_CONFIG} className="!max-w-none" />
       </div>

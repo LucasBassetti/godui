@@ -29,7 +29,7 @@ const items: Item[] = [
 
 export function DockDemo() {
   return (
-    <div className="relative h-[380px] w-full overflow-hidden rounded-xl border border-border">
+    <div className="relative h-full min-h-[380px] w-full overflow-hidden rounded-xl border border-border">
       {/* Wallpaper */}
       <div className="absolute inset-0 bg-[linear-gradient(135deg,oklch(0.55_0.18_265),oklch(0.62_0.16_320)_45%,oklch(0.7_0.12_25))]" />
       <div className="absolute inset-0 bg-[radial-gradient(60%_50%_at_50%_0%,rgba(255,255,255,0.25),transparent)]" />

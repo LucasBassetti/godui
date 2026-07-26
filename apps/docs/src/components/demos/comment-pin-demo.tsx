@@ -62,25 +62,30 @@ export function CommentPinDemo() {
     );
 
   return (
-    <div className="relative mx-auto h-[400px] w-full overflow-hidden rounded-2xl border border-border bg-card">
-      <div className="absolute left-6 top-6 h-28 w-56 rounded-xl bg-muted" />
-      <div className="absolute right-10 top-12 h-20 w-40 rounded-xl bg-muted" />
-      <div className="absolute bottom-10 left-12 h-24 w-72 rounded-xl bg-muted" />
-      <p className="absolute bottom-4 right-4 text-xs text-muted-foreground">
-        Click a pin to open its thread.
-      </p>
-      {pins.map((pin) => (
-        <CommentPin
-          key={pin.id}
-          x={pin.x}
-          y={pin.y}
-          resolved={pin.resolved}
-          comments={pin.comments}
-          open={openId === pin.id}
-          onOpenChange={(o) => setOpenId(o ? pin.id : null)}
-          onReply={(body) => reply(pin.id, body)}
-        />
-      ))}
+    <div className="relative flex h-full w-full items-center justify-center overflow-hidden px-6">
+      {/* Centered play area — kept clear of the stage header chrome (title,
+          breadcrumb, badges top-left; controls top-right) by living in a
+          vertically-centered band; pins position by % of this region. */}
+      <div className="relative h-[64%] w-full max-w-2xl">
+        <div className="absolute left-0 top-2 h-28 w-56 rounded-xl bg-muted" />
+        <div className="absolute right-4 top-10 h-20 w-40 rounded-xl bg-muted" />
+        <div className="absolute bottom-6 left-8 h-24 w-72 rounded-xl bg-muted" />
+        <p className="absolute bottom-0 right-0 text-xs text-muted-foreground">
+          Click a pin to open its thread.
+        </p>
+        {pins.map((pin) => (
+          <CommentPin
+            key={pin.id}
+            x={pin.x}
+            y={pin.y}
+            resolved={pin.resolved}
+            comments={pin.comments}
+            open={openId === pin.id}
+            onOpenChange={(o) => setOpenId(o ? pin.id : null)}
+            onReply={(body) => reply(pin.id, body)}
+          />
+        ))}
+      </div>
     </div>
   );
 }

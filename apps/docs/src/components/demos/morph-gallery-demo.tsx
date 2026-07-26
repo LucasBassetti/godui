@@ -17,6 +17,7 @@ const PHOTOS = [
 export function MorphGalleryDemo() {
   return (
     <MorphGallery
+      className="mx-auto max-w-lg"
       columns={3}
       items={PHOTOS.map((p) => ({
         src: `https://picsum.photos/id/${p.id}/900/900`,

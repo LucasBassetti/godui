@@ -4,7 +4,7 @@ import { WorldMap } from "@godui/components";
 
 export function WorldMapDemo() {
   return (
-    <div className="w-full px-4 py-10">
+    <div className="w-full px-4 pt-[12vh] pb-10">
       <div className="mx-auto max-w-3xl text-center">
         <h2 className="text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
           Ship to every region

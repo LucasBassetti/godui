@@ -23,7 +23,7 @@ const IMAGES = [
 
 export function ThreeDMarqueeDemo() {
   return (
-    <div className="mx-auto h-[26rem] w-full max-w-2xl">
+    <div className="mx-auto my-auto h-[26rem] w-full max-w-2xl">
       <ThreeDMarquee images={IMAGES} />
     </div>
   );
