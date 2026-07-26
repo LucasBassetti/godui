@@ -68,10 +68,12 @@ export function ContextMenuDemo() {
   return (
     <ContextMenu items={items}>
       <div className="flex w-full max-w-md select-none flex-col items-center gap-4 rounded-xl border border-border border-dashed bg-card px-6 py-10 text-center shadow-sm">
-        <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-primary/10 text-primary">
+        <div className="relative flex h-14 w-14 items-center justify-center rounded-xl bg-primary/10 text-primary">
           <FileText className="size-7" />
           {starred && (
-            <Star className="-mt-6 ml-9 size-4 fill-amber-400 text-amber-400" />
+            <span className="absolute -right-1.5 -top-1.5 grid size-5 place-items-center rounded-full bg-background shadow-sm ring-1 ring-border">
+              <Star className="size-3 fill-amber-400 text-amber-400" />
+            </span>
           )}
         </div>
         <div>

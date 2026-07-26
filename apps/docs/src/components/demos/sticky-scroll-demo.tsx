@@ -34,5 +34,5 @@ const ITEMS: StickyScrollItem[] = [
 ];
 
 export function StickyScrollDemo() {
-  return <StickyScroll items={ITEMS} />;
+  return <StickyScroll items={ITEMS} className="my-auto" />;
 }

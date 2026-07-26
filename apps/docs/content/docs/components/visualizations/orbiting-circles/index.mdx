@@ -69,28 +69,37 @@ ecosystem diagram.
 <Example
   label="Reversed Inner Ring"
   fullWidth
-  code={`<div className="relative flex h-80 w-full items-center justify-center">
-  <OrbitingCircles className="absolute" radius={60} duration={14}>
-    <Chip>1</Chip>
-    <Chip>2</Chip>
-  </OrbitingCircles>
-  <OrbitingCircles className="absolute" radius={120} duration={24} reverse>
-    <Chip>3</Chip>
-    <Chip>4</Chip>
-    <Chip>5</Chip>
-  </OrbitingCircles>
+  code={`<div className="relative flex h-full min-h-80 w-full items-center justify-center">
+  {/* Each ring in an absolutely-centered wrapper so they share one center. */}
+  <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+    <OrbitingCircles radius={60} duration={14}>
+      <Chip>1</Chip>
+      <Chip>2</Chip>
+    </OrbitingCircles>
+  </div>
+  <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+    <OrbitingCircles radius={120} duration={24} reverse>
+      <Chip>3</Chip>
+      <Chip>4</Chip>
+      <Chip>5</Chip>
+    </OrbitingCircles>
+  </div>
 </div>`}
 >
-  <div className="relative flex h-80 w-full items-center justify-center">
-    <OrbitingCircles className="absolute" radius={60} duration={14}>
-      <span className="flex size-full items-center justify-center rounded-full border border-border bg-card text-sm font-semibold text-foreground">1</span>
-      <span className="flex size-full items-center justify-center rounded-full border border-border bg-card text-sm font-semibold text-foreground">2</span>
-    </OrbitingCircles>
-    <OrbitingCircles className="absolute" radius={120} duration={24} reverse>
-      <span className="flex size-full items-center justify-center rounded-full border border-border bg-card text-sm font-semibold text-foreground">3</span>
-      <span className="flex size-full items-center justify-center rounded-full border border-border bg-card text-sm font-semibold text-foreground">4</span>
-      <span className="flex size-full items-center justify-center rounded-full border border-border bg-card text-sm font-semibold text-foreground">5</span>
-    </OrbitingCircles>
+  <div className="relative flex h-full min-h-80 w-full items-center justify-center">
+    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+      <OrbitingCircles radius={60} duration={14}>
+        <span className="flex size-full items-center justify-center rounded-full border border-border bg-card text-sm font-semibold text-foreground">1</span>
+        <span className="flex size-full items-center justify-center rounded-full border border-border bg-card text-sm font-semibold text-foreground">2</span>
+      </OrbitingCircles>
+    </div>
+    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+      <OrbitingCircles radius={120} duration={24} reverse>
+        <span className="flex size-full items-center justify-center rounded-full border border-border bg-card text-sm font-semibold text-foreground">3</span>
+        <span className="flex size-full items-center justify-center rounded-full border border-border bg-card text-sm font-semibold text-foreground">4</span>
+        <span className="flex size-full items-center justify-center rounded-full border border-border bg-card text-sm font-semibold text-foreground">5</span>
+      </OrbitingCircles>
+    </div>
   </div>
 </Example>
 

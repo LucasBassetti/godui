@@ -221,7 +221,7 @@ function WorkbenchInner({
             it restores contrast. Below the chrome (z-20), above the demo. */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-x-0 top-0 z-10 h-40 bg-gradient-to-b from-fd-background/90 via-fd-background/60 to-transparent"
+          className="stage-scrim pointer-events-none absolute inset-x-0 top-0 z-10 h-40"
         />
 
         {/* Identity chip — top-left */}
@@ -234,7 +234,9 @@ function WorkbenchInner({
           icon-only bordered chips. Wraps on very narrow desktops. */}
         <div className="absolute top-4 right-4 z-20 flex flex-wrap items-center justify-end gap-1.5">
           {/* Static showcases (embedded background) have nothing to replay. */}
-          {copyValue === null ? <ReplayButton onReplay={replay} /> : null}
+          {copyValue === null ? (
+            <ReplayButton onReplay={replay} className="max-md:hidden" />
+          ) : null}
           <Segmented
             className="max-md:hidden"
             iconOnly
@@ -299,7 +301,7 @@ function WorkbenchInner({
               rel="noreferrer"
               aria-label="Playground"
               title="Playground"
-              className="inline-flex size-8 items-center justify-center rounded-[10px] border border-fd-border bg-fd-card text-fd-muted-foreground transition-colors hover:text-fd-foreground active:scale-95"
+              className="inline-flex size-8 items-center justify-center rounded-[10px] border border-fd-border bg-fd-card text-fd-muted-foreground transition-colors hover:text-fd-foreground active:scale-95 max-md:hidden"
             >
               <PlaygroundIcon />
             </a>
@@ -309,6 +311,7 @@ function WorkbenchInner({
             label={fullscreen ? "Exit fullscreen" : "Fullscreen"}
             active={fullscreen}
             onClick={() => setFullscreen((f) => !f)}
+            className="max-md:hidden"
           >
             {fullscreen ? (
               <Minimize2 className="size-4" aria-hidden />
@@ -396,7 +399,9 @@ function WorkbenchInner({
 }
 
 function RailDivider() {
-  return <span aria-hidden className="mx-0.5 h-5 w-px bg-fd-border" />;
+  return (
+    <span aria-hidden className="mx-0.5 h-5 w-px bg-fd-border max-md:hidden" />
+  );
 }
 
 /**
@@ -494,12 +499,14 @@ function ToolButton({
   disabled,
   onClick,
   children,
+  className,
 }: {
   label: string;
   active?: boolean;
   disabled?: boolean;
   onClick?: () => void;
   children: ReactNode;
+  className?: string;
 }) {
   return (
     <button
@@ -511,6 +518,7 @@ function ToolButton({
       onClick={onClick}
       className={cn(
         "inline-flex size-8 items-center justify-center rounded-[10px] border transition-colors active:scale-95 disabled:pointer-events-none disabled:opacity-40",
+        className,
         active
           ? "border-fd-primary/45 bg-fd-primary/10 text-fd-primary"
           : "border-fd-border bg-fd-card text-fd-muted-foreground hover:text-fd-foreground",

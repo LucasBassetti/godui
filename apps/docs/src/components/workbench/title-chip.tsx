@@ -24,7 +24,7 @@ export function TitleChip() {
   const { title, badges, breadcrumbs } = useWorkbenchMeta();
 
   return (
-    <div className="pointer-events-none flex max-w-[60vw] flex-col gap-1.5 sm:max-w-md">
+    <div className="pointer-events-none flex max-w-[42vw] flex-col gap-1.5 sm:max-w-md">
       {/* Breadcrumb is desktop-only — on mobile just the component title shows. */}
       <div className="pointer-events-auto hidden sm:block">
         <Breadcrumbs crumbs={breadcrumbs} />

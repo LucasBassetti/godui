@@ -20,10 +20,15 @@ export type TimelineEntry = {
 
 export type ScrollTimelineProps = React.HTMLAttributes<HTMLDivElement> & {
   data: TimelineEntry[];
+  /**
+   * Track scroll of a scrollable element instead of the window. Pass a ref to
+   * the overflow container when the timeline lives inside an inner scroll area.
+   */
+  container?: React.RefObject<HTMLElement | null>;
 };
 
 const ScrollTimeline = React.forwardRef<HTMLDivElement, ScrollTimelineProps>(
-  ({ data, className, ...props }, ref) => {
+  ({ data, container, className, ...props }, ref) => {
     const reduce = useReducedMotion();
     const rootRef = React.useRef<HTMLDivElement>(null);
     React.useImperativeHandle(ref, () => rootRef.current as HTMLDivElement);
@@ -40,10 +45,15 @@ const ScrollTimeline = React.forwardRef<HTMLDivElement, ScrollTimelineProps>(
       return () => ro.disconnect();
     }, []);
 
-    const { scrollYProgress } = useScroll({
-      target: trackRef,
-      offset: ["start 10%", "end 60%"],
-    });
+    // With an inner scroll container, drive the rail off that container's own
+    // scroll progress (0 at top → 1 at bottom) so the line grows linearly with
+    // scroll. On the page (no container) track the timeline through the viewport
+    // with the tuned offset — the original, page-scroll behavior.
+    const { scrollYProgress } = useScroll(
+      container
+        ? { container }
+        : { target: trackRef, offset: ["start 10%", "end 60%"] },
+    );
 
     // Spring-smooth the scroll scrub, then drive the rail with a GPU `scaleY`
     // transform (not `height`) so growth stays buttery. SPRING.smooth.
