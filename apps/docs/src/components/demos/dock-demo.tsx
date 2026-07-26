@@ -11,6 +11,7 @@ import {
   Wifi,
 } from "lucide-react";
 import type { ComponentType } from "react";
+import { DemoScene } from "@/components/demos/_kit";
 
 type Item = {
   label: string;
@@ -29,13 +30,13 @@ const items: Item[] = [
 
 export function DockDemo() {
   return (
-    <div className="relative h-full min-h-[380px] w-full overflow-hidden rounded-xl border border-border">
+    <DemoScene className="min-h-[380px] overflow-hidden rounded-xl border border-border">
       {/* Wallpaper */}
       <div className="absolute inset-0 bg-[linear-gradient(135deg,oklch(0.55_0.18_265),oklch(0.62_0.16_320)_45%,oklch(0.7_0.12_25))]" />
       <div className="absolute inset-0 bg-[radial-gradient(60%_50%_at_50%_0%,rgba(255,255,255,0.25),transparent)]" />
 
       {/* Menu bar */}
-      <div className="absolute inset-x-0 top-0 flex items-center justify-between px-4 py-1.5 text-xs font-medium text-white/95 [text-shadow:0_1px_2px_rgba(0,0,0,0.25)]">
+      <div className="absolute inset-x-0 top-0 z-10 flex items-center justify-between px-4 py-1.5 font-medium text-white/95 text-xs [text-shadow:0_1px_2px_rgba(0,0,0,0.25)]">
         <div className="flex items-center gap-4">
           <span className="font-semibold"></span>
           <span className="font-semibold">Finder</span>
@@ -106,7 +107,7 @@ export function DockDemo() {
       </div>
 
       {/* Dock */}
-      <div className="absolute inset-x-0 bottom-4 flex justify-center px-4">
+      <div className="absolute inset-x-0 bottom-4 z-10 flex justify-center px-4">
         <Dock>
           {items.map(({ label, color, Icon }) => (
             <DockItem key={label} label={label}>
@@ -115,6 +116,6 @@ export function DockDemo() {
           ))}
         </Dock>
       </div>
-    </div>
+    </DemoScene>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { StickyScroll, type StickyScrollItem } from "@godui/components";
+import { DemoCenter } from "@/components/demos/_kit";
 
 const ITEMS: StickyScrollItem[] = [
   {
@@ -8,7 +9,7 @@ const ITEMS: StickyScrollItem[] = [
     description:
       "Cursors, comments, and presence keep the whole team on the same page.",
     content: (
-      <div className="flex size-full items-center justify-center bg-gradient-to-br from-primary/20 to-primary/5 text-2xl font-semibold text-foreground">
+      <div className="flex size-full items-center justify-center bg-gradient-to-br from-primary/20 to-primary/5 font-semibold text-2xl text-foreground">
         Collaborate
       </div>
     ),
@@ -17,7 +18,7 @@ const ITEMS: StickyScrollItem[] = [
     title: "Ship with confidence",
     description: "Preview every change and roll out when it feels right.",
     content: (
-      <div className="flex size-full items-center justify-center bg-gradient-to-br from-primary/30 to-transparent text-2xl font-semibold text-foreground">
+      <div className="flex size-full items-center justify-center bg-gradient-to-br from-primary/30 to-transparent font-semibold text-2xl text-foreground">
         Ship
       </div>
     ),
@@ -26,7 +27,7 @@ const ITEMS: StickyScrollItem[] = [
     title: "Scale calmly",
     description: "Infrastructure that grows with you, never against you.",
     content: (
-      <div className="flex size-full items-center justify-center bg-gradient-to-br from-primary/10 to-primary/25 text-2xl font-semibold text-foreground">
+      <div className="flex size-full items-center justify-center bg-gradient-to-br from-primary/10 to-primary/25 font-semibold text-2xl text-foreground">
         Scale
       </div>
     ),
@@ -34,5 +35,10 @@ const ITEMS: StickyScrollItem[] = [
 ];
 
 export function StickyScrollDemo() {
-  return <StickyScroll items={ITEMS} className="my-auto" />;
+  // Component-owned framed scroller — centered (no Example fullWidth).
+  return (
+    <DemoCenter max="none" className="max-w-5xl">
+      <StickyScroll items={ITEMS} className="w-full" />
+    </DemoCenter>
+  );
 }

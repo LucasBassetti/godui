@@ -311,12 +311,35 @@ p.docs-lead {
   z-index: 1;
 }
 
-/* Workbench stage canvas — a hair off the page background so the card reads as
-   a distinct surface (lighter in dark, darker in light) without real contrast.
-   The color lives on a var (see .stage-frame) so the top scrim fades the same
+/* Workbench stage canvas — same dotted grid as ComponentPreview / PreviewCard
+   so the index and every component page share one surface language. The base
+   color sits a hair off the page background (lighter in dark, darker in light)
+   via --workbench-canvas-bg (see .stage-frame) so the top scrim fades the same
    surface. */
 .workbench-canvas {
   background-color: var(--workbench-canvas-bg);
+  background-image: radial-gradient(
+    color-mix(in srgb, var(--color-fd-border) 70%, transparent) 1px,
+    transparent 1px
+  );
+  background-size: 16px 16px;
+}
+
+.workbench-canvas::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    120% 120% at 50% 0%,
+    transparent 60%,
+    color-mix(in srgb, var(--workbench-canvas-bg) 55%, transparent)
+  );
+}
+
+.workbench-canvas > * {
+  position: relative;
+  z-index: 1;
 }
 
 /* Top scrim — fades the card surface (not the page bg) to transparent so the

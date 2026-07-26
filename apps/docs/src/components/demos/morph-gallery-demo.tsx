@@ -1,6 +1,7 @@
 "use client";
 
 import { MorphGallery } from "@godui/components";
+import { DemoMedia } from "@/components/demos/_kit";
 
 const PHOTOS = [
   { id: "1002", caption: "Coastline at dawn" },
@@ -16,14 +17,16 @@ const PHOTOS = [
 
 export function MorphGalleryDemo() {
   return (
-    <MorphGallery
-      className="mx-auto max-w-lg"
-      columns={3}
-      items={PHOTOS.map((p) => ({
-        src: `https://picsum.photos/id/${p.id}/900/900`,
-        alt: p.caption,
-        caption: p.caption,
-      }))}
-    />
+    <DemoMedia max="lg">
+      <MorphGallery
+        className="w-full"
+        columns={3}
+        items={PHOTOS.map((p) => ({
+          src: `https://picsum.photos/id/${p.id}/900/900`,
+          alt: p.caption,
+          caption: p.caption,
+        }))}
+      />
+    </DemoMedia>
   );
 }

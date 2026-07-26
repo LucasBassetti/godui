@@ -1,6 +1,7 @@
 "use client";
 
 import { InertiaGallery } from "@godui/components";
+import { DemoScene } from "@/components/demos/_kit";
 
 const SHOTS = [
   { label: "Dune", img: "1018" },
@@ -20,7 +21,7 @@ function Shot({ label, img }: (typeof SHOTS)[number]) {
         className="absolute inset-0 size-full object-cover"
         draggable={false}
       />
-      <span className="absolute bottom-3 left-3 rounded-md bg-black/50 px-2 py-0.5 text-xs font-medium text-white backdrop-blur">
+      <span className="absolute bottom-3 left-3 rounded-md bg-black/50 px-2 py-0.5 font-medium text-white text-xs backdrop-blur">
         {label}
       </span>
     </div>
@@ -28,13 +29,14 @@ function Shot({ label, img }: (typeof SHOTS)[number]) {
 }
 
 export function InertiaGalleryDemo() {
+  // Full-bleed horizontal scene — pair with Example fullWidth.
   return (
-    <div className="flex w-full flex-1 flex-col justify-center">
+    <DemoScene className="justify-center">
       <InertiaGallery snap defaultIndex={2} itemWidth={200} gap={24}>
         {SHOTS.map((s) => (
           <Shot key={s.label} {...s} />
         ))}
       </InertiaGallery>
-    </div>
+    </DemoScene>
   );
 }

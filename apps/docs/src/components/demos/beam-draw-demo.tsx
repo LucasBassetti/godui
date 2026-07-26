@@ -2,6 +2,7 @@
 
 import { BeamDraw } from "@godui/components";
 import { useRef } from "react";
+import { DemoScrollPort, DemoScrollRunway } from "@/components/demos/_kit";
 
 // Right-hand nodes, positioned at the y-fractions where the default beams end
 // (40, 150, 250, 360 on the 400-tall viewBox).
@@ -22,13 +23,15 @@ function Chip({ children }: { children: React.ReactNode }) {
 }
 
 export function BeamDrawDemo() {
-  // The preview stage is an inner scroll area, so the beam tracks this container
-  // (not the window) to scrub as you scroll.
+  // Stage-fill scrubber — pair with Example fullWidth.
   const scrollRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div ref={scrollRef} className="h-full w-full overflow-y-auto">
-      <div className="flex min-h-[260vh] flex-col items-center justify-center gap-12 py-[60vh]">
+    <DemoScrollPort ref={scrollRef}>
+      <DemoScrollRunway
+        pad="xl"
+        className="flex min-h-[260vh] flex-col items-center justify-center gap-12"
+      >
         <div className="text-center">
           <h3 className="text-2xl font-bold text-foreground md:text-3xl">
             Your entire stack, connected
@@ -45,15 +48,13 @@ export function BeamDrawDemo() {
             className="absolute inset-0 size-full"
           />
 
-          {/* Core node — the left endpoint the beams fan out from. */}
-          <div className="absolute left-0 top-1/2 flex -translate-y-1/2 items-center gap-2 rounded-xl border border-border bg-background px-4 py-3 shadow-lg">
+          <div className="absolute top-1/2 left-0 flex -translate-y-1/2 items-center gap-2 rounded-xl border border-border bg-background px-4 py-3 shadow-lg">
             <span className="size-2.5 rounded-full bg-primary shadow-[0_0_10px_var(--primary)]" />
-            <span className="text-sm font-semibold text-foreground">
+            <span className="font-semibold text-foreground text-sm">
               API Core
             </span>
           </div>
 
-          {/* Destination nodes at each beam's right endpoint. */}
           {NODES.map((node) => (
             <div
               key={node.label}
@@ -64,7 +65,7 @@ export function BeamDrawDemo() {
             </div>
           ))}
         </div>
-      </div>
-    </div>
+      </DemoScrollRunway>
+    </DemoScrollPort>
   );
 }
