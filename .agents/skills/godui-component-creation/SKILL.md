@@ -257,6 +257,23 @@ shows a "New" badge (wired via `date` → `frontmatterSchema` in `source.config.
 
 Do **not** nest `max-w-*` under `fullWidth` unless the demo intentionally builds an inset scene.
 
+### Example content standard (stage tabs)
+
+Every component page should feel like it was authored with the same taste — not a
+mix of “Press me” fillers and full desktop scenes.
+
+| Tab | Content |
+| --- | --- |
+| **Default** | One intentional product moment. Real verbs / labels (`Get started`, `Hold to delete`, `Email address`). Not a variant matrix. Not “Press/Hover/Push me”. Optional companion CTA only when the component is naturally a pair (e.g. primary + outline). |
+| **Variants / Masks / …** | Prop galleries. Distinct product labels per item (`Continue` / `Save draft` / `View docs`) — or Short/Medium/Large for sizes. Never make Default *be* this gallery when the tab also exists. |
+| **Feature tabs** | Only unique behaviors (Loading, Squash, Async, Static Label). Drop tabs that re-show Default. |
+| **Disabled** | Same label as Default + `disabled`. |
+
+**Polish ceiling:** bare control centered on the stage is the default. Reserve
+`DemoScene` / habitat chrome (wallpaper, menu bars) for environmental components
+(dock, backgrounds, pointer playgrounds) — don’t under-author buttons to look
+random, and don’t over-author every control into a fake desktop.
+
 **Mobile preview (required check).** The Workbench stage has a desktop/mobile toggle; mobile renders the demo inside a **360px** `<iframe>` so real `@media` queries fire. Demos must be fluid so they don't overflow it, **without changing the desktop rendering**:
 
 - Swap a fixed `w-[26rem]` for `w-full max-w-[26rem]` — on the wide desktop container this still resolves to 26rem (identical), but shrinks below 360px on mobile.

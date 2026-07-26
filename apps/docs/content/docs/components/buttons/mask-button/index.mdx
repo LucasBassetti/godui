@@ -13,49 +13,54 @@ A button whose face wipes away on hover via an animated CSS sprite-sheet mask, r
 <Example
   label="Default"
   story="buttons-mask-button"
-  code={`import { MaskButton } from "@godui/components";
+  code={`import { MaskButton } from "@/components/godui/mask-button";
 
 export function MaskButtonDemo() {
-  return (
-    <div className="flex flex-wrap items-center justify-center gap-6">
-      <MaskButton mask="nature">Hover me</MaskButton>
-      <MaskButton mask="urban">Hover me</MaskButton>
-      <MaskButton mask="forest">Hover me</MaskButton>
-    </div>
-  );
+  return <MaskButton mask="nature">Explore</MaskButton>;
 }`}
 >
+  <MaskButton mask="nature">Explore</MaskButton>
+</Example>
+
+<Example
+  label="Masks"
+  code={`<div className="flex flex-wrap items-center justify-center gap-6">
+  <MaskButton mask="nature">Explore</MaskButton>
+  <MaskButton mask="urban">Book a demo</MaskButton>
+  <MaskButton mask="forest">See gallery</MaskButton>
+</div>`}
+>
   <div className="flex flex-wrap items-center justify-center gap-6">
-    <MaskButton mask="nature">Hover me</MaskButton>
-    <MaskButton mask="urban">Hover me</MaskButton>
-    <MaskButton mask="forest">Hover me</MaskButton>
+    <MaskButton mask="nature">Explore</MaskButton>
+    <MaskButton mask="urban">Book a demo</MaskButton>
+    <MaskButton mask="forest">See gallery</MaskButton>
   </div>
 </Example>
 
 <Example
-  label="Secondary"
-  code={`import { MaskButton } from "@godui/components";
-
-export function MaskButtonSecondary() {
-  return <MaskButton mask="nature" variant="secondary">Hover me</MaskButton>;
-}`}
+  label="Variants"
+  code={`<div className="flex flex-wrap items-center justify-center gap-6">
+  <MaskButton mask="nature" variant="primary">Continue</MaskButton>
+  <MaskButton mask="nature" variant="secondary">Learn more</MaskButton>
+</div>`}
 >
-  <MaskButton mask="nature" variant="secondary">Hover me</MaskButton>
+  <div className="flex flex-wrap items-center justify-center gap-6">
+    <MaskButton mask="nature" variant="primary">
+      Continue
+    </MaskButton>
+    <MaskButton mask="nature" variant="secondary">
+      Learn more
+    </MaskButton>
+  </div>
 </Example>
 
 <Example
   label="Sizes"
-  code={`import { MaskButton } from "@godui/components";
-
-export function MaskButtonSizes() {
-  return (
-    <div className="flex flex-wrap items-center justify-center gap-6">
-      <MaskButton size="sm">Small</MaskButton>
-      <MaskButton size="md">Medium</MaskButton>
-      <MaskButton size="lg">Large</MaskButton>
-    </div>
-  );
-}`}
+  code={`<div className="flex flex-wrap items-center justify-center gap-6">
+  <MaskButton size="sm">Small</MaskButton>
+  <MaskButton size="md">Medium</MaskButton>
+  <MaskButton size="lg">Large</MaskButton>
+</div>`}
 >
   <div className="flex flex-wrap items-center justify-center gap-6">
     <MaskButton size="sm">Small</MaskButton>
@@ -66,13 +71,9 @@ export function MaskButtonSizes() {
 
 <Example
   label="Disabled"
-  code={`import { MaskButton } from "@godui/components";
-
-export function MaskButtonDisabled() {
-  return <MaskButton disabled>Hover me</MaskButton>;
-}`}
+  code={`<MaskButton disabled>Explore</MaskButton>`}
 >
-  <MaskButton disabled>Hover me</MaskButton>
+  <MaskButton disabled>Explore</MaskButton>
 </Example>
 
 ## Installation
@@ -82,7 +83,7 @@ the component and CSS, but the masks ship as static assets — download them int
 your app's `public/masks/` folder (the Manual tab links them directly).
 
 <ComponentInstall
-  componentName="MaskButton"
+  name="mask-button"
   assetsTarget="public/masks/"
   assets={[
     { label: "mask-nature.png", href: "/masks/mask-nature.png" },
@@ -94,11 +95,11 @@ your app's `public/masks/` folder (the Manual tab links them directly).
 ## Usage
 
 ```tsx
-import { MaskButton } from "@godui/components";
+import { MaskButton } from "@/components/godui/mask-button";
 ```
 
 ```tsx
-<MaskButton mask="nature">Hover me</MaskButton>
+<MaskButton mask="nature">Explore</MaskButton>
 ```
 
 The primary face is masked by a horizontal sprite-sheet image. On hover the

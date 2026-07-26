@@ -27,21 +27,34 @@ export function HoldConfirmButtonDemo() {
 </Example>
 
 <Example
-  label="Variants"
+  label="Publish"
   code={`import { HoldConfirmButton } from "@/components/godui/hold-confirm-button";
 
-export function HoldConfirmButtonVariants() {
+export function HoldConfirmButtonPublish() {
   return (
-    <div className="flex flex-wrap items-center justify-center gap-4">
-      <HoldConfirmButton variant="destructive">Hold to delete</HoldConfirmButton>
-      <HoldConfirmButton variant="default" duration={1400}>Hold to publish</HoldConfirmButton>
-    </div>
+    <HoldConfirmButton variant="default" duration={1400}>
+      Hold to publish
+    </HoldConfirmButton>
   );
 }`}
 >
+  <HoldConfirmButton variant="default" duration={1400}>
+    Hold to publish
+  </HoldConfirmButton>
+</Example>
+
+<Example
+  label="Sizes"
+  code={`<div className="flex flex-wrap items-center justify-center gap-4">
+  <HoldConfirmButton size="sm">Hold to delete</HoldConfirmButton>
+  <HoldConfirmButton size="md">Hold to delete</HoldConfirmButton>
+  <HoldConfirmButton size="lg">Hold to delete</HoldConfirmButton>
+</div>`}
+>
   <div className="flex flex-wrap items-center justify-center gap-4">
-    <HoldConfirmButton variant="destructive">Hold to delete</HoldConfirmButton>
-    <HoldConfirmButton variant="default" duration={1400}>Hold to publish</HoldConfirmButton>
+    <HoldConfirmButton size="sm">Hold to delete</HoldConfirmButton>
+    <HoldConfirmButton size="md">Hold to delete</HoldConfirmButton>
+    <HoldConfirmButton size="lg">Hold to delete</HoldConfirmButton>
   </div>
 </Example>
 

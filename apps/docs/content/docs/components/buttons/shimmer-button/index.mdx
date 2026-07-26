@@ -16,35 +16,34 @@ A button with an animated shimmering border light effect.
   code={`import { ShimmerButton } from "@/components/godui/shimmer-button";
 
 export function ShimmerButtonDemo() {
-  return (
-    <div className="flex flex-wrap items-center justify-center gap-4">
-      <ShimmerButton variant="primary">Primary</ShimmerButton>
-      <ShimmerButton variant="secondary">Secondary</ShimmerButton>
-      <ShimmerButton variant="outline">Outline</ShimmerButton>
-    </div>
-  );
+  return <ShimmerButton variant="primary">Get started</ShimmerButton>;
 }`}
 >
+  <ShimmerButton variant="primary">Get started</ShimmerButton>
+</Example>
+
+<Example
+  label="Variants"
+  code={`<div className="flex flex-wrap items-center justify-center gap-4">
+  <ShimmerButton variant="primary">Continue</ShimmerButton>
+  <ShimmerButton variant="secondary">Learn more</ShimmerButton>
+  <ShimmerButton variant="outline">View pricing</ShimmerButton>
+</div>`}
+>
   <div className="flex flex-wrap items-center justify-center gap-4">
-    <ShimmerButton variant="primary">Primary</ShimmerButton>
-    <ShimmerButton variant="secondary">Secondary</ShimmerButton>
-    <ShimmerButton variant="outline">Outline</ShimmerButton>
+    <ShimmerButton variant="primary">Continue</ShimmerButton>
+    <ShimmerButton variant="secondary">Learn more</ShimmerButton>
+    <ShimmerButton variant="outline">View pricing</ShimmerButton>
   </div>
 </Example>
 
 <Example
   label="Sizes"
-  code={`import { ShimmerButton } from "@/components/godui/shimmer-button";
-
-export function ShimmerButtonSizes() {
-  return (
-    <div className="flex flex-wrap items-center justify-center gap-4">
-      <ShimmerButton size="sm">Small</ShimmerButton>
-      <ShimmerButton size="md">Medium</ShimmerButton>
-      <ShimmerButton size="lg">Large</ShimmerButton>
-    </div>
-  );
-}`}
+  code={`<div className="flex flex-wrap items-center justify-center gap-4">
+  <ShimmerButton size="sm">Small</ShimmerButton>
+  <ShimmerButton size="md">Medium</ShimmerButton>
+  <ShimmerButton size="lg">Large</ShimmerButton>
+</div>`}
 >
   <div className="flex flex-wrap items-center justify-center gap-4">
     <ShimmerButton size="sm">Small</ShimmerButton>
@@ -55,29 +54,21 @@ export function ShimmerButtonSizes() {
 
 <Example
   label="Static"
-  code={`import { ShimmerButton } from "@/components/godui/shimmer-button";
-
-export function ShimmerButtonStatic() {
-  return <ShimmerButton shimmer={false}>No shimmer</ShimmerButton>;
-}`}
+  code={`<ShimmerButton shimmer={false}>Get started</ShimmerButton>`}
 >
-  <ShimmerButton shimmer={false}>No shimmer</ShimmerButton>
+  <ShimmerButton shimmer={false}>Get started</ShimmerButton>
 </Example>
 
 <Example
   label="Disabled"
-  code={`import { ShimmerButton } from "@/components/godui/shimmer-button";
-
-export function ShimmerButtonDisabled() {
-  return <ShimmerButton disabled>Disabled</ShimmerButton>;
-}`}
+  code={`<ShimmerButton disabled>Get started</ShimmerButton>`}
 >
-  <ShimmerButton disabled>Disabled</ShimmerButton>
+  <ShimmerButton disabled>Get started</ShimmerButton>
 </Example>
 
 ## Installation
 
-<ComponentInstall componentName="ShimmerButton" />
+<ComponentInstall name="shimmer-button" />
 
 ## Usage
 
@@ -86,7 +77,7 @@ import { ShimmerButton } from "@/components/godui/shimmer-button";
 ```
 
 ```tsx
-<ShimmerButton variant="primary">Click me</ShimmerButton>
+<ShimmerButton variant="primary">Get started</ShimmerButton>
 ```
 
 Set `shimmer={false}` to keep the button styling without the animated border light.
@@ -96,10 +87,7 @@ Set `shimmer={false}` to keep the button styling without the animated border lig
 | Prop | Type | Default | Description |
 | ---- | ---- | ------- | ----------- |
 | `variant` | `"primary" \| "secondary" \| "outline"` | `"primary"` | Visual style of the button |
-| `size` | `"sm" \| "default" \| "lg"` | `"default"` | Button padding and text size |
+| `size` | `"sm" \| "md" \| "lg"` | `"md"` | Button padding and text size |
 | `shimmer` | `boolean` | `true` | Animate the button with a shimmering border light effect |
-| `shimmerColor` | `string` | variant default | Color of the shimmering light |
-| `shimmerDuration` | `string` | `"3s"` | Duration of the shimmer animation |
-| `background` | `string` | variant default | Background color override |
 
 </Workbench>

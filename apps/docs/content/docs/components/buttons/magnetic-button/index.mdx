@@ -24,23 +24,9 @@ export function MagneticButtonDemo() {
         Get started
         <ArrowRight className="size-4" strokeWidth={2.5} />
       </MagneticButton>
-      <MagneticButton
-        variant="outline"
-        size="lg"
-        range={36}
-        onClick={() =>
-          window.open(
-            "https://github.com/LucasBassetti/godui",
-            "_blank",
-            "noopener,noreferrer",
-          )
-        }
-      >
+      <MagneticButton variant="outline" size="lg" range={36}>
         <Star className="size-4" strokeWidth={2.5} />
         Star on GitHub
-      </MagneticButton>
-      <MagneticButton variant="secondary" size="lg" range={44} staticLabel>
-        Label stays centered
       </MagneticButton>
     </div>
   );
@@ -51,28 +37,28 @@ export function MagneticButtonDemo() {
 
 <Example
   label="Variants"
-  code={`<div className="flex items-center gap-4">
-  <MagneticButton variant="default">Default</MagneticButton>
-  <MagneticButton variant="secondary">Secondary</MagneticButton>
-  <MagneticButton variant="outline">Outline</MagneticButton>
+  code={`<div className="flex flex-wrap items-center justify-center gap-4">
+  <MagneticButton variant="default">Continue</MagneticButton>
+  <MagneticButton variant="secondary">Save draft</MagneticButton>
+  <MagneticButton variant="outline">View docs</MagneticButton>
 </div>`}
 >
-  <div className="flex items-center gap-4">
-    <MagneticButton variant="default">Default</MagneticButton>
-    <MagneticButton variant="secondary">Secondary</MagneticButton>
-    <MagneticButton variant="outline">Outline</MagneticButton>
+  <div className="flex flex-wrap items-center justify-center gap-4">
+    <MagneticButton variant="default">Continue</MagneticButton>
+    <MagneticButton variant="secondary">Save draft</MagneticButton>
+    <MagneticButton variant="outline">View docs</MagneticButton>
   </div>
 </Example>
 
 <Example
   label="Sizes"
-  code={`<div className="flex items-center gap-4">
+  code={`<div className="flex flex-wrap items-center justify-center gap-4">
   <MagneticButton size="sm">Small</MagneticButton>
   <MagneticButton size="md">Medium</MagneticButton>
   <MagneticButton size="lg">Large</MagneticButton>
 </div>`}
 >
-  <div className="flex items-center gap-4">
+  <div className="flex flex-wrap items-center justify-center gap-4">
     <MagneticButton size="sm">Small</MagneticButton>
     <MagneticButton size="md">Medium</MagneticButton>
     <MagneticButton size="lg">Large</MagneticButton>
@@ -81,27 +67,37 @@ export function MagneticButtonDemo() {
 
 <Example
   label="Stronger Pull"
-  code={`<MagneticButton strength={0.8} range={48} size="lg">Pull me</MagneticButton>`}
+  code={`<MagneticButton strength={0.8} range={48} size="lg">
+  Explore docs
+</MagneticButton>`}
 >
-  <MagneticButton strength={0.8} range={48} size="lg">Pull me</MagneticButton>
+  <MagneticButton strength={0.8} range={48} size="lg">
+    Explore docs
+  </MagneticButton>
 </Example>
 
 <Example
   label="Static Label"
-  code={`<div className="flex items-center gap-4">
+  code={`<div className="flex flex-wrap items-center justify-center gap-4">
   <MagneticButton size="lg" range={44}>Parallax label</MagneticButton>
-  <MagneticButton variant="secondary" size="lg" range={44} staticLabel>Centered label</MagneticButton>
+  <MagneticButton variant="secondary" size="lg" range={44} staticLabel>
+    Centered label
+  </MagneticButton>
 </div>`}
 >
-  <div className="flex items-center gap-4">
-    <MagneticButton size="lg" range={44}>Parallax label</MagneticButton>
-    <MagneticButton variant="secondary" size="lg" range={44} staticLabel>Centered label</MagneticButton>
+  <div className="flex flex-wrap items-center justify-center gap-4">
+    <MagneticButton size="lg" range={44}>
+      Parallax label
+    </MagneticButton>
+    <MagneticButton variant="secondary" size="lg" range={44} staticLabel>
+      Centered label
+    </MagneticButton>
   </div>
 </Example>
 
 ## Installation
 
-<ComponentInstall componentName="MagneticButton" />
+<ComponentInstall name="magnetic-button" />
 
 `MagneticButton` wraps the button in an invisible sensor. As the pointer moves
 inside that area, the button spring-translates toward the cursor by `strength`,
