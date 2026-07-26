@@ -18,11 +18,16 @@ import {
   useRef,
   useState,
 } from "react";
-import { Segmented } from "@/components/docs-tabs";
+import { CopyButton } from "@/components/copy-button";
+import { ScrollableSegmented, Segmented } from "@/components/docs-tabs";
 import { ReplayButton } from "@/components/replay-button";
 import type { ExampleProps } from "@/components/workbench/example";
 import type { DrawerTab } from "@/components/workbench/panel-body";
 import { Stage, type StageView } from "@/components/workbench/stage";
+import {
+  StageCopyProvider,
+  useStageCopy,
+} from "@/components/workbench/stage-copy-context";
 import { StageDrawer } from "@/components/workbench/stage-drawer";
 import { StagePanel } from "@/components/workbench/stage-panel";
 import { TitleChip } from "@/components/workbench/title-chip";
@@ -38,7 +43,20 @@ const STORYBOOK_URL = "https://storybook.godui.design";
  * the partitioning where `child.type === Example` reliably matches (client
  * references don't survive the server → client boundary as `===`).
  */
-export function WorkbenchClient({
+export function WorkbenchClient(props: {
+  examples: ExampleProps[];
+  docs: ReactNode;
+}) {
+  // Provider wraps the shell so a stage component (embedded BackgroundShowcase)
+  // can publish a live snippet the rail's copy button reads.
+  return (
+    <StageCopyProvider>
+      <WorkbenchInner {...props} />
+    </StageCopyProvider>
+  );
+}
+
+function WorkbenchInner({
   examples,
   docs,
 }: {
@@ -47,6 +65,9 @@ export function WorkbenchClient({
 }) {
   const { learnHref, docsHref, learn, initialDrawerTab } = useWorkbenchMeta();
   const fitsSide = useSidePanelFit();
+  // Present when the active demo is a "static" showcase (embedded background):
+  // the rail shows a copy button instead of the Code icon and hides replay.
+  const { copyValue } = useStageCopy();
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [replayKey, setReplayKey] = useState(0);
@@ -208,7 +229,8 @@ export function WorkbenchClient({
           content group (Docs / Learn / Code / Playground) then Fullscreen, all
           icon-only bordered chips. Wraps on very narrow desktops. */}
         <div className="absolute top-4 right-4 z-20 flex flex-wrap items-center justify-end gap-1.5">
-          <ReplayButton onReplay={replay} />
+          {/* Static showcases (embedded background) have nothing to replay. */}
+          {copyValue === null ? <ReplayButton onReplay={replay} /> : null}
           <Segmented
             className="max-md:hidden"
             iconOnly
@@ -239,14 +261,20 @@ export function WorkbenchClient({
           >
             <FileText className="size-4" aria-hidden />
           </ToolButton>
-          <ToolButton
-            label="View code"
-            active={drawerOpen && drawerTab === "code"}
-            disabled={!hasCode}
-            onClick={toggleCode}
-          >
-            <Code2 className="size-4" aria-hidden />
-          </ToolButton>
+          {copyValue !== null ? (
+            // Static showcase: the Code icon becomes a copy button for the live
+            // variant snippet (updates as the user switches backgrounds).
+            <CopyButton value={copyValue} className="size-8 rounded-[10px]" />
+          ) : (
+            <ToolButton
+              label="View code"
+              active={drawerOpen && drawerTab === "code"}
+              disabled={!hasCode}
+              onClick={toggleCode}
+            >
+              <Code2 className="size-4" aria-hidden />
+            </ToolButton>
+          )}
           {learn ? (
             <ToolButton
               label="Learn"
@@ -288,10 +316,8 @@ export function WorkbenchClient({
 
         {/* Bottom cluster — example variant tabs, centered. */}
         {examples.length > 1 ? (
-          <div className="-translate-x-1/2 absolute bottom-5 left-1/2 z-20 flex w-[calc(100%-1.25rem)] flex-col items-center sm:w-auto sm:max-w-[calc(100%-1rem)]">
-            {/* Mobile: a custom dropdown — equal-width tabs get cramped / wrap
-                once there are 3+ variants. It opens upward (the control sits at
-                the screen bottom) instead of the browser's detached native list. */}
+          <div className="-translate-x-1/2 absolute bottom-5 left-1/2 z-20 flex w-[calc(100%-1.25rem)] flex-col items-center sm:w-auto sm:max-w-[calc(100%-2rem)]">
+            {/* Mobile: dropdown (equal-width tabs get cramped on narrow screens). */}
             <div className="w-full sm:hidden">
               <ExampleSelect
                 items={examples.map((ex, i) => ex.label ?? `Example ${i + 1}`)}
@@ -299,19 +325,35 @@ export function WorkbenchClient({
                 onSelect={selectExample}
               />
             </div>
-            {/* Desktop: the segmented control (wrapper controls visibility —
-                Segmented's own `inline-grid` would beat a `hidden` on it). */}
-            <div className="hidden sm:block">
-              <Segmented
-                className="shadow-lg"
-                tabs={examples.map((ex, i) => ({
-                  value: String(i),
-                  label: ex.label ?? `Example ${i + 1}`,
-                }))}
-                value={String(Math.min(activeIndex, examples.length - 1))}
-                onChange={(v) => selectExample(Number(v))}
-              />
-            </div>
+            {/* Desktop: a segmented tab strip. Few variants → equal-width
+                <Segmented>. Many (e.g. combobox) would collide/overflow, so use
+                a horizontally-scrollable, content-width strip instead of a lone
+                dropdown. Wrappers control visibility — Segmented's own
+                `inline-grid` would beat a `hidden` on the control itself. */}
+            {examples.length > 5 ? (
+              <div className="hidden max-w-full sm:block">
+                <ScrollableSegmented
+                  tabs={examples.map((ex, i) => ({
+                    value: String(i),
+                    label: ex.label ?? `Example ${i + 1}`,
+                  }))}
+                  value={String(Math.min(activeIndex, examples.length - 1))}
+                  onChange={(v) => selectExample(Number(v))}
+                />
+              </div>
+            ) : (
+              <div className="hidden sm:block">
+                <Segmented
+                  className="shadow-lg"
+                  tabs={examples.map((ex, i) => ({
+                    value: String(i),
+                    label: ex.label ?? `Example ${i + 1}`,
+                  }))}
+                  value={String(Math.min(activeIndex, examples.length - 1))}
+                  onChange={(v) => selectExample(Number(v))}
+                />
+              </div>
+            )}
           </div>
         ) : null}
 

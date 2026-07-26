@@ -14,13 +14,18 @@ export type ContainerScrollProps = React.HTMLAttributes<HTMLDivElement> & {
   header?: React.ReactNode;
   /** The "screen" content — an image, video, or live UI. */
   children: React.ReactNode;
+  /**
+   * Scrollport whose progress drives the animation. Defaults to the viewport;
+   * pass a ref when embedding inside an `overflow` frame (e.g. a docs preview).
+   */
+  scrollContainer?: React.RefObject<HTMLElement | null>;
 };
 
 // SPRING.smooth — surfaces / shared-layout feel.
 const SPRING = { stiffness: 320, damping: 32, mass: 0.9 } as const;
 
 const ContainerScroll = React.forwardRef<HTMLDivElement, ContainerScrollProps>(
-  ({ header, children, className, ...props }, ref) => {
+  ({ header, children, className, scrollContainer, ...props }, ref) => {
     const reduce = useReducedMotion();
     const containerRef = React.useRef<HTMLDivElement>(null);
     React.useImperativeHandle(
@@ -28,7 +33,10 @@ const ContainerScroll = React.forwardRef<HTMLDivElement, ContainerScrollProps>(
       () => containerRef.current as HTMLDivElement,
     );
 
-    const { scrollYProgress } = useScroll({ target: containerRef });
+    const { scrollYProgress } = useScroll({
+      target: containerRef,
+      container: scrollContainer,
+    });
 
     const rotateX = useSpring(
       useTransform(scrollYProgress, [0, 1], [20, 0]),

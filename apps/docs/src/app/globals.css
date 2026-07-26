@@ -242,6 +242,16 @@ p.docs-lead {
   margin: 0 !important;
 }
 
+/* Hide the scrollbar on horizontally-scrollable strips (e.g. the workbench
+   example tab track) while keeping them scrollable. */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 /* Workbench Code tab — framed codebox with a left line-number gutter. */
 .workbench-code .shiki,
 .workbench-code pre {
