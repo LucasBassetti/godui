@@ -332,12 +332,12 @@ function WorkbenchInner({
                 onSelect={selectExample}
               />
             </div>
-            {/* Desktop: a segmented tab strip. Few variants → equal-width
-                <Segmented>. Many (e.g. combobox) would collide/overflow, so use
-                a horizontally-scrollable, content-width strip instead of a lone
-                dropdown. Wrappers control visibility — Segmented's own
-                `inline-grid` would beat a `hidden` on the control itself. */}
-            {examples.length > 5 ? (
+            {/* Desktop: a segmented tab strip. Few short variants → equal-width
+                <Segmented>. 5+ tabs (or long labels) collide in equal columns, so
+                use a horizontally-scrollable, content-width strip instead.
+                Wrappers control visibility — Segmented's own `inline-grid`
+                would beat a `hidden` on the control itself. */}
+            {examples.length > 4 ? (
               <div className="hidden max-w-full sm:block">
                 <ScrollableSegmented
                   tabs={examples.map((ex, i) => ({

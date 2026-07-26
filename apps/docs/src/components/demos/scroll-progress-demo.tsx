@@ -2,25 +2,28 @@
 
 import { ScrollProgress } from "@godui/components";
 import * as React from "react";
+import { DemoScrollPort } from "@/components/demos/_kit";
 
 const filler = Array.from({ length: 14 });
 
 function ScrollBox({ variant }: { variant: "bar" | "circle" }) {
   const ref = React.useRef<HTMLDivElement>(null);
   return (
-    <div
+    <DemoScrollPort
       ref={ref}
-      data-scroll-container
-      className="relative h-72 w-full max-w-md overflow-y-auto rounded-xl border border-border bg-card"
+      variant="framed"
+      height="18rem"
+      max="md"
+      className="rounded-xl bg-card"
     >
       {variant === "bar" && <ScrollProgress container={ref} />}
       <div className="space-y-4 p-6">
-        <p className="text-sm font-medium text-foreground">Scroll this panel</p>
+        <p className="font-medium text-foreground text-sm">Scroll this panel</p>
         {filler.map((_, i) => (
           <p
             // biome-ignore lint/suspicious/noArrayIndexKey: static filler copy
             key={i}
-            className="text-sm leading-relaxed text-muted-foreground"
+            className="text-muted-foreground text-sm leading-relaxed"
           >
             The progress indicator tracks this scroll container. Keep scrolling
             to watch it fill — paragraph {i + 1} of {filler.length}.
@@ -35,7 +38,7 @@ function ScrollBox({ variant }: { variant: "bar" | "circle" }) {
           position="bottom-left"
         />
       )}
-    </div>
+    </DemoScrollPort>
   );
 }
 

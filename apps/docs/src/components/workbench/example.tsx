@@ -15,8 +15,13 @@ export type ExampleProps = {
    */
   story?: string;
   /**
-   * When true the demo fills the stage edge-to-edge instead of sitting centered
-   * in a padded canvas. Use for full-bleed UI (docks, nav bars, heroes).
+   * Stage layout mode:
+   * - `false` (default) — padded canvas, demo centered. Use for buttons,
+   *   inputs, cards, image/media demos, and framed mini-scrollers.
+   * - `true` — edge-to-edge. Use for backgrounds, docks, pointer playgrounds,
+   *   and stage-fill scroll ports (`DemoScrollPort variant="fill"` /
+   *   `DemoScene`). Do **not** nest `max-w-*` under fullWidth unless the demo
+   *   intentionally builds an inset scene.
    */
   fullWidth?: boolean;
 };
@@ -26,6 +31,10 @@ export type ExampleProps = {
  * own — <Workbench> reads its props (and `children` as the live demo), turning
  * each <Example> into a stage tab. Kept as a stable module identity so
  * `child.type === Example` matches across the server-MDX → client boundary.
+ *
+ * Structure rule: put every stage variant as an `<Example label="…">` — never
+ * wrap them in `##` headings before Installation (headings land in the Docs
+ * drawer, not as stage chrome).
  */
 export function Example(_props: ExampleProps): null {
   return null;

@@ -25,11 +25,6 @@ export function ScrollProgressDemo() {
   <ScrollProgressDemo />
 </Example>
 
-## Circle variant
-
-`variant="circle"` renders a circular progress ring that fades in past
-`showAfter` and scrolls back to top on click.
-
 <Example
   label="Circle Variant"
   code={`import { ScrollProgress } from "@/components/godui/scroll-progress";
@@ -52,6 +47,9 @@ import { ScrollProgress } from "@godui/components";
 
 // Whole-page reading bar
 <ScrollProgress />;
+
+// Circular ring that fades in past showAfter and scrolls back to top on click
+<ScrollProgress variant="circle" showAfter={0.05} />;
 
 // Track a specific section
 const ref = useRef<HTMLElement>(null);

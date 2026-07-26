@@ -1,6 +1,6 @@
 ---
 name: godui-component-creation
-description: Create new components for the GodUI design system in @godui/components. Use when adding a component, fixing missing Tailwind styles on components, wiring Storybook stories, or writing docs pages (main page + required Learn tab) with ComponentPreview and ComponentInstall.
+description: Create new components for the GodUI design system in @godui/components. Use when adding a component, fixing missing Tailwind styles on components, wiring Storybook stories, or writing docs pages (main page + required Learn tab) with Workbench/Example and ComponentInstall.
 ---
 
 # GodUI Component Creation
@@ -187,55 +187,101 @@ Include stories for each variant, sizes, and disabled state.
 Docs live under a **category subfolder** (e.g. `buttons/`, `text/`), and each component
 is its **own folder** so the Learn tab can sit beside it: create
 `apps/docs/content/docs/components/{category}/{name}/index.mdx` (the main page) — a Learn
-tab will be added as `learn.mdx` in the same folder (see §5.5). Use the Preview/Code tabs,
-then Installation, Usage, Props:
+tab will be added as `learn.mdx` in the same folder (see §5.5).
+
+Component pages are **Workbench-first**: stage examples as `<Example>` tabs, then
+Installation → Usage → Props in the Docs drawer.
 
 ```mdx
 ---
 title: My Component
 description: Short description.
 date: "2026-07-10"
+workbench: true
 ---
 
 import { MyComponent } from "@godui/components";
+import { MyComponentDemo } from "@/components/demos/my-component-demo";
 
-<ComponentPreview code={`import { MyComponent } from "@godui/components";
+<Workbench>
+
+One-sentence lead.
+
+<Example
+  label="Default"
+  story="category-mycomponent"
+  code={`import { MyComponent } from "@/components/godui/my-component";
 
 export function MyComponentDemo() {
   return <MyComponent variant="primary">Example</MyComponent>;
-}`}>
-  <MyComponent variant="primary">Example</MyComponent>
-</ComponentPreview>
+}`}
+>
+  <MyComponentDemo />
+</Example>
 
-The `date` frontmatter is the component's **creation date** (`YYYY-MM-DD`) and is
-**required for new components**. For one month after that date the sidebar nav
-shows a "New" badge (wired via `date` → `frontmatterSchema` in `source.config.ts`
-→ `newBadgePlugin` in `src/lib/source.ts`). Use today's date.
+{/* More variants = more <Example label="…"> tabs only — never ## headings between them */}
 
 ## Installation
-<ComponentInstall componentName="MyComponent" />
+<ComponentInstall name="my-component" />
 
 ## Usage
 \`\`\`tsx
-import { MyComponent } from "@godui/components";
+import { MyComponent } from "@/components/godui/my-component";
 \`\`\`
 
 ## Props
 | Prop | Type | Default | Description |
 | ---- | ---- | ------- | ----------- |
 | `variant` | `"primary" \| "secondary"` | `"primary"` | Visual style |
+
+</Workbench>
 ```
 
-`ComponentPreview` and `ComponentInstall` are registered globally in `apps/docs/src/components/mdx.tsx`.
+The `date` frontmatter is the component's **creation date** (`YYYY-MM-DD`) and is
+**required for new components**. For one month after that date the sidebar nav
+shows a "New" badge (wired via `date` → `frontmatterSchema` in `source.config.ts`
+→ `newBadgePlugin` in `src/lib/source.ts`). Use today's date.
 
-**Mobile preview (required check).** `ComponentPreview` has a desktop/mobile toggle; mobile renders the demo inside a **360px** `<iframe>` so real `@media` queries fire. Demos must be fluid so they don't overflow it, **without changing the desktop rendering**:
+`Workbench`, `Example`, and `ComponentInstall` are registered globally in
+`apps/docs/src/components/mdx.tsx`.
+
+### Demo layout kit (`apps/docs/src/components/demos/_kit.tsx`)
+
+| Kit | When | Example `fullWidth` |
+| --- | --- | --- |
+| `DemoCenter` | Buttons, inputs, small cards | no |
+| `DemoMedia` | Image compare / accordion / galleries | no |
+| `DemoScrollPort variant="fill"` | Stage-fill scrubbers (container-scroll, hero-parallax, beam-draw) | **yes** |
+| `DemoScrollPort variant="framed"` | Mini readers (scroll-progress, scroll-text-reveal, scroll-reveal) | no |
+| `DemoScene` | Full-bleed scenes (backgrounds, dock, inertia gallery) | **yes** |
+
+Do **not** nest `max-w-*` under `fullWidth` unless the demo intentionally builds an inset scene.
+
+### Example content standard (stage tabs)
+
+Every component page should feel like it was authored with the same taste — not a
+mix of “Press me” fillers and full desktop scenes.
+
+| Tab | Content |
+| --- | --- |
+| **Default** | One intentional product moment. Real verbs / labels (`Get started`, `Hold to delete`, `Email address`). Not a variant matrix. Not “Press/Hover/Push me”. Optional companion CTA only when the component is naturally a pair (e.g. primary + outline). |
+| **Variants / Masks / …** | Prop galleries. Distinct product labels per item (`Continue` / `Save draft` / `View docs`) — or Short/Medium/Large for sizes. Never make Default *be* this gallery when the tab also exists. |
+| **Feature tabs** | Only unique behaviors (Loading, Squash, Async, Static Label). Drop tabs that re-show Default. |
+| **Disabled** | Same label as Default + `disabled`. |
+
+**Polish ceiling:** bare control centered on the stage is the default. Reserve
+`DemoScene` / habitat chrome (wallpaper, menu bars) for environmental components
+(dock, backgrounds, pointer playgrounds) — don’t under-author buttons to look
+random, and don’t over-author every control into a fake desktop.
+
+**Mobile preview (required check).** The Workbench stage has a desktop/mobile toggle; mobile renders the demo inside a **360px** `<iframe>` so real `@media` queries fire. Demos must be fluid so they don't overflow it, **without changing the desktop rendering**:
 
 - Swap a fixed `w-[26rem]` for `w-full max-w-[26rem]` — on the wide desktop container this still resolves to 26rem (identical), but shrinks below 360px on mobile.
 - Any padding/margin you add purely to keep the card off the mobile edges must be **mobile-only** — gate it with `max-sm:` (e.g. `max-sm:px-4`, `max-sm:mx-4`) so desktop stays byte-for-byte the same. Never add flat `px-4`/`mx-4` that also hits desktop.
 
 Always flip the toggle to mobile AND back to desktop: mobile must not clip or h-scroll, desktop must look exactly as before (see §8).
 
-**MDX `<p>`-in-`<p>` hydration trap (happens frequently).** Inside `ComponentPreview`
+**MDX `<p>`-in-`<p>` hydration trap (happens frequently).** Inside Example
 children, any text sitting on **its own line** inside a block element gets wrapped by MDX
 in an extra `<p>`. If that element is itself a `<p>` (or the preview already lives inside
 prose), you get `<p>` nested in `<p>` → `In HTML, <p> cannot be a descendant of <p>` and a
@@ -375,12 +421,12 @@ slug.
 - **NEVER** invent spring/duration/easing numbers — use the motion tokens (see "Motion"). Match the documented values inline.
 - **NEVER** ship an animation without a reduced-motion path, and **never** `transition: all`.
 - **NEVER** use arbitrary z-index — use the scale: `z-base`, `z-raised`, `z-overlay`, `z-sticky`, `z-popover`, `z-modal`, `z-toast`.
-- **NEVER** put bare text on its own line inside a block tag in `ComponentPreview` children — MDX wraps it in a `<p>`, causing `<p>`-in-`<p>` hydration errors. Keep text inline (see §5).
+- **NEVER** put bare text on its own line inside a block tag in `Example` children — MDX wraps it in a `<p>`, causing `<p>`-in-`<p>` hydration errors. Keep text inline (see §5).
 - **NEVER** rely on folder auto-nav for docs — register the page in the root `apps/docs/content/docs/meta.json` (slug `components/{category}/{name}`) and add a `<PreviewCard>` in `components/index.mdx`, or it won't appear (see §5).
 - **NEVER** ship a component without a Learn tab — every component needs `{name}/learn.mdx`, built via the `godui-learn-article` skill (see §5.5).
 - **NEVER** use fixed-luminance colors (`bg-black/*`, `bg-white/*`, `border-white/*`, `text-white`, hex) in a Learn scene — they only contrast in one theme. Use theme tokens and verify light **and** dark (see §5.5).
 - **NEVER** ship a `<PreviewCard>` without its placeholder preview — create `card-previews/previews/{name}.tsx` (filename = href slug) and add the slug to `CURATED_SLUGS`, or the card renders text-only and breaks the uniform grid (see §6).
-- **NEVER** give a demo (or the component itself) a fixed width wider than the mobile preview — `ComponentPreview` has a mobile toggle that renders the demo in a **360px** iframe, so a hard `w-[26rem]`/`w-96`/`min-w-[...]` overflows and clips. Use fluid widths: `w-full max-w-[26rem]` (shrinks on mobile, still 26rem on desktop). Gate any extra edge padding/margin to mobile with `max-sm:` so **desktop stays unchanged** — never add flat `px-4`/`mx-4` that also alters desktop (see §5).
+- **NEVER** give a demo (or the component itself) a fixed width wider than the mobile preview — the Workbench stage has a mobile toggle that renders the demo in a **360px** iframe, so a hard `w-[26rem]`/`w-96`/`min-w-[...]` overflows and clips. Use fluid widths: `w-full max-w-[26rem]` (shrinks on mobile, still 26rem on desktop). Gate any extra edge padding/margin to mobile with `max-sm:` so **desktop stays unchanged** — never add flat `px-4`/`mx-4` that also alters desktop (see §5).
 
 ## 9. Theme tokens
 
@@ -400,14 +446,14 @@ slug.
 - [ ] Styles authored as inline Tailwind utilities — no CSS file / no `@layer components` (only `@keyframes` + `@theme` may touch `styles.css`)
 - [ ] Motion uses the guideline tokens (DURATION/EASE/SPRING/STAGGER/ENTER/EXIT) inline — no invented numbers; transform/opacity only; reduced-motion handled (see "Motion")
 - [ ] Storybook story with `tags: ["autodocs"]`
-- [ ] Docs MDX under `components/{category}/{name}/index.mdx` with ComponentPreview + ComponentInstall
+- [ ] Docs MDX under `components/{category}/{name}/index.mdx` with Workbench + Example + ComponentInstall
 - [ ] Learn tab `components/{category}/{name}/learn.mdx` built via the `godui-learn-article` skill — scenes use the black/white pattern and are verified in **both** light and dark theme (see §5.5)
 - [ ] Motion Score section in the Learn article (`## Motion Score` + `<MotionScorePanel name="{name}" />` before The result, plus a `MOTION_SCORE_PANELS` registry entry) — grade matches the docs Motion badge; **skip for static (`STATIC_COMPONENTS`) components** (see learn skill §6.5)
 - [ ] `date: YYYY-MM-DD` (today) in the MDX frontmatter — required; drives the "New" sidebar badge for one month
-- [ ] ComponentPreview children: text inline in its tag (no `<p>`-in-`<p>` — see §5)
+- [ ] Example children: text inline in its tag (no `<p>`-in-`<p>` — see §5)
 - [ ] Registered in root `apps/docs/content/docs/meta.json` as `components/{category}/{name}`
 - [ ] `<PreviewCard>` added to its section in `components/index.mdx`
 - [ ] Placeholder preview `card-previews/previews/{name}.tsx` (kit skeleton, `group-hover` motion) + slug in `CURATED_SLUGS` (see §6)
 - [ ] Static Tailwind classes only (no dynamic class construction)
-- [ ] Demo is fluid — `w-full max-w-[...]`, no fixed width wider than 360px; verified via the ComponentPreview mobile toggle (see §8)
+- [ ] Demo is fluid — `w-full max-w-[...]`, no fixed width wider than 360px; verified via the Workbench mobile toggle (see §8); use demos/_kit layout primitives
 - [ ] Verified styles in Storybook and docs after dev server restart

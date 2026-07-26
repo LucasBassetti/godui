@@ -1,6 +1,7 @@
 "use client";
 
 import { OrbitCarousel } from "@godui/components";
+import { DemoCenter } from "@/components/demos/_kit";
 
 const CARDS = [
   { title: "Aurora", img: "1041" },
@@ -28,10 +29,12 @@ function OrbitCard({ title, img }: (typeof CARDS)[number]) {
 
 export function OrbitCarouselDemo() {
   return (
-    <OrbitCarousel defaultIndex={2} radius={230} angleStep={26}>
-      {CARDS.map((c) => (
-        <OrbitCard key={c.title} {...c} />
-      ))}
-    </OrbitCarousel>
+    <DemoCenter className="w-full">
+      <OrbitCarousel defaultIndex={2} radius={230} angleStep={26}>
+        {CARDS.map((c) => (
+          <OrbitCard key={c.title} {...c} />
+        ))}
+      </OrbitCarousel>
+    </DemoCenter>
   );
 }

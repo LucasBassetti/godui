@@ -17,84 +17,54 @@ A 3D layered text input that lifts on focus with an optional rainbow edge animat
 
 export function MagicInputDemo() {
   return (
-    <div className="flex w-full max-w-xs flex-col gap-6">
-      <MagicInput placeholder="Focus me" />
-      <MagicInput rainbow={false} placeholder="Primary" />
-      <MagicInput variant="secondary" rainbow={false} placeholder="Secondary" />
+    <div className="w-full max-w-xs">
+      <MagicInput placeholder="Email address" />
     </div>
   );
 }`}
 >
-  <div className="flex w-full max-w-xs flex-col gap-6">
-    <MagicInput placeholder="Focus me" />
-    <MagicInput rainbow={false} placeholder="Primary" />
-    <MagicInput variant="secondary" rainbow={false} placeholder="Secondary" />
+  <div className="w-full max-w-xs">
+    <MagicInput placeholder="Email address" />
   </div>
 </Example>
-
-## Variants
-
-The `variant` tints the 3D edge. It shows when `rainbow={false}` (the rainbow
-gradient otherwise overrides the edge while focused).
 
 <Example
   label="Variants"
-  code={`import { MagicInput } from "@/components/godui/magic-input";
-
-export function MagicInputVariants() {
-  return (
-    <div className="flex w-full max-w-xs flex-col gap-6">
-      <MagicInput variant="primary" rainbow={false} placeholder="Primary" />
-      <MagicInput variant="secondary" rainbow={false} placeholder="Secondary" />
-    </div>
-  );
-}`}
+  code={`<div className="flex w-full max-w-xs flex-col gap-6">
+  <MagicInput variant="primary" rainbow={false} placeholder="Email address" />
+  <MagicInput variant="secondary" rainbow={false} placeholder="Workspace name" />
+</div>`}
 >
   <div className="flex w-full max-w-xs flex-col gap-6">
-    <MagicInput variant="primary" rainbow={false} placeholder="Primary" />
-    <MagicInput variant="secondary" rainbow={false} placeholder="Secondary" />
+    <MagicInput variant="primary" rainbow={false} placeholder="Email address" />
+    <MagicInput
+      variant="secondary"
+      rainbow={false}
+      placeholder="Workspace name"
+    />
   </div>
 </Example>
 
-## Depth
-
-`depth="focus"` (default) stays flat until focused. `depth="always"` keeps the
-raised 3D look at rest.
-
 <Example
   label="Depth"
-  code={`import { MagicInput } from "@/components/godui/magic-input";
-
-export function MagicInputDepth() {
-  return (
-    <div className="flex w-full max-w-xs flex-col gap-6">
-      <MagicInput depth="focus" placeholder="On focus" />
-      <MagicInput depth="always" placeholder="Always raised" />
-    </div>
-  );
-}`}
+  code={`<div className="flex w-full max-w-xs flex-col gap-6">
+  <MagicInput depth="focus" placeholder="Email address" />
+  <MagicInput depth="always" placeholder="Always raised" />
+</div>`}
 >
   <div className="flex w-full max-w-xs flex-col gap-6">
-    <MagicInput depth="focus" placeholder="On focus" />
+    <MagicInput depth="focus" placeholder="Email address" />
     <MagicInput depth="always" placeholder="Always raised" />
   </div>
 </Example>
 
-## Sizes
-
 <Example
   label="Sizes"
-  code={`import { MagicInput } from "@/components/godui/magic-input";
-
-export function MagicInputSizes() {
-  return (
-    <div className="flex w-full max-w-xs flex-col gap-6">
-      <MagicInput size="sm" placeholder="Small" />
-      <MagicInput size="md" placeholder="Medium" />
-      <MagicInput size="lg" placeholder="Large" />
-    </div>
-  );
-}`}
+  code={`<div className="flex w-full max-w-xs flex-col gap-6">
+  <MagicInput size="sm" placeholder="Small" />
+  <MagicInput size="md" placeholder="Medium" />
+  <MagicInput size="lg" placeholder="Large" />
+</div>`}
 >
   <div className="flex w-full max-w-xs flex-col gap-6">
     <MagicInput size="sm" placeholder="Small" />
@@ -103,85 +73,40 @@ export function MagicInputSizes() {
   </div>
 </Example>
 
-## Submit button
-
-Pass `onSubmit` to render an arrow button on the right. It fires with the
-current value on click or when <kbd>Enter</kbd> is pressed. Without `onSubmit`,
-set `submitButton` to render a `type="submit"` button for an enclosing form.
-
 <Example
   label="Submit Button"
-  code={`import { MagicInput } from "@/components/godui/magic-input";
-
-export function MagicInputSubmit() {
-  return (
-    <div className="flex w-full max-w-xs flex-col gap-6">
-      <MagicInput placeholder="Type and submit" onSubmit={(v) => alert(v)} />
-      <MagicInput size="lg" placeholder="Larger" onSubmit={(v) => alert(v)} />
-    </div>
-  );
-}`}
+  code={`<div className="flex w-full max-w-xs flex-col gap-6">
+  <MagicInput placeholder="Search docs" onSubmit={(v) => alert(v)} />
+  <MagicInput size="lg" placeholder="Ask AI anything" onSubmit={(v) => alert(v)} />
+</div>`}
 >
   <div className="flex w-full max-w-xs flex-col gap-6">
-    <MagicInput placeholder="Type and submit" submitButton />
-    <MagicInput size="lg" placeholder="Larger" submitButton />
+    <MagicInput placeholder="Search docs" submitButton />
+    <MagicInput size="lg" placeholder="Ask AI anything" submitButton />
   </div>
 </Example>
-
-## Submit lifecycle
-
-`status` and `progress` are fully controlled. While `status="loading"` the
-rainbow hides, the 3D depth locks in, and a progress bar runs along the bottom —
-determinate when you pass `progress`, otherwise an indeterminate segment bounces
-end to end. The arrow turns into a circular progress / spinner. `success` and
-`error` flash a green / red sweep with a check / X icon.
 
 <Example
   label="Submit Lifecycle"
-  code={`import { MagicInput } from "@/components/godui/magic-input";
-
-export function MagicInputStatus() {
-  return (
-    <div className="flex w-full max-w-xs flex-col gap-6">
-      <MagicInput placeholder="Indeterminate" onSubmit={() => {}} status="loading" />
-      <MagicInput placeholder="Determinate" onSubmit={() => {}} status="loading" progress={60} />
-      <MagicInput placeholder="Success" onSubmit={() => {}} status="success" />
-      <MagicInput placeholder="Error" onSubmit={() => {}} status="error" />
-    </div>
-  );
-}`}
+  code={`<div className="flex w-full max-w-xs flex-col gap-6">
+  <MagicInput placeholder="Uploading…" onSubmit={() => {}} status="loading" />
+  <MagicInput placeholder="Exporting…" onSubmit={() => {}} status="loading" progress={60} />
+  <MagicInput placeholder="Invite sent" onSubmit={() => {}} status="success" />
+  <MagicInput placeholder="Try again" onSubmit={() => {}} status="error" />
+</div>`}
 >
   <div className="flex w-full max-w-xs flex-col gap-6">
-    <MagicInput placeholder="Indeterminate" submitButton status="loading" />
-    <MagicInput placeholder="Determinate" submitButton status="loading" progress={60} />
-    <MagicInput placeholder="Success" submitButton status="success" />
-    <MagicInput placeholder="Error" submitButton status="error" />
+    <MagicInput placeholder="Uploading…" submitButton status="loading" />
+    <MagicInput
+      placeholder="Exporting…"
+      submitButton
+      status="loading"
+      progress={60}
+    />
+    <MagicInput placeholder="Invite sent" submitButton status="success" />
+    <MagicInput placeholder="Try again" submitButton status="error" />
   </div>
 </Example>
-
-You drive it from your submit handler:
-
-```tsx
-const [status, setStatus] = useState<MagicInputStatus>("idle");
-const [progress, setProgress] = useState(0);
-
-async function handleSubmit(value: string) {
-  setStatus("loading");
-  try {
-    await upload(value, setProgress); // call setProgress(0..100) as it runs
-    setStatus("success");
-  } catch {
-    setStatus("error");
-  }
-  setTimeout(() => setStatus("idle"), 1600);
-}
-
-<MagicInput
-  status={status}
-  progress={status === "loading" ? progress : undefined}
-  onSubmit={handleSubmit}
-/>;
-```
 
 ## Installation
 
@@ -194,7 +119,7 @@ import { MagicInput } from "@/components/godui/magic-input";
 ```
 
 ```tsx
-<MagicInput placeholder="Focus me" />
+<MagicInput placeholder="Email address" />
 ```
 
 By default the input is flat and lifts into the 3D effect only while focused.
@@ -202,7 +127,39 @@ Set `depth="always"` to keep the raised look at rest, and `rainbow={false}` to
 disable the animated rainbow edge.
 
 ```tsx
-<MagicInput depth="always" rainbow={false} placeholder="Always raised" />
+<MagicInput depth="always" rainbow={false} placeholder="Workspace name" />
+```
+
+Pass `onSubmit` to render an arrow button on the right. It fires with the
+current value on click or when <kbd>Enter</kbd> is pressed. Without `onSubmit`,
+set `submitButton` to render a `type="submit"` button for an enclosing form.
+
+`status` and `progress` are fully controlled. While `status="loading"` the
+rainbow hides, the 3D depth locks in, and a progress bar runs along the bottom —
+determinate when you pass `progress`, otherwise an indeterminate segment bounces
+end to end. The arrow turns into a circular progress / spinner. `success` and
+`error` flash a green / red sweep with a check / X icon.
+
+```tsx
+const [status, setStatus] = useState<MagicInputStatus>("idle");
+const [progress, setProgress] = useState(0);
+
+async function handleSubmit(value: string) {
+  setStatus("loading");
+  try {
+    await upload(value, setProgress);
+    setStatus("success");
+  } catch {
+    setStatus("error");
+  }
+  setTimeout(() => setStatus("idle"), 1600);
+}
+
+<MagicInput
+  status={status}
+  progress={status === "loading" ? progress : undefined}
+  onSubmit={handleSubmit}
+/>;
 ```
 
 ## Props

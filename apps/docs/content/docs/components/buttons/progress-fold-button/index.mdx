@@ -16,56 +16,49 @@ A 3D button whose front face folds back to reveal a controlled progress bar whil
   code={`import { ProgressFoldButton } from "@/components/godui/progress-fold-button";
 
 export function ProgressFoldButtonDemo() {
-  return (
-    <div className="flex flex-wrap items-center justify-center gap-6">
-      <ProgressFoldButton variant="primary">Submit</ProgressFoldButton>
-      <ProgressFoldButton variant="secondary">Submit</ProgressFoldButton>
-    </div>
-  );
+  return <ProgressFoldButton variant="primary">Publish</ProgressFoldButton>;
 }`}
 >
+  <ProgressFoldButton variant="primary">Publish</ProgressFoldButton>
+</Example>
+
+<Example
+  label="Variants"
+  code={`<div className="flex flex-wrap items-center justify-center gap-6">
+  <ProgressFoldButton variant="primary">Publish</ProgressFoldButton>
+  <ProgressFoldButton variant="secondary">Save draft</ProgressFoldButton>
+</div>`}
+>
   <div className="flex flex-wrap items-center justify-center gap-6">
-    <ProgressFoldButton variant="primary">Submit</ProgressFoldButton>
-    <ProgressFoldButton variant="secondary">Submit</ProgressFoldButton>
+    <ProgressFoldButton variant="primary">Publish</ProgressFoldButton>
+    <ProgressFoldButton variant="secondary">Save draft</ProgressFoldButton>
   </div>
 </Example>
 
 <Example
   label="Loading"
-  code={`import { ProgressFoldButton } from "@/components/godui/progress-fold-button";
-
-export function ProgressFoldButtonLoading() {
-  return (
-    <div className="flex flex-wrap items-center justify-center gap-6">
-      <ProgressFoldButton status="loading">Indeterminate</ProgressFoldButton>
-      <ProgressFoldButton status="loading" progress={60}>
-        Determinate
-      </ProgressFoldButton>
-    </div>
-  );
-}`}
+  code={`<div className="flex flex-wrap items-center justify-center gap-6">
+  <ProgressFoldButton status="loading">Uploading…</ProgressFoldButton>
+  <ProgressFoldButton status="loading" progress={60}>
+    Exporting…
+  </ProgressFoldButton>
+</div>`}
 >
   <div className="flex flex-wrap items-center justify-center gap-6">
-    <ProgressFoldButton status="loading">Indeterminate</ProgressFoldButton>
+    <ProgressFoldButton status="loading">Uploading…</ProgressFoldButton>
     <ProgressFoldButton status="loading" progress={60}>
-      Determinate
+      Exporting…
     </ProgressFoldButton>
   </div>
 </Example>
 
 <Example
   label="Sizes"
-  code={`import { ProgressFoldButton } from "@/components/godui/progress-fold-button";
-
-export function ProgressFoldButtonSizes() {
-  return (
-    <div className="flex flex-wrap items-center justify-center gap-6">
-      <ProgressFoldButton size="sm">Small</ProgressFoldButton>
-      <ProgressFoldButton size="md">Medium</ProgressFoldButton>
-      <ProgressFoldButton size="lg">Large</ProgressFoldButton>
-    </div>
-  );
-}`}
+  code={`<div className="flex flex-wrap items-center justify-center gap-6">
+  <ProgressFoldButton size="sm">Small</ProgressFoldButton>
+  <ProgressFoldButton size="md">Medium</ProgressFoldButton>
+  <ProgressFoldButton size="lg">Large</ProgressFoldButton>
+</div>`}
 >
   <div className="flex flex-wrap items-center justify-center gap-6">
     <ProgressFoldButton size="sm">Small</ProgressFoldButton>
@@ -76,18 +69,14 @@ export function ProgressFoldButtonSizes() {
 
 <Example
   label="Disabled"
-  code={`import { ProgressFoldButton } from "@/components/godui/progress-fold-button";
-
-export function ProgressFoldButtonDisabled() {
-  return <ProgressFoldButton disabled>Submit</ProgressFoldButton>;
-}`}
+  code={`<ProgressFoldButton disabled>Publish</ProgressFoldButton>`}
 >
-  <ProgressFoldButton disabled>Submit</ProgressFoldButton>
+  <ProgressFoldButton disabled>Publish</ProgressFoldButton>
 </Example>
 
 ## Installation
 
-<ComponentInstall componentName="ProgressFoldButton" />
+<ComponentInstall name="progress-fold-button" />
 
 ## Usage
 
@@ -97,7 +86,7 @@ import { ProgressFoldButton } from "@/components/godui/progress-fold-button";
 
 ```tsx
 <ProgressFoldButton status="loading" progress={40}>
-  Submit
+  Publish
 </ProgressFoldButton>
 ```
 
@@ -118,16 +107,22 @@ import { ProgressFoldButton } from "@/components/godui/progress-fold-button";
 
 export function Example() {
   const [status, setStatus] = React.useState<"idle" | "loading">("idle");
+  const [progress, setProgress] = React.useState(0);
 
-  const handleClick = async () => {
+  async function handleClick() {
     setStatus("loading");
-    await doWork();
+    setProgress(0);
+    // …drive progress, then:
     setStatus("idle");
-  };
+  }
 
   return (
-    <ProgressFoldButton status={status} onClick={handleClick}>
-      Submit
+    <ProgressFoldButton
+      status={status}
+      progress={status === "loading" ? progress : undefined}
+      onClick={handleClick}
+    >
+      Publish
     </ProgressFoldButton>
   );
 }
@@ -135,16 +130,11 @@ export function Example() {
 
 ## Props
 
-Accepts all native `<button>` attributes.
-
 | Prop | Type | Default | Description |
 | ---- | ---- | ------- | ----------- |
-| `variant` | `"primary" \| "secondary"` | `"primary"` | Theme color scheme of the front face |
-| `size` | `"sm" \| "md" \| "lg"` | `"md"` | Button size |
-| `status` | `"idle" \| "loading"` | `"idle"` | Loading lifecycle; `"loading"` folds open and runs the bar |
-| `progress` | `number` | — | 0–100; makes `loading` determinate (omit for indeterminate) |
-| `children` | `ReactNode` | — | Button label |
-| `disabled` | `boolean` | `false` | Disable the button and its animations |
-| `onClick` | `(e) => void` | — | Fires on click; flip `status` from here to start loading |
+| `variant` | `"primary" \| "secondary"` | `"primary"` | Front face color scheme |
+| `size` | `"sm" \| "md" \| "lg"` | `"md"` | Button padding and text size |
+| `status` | `"idle" \| "loading"` | `"idle"` | Fold open and show the progress bar while loading |
+| `progress` | `number` | — | 0–100; makes loading determinate (omit for indeterminate) |
 
 </Workbench>

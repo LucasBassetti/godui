@@ -2,18 +2,14 @@
 
 import { ContainerScroll } from "@godui/components";
 import { useRef } from "react";
+import { DemoScrollPort } from "@/components/demos/_kit";
 
 export function ContainerScrollDemo() {
-  // Scroll-driven, so it needs its own scroll room. Inside the workbench stage
-  // the window never scrolls — give the demo a self-contained scroll frame and
-  // point `scrollContainer` at it so scrolling the preview drives the animation.
+  // Scroll-driven — own scroll room via DemoScrollPort (stage doesn't scroll
+  // the window). Pair with Example fullWidth.
   const ref = useRef<HTMLDivElement>(null);
   return (
-    <div
-      ref={ref}
-      data-scroll-container
-      className="relative h-full w-full overflow-y-auto overflow-x-hidden"
-    >
+    <DemoScrollPort ref={ref}>
       <ContainerScroll
         scrollContainer={ref}
         header={
@@ -29,6 +25,6 @@ export function ContainerScrollDemo() {
       >
         <img src="https://picsum.photos/id/1005/1200/750" alt="Dashboard" />
       </ContainerScroll>
-    </div>
+    </DemoScrollPort>
   );
 }

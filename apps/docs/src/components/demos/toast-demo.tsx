@@ -4,15 +4,15 @@ import { ToastProvider, toast } from "@godui/components";
 
 export function ToastDemo() {
   return (
-    <div className="flex flex-wrap gap-3">
+    <div className="flex flex-wrap items-center justify-center gap-3">
       <button
         type="button"
         onClick={() =>
           toast({ title: "Event created", description: "Friday at 5pm" })
         }
-        className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
+        className="rounded-lg bg-primary px-4 py-2 font-medium text-primary-foreground text-sm"
       >
-        Show toast
+        Create event
       </button>
       <button
         type="button"
@@ -22,9 +22,9 @@ export function ToastDemo() {
             description: "Your changes are live.",
           })
         }
-        className="rounded-lg bg-muted px-4 py-2 text-sm font-medium text-foreground"
+        className="rounded-lg bg-muted px-4 py-2 font-medium text-foreground text-sm"
       >
-        Success
+        Save changes
       </button>
       <button
         type="button"
@@ -35,9 +35,9 @@ export function ToastDemo() {
             action: { label: "Undo", onClick: () => {} },
           })
         }
-        className="rounded-lg bg-muted px-4 py-2 text-sm font-medium text-foreground"
+        className="rounded-lg bg-muted px-4 py-2 font-medium text-foreground text-sm"
       >
-        With action
+        Delete file
       </button>
       <ToastProvider />
     </div>

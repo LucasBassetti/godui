@@ -1,6 +1,7 @@
 "use client";
 
 import { ThreeDMarquee } from "@godui/components";
+import { DemoMedia } from "@/components/demos/_kit";
 
 const IMAGES = [
   "1015",
@@ -22,9 +23,10 @@ const IMAGES = [
 ].map((id) => `https://picsum.photos/id/${id}/400/400`);
 
 export function ThreeDMarqueeDemo() {
+  // Image showcase — centered media band (no Example fullWidth).
   return (
-    <div className="mx-auto my-auto h-[26rem] w-full max-w-2xl">
+    <DemoMedia max="2xl" className="h-[26rem]">
       <ThreeDMarquee images={IMAGES} />
-    </div>
+    </DemoMedia>
   );
 }

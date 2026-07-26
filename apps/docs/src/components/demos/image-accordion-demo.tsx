@@ -1,6 +1,7 @@
 "use client";
 
 import { ImageAccordion } from "@godui/components";
+import { DemoMedia } from "@/components/demos/_kit";
 
 const PANELS = [
   {
@@ -32,10 +33,8 @@ const PANELS = [
 
 export function ImageAccordionDemo() {
   return (
-    <ImageAccordion
-      panels={PANELS}
-      className="w-full max-w-2xl"
-      height="24rem"
-    />
+    <DemoMedia max="2xl" className="h-[24rem]">
+      <ImageAccordion panels={PANELS} className="size-full" height="24rem" />
+    </DemoMedia>
   );
 }

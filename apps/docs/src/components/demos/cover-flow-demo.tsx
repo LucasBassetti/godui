@@ -1,6 +1,7 @@
 "use client";
 
 import { CoverFlow } from "@godui/components";
+import { DemoCenter } from "@/components/demos/_kit";
 
 const COVERS = [
   { title: "Nightfall", artist: "Aurora Grey", img: "1043" },
@@ -29,10 +30,12 @@ function Cover({ title, artist, img }: (typeof COVERS)[number]) {
 
 export function CoverFlowDemo() {
   return (
-    <CoverFlow defaultIndex={2} itemWidth={220} itemHeight={220}>
-      {COVERS.map((c) => (
-        <Cover key={c.title} {...c} />
-      ))}
-    </CoverFlow>
+    <DemoCenter className="w-full">
+      <CoverFlow defaultIndex={2} itemWidth={220} itemHeight={220}>
+        {COVERS.map((c) => (
+          <Cover key={c.title} {...c} />
+        ))}
+      </CoverFlow>
+    </DemoCenter>
   );
 }

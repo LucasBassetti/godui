@@ -17,35 +17,34 @@ A squishy button that deforms on press and springs back with a jelly wobble — 
   code={`import { JellyButton } from "@/components/godui/jelly-button";
 
 export function JellyButtonDemo() {
-  return (
-    <div className="flex flex-wrap items-center justify-center gap-6">
-      <JellyButton variant="primary">Press me</JellyButton>
-      <JellyButton variant="secondary">Press me</JellyButton>
-      <JellyButton variant="outline">Press me</JellyButton>
-    </div>
-  );
+  return <JellyButton variant="primary">Get started</JellyButton>;
 }`}
 >
+  <JellyButton variant="primary">Get started</JellyButton>
+</Example>
+
+<Example
+  label="Variants"
+  code={`<div className="flex flex-wrap items-center justify-center gap-6">
+  <JellyButton variant="primary">Continue</JellyButton>
+  <JellyButton variant="secondary">Save draft</JellyButton>
+  <JellyButton variant="outline">View docs</JellyButton>
+</div>`}
+>
   <div className="flex flex-wrap items-center justify-center gap-6">
-    <JellyButton variant="primary">Press me</JellyButton>
-    <JellyButton variant="secondary">Press me</JellyButton>
-    <JellyButton variant="outline">Press me</JellyButton>
+    <JellyButton variant="primary">Continue</JellyButton>
+    <JellyButton variant="secondary">Save draft</JellyButton>
+    <JellyButton variant="outline">View docs</JellyButton>
   </div>
 </Example>
 
 <Example
   label="Sizes"
-  code={`import { JellyButton } from "@/components/godui/jelly-button";
-
-export function JellyButtonSizes() {
-  return (
-    <div className="flex flex-wrap items-center justify-center gap-6">
-      <JellyButton size="sm">Small</JellyButton>
-      <JellyButton size="md">Medium</JellyButton>
-      <JellyButton size="lg">Large</JellyButton>
-    </div>
-  );
-}`}
+  code={`<div className="flex flex-wrap items-center justify-center gap-6">
+  <JellyButton size="sm">Small</JellyButton>
+  <JellyButton size="md">Medium</JellyButton>
+  <JellyButton size="lg">Large</JellyButton>
+</div>`}
 >
   <div className="flex flex-wrap items-center justify-center gap-6">
     <JellyButton size="sm">Small</JellyButton>
@@ -56,17 +55,11 @@ export function JellyButtonSizes() {
 
 <Example
   label="Squash"
-  code={`import { JellyButton } from "@/components/godui/jelly-button";
-
-export function JellyButtonSquash() {
-  return (
-    <div className="flex flex-wrap items-center justify-center gap-6">
-      <JellyButton squash={0.2}>Subtle</JellyButton>
-      <JellyButton squash={0.6}>Default</JellyButton>
-      <JellyButton squash={1}>Extra squishy</JellyButton>
-    </div>
-  );
-}`}
+  code={`<div className="flex flex-wrap items-center justify-center gap-6">
+  <JellyButton squash={0.2}>Subtle</JellyButton>
+  <JellyButton squash={0.6}>Default</JellyButton>
+  <JellyButton squash={1}>Extra squishy</JellyButton>
+</div>`}
 >
   <div className="flex flex-wrap items-center justify-center gap-6">
     <JellyButton squash={0.2}>Subtle</JellyButton>
@@ -77,13 +70,9 @@ export function JellyButtonSquash() {
 
 <Example
   label="Disabled"
-  code={`import { JellyButton } from "@/components/godui/jelly-button";
-
-export function JellyButtonDisabled() {
-  return <JellyButton disabled>Press me</JellyButton>;
-}`}
+  code={`<JellyButton disabled>Get started</JellyButton>`}
 >
-  <JellyButton disabled>Press me</JellyButton>
+  <JellyButton disabled>Get started</JellyButton>
 </Example>
 
 ## Installation
@@ -97,7 +86,7 @@ import { JellyButton } from "@/components/godui/jelly-button";
 ```
 
 ```tsx
-<JellyButton variant="primary">Press me</JellyButton>
+<JellyButton variant="primary">Get started</JellyButton>
 ```
 
 The `squash` prop (`0`–`1`) sets how hard the button deforms on press. Lower is subtle, higher is bouncier.

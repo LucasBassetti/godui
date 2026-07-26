@@ -4,11 +4,15 @@ description: Reveals its children with a spring as they scroll into view, with o
 workbench: true
 ---
 
-import { ScrollReveal } from "@godui/components";
+import {
+  ScrollRevealDemo,
+  ScrollRevealLeftDemo,
+  ScrollRevealStaggerDemo,
+} from "@/components/demos/scroll-reveal-demo";
 
 <Workbench>
 
-Reveals its children with a spring as they scroll into view, with optional velocity skew.
+Reveals its children with a spring as they scroll into view, with optional velocity skew. Scroll the preview to trigger the reveal.
 
 <Example
   label="Default"
@@ -18,14 +22,40 @@ Reveals its children with a spring as they scroll into view, with optional veloc
 export function ScrollRevealDemo() {
   return (
     <ScrollReveal>
-      <div className="rounded-xl border border-border bg-card p-8 text-lg font-semibold text-foreground shadow-sm">I reveal on scroll</div>
+      <div className="rounded-xl border border-border bg-card p-8 text-lg font-semibold text-foreground shadow-sm">
+        I reveal on scroll
+      </div>
     </ScrollReveal>
   );
 }`}
 >
-  <ScrollReveal>
-    <div className="rounded-xl border border-border bg-card p-8 text-lg font-semibold text-foreground shadow-sm">I reveal on scroll</div>
-  </ScrollReveal>
+  <ScrollRevealDemo />
+</Example>
+
+<Example
+  label="Staggered Grid"
+  code={`<div className="grid grid-cols-3 gap-3">
+  {items.map((item, i) => (
+    <ScrollReveal key={item} delay={i * 0.1}>
+      <div className="rounded-xl border border-border bg-card p-5 text-sm font-medium text-foreground shadow-sm">
+        {item}
+      </div>
+    </ScrollReveal>
+  ))}
+</div>`}
+>
+  <ScrollRevealStaggerDemo />
+</Example>
+
+<Example
+  label="From The Left"
+  code={`<ScrollReveal direction="left" distance={80} blur={false}>
+  <div className="rounded-xl border border-border bg-card p-8 text-lg font-semibold text-foreground shadow-sm">
+    Slides in from the left
+  </div>
+</ScrollReveal>`}
+>
+  <ScrollRevealLeftDemo />
 </Example>
 
 ## Installation
@@ -71,44 +101,6 @@ Use `delay` on adjacent reveals to stagger them.
 <ScrollReveal delay={0.1} />
 <ScrollReveal delay={0.2} />
 ```
-
-## Examples
-
-### Staggered grid
-
-Reveal a set of cards in sequence as the group scrolls into view.
-
-<Example
-  label="Staggered Grid"
-  code={`<div className="grid grid-cols-3 gap-3">
-  {items.map((item, i) => (
-    <ScrollReveal key={item} delay={i * 0.1}>
-      <div className="rounded-xl border border-border bg-card p-5 text-sm font-medium text-foreground shadow-sm">{item}</div>
-    </ScrollReveal>
-  ))}
-</div>`}
->
-  <div className="grid grid-cols-3 gap-3">
-    {["Plan", "Build", "Ship", "Measure", "Iterate", "Scale"].map((item, i) => (
-      <ScrollReveal key={item} delay={i * 0.1}>
-        <div className="rounded-xl border border-border bg-card p-5 text-sm font-medium text-foreground shadow-sm">{item}</div>
-      </ScrollReveal>
-    ))}
-  </div>
-</Example>
-
-### From the left, no blur
-
-<Example
-  label="From The Left"
-  code={`<ScrollReveal direction="left" distance={80} blur={false}>
-  <div className="rounded-xl border border-border bg-card p-8 text-lg font-semibold text-foreground shadow-sm">Slides in from the left</div>
-</ScrollReveal>`}
->
-  <ScrollReveal direction="left" distance={80} blur={false}>
-    <div className="rounded-xl border border-border bg-card p-8 text-lg font-semibold text-foreground shadow-sm">Slides in from the left</div>
-  </ScrollReveal>
-</Example>
 
 ## Props
 

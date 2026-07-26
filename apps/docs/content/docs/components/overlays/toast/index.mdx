@@ -18,8 +18,38 @@ import { ToastProvider, toast } from "@/components/godui/toast";
 
 export function ToastDemo() {
   return (
-    <div>
-      <button onClick={() => toast({ title: "Event created", description: "Friday at 5pm" })} className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground">Show toast</button>
+    <div className="flex flex-wrap items-center justify-center gap-3">
+      <button
+        type="button"
+        onClick={() =>
+          toast({ title: "Event created", description: "Friday at 5pm" })
+        }
+        className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
+      >
+        Create event
+      </button>
+      <button
+        type="button"
+        onClick={() =>
+          toast.success({ title: "Saved", description: "Your changes are live." })
+        }
+        className="rounded-lg bg-muted px-4 py-2 text-sm font-medium text-foreground"
+      >
+        Save changes
+      </button>
+      <button
+        type="button"
+        onClick={() =>
+          toast({
+            title: "Deleted file",
+            description: "report.pdf",
+            action: { label: "Undo", onClick: () => {} },
+          })
+        }
+        className="rounded-lg bg-muted px-4 py-2 text-sm font-medium text-foreground"
+      >
+        Delete file
+      </button>
       <ToastProvider />
     </div>
   );
@@ -30,7 +60,7 @@ export function ToastDemo() {
 
 ## Installation
 
-<ComponentInstall componentName="Toast" />
+<ComponentInstall name="toast" />
 
 Render a single `<ToastProvider />` near the root of your app, then call `toast()`
 from anywhere. Toasts spring in, auto-dismiss, pause on hover, and can be swiped away.
