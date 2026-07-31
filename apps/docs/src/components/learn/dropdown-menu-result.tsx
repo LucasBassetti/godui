@@ -12,6 +12,7 @@ import {
   Users,
 } from "lucide-react";
 import { useState } from "react";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
  * Closing "here's the finished thing" panel — the real, interactive
@@ -72,6 +73,40 @@ export function DropdownMenuResult() {
     },
   ];
 
+  const demo = (
+    <>
+      <DropdownMenu
+        align="end"
+        trigger={
+          <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card py-1 pr-3 pl-1 font-medium text-foreground text-sm shadow-sm">
+            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary font-semibold text-primary-foreground text-xs">
+              AL
+            </span>
+            Ada Lovelace
+            <ChevronDown className="size-4 text-muted-foreground" />
+          </span>
+        }
+        items={items}
+      />
+      <p className="text-muted-foreground text-xs">
+        {last ? (
+          <>
+            Selected: <span className="text-foreground">{last}</span>
+          </>
+        ) : (
+          "Open the menu and pick an action"
+        )}
+      </p>
+    </>
+  );
+
+  if (useBareScene())
+    return (
+      <div className="flex min-h-[460px] w-full flex-col items-center gap-4 p-6">
+        {demo}
+      </div>
+    );
+
   return (
     <div className="not-prose my-8 rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -83,28 +118,7 @@ export function DropdownMenuResult() {
         </span>
       </div>
       <div className="flex min-h-[460px] w-full flex-col items-center gap-4 p-10">
-        <DropdownMenu
-          align="end"
-          trigger={
-            <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card py-1 pr-3 pl-1 font-medium text-foreground text-sm shadow-sm">
-              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary font-semibold text-primary-foreground text-xs">
-                AL
-              </span>
-              Ada Lovelace
-              <ChevronDown className="size-4 text-muted-foreground" />
-            </span>
-          }
-          items={items}
-        />
-        <p className="text-muted-foreground text-xs">
-          {last ? (
-            <>
-              Selected: <span className="text-foreground">{last}</span>
-            </>
-          ) : (
-            "Open the menu and pick an action"
-          )}
-        </p>
+        {demo}
       </div>
     </div>
   );

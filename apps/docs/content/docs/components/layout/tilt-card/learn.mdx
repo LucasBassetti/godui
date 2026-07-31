@@ -1,14 +1,28 @@
 ---
 title: Anatomy of Tilt Card
 description: How one spring-smoothed pointer value drives a card's rotation, its floating content, and a glare that chases the cursor.
+learnPlayer: true
 ---
+
+<LearnPlayer>
+
+<LearnChapter
+  label="The three layers"
+  scene={<TiltCardAnatomy />}
+  code={`<div className="[perspective:1000px]">
+  <motion.div style={{ rotateX, rotateY }} className="[transform-style:preserve-3d]">
+    <div style={{ transform: \`translateZ(\${depth}px)\`, transformStyle: "preserve-3d" }}>
+      {children}
+    </div>
+    <motion.div style={{ "--gx": glareX, "--gy": glareY }} />
+  </motion.div>
+</div>`}
+>
 
 Tilt Card doesn't animate a rotation and a glare separately — it reads the
 pointer once, smooths it through a single spring, and lets both the tilt and
 the glare's position fall out of that one signal. Here's how a `pointermove`
 handler becomes a card that feels like it's made of glass.
-
-## The three layers
 
 Everything lives inside one `[perspective:1000px]` wrapper. The card itself
 carries `rotateX`/`rotateY` in a `preserve-3d` box; a content layer floats
@@ -16,34 +30,23 @@ toward the viewer on `translateZ(depth)` so children read as physically
 closer; and a glare layer sits on top, its radial gradient centered wherever
 the pointer is.
 
-<TiltCardAnatomy />
+</LearnChapter>
 
-```tsx
-<div className="[perspective:1000px]">
-  <motion.div style={{ rotateX, rotateY }} className="[transform-style:preserve-3d]">
-    <div style={{ transform: `translateZ(${depth}px)`, transformStyle: "preserve-3d" }}>
-      {children}
-    </div>
-    <motion.div style={{ "--gx": glareX, "--gy": glareY }} />
-  </motion.div>
-</div>
-```
-
-## One pointer, one spring, two mappings
-
-`onPointerMove` normalizes the cursor to `[-0.5, 0.5]` on each axis relative
-to the card's bounding rect, and writes that straight into two motion
-values — no rotation math happens here yet:
-
-```tsx
-const px = useMotionValue(0);
+<LearnChapter
+  label="One pointer, one spring, two mappings"
+  scene={<TiltCardSpring />}
+  code={`const px = useMotionValue(0);
 const py = useMotionValue(0);
 const sx = useSpring(px, SPRING);
 const sy = useSpring(py, SPRING);
 
 px.set((e.clientX - rect.left) / rect.width - 0.5);
-py.set((e.clientY - rect.top) / rect.height - 0.5);
-```
+py.set((e.clientY - rect.top) / rect.height - 0.5);`}
+>
+
+`onPointerMove` normalizes the cursor to `[-0.5, 0.5]` on each axis relative
+to the card's bounding rect, and writes that straight into two motion
+values — no rotation math happens here yet:
 
 `sx`/`sy` are the spring-smoothed versions of those raw values, and
 `SPRING` — `{ stiffness: 170, damping: 12, mass: 0.1 }` — is deliberately
@@ -63,19 +66,29 @@ Because the tilt and the glare read the same two springs, they can never
 drift out of sync — move the pointer and the highlight always sits on the
 side of the card that's tilted toward it.
 
-<TiltCardSpring />
-
 Leaving the card resets `px`/`py` to `0`, and the same spring eases the tilt
 and glare back to flat rather than snapping — `onPointerLeave` never touches
 `rotateX`/`rotateY` directly, it just gives the spring a new target.
-
-## Why transform, not layout
 
 `rotateX`, `rotateY`, `scale` (on `whileHover`), and the glare's CSS-variable
 position are the only things that change per frame. All of it composes onto
 the transform/paint layers the GPU already owns — the browser never
 re-measures the card while the spring is settling, no matter how fast the
 pointer moves across it.
+
+</LearnChapter>
+
+<LearnChapter label="The result" scene={<TiltCardResult />} isResult>
+
+Move your pointer across each card — the rotation, the depth, and the glare
+all come from the same spring.
+
+One pointer position, one spring, four `useTransform` calls — that's the
+whole card.
+
+</LearnChapter>
+
+</LearnPlayer>
 
 ## Accessibility
 
@@ -96,13 +109,3 @@ if (reduceMotion) {
 ## Motion Score
 
 <MotionScorePanel name="tilt-card" />
-
-## The result
-
-Move your pointer across each card — the rotation, the depth, and the glare
-all come from the same spring.
-
-<TiltCardResult />
-
-One pointer position, one spring, four `useTransform` calls — that's the
-whole card.

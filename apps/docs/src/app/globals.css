@@ -144,6 +144,13 @@ body {
     padding-top: 0 !important;
   }
 
+  /* Learn player pages: match the content's right edge to the header's (px-4 /
+     1rem) so the pinned preview lines up with the header icons instead of
+     stopping short at the wider article padding (md:px-6 / xl:px-8). */
+  #nd-page.learn-player-page {
+    padding-right: 1rem !important;
+  }
+
   /* The mobile-only "Menu" block is hidden on desktop but its wrapper's mb-4
      margin still pushed the first nav label down. Remove it, then offset the
      first section label by the same amount as #nd-page's top padding so

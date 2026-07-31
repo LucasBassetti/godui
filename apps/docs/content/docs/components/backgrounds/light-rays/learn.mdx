@@ -1,13 +1,28 @@
 ---
 title: Anatomy of Light Rays
 description: How a top glow, a repeating-conic fan, a ±6° breathe, and optional film grain stack into volumetric god-rays — all pure CSS.
+learnPlayer: true
 ---
+
+<LearnPlayer>
+
+<LearnChapter
+  label="Three plates, one pivot"
+  scene={<LightRaysAnatomy />}
+  code={`const step = 360 / rayCount;
+const rayColor = \`color-mix(in oklab, \${color}, transparent 55%)\`;
+
+repeating-conic-gradient(
+  from \${angle}deg at 50% 0%,
+  transparent 0deg,
+  \${rayColor} \${step * 0.16}deg,
+  transparent \${step}deg,
+)`}
+>
 
 `LightRays` is three stacked layers and one keyframe. No canvas, no rAF —
 just paint, an oversized transform, and an optional SVG noise overlay. Drop
 it first in a `relative overflow-hidden` container.
-
-## Three plates, one pivot
 
 Read left → right. Every plate shares the same top-center origin:
 
@@ -17,36 +32,24 @@ Read left → right. Every plate shares the same top-center origin:
 3. **Soft fan** — those wedges at `inset-[-50%]`, `blur(8px)`, faded with a
    bottom mask. Oversizing is why a ±6° rotate never flashes an empty edge.
 
-```tsx
-const step = 360 / rayCount;
-const rayColor = `color-mix(in oklab, ${color}, transparent 55%)`;
-
-repeating-conic-gradient(
-  from ${angle}deg at 50% 0%,
-  transparent 0deg,
-  ${rayColor} ${step * 0.16}deg,
-  transparent ${step}deg,
-)
-```
-
 Color defaults to `var(--primary)`. Intensity (`0.6` default) sets the fan
 opacity.
 
-<LightRaysAnatomy />
+</LearnChapter>
 
-## The sweep is tiny on purpose
-
-Rest vs live. The live plate runs `animate-light-rays-sweep`:
-
-```css
-@keyframes light-rays-sweep {
+<LearnChapter
+  label="The sweep is tiny on purpose"
+  scene={<LightRaysSweep />}
+  code={`@keyframes light-rays-sweep {
   0%   { transform: rotate(calc(var(--rays-angle) - 6deg)) scale(1);
          opacity: calc(var(--rays-intensity) * 0.7); }
   100% { transform: rotate(calc(var(--rays-angle) + 6deg)) scale(1.08);
          opacity: var(--rays-intensity); }
 }
-/* duration: var(--rays-speed, 14s) = 14 / speed · ease-in-out alternate */
-```
+/* duration: var(--rays-speed, 14s) = 14 / speed · ease-in-out alternate */`}
+>
+
+Rest vs live. The live plate runs `animate-light-rays-sweep`:
 
 ```tsx
 style={{ "--rays-speed": `${14 / speed}s`, "--rays-angle": `${angle}deg`, … }}
@@ -56,31 +59,33 @@ The needle in the diagram tracks that same arc so the motion is not lost in
 the blur. `motion-reduce:animate-none` freezes the fan — glow and wedges
 stay.
 
-<LightRaysSweep />
+</LearnChapter>
 
-## Grain is an overlay, not a texture bake
-
-Clean fan → `feTurbulence` field → both with `mix-blend-overlay`. Default
-`grain={0.05}` is almost subliminal; set `0` to omit the SVG entirely.
-
-```tsx
-<feTurbulence
+<LearnChapter
+  label="Grain is an overlay, not a texture bake"
+  scene={<LightRaysGrain />}
+  code={`<feTurbulence
   type="fractalNoise"
   baseFrequency="0.9"
   numOctaves={2}
   stitchTiles="stitch"
 />
-// rect opacity = grain, mix-blend-overlay
-```
+// rect opacity = grain, mix-blend-overlay`}
+>
 
-<LightRaysGrain />
+Clean fan → `feTurbulence` field → both with `mix-blend-overlay`. Default
+`grain={0.05}` is almost subliminal; set `0` to omit the SVG entirely.
+
+</LearnChapter>
+
+<LearnChapter label="The result" scene={<LightRaysResult />} isResult>
+
+Three layers, one keyframe, optional grit — compositor-only the whole way.
+
+</LearnChapter>
+
+</LearnPlayer>
 
 ## Motion Score
 
 <MotionScorePanel name="light-rays" />
-
-## The result
-
-<LightRaysResult />
-
-Three layers, one keyframe, optional grit — compositor-only the whole way.

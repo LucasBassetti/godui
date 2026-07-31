@@ -1,6 +1,7 @@
 "use client";
 
 import { WorldMap } from "@godui/components";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
  * Closing "here's the finished thing" panel — the real, interactive
@@ -9,6 +10,30 @@ import { WorldMap } from "@godui/components";
  * panels.
  */
 export function WorldMapResult() {
+  const demo = (
+    <>
+      <WorldMap
+        connections={[
+          {
+            start: { lat: 37.7749, lng: -122.4194, label: "San Francisco" },
+            end: { lat: 51.5074, lng: -0.1278, label: "London" },
+          },
+          {
+            start: { lat: 51.5074, lng: -0.1278, label: "London" },
+            end: { lat: 35.6762, lng: 139.6503, label: "Tokyo" },
+          },
+          {
+            start: { lat: 40.7128, lng: -74.006, label: "New York" },
+            end: { lat: 1.3521, lng: 103.8198, label: "Singapore" },
+          },
+        ]}
+      />
+    </>
+  );
+
+  if (useBareScene())
+    return <div className="min-h-[280px] p-6 md:p-6 w-full">{demo}</div>;
+
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -19,24 +44,7 @@ export function WorldMapResult() {
           the real component — the arcs draw and loop
         </span>
       </div>
-      <div className="p-6 md:p-10">
-        <WorldMap
-          connections={[
-            {
-              start: { lat: 37.7749, lng: -122.4194, label: "San Francisco" },
-              end: { lat: 51.5074, lng: -0.1278, label: "London" },
-            },
-            {
-              start: { lat: 51.5074, lng: -0.1278, label: "London" },
-              end: { lat: 35.6762, lng: 139.6503, label: "Tokyo" },
-            },
-            {
-              start: { lat: 40.7128, lng: -74.006, label: "New York" },
-              end: { lat: 1.3521, lng: 103.8198, label: "Singapore" },
-            },
-          ]}
-        />
-      </div>
+      <div className="p-6 md:p-10">{demo}</div>
     </div>
   );
 }

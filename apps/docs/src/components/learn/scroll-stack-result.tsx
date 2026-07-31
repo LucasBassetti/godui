@@ -3,6 +3,7 @@
 import { ScrollStack } from "@godui/components";
 import { BarChart3, GitBranch, Rocket } from "lucide-react";
 import type { ComponentType } from "react";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
  * Closing "here's the finished thing" panel — the real, interactive
@@ -39,6 +40,45 @@ const CARDS: Card[] = [
 ];
 
 export function ScrollStackResult() {
+  const demo = (
+    <>
+      <ScrollStack
+        height="24rem"
+        pinTop="8%"
+        className="w-full max-w-md rounded-2xl border border-fd-border bg-[var(--muted)]/30"
+      >
+        {CARDS.map(({ Icon, eyebrow, title, body }) => (
+          <article
+            key={title}
+            className="flex w-full flex-col rounded-2xl border border-border bg-card p-7 shadow-[0_24px_60px_-24px_rgba(0,0,0,0.45)]"
+          >
+            <div className="flex items-center gap-3">
+              <span className="grid size-8 place-items-center rounded-lg bg-primary/10 text-primary ring-1 ring-primary/15 ring-inset">
+                <Icon className="size-4" strokeWidth={2} />
+              </span>
+              <span className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                {eyebrow}
+              </span>
+            </div>
+            <h3 className="mt-5 text-xl font-semibold tracking-tight text-foreground">
+              {title}
+            </h3>
+            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+              {body}
+            </p>
+          </article>
+        ))}
+      </ScrollStack>
+    </>
+  );
+
+  if (useBareScene())
+    return (
+      <div className="relative flex min-h-[300px] items-center justify-center p-6 md:p-6 w-full">
+        {demo}
+      </div>
+    );
+
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -50,33 +90,7 @@ export function ScrollStackResult() {
         </span>
       </div>
       <div className="relative flex min-h-[300px] items-center justify-center p-6 md:p-10">
-        <ScrollStack
-          height="24rem"
-          pinTop="8%"
-          className="w-full max-w-md rounded-2xl border border-fd-border bg-[var(--muted)]/30"
-        >
-          {CARDS.map(({ Icon, eyebrow, title, body }) => (
-            <article
-              key={title}
-              className="flex w-full flex-col rounded-2xl border border-border bg-card p-7 shadow-[0_24px_60px_-24px_rgba(0,0,0,0.45)]"
-            >
-              <div className="flex items-center gap-3">
-                <span className="grid size-8 place-items-center rounded-lg bg-primary/10 text-primary ring-1 ring-primary/15 ring-inset">
-                  <Icon className="size-4" strokeWidth={2} />
-                </span>
-                <span className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-                  {eyebrow}
-                </span>
-              </div>
-              <h3 className="mt-5 text-xl font-semibold tracking-tight text-foreground">
-                {title}
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                {body}
-              </p>
-            </article>
-          ))}
-        </ScrollStack>
+        {demo}
       </div>
     </div>
   );

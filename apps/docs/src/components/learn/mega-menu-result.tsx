@@ -9,6 +9,7 @@ import {
   Rocket,
   ShieldCheck,
 } from "lucide-react";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 const ITEMS: MegaMenuItem[] = [
   {
@@ -82,6 +83,19 @@ const ITEMS: MegaMenuItem[] = [
  * `position: absolute` and would get clipped otherwise.
  */
 export function MegaMenuResult() {
+  const demo = (
+    <>
+      <MegaMenu items={ITEMS} />
+    </>
+  );
+
+  if (useBareScene())
+    return (
+      <div className="flex min-h-[380px] items-start justify-center px-6 pt-8 pb-6 w-full">
+        {demo}
+      </div>
+    );
+
   return (
     <div className="not-prose my-8 rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-fd-border border-b px-2.5 py-2">
@@ -93,7 +107,7 @@ export function MegaMenuResult() {
         </span>
       </div>
       <div className="flex min-h-[380px] items-start justify-center px-6 pt-8 pb-6">
-        <MegaMenu items={ITEMS} />
+        {demo}
       </div>
     </div>
   );

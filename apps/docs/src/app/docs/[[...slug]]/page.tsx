@@ -8,6 +8,7 @@ import {
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ComponentBadges } from "@/components/component-badges";
+import { LearnPlayerProvider } from "@/components/learn/learn-player-context";
 import { getMDXComponents } from "@/components/mdx";
 import {
   type BadgeItem,
@@ -73,7 +74,15 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
       url: atComponentsRoot ? undefined : "/docs/components",
     });
     if (!atComponentsRoot) {
-      crumbs.push({ name: componentCrumbTitle ?? page.data.title });
+      // On the Learn page the component crumb links back to its docs page, and a
+      // trailing "Learn" crumb marks where you are (the Docs/Learn tabs are gone
+      // in the stage-first layout).
+      const componentHref = base ? `/docs/${base.join("/")}` : undefined;
+      crumbs.push({
+        name: componentCrumbTitle ?? page.data.title,
+        url: isLearnPage ? componentHref : undefined,
+      });
+      if (isLearnPage) crumbs.push({ name: "Learn" });
     }
   } else if (slug.length) {
     crumbs.push({ name: page.data.title });
@@ -203,43 +212,74 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
       <TocCta />
     );
 
+  // The stage-first Learn layout renders the article title + description *below*
+  // its pinned preview (via <LearnPlayer>), so the page suppresses the default
+  // title/badges here and widens the column to give the stage room.
+  const isLearnPlayer =
+    isLearnPage &&
+    (page.data as { learnPlayer?: boolean }).learnPlayer === true;
+
   return (
     <DocsPage
-      toc={page.data.toc}
-      full={page.data.full}
+      toc={isLearnPlayer ? [] : page.data.toc}
+      full={page.data.full || isLearnPlayer}
       breadcrumb={{ enabled: false }}
-      tableOfContent={{ footer: tocFooter }}
-      tableOfContentPopover={{ footer: tocFooter }}
+      // The stage-first layout is self-navigating (chapter rail) and fills the
+      // full content width, so it drops the right TOC column entirely.
+      tableOfContent={
+        isLearnPlayer ? { enabled: false } : { footer: tocFooter }
+      }
+      tableOfContentPopover={
+        isLearnPlayer ? { enabled: false } : { footer: tocFooter }
+      }
+      className={isLearnPlayer ? "learn-player-page max-w-none" : undefined}
     >
       {isLearnPage && docsHref ? <SidebarActiveLink href={docsHref} /> : null}
       {crumbs.length > 1 || tabs ? (
         <div className="-mb-2 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
           <Breadcrumbs crumbs={crumbs} />
-          {tabs ? (
+          {tabs && !isLearnPlayer ? (
             <ComponentTabs tabs={tabs} className="self-start sm:self-auto" />
           ) : null}
         </div>
       ) : null}
-      {isComponentDocsPage ? (
-        <ComponentBadges
-          score={score}
-          scoreHref={
-            hasLearn && docsHref ? `${docsHref}/learn#motion-score` : undefined
-          }
-          perf={motionNote}
-          dep={dependencyNote}
-          isStatic={isStatic}
-        />
-      ) : isLearnPage ? (
-        <ComponentBadges placeholder />
-      ) : null}
-      <DocsTitle className="docs-title">{page.data.title}</DocsTitle>
-      <DocsDescription className="docs-lead">
-        {page.data.description}
-      </DocsDescription>
-      <DocsBody>
-        <MDX components={getMDXComponents()} />
-      </DocsBody>
+      {isLearnPlayer ? (
+        <LearnPlayerProvider
+          value={{
+            title: page.data.title,
+            description: page.data.description,
+          }}
+        >
+          <DocsBody>
+            <MDX components={getMDXComponents()} />
+          </DocsBody>
+        </LearnPlayerProvider>
+      ) : (
+        <>
+          {isComponentDocsPage ? (
+            <ComponentBadges
+              score={score}
+              scoreHref={
+                hasLearn && docsHref
+                  ? `${docsHref}/learn#motion-score`
+                  : undefined
+              }
+              perf={motionNote}
+              dep={dependencyNote}
+              isStatic={isStatic}
+            />
+          ) : isLearnPage ? (
+            <ComponentBadges placeholder />
+          ) : null}
+          <DocsTitle className="docs-title">{page.data.title}</DocsTitle>
+          <DocsDescription className="docs-lead">
+            {page.data.description}
+          </DocsDescription>
+          <DocsBody>
+            <MDX components={getMDXComponents()} />
+          </DocsBody>
+        </>
+      )}
     </DocsPage>
   );
 }

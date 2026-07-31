@@ -1,7 +1,7 @@
 "use client";
 
 import type { CSSProperties } from "react";
-import { ScrollScene } from "./scroll-scene";
+import { type SceneAnim, ScrollScene } from "./scroll-scene";
 
 /**
  * Anatomy of the real open FAB: same geometry three ways — blob paint only,
@@ -134,46 +134,58 @@ const COLUMNS: {
   },
 ];
 
+/**
+ * The raw animated body — no card chrome. Rendered directly by `LearnPlayer`
+ * (which owns one shared stage) and wrapped in `<ScrollScene>` by `GooeyLayers`
+ * for the classic scroll layout. `cycle` remounts the animated grid on replay.
+ */
+export function GooeyLayersBody({
+  cycle = 0,
+  reduced = false,
+}: Partial<SceneAnim>) {
+  return (
+    <div className="flex w-full max-w-[560px] flex-col items-center gap-8">
+      {/* biome-ignore lint/security/noDangerouslySetInnerHtml: static keyframes, no user input */}
+      <style dangerouslySetInnerHTML={{ __html: CSS }} />
+      <div
+        key={cycle}
+        className={`grid w-full grid-cols-3 items-end justify-items-center gap-3 sm:gap-6 ${reduced ? "gl-static" : ""}`}
+      >
+        {COLUMNS.map((col) => (
+          <div
+            key={col.key}
+            className="gl-col flex flex-col items-center gap-3"
+            style={{ "--d": `${col.delay}ms` } as CSSProperties}
+          >
+            <FabStage blobs={col.blobs} controls={col.controls} />
+            <p className="font-mono text-[11px] text-fd-muted-foreground">
+              {col.label}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
+        {LEGEND.map((item) => (
+          <div key={item.name} className="flex flex-col gap-1.5">
+            <LegendSwatch kind={item.kind} />
+            <dt className="font-medium text-[13px] text-fd-foreground">
+              {item.name}
+            </dt>
+            <dd className="text-[12px] text-fd-muted-foreground">
+              {item.desc}
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  );
+}
+
 export function GooeyLayers() {
   return (
     <ScrollScene label="Anatomy" note="same open FAB, two layers">
-      {({ cycle, reduced }) => (
-        <div className="flex w-full max-w-[560px] flex-col items-center gap-8">
-          {/* biome-ignore lint/security/noDangerouslySetInnerHtml: static keyframes, no user input */}
-          <style dangerouslySetInnerHTML={{ __html: CSS }} />
-          <div
-            key={cycle}
-            className={`grid w-full grid-cols-3 items-end justify-items-center gap-3 sm:gap-6 ${reduced ? "gl-static" : ""}`}
-          >
-            {COLUMNS.map((col) => (
-              <div
-                key={col.key}
-                className="gl-col flex flex-col items-center gap-3"
-                style={{ "--d": `${col.delay}ms` } as CSSProperties}
-              >
-                <FabStage blobs={col.blobs} controls={col.controls} />
-                <p className="font-mono text-[11px] text-fd-muted-foreground">
-                  {col.label}
-                </p>
-              </div>
-            ))}
-          </div>
-
-          <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
-            {LEGEND.map((item) => (
-              <div key={item.name} className="flex flex-col gap-1.5">
-                <LegendSwatch kind={item.kind} />
-                <dt className="font-medium text-[13px] text-fd-foreground">
-                  {item.name}
-                </dt>
-                <dd className="text-[12px] text-fd-muted-foreground">
-                  {item.desc}
-                </dd>
-              </div>
-            ))}
-          </dl>
-        </div>
-      )}
+      {(anim) => <GooeyLayersBody {...anim} />}
     </ScrollScene>
   );
 }

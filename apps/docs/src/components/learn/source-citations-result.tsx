@@ -1,6 +1,7 @@
 "use client";
 
 import { SourceCitation, SourceList } from "@godui/components";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
  * Same source set as the component's docs demo, extended to five entries so
@@ -39,6 +40,32 @@ const sources = [
 ];
 
 export function SourceCitationsResult() {
+  const demo = (
+    <div className="w-full max-w-lg">
+      <p className="text-sm leading-7 text-foreground">
+        Modern design systems standardize on OKLCH for perceptually uniform
+        theming
+        <SourceCitation index={1} source={sources[0]} />, and Tailwind v4 ships
+        a CSS-first config that makes tokens first-class
+        <SourceCitation index={2} source={sources[1]} />. Motion is now treated
+        as a core craft, not a finishing touch
+        <SourceCitation index={3} source={sources[2]} />.
+      </p>
+      <div className="mt-4 border-t border-border pt-4">
+        <SourceList sources={sources} />
+      </div>
+    </div>
+  );
+
+  // On the LearnPlayer stage, the player supplies the card — render the live
+  // components only. (Standalone / classic scroll layout keeps its own card.)
+  if (useBareScene())
+    return (
+      <div className="flex min-h-[280px] w-full items-center justify-center p-6">
+        {demo}
+      </div>
+    );
+
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -50,20 +77,7 @@ export function SourceCitationsResult() {
         </span>
       </div>
       <div className="flex min-h-[320px] w-full items-center justify-center p-10">
-        <div className="w-full max-w-lg">
-          <p className="text-sm leading-7 text-foreground">
-            Modern design systems standardize on OKLCH for perceptually uniform
-            theming
-            <SourceCitation index={1} source={sources[0]} />, and Tailwind v4
-            ships a CSS-first config that makes tokens first-class
-            <SourceCitation index={2} source={sources[1]} />. Motion is now
-            treated as a core craft, not a finishing touch
-            <SourceCitation index={3} source={sources[2]} />.
-          </p>
-          <div className="mt-4 border-t border-border pt-4">
-            <SourceList sources={sources} />
-          </div>
-        </div>
+        {demo}
       </div>
     </div>
   );

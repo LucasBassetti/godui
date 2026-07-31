@@ -1,29 +1,30 @@
 ---
 title: Anatomy of Flow Field
 description: How value noise becomes a vector field, how a translucent wipe leaves silk trails, and how observers keep the rAF loop cheap when idle.
+learnPlayer: true
 ---
+
+<LearnPlayer>
+
+<LearnChapter
+  label="Noise → angle → step"
+  scene={<FlowFieldAnatomy />}
+  code={`const angle =
+  valueNoise(p.x * noiseScale, p.y * noiseScale + z) * Math.PI * 4;
+p.x += Math.cos(angle) * 1.6 * speed;
+p.y += Math.sin(angle) * 1.6 * speed;
+z += 0.0008 * speed; // field evolves slowly`}
+>
 
 `FlowField` paints particles on a canvas that stream along an evolving noise
 field. There is no SVG path and no retained trail geometry — each frame
 samples noise for an angle, steps the particle, then fades the whole buffer
 a hair so yesterday's stroke lingers as silk.
 
-## Noise → angle → step
-
 Per particle, every frame:
-
-```tsx
-const angle =
-  valueNoise(p.x * noiseScale, p.y * noiseScale + z) * Math.PI * 4;
-p.x += Math.cos(angle) * 1.6 * speed;
-p.y += Math.sin(angle) * 1.6 * speed;
-z += 0.0008 * speed; // field evolves slowly
-```
 
 `noiseScale` defaults to `0.0016` — smaller means broader, smoother
 currents. `speed` scales both the step and the z drift.
-
-<FlowFieldAnatomy />
 
 Particle count defaults to `900`, then clamps so dense viewports don't melt
 the main thread:
@@ -32,24 +33,26 @@ the main thread:
 Math.max(120, Math.min(particleCount, Math.round((w * h) / 1400)))
 ```
 
-## Fade wipe trails
+</LearnChapter>
+
+<LearnChapter
+  label="Fade wipe trails"
+  scene={<FlowFieldTrails />}
+  code={`ctx.fillStyle = \`rgba(\${br}, \${bg}, \${bb}, \${fade})\`; // default fade = 0.06
+ctx.fillRect(0, 0, w, h);
+// then stroke each particle's latest segment in --primary`}
+>
 
 Instead of storing polylines, every frame fills the canvas with a translucent
 rect in the background color:
-
-```tsx
-ctx.fillStyle = `rgba(${br}, ${bg}, ${bb}, ${fade})`; // default fade = 0.06
-ctx.fillRect(0, 0, w, h);
-// then stroke each particle's latest segment in --primary
-```
 
 Lower `fade` → longer, silkier wakes. Higher → crisp, short ticks. Theme
 colors re-resolve via a `MutationObserver` on `<html>` (`class` /
 `data-theme` / `style`) so light and dark both stay correct.
 
-<FlowFieldTrails />
+</LearnChapter>
 
-## Cheap when offscreen
+<LearnChapter label="Cheap when offscreen" scene={<FlowFieldLifecycle />}>
 
 Three gates stop the loop when work would be wasted:
 
@@ -61,15 +64,17 @@ Three gates stop the loop when work would be wasted:
 
 `ResizeObserver` rebuilds the buffer when the container changes size.
 
-<FlowFieldLifecycle />
+</LearnChapter>
+
+<LearnChapter label="The result" scene={<FlowFieldResult />} isResult>
+
+Sample → step → wipe. A living field that refuses to burn frames when nobody
+is looking.
+
+</LearnChapter>
+
+</LearnPlayer>
 
 ## Motion Score
 
 <MotionScorePanel name="flow-field" />
-
-## The result
-
-<FlowFieldResult />
-
-Sample → step → wipe. A living field that refuses to burn frames when nobody
-is looking.

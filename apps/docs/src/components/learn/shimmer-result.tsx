@@ -1,6 +1,15 @@
 "use client";
 
 import { ShimmerButton } from "@godui/components";
+import { useBareScene } from "@/components/learn/bare-scene-context";
+
+const ShimmerResultBody = () => (
+  <>
+    <ShimmerButton variant="primary">Primary</ShimmerButton>
+    <ShimmerButton variant="secondary">Secondary</ShimmerButton>
+    <ShimmerButton variant="outline">Outline</ShimmerButton>
+  </>
+);
 
 /**
  * Closing "here's the finished thing" panel — the real, interactive Shimmer
@@ -8,6 +17,14 @@ import { ShimmerButton } from "@godui/components";
  * apart: hover/focus speed-up, the press dip, the border-only spark.
  */
 export function ShimmerResult() {
+  // On the LearnPlayer stage, the player supplies the card — render the live
+  // component only. (Standalone / classic scroll layout keeps its own card.)
+  if (useBareScene())
+    return (
+      <div className="flex min-h-[280px] w-full flex-wrap items-center justify-center gap-6 p-6">
+        <ShimmerResultBody />
+      </div>
+    );
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -19,9 +36,7 @@ export function ShimmerResult() {
         </span>
       </div>
       <div className="flex min-h-[240px] flex-wrap items-center justify-center gap-6 p-10">
-        <ShimmerButton variant="primary">Primary</ShimmerButton>
-        <ShimmerButton variant="secondary">Secondary</ShimmerButton>
-        <ShimmerButton variant="outline">Outline</ShimmerButton>
+        <ShimmerResultBody />
       </div>
     </div>
   );

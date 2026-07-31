@@ -1,6 +1,7 @@
 "use client";
 
 import { TiltCard } from "@godui/components";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
  * Closing "here's the finished thing" panel — the real, interactive
@@ -9,6 +10,34 @@ import { TiltCard } from "@godui/components";
  * cranks `maxTilt`/`depth` for a more dramatic effect.
  */
 export function TiltCardResult() {
+  const demo = (
+    <>
+      <TiltCard className="w-64 p-6">
+        <h3 className="text-lg font-semibold text-foreground">
+          Designed in 3D
+        </h3>
+        <p className="mt-2 text-sm text-muted-foreground">
+          One spring drives rotation, depth, and glare together.
+        </p>
+      </TiltCard>
+      <TiltCard maxTilt={22} depth={70} className="w-64 p-6">
+        <h3 className="text-lg font-semibold text-foreground">
+          Deeper parallax
+        </h3>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Crank maxTilt and depth for a more dramatic effect.
+        </p>
+      </TiltCard>
+    </>
+  );
+
+  if (useBareScene())
+    return (
+      <div className="flex min-h-[300px] flex-wrap items-center justify-center gap-8 p-6 w-full">
+        {demo}
+      </div>
+    );
+
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -20,22 +49,7 @@ export function TiltCardResult() {
         </span>
       </div>
       <div className="flex min-h-[300px] flex-wrap items-center justify-center gap-8 p-10">
-        <TiltCard className="w-64 p-6">
-          <h3 className="text-lg font-semibold text-foreground">
-            Designed in 3D
-          </h3>
-          <p className="mt-2 text-sm text-muted-foreground">
-            One spring drives rotation, depth, and glare together.
-          </p>
-        </TiltCard>
-        <TiltCard maxTilt={22} depth={70} className="w-64 p-6">
-          <h3 className="text-lg font-semibold text-foreground">
-            Deeper parallax
-          </h3>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Crank maxTilt and depth for a more dramatic effect.
-          </p>
-        </TiltCard>
+        {demo}
       </div>
     </div>
   );

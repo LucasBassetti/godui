@@ -1,6 +1,17 @@
 "use client";
 
 import { AppShowcase } from "@godui/components";
+import { useBareScene } from "@/components/learn/bare-scene-context";
+
+const demo = (
+  <AppShowcase
+    device="iphone"
+    mode="loop"
+    width={220}
+    src="https://picsum.photos/seed/godui-learn-app/600/1300"
+    alt="App home screen"
+  />
+);
 
 /**
  * Closing "here's the finished thing" panel — the real, interactive
@@ -8,6 +19,14 @@ import { AppShowcase } from "@godui/components";
  * the phone is in view, no scroll-linked JS required.
  */
 export function AppShowcaseResult() {
+  // On the LearnPlayer stage, the player supplies the card — render the live
+  // component only. (Standalone / classic scroll layout keeps its own card.)
+  if (useBareScene())
+    return (
+      <div className="flex min-h-[280px] w-full items-center justify-center p-6">
+        {demo}
+      </div>
+    );
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -19,13 +38,7 @@ export function AppShowcaseResult() {
         </span>
       </div>
       <div className="flex min-h-[320px] items-center justify-center p-10">
-        <AppShowcase
-          device="iphone"
-          mode="loop"
-          width={220}
-          src="https://picsum.photos/seed/godui-learn-app/600/1300"
-          alt="App home screen"
-        />
+        {demo}
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 "use client";
 
 import { ToastProvider, toast } from "@godui/components";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
  * Closing "here's the finished thing" panel — the real, imperative
@@ -8,6 +9,53 @@ import { ToastProvider, toast } from "@godui/components";
  * countdown, and drag one away to dismiss it.
  */
 export function ToastResult() {
+  const demo = (
+    <>
+      <button
+        type="button"
+        onClick={() =>
+          toast({ title: "Event created", description: "Friday at 5pm" })
+        }
+        className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
+      >
+        Show toast
+      </button>
+      <button
+        type="button"
+        onClick={() =>
+          toast.success({
+            title: "Saved",
+            description: "Your changes are live.",
+          })
+        }
+        className="rounded-lg bg-muted px-4 py-2 text-sm font-medium text-foreground"
+      >
+        Success
+      </button>
+      <button
+        type="button"
+        onClick={() =>
+          toast({
+            title: "Deleted file",
+            description: "report.pdf",
+            action: { label: "Undo", onClick: () => {} },
+          })
+        }
+        className="rounded-lg bg-muted px-4 py-2 text-sm font-medium text-foreground"
+      >
+        With action
+      </button>
+      <ToastProvider />
+    </>
+  );
+
+  if (useBareScene())
+    return (
+      <div className="flex min-h-[240px] w-full flex-wrap items-center justify-center gap-3 p-6">
+        {demo}
+      </div>
+    );
+
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -19,41 +67,7 @@ export function ToastResult() {
         </span>
       </div>
       <div className="flex min-h-[240px] w-full flex-wrap items-center justify-center gap-3 p-10">
-        <button
-          type="button"
-          onClick={() =>
-            toast({ title: "Event created", description: "Friday at 5pm" })
-          }
-          className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
-        >
-          Show toast
-        </button>
-        <button
-          type="button"
-          onClick={() =>
-            toast.success({
-              title: "Saved",
-              description: "Your changes are live.",
-            })
-          }
-          className="rounded-lg bg-muted px-4 py-2 text-sm font-medium text-foreground"
-        >
-          Success
-        </button>
-        <button
-          type="button"
-          onClick={() =>
-            toast({
-              title: "Deleted file",
-              description: "report.pdf",
-              action: { label: "Undo", onClick: () => {} },
-            })
-          }
-          className="rounded-lg bg-muted px-4 py-2 text-sm font-medium text-foreground"
-        >
-          With action
-        </button>
-        <ToastProvider />
+        {demo}
       </div>
     </div>
   );

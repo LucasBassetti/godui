@@ -2,6 +2,7 @@
 
 import { ScrollProgress } from "@godui/components";
 import * as React from "react";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
  * Closing panel — real ScrollProgress tracking a scrollable box (bar +
@@ -12,6 +13,44 @@ const FILLER = Array.from({ length: 12 });
 
 export function ScrollProgressResult() {
   const ref = React.useRef<HTMLDivElement>(null);
+
+  const demo = (
+    <div
+      ref={ref}
+      data-scroll-container
+      className="relative h-72 w-full max-w-md overflow-y-auto rounded-xl border border-border bg-card"
+    >
+      <ScrollProgress container={ref} />
+      <div className="space-y-4 p-6 pb-16">
+        <p className="font-medium text-foreground text-sm">Scroll this panel</p>
+        {FILLER.map((_, i) => (
+          <p
+            // biome-ignore lint/suspicious/noArrayIndexKey: static filler
+            key={i}
+            className="text-muted-foreground text-sm leading-relaxed"
+          >
+            Progress springs toward the scroll position — paragraph {i + 1} of{" "}
+            {FILLER.length}.
+          </p>
+        ))}
+      </div>
+      <ScrollProgress
+        variant="circle"
+        container={ref}
+        showAfter={0.05}
+        position="bottom-right"
+      />
+    </div>
+  );
+
+  // On the LearnPlayer stage, the player supplies the card — render the live
+  // component only. (Standalone / classic scroll layout keeps its own card.)
+  if (useBareScene())
+    return (
+      <div className="flex min-h-[320px] w-full items-center justify-center p-6">
+        {demo}
+      </div>
+    );
 
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
@@ -24,34 +63,7 @@ export function ScrollProgressResult() {
         </span>
       </div>
       <div className="flex min-h-[320px] items-center justify-center p-6 md:p-10">
-        <div
-          ref={ref}
-          data-scroll-container
-          className="relative h-72 w-full max-w-md overflow-y-auto rounded-xl border border-border bg-card"
-        >
-          <ScrollProgress container={ref} />
-          <div className="space-y-4 p-6 pb-16">
-            <p className="font-medium text-foreground text-sm">
-              Scroll this panel
-            </p>
-            {FILLER.map((_, i) => (
-              <p
-                // biome-ignore lint/suspicious/noArrayIndexKey: static filler
-                key={i}
-                className="text-muted-foreground text-sm leading-relaxed"
-              >
-                Progress springs toward the scroll position — paragraph {i + 1}{" "}
-                of {FILLER.length}.
-              </p>
-            ))}
-          </div>
-          <ScrollProgress
-            variant="circle"
-            container={ref}
-            showAfter={0.05}
-            position="bottom-right"
-          />
-        </div>
+        {demo}
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 "use client";
 
 import { HolographicCard } from "@godui/components";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
  * Closing "here's the finished thing" panel — the real, interactive
@@ -8,6 +9,32 @@ import { HolographicCard } from "@godui/components";
  * and glitter all shift together as it tilts, like a real trading-card holo.
  */
 export function HolographicCardResult() {
+  const demo = (
+    <>
+      <HolographicCard variant="rainbow" className="h-72 w-52 p-5">
+        <span className="text-[10px] font-medium uppercase tracking-widest text-white/60">
+          Founding Member
+        </span>
+        <div className="mt-24">
+          <h3 className="text-xl font-semibold tracking-tight text-white">
+            GodUI
+          </h3>
+          <p className="mt-1 text-xs text-white/70">
+            Move your pointer across the card.
+          </p>
+        </div>
+      </HolographicCard>
+      <HolographicCard variant="galaxy" className="h-72 w-52" />
+    </>
+  );
+
+  if (useBareScene())
+    return (
+      <div className="flex min-h-[340px] flex-wrap items-center justify-center gap-8 p-6 w-full">
+        {demo}
+      </div>
+    );
+
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -19,20 +46,7 @@ export function HolographicCardResult() {
         </span>
       </div>
       <div className="flex min-h-[340px] flex-wrap items-center justify-center gap-8 p-10">
-        <HolographicCard variant="rainbow" className="h-72 w-52 p-5">
-          <span className="text-[10px] font-medium uppercase tracking-widest text-white/60">
-            Founding Member
-          </span>
-          <div className="mt-24">
-            <h3 className="text-xl font-semibold tracking-tight text-white">
-              GodUI
-            </h3>
-            <p className="mt-1 text-xs text-white/70">
-              Move your pointer across the card.
-            </p>
-          </div>
-        </HolographicCard>
-        <HolographicCard variant="galaxy" className="h-72 w-52" />
+        {demo}
       </div>
     </div>
   );

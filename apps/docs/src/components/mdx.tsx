@@ -146,10 +146,13 @@ import { GlobeAnatomy } from "@/components/learn/globe-anatomy";
 import { GlobeLifecycle } from "@/components/learn/globe-lifecycle";
 import { GlobeResult } from "@/components/learn/globe-result";
 import { GlobeRotate } from "@/components/learn/globe-rotate";
-import { GooeyFabResult } from "@/components/learn/gooey-fab-result";
-import { GooeyFilter } from "@/components/learn/gooey-filter";
-import { GooeyLayers } from "@/components/learn/gooey-layers";
-import { GooeySpring } from "@/components/learn/gooey-spring";
+import {
+  GooeyFabResult,
+  GooeyFabResultBody,
+} from "@/components/learn/gooey-fab-result";
+import { GooeyFilter, GooeyFilterBody } from "@/components/learn/gooey-filter";
+import { GooeyLayers, GooeyLayersBody } from "@/components/learn/gooey-layers";
+import { GooeySpring, GooeySpringBody } from "@/components/learn/gooey-spring";
 import { GooeyStackAnatomy } from "@/components/learn/gooey-stack-anatomy";
 import { GooeyStackFilter } from "@/components/learn/gooey-stack-filter";
 import { GooeyStackNearness } from "@/components/learn/gooey-stack-nearness";
@@ -193,6 +196,8 @@ import { LampIgnite } from "@/components/learn/lamp-ignite";
 import { LampResult } from "@/components/learn/lamp-result";
 import { LampRise } from "@/components/learn/lamp-rise";
 import { LayerReveal } from "@/components/learn/layer-reveal";
+import { LearnChapter } from "@/components/learn/learn-chapter";
+import { LearnPlayer } from "@/components/learn/learn-player";
 import { LightRaysAnatomy } from "@/components/learn/light-rays-anatomy";
 import { LightRaysGrain } from "@/components/learn/light-rays-grain";
 import { LightRaysResult } from "@/components/learn/light-rays-result";
@@ -623,9 +628,13 @@ export function getMDXComponents(components?: MDXComponents) {
     GlobeResult,
     GlobeRotate,
     GooeyFabResult,
+    GooeyFabResultBody,
     GooeyFilter,
+    GooeyFilterBody,
     GooeyLayers,
+    GooeyLayersBody,
     GooeySpring,
+    GooeySpringBody,
     GooeyStackAnatomy,
     GooeyStackFilter,
     GooeyStackNearness,
@@ -669,6 +678,8 @@ export function getMDXComponents(components?: MDXComponents) {
     LampResult,
     LampRise,
     LayerReveal,
+    LearnChapter,
+    LearnPlayer,
     LightRaysAnatomy,
     LightRaysGrain,
     LightRaysResult,

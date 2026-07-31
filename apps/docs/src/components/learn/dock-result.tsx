@@ -3,6 +3,7 @@
 import { Dock, DockItem } from "@godui/components";
 import { Calendar, Folder, Home, Mail, Search, Settings } from "lucide-react";
 import type { ComponentType } from "react";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
  * Closing "here's the finished thing" panel — the real, interactive Dock. Sweep
@@ -25,6 +26,28 @@ const ITEMS: Item[] = [
 ];
 
 export function DockResult() {
+  const demo = (
+    <>
+      <div className="absolute inset-0 bg-[linear-gradient(135deg,oklch(0.55_0.18_265),oklch(0.62_0.16_320)_45%,oklch(0.7_0.12_25))] opacity-90" />
+      <div className="relative">
+        <Dock>
+          {ITEMS.map(({ label, color, Icon }) => (
+            <DockItem key={label} label={label}>
+              <Icon className={`size-1/2 ${color}`} strokeWidth={2} />
+            </DockItem>
+          ))}
+        </Dock>
+      </div>
+    </>
+  );
+
+  if (useBareScene())
+    return (
+      <div className="relative flex min-h-[260px] items-end justify-center overflow-hidden p-6 w-full">
+        {demo}
+      </div>
+    );
+
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -36,16 +59,7 @@ export function DockResult() {
         </span>
       </div>
       <div className="relative flex min-h-[260px] items-end justify-center overflow-hidden p-10">
-        <div className="absolute inset-0 bg-[linear-gradient(135deg,oklch(0.55_0.18_265),oklch(0.62_0.16_320)_45%,oklch(0.7_0.12_25))] opacity-90" />
-        <div className="relative">
-          <Dock>
-            {ITEMS.map(({ label, color, Icon }) => (
-              <DockItem key={label} label={label}>
-                <Icon className={`size-1/2 ${color}`} strokeWidth={2} />
-              </DockItem>
-            ))}
-          </Dock>
-        </div>
+        {demo}
       </div>
     </div>
   );

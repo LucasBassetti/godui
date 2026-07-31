@@ -1,6 +1,7 @@
 "use client";
 
 import { Accordion } from "@godui/components";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
  * Closing "here's the finished thing" panel — the real, interactive
@@ -27,6 +28,14 @@ const FAQ_ITEMS = [
 ];
 
 export function AccordionResult() {
+  if (useBareScene())
+    return (
+      <div className="flex min-h-[280px] w-full items-center justify-center p-6">
+        <div className="w-full max-w-lg">
+          <Accordion items={FAQ_ITEMS} defaultValue="what" />
+        </div>
+      </div>
+    );
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">

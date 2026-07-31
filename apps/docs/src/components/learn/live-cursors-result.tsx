@@ -1,6 +1,7 @@
 "use client";
 
 import { SimulatedCursors } from "@godui/components";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
  * Closing "here's the finished thing" panel — `SimulatedCursors` driving
@@ -8,6 +9,18 @@ import { SimulatedCursors } from "@godui/components";
  * component page's own demo uses for a hands-free preview.
  */
 export function LiveCursorsResult() {
+  const demo = (
+    <div className="relative h-full w-full overflow-hidden rounded-xl bg-[var(--muted)]/40">
+      <SimulatedCursors names={["Ana", "Marco", "Priya"]} />
+    </div>
+  );
+
+  // On the LearnPlayer stage, the player supplies the card — render the live
+  // component only. (Standalone / classic scroll layout keeps its own card.)
+  if (useBareScene()) {
+    return <div className="relative h-[280px] w-full p-6">{demo}</div>;
+  }
+
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -18,11 +31,7 @@ export function LiveCursorsResult() {
           the real component — self-driving peers
         </span>
       </div>
-      <div className="relative h-[280px] p-6">
-        <div className="relative h-full w-full overflow-hidden rounded-xl bg-[var(--muted)]/40">
-          <SimulatedCursors names={["Ana", "Marco", "Priya"]} />
-        </div>
-      </div>
+      <div className="relative h-[280px] p-6">{demo}</div>
     </div>
   );
 }

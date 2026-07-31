@@ -1,12 +1,34 @@
 "use client";
 
 import { ElasticText } from "@godui/components";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
  * Closing panel — the real ElasticText so the reader feels the auto spotlight
  * sweep, the spring settle on each character, and the hover distance falloff.
  */
 export function ElasticTextResult() {
+  const demo = (
+    <>
+      <ElasticText className="text-4xl tracking-tight sm:text-5xl">
+        Design for Humans
+      </ElasticText>
+      <ElasticText
+        mode="hover"
+        className="text-2xl tracking-tight text-fd-muted-foreground sm:text-3xl"
+      >
+        Move Your Mouse
+      </ElasticText>
+    </>
+  );
+
+  if (useBareScene())
+    return (
+      <div className="flex min-h-[240px] flex-col items-center justify-center gap-10 p-6 w-full">
+        {demo}
+      </div>
+    );
+
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -18,15 +40,7 @@ export function ElasticTextResult() {
         </span>
       </div>
       <div className="flex min-h-[240px] flex-col items-center justify-center gap-10 p-10">
-        <ElasticText className="text-4xl tracking-tight sm:text-5xl">
-          Design for Humans
-        </ElasticText>
-        <ElasticText
-          mode="hover"
-          className="text-2xl tracking-tight text-fd-muted-foreground sm:text-3xl"
-        >
-          Move Your Mouse
-        </ElasticText>
+        {demo}
       </div>
     </div>
   );

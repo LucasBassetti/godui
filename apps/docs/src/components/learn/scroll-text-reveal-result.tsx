@@ -1,6 +1,7 @@
 "use client";
 
 import { ScrollTextReveal } from "@godui/components";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
  * Closing panel — the real ScrollTextReveal. useScroll targets the element
@@ -8,6 +9,34 @@ import { ScrollTextReveal } from "@godui/components";
  * vertical room and asks the reader to scroll the page through it.
  */
 export function ScrollTextRevealResult() {
+  const demo = (
+    <>
+      <ScrollTextReveal
+        as="p"
+        className="text-balance text-center text-2xl font-semibold leading-relaxed text-foreground sm:text-3xl"
+      >
+        Great interfaces read like a sentence — one idea resolving into the
+        next. As you scroll, each word settles into focus, pacing attention
+        exactly where it belongs.
+      </ScrollTextReveal>
+      <ScrollTextReveal
+        as="p"
+        keepRevealed
+        className="text-balance text-center text-xl font-semibold leading-relaxed text-foreground sm:text-2xl"
+      >
+        With keepRevealed, each word latches at full presence once it lands — so
+        the paragraph stays lit as you scroll back up instead of dimming again.
+      </ScrollTextReveal>
+    </>
+  );
+
+  if (useBareScene())
+    return (
+      <div className="min-h-[280px] mx-auto flex max-w-lg flex-col gap-16 px-6 py-20 md:py-28 w-full">
+        {demo}
+      </div>
+    );
+
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -19,23 +48,7 @@ export function ScrollTextRevealResult() {
         </span>
       </div>
       <div className="mx-auto flex max-w-lg flex-col gap-16 px-6 py-20 md:py-28">
-        <ScrollTextReveal
-          as="p"
-          className="text-balance text-center text-2xl font-semibold leading-relaxed text-foreground sm:text-3xl"
-        >
-          Great interfaces read like a sentence — one idea resolving into the
-          next. As you scroll, each word settles into focus, pacing attention
-          exactly where it belongs.
-        </ScrollTextReveal>
-        <ScrollTextReveal
-          as="p"
-          keepRevealed
-          className="text-balance text-center text-xl font-semibold leading-relaxed text-foreground sm:text-2xl"
-        >
-          With keepRevealed, each word latches at full presence once it lands —
-          so the paragraph stays lit as you scroll back up instead of dimming
-          again.
-        </ScrollTextReveal>
+        {demo}
       </div>
     </div>
   );

@@ -1,14 +1,25 @@
 ---
 title: Anatomy of Scroll Stack
 description: How one scroll progress value turns plain sticky elements into a stack of cards that pin, bury, and scale — with no scroll-jacking and no per-card listeners.
+learnPlayer: true
 ---
+
+<LearnPlayer>
+
+<LearnChapter
+  label="One pinTop, three sticky cards"
+  scene={<ScrollStackAnatomy />}
+  code={`<div className={\`sticky flex items-center justify-center \${trackClass}\`} style={{ top: pinTop }}>
+  <motion.div style={{ scale, filter, translateY: index * peek, transformOrigin: "center top" }}>
+    {children}
+  </motion.div>
+</div>`}
+>
 
 `ScrollStack` doesn't move anything to make cards "stack." Every card is a
 plain `position: sticky` element pinned to the same offset; the stacking
 illusion comes entirely from one shared scroll progress value driving each
 card's own scale, brightness, and blur as it gets buried.
-
-## One pinTop, three sticky cards
 
 Every card sits inside its own track — `h-screen` when the stack tracks the
 page, or `h-full` when it's self-contained — and pins to the same `top:
@@ -17,20 +28,25 @@ later cards render after earlier ones in the DOM, a later card's sticky
 box visually covers the one before it; the only thing keeping the buried
 card visible at all is a small `translateY` offset.
 
-<ScrollStackAnatomy />
-
-```tsx
-<div className={`sticky flex items-center justify-center ${trackClass}`} style={{ top: pinTop }}>
-  <motion.div style={{ scale, filter, translateY: index * peek, transformOrigin: "center top" }}>
-    {children}
-  </motion.div>
-</div>
-```
-
 `peek` (default `16`) is that offset — just enough of the buried card's
 edge to read as depth without the stack looking like a random pile.
 
-## The bury
+</LearnChapter>
+
+<LearnChapter
+  label="The bury"
+  scene={<ScrollStackBury />}
+  code={`const finalScale = Math.max(baseScale, 1 - depth * (1 - baseScale) * 0.5);
+const buriedBrightness = Math.max(0.6, 1 - depth * 0.08);
+const buriedBlur = depth * (blur ? 2 : 0);
+
+const scale = useTransform(progress, [0, segmentEnd, 1], [1, 1, finalScale]);
+const filter = useTransform(progress, [0, segmentEnd, 1], [
+  "brightness(1) blur(0px)",
+  "brightness(1) blur(0px)",
+  \`brightness(\${buriedBrightness}) blur(\${buriedBlur}px)\`,
+]);`}
+>
 
 `depth` is how many cards end up stacked on top of a given one
 (`total - 1 - index`), and it's the only input to that card's `scale` and
@@ -39,26 +55,9 @@ edge to read as depth without the stack looking like a random pile.
 and `filter` ease from resting values toward the buried ones over the rest
 of the scroll:
 
-<ScrollStackBury />
-
-```tsx
-const finalScale = Math.max(baseScale, 1 - depth * (1 - baseScale) * 0.5);
-const buriedBrightness = Math.max(0.6, 1 - depth * 0.08);
-const buriedBlur = depth * (blur ? 2 : 0);
-
-const scale = useTransform(progress, [0, segmentEnd, 1], [1, 1, finalScale]);
-const filter = useTransform(progress, [0, segmentEnd, 1], [
-  "brightness(1) blur(0px)",
-  "brightness(1) blur(0px)",
-  `brightness(${buriedBrightness}) blur(${buriedBlur}px)`,
-]);
-```
-
 The `Math.max(baseScale, …)` clamp means a two-card stack never buries its
 back card past `baseScale` even though the formula alone would ask for
 more — depth stays readable instead of shrinking to a speck.
-
-## Page track vs. self-contained scroller
 
 `ScrollStack` reads exactly one `useScroll` call, and which mode it uses
 flips on a single check:
@@ -78,6 +77,18 @@ stack's total height is `total` viewports of scroll distance. Pass
 `height` and it becomes its own scroll viewport instead, useful anywhere
 you don't want to dedicate that much page scroll to it — inside a bounded
 panel, a modal, or (as below) a docs preview.
+
+</LearnChapter>
+
+<LearnChapter label="The result" scene={<ScrollStackResult />} isResult>
+
+One `scrollYProgress`, one `depth`-driven transform per card, and a resting
+list for anyone who'd rather not watch things scale and blur as they
+scroll.
+
+</LearnChapter>
+
+</LearnPlayer>
 
 ## Accessibility
 
@@ -99,11 +110,3 @@ if (reduce) {
 ## Motion Score
 
 <MotionScorePanel name="scroll-stack" />
-
-## The result
-
-<ScrollStackResult />
-
-One `scrollYProgress`, one `depth`-driven transform per card, and a resting
-list for anyone who'd rather not watch things scale and blur as they
-scroll.

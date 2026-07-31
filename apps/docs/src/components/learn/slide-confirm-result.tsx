@@ -1,6 +1,21 @@
 "use client";
 
 import { SlideConfirmButton } from "@godui/components";
+import { useBareScene } from "@/components/learn/bare-scene-context";
+
+/**
+ * The real, interactive Slide Confirm buttons — no card chrome. Rendered on
+ * the shared `LearnPlayer` stage as the final chapter, and reused inside the
+ * classic card layout below.
+ */
+function SlideConfirmDemo() {
+  return (
+    <div className="flex flex-col items-center justify-center gap-6">
+      <SlideConfirmButton label="Slide to deploy" />
+      <SlideConfirmButton variant="destructive" label="Slide to delete" />
+    </div>
+  );
+}
 
 /**
  * Closing "here's the finished thing" panel — the real, interactive
@@ -8,6 +23,14 @@ import { SlideConfirmButton } from "@godui/components";
  * apart: drag the thumb, watch the fill trail it, release past the line.
  */
 export function SlideConfirmResult() {
+  // On the LearnPlayer stage, the player supplies the card — render the live
+  // component only. (Standalone / classic scroll layout keeps its own card.)
+  if (useBareScene())
+    return (
+      <div className="flex min-h-[280px] w-full items-center justify-center p-6">
+        <SlideConfirmDemo />
+      </div>
+    );
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -18,9 +41,8 @@ export function SlideConfirmResult() {
           the real component — drag the thumb, or release early
         </span>
       </div>
-      <div className="flex min-h-[240px] flex-col items-center justify-center gap-6 p-10">
-        <SlideConfirmButton label="Slide to deploy" />
-        <SlideConfirmButton variant="destructive" label="Slide to delete" />
+      <div className="flex min-h-[240px] items-center justify-center p-10">
+        <SlideConfirmDemo />
       </div>
     </div>
   );

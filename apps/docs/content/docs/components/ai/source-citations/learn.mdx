@@ -1,15 +1,32 @@
 ---
 title: Anatomy of Source Citations
 description: How a numbered pill and a floating preview card share one wrapper, bridge a hover gap with two timers, and settle in with a near-critically-damped spring.
+learnPlayer: true
 ---
 
-An AI answer is only as trustworthy as its sources, and a citation only earns
-its keep if reading it costs nothing. `SourceCitation` answers that with a
-pill small enough to sit inside a sentence and a preview card that only
-exists while you're looking at it. `SourceList` answers the same brief for
-the footer: every source, collapsed by default, staggered in when it isn't.
+<LearnPlayer>
 
-## Anatomy of a citation
+<LearnChapter
+  label="Anatomy of a citation"
+  scene={<SourceCitationsAnatomy />}
+  code={`{/* one wrapper — card is a child of this, not of the paragraph */}
+<span className="relative inline-block align-baseline" onMouseEnter={show} onMouseLeave={hide}>
+  <a href={source.url} aria-label={\`Source \${index}: \${source.title}\`}>
+    {index}
+  </a>
+  <AnimatePresence>
+    {open ? (
+      <motion.span
+        role="tooltip"
+        className="absolute bottom-full left-1/2 z-popover mb-2 -translate-x-1/2 ..."
+      >
+        {/* favicon · hostname · title · snippet */}
+        <span className="absolute left-1/2 top-full size-2 -translate-x-1/2 -translate-y-1 rotate-45 ..." />
+      </motion.span>
+    ) : null}
+  </AnimatePresence>
+</span>`}
+>
 
 Think of it as a footnote mark that grows a preview on hover — not a
 standalone tooltip widget floating somewhere else on the page.
@@ -24,30 +41,8 @@ whole trick:
 3. **Caret** — a rotated square at the card's bottom edge; because the card
    is centered on the wrapper, the caret points at the number.
 
-<SourceCitationsAnatomy />
-
-```tsx
-{/* one wrapper — card is a child of this, not of the paragraph */}
-<span className="relative inline-block align-baseline" onMouseEnter={show} onMouseLeave={hide}>
-  <a href={source.url} aria-label={`Source ${index}: ${source.title}`}>
-    {index}
-  </a>
-  <AnimatePresence>
-    {open ? (
-      <motion.span
-        role="tooltip"
-        className="absolute bottom-full left-1/2 z-popover mb-2 -translate-x-1/2 ..."
-      >
-        {/* favicon · hostname · title · snippet */}
-        <span className="absolute left-1/2 top-full size-2 -translate-x-1/2 -translate-y-1 rotate-45 ..." />
-      </motion.span>
-    ) : null}
-  </AnimatePresence>
-</span>
-```
-
 Closed = pill alone. Open = the **same** wrapper with the card mounted
-above the pill. If the caret misses the number, the card is parented wrong.## Bridging the hover gap
+above the pill. If the caret misses the number, the card is parented wrong.
 
 The pill and the card don't touch — there's a couple of pixels of dead air
 between them, plus the `mb-2` gap the card sits in. Close on `mouseleave`
@@ -73,7 +68,18 @@ Keyboard users skip the timers entirely — `onFocus`/`onBlur` on the anchor
 flip `open` immediately, so tabbing to a pill opens the card exactly like a
 deliberate hover would, with no delay to wait out.
 
-## The spring pop
+</LearnChapter>
+
+<LearnChapter
+  label="The spring pop"
+  scene={<SourceCitationsTooltip />}
+  code={`<motion.span
+  initial={{ opacity: 0, y: 6, scale: 0.96 }}
+  animate={{ opacity: 1, y: 0, scale: 1 }}
+  exit={{ opacity: 0, y: 6, scale: 0.96 }}
+  transition={{ type: "spring", stiffness: 320, damping: 32, mass: 0.9 }}
+/>`}
+>
 
 Once `open` flips, `AnimatePresence` mounts the card off
 `initial={{ opacity: 0, y: 6, scale: 0.96 }}` into a spring —
@@ -82,19 +88,6 @@ damped: fast, with barely a flicker of overshoot past `scale: 1`, nothing
 like a springy button's bounce. Exit runs the same shape in reverse, so
 closing doesn't feel like a different animation.
 
-<SourceCitationsTooltip />
-
-```tsx
-<motion.span
-  initial={{ opacity: 0, y: 6, scale: 0.96 }}
-  animate={{ opacity: 1, y: 0, scale: 1 }}
-  exit={{ opacity: 0, y: 6, scale: 0.96 }}
-  transition={{ type: "spring", stiffness: 320, damping: 32, mass: 0.9 }}
-/>
-```
-
-## Why a spring, not a toggle
-
 `y` and `scale` are the only two properties animating, and both are
 transforms — the browser composites the card on the GPU without touching
 layout or paint. A spring over a fixed-duration ease also means the exit
@@ -102,7 +95,18 @@ feels continuous with whatever point the enter had reached: if you close the
 card mid-pop, the spring reverses from there instead of snapping or
 restarting a separate timeline.
 
-## The source list
+</LearnChapter>
+
+<LearnChapter
+  label="The source list"
+  scene={<SourceCitationsList />}
+  code={`<motion.a
+  initial={{ opacity: 0, y: reduce ? 0 : 8 }}
+  animate={{ opacity: 1, y: 0 }}
+  exit={{ opacity: 0, y: reduce ? 0 : -4, transition: { duration: reduce ? 0 : 0.15, ease } }}
+  transition={{ duration: reduce ? 0 : 0.3, ease, delay: reduce ? 0 : Math.min(i, previewCount) * 0.05 }}
+/>`}
+>
 
 `SourceList` is a flatter problem: no hover, no positioning math, just an
 ordered stack that needs to feel alive without dragging every row in one at
@@ -112,19 +116,24 @@ inside a quarter second. Collapsed, only the first `previewCount` rows exist;
 the "+N more" toggle mounts the rest, and they run the identical fade-up on
 their own delay.
 
-<SourceCitationsList />
-
-```tsx
-<motion.a
-  initial={{ opacity: 0, y: reduce ? 0 : 8 }}
-  animate={{ opacity: 1, y: 0 }}
-  exit={{ opacity: 0, y: reduce ? 0 : -4, transition: { duration: reduce ? 0 : 0.15, ease } }}
-  transition={{ duration: reduce ? 0 : 0.3, ease, delay: reduce ? 0 : Math.min(i, previewCount) * 0.05 }}
-/>
-```
-
 The exit is deliberately shorter than the enter (`0.15s` vs `0.3s`) — rows
 leaving on collapse shouldn't linger as long as rows arriving.
+
+</LearnChapter>
+
+<LearnChapter label="The result" scene={<SourceCitationsResult />} isResult>
+
+Both pieces together — the real components. Hover a pill or tab to one to
+feel the spring; open the collapsed rows below to feel the stagger.
+
+Two small mechanisms doing all the work: a wrapper that opens a card exactly
+where you're looking, bridged by two timers so the gap between them never
+trips you up, and a list that arrives one row at a time without ever making
+you wait for it.
+
+</LearnChapter>
+
+</LearnPlayer>
 
 ## Accessibility
 
@@ -145,15 +154,3 @@ const reduce = useReducedMotion();
 ## Motion Score
 
 <MotionScorePanel name="source-citations" />
-
-## The result
-
-Both pieces together — the real components. Hover a pill or tab to one to
-feel the spring; open the collapsed rows below to feel the stagger.
-
-<SourceCitationsResult />
-
-Two small mechanisms doing all the work: a wrapper that opens a card exactly
-where you're looking, bridged by two timers so the gap between them never
-trips you up, and a list that arrives one row at a time without ever making
-you wait for it.

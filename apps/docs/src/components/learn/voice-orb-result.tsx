@@ -2,6 +2,7 @@
 
 import { VoiceOrb, type VoiceOrbState } from "@godui/components";
 import * as React from "react";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
  * Live VoiceOrb with synthetic amplitude — same idea as the docs demo,
@@ -30,6 +31,37 @@ export function VoiceOrbResult() {
     return () => cancelAnimationFrame(raf);
   }, [state]);
 
+  const demo = (
+    <div className="flex flex-col items-center justify-center gap-6">
+      <VoiceOrb state={state} amplitude={amp} />
+      <div className="flex flex-wrap justify-center gap-2">
+        {STATES.map((s) => (
+          <button
+            key={s}
+            type="button"
+            onClick={() => setState(s)}
+            className={`rounded-lg px-3 py-1.5 text-sm font-medium capitalize ${
+              state === s
+                ? "bg-primary text-primary-foreground"
+                : "bg-[var(--muted)] text-foreground hover:opacity-80"
+            }`}
+          >
+            {s}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+
+  // On the LearnPlayer stage, the player supplies the card — render the live
+  // component only. (Standalone / classic scroll layout keeps its own card.)
+  if (useBareScene())
+    return (
+      <div className="flex min-h-[280px] w-full items-center justify-center p-6">
+        {demo}
+      </div>
+    );
+
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -41,23 +73,7 @@ export function VoiceOrbResult() {
         </span>
       </div>
       <div className="flex min-h-[280px] flex-col items-center justify-center gap-6 p-10">
-        <VoiceOrb state={state} amplitude={amp} />
-        <div className="flex flex-wrap justify-center gap-2">
-          {STATES.map((s) => (
-            <button
-              key={s}
-              type="button"
-              onClick={() => setState(s)}
-              className={`rounded-lg px-3 py-1.5 text-sm font-medium capitalize ${
-                state === s
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-[var(--muted)] text-foreground hover:opacity-80"
-              }`}
-            >
-              {s}
-            </button>
-          ))}
-        </div>
+        {demo}
       </div>
     </div>
   );

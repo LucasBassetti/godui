@@ -1,29 +1,25 @@
 ---
 title: Anatomy of the Hold Confirm Button
 description: How a press-and-hold gesture replaces a confirmation dialog — one motion value, a linear fill, a spring cancel, and a label stack that never resizes the button.
+learnPlayer: true
 ---
 
-A confirmation dialog asks you to move your eyes and click again. A hold
-asks you to commit with the same gesture for a little longer — and it can
-change its mind mid-motion. That's the whole design brief, and it comes down
-to one `motion value` and two very different easings.
+<LearnPlayer>
 
-## The fill
+<LearnChapter
+  label="The fill"
+  scene={<HoldFill />}
+  code={`<motion.span
+  aria-hidden="true"
+  style={{ scaleX: progress }}
+  className="absolute inset-0 origin-left bg-black/20"
+/>`}
+>
 
 Everything rides on a single `useMotionValue(0)` called `progress`. It never
 touches layout — it drives the `scaleX` of an absolutely-positioned span
 pinned to the button's own bounds, `transform-origin: left`. The button
 never resizes; only the fill's transform changes.
-
-<HoldFill />
-
-```tsx
-<motion.span
-  aria-hidden="true"
-  style={{ scaleX: progress }}
-  className="absolute inset-0 origin-left bg-black/20"
-/>
-```
 
 On pointer/key down, `progress` animates `0 → 1` over `duration` (default
 `900`ms) with `ease: "linear"` — no acceleration, no easing curve. A hold is
@@ -38,18 +34,12 @@ playback.current = animate(progress, 1, {
 });
 ```
 
-## Cancel vs confirm
+</LearnChapter>
 
-Release before the fill completes and `progress` doesn't just jump back —
-it springs, with enough damping to feel decisive rather than bouncy:
-`stiffness: 320`, `damping: 32`, `mass: 0.9`. Hold all the way through and
-the fill locks at `1`, a checkmark draws itself in over the label, and
-`onConfirm` fires.
-
-<HoldCancel />
-
-```tsx
-const cancel = () => {
+<LearnChapter
+  label="Cancel vs confirm"
+  scene={<HoldCancel />}
+  code={`const cancel = () => {
   if (statusRef.current !== "holding") return;
   playback.current?.stop();
   setStatus("idle");
@@ -59,8 +49,14 @@ const cancel = () => {
     damping: 32,
     mass: 0.9,
   });
-};
-```
+};`}
+>
+
+Release before the fill completes and `progress` doesn't just jump back —
+it springs, with enough damping to feel decisive rather than bouncy:
+`stiffness: 320`, `damping: 32`, `mass: 0.9`. Hold all the way through and
+the fill locks at `1`, a checkmark draws itself in over the label, and
+`onConfirm` fires.
 
 The check draws with the same restraint as the fill: an SVG path animates
 `pathLength` from `0` to `1` over a flat `0.3`s, no spring, no overshoot. The
@@ -75,8 +71,6 @@ stays quiet.
   transition={{ duration: 0.3 }}
 />
 ```
-
-## A label stack that never resizes
 
 `idle`, `holding`, and `confirmed` each have their own label, and all three
 occupy the **same grid cell**:
@@ -107,8 +101,6 @@ twitch when the hold starts; it was already sized for it. The inactive
 labels also carry `aria-hidden`, so screen readers only ever see the one
 that's showing.
 
-## The confirmed beat
-
 Confirming doesn't reset immediately — the filled bar holds for `1100`ms so
 the "done" state actually registers, then eases back to `0` over a quick
 `0.2`s (no spring here; the moment has passed, this is just tidying up):
@@ -130,8 +122,6 @@ Both the pending `animate()` playback and this timeout are torn down on
 unmount, so a hold that outlives its button never calls `setState` into the
 void.
 
-## Keyboard holds like pointer
-
 `onPointerDown` / `onPointerUp` / `onPointerLeave` / `onPointerCancel` all
 map to the same `start()` / `cancel()` pair that Enter and Space use — a
 keyboard hold is not a lesser affordance, it's the identical state machine:
@@ -152,6 +142,19 @@ const handleKeyUp = (event) => {
 the OS repeat rate, and without that guard every one of them would call
 `start()` again and re-stomp the running animation.
 
+</LearnChapter>
+
+<LearnChapter label="The result" scene={<HoldConfirmResult />} isResult>
+
+One motion value, two easings, and a grid trick — that's the entire
+mechanism. The fill tells you how much longer, the spring tells you it heard
+you let go, and the label stack means none of it ever costs you a layout
+shift.
+
+</LearnChapter>
+
+</LearnPlayer>
+
 ## No reduced-motion branch — and that's fine here
 
 Unlike most GodUI motion, this component doesn't check
@@ -164,12 +167,3 @@ someone how much longer to keep holding.
 ## Motion Score
 
 <MotionScorePanel name="hold-confirm-button" />
-
-## The result
-
-<HoldConfirmResult />
-
-One motion value, two easings, and a grid trick — that's the entire
-mechanism. The fill tells you how much longer, the spring tells you it heard
-you let go, and the label stack means none of it ever costs you a layout
-shift.

@@ -8,6 +8,7 @@ import {
 } from "@godui/components";
 import { Copy, RotateCcw, ThumbsUp } from "lucide-react";
 import * as React from "react";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
  * Closing "here's the finished thing" panel — the real `ConversationThread`
@@ -27,6 +28,40 @@ const ACTIONS = [
 export function ConversationThreadResult() {
   const [run, setRun] = React.useState(0);
   const [streaming, setStreaming] = React.useState(true);
+
+  const demo = (
+    <div
+      key={run}
+      className="mx-auto flex h-[320px] w-full max-w-md flex-col overflow-hidden rounded-xl border border-border bg-background"
+    >
+      <ConversationThread className="flex-1">
+        <ConversationMessage role="user" name="You">
+          How do I center a div in 2026?
+        </ConversationMessage>
+        <ConversationMessage
+          role="assistant"
+          name="GodUI"
+          actions={ACTIONS}
+          streaming={streaming}
+        >
+          {streaming ? (
+            <StreamingText text={ANSWER} onDone={() => setStreaming(false)} />
+          ) : (
+            ANSWER
+          )}
+        </ConversationMessage>
+      </ConversationThread>
+    </div>
+  );
+
+  // On the LearnPlayer stage, the player supplies the card — render the live
+  // component only. (Standalone / classic scroll layout keeps its own card.)
+  if (useBareScene())
+    return (
+      <div className="flex min-h-[280px] w-full items-center justify-center p-6">
+        {demo}
+      </div>
+    );
 
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
@@ -65,31 +100,7 @@ export function ConversationThreadResult() {
         </button>
       </div>
       <div className="flex min-h-[360px] items-center justify-center p-4 md:p-6">
-        <div
-          key={run}
-          className="mx-auto flex h-[320px] w-full max-w-md flex-col overflow-hidden rounded-xl border border-border bg-background"
-        >
-          <ConversationThread className="flex-1">
-            <ConversationMessage role="user" name="You">
-              How do I center a div in 2026?
-            </ConversationMessage>
-            <ConversationMessage
-              role="assistant"
-              name="GodUI"
-              actions={ACTIONS}
-              streaming={streaming}
-            >
-              {streaming ? (
-                <StreamingText
-                  text={ANSWER}
-                  onDone={() => setStreaming(false)}
-                />
-              ) : (
-                ANSWER
-              )}
-            </ConversationMessage>
-          </ConversationThread>
-        </div>
+        {demo}
       </div>
     </div>
   );

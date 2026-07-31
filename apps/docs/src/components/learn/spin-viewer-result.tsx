@@ -3,6 +3,7 @@
 import { SpinViewer } from "@godui/components";
 import { useMemo } from "react";
 import { makeCubeFrames } from "@/components/demos/spin-viewer-frames";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
  * Closing "here's the finished thing" panel — the real, interactive
@@ -12,6 +13,19 @@ import { makeCubeFrames } from "@/components/demos/spin-viewer-frames";
  */
 export function SpinViewerResult() {
   const frames = useMemo(() => makeCubeFrames(48), []);
+
+  const demo = (
+    <>
+      <SpinViewer frames={frames} autoRotate className="size-56" />
+    </>
+  );
+
+  if (useBareScene())
+    return (
+      <div className="relative flex min-h-[300px] items-center justify-center p-6 w-full">
+        {demo}
+      </div>
+    );
 
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
@@ -24,7 +38,7 @@ export function SpinViewerResult() {
         </span>
       </div>
       <div className="relative flex min-h-[300px] items-center justify-center p-10">
-        <SpinViewer frames={frames} autoRotate className="size-56" />
+        {demo}
       </div>
     </div>
   );

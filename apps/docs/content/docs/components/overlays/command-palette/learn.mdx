@@ -1,27 +1,15 @@
 ---
 title: Anatomy of the Command Palette
 description: How a flat groups array becomes a spring-loaded ⌘K menu, with a single highlight that springs between rows instead of restyling them.
+learnPlayer: true
 ---
 
-A command palette is three unglamorous jobs wearing one glossy interaction:
-mount an overlay, filter a list as you type, and keep a keyboard cursor in
-sync with the mouse. None of that is hard on its own — what makes it feel
-fast is that the filtering, the keyboard, and the ⌘K shortcut all share one
-piece of state, and the "active" row is one animated element, not a
-re-render of every row.
+<LearnPlayer>
 
-## Backdrop, panel, rows
-
-`CommandPalette` portals a fixed-position layer into `document.body` and
-renders it only while `open` is true, via `AnimatePresence`. Behind the
-panel sits a click-to-close backdrop; inside it, a search input drives a
-`useMemo`'d filter over `groups`, and the surviving items render flat, one
-`<button role="menuitem">` per row:
-
-<CommandPaletteAnatomy />
-
-```tsx
-const filteredGroups = groups
+<LearnChapter
+  label="Backdrop, panel, rows"
+  scene={<CommandPaletteAnatomy />}
+  code={`const filteredGroups = groups
   .map((g) => ({ ...g, items: g.items.filter((i) => matches(i, query)) }))
   .filter((g) => g.items.length > 0);
 
@@ -32,29 +20,42 @@ function matches(item: CommandItem, query: string) {
     item.label.toLowerCase().includes(q) ||
     item.keywords?.some((k) => k.toLowerCase().includes(q)) === true
   );
-}
-```
+}`}
+>
+
+A command palette is three unglamorous jobs wearing one glossy interaction:
+mount an overlay, filter a list as you type, and keep a keyboard cursor in
+sync with the mouse. None of that is hard on its own — what makes it feel
+fast is that the filtering, the keyboard, and the ⌘K shortcut all share one
+piece of state, and the "active" row is one animated element, not a
+re-render of every row.
+
+`CommandPalette` portals a fixed-position layer into `document.body` and
+renders it only while `open` is true, via `AnimatePresence`. Behind the
+panel sits a click-to-close backdrop; inside it, a search input drives a
+`useMemo`'d filter over `groups`, and the surviving items render flat, one
+`<button role="menuitem">` per row.
 
 `matches` checks the label *and* an optional `keywords` array, so an item
 titled "Toggle Theme" can still surface on "dark" or "light" — the palette
 searches intent, not just the string on screen.
 
-## Enter and exit share one spring
+</LearnChapter>
 
-The panel doesn't fade in from nowhere — it resolves out of a blur, like a
-lens racking into focus. `initial`/`animate`/`exit` move four properties at
-once (`opacity`, `scale`, `y`, `filter: blur()`), all on the same spring:
-
-<CommandPaletteEnter />
-
-```tsx
-<motion.div
+<LearnChapter
+  label="Enter and exit spring"
+  scene={<CommandPaletteEnter />}
+  code={`<motion.div
   initial={{ opacity: 0, scale: 0.96, y: -8, filter: "blur(8px)" }}
   animate={{ opacity: 1, scale: 1, y: 0, filter: "blur(0px)" }}
   exit={{ opacity: 0, scale: 0.97, y: -6, filter: "blur(6px)" }}
   transition={{ type: "spring", stiffness: 320, damping: 32, mass: 0.9 }}
-/>
-```
+/>`}
+>
+
+The panel doesn't fade in from nowhere — it resolves out of a blur, like a
+lens racking into focus. `initial`/`animate`/`exit` move four properties at
+once (`opacity`, `scale`, `y`, `filter: blur()`), all on the same spring.
 
 The exit isn't a mirror of the entrance — `scale 0.97` and `y -6` are a
 shorter throw than `0.96`/`-8`, and the blur is 6px instead of 8. Dismissing
@@ -62,23 +63,23 @@ reads as a quick settle rather than the entrance played backward, which
 matters because exits happen far more often than opens (every `Escape`,
 every selection, every backdrop click).
 
-## One highlight, not one per row
+</LearnChapter>
 
-The active-row indicator isn't a class toggled on whichever row is hot —
-it's a single `motion.span` that only ever exists inside one row at a time,
-bound by a shared `layoutId`:
-
-<CommandPaletteHighlight />
-
-```tsx
-{isActive ? (
+<LearnChapter
+  label="One highlight"
+  scene={<CommandPaletteHighlight />}
+  code={`{isActive ? (
   <motion.span
     layoutId="command-active"
     transition={{ type: "spring", stiffness: 500, damping: 35 }}
     className="absolute inset-0 rounded-lg bg-accent"
   />
-) : null}
-```
+) : null}`}
+>
+
+The active-row indicator isn't a class toggled on whichever row is hot —
+it's a single `motion.span` that only ever exists inside one row at a time,
+bound by a shared `layoutId`.
 
 When `activeIndex` changes — `ArrowDown`/`ArrowUp`, or `onMouseMove`
 re-targeting the row under the cursor — the span it was rendered inside
@@ -87,6 +88,18 @@ unmounts and a new one mounts in the new row. Framer notices they share
 transform instead of cross-fading two static rects. The spring is stiffer
 than the panel's own enter (`500/35` vs `320/32`) because it has to keep up
 with a held-down arrow key without lagging behind it.
+
+</LearnChapter>
+
+<LearnChapter label="The result" scene={<CommandPaletteResult />} isResult>
+
+One `groups` array, filtered in place, walked flat, with a single animated
+highlight riding on top of it. The panel is a spring; the rows are just
+data.
+
+</LearnChapter>
+
+</LearnPlayer>
 
 ## Keyboard, ⌘K, and cleanup
 
@@ -117,11 +130,3 @@ palette, and it never leaks the lock if the component unmounts mid-session.
 ## Motion Score
 
 <MotionScorePanel name="command-palette" />
-
-## The result
-
-<CommandPaletteResult />
-
-One `groups` array, filtered in place, walked flat, with a single animated
-highlight riding on top of it. The panel is a spring; the rows are just
-data.

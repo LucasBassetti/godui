@@ -6,6 +6,7 @@ import {
   type AgentFlowNode,
 } from "@godui/components";
 import * as React from "react";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
  * The real `AgentFlow`, trimmed to four nodes so the whole run fits the
@@ -56,6 +57,27 @@ const EDGES: AgentFlowEdge[] = [
 
 export function AgentFlowResult() {
   const [run, setRun] = React.useState(0);
+  const bare = useBareScene();
+
+  const demo = (
+    <AgentFlow
+      key={run}
+      nodes={NODES}
+      edges={EDGES}
+      autoPlay
+      aria-label="Research agent workflow"
+      className="min-h-[360px] w-full"
+    />
+  );
+
+  // On the LearnPlayer stage, the player supplies the card — render the live
+  // component only. (Standalone / classic scroll layout keeps its own card.)
+  if (bare)
+    return (
+      <div className="flex min-h-[280px] w-full items-center justify-center p-6">
+        {demo}
+      </div>
+    );
 
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
@@ -90,16 +112,7 @@ export function AgentFlowResult() {
           </svg>
         </button>
       </div>
-      <div className="p-4 md:p-6">
-        <AgentFlow
-          key={run}
-          nodes={NODES}
-          edges={EDGES}
-          autoPlay
-          aria-label="Research agent workflow"
-          className="min-h-[360px] w-full"
-        />
-      </div>
+      <div className="p-4 md:p-6">{demo}</div>
     </div>
   );
 }

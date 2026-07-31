@@ -1,6 +1,7 @@
 "use client";
 
 import { SwipeDeck } from "@godui/components";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 const CARDS: { name: string; role: string; img: string }[] = [
   { name: "Aria Wells", role: "Product Designer", img: "1027" },
@@ -38,6 +39,23 @@ function ProfileCard({
  * SwipeDeck. Drag the front card, use the buttons, or the arrow keys.
  */
 export function SwipeDeckResult() {
+  const demo = (
+    <>
+      <SwipeDeck loop actions={{ left: "Pass", right: "Connect" }}>
+        {CARDS.map((c) => (
+          <ProfileCard key={c.name} {...c} />
+        ))}
+      </SwipeDeck>
+    </>
+  );
+
+  if (useBareScene())
+    return (
+      <div className="flex min-h-[420px] items-center justify-center p-6 w-full">
+        {demo}
+      </div>
+    );
+
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -49,11 +67,7 @@ export function SwipeDeckResult() {
         </span>
       </div>
       <div className="flex min-h-[420px] items-center justify-center p-10">
-        <SwipeDeck loop actions={{ left: "Pass", right: "Connect" }}>
-          {CARDS.map((c) => (
-            <ProfileCard key={c.name} {...c} />
-          ))}
-        </SwipeDeck>
+        {demo}
       </div>
     </div>
   );

@@ -1,14 +1,28 @@
 ---
 title: Anatomy of Scroll Progress
 description: How useScroll feeds a spring into scaleX (or a strokeDashoffset ring), and why reduced motion just stiffens the spring.
+learnPlayer: true
 ---
+
+<LearnPlayer>
+
+<LearnChapter
+  label="A pinned bar that scales, not grows"
+  scene={<ScrollProgressAnatomy />}
+  code={`const pinned = container ? "sticky" : "fixed";
+
+<motion.div
+  role="progressbar"
+  aria-label="Scroll progress"
+  style={{ scaleX: progress, height }}
+  className={\`\${pinned} inset-x-0 top-0 left-0 z-sticky origin-left bg-primary\`}
+/>`}
+>
 
 `ScrollProgress` doesn't poll scroll position on a timer. It reads
 `scrollYProgress` from Framer Motion's `useScroll`, smooths it with
 `useSpring`, and maps that single number onto either a pinned bar's
 `scaleX` or a circle's `strokeDashoffset`.
-
-## A pinned bar that scales, not grows
 
 The bar variant is a `motion.div` with `role="progressbar"`,
 `origin-left`, and `style={{ scaleX: progress, height }}`. Pinning is
@@ -16,20 +30,17 @@ The bar variant is a `motion.div` with `role="progressbar"`,
 indicator stays inside a scrollable panel. Width never changes —
 `scaleX` keeps the paint cheap.
 
-<ScrollProgressAnatomy />
+</LearnChapter>
 
-```tsx
-const pinned = container ? "sticky" : "fixed";
-
-<motion.div
-  role="progressbar"
-  aria-label="Scroll progress"
-  style={{ scaleX: progress, height }}
-  className={`${pinned} inset-x-0 top-0 left-0 z-sticky origin-left bg-primary`}
-/>
-```
-
-## useScroll → useSpring → scaleX
+<LearnChapter
+  label="useScroll → useSpring → scaleX"
+  scene={<ScrollProgressSpring />}
+  code={`const { scrollYProgress } = useScroll(/* container | target | page */);
+const progress = useSpring(
+  scrollYProgress,
+  reduceMotion ? { stiffness: 1000, damping: 100 } : SPRING,
+);`}
+>
 
 `useScroll` yields a raw `MotionValue` that jumps with every wheel tick.
 `useSpring` wraps it with `{ stiffness: 120, damping: 24, restDelta: 0.001 }`
@@ -38,29 +49,12 @@ so the bar eases toward the true progress instead of stuttering. Under
 `{ stiffness: 1000, damping: 100 }` — still a spring, just near-instant, so
 the indicator keeps tracking without a visible lag.
 
-<ScrollProgressSpring />
+</LearnChapter>
 
-```tsx
-const { scrollYProgress } = useScroll(/* container | target | page */);
-const progress = useSpring(
-  scrollYProgress,
-  reduceMotion ? { stiffness: 1000, damping: 100 } : SPRING,
-);
-```
-
-## Circle: dashoffset, threshold, back-to-top
-
-`variant="circle"` maps the same spring through
-`useTransform` into `strokeDashoffset = circumference * (1 − progress)`.
-Visibility is gated by raw (unsprung) progress against `showAfter`
-(default `0.05`); `AnimatePresence` springs the button in and out
-(`stiffness: 520`, `damping: 32`). Click finds the nearest
-`[data-scroll-container]` or falls back to `window.scrollTo`.
-
-<ScrollProgressCircle />
-
-```tsx
-const dashoffset = useTransform(
+<LearnChapter
+  label="Circle: dashoffset, threshold, back-to-top"
+  scene={<ScrollProgressCircle />}
+  code={`const dashoffset = useTransform(
   progress,
   (v) => circumference * (1 - Math.min(Math.max(v, 0), 1)),
 );
@@ -69,22 +63,31 @@ React.useEffect(() => {
   const update = (v: number) => setVisible(v > (showAfter ?? 0.05));
   update(rawProgress.get());
   return rawProgress.on("change", update);
-}, [rawProgress, showAfter]);
-```
+}, [rawProgress, showAfter]);`}
+>
 
-## Why scaleX (and dashoffset) stay cheap
+`variant="circle"` maps the same spring through
+`useTransform` into `strokeDashoffset = circumference * (1 − progress)`.
+Visibility is gated by raw (unsprung) progress against `showAfter`
+(default `0.05`); `AnimatePresence` springs the button in and out
+(`stiffness: 520`, `damping: 32`). Click finds the nearest
+`[data-scroll-container]` or falls back to `window.scrollTo`.
 
 Neither variant animates layout. The bar never changes `width`; the ring
 never redraws path geometry — only `strokeDashoffset` updates. The spring
 runs on the MotionValue pipeline, not a React re-render per frame.
 
-## Motion Score
+</LearnChapter>
 
-<MotionScorePanel name="scroll-progress" />
-
-## The result
-
-<ScrollProgressResult />
+<LearnChapter label="The result" scene={<ScrollProgressResult />} isResult>
 
 One scroll signal, one spring, two skins — a bar that scales from the left,
 and a ring that fills until you send it home.
+
+</LearnChapter>
+
+</LearnPlayer>
+
+## Motion Score
+
+<MotionScorePanel name="scroll-progress" />

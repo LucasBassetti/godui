@@ -2,6 +2,7 @@
 
 import { Combobox, type ComboboxOption } from "@godui/components";
 import { useState } from "react";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 const PEOPLE: ComboboxOption[] = [
   {
@@ -55,6 +56,37 @@ export function ComboboxResult() {
   const [value, setValue] = useState("");
   const selected = PEOPLE.find((p) => p.value === value);
 
+  const demo = (
+    <>
+      <div className="flex w-full max-w-sm flex-col gap-3">
+        <span className="font-medium text-foreground text-sm">Assignee</span>
+        <Combobox
+          options={PEOPLE}
+          value={value}
+          onChange={setValue}
+          placeholder="Assign to…"
+        />
+        <p className="text-muted-foreground text-xs">
+          {selected ? (
+            <>
+              Assigned to{" "}
+              <span className="text-foreground">{selected.label}</span>
+            </>
+          ) : (
+            "Search teammates by name"
+          )}
+        </p>
+      </div>
+    </>
+  );
+
+  if (useBareScene())
+    return (
+      <div className="flex min-h-[420px] w-full flex-col items-center gap-4 p-6">
+        {demo}
+      </div>
+    );
+
   return (
     <div className="not-prose my-8 rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -66,25 +98,7 @@ export function ComboboxResult() {
         </span>
       </div>
       <div className="flex min-h-[420px] w-full flex-col items-center gap-4 p-10">
-        <div className="flex w-full max-w-sm flex-col gap-3">
-          <span className="font-medium text-foreground text-sm">Assignee</span>
-          <Combobox
-            options={PEOPLE}
-            value={value}
-            onChange={setValue}
-            placeholder="Assign to…"
-          />
-          <p className="text-muted-foreground text-xs">
-            {selected ? (
-              <>
-                Assigned to{" "}
-                <span className="text-foreground">{selected.label}</span>
-              </>
-            ) : (
-              "Search teammates by name"
-            )}
-          </p>
-        </div>
+        {demo}
       </div>
     </div>
   );

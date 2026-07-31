@@ -2,6 +2,7 @@
 
 import { ProgressFoldButton } from "@godui/components";
 import * as React from "react";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
  * Closing "here's the finished thing" panel — the real, interactive
@@ -40,6 +41,31 @@ export function ProgressFoldResult() {
     setStatus("loading");
   };
 
+  const demo = (
+    <div className="flex min-h-[240px] flex-wrap items-center justify-center gap-6 p-10">
+      <ProgressFoldButton
+        variant="primary"
+        status={status}
+        progress={status === "loading" ? progress : undefined}
+        onClick={handleClick}
+      >
+        {status === "loading" ? "Submitting…" : "Submit"}
+      </ProgressFoldButton>
+      <ProgressFoldButton variant="secondary" status="loading">
+        Indeterminate
+      </ProgressFoldButton>
+    </div>
+  );
+
+  // On the LearnPlayer stage, the player supplies the card — render the live
+  // component only. (Standalone / classic scroll layout keeps its own card.)
+  if (useBareScene())
+    return (
+      <div className="flex min-h-[280px] w-full items-center justify-center p-6">
+        {demo}
+      </div>
+    );
+
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -50,19 +76,7 @@ export function ProgressFoldResult() {
           the real component — click the left one
         </span>
       </div>
-      <div className="flex min-h-[240px] flex-wrap items-center justify-center gap-6 p-10">
-        <ProgressFoldButton
-          variant="primary"
-          status={status}
-          progress={status === "loading" ? progress : undefined}
-          onClick={handleClick}
-        >
-          {status === "loading" ? "Submitting…" : "Submit"}
-        </ProgressFoldButton>
-        <ProgressFoldButton variant="secondary" status="loading">
-          Indeterminate
-        </ProgressFoldButton>
-      </div>
+      {demo}
     </div>
   );
 }

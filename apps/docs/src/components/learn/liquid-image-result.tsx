@@ -1,12 +1,41 @@
 "use client";
 
 import { LiquidImage } from "@godui/components";
+import { useBareScene } from "@/components/learn/bare-scene-context";
+
+const Demo = () => (
+  <div className="grid w-full max-w-md grid-cols-2 gap-4 sm:grid-cols-3">
+    <LiquidImage
+      src="https://picsum.photos/id/1018/640/640"
+      alt="Mountain landscape"
+      className="aspect-square w-full shadow-lg"
+    />
+    <LiquidImage
+      src="https://picsum.photos/id/1015/640/640"
+      alt="River valley"
+      className="aspect-square w-full shadow-lg"
+    />
+    <LiquidImage
+      src="https://picsum.photos/id/1039/640/640"
+      alt="Waterfall"
+      className="col-span-2 aspect-square w-full shadow-lg sm:col-span-1"
+    />
+  </div>
+);
 
 /**
  * Closing panel — real `LiquidImage` tiles so the reader can hover and feel
  * the displacement lerp + velocity boost the article described.
  */
 export function LiquidImageResult() {
+  // On the LearnPlayer stage, the player supplies the card — render the live
+  // component only. (Standalone / classic scroll layout keeps its own card.)
+  if (useBareScene())
+    return (
+      <div className="flex min-h-[280px] w-full items-center justify-center p-6">
+        <Demo />
+      </div>
+    );
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -18,23 +47,7 @@ export function LiquidImageResult() {
         </span>
       </div>
       <div className="flex min-h-[280px] items-center justify-center p-6 md:p-10">
-        <div className="grid w-full max-w-md grid-cols-2 gap-4 sm:grid-cols-3">
-          <LiquidImage
-            src="https://picsum.photos/id/1018/640/640"
-            alt="Mountain landscape"
-            className="aspect-square w-full shadow-lg"
-          />
-          <LiquidImage
-            src="https://picsum.photos/id/1015/640/640"
-            alt="River valley"
-            className="aspect-square w-full shadow-lg"
-          />
-          <LiquidImage
-            src="https://picsum.photos/id/1039/640/640"
-            alt="Waterfall"
-            className="col-span-2 aspect-square w-full shadow-lg sm:col-span-1"
-          />
-        </div>
+        <Demo />
       </div>
     </div>
   );

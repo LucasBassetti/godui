@@ -1,52 +1,48 @@
 ---
 title: Anatomy of the Magic Button
 description: How a pushable 3D button is built from three flat layers, a springy bezier, and a rainbow that costs nothing when idle.
+learnPlayer: true
 ---
 
-A button that feels _pushable_ isn't a texture — it's a lie told by three flat
-layers and a spring. Here's every trick, pulled apart.
+<LearnPlayer>
 
-## The three-layer stack
+<LearnChapter
+  label="The three-layer stack"
+  scene={<LayerReveal />}
+  code={`<button className="group relative ...">
+  <span className="absolute inset-0 rounded-xl ..." aria-hidden />   {/* shadow */}
+  <span className="absolute inset-0 rounded-xl ..." aria-hidden />   {/* edge   */}
+  <span className="relative block rounded-xl ...">{children}</span>  {/* face   */}
+</button>`}
+>
 
 There is no 3D geometry here. The depth is three stacked `<span>`s: a blurred
 **shadow** on the surface, a colored **edge** that fakes the side wall, and the
 **front face** you actually read. Lift the face a few pixels above the edge and
 your eye fills in a solid object.
 
-<LayerReveal />
-
 Each layer is absolutely positioned in the same box, so they overlap perfectly
 at rest. Only their vertical offsets differ.
 
-```tsx
-<button className="group relative ...">
-  <span className="absolute inset-0 rounded-xl ..." aria-hidden />   {/* shadow */}
-  <span className="absolute inset-0 rounded-xl ..." aria-hidden />   {/* edge   */}
-  <span className="relative block rounded-xl ...">{children}</span>  {/* face   */}
-</button>
-```
+</LearnChapter>
 
-## The push physics
+<LearnChapter
+  label="The push physics"
+  scene={<PushPhysics />}
+  code={`// front face
+"-translate-y-[4px] [transition:translate_600ms_cubic-bezier(0.3,0.7,0.4,1)]
+ group-hover:-translate-y-[6px]
+ group-hover:[transition:translate_250ms_cubic-bezier(0.3,0.7,0.4,1.5)]
+ group-active:-translate-y-[2px] group-active:[transition:translate_34ms]"`}
+>
 
 Depth is static; _push_ is motion. The face sits at `-4px`, lifts to `-6px` on
 hover, and dips to `-2px` on press — while the shadow deepens underneath. What
 sells it is the timing: a slow, springy settle at rest, a snappy overshoot on
 hover, and a near-instant `34ms` dip on press.
 
-<PushPhysics />
-
 The overshoot lives in the bezier: `cubic-bezier(0.3, 0.7, 0.4, 1.5)` — that
 final `1.5` control point pushes past the target and springs back.
-
-```tsx
-// front face
-"-translate-y-[4px] [transition:translate_600ms_cubic-bezier(0.3,0.7,0.4,1)]
- group-hover:-translate-y-[6px]
- group-hover:[transition:translate_250ms_cubic-bezier(0.3,0.7,0.4,1.5)]
- group-active:-translate-y-[2px] group-active:[transition:translate_34ms]"
-```
-
-## Why `translate`, not `top` or `box-shadow`
 
 Every offset animates `translate`, never `top`/`margin` or an animated
 `box-shadow`. Transforms are composited — the browser moves an already-painted
@@ -58,23 +54,21 @@ the house rule across GodUI's motion, enforced in CI.
 "[will-change:translate] [transition:translate_600ms_cubic-bezier(0.3,0.7,0.4,1)]"
 ```
 
-## The rainbow edge
+</LearnChapter>
+
+<LearnChapter
+  label="The rainbow edge"
+  scene={<RainbowSweep />}
+  code={`"[background-image:linear-gradient(90deg,var(--rainbow-1),var(--rainbow-5),...)]
+ [background-size:200%_100%] animate-magic-rainbow motion-reduce:animate-none"`}
+>
 
 The optional rainbow isn't a video or a canvas — it's one gradient twice as wide
 as the button, slid sideways forever. `background-size: 200% 100%` gives the
 slack; a keyframe animates `background-position` across it.
 
-<RainbowSweep />
-
-```tsx
-"[background-image:linear-gradient(90deg,var(--rainbow-1),var(--rainbow-5),...)]
- [background-size:200%_100%] animate-magic-rainbow motion-reduce:animate-none"
-```
-
 `motion-reduce:animate-none` freezes the sweep for anyone who's asked the OS to
 cut motion.
-
-## Cheap when idle
 
 An infinite `background-position` keyframe is main-thread paint — cheap, but not
 free, and pointless when the button is off screen. An `IntersectionObserver`
@@ -93,6 +87,20 @@ const io = new IntersectionObserver(
 
 The `128px` margin resumes it just before it re-enters, so you never catch it
 mid-restart.
+
+</LearnChapter>
+
+<LearnChapter label="The result" scene={<ResultPreview />} isResult>
+
+Every piece, assembled — the real component. Hover it, tab to it, press and
+hold. Each motion is one of the mechanisms above doing its job.
+
+That's the whole illusion: three flat layers, one springy curve, a gradient on a
+timer, and the discipline to animate only what the GPU can move for free.
+
+</LearnChapter>
+
+</LearnPlayer>
 
 ## Accessibility
 
@@ -113,13 +121,3 @@ const handleKeyDown = (e) => {
 ## Motion Score
 
 <MotionScorePanel name="magic-button" />
-
-## The result
-
-Every piece, assembled — the real component. Hover it, tab to it, press and
-hold. Each motion is one of the mechanisms above doing its job.
-
-<ResultPreview />
-
-That's the whole illusion: three flat layers, one springy curve, a gradient on a
-timer, and the discipline to animate only what the GPU can move for free.

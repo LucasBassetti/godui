@@ -1,6 +1,7 @@
 "use client";
 
 import { MagicTab, type MagicTabItem } from "@godui/components";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 const ITEMS: MagicTabItem[] = [
   { value: "overview", label: "Overview" },
@@ -15,6 +16,19 @@ const ITEMS: MagicTabItem[] = [
  * selected tab.
  */
 export function MagicTabResult() {
+  const demo = (
+    <>
+      <MagicTab items={ITEMS} defaultValue="overview" rainbow />
+    </>
+  );
+
+  if (useBareScene())
+    return (
+      <div className="flex min-h-[240px] items-center justify-center p-6 w-full">
+        {demo}
+      </div>
+    );
+
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -26,7 +40,7 @@ export function MagicTabResult() {
         </span>
       </div>
       <div className="flex min-h-[240px] items-center justify-center p-10">
-        <MagicTab items={ITEMS} defaultValue="overview" rainbow />
+        {demo}
       </div>
     </div>
   );

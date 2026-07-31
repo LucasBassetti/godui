@@ -1,30 +1,31 @@
 ---
 title: Anatomy of Orbit Carousel
 description: How one signed offset drives position, tilt, scale, and opacity for every slide on the arc, and how a drag rewrites that offset live before a spring settles it.
+learnPlayer: true
 ---
+
+<LearnPlayer>
+
+<LearnChapter
+  label="One offset, five properties"
+  scene={<OrbitCarouselAnatomy />}
+  code={`const a = offset * angleStep;
+const rad = (a * Math.PI) / 180;
+const x = radius * Math.sin(rad);
+const y = radius * (1 - Math.cos(rad));
+const scale = 1 - Math.min(Math.abs(a) / 70, 1) * 0.42;
+const opacity = Math.max(0, 1 - Math.min(Math.abs(a) / 82, 1) * 0.85);`}
+>
 
 Orbit Carousel doesn't animate five slides independently — it derives all
 five from a single number per slide (`offset = i - active`) fed through one
 arc formula. Here's that formula, and the drag that keeps rewriting it in
 real time.
 
-## One offset, five properties
-
 Each slide reads its own `offset` and turns it into `angle = offset *
 angleStep`. Everything else — `x`, `y`, `scale`, `opacity`, `rotate` — is a
 function of that one angle. The front slide (`offset = 0`) sits full-size and
 upright; every step away curves along the arc, shrinks, dims, and tilts.
-
-<OrbitCarouselAnatomy />
-
-```tsx
-const a = offset * angleStep;
-const rad = (a * Math.PI) / 180;
-const x = radius * Math.sin(rad);
-const y = radius * (1 - Math.cos(rad));
-const scale = 1 - Math.min(Math.abs(a) / 70, 1) * 0.42;
-const opacity = Math.max(0, 1 - Math.min(Math.abs(a) / 82, 1) * 0.85);
-```
 
 ```tsx
 <motion.div
@@ -38,7 +39,20 @@ const opacity = Math.max(0, 1 - Math.min(Math.abs(a) / 82, 1) * 0.85);
 slide is visibly smaller before it's visibly faded. That's a deliberate
 two-stage falloff, not one number reused twice.
 
-## The motion: pan rewrites `active`, a spring settles it
+</LearnChapter>
+
+<LearnChapter
+  label="The motion: pan rewrites active, a spring settles it"
+  scene={<OrbitCarouselOrbit />}
+  code={`const handlePan = (_e: unknown, info: PanInfo) => {
+  goTo(Math.round(dragFrom.current - info.offset.x / 120));
+};
+const handlePanEnd = (_e: unknown, info: PanInfo) => {
+  if (Math.abs(info.velocity.x) > 500) {
+    goTo(active - Math.sign(info.velocity.x));
+  }
+};`}
+>
 
 Dragging doesn't move any slide directly. `onPan` recomputes `active` on
 every pointer move — `goTo(dragFrom - offset.x / 120)` — and every slide's
@@ -47,25 +61,10 @@ moves the DOM; the pointer just keeps changing where the spring is chasing.
 Release past the fling threshold and `active` gets one more nudge before the
 spring even starts settling toward it.
 
-<OrbitCarouselOrbit />
-
-```tsx
-const handlePan = (_e: unknown, info: PanInfo) => {
-  goTo(Math.round(dragFrom.current - info.offset.x / 120));
-};
-const handlePanEnd = (_e: unknown, info: PanInfo) => {
-  if (Math.abs(info.velocity.x) > 500) {
-    goTo(active - Math.sign(info.velocity.x));
-  }
-};
-```
-
 Because `active` is a plain rounded integer even mid-drag, every slide is
 already animating toward its next resting angle as soon as the pointer
 crosses the halfway point to the next slot — there's no separate "commit"
 step; the drag handler and the settle spring share the exact same state.
-
-## Why transform, not layout
 
 Every property `OrbitItem` animates — `x`, `y`, `rotate`, `scale`, `opacity`
 — is a `transform`/`opacity` pair, set directly in the `style` object as
@@ -82,6 +81,17 @@ recalculation; the browser only repaints transformed layers.
 />
 ```
 
+</LearnChapter>
+
+<LearnChapter label="The result" scene={<OrbitCarouselResult />} isResult>
+
+One offset, one formula, one spring chasing whatever `active` the drag or
+the keyboard last set — that's the entire wheel.
+
+</LearnChapter>
+
+</LearnPlayer>
+
 ## Accessibility and reduced motion
 
 The stage is `role="group"` with `aria-roledescription="carousel"`, and the
@@ -97,10 +107,3 @@ animate={{ x, y, rotate: reduce ? 0 : a * 0.5, scale, opacity }}
 ## Motion Score
 
 <MotionScorePanel name="orbit-carousel" />
-
-## The result
-
-<OrbitCarouselResult />
-
-One offset, one formula, one spring chasing whatever `active` the drag or
-the keyboard last set — that's the entire wheel.

@@ -2,16 +2,74 @@
 
 import { BentoCard, BentoGrid } from "@godui/components";
 import { Activity, Globe2, ShieldCheck, Sparkles } from "lucide-react";
+import { useBareScene } from "@/components/learn/bare-scene-context";
+
+const iconWrap =
+  "inline-flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary";
+
+/**
+ * The real, interactive `BentoGrid` — no card chrome. Rendered on the shared
+ * `LearnPlayer` stage as the final chapter.
+ */
+export function BentoGridResultBody() {
+  return (
+    <BentoGrid className="max-w-3xl">
+      <BentoCard
+        colSpan={2}
+        icon={
+          <span className={iconWrap}>
+            <Sparkles className="size-5" />
+          </span>
+        }
+        title="Interfaces that feel alive"
+        description="Spring-driven motion and pixel-tuned details, ready to drop in."
+      />
+      <BentoCard
+        rowSpan={2}
+        icon={
+          <span className={iconWrap}>
+            <Activity className="size-5" />
+          </span>
+        }
+        title="Realtime analytics"
+        description="Every interaction streamed and charted as it happens."
+      />
+      <BentoCard
+        icon={
+          <span className={iconWrap}>
+            <ShieldCheck className="size-5" />
+          </span>
+        }
+        title="Enterprise-grade"
+        description="SOC 2 Type II, SSO, and audit logs out of the box."
+      />
+      <BentoCard
+        icon={
+          <span className={iconWrap}>
+            <Globe2 className="size-5" />
+          </span>
+        }
+        title="120ms p95 globally"
+        description="Served from 35 edge regions, close to every user."
+      />
+    </BentoGrid>
+  );
+}
 
 /**
  * Closing "here's the finished thing" panel — the real, interactive
  * `BentoGrid`. Scroll it into view to see the stagger, then hover a card for
  * the lift + spotlight.
  */
-const iconWrap =
-  "inline-flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary";
-
 export function BentoGridResult() {
+  // On the LearnPlayer stage, the player supplies the card — render the live
+  // component only. (Standalone / classic scroll layout keeps its own card.)
+  if (useBareScene())
+    return (
+      <div className="flex min-h-[280px] w-full items-center justify-center p-6">
+        <BentoGridResultBody />
+      </div>
+    );
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -23,46 +81,7 @@ export function BentoGridResult() {
         </span>
       </div>
       <div className="flex min-h-[320px] items-center justify-center p-8">
-        <BentoGrid className="max-w-3xl">
-          <BentoCard
-            colSpan={2}
-            icon={
-              <span className={iconWrap}>
-                <Sparkles className="size-5" />
-              </span>
-            }
-            title="Interfaces that feel alive"
-            description="Spring-driven motion and pixel-tuned details, ready to drop in."
-          />
-          <BentoCard
-            rowSpan={2}
-            icon={
-              <span className={iconWrap}>
-                <Activity className="size-5" />
-              </span>
-            }
-            title="Realtime analytics"
-            description="Every interaction streamed and charted as it happens."
-          />
-          <BentoCard
-            icon={
-              <span className={iconWrap}>
-                <ShieldCheck className="size-5" />
-              </span>
-            }
-            title="Enterprise-grade"
-            description="SOC 2 Type II, SSO, and audit logs out of the box."
-          />
-          <BentoCard
-            icon={
-              <span className={iconWrap}>
-                <Globe2 className="size-5" />
-              </span>
-            }
-            title="120ms p95 globally"
-            description="Served from 35 edge regions, close to every user."
-          />
-        </BentoGrid>
+        <BentoGridResultBody />
       </div>
     </div>
   );

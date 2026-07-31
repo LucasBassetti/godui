@@ -1,12 +1,29 @@
 "use client";
 
 import { MaskButton } from "@godui/components";
+import { useBareScene } from "@/components/learn/bare-scene-context";
+
+const MaskButtons = () => (
+  <>
+    <MaskButton mask="nature">Hover me</MaskButton>
+    <MaskButton mask="urban">Hover me</MaskButton>
+    <MaskButton mask="forest">Hover me</MaskButton>
+  </>
+);
 
 /**
  * Closing "here's the finished thing" panel — the real, interactive
  * MaskButton, one per sprite. Hover or tab to each and watch the flipbook.
  */
 export function MaskResult() {
+  // On the LearnPlayer stage, the player supplies the card — render the live
+  // component only. (Standalone / classic scroll layout keeps its own card.)
+  if (useBareScene())
+    return (
+      <div className="flex min-h-[280px] w-full flex-wrap items-center justify-center gap-6 p-6">
+        <MaskButtons />
+      </div>
+    );
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -18,9 +35,7 @@ export function MaskResult() {
         </span>
       </div>
       <div className="flex min-h-[240px] flex-wrap items-center justify-center gap-6 p-10">
-        <MaskButton mask="nature">Hover me</MaskButton>
-        <MaskButton mask="urban">Hover me</MaskButton>
-        <MaskButton mask="forest">Hover me</MaskButton>
+        <MaskButtons />
       </div>
     </div>
   );

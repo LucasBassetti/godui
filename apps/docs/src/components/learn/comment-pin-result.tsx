@@ -2,6 +2,7 @@
 
 import { type Comment, CommentPin } from "@godui/components";
 import { useState } from "react";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
  * Closing "here's the finished thing" panel — two real `CommentPin`s over a
@@ -47,8 +48,39 @@ const PINS: Pin[] = [
   },
 ];
 
-export function CommentPinResult() {
+/**
+ * The real, interactive canvas — two `CommentPin`s over a mock surface, no card
+ * chrome. Reused by both the standalone card and the bare `LearnPlayer` stage.
+ */
+function CommentPinResultBody() {
   const [openId, setOpenId] = useState<string | null>("p1");
+
+  return (
+    <div className="relative h-full w-full overflow-hidden rounded-xl bg-[var(--muted)]/40">
+      {PINS.map((pin) => (
+        <CommentPin
+          key={pin.id}
+          x={pin.x}
+          y={pin.y}
+          resolved={pin.resolved}
+          comments={pin.comments}
+          open={openId === pin.id}
+          onOpenChange={(open) => setOpenId(open ? pin.id : null)}
+        />
+      ))}
+    </div>
+  );
+}
+
+export function CommentPinResult() {
+  // On the LearnPlayer stage, the player supplies the card — render the live
+  // canvas only. (Standalone / classic scroll layout keeps its own card.)
+  if (useBareScene())
+    return (
+      <div className="flex h-[280px] w-full items-center justify-center p-6">
+        <CommentPinResultBody />
+      </div>
+    );
 
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
@@ -61,19 +93,7 @@ export function CommentPinResult() {
         </span>
       </div>
       <div className="relative h-[280px] p-6">
-        <div className="relative h-full w-full overflow-hidden rounded-xl bg-[var(--muted)]/40">
-          {PINS.map((pin) => (
-            <CommentPin
-              key={pin.id}
-              x={pin.x}
-              y={pin.y}
-              resolved={pin.resolved}
-              comments={pin.comments}
-              open={openId === pin.id}
-              onOpenChange={(open) => setOpenId(open ? pin.id : null)}
-            />
-          ))}
-        </div>
+        <CommentPinResultBody />
       </div>
     </div>
   );

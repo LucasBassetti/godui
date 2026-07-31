@@ -1,13 +1,21 @@
 ---
 title: Anatomy of Hero Parallax
 description: How one scroll progress value drives a tilting 3D plane and three rows drifting in alternating directions, all through spring-smoothed transforms.
+learnPlayer: true
 ---
+
+<LearnPlayer>
+
+<LearnChapter
+  label="Two motion values, three rows"
+  scene={<HeroParallaxAnatomy />}
+  code={`const translateX = useSpring(useTransform(scrollYProgress, [0, 1], [0, 1000]), SPRING);
+const translateXReverse = useSpring(useTransform(scrollYProgress, [0, 1], [0, -1000]), SPRING);`}
+>
 
 Hero Parallax reads exactly one number off the page — `scrollYProgress` —
 and feeds it into five `useTransform` mappings. No scroll listeners per
 row, no manual rAF loop. Here's how one number becomes a drifting 3D grid.
-
-## Two motion values, three rows
 
 Rows don't each get their own scroll math. There are only two: `translateX`
 (scroll `[0,1]` → `[0, 1000]`) and `translateXReverse` (`[0,1]` →
@@ -15,13 +23,6 @@ Rows don't each get their own scroll math. There are only two: `translateX`
 row 2 reads the second and lays out plain `flex-row` — that swap of layout
 direction against the *same-signed* motion is the entire "alternating
 drift" illusion.
-
-<HeroParallaxAnatomy />
-
-```tsx
-const translateX = useSpring(useTransform(scrollYProgress, [0, 1], [0, 1000]), SPRING);
-const translateXReverse = useSpring(useTransform(scrollYProgress, [0, 1], [0, -1000]), SPRING);
-```
 
 ```tsx
 <motion.div className="flex flex-row-reverse ...">   {/* row 1 & 3 */}
@@ -32,7 +33,16 @@ const translateXReverse = useSpring(useTransform(scrollYProgress, [0, 1], [0, -1
 </motion.div>
 ```
 
-## The plane settles fast; the rows keep drifting
+</LearnChapter>
+
+<LearnChapter
+  label="The plane settles fast; the rows keep drifting"
+  scene={<HeroParallaxScrub />}
+  code={`const rotateX = useSpring(useTransform(scrollYProgress, [0, 0.2], [15, 0]), SPRING);
+const rotateZ = useSpring(useTransform(scrollYProgress, [0, 0.2], [20, 0]), SPRING);
+const translateY = useSpring(useTransform(scrollYProgress, [0, 0.2], [-700, 200]), SPRING);
+const opacity = useSpring(useTransform(scrollYProgress, [0, 0.2], [0.2, 1]), SPRING);`}
+>
 
 The whole plane's `rotateX`, `rotateZ`, `translateY`, and `opacity` all map
 from `scrollYProgress` over just `[0, 0.2]` — the tilt is gone and the
@@ -41,21 +51,10 @@ plane is fully visible after the first fifth of the scroll. The row
 spreading the cards apart for the entire 300vh. Two different scroll
 windows on the same signal, composited together.
 
-<HeroParallaxScrub />
-
-```tsx
-const rotateX = useSpring(useTransform(scrollYProgress, [0, 0.2], [15, 0]), SPRING);
-const rotateZ = useSpring(useTransform(scrollYProgress, [0, 0.2], [20, 0]), SPRING);
-const translateY = useSpring(useTransform(scrollYProgress, [0, 0.2], [-700, 200]), SPRING);
-const opacity = useSpring(useTransform(scrollYProgress, [0, 0.2], [0.2, 1]), SPRING);
-```
-
 Every one of those runs through the same `useSpring({ stiffness: 320,
 damping: 32, mass: 0.9 })` before it reaches the DOM, so a fast scroll or a
 scrollbar drag never snaps the plane — it always eases toward wherever
 `scrollYProgress` currently points.
-
-## Why transform, not scroll offsets
 
 `rotateX`/`rotateZ`/`translateY`/`translateX`/`opacity` are the only
 properties in motion. The container's `[perspective:1000px]
@@ -67,6 +66,21 @@ per-row listeners.
 ```tsx
 className="relative flex h-[300vh] flex-col ... [perspective:1000px] [transform-style:preserve-3d]"
 ```
+
+</LearnChapter>
+
+<LearnChapter label="The result" scene={<HeroParallaxResult />} isResult>
+
+Every piece, assembled — scroll inside the panel below to watch the plane
+un-tilt and the rows drift apart. It starts already mid-reveal so the cards
+are visible right away.
+
+One scroll progress value, five spring-smoothed mappings, and a layout swap
+that turns identical math into opposite drift — that's the whole hero.
+
+</LearnChapter>
+
+</LearnPlayer>
 
 ## Accessibility and reduced motion
 
@@ -91,14 +105,3 @@ if (reduce) {
 ## Motion Score
 
 <MotionScorePanel name="hero-parallax" />
-
-## The result
-
-Every piece, assembled — scroll inside the panel below to watch the plane
-un-tilt and the rows drift apart. It starts already mid-reveal so the cards
-are visible right away.
-
-<HeroParallaxResult />
-
-One scroll progress value, five spring-smoothed mappings, and a layout swap
-that turns identical math into opposite drift — that's the whole hero.

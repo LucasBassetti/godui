@@ -1,24 +1,15 @@
 ---
 title: Anatomy of the Animated Tooltip
 description: How one motion.span becomes a bouncy, pointer-tracking tooltip — the mount spring, the 3D tilt math, and why both share one spring config.
+learnPlayer: true
 ---
 
-Most tooltips are a `display` toggle with a CSS transition bolted on. Animated
-Tooltip is one `<span>` wrapper, an `AnimatePresence`, and two coupled springs
-— one for the mount, one for the pointer — built from the exact same
-`{ stiffness: 170, damping: 12, mass: 0.1 }` config so the whole thing feels
-like a single physical object.
+<LearnPlayer>
 
-## Anatomy
-
-The wrapper never unmounts. `open` — flipped by `onMouseEnter`/`onMouseLeave`
-and `onFocus`/`onBlur` — controls whether the panel and its caret exist at
-all:
-
-<AnimatedTooltipAnatomy />
-
-```tsx
-<span
+<LearnChapter
+  label="Anatomy"
+  scene={<AnimatedTooltipAnatomy />}
+  code={`<span
   onMouseEnter={() => setOpen(true)}
   onMouseLeave={() => setOpen(false)}
   onFocus={() => setOpen(true)}
@@ -29,24 +20,29 @@ all:
     {open ? <motion.span role="tooltip">{content}</motion.span> : null}
   </AnimatePresence>
   {children}
-</span>
-```
+</span>`}
+>
+
+Most tooltips are a `display` toggle with a CSS transition bolted on. Animated
+Tooltip is one `<span>` wrapper, an `AnimatePresence`, and two coupled springs
+— one for the mount, one for the pointer — built from the exact same
+`{ stiffness: 170, damping: 12, mass: 0.1 }` config so the whole thing feels
+like a single physical object.
+
+The wrapper never unmounts. `open` — flipped by `onMouseEnter`/`onMouseLeave`
+and `onFocus`/`onBlur` — controls whether the panel and its caret exist at
+all.
 
 The caret isn't a triangle or an SVG — it's a 2px square, `rotate-45`, tucked
 half-behind the panel's edge. Cheaper than a clip-path, and it inherits the
 panel's own background so there's nothing to keep in sync.
 
-## The motion
+</LearnChapter>
 
-The panel's `initial`/`animate` pair isn't a fade with a duration; it's a
-spring, and a deliberately underdamped one. `damping: 12` against
-`stiffness: 170` with a featherweight `mass: 0.1` means it doesn't ease up to
-`scale: 1` — it flies past it and springs back:
-
-<AnimatedTooltipSpring />
-
-```tsx
-<motion.span
+<LearnChapter
+  label="The motion"
+  scene={<AnimatedTooltipSpring />}
+  code={`<motion.span
   initial={{ opacity: 0, y: isTop ? 8 : -8, scale: 0.85 }}
   animate={{
     opacity: 1,
@@ -55,33 +51,38 @@ spring, and a deliberately underdamped one. `damping: 12` against
     transition: { type: "spring", stiffness: 170, damping: 12, mass: 0.1 },
   }}
   exit={{ opacity: 0, y: isTop ? 6 : -6, scale: 0.9 }}
-/>
-```
+/>`}
+>
+
+The panel's `initial`/`animate` pair isn't a fade with a duration; it's a
+spring, and a deliberately underdamped one. `damping: 12` against
+`stiffness: 170` with a featherweight `mass: 0.1` means it doesn't ease up to
+`scale: 1` — it flies past it and springs back.
 
 Notice the exit isn't a spring at all — no `transition` is specified, so it
 falls back to Framer's default tween. The bounce is a *hello*, not a
 *goodbye*: reserved for the moment the tooltip earns your attention, skipped
 on the way out because nobody's watching it leave.
 
-## Pointer tilt
+</LearnChapter>
 
-The 3D read comes from a second spring riding the same config, driven by the
-cursor instead of a mount/unmount. `onMouseMove` measures the pointer against
-the trigger's own center — not the page — so the math is symmetric around
-zero regardless of where the trigger sits:
-
-<AnimatedTooltipTilt />
-
-```tsx
-const x = useMotionValue(0);
+<LearnChapter
+  label="Pointer tilt"
+  scene={<AnimatedTooltipTilt />}
+  code={`const x = useMotionValue(0);
 const rotate = useSpring(useTransform(x, [-60, 60], [-14, 14]), SPRING);
 const translateX = useSpring(useTransform(x, [-60, 60], [-12, 12]), SPRING);
 
 const handleMouseMove = (e: React.MouseEvent<HTMLSpanElement>) => {
   const rect = e.currentTarget.getBoundingClientRect();
   x.set(e.clientX - rect.left - rect.width / 2);
-};
-```
+};`}
+>
+
+The 3D read comes from a second spring riding the same config, driven by the
+cursor instead of a mount/unmount. `onMouseMove` measures the pointer against
+the trigger's own center — not the page — so the math is symmetric around
+zero regardless of where the trigger sits.
 
 `useTransform` is the instant, unanimated remap — pure interpolation, no
 easing. `useSpring` is what wraps around it, turning that instantaneous
@@ -95,6 +96,18 @@ off the motion values directly — no re-render per pixel of mouse movement.
 caret's own `rotate-45` compositing correctly together instead of one
 flattening the other.
 
+</LearnChapter>
+
+<LearnChapter label="The result" scene={<AnimatedTooltipResult />} isResult>
+
+One spring config, two jobs: the panel springs into existence, and once it
+exists, the same numbers govern how it leans toward wherever you're
+pointing.
+
+</LearnChapter>
+
+</LearnPlayer>
+
 ## Accessibility
 
 `role="tooltip"` is on the panel itself, and it opens on `onFocus` exactly
@@ -106,11 +119,3 @@ routed through the identical `AnimatePresence`.
 ## Motion Score
 
 <MotionScorePanel name="animated-tooltip" />
-
-## The result
-
-<AnimatedTooltipResult />
-
-One spring config, two jobs: the panel springs into existence, and once it
-exists, the same numbers govern how it leans toward wherever you're
-pointing.

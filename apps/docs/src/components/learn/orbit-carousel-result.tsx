@@ -1,6 +1,7 @@
 "use client";
 
 import { OrbitCarousel } from "@godui/components";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
  * Closing "here's the finished thing" panel — the real, interactive Orbit
@@ -31,6 +32,23 @@ function OrbitCard({ title, img }: (typeof CARDS)[number]) {
 }
 
 export function OrbitCarouselResult() {
+  const demo = (
+    <>
+      <OrbitCarousel defaultIndex={2} radius={230} angleStep={26}>
+        {CARDS.map((c) => (
+          <OrbitCard key={c.title} {...c} />
+        ))}
+      </OrbitCarousel>
+    </>
+  );
+
+  if (useBareScene())
+    return (
+      <div className="relative flex min-h-[360px] items-center justify-center p-6 md:min-h-[420px] md:p-6 w-full">
+        {demo}
+      </div>
+    );
+
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -42,11 +60,7 @@ export function OrbitCarouselResult() {
         </span>
       </div>
       <div className="relative flex min-h-[360px] items-center justify-center p-6 md:min-h-[420px] md:p-10">
-        <OrbitCarousel defaultIndex={2} radius={230} angleStep={26}>
-          {CARDS.map((c) => (
-            <OrbitCard key={c.title} {...c} />
-          ))}
-        </OrbitCarousel>
+        {demo}
       </div>
     </div>
   );

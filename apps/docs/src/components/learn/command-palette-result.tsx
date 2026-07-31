@@ -2,6 +2,7 @@
 
 import { type CommandGroup, CommandPalette } from "@godui/components";
 import { useState } from "react";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
  * Closing "here's the finished thing" panel — the real, interactive
@@ -62,6 +63,45 @@ export function CommandPaletteResult() {
     },
   ];
 
+  const demo = (
+    <>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-4 py-2 text-sm font-medium text-foreground shadow-sm"
+      >
+        Open command palette
+        <kbd className="rounded border border-border px-1.5 py-0.5 text-muted-foreground text-xs">
+          ⌘K
+        </kbd>
+      </button>
+      <p className="text-muted-foreground text-xs">
+        {last ? (
+          <>
+            Selected: <span className="text-foreground">{last}</span>
+          </>
+        ) : (
+          "Open the palette and run a command"
+        )}
+      </p>
+    </>
+  );
+
+  if (useBareScene())
+    return (
+      <>
+        <div className="flex min-h-[300px] flex-col items-center justify-center gap-4 p-6 w-full">
+          {demo}
+        </div>
+        <CommandPalette
+          open={open}
+          onOpenChange={setOpen}
+          groups={groups}
+          enableShortcut
+        />
+      </>
+    );
+
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -73,25 +113,7 @@ export function CommandPaletteResult() {
         </span>
       </div>
       <div className="flex min-h-[300px] flex-col items-center justify-center gap-4 p-10">
-        <button
-          type="button"
-          onClick={() => setOpen(true)}
-          className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-4 py-2 text-sm font-medium text-foreground shadow-sm"
-        >
-          Open command palette
-          <kbd className="rounded border border-border px-1.5 py-0.5 text-muted-foreground text-xs">
-            ⌘K
-          </kbd>
-        </button>
-        <p className="text-muted-foreground text-xs">
-          {last ? (
-            <>
-              Selected: <span className="text-foreground">{last}</span>
-            </>
-          ) : (
-            "Open the palette and run a command"
-          )}
-        </p>
+        {demo}
       </div>
       <CommandPalette
         open={open}

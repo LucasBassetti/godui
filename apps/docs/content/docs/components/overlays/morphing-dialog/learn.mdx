@@ -1,7 +1,25 @@
 ---
 title: Anatomy of the Morphing Dialog
 description: How one Framer Motion layoutId turns a card into a modal, and springs it back, without a single manually-coordinated animation.
+learnPlayer: true
 ---
+
+<LearnPlayer>
+
+<LearnChapter
+  label="One id, two boxes"
+  scene={<MorphingDialogAnatomy />}
+  code={`const value = React.useMemo<MorphingDialogContextValue>(
+  () => ({
+    isOpen,
+    open: () => setOpen(true),
+    close: () => setOpen(false),
+    layoutId: \`morphing-dialog-\${layoutId}\`,
+    reduceMotion,
+  }),
+  [isOpen, setOpen, layoutId, reduceMotion],
+);`}
+>
 
 Most "expand to modal" implementations fake it: absolutely position a clone
 over the card, animate its box, then swap in the real modal underneath. Morphing
@@ -9,25 +27,8 @@ Dialog doesn't clone anything — it renders the trigger and the content as two
 components that share one `layoutId`, and lets Framer Motion's layout engine
 do the interpolation.
 
-## One id, two measured boxes
-
 `MorphingDialog` is a context provider; it mints a single `layoutId` and hands
-it to both `MorphingDialogTrigger` and `MorphingDialogContent`:
-
-<MorphingDialogAnatomy />
-
-```tsx
-const value = React.useMemo<MorphingDialogContextValue>(
-  () => ({
-    isOpen,
-    open: () => setOpen(true),
-    close: () => setOpen(false),
-    layoutId: `morphing-dialog-${layoutId}`,
-    reduceMotion,
-  }),
-  [isOpen, setOpen, layoutId, reduceMotion],
-);
-```
+it to both `MorphingDialogTrigger` and `MorphingDialogContent`.
 
 Both pieces are just `motion.div`s with `layoutId={layoutId}` set. Framer
 tracks every element with a shared `layoutId` across the tree; when one
@@ -37,15 +38,12 @@ and the other is present, it measures both rects and animates the difference
 `morph()` call anywhere in the source; the "morph" is just two elements
 agreeing to be the same thing.
 
-## The morph spring
+</LearnChapter>
 
-The interpolation itself runs on one transition, tuned specifically for this
-motion:
-
-<MorphingDialogSpring />
-
-```tsx
-// Underdamped so the card settles into the modal with a soft, premium overshoot.
+<LearnChapter
+  label="The morph spring"
+  scene={<MorphingDialogSpring />}
+  code={`// Underdamped so the card settles into the modal with a soft, premium overshoot.
 const MORPH_SPRING = {
   type: "spring" as const,
   stiffness: 320,
@@ -57,8 +55,11 @@ const MORPH_SPRING = {
   layoutId={layoutId}
   transition={reduceMotion ? { duration: 0 } : MORPH_SPRING}
   className="relative z-raised overflow-hidden bg-card text-card-foreground shadow-2xl"
+/>`}
 >
-```
+
+The interpolation itself runs on one transition, tuned specifically for this
+motion.
 
 `stiffness: 320` with `damping: 32` is underdamped enough to overshoot by a
 hair before settling — the card doesn't just resize, it feels like it has
@@ -67,17 +68,12 @@ Everything else about the panel — its border radius, its internal layout —
 rides along on the same spring because it's the same animated `layoutId`
 element, not a second thing chasing it.
 
-## Backdrop, portal, and independent timing
+</LearnChapter>
 
-The morph is only one of three things happening on open. `MorphingDialogContent`
-mounts through `createPortal` into `document.body` (so `z-modal` always wins,
-regardless of where the trigger lives in the DOM), and it renders its own
-backdrop with a completely separate transition:
-
-<MorphingDialogBackdrop />
-
-```tsx
-<motion.button
+<LearnChapter
+  label="Backdrop and portal"
+  scene={<MorphingDialogBackdrop />}
+  code={`<motion.button
   data-slot="morphing-dialog-backdrop"
   onClick={close}
   initial={{ opacity: 0 }}
@@ -85,8 +81,13 @@ backdrop with a completely separate transition:
   exit={{ opacity: 0 }}
   transition={{ duration: reduceMotion ? 0 : 0.2 }}
   className="absolute inset-0 cursor-default bg-black/50 backdrop-blur-sm"
-/>
-```
+/>`}
+>
+
+The morph is only one of three things happening on open. `MorphingDialogContent`
+mounts through `createPortal` into `document.body` (so `z-modal` always wins,
+regardless of where the trigger lives in the DOM), and it renders its own
+backdrop with a completely separate transition.
 
 The backdrop is a flat opacity tween — no spring, no overshoot, because a
 dimming layer springing would look like a glitch. The close button uses the
@@ -105,6 +106,18 @@ never appears mid-morph, only once the panel has essentially arrived:
 ```
 
 Three timelines, three easings, one moment.
+
+</LearnChapter>
+
+<LearnChapter label="The result" scene={<MorphingDialogResult />} isResult>
+
+One `layoutId`, one spring, and a portal — that's the entire mechanism.
+Everything else (the backdrop, the close delay, the escape key) is
+choreography layered on top of a single measured interpolation.
+
+</LearnChapter>
+
+</LearnPlayer>
 
 ## Dismissal and reduced motion
 
@@ -137,11 +150,3 @@ becomes the modal — it just doesn't travel to get there.
 ## Motion Score
 
 <MotionScorePanel name="morphing-dialog" />
-
-## The result
-
-<MorphingDialogResult />
-
-One `layoutId`, one spring, and a portal — that's the entire mechanism.
-Everything else (the backdrop, the close delay, the escape key) is
-choreography layered on top of a single measured interpolation.

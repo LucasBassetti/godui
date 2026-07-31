@@ -2,6 +2,7 @@
 
 import { PromptComposer } from "@godui/components";
 import { useState } from "react";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
  * Closing "here's the finished thing" panel — the real, interactive
@@ -12,6 +13,37 @@ import { useState } from "react";
 export function PromptComposerResult() {
   const [streaming, setStreaming] = useState(false);
   const [model, setModel] = useState("Opus 4.8");
+
+  const demo = (
+    <>
+      <div className="w-full max-w-xl">
+        <PromptComposer
+          placeholder="Ask anything, attach a file, or pick a model…"
+          models={["Opus 4.8", "Sonnet 4.6", "Haiku 4.5"]}
+          model={model}
+          onModelChange={setModel}
+          isStreaming={streaming}
+          onSend={() => {
+            setStreaming(true);
+            setTimeout(() => setStreaming(false), 2200);
+          }}
+          onStop={() => setStreaming(false)}
+        />
+      </div>
+      <p className="text-muted-foreground text-xs">
+        ⌘/Ctrl + Enter to send · drop or paste a file to attach it
+      </p>
+    </>
+  );
+
+  // On the LearnPlayer stage, the player supplies the card — render the live
+  // component only. (Standalone / classic scroll layout keeps its own card.)
+  if (useBareScene())
+    return (
+      <div className="flex min-h-[280px] w-full flex-col items-center justify-center gap-3 p-6">
+        {demo}
+      </div>
+    );
 
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
@@ -24,23 +56,7 @@ export function PromptComposerResult() {
         </span>
       </div>
       <div className="flex min-h-[280px] flex-col items-center justify-center gap-3 p-10">
-        <div className="w-full max-w-xl">
-          <PromptComposer
-            placeholder="Ask anything, attach a file, or pick a model…"
-            models={["Opus 4.8", "Sonnet 4.6", "Haiku 4.5"]}
-            model={model}
-            onModelChange={setModel}
-            isStreaming={streaming}
-            onSend={() => {
-              setStreaming(true);
-              setTimeout(() => setStreaming(false), 2200);
-            }}
-            onStop={() => setStreaming(false)}
-          />
-        </div>
-        <p className="text-muted-foreground text-xs">
-          ⌘/Ctrl + Enter to send · drop or paste a file to attach it
-        </p>
+        {demo}
       </div>
     </div>
   );

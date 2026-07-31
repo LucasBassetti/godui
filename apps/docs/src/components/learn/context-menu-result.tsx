@@ -3,6 +3,7 @@
 import { ContextMenu, type ContextMenuItem } from "@godui/components";
 import { Copy, Download, FileText, Pencil, Share2, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
  * Closing "here's the finished thing" panel — the real, interactive Context
@@ -54,6 +55,33 @@ export function ContextMenuResult() {
     },
   ];
 
+  const demo = (
+    <>
+      <ContextMenu items={items}>
+        <div className="flex w-full max-w-md select-none flex-col items-center gap-4 rounded-xl border border-border border-dashed bg-card px-6 py-10 text-center shadow-sm">
+          <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-primary/10 text-primary">
+            <FileText className="size-7" />
+          </div>
+          <div>
+            <div className="font-medium text-foreground text-sm">
+              quarterly-report.pdf
+            </div>
+            <div className="mt-0.5 text-muted-foreground text-xs">
+              Right-click for actions{last ? ` · ${last}` : ""}
+            </div>
+          </div>
+        </div>
+      </ContextMenu>
+    </>
+  );
+
+  if (useBareScene())
+    return (
+      <div className="flex min-h-[240px] flex-col items-center justify-center gap-6 p-6 w-full">
+        {demo}
+      </div>
+    );
+
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -65,21 +93,7 @@ export function ContextMenuResult() {
         </span>
       </div>
       <div className="flex min-h-[240px] flex-col items-center justify-center gap-6 p-10">
-        <ContextMenu items={items}>
-          <div className="flex w-full max-w-md select-none flex-col items-center gap-4 rounded-xl border border-border border-dashed bg-card px-6 py-10 text-center shadow-sm">
-            <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-primary/10 text-primary">
-              <FileText className="size-7" />
-            </div>
-            <div>
-              <div className="font-medium text-foreground text-sm">
-                quarterly-report.pdf
-              </div>
-              <div className="mt-0.5 text-muted-foreground text-xs">
-                Right-click for actions{last ? ` · ${last}` : ""}
-              </div>
-            </div>
-          </div>
-        </ContextMenu>
+        {demo}
       </div>
     </div>
   );

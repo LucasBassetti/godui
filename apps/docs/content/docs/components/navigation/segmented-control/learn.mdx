@@ -1,25 +1,15 @@
 ---
 title: Anatomy of the Segmented Control
 description: How a tab-like control renders one pill that lives inside whichever tab is active, and lets Framer's layoutId spring it between segments instead of cross-fading.
+learnPlayer: true
 ---
 
-A segmented control could be built as N buttons each tracking their own
-"am I selected" background. GodUI builds it as N buttons and exactly **one**
-pill, which is only ever rendered inside the currently active tab. Switching
-segments doesn't toggle a background on the old and new button — it moves
-the same element.
+<LearnPlayer>
 
-## One track, N tabs, one pill
-
-The track is a `role="tablist"` with `bg-muted`, rounded corners, and a
-little padding; each option is a `role="tab"` button. The pill itself is
-`absolute inset-0` of whichever button is active — conditionally rendered,
-so it only ever exists in one place in the DOM at a time:
-
-<SegmentedControlAnatomy />
-
-```tsx
-<div role="tablist" className="inline-flex items-center rounded-lg border bg-muted p-1">
+<LearnChapter
+  label="One track, one pill"
+  scene={<SegmentedControlAnatomy />}
+  code={`<div role="tablist" className="inline-flex items-center rounded-lg border bg-muted p-1">
   {options.map((opt) => {
     const active = opt.value === value;
     return (
@@ -34,14 +24,38 @@ so it only ever exists in one place in the DOM at a time:
       </button>
     );
   })}
-</div>
-```
+</div>`}
+>
+
+A segmented control could be built as N buttons each tracking their own
+"am I selected" background. GodUI builds it as N buttons and exactly **one**
+pill, which is only ever rendered inside the currently active tab. Switching
+segments doesn't toggle a background on the old and new button — it moves
+the same element.
+
+The track is a `role="tablist"` with `bg-muted`, rounded corners, and a
+little padding; each option is a `role="tab"` button. The pill itself is
+`absolute inset-0` of whichever button is active — conditionally rendered,
+so it only ever exists in one place in the DOM at a time:
 
 Because the pill is a child of the *button*, not the track, it's positioned
 with plain `inset-0` — no coordinate math to find "which tab am I under."
 The tab's own layout does that for free.
 
-## `layoutId` turns a remount into a slide
+</LearnChapter>
+
+<LearnChapter
+  label="layoutId slide"
+  scene={<SegmentedControlSlide />}
+  code={`let pillSeed = 0;
+const layoutId = React.useMemo(() => \`segmented-pill-\${pillSeed++}\`, []);
+
+<motion.span
+  layoutId={layoutId}
+  transition={{ type: "spring", stiffness: 520, damping: 32 }}
+  className="absolute inset-0 rounded-md bg-background shadow-sm"
+/>`}
+>
 
 When `value` changes, the pill unmounts from the old button and mounts in
 the new one — normally that would be two separate elements popping in and
@@ -49,26 +63,11 @@ out. `layoutId` tells Framer Motion these two mounts are "the same" element:
 it measures the old box, measures the new box, and animates a `transform`
 between them instead of letting either one just appear:
 
-<SegmentedControlSlide />
-
-```tsx
-let pillSeed = 0;
-const layoutId = React.useMemo(() => `segmented-pill-${pillSeed++}`, []);
-
-<motion.span
-  layoutId={layoutId}
-  transition={{ type: "spring", stiffness: 520, damping: 32 }}
-  className="absolute inset-0 rounded-md bg-background shadow-sm"
-/>
-```
-
 The per-instance `pillSeed` counter matters more than it looks: `layoutId`
 is matched globally across the page, so two `SegmentedControl`s rendered at
 once must never share an id, or Framer would try to slide a pill *between
 them*. Incrementing a module-level counter on every mount guarantees each
 instance gets its own namespace without a prop the consumer has to supply.
-
-## Press feedback, no extra state
 
 There's no separate "pressed" boolean to track. Every tab button carries
 `active:scale-[0.97]` — a plain CSS active-state utility, not a Framer
@@ -78,6 +77,19 @@ nothing while the control is idle:
 ```tsx
 className="... active:scale-[0.97] disabled:pointer-events-none disabled:opacity-40"
 ```
+
+</LearnChapter>
+
+<LearnChapter label="The result" scene={<SegmentedControlResult />} isResult>
+
+Two lines of state (`value`, and a `layoutId` that only exists to keep
+instances apart) plus one conditionally-rendered pill — the slide is Framer
+measuring two boxes and animating between them, not a control tracking
+motion on its own.
+
+</LearnChapter>
+
+</LearnPlayer>
 
 ## Accessibility
 
@@ -93,12 +105,3 @@ pill still jumps to the new tab, it just doesn't slide.
 ## Motion Score
 
 <MotionScorePanel name="segmented-control" />
-
-## The result
-
-<SegmentedControlResult />
-
-Two lines of state (`value`, and a `layoutId` that only exists to keep
-instances apart) plus one conditionally-rendered pill — the slide is Framer
-measuring two boxes and animating between them, not a control tracking
-motion on its own.

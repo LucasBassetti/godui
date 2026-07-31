@@ -1,35 +1,47 @@
 ---
 title: Anatomy of the Resizable Header
 description: How one nav bar morphs from a wide rounded surface into a floating pill on scroll, and carries two independent layoutId tracks for hover and active state.
+learnPlayer: true
 ---
+
+<LearnPlayer>
+
+<LearnChapter
+  label="One nav: logo, links, CTA"
+  scene={<ResizableHeaderAnatomy />}
+  code={`<motion.nav
+  layout
+  transition={spring}
+  className={\`... border border-border bg-background/70 backdrop-blur-xl \${
+    shrunk
+      ? "w-full max-w-2xl rounded-full px-3 py-2 shadow-lg"
+      : "w-full max-w-5xl rounded-2xl px-4 py-3 shadow-sm"
+  }\`}
+/>`}
+>
 
 Most "shrinking header" implementations swap two separate DOM trees at a
 breakpoint. Resizable Header is one `motion.nav` the whole time — a single
 element whose class names change and whose box framer FLIPs between them,
 so the shrink reads as one continuous move instead of a cut.
 
-## One nav: logo, links, CTA
-
 Structurally it's a `<header>` wrapping a single `motion.nav` — a
 shrink-0 logo on the left, a link row in the middle with room for a hover
 pill and an active underline, and a shrink-0 CTA plus mobile toggle on the
 right:
 
-<ResizableHeaderAnatomy />
+</LearnChapter>
 
-```tsx
-<motion.nav
-  layout
-  transition={spring}
-  className={`... border border-border bg-background/70 backdrop-blur-xl ${
-    shrunk
-      ? "w-full max-w-2xl rounded-full px-3 py-2 shadow-lg"
-      : "w-full max-w-5xl rounded-2xl px-4 py-3 shadow-sm"
-  }`}
-/>
-```
+<LearnChapter
+  label="Scroll threshold morph"
+  scene={<ResizableHeaderMorph />}
+  code={`const { scrollY } = useScroll(scrollRef ? { container: scrollRef } : undefined);
+useMotionValueEvent(scrollY, "change", (latest) => {
+  setShrunk(latest > scrollThreshold);
+});
 
-## Scroll crosses a threshold, the box morphs
+const spring = { type: "spring", stiffness: 320, damping: 32, mass: 0.9 };`}
+>
 
 `useScroll` tracks `scrollY`; a `useMotionValueEvent` listener flips a
 single boolean the instant it passes `scrollThreshold` (default `24px`).
@@ -38,41 +50,28 @@ That boolean is the only thing driving the two class strings above — the
 `max-w-5xl`/`rounded-2xl` to `max-w-2xl`/`rounded-full` on a spring instead
 of snapping:
 
-<ResizableHeaderMorph />
-
-```tsx
-const { scrollY } = useScroll(scrollRef ? { container: scrollRef } : undefined);
-useMotionValueEvent(scrollY, "change", (latest) => {
-  setShrunk(latest > scrollThreshold);
-});
-
-const spring = { type: "spring", stiffness: 320, damping: 32, mass: 0.9 };
-```
-
 The same `320/32/mass 0.9` spring as Mega Menu's panel morph — both are
 "resize a real box" animations, and both want that extra mass so a wide
 surface doesn't overshoot visibly on the way to its new width.
 
-## Two layoutId tracks on one link row
+</LearnChapter>
+
+<LearnChapter
+  label="Two layoutId tracks"
+  scene={<ResizableHeaderPills />}
+  code={`{hovered === link.href && (
+  <motion.span layoutId={\`\${ids.pill}-hover\`} transition={spring} className="... bg-accent" />
+)}
+{isActive && (
+  <motion.span layoutId={ids.pill} transition={spring} className="... bg-foreground" />
+)}`}
+>
 
 The link row carries two independent `motion.span`s, each bound to its own
 `layoutId`: a hover pill that fills whatever link the pointer is over, and
 a thin active underline that only follows a click. They don't know about
 each other — the hover pill can sweep past three links while the
 underline sits still on the one that's actually active:
-
-<ResizableHeaderPills />
-
-```tsx
-{hovered === link.href && (
-  <motion.span layoutId={`${ids.pill}-hover`} transition={spring} className="... bg-accent" />
-)}
-{isActive && (
-  <motion.span layoutId={ids.pill} transition={spring} className="... bg-foreground" />
-)}
-```
-
-## Sticky by default, container-aware, mobile-safe
 
 `sticky` (default `true`) pins the header with `sticky top-0 z-sticky`;
 set it `false` for a header that scrolls away normally. For layouts where
@@ -81,6 +80,17 @@ panel — pass `scrollRef` and `useScroll` tracks that container's scroll
 position instead of the window's. Below `md`, the link row and CTA hide
 entirely behind a hamburger button that opens an `AnimatePresence` dropdown
 sharing the header's border radius and shadow language.
+
+</LearnChapter>
+
+<LearnChapter label="The result" scene={<ResizableHeaderResult />} isResult>
+
+Scroll it: one nav, one threshold, one spring — the bar becomes a pill and
+the two highlight tracks keep riding along underneath it.
+
+</LearnChapter>
+
+</LearnPlayer>
 
 ## Accessibility
 
@@ -93,10 +103,3 @@ morph alone.
 ## Motion Score
 
 <MotionScorePanel name="resizable-header" />
-
-## The result
-
-<ResizableHeaderResult />
-
-Scroll it: one nav, one threshold, one spring — the bar becomes a pill and
-the two highlight tracks keep riding along underneath it.

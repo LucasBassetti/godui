@@ -1,6 +1,7 @@
 "use client";
 
 import { ScrollReveal } from "@godui/components";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
  * Closing panel — real ScrollReveal cards with a short stagger so the
@@ -9,7 +10,27 @@ import { ScrollReveal } from "@godui/components";
 
 const CARDS = [0, 1, 2] as const;
 
+const Cards = () => (
+  <>
+    {CARDS.map((i) => (
+      <ScrollReveal key={i} delay={i * 0.1} className="w-full max-w-sm">
+        <div className="flex h-16 items-center justify-center rounded-xl border border-border bg-card shadow-sm">
+          <span className="h-2 w-24 rounded-full bg-foreground/25" />
+        </div>
+      </ScrollReveal>
+    ))}
+  </>
+);
+
 export function ScrollRevealResult() {
+  // On the LearnPlayer stage, the player supplies the card — render the live
+  // component only. (Standalone / classic scroll layout keeps its own card.)
+  if (useBareScene())
+    return (
+      <div className="flex min-h-[280px] w-full flex-col items-center justify-center gap-4 p-6">
+        <Cards />
+      </div>
+    );
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -21,13 +42,7 @@ export function ScrollRevealResult() {
         </span>
       </div>
       <div className="flex min-h-[280px] flex-col items-center justify-center gap-4 p-8 md:p-12">
-        {CARDS.map((i) => (
-          <ScrollReveal key={i} delay={i * 0.1} className="w-full max-w-sm">
-            <div className="flex h-16 items-center justify-center rounded-xl border border-border bg-card shadow-sm">
-              <span className="h-2 w-24 rounded-full bg-foreground/25" />
-            </div>
-          </ScrollReveal>
-        ))}
+        <Cards />
       </div>
     </div>
   );

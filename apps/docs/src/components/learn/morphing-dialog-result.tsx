@@ -6,6 +6,7 @@ import {
   MorphingDialogContent,
   MorphingDialogTrigger,
 } from "@godui/components";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
  * Closing "here's the finished thing" panel — the real, interactive
@@ -14,6 +15,38 @@ import {
  * button to spring it back.
  */
 export function MorphingDialogResult() {
+  const demo = (
+    <>
+      <MorphingDialog>
+        <MorphingDialogTrigger className="w-64 rounded-2xl border border-border bg-card p-4 text-left shadow-sm [transition:box-shadow_200ms_ease] hover:shadow-md">
+          <div className="h-28 rounded-xl bg-gradient-to-br from-chart-1 to-chart-3" />
+          <div className="mt-3 font-semibold">Aurora Sessions</div>
+          <div className="text-sm text-muted-foreground">Tap to expand</div>
+        </MorphingDialogTrigger>
+
+        <MorphingDialogContent className="w-[min(92vw,28rem)] rounded-2xl">
+          <div className="h-44 bg-gradient-to-br from-chart-1 to-chart-3" />
+          <div className="p-5">
+            <div className="text-lg font-semibold">Aurora Sessions</div>
+            <p className="mt-2 text-sm text-muted-foreground">
+              The card physically morphs into this modal through a shared
+              <code className="mx-1">layoutId</code>, then springs back on
+              close.
+            </p>
+          </div>
+          <MorphingDialogClose />
+        </MorphingDialogContent>
+      </MorphingDialog>
+    </>
+  );
+
+  if (useBareScene())
+    return (
+      <div className="flex min-h-[260px] w-full items-center justify-center p-6">
+        {demo}
+      </div>
+    );
+
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -25,26 +58,7 @@ export function MorphingDialogResult() {
         </span>
       </div>
       <div className="flex min-h-[260px] w-full items-center justify-center p-10">
-        <MorphingDialog>
-          <MorphingDialogTrigger className="w-64 rounded-2xl border border-border bg-card p-4 text-left shadow-sm [transition:box-shadow_200ms_ease] hover:shadow-md">
-            <div className="h-28 rounded-xl bg-gradient-to-br from-chart-1 to-chart-3" />
-            <div className="mt-3 font-semibold">Aurora Sessions</div>
-            <div className="text-sm text-muted-foreground">Tap to expand</div>
-          </MorphingDialogTrigger>
-
-          <MorphingDialogContent className="w-[min(92vw,28rem)] rounded-2xl">
-            <div className="h-44 bg-gradient-to-br from-chart-1 to-chart-3" />
-            <div className="p-5">
-              <div className="text-lg font-semibold">Aurora Sessions</div>
-              <p className="mt-2 text-sm text-muted-foreground">
-                The card physically morphs into this modal through a shared
-                <code className="mx-1">layoutId</code>, then springs back on
-                close.
-              </p>
-            </div>
-            <MorphingDialogClose />
-          </MorphingDialogContent>
-        </MorphingDialog>
+        {demo}
       </div>
     </div>
   );

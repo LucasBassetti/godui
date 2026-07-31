@@ -1,26 +1,15 @@
 ---
 title: Anatomy of Scroll Text Reveal
 description: How one scrollYProgress is sliced across words, scrubbed into opacity and blur, and optionally latched so revealed segments never re-dim.
+learnPlayer: true
 ---
 
-ScrollTextReveal isn't a staggered entrance. It's a scrubbed mapping: the
-paragraph's position in the viewport becomes one `scrollYProgress`, that
-number is carved into equal slices, and each slice drives a segment from
-dim to sharp. Scroll back up and — unless you latch — the sentence dims
-in reverse.
+<LearnPlayer>
 
-## One progress, n slices
-
-`useScroll` watches the root element with offset
-`["start 0.85", "end 0.35"]` — progress starts when the top hits ~85% of
-the viewport and finishes when the bottom clears ~35%. The copy is split
-by `word` (default), `character`, or `line`. Segment `i` of `n` owns
-`[i/n, (i+1)/n]`.
-
-<ScrollTextRevealAnatomy />
-
-```tsx
-const { scrollYProgress } = useScroll({
+<LearnChapter
+  label="One progress, n slices"
+  scene={<ScrollTextRevealAnatomy />}
+  code={`const { scrollYProgress } = useScroll({
   target: localRef,
   offset: offset ?? ["start 0.85", "end 0.35"],
 });
@@ -33,44 +22,66 @@ segments.map(({ key, segment }, i) => (
     end={(i + 1) / n}
     // …
   />
-))
-```
+))`}
+>
+
+ScrollTextReveal isn't a staggered entrance. It's a scrubbed mapping: the
+paragraph's position in the viewport becomes one `scrollYProgress`, that
+number is carved into equal slices, and each slice drives a segment from
+dim to sharp. Scroll back up and — unless you latch — the sentence dims
+in reverse.
+
+`useScroll` watches the root element with offset
+`["start 0.85", "end 0.35"]` — progress starts when the top hits ~85% of
+the viewport and finishes when the bottom clears ~35%. The copy is split
+by `word` (default), `character`, or `line`. Segment `i` of `n` owns
+`[i/n, (i+1)/n]`.
 
 At mid-progress the leading slices are already at reveal `1`, the active
 slice is interpolating, and trailing slices still sit at `dimOpacity`
 (default `0.15`) with optional `blur(6px)`.
 
-## The scrub
+</LearnChapter>
+
+<LearnChapter
+  label="The scrub"
+  scene={<ScrollTextRevealScrub />}
+  code={`const raw = useTransform(progress, [start, end], [0, 1]);
+const opacity = useTransform(reveal, [0, 1], [dimOpacity, 1]);
+const filter = useTransform(reveal, [0, 1], ["blur(6px)", "blur(0px)"]);`}
+>
 
 Each segment maps its slice onto a 0→1 reveal factor, then onto opacity
 (`dimOpacity` → `1`) and, when `blur` is on, `blur(6px)` → `blur(0)`.
 Because those transforms read the live progress value, scrolling up
 rewinds them — no timeline to cancel, no play-once flag.
 
-<ScrollTextRevealScrub />
-
-```tsx
-const raw = useTransform(progress, [start, end], [0, 1]);
-const opacity = useTransform(reveal, [0, 1], [dimOpacity, 1]);
-const filter = useTransform(reveal, [0, 1], ["blur(6px)", "blur(0px)"]);
-```
-
 Only compositor props move. Layout stays put; whitespace tokens keep
 `whitespace-pre` so the original spacing survives the split.
 
-## keepRevealed
+</LearnChapter>
+
+<LearnChapter
+  label="keepRevealed"
+  scene={<ScrollTextRevealLatch />}
+  code={`reveal.set(keepRevealed ? Math.max(reveal.get(), v) : v);`}
+>
 
 Default scrub is honest: leave the paragraph and the words re-dim. Set
-`keepRevealed` and each segment latches at its peak —
+`keepRevealed` and each segment latches at its peak — so scroll-up never
+undoes a word that already landed. Same progress driver, two exit
+behaviours.
 
-```tsx
-reveal.set(keepRevealed ? Math.max(reveal.get(), v) : v);
-```
+</LearnChapter>
 
-— so scroll-up never undoes a word that already landed. Same progress
-driver, two exit behaviours.
+<LearnChapter label="The result" scene={<ScrollTextRevealResult />} isResult>
 
-<ScrollTextRevealLatch />
+One progress value, equal slices, opacity and blur scrubbed to the
+scroll — latch optional. Scroll the page through the panel below.
+
+</LearnChapter>
+
+</LearnPlayer>
 
 ## Accessibility
 
@@ -93,10 +104,3 @@ if (reduceMotion) {
 ## Motion Score
 
 <MotionScorePanel name="scroll-text-reveal" />
-
-## The result
-
-One progress value, equal slices, opacity and blur scrubbed to the
-scroll — latch optional. Scroll the page through the panel below.
-
-<ScrollTextRevealResult />

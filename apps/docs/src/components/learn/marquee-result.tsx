@@ -1,6 +1,7 @@
 "use client";
 
 import { Marquee } from "@godui/components";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
  * Closing panel — the real Marquee with token-bar stand-ins (no brand copy
@@ -9,7 +10,30 @@ import { Marquee } from "@godui/components";
 
 const CELLS = [0, 1, 2, 3, 4, 5, 6, 7] as const;
 
+function MarqueeResultDemo() {
+  return (
+    <Marquee speed={28} className="w-full">
+      {CELLS.map((i) => (
+        <span
+          key={i}
+          className="flex h-12 w-28 items-center justify-center rounded-lg border border-border bg-card shadow-sm"
+        >
+          <span className="h-2 w-14 rounded-full bg-foreground/25" />
+        </span>
+      ))}
+    </Marquee>
+  );
+}
+
 export function MarqueeResult() {
+  // On the LearnPlayer stage, the player supplies the card — render the live
+  // component only. (Standalone / classic scroll layout keeps its own card.)
+  if (useBareScene())
+    return (
+      <div className="flex min-h-[280px] w-full items-center justify-center p-6">
+        <MarqueeResultDemo />
+      </div>
+    );
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -21,16 +45,7 @@ export function MarqueeResult() {
         </span>
       </div>
       <div className="flex min-h-[200px] items-center justify-center py-10">
-        <Marquee speed={28} className="w-full">
-          {CELLS.map((i) => (
-            <span
-              key={i}
-              className="flex h-12 w-28 items-center justify-center rounded-lg border border-border bg-card shadow-sm"
-            >
-              <span className="h-2 w-14 rounded-full bg-foreground/25" />
-            </span>
-          ))}
-        </Marquee>
+        <MarqueeResultDemo />
       </div>
     </div>
   );

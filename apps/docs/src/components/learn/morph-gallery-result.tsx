@@ -1,6 +1,7 @@
 "use client";
 
 import { MorphGallery } from "@godui/components";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
  * Closing "here's the finished thing" panel — the real, interactive
@@ -17,6 +18,27 @@ const PHOTOS = [
 ];
 
 export function MorphGalleryResult() {
+  const demo = (
+    <>
+      <MorphGallery
+        columns={3}
+        className="max-w-md"
+        items={PHOTOS.map((p) => ({
+          src: `https://picsum.photos/id/${p.id}/900/900`,
+          alt: p.caption,
+          caption: p.caption,
+        }))}
+      />
+    </>
+  );
+
+  if (useBareScene())
+    return (
+      <div className="relative flex min-h-[280px] items-center justify-center p-6 sm:p-6 w-full">
+        {demo}
+      </div>
+    );
+
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -28,15 +50,7 @@ export function MorphGalleryResult() {
         </span>
       </div>
       <div className="relative flex min-h-[280px] items-center justify-center p-6 sm:p-10">
-        <MorphGallery
-          columns={3}
-          className="max-w-md"
-          items={PHOTOS.map((p) => ({
-            src: `https://picsum.photos/id/${p.id}/900/900`,
-            alt: p.caption,
-            caption: p.caption,
-          }))}
-        />
+        {demo}
       </div>
     </div>
   );
