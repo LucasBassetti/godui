@@ -1,6 +1,24 @@
 "use client";
 
 import { ContainerScroll } from "@godui/components";
+import { useBareScene } from "@/components/learn/bare-scene-context";
+
+const demo = (
+  <ContainerScroll
+    header={
+      <>
+        <h2 className="text-3xl font-bold text-foreground md:text-5xl">
+          Scroll to bring it to life
+        </h2>
+        <p className="mt-4 text-muted-foreground">
+          The frame un-tilts and settles as you scroll.
+        </p>
+      </>
+    }
+  >
+    <img src="https://picsum.photos/id/1005/1200/750" alt="Dashboard" />
+  </ContainerScroll>
+);
 
 /**
  * Closing "here's the finished thing" panel — the real, interactive
@@ -9,6 +27,14 @@ import { ContainerScroll } from "@godui/components";
  * page through it to watch the frame settle.
  */
 export function ContainerScrollResult() {
+  // On the LearnPlayer stage, the player supplies the card — render the live
+  // component only. (Standalone / classic scroll layout keeps its own card.)
+  if (useBareScene())
+    return (
+      <div className="flex min-h-[280px] w-full items-center justify-center p-6">
+        {demo}
+      </div>
+    );
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -19,20 +45,7 @@ export function ContainerScrollResult() {
           the real component — scroll through it
         </span>
       </div>
-      <ContainerScroll
-        header={
-          <>
-            <h2 className="text-3xl font-bold text-foreground md:text-5xl">
-              Scroll to bring it to life
-            </h2>
-            <p className="mt-4 text-muted-foreground">
-              The frame un-tilts and settles as you scroll.
-            </p>
-          </>
-        }
-      >
-        <img src="https://picsum.photos/id/1005/1200/750" alt="Dashboard" />
-      </ContainerScroll>
+      {demo}
     </div>
   );
 }

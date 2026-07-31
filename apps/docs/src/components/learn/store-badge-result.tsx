@@ -1,12 +1,37 @@
 "use client";
 
 import { StoreBadge, StoreBadgeGroup } from "@godui/components";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
  * Closing "here's the finished thing" panel — the real, interactive
  * StoreBadgeGroup. Hover (or focus) a badge for the scan-to-download QR.
  */
 export function StoreBadgeResult() {
+  const demo = (
+    <>
+      <StoreBadgeGroup>
+        <StoreBadge
+          store="app-store"
+          href="https://apps.apple.com/app/id6761287549"
+          qr
+        />
+        <StoreBadge
+          store="google-play"
+          href="https://play.google.com/store/apps/details?id=lol.hivemind"
+          qr
+        />
+      </StoreBadgeGroup>
+    </>
+  );
+
+  if (useBareScene())
+    return (
+      <div className="flex min-h-[220px] flex-wrap items-center justify-center gap-4 p-6 w-full">
+        {demo}
+      </div>
+    );
+
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -18,18 +43,7 @@ export function StoreBadgeResult() {
         </span>
       </div>
       <div className="flex min-h-[220px] flex-wrap items-center justify-center gap-4 p-10">
-        <StoreBadgeGroup>
-          <StoreBadge
-            store="app-store"
-            href="https://apps.apple.com/app/id6761287549"
-            qr
-          />
-          <StoreBadge
-            store="google-play"
-            href="https://play.google.com/store/apps/details?id=lol.hivemind"
-            qr
-          />
-        </StoreBadgeGroup>
+        {demo}
       </div>
     </div>
   );

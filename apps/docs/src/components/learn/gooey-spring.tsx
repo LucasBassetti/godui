@@ -1,7 +1,7 @@
 "use client";
 
 import type { CSSProperties } from "react";
-import { ScrollScene } from "./scroll-scene";
+import { type SceneAnim, ScrollScene } from "./scroll-scene";
 
 /**
  * One open → close cycle matching the component's spring feel: satellites
@@ -49,49 +49,56 @@ const PHASES: { label: string; value: string }[] = [
   { label: "close delay", value: "(n−i) × 20ms" },
 ];
 
+export function GooeySpringBody({
+  cycle = 0,
+  reduced = false,
+}: Partial<SceneAnim>) {
+  return (
+    <div
+      key={cycle}
+      className={`flex flex-col items-center gap-8 ${reduced ? "gs-static" : ""}`}
+    >
+      {/* biome-ignore lint/security/noDangerouslySetInnerHtml: static keyframes, no user input */}
+      <style dangerouslySetInnerHTML={{ __html: CSS }} />
+
+      <div className="relative flex h-[240px] w-[80px] items-end justify-center pb-2">
+        <div
+          className="gs-sat-2 absolute bottom-2 size-9 rounded-full bg-[var(--foreground)]/40"
+          style={{ "--ty": "-174px" } as CSSProperties}
+        />
+        <div
+          className="gs-sat-1 absolute bottom-2 size-9 rounded-full bg-[var(--foreground)]/45"
+          style={{ "--ty": "-116px" } as CSSProperties}
+        />
+        <div
+          className="gs-sat-0 absolute bottom-2 size-9 rounded-full bg-[var(--foreground)]/50"
+          style={{ "--ty": "-58px" } as CSSProperties}
+        />
+        <div className="relative z-10 flex size-14 items-center justify-center rounded-full border border-white/10 bg-[var(--card)] shadow-md">
+          <span className="gs-trigger flex size-full items-center justify-center font-semibold text-[20px] text-fd-foreground leading-none">
+            +
+          </span>
+        </div>
+      </div>
+
+      <dl className="grid grid-cols-3 gap-x-6 gap-y-1 text-center font-mono text-[11px] text-fd-muted-foreground">
+        {PHASES.map((p) => (
+          <dt key={p.label} className="text-fd-foreground">
+            {p.label}
+          </dt>
+        ))}
+        {PHASES.map((p) => (
+          <dd key={p.label}>{p.value}</dd>
+        ))}
+      </dl>
+    </div>
+  );
+}
+
 export function GooeySpring() {
   return (
     <ScrollScene label="Spring extrusion" note="staggered open / reverse close">
-      {({ cycle, reduced }) => (
-        <div
-          key={cycle}
-          className={`flex flex-col items-center gap-8 ${reduced ? "gs-static" : ""}`}
-        >
-          {/* biome-ignore lint/security/noDangerouslySetInnerHtml: static keyframes, no user input */}
-          <style dangerouslySetInnerHTML={{ __html: CSS }} />
-
-          <div className="relative flex h-[240px] w-[80px] items-end justify-center pb-2">
-            <div
-              className="gs-sat-2 absolute bottom-2 size-9 rounded-full bg-[var(--foreground)]/40"
-              style={{ "--ty": "-174px" } as CSSProperties}
-            />
-            <div
-              className="gs-sat-1 absolute bottom-2 size-9 rounded-full bg-[var(--foreground)]/45"
-              style={{ "--ty": "-116px" } as CSSProperties}
-            />
-            <div
-              className="gs-sat-0 absolute bottom-2 size-9 rounded-full bg-[var(--foreground)]/50"
-              style={{ "--ty": "-58px" } as CSSProperties}
-            />
-            <div className="relative z-10 flex size-14 items-center justify-center rounded-full border border-white/10 bg-[var(--card)] shadow-md">
-              <span className="gs-trigger flex size-full items-center justify-center font-semibold text-[20px] text-fd-foreground leading-none">
-                +
-              </span>
-            </div>
-          </div>
-
-          <dl className="grid grid-cols-3 gap-x-6 gap-y-1 text-center font-mono text-[11px] text-fd-muted-foreground">
-            {PHASES.map((p) => (
-              <dt key={p.label} className="text-fd-foreground">
-                {p.label}
-              </dt>
-            ))}
-            {PHASES.map((p) => (
-              <dd key={p.label}>{p.value}</dd>
-            ))}
-          </dl>
-        </div>
-      )}
+      {(anim) => <GooeySpringBody {...anim} />}
     </ScrollScene>
   );
 }

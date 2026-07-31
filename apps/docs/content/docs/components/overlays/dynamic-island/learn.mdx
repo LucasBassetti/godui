@@ -1,23 +1,15 @@
 ---
 title: Anatomy of the Dynamic Island
 description: How five fixed size presets, one stiff spring, and a separate crossfade combine into Apple's signature pill.
+learnPlayer: true
 ---
 
-The Dynamic Island's shell and its content are animated by two entirely
-different systems that happen to sit inside the same element: the shell's
-box model is driven by `layout` + explicit `animate`, and the content inside
-it is a nested `AnimatePresence` that doesn't know or care what shape it's
-sitting in.
+<LearnPlayer>
 
-## Five presets, nothing computed
-
-There's no formula deriving a size from content — `SIZES` is a lookup table,
-and every shape the shell can take is one of exactly five entries:
-
-<DynamicIslandAnatomy />
-
-```tsx
-const SIZES: Record<
+<LearnChapter
+  label="Five presets"
+  scene={<DynamicIslandAnatomy />}
+  code={`const SIZES: Record<
   DynamicIslandSize,
   { width: number; height: number; radius: number }
 > = {
@@ -26,22 +18,28 @@ const SIZES: Record<
   long: { width: 360, height: 52, radius: 26 },
   tall: { width: 260, height: 120, radius: 28 },
   large: { width: 360, height: 200, radius: 36 },
-};
-```
+};`}
+>
+
+The Dynamic Island's shell and its content are animated by two entirely
+different systems that happen to sit inside the same element: the shell's
+box model is driven by `layout` + explicit `animate`, and the content inside
+it is a nested `AnimatePresence` that doesn't know or care what shape it's
+sitting in.
+
+There's no formula deriving a size from content — `SIZES` is a lookup table,
+and every shape the shell can take is one of exactly five entries.
 
 Passing a size you haven't defined isn't possible — `DynamicIslandSize` is a
 union of these five keys, so the shell only ever animates between known,
 designed states, never an arbitrary in-between.
 
-## The shell spring
+</LearnChapter>
 
-Changing `size` triggers one `animate` call across all three box properties
-at once:
-
-<DynamicIslandShell />
-
-```tsx
-// Underdamped so the shell settles with the signature rubbery overshoot.
+<LearnChapter
+  label="The shell spring"
+  scene={<DynamicIslandShell />}
+  code={`// Underdamped so the shell settles with the signature rubbery overshoot.
 const SHELL_SPRING = {
   type: "spring" as const,
   stiffness: 520,
@@ -58,8 +56,11 @@ const SHELL_SPRING = {
   }}
   transition={reduceMotion ? { duration: 0 } : SHELL_SPRING}
   className="relative flex items-center justify-center overflow-hidden bg-black text-white shadow-xl"
-/>
-```
+/>`}
+>
+
+Changing `size` triggers one `animate` call across all three box properties
+at once.
 
 `stiffness: 520` is considerably stiffer than the morph dialog's `320` —
 the island snaps toward its target almost immediately and only overshoots by
@@ -70,15 +71,12 @@ capsules anymore — their radius is much smaller than half the height — so th
 scene above springs the same three box properties the component does, rather
 than faking the morph with `scale` (which would warp the corners).
 
-## The content crossfade
+</LearnChapter>
 
-The shell's `animate` only touches the box. What's inside crossfades through
-its own, independent `AnimatePresence`:
-
-<DynamicIslandCrossfade />
-
-```tsx
-const key = presenceKey ?? size;
+<LearnChapter
+  label="The content crossfade"
+  scene={<DynamicIslandCrossfade />}
+  code={`const key = presenceKey ?? size;
 
 <AnimatePresence mode="popLayout" initial={false}>
   <motion.div
@@ -90,8 +88,11 @@ const key = presenceKey ?? size;
   >
     {children}
   </motion.div>
-</AnimatePresence>
-```
+</AnimatePresence>`}
+>
+
+The shell's `animate` only touches the box. What's inside crossfades through
+its own, independent `AnimatePresence`.
 
 `presenceKey` defaults to `size`, so simply switching shapes is enough to
 trigger a crossfade — but it's a separate prop precisely so you can keep the
@@ -100,6 +101,17 @@ trigger a crossfade — but it's a separate prop precisely so you can keep the
 means the exiting and entering views animate concurrently rather than
 waiting their turn, which is what makes it read as one view dissolving into
 the next instead of two sequential fades.
+
+</LearnChapter>
+
+<LearnChapter label="The result" scene={<DynamicIslandResult />} isResult>
+
+Two systems, cleanly separated: a five-preset shell spring for the box, and
+an independent crossfade for whatever you put inside it.
+
+</LearnChapter>
+
+</LearnPlayer>
 
 ## Cheap when idle
 
@@ -121,10 +133,3 @@ content — motion is what's skipped, not state.
 ## Motion Score
 
 <MotionScorePanel name="dynamic-island" />
-
-## The result
-
-<DynamicIslandResult />
-
-Two systems, cleanly separated: a five-preset shell spring for the box, and
-an independent crossfade for whatever you put inside it.

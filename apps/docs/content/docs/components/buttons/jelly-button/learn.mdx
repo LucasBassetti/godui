@@ -1,51 +1,46 @@
 ---
 title: Anatomy of the Jelly Button
 description: How a squishy, physical-feeling button is built from a single surface, one animated property, and a bezier that overshoots.
+learnPlayer: true
 ---
 
-A button that feels _squishy_ isn't a texture or a spring library — it's one
-surface, one animated property, and a curve that springs past its target. Here's
-every trick, pulled apart.
+<LearnPlayer>
 
-## One surface, one origin
+<LearnChapter
+  label="One surface, one origin"
+  scene={<JellyAnatomy />}
+  code={`<button className="group origin-bottom ...">{children}</button>`}
+>
 
 There are no layers here. Unlike a 3D push button, the Jelly Button is a single
 element that _deforms in place_. The whole trick is `transform-origin: bottom` —
 the surface is pinned to its baseline, so when it squashes it flattens _down_
 into that edge, the way a real object settles under your finger.
 
-<JellyAnatomy />
-
 The dashed frame is the envelope the surface deforms into on press: wider on X,
 shorter on Y, but anchored to the same bottom edge.
 
-```tsx
-<button className="group origin-bottom ...">{children}</button>
-```
+</LearnChapter>
 
-## The squash & stretch
+<LearnChapter
+  label="The squash & stretch"
+  scene={<JellySquash />}
+  code={`"[transition:scale_300ms_cubic-bezier(0.3,0.7,0.4,1.5)]
+ active:[scale:var(--jelly-press)]
+ active:[transition:scale_120ms_cubic-bezier(0.3,0.7,0.4,1)]"`}
+>
 
 Depth is faked by deform. On press the surface snaps to `scale(1.13, 0.87)` —
 fatter and shorter — then _releases past_ its rest size before settling. That
 overshoot is the entire "jelly" read: a rigid button would just return to `1`,
 but this one springs to `scale(0.97, 1.06)` and back.
 
-<JellySquash />
-
 Two timings do the work: a near-instant `120ms` squash while held, and a slower
 `300ms` release on a bezier that overshoots.
-
-```tsx
-"[transition:scale_300ms_cubic-bezier(0.3,0.7,0.4,1.5)]
- active:[scale:var(--jelly-press)]
- active:[transition:scale_120ms_cubic-bezier(0.3,0.7,0.4,1)]"
-```
 
 The overshoot lives in that `1.5` — the fourth control point of
 `cubic-bezier(0.3, 0.7, 0.4, 1.5)` pushes the value past its target and lets it
 spring back, no keyframes and no JS spring required.
-
-## Why `scale`, nothing else
 
 The deform animates `scale` and _only_ `scale`. No `width`/`height` (that would
 re-flow the page every frame), no `box-shadow` (that would re-paint it). `scale`
@@ -59,8 +54,6 @@ MotionScore **S**.
 "origin-bottom [will-change:transform]
  [transition:scale_300ms_cubic-bezier(0.3,0.7,0.4,1.5)]"
 ```
-
-## The squash knob
 
 How hard the button deforms is one prop, `squash` (`0`–`1`), mapped to the
 `scale` value the button snaps to and handed in as a CSS variable so the class
@@ -78,6 +71,22 @@ style={{ "--jelly-press": pressScale(squash) }}
 
 Driving it through `--jelly-press` means the same handful of Tailwind classes
 serve every intensity — the scanner never sees an interpolated class name.
+
+</LearnChapter>
+
+<LearnChapter label="The result" scene={<JellyButtonResult />} isResult>
+
+Every piece, assembled — the real component. Hover it, tab to it, press and
+hold. The squash, the overshoot, the settle: each is `scale` on a bezier, and
+nothing else.
+
+That's the whole illusion: one surface pinned to its baseline, a single
+composited property, and a curve with the discipline to overshoot and spring
+back.
+
+</LearnChapter>
+
+</LearnPlayer>
 
 ## Accessibility
 
@@ -98,15 +107,3 @@ const handleKeyDown = (e) => {
 ## Motion Score
 
 <MotionScorePanel name="jelly-button" />
-
-## The result
-
-Every piece, assembled — the real component. Hover it, tab to it, press and
-hold. The squash, the overshoot, the settle: each is `scale` on a bezier, and
-nothing else.
-
-<JellyButtonResult />
-
-That's the whole illusion: one surface pinned to its baseline, a single
-composited property, and a curve with the discipline to overshoot and spring
-back.

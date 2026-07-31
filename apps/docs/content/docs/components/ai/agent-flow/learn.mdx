@@ -1,14 +1,27 @@
 ---
 title: Anatomy of Agent Flow
 description: How a node graph becomes one continuous light — length-driven speed, a border-to-beam handoff, and a sequencer that walks the graph on its own.
+learnPlayer: true
 ---
+
+<LearnPlayer>
+
+<LearnChapter
+  label="The graph"
+  scene={<AgentFlowAnatomy />}
+  code={`const startX = from.x + fs.w / 2;
+const startY = from.y;
+const endX = to.x - ts.w / 2;
+const endY = to.y;
+const controlX = (startX + endX) / 2;
+const controlY = (startY + endY) / 2 - (edge.curvature ?? 0);
+const d = \`M \${startX},\${startY} Q \${controlX},\${controlY} \${endX},\${endY}\`;`}
+>
 
 `AgentFlow` looks like a diagram tool, but the interesting part isn't the
 layout — it's the light. Every node card and every edge derives its motion
 from the same handful of numbers, so a graph of any shape reads as one
 unbroken current instead of a pile of independent animations.
-
-## The graph
 
 A node is a card at an absolute `(x, y)` centre. An edge is an SVG quadratic
 curve from its source's **right-edge centre** to its target's **left-edge
@@ -16,23 +29,22 @@ centre** — the anchors are computed from each card's live measured size, not
 a fixed offset, so relabelling a node (a longer sublabel, a taller card) never
 misaligns the line it's plugged into.
 
-<AgentFlowAnatomy />
-
-```tsx
-const startX = from.x + fs.w / 2;
-const startY = from.y;
-const endX = to.x - ts.w / 2;
-const endY = to.y;
-const controlX = (startX + endX) / 2;
-const controlY = (startY + endY) / 2 - (edge.curvature ?? 0);
-const d = `M ${startX},${startY} Q ${controlX},${controlY} ${endX},${endY}`;
-```
-
 Card sizes come from a `ResizeObserver` over every rendered node, not from
 props — so `fitView` and every edge anchor stay correct even after the DOM
 reflows text.
 
-## One pace for every length
+</LearnChapter>
+
+<LearnChapter
+  label="One pace for every length"
+  scene={<AgentFlowBorderTrace />}
+  code={`function borderOutlineLength(w: number, h: number): number {
+  const r = Math.min(CARD_RADIUS, w / 2, h / 2);
+  return w + h - (4 - Math.PI) * r;
+}
+
+const traceDuration = borderOutlineLength(size.w, size.h) / flowSpeed;`}
+>
 
 A bigger card's border has more perimeter to draw. A longer edge has more
 distance to cover. If each animated separately by *duration*, the light would
@@ -40,17 +52,6 @@ visibly slow down on big pieces and speed up on small ones. `AgentFlow` fixes
 the pace instead of the duration: everything shares one `flowSpeed`
 (px/second, default `280`), and each element's duration falls out of its own
 length.
-
-<AgentFlowBorderTrace />
-
-```tsx
-function borderOutlineLength(w: number, h: number): number {
-  const r = Math.min(CARD_RADIUS, w / 2, h / 2);
-  return w + h - (4 - Math.PI) * r;
-}
-
-const traceDuration = borderOutlineLength(size.w, size.h) / flowSpeed;
-```
 
 Edges do the same thing with their own geometry — chord length averaged with
 the two control-arm lengths, for a real (not straight-line) estimate of a
@@ -70,24 +71,24 @@ the component reaches for. An ease-out front decelerates right as it finishes
 — which would visibly stutter the exact moment the beam is supposed to pick
 up speed and continue. Constant velocity is what makes the seam invisible.
 
-## Border → beam, one continuous light
+</LearnChapter>
+
+<LearnChapter
+  label="Border → beam, one continuous light"
+  scene={<AgentFlowPacket />}
+  code={`function borderTracePaths(w: number, h: number): [string, string] {
+  const r = Math.min(CARD_RADIUS, w / 2, h / 2);
+  const top = \`M 0,\${h / 2} L 0,\${r} A \${r},\${r} 0 0 1 \${r},0 L \${w - r},0 A \${r},\${r} 0 0 1 \${w},\${r} L \${w},\${h / 2}\`;
+  const bottom = \`M 0,\${h / 2} L 0,\${h - r} A \${r},\${r} 0 0 0 \${r},\${h} L \${w - r},\${h} A \${r},\${r} 0 0 0 \${w},\${h - r} L \${w},\${h / 2}\`;
+  return [top, bottom];
+}`}
+>
 
 Each card's outline is really *two* paths — `borderTracePaths(w, h)` returns
 symmetric top and bottom outlines that both start at the **left-edge centre**
 and meet at the **right-edge centre**, so the trace grows outward in both
 directions from the same point an incoming beam would have landed on, and
 finishes at the exact point the outgoing beam starts from.
-
-<AgentFlowPacket />
-
-```tsx
-function borderTracePaths(w: number, h: number): [string, string] {
-  const r = Math.min(CARD_RADIUS, w / 2, h / 2);
-  const top = `M 0,${h / 2} L 0,${r} A ${r},${r} 0 0 1 ${r},0 L ${w - r},0 A ${r},${r} 0 0 1 ${w},${r} L ${w},${h / 2}`;
-  const bottom = `M 0,${h / 2} L 0,${h - r} A ${r},${r} 0 0 0 ${r},${h} L ${w - r},${h} A ${r},${r} 0 0 0 ${w},${h - r} L ${w},${h / 2}`;
-  return [top, bottom];
-}
-```
 
 The icon chip doesn't wait for the border to finish — it lights **at the
 halfway point** of the trace, off a plain timer, not an animation-complete
@@ -111,12 +112,10 @@ Timers derived from the same duration the animation itself uses fire exactly
 when the *visual* handoff needs them to, every time — including the graph's
 last hop, which has no next element waiting to double-check it.
 
-## The sequencer
-
-`autoPlay` walks the graph with three sets — `tracing`, `lit`, `flowing` —
-managed by a small reducer, not a timeline library. A node's status is
-derived from which set contains its id; an edge only shows its beam while its
-id is in `flowing`.
+**The sequencer.** `autoPlay` walks the graph with three sets — `tracing`,
+`lit`, `flowing` — managed by a small reducer, not a timeline library. A
+node's status is derived from which set contains its id; an edge only shows
+its beam while its id is in `flowing`.
 
 ```tsx
 type SeqState = { tracing: Set<string>; lit: Set<string>; flowing: Set<string> };
@@ -161,6 +160,18 @@ primary-coloured trail in sync with the packet and keeps it lit once
 `animated` drops back to `false`, so a graph that's finished a full pass shows
 its whole travelled route glowing rather than resetting to plain lines.
 
+</LearnChapter>
+
+<LearnChapter label="The result" scene={<AgentFlowResult />} isResult>
+
+Same reducer, same length-driven pace, same 0.98-early arrival — running on a
+real graph instead of a two-node illustration. Watch the border meet the beam
+at every hop; that seam is the whole point of `flowSpeed`.
+
+</LearnChapter>
+
+</LearnPlayer>
+
 ## Reduced motion
 
 `useReducedMotion()` is read once at the top of the component and threaded
@@ -188,11 +199,3 @@ lit, every persisted edge drawn — it just gets there without the trip.
 ## Motion Score
 
 <MotionScorePanel name="agent-flow" />
-
-## The result
-
-<AgentFlowResult />
-
-Same reducer, same length-driven pace, same 0.98-early arrival — running on a
-real graph instead of a two-node illustration. Watch the border meet the beam
-at every hop; that seam is the whole point of `flowSpeed`.

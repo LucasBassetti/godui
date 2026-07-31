@@ -1,6 +1,7 @@
 "use client";
 
 import { AuroraText } from "@godui/components";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
  * Closing "here's the finished thing" panel — the real AuroraText so the
@@ -8,6 +9,21 @@ import { AuroraText } from "@godui/components";
  * the idle pause the article just explained.
  */
 export function AuroraTextResult() {
+  const demo = (
+    <>
+      <h2 className="text-center font-bold text-4xl tracking-tight md:text-5xl">
+        Ship <AuroraText>beautiful</AuroraText> UI
+      </h2>
+    </>
+  );
+
+  if (useBareScene())
+    return (
+      <div className="flex min-h-[240px] flex-wrap items-center justify-center gap-6 p-6 w-full">
+        {demo}
+      </div>
+    );
+
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -19,9 +35,7 @@ export function AuroraTextResult() {
         </span>
       </div>
       <div className="flex min-h-[240px] flex-wrap items-center justify-center gap-6 p-10">
-        <h2 className="text-center font-bold text-4xl tracking-tight md:text-5xl">
-          Ship <AuroraText>beautiful</AuroraText> UI
-        </h2>
+        {demo}
       </div>
     </div>
   );

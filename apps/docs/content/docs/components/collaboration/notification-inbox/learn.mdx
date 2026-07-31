@@ -1,7 +1,18 @@
 ---
 title: Anatomy of the Notification Inbox
 description: How a Linear-style inbox groups notifications into sticky buckets, archives a row with an elastic drag, and clears its unread badge in one motion.
+learnPlayer: true
 ---
+
+<LearnPlayer>
+
+<LearnChapter
+  label="Header, sticky groups, rows"
+  scene={<NotificationInboxAnatomy />}
+  code={`<div className="sticky top-0 z-base bg-card/90 px-4 py-1.5 backdrop-blur-sm">
+  {label}
+</div>`}
+>
 
 A notification inbox lives or dies on triage speed: can you tell what's new,
 clear it, and get rid of what you don't need without ever reaching for a
@@ -9,14 +20,10 @@ menu? Notification Inbox answers with three mechanisms — sticky grouping, a
 draggable archive, and a badge that clears in lockstep with the rows it
 represents.
 
-## Header, sticky groups, rows
-
 The whole thing is one card: a header with the title and an unread count,
 then notifications bucketed by `group` (defaulting to `"Earlier"` when a
 notification doesn't specify one) under a label that sticks to the top of
 the scroll container while its bucket is in view:
-
-<NotificationInboxAnatomy />
 
 ```tsx
 function groupNotifications(items: Notification[]) {
@@ -34,12 +41,6 @@ function groupNotifications(items: Notification[]) {
 }
 ```
 
-```tsx
-<div className="sticky top-0 z-base bg-card/90 px-4 py-1.5 backdrop-blur-sm">
-  {label}
-</div>
-```
-
 `sticky top-0` inside the scroll container is what lets "Today" pin to the
 top while its rows scroll underneath it — no scroll listener, no manual
 offset math. `z-base` keeps it above the rows without reaching for an
@@ -50,25 +51,25 @@ Each row's `<motion.li layout>` is what makes the group actually respond to
 changes: read a notification, remove one, and every remaining row
 re-measures and springs to its new position instead of snapping.
 
-## Swipe to archive, with a real threshold
+</LearnChapter>
 
-Archiving isn't a button — it's a drag. Each row is `drag="x"`, constrained
-to only move left, with elastic resistance built in so a small nudge feels
-soft and a big pull still can't be dragged off past a limit that doesn't
-exist:
-
-<NotificationInboxSwipe />
-
-```tsx
-<motion.div
+<LearnChapter
+  label="Swipe to archive, with a real threshold"
+  scene={<NotificationInboxSwipe />}
+  code={`<motion.div
   drag="x"
   dragConstraints={{ left: 0, right: 0 }}
   dragElastic={{ left: 0.7, right: 0 }}
   onDragEnd={(_, info) => {
     if (info.offset.x < -80) onArchive?.(notification.id);
   }}
-/>
-```
+/>`}
+>
+
+Archiving isn't a button — it's a drag. Each row is `drag="x"`, constrained
+to only move left, with elastic resistance built in so a small nudge feels
+soft and a big pull still can't be dragged off past a limit that doesn't
+exist:
 
 `dragConstraints: { left: 0, right: 0 }` sounds like it should lock the row
 in place — and it would, if not for `dragElastic`. Elastic drag lets the row
@@ -90,12 +91,12 @@ On archive, the row's `exit` animation is `{ opacity: 0, height: 0, x: -80 }`
 than snapping back to center first, so the dismissal reads as a
 continuation of the gesture instead of a separate animation taking over.
 
-## The badge and the dots clear together
+</LearnChapter>
 
-<NotificationInboxBadge />
-
-```tsx
-<AnimatePresence>
+<LearnChapter
+  label="The badge and the dots clear together"
+  scene={<NotificationInboxBadge />}
+  code={`<AnimatePresence>
   {unread > 0 ? (
     <motion.span
       initial={{ opacity: 0, scale: 0.6 }}
@@ -105,8 +106,8 @@ continuation of the gesture instead of a separate animation taking over.
       {unread}
     </motion.span>
   ) : null}
-</AnimatePresence>
-```
+</AnimatePresence>`}
+>
 
 The badge isn't hidden with `display: none` when the count hits zero — it's
 conditionally rendered inside `AnimatePresence`, so removing it triggers the
@@ -117,8 +118,6 @@ row's unread-dot disappearance happen on the same tick, not staggered one
 notification at a time. Nothing individually "clears" — the count that
 drives the badge and the flags that drive the dots are the same source of
 truth, updated once.
-
-## Cheap when empty
 
 An empty inbox isn't a static "no notifications" line — the bell icon
 bobs on a slow, infinite `y: [0, -4, 0]` loop:
@@ -136,6 +135,18 @@ It's a single `transform`-only keyframe on one small icon, so there's no
 per-frame cost worth pausing for — unlike a full row list, an empty state
 has nothing else on screen competing for main-thread time.
 
+</LearnChapter>
+
+<LearnChapter label="The result" scene={<NotificationInboxResult />} isResult>
+
+One card, one grouping function, one drag threshold, and a badge that's
+just another `AnimatePresence` child reacting to the same state as the rows
+underneath it.
+
+</LearnChapter>
+
+</LearnPlayer>
+
 ## Accessibility
 
 The unread dot carries a visually-hidden `<span className="sr-only">Unread
@@ -147,11 +158,3 @@ keyboard independent of the drag gesture layered on top of it.
 ## Motion Score
 
 <MotionScorePanel name="notification-inbox" />
-
-## The result
-
-<NotificationInboxResult />
-
-One card, one grouping function, one drag threshold, and a badge that's
-just another `AnimatePresence` child reacting to the same state as the rows
-underneath it.

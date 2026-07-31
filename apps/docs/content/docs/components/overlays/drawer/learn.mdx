@@ -1,7 +1,19 @@
 ---
 title: Anatomy of the Drawer
 description: How a sheet pinned to one edge slides purely on transform, and why its drag gesture only stretches in the direction that dismisses it.
+learnPlayer: true
 ---
+
+<LearnPlayer>
+
+<LearnChapter
+  label="Pinned to an edge"
+  scene={<DrawerAnatomy />}
+  code={`const PANEL_BY_SIDE: Record<DrawerSide, string> = {
+  bottom: "inset-x-0 bottom-0 max-h-[90vh] rounded-t-2xl border-t border-border",
+  right:  "inset-y-0 right-0 w-full max-w-md rounded-l-2xl border-l border-border",
+};`}
+>
 
 A drawer is a modal that refuses to feel like one. It's still a portalled
 overlay with a backdrop and a `role="dialog"`, but it lives on an edge
@@ -11,37 +23,21 @@ in. Every one of those differences comes down to one idea: the panel is
 never really "positioned," it's always at its resting `top`/`right`, and
 everything you see is a `transform` on top of that.
 
-## One panel, pinned to an edge
-
 `side="bottom"` and `side="right"` render the same `motion.div`, just with
 different resting classes and a different drag axis. The bottom sheet gets
 `inset-x-0 bottom-0` plus a grab handle; the side panel gets `inset-y-0
-right-0` and no handle:
-
-<DrawerAnatomy />
-
-```tsx
-const PANEL_BY_SIDE: Record<DrawerSide, string> = {
-  bottom: "inset-x-0 bottom-0 max-h-[90vh] rounded-t-2xl border-t border-border",
-  right:  "inset-y-0 right-0 w-full max-w-md rounded-l-2xl border-l border-border",
-};
-```
+right-0` and no handle.
 
 Because those classes never change while the drawer is open, the browser
 never has to reflow the panel's box — everything that moves after mount is
 a `transform`, which brings us to the actual animation.
 
-## It slides, it never repositions
+</LearnChapter>
 
-Hidden and shown are two `transform` values, nothing else. For the bottom
-sheet that's `y: "100%"` (pushed one full panel-height below its own edge)
-to `y: 0`; for the right panel it's the same idea on `x`. One spring drives
-both directions:
-
-<DrawerSpring />
-
-```tsx
-const hidden = isBottom ? { y: "100%" } : { x: "100%" };
+<LearnChapter
+  label="It slides, never repositions"
+  scene={<DrawerSpring />}
+  code={`const hidden = isBottom ? { y: "100%" } : { x: "100%" };
 const shown = isBottom ? { y: 0 } : { x: 0 };
 
 <motion.div
@@ -50,23 +46,24 @@ const shown = isBottom ? { y: 0 } : { x: 0 };
   exit={hidden}
   transition={{ type: "spring", damping: 32, stiffness: 320, mass: 0.9 }}
   drag={isBottom ? "y" : "x"}
-/>
-```
+/>`}
+>
+
+Hidden and shown are two `transform` values, nothing else. For the bottom
+sheet that's `y: "100%"` (pushed one full panel-height below its own edge)
+to `y: 0`; for the right panel it's the same idea on `x`. One spring drives
+both directions.
 
 Because the resting layout never moves, `%`-based transforms stay correct
 at every viewport size without a resize listener — `100%` is always exactly
 one panel-length, on any screen.
 
-## The drag only stretches one way
+</LearnChapter>
 
-The same axis the panel slides on is also the axis you can drag it on, but
-`dragElastic` is asymmetric — it only gives in the direction that dismisses
-the drawer, and stiffens the harder you pull:
-
-<DrawerDismiss />
-
-```tsx
-const CLOSE_OFFSET = 120;
+<LearnChapter
+  label="Drag only one way"
+  scene={<DrawerDismiss />}
+  code={`const CLOSE_OFFSET = 120;
 const CLOSE_VELOCITY = 600;
 
 <motion.div
@@ -74,8 +71,12 @@ const CLOSE_VELOCITY = 600;
   dragConstraints={{ top: 0, bottom: 0, left: 0, right: 0 }}
   dragElastic={isBottom ? { top: 0, bottom: 0.6 } : { left: 0, right: 0.6 }}
   onDragEnd={handleDragEnd}
-/>
-```
+/>`}
+>
+
+The same axis the panel slides on is also the axis you can drag it on, but
+`dragElastic` is asymmetric — it only gives in the direction that dismisses
+the drawer, and stiffens the harder you pull.
 
 `dragConstraints` is zero on every side — there's no real travel budget —
 so all of the give comes from `dragElastic`'s rubber-band math on the
@@ -98,6 +99,19 @@ enough (`> 600px/s`) even from a short drag. Anything short of both and the
 panel has no memory of the gesture — it just springs back to `y: 0` on the
 same transition the open used, because dropping the drag doesn't change
 `animate`.
+
+</LearnChapter>
+
+<LearnChapter label="The result" scene={<DrawerResult />} isResult>
+
+Same component, two edges: a cart on the right you drag away horizontally,
+a share sheet on the bottom you drag away vertically — one spring, one
+elastic drag axis, and a threshold that decides when a gesture becomes a
+dismissal.
+
+</LearnChapter>
+
+</LearnPlayer>
 
 ## Escape, scrim, and scroll lock
 
@@ -131,12 +145,3 @@ that's visually the drawer.
 ## Motion Score
 
 <MotionScorePanel name="drawer" />
-
-## The result
-
-<DrawerResult />
-
-Same component, two edges: a cart on the right you drag away horizontally,
-a share sheet on the bottom you drag away vertically — one spring, one
-elastic drag axis, and a threshold that decides when a gesture becomes a
-dismissal.

@@ -1,21 +1,15 @@
 ---
 title: Anatomy of the Slide Confirm Button
 description: How a drag-to-confirm thumb measures its own track, trails a fill behind an x motion value, and commits past a 90% line.
+learnPlayer: true
 ---
 
-Dragging is the most deliberate confirmation gesture there is — you can't
-mash it, and you can feel exactly how far you've committed before you let
-go. The whole thing is one motion value, `x`, and a track that measures
-itself.
+<LearnPlayer>
 
-## The track measures itself
-
-`maxX` — how far the thumb can travel — isn't a fixed number. It's
-`trackWidth - thumb - pad × 2`, recomputed by a `ResizeObserver` so the
-button stays correct if its container resizes:
-
-```tsx
-React.useLayoutEffect(() => {
+<LearnChapter
+  label="The track measures itself"
+  scene={<SlideAnatomy />}
+  code={`React.useLayoutEffect(() => {
   const el = trackRef.current;
   if (!el) return;
   const measure = () => {
@@ -26,14 +20,21 @@ React.useLayoutEffect(() => {
   const ro = new ResizeObserver(measure);
   ro.observe(el);
   return () => ro.disconnect();
-}, [dims.thumb, dims.pad]);
-```
+}, [dims.thumb, dims.pad]);`}
+>
+
+Dragging is the most deliberate confirmation gesture there is — you can't
+mash it, and you can feel exactly how far you've committed before you let
+go. The whole thing is one motion value, `x`, and a track that measures
+itself.
+
+`maxX` — how far the thumb can travel — isn't a fixed number. It's
+`trackWidth - thumb - pad × 2`, recomputed by a `ResizeObserver` so the
+button stays correct if its container resizes.
 
 At the `md` size that's a real `288`px track, a `40`px thumb, `4`px of pad
 on each side — so `maxX` comes out to `240`. Everything below uses those
 exact numbers.
-
-<SlideAnatomy />
 
 The fill is a second absolutely-positioned pill, pinned at `top`/`bottom`/
 `left: pad`, whose `width` is derived straight from `x`:
@@ -53,21 +54,21 @@ instruction has already gotten out of the way:
 const labelOpacity = useTransform(x, [0, Math.max(1, maxX * 0.6)], [1, 0]);
 ```
 
-## The threshold
+</LearnChapter>
 
-`threshold` defaults to `0.9` — the thumb has to clear 90% of `maxX` before
-release counts as a confirm. Everything before that line springs back;
-everything past it springs the rest of the way home:
-
-<SlideThreshold />
-
-```tsx
-const handleDragEnd = () => {
+<LearnChapter
+  label="The threshold"
+  scene={<SlideThreshold />}
+  code={`const handleDragEnd = () => {
   if (statusRef.current === "confirmed") return;
   if (maxX > 0 && x.get() >= maxX * threshold) confirm();
   else settleBack();
-};
-```
+};`}
+>
+
+`threshold` defaults to `0.9` — the thumb has to clear 90% of `maxX` before
+release counts as a confirm. Everything before that line springs back;
+everything past it springs the rest of the way home.
 
 Both outcomes use the same spring — `stiffness: 500`, `damping: 40` — just
 aimed at different targets. A failed drag springs `x` back to `0`; a
@@ -95,8 +96,6 @@ same spring for a flat `0.2`s tween on the settle-back path, so a
 reduced-motion user still gets an instant, legible snap instead of a
 bounce.
 
-## Drag feel: elastic, not momentum-driven
-
 Two Framer Motion drag props shape how the thumb feels under a real finger:
 
 ```tsx
@@ -114,6 +113,18 @@ without it, a fast flick could carry `x` past the threshold on momentum
 alone, which would make "past the line" mean something different depending
 on drag speed instead of drag distance. Distance is the only thing that
 should decide a confirm.
+
+</LearnChapter>
+
+<LearnChapter label="The result" scene={<SlideConfirmResult />} isResult>
+
+A measured track, a fill derived from one motion value, a threshold that
+picks the target for the same spring, and a drag config tuned so distance —
+not speed — is what commits. Drag it, or just press the arrow key.
+
+</LearnChapter>
+
+</LearnPlayer>
 
 ## Keyboard confirms instantly
 
@@ -138,11 +149,3 @@ gesture-appropriate shortcut instead of only the generic activation keys.
 ## Motion Score
 
 <MotionScorePanel name="slide-confirm-button" />
-
-## The result
-
-<SlideConfirmResult />
-
-A measured track, a fill derived from one motion value, a threshold that
-picks the target for the same spring, and a drag config tuned so distance —
-not speed — is what commits. Drag it, or just press the arrow key.

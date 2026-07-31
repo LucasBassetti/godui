@@ -1,23 +1,15 @@
 ---
 title: Anatomy of the Dropdown Menu
 description: How one recursive panel component turns a flat items array into a menu that springs from the trigger's corner and nests submenus to the side, at any depth.
+learnPlayer: true
 ---
 
-A dropdown menu and its submenus look like two different pieces of UI. In
-the source they're the same component called twice. `MenuPanel` doesn't know
-whether it's the root menu or nested three levels deep — it just renders an
-`items` array, and if one of those items has its own `submenu`, it renders
-another `MenuPanel` inside itself.
+<LearnPlayer>
 
-## One array, four row kinds
-
-There's no compound `<Menu.Item>` / `<Menu.Label>` API. `DropdownMenuItem` is
-a union, and the panel switches on `type` (or the absence of one) as it maps:
-
-<DropdownMenuAnatomy />
-
-```tsx
-export type DropdownMenuItem =
+<LearnChapter
+  label="Four row kinds"
+  scene={<DropdownMenuAnatomy />}
+  code={`export type DropdownMenuItem =
   | { type: "separator" }
   | { type: "label"; label: React.ReactNode }
   | {
@@ -26,26 +18,29 @@ export type DropdownMenuItem =
       icon?: React.ReactNode;
       shortcut?: string;
       submenu?: DropdownMenuItem[];
-    };
-```
+    };`}
+>
+
+A dropdown menu and its submenus look like two different pieces of UI. In
+the source they're the same component called twice. `MenuPanel` doesn't know
+whether it's the root menu or nested three levels deep — it just renders an
+`items` array, and if one of those items has its own `submenu`, it renders
+another `MenuPanel` inside itself.
+
+There's no compound `<Menu.Item>` / `<Menu.Label>` API. `DropdownMenuItem` is
+a union, and the panel switches on `type` (or the absence of one) as it maps:
 
 A `label` is a muted, non-interactive heading; a `separator` is a hairline
 `<hr>`; a plain item lays out icon · label · shortcut; and an item with a
 non-empty `submenu` gets the same row plus a trailing chevron. Four visual
 kinds, one loop, no branching component tree.
 
-## It springs from the corner nearest the trigger
+</LearnChapter>
 
-Opening isn't a fade toward the center — the panel scales `0.94 → 1` while
-fading in, on the same `stiffness: 520 / damping: 32` spring used across
-GodUI's popovers. What makes it read as "growing off the trigger" is
-`transform-origin`: not a fixed corner, but whichever one sits closest to
-where the trigger is, computed from `side` and `align`:
-
-<DropdownMenuSpring />
-
-```tsx
-const originClasses: Record<DropdownSide, Record<DropdownAlign, string>> = {
+<LearnChapter
+  label="Spring from the corner"
+  scene={<DropdownMenuSpring />}
+  code={`const originClasses: Record<DropdownSide, Record<DropdownAlign, string>> = {
   bottom: { start: "origin-top-left", center: "origin-top", end: "origin-top-right" },
   top:    { start: "origin-bottom-left", center: "origin-bottom", end: "origin-bottom-right" },
   // …right, left…
@@ -55,27 +50,27 @@ const originClasses: Record<DropdownSide, Record<DropdownAlign, string>> = {
   initial={{ opacity: 0, scale: 0.94 }}
   animate={{ opacity: 1, scale: 1 }}
   transition={{ type: "spring", stiffness: 520, damping: 32 }}
-  className={`... ${originClasses[side][align]}`}
-/>
-```
+  className={\`... \${originClasses[side][align]}\`}
+/>`}
+>
+
+Opening isn't a fade toward the center — the panel scales `0.94 → 1` while
+fading in, on the same `stiffness: 520 / damping: 32` spring used across
+GodUI's popovers. What makes it read as "growing off the trigger" is
+`transform-origin`: not a fixed corner, but whichever one sits closest to
+where the trigger is, computed from `side` and `align`:
 
 An `align="end"` menu below a right-aligned trigger gets `origin-top-right`
 — the panel visibly unfolds from its own top-right corner, which is exactly
 where the trigger's edge is. Flip `align` to `start` and the origin flips
 with it; the component never hardcodes "top left."
 
-## Submenus are the same panel, recursed
+</LearnChapter>
 
-A submenu isn't a second, simpler component — `MenuPanel` calls itself.
-Hovering (or pressing `ArrowRight` on) a row with a `submenu` sets a local
-`openSub` index; the child `MenuPanel` mounts absolutely positioned off that
-row's right edge, with `side="right"` and `align="start"` so its own origin
-resolves to `origin-top-left`:
-
-<DropdownMenuSubmenu />
-
-```tsx
-{hasSub && (
+<LearnChapter
+  label="Recursive submenus"
+  scene={<DropdownMenuSubmenu />}
+  code={`{hasSub && (
   <div onMouseEnter={() => setOpenSub(index)} onMouseLeave={() => setOpenSub(null)}>
     <button
       onKeyDown={(e) => {
@@ -91,8 +86,14 @@ resolves to `origin-top-left`:
       </div>
     )}
   </div>
-)}
-```
+)}`}
+>
+
+A submenu isn't a second, simpler component — `MenuPanel` calls itself.
+Hovering (or pressing `ArrowRight` on) a row with a `submenu` sets a local
+`openSub` index; the child `MenuPanel` mounts absolutely positioned off that
+row's right edge, with `side="right"` and `align="start"` so its own origin
+resolves to `origin-top-left`:
 
 Because it's the *same* `MenuPanel`, a submenu gets every mechanism the root
 menu gets for free — its own spring-in, its own focus trap, its own
@@ -100,7 +101,19 @@ menu gets for free — its own spring-in, its own focus trap, its own
 submenu of a submenu would just work, though the current row kinds only
 nest one level deep in practice.
 
-## Focus and keys, scoped to each panel
+</LearnChapter>
+
+<LearnChapter label="The result" scene={<DropdownMenuResult />} isResult>
+
+One `items` array, one recursive `MenuPanel`, and a `transform-origin` that
+follows the trigger instead of being fixed — that's a menu and every nested
+submenu it can grow, built from a single component calling itself.
+
+</LearnChapter>
+
+</LearnPlayer>
+
+## Accessibility
 
 Each `MenuPanel` focuses its own first `[data-menu-item]` on mount and owns
 its own `ArrowDown`/`ArrowUp` wrap-around walk — scoped to *that* panel's
@@ -124,11 +137,3 @@ panel, root and submenu alike, leaving a plain opacity fade.
 ## Motion Score
 
 <MotionScorePanel name="dropdown-menu" />
-
-## The result
-
-<DropdownMenuResult />
-
-One `items` array, one recursive `MenuPanel`, and a `transform-origin` that
-follows the trigger instead of being fixed — that's a menu and every nested
-submenu it can grow, built from a single component calling itself.

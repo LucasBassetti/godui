@@ -1,12 +1,37 @@
 "use client";
 
 import { StackBadge } from "@godui/components";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
  * Closing "here's the finished thing" panel — the real, interactive
  * StackBadge. Scroll it into view for the stagger, then hover a chip.
  */
 export function StackBadgeResult() {
+  const demo = (
+    <>
+      <StackBadge
+        items={[
+          "react",
+          "typescript",
+          "tailwind",
+          "nextjs",
+          "node",
+          "figma",
+          "rust",
+          "postgres",
+        ]}
+      />
+    </>
+  );
+
+  if (useBareScene())
+    return (
+      <div className="flex min-h-[220px] flex-wrap items-center justify-center gap-6 p-6 w-full">
+        {demo}
+      </div>
+    );
+
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -18,18 +43,7 @@ export function StackBadgeResult() {
         </span>
       </div>
       <div className="flex min-h-[220px] flex-wrap items-center justify-center gap-6 p-10">
-        <StackBadge
-          items={[
-            "react",
-            "typescript",
-            "tailwind",
-            "nextjs",
-            "node",
-            "figma",
-            "rust",
-            "postgres",
-          ]}
-        />
+        {demo}
       </div>
     </div>
   );

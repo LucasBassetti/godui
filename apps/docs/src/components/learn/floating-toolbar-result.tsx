@@ -3,6 +3,7 @@
 import { FloatingToolbar, type ToolbarAction } from "@godui/components";
 import { AlignLeft, Bold, Italic, Link2 } from "lucide-react";
 import { useState } from "react";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
  * The real, interactive `FloatingToolbar` — toggle it in and out to feel the
@@ -41,6 +42,26 @@ export function FloatingToolbarResult() {
     },
   ];
 
+  const demo = (
+    <>
+      <FloatingToolbar open={open} actions={actions} />
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="rounded-lg border border-border bg-card px-3 py-1.5 font-medium text-muted-foreground text-xs transition-colors hover:text-foreground"
+      >
+        {open ? "Hide toolbar" : "Show toolbar"}
+      </button>
+    </>
+  );
+
+  if (useBareScene())
+    return (
+      <div className="flex min-h-[280px] w-full flex-col items-center justify-center gap-6 p-6">
+        {demo}
+      </div>
+    );
+
   return (
     <div className="not-prose my-8 rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -52,14 +73,7 @@ export function FloatingToolbarResult() {
         </span>
       </div>
       <div className="flex min-h-[280px] w-full flex-col items-center justify-center gap-6 p-10">
-        <FloatingToolbar open={open} actions={actions} />
-        <button
-          type="button"
-          onClick={() => setOpen((v) => !v)}
-          className="rounded-lg border border-border bg-card px-3 py-1.5 font-medium text-muted-foreground text-xs transition-colors hover:text-foreground"
-        >
-          {open ? "Hide toolbar" : "Show toolbar"}
-        </button>
+        {demo}
       </div>
     </div>
   );

@@ -1,23 +1,15 @@
 ---
 title: Anatomy of Spotlight Reveal
 description: How an inverted radial mask punches a hole through a cover layer, eased toward the pointer on a single rAF loop — with idle breathing and click-to-pin.
+learnPlayer: true
 ---
 
-`SpotlightReveal` stacks two full-bleed layers. The `reveal` prop sits
-underneath; `children` is the cover. An inverted radial mask on the cover
-makes a soft hole that follows the pointer — exposing whatever's beneath
-without unmounting either layer.
+<LearnPlayer>
 
-## Reveal under, cover on top
-
-Both layers are `absolute inset-0`. The cover owns the mask; the reveal
-is always painted and simply shows through the hole. Clicking the root
-toggles a `pinned` ref so the spotlight can freeze in place.
-
-<SpotlightRevealAnatomy />
-
-```tsx
-<div className="absolute inset-0">{reveal}</div>
+<LearnChapter
+  label="Reveal under, cover on top"
+  scene={<SpotlightRevealAnatomy />}
+  code={`<div className="absolute inset-0">{reveal}</div>
 
 <div
   ref={coverRef}
@@ -29,26 +21,44 @@ toggles a `pinned` ref so the spotlight can freeze in place.
   }
 >
   {children}
-</div>
-```
+</div>`}
+>
 
-## Softness is the hard edge
+`SpotlightReveal` stacks two full-bleed layers. The `reveal` prop sits
+underneath; `children` is the cover. An inverted radial mask on the cover
+makes a soft hole that follows the pointer — exposing whatever's beneath
+without unmounting either layer.
+
+Both layers are `absolute inset-0`. The cover owns the mask; the reveal
+is always painted and simply shows through the hole. Clicking the root
+toggles a `pinned` ref so the spotlight can freeze in place.
+
+</LearnChapter>
+
+<LearnChapter
+  label="Softness is the hard edge"
+  scene={<SpotlightRevealMask />}
+  code={`const inner = Math.max(0, radius * (1 - softness));
+const maskImage =
+  \`radial-gradient(circle \${radius}px at var(--x, 50%) var(--y, 50%), \` +
+  \`transparent 0, transparent \${inner}px, #000 \${radius}px)\`;`}
+>
 
 `softness` (0–1, default `0.55`) sets how wide the feather is.
 `inner = radius * (1 - softness)` is the fully transparent core; from
 there the mask ramps to opaque at `radius`. Hard edges keep the hole
 crisp; soft ones feel like a flashlight bloom.
 
-<SpotlightRevealMask />
+</LearnChapter>
 
-```tsx
-const inner = Math.max(0, radius * (1 - softness));
-const maskImage =
-  `radial-gradient(circle ${radius}px at var(--x, 50%) var(--y, 50%), ` +
-  `transparent 0, transparent ${inner}px, #000 ${radius}px)`;
-```
-
-## Eased follow, idle breathing, pin
+<LearnChapter
+  label="Eased follow, idle breathing, pin"
+  scene={<SpotlightRevealFollow />}
+  code={`cur.current.x += (target.current.x - cur.current.x) * ease;
+cur.current.y += (target.current.y - cur.current.y) * ease;
+cover.style.setProperty("--x", \`\${cur.current.x}px\`);
+cover.style.setProperty("--y", \`\${cur.current.y}px\`);`}
+>
 
 A single `requestAnimationFrame` loop owns motion. Each frame:
 
@@ -61,14 +71,16 @@ Pointer enter/move updates `target` (unless pinned). Click flips
 `pinned`. No React state for position — same cheap path as
 `SpotlightCard`, plus the lag that makes the light feel liquid.
 
-<SpotlightRevealFollow />
+</LearnChapter>
 
-```tsx
-cur.current.x += (target.current.x - cur.current.x) * ease;
-cur.current.y += (target.current.y - cur.current.y) * ease;
-cover.style.setProperty("--x", `${cur.current.x}px`);
-cover.style.setProperty("--y", `${cur.current.y}px`);
-```
+<LearnChapter label="The result" scene={<SpotlightRevealResult />} isResult>
+
+Two layers, one inverted mask, a 0.16 ease, and an idle ellipse that
+invites the hover. Move to follow; click to pin.
+
+</LearnChapter>
+
+</LearnPlayer>
 
 ## Reduced motion
 
@@ -87,10 +99,3 @@ style={
 ## Motion Score
 
 <MotionScorePanel name="spotlight-reveal" />
-
-## The result
-
-Two layers, one inverted mask, a 0.16 ease, and an idle ellipse that
-invites the hover. Move to follow; click to pin.
-
-<SpotlightRevealResult />

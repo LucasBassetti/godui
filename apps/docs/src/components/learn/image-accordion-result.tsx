@@ -1,6 +1,7 @@
 "use client";
 
 import { ImageAccordion } from "@godui/components";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
  * Closing "here's the finished thing" panel — the real, interactive
@@ -31,6 +32,23 @@ const PANELS = [
 ];
 
 export function ImageAccordionResult() {
+  const demo = (
+    <>
+      <ImageAccordion
+        panels={PANELS}
+        className="w-full max-w-2xl"
+        height="22rem"
+      />
+    </>
+  );
+
+  if (useBareScene())
+    return (
+      <div className="relative flex min-h-[280px] items-center justify-center overflow-hidden p-6 sm:p-6 w-full">
+        {demo}
+      </div>
+    );
+
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -42,11 +60,7 @@ export function ImageAccordionResult() {
         </span>
       </div>
       <div className="relative flex min-h-[280px] items-center justify-center overflow-hidden p-6 sm:p-10">
-        <ImageAccordion
-          panels={PANELS}
-          className="w-full max-w-2xl"
-          height="22rem"
-        />
+        {demo}
       </div>
     </div>
   );

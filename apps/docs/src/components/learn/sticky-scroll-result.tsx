@@ -1,6 +1,7 @@
 "use client";
 
 import { StickyScroll, type StickyScrollItem } from "@godui/components";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
  * Closing "here's the finished thing" panel — the real, interactive
@@ -40,6 +41,19 @@ const ITEMS: StickyScrollItem[] = [
 ];
 
 export function StickyScrollResult() {
+  const demo = (
+    <>
+      <StickyScroll items={ITEMS} />
+    </>
+  );
+
+  if (useBareScene())
+    return (
+      <div className="min-h-[280px] flex justify-center p-6 md:p-6 w-full">
+        {demo}
+      </div>
+    );
+
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -50,9 +64,7 @@ export function StickyScrollResult() {
           the real component — scroll inside this panel
         </span>
       </div>
-      <div className="flex justify-center p-6 md:p-10">
-        <StickyScroll items={ITEMS} />
-      </div>
+      <div className="flex justify-center p-6 md:p-10">{demo}</div>
     </div>
   );
 }

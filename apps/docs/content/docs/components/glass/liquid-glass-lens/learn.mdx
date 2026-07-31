@@ -1,7 +1,21 @@
 ---
 title: Anatomy of the Liquid Glass Lens
 description: How a parent-owned pointer, a band=0 displacement map, and a fixed sphere glint turn the same refraction stack into a floating magnifier that never steals clicks.
+learnPlayer: true
 ---
+
+<LearnPlayer>
+
+<LearnChapter
+  label="Disc, fixed glint, full map"
+  scene={<LiquidGlassLensAnatomy />}
+  code={`backgroundImage: \`radial-gradient(
+  circle at 32% 28%,
+  rgba(255,255,255,\${0.7 * sheen}) 0%,
+  rgba(255,255,255,0) 55%
+)\`
+boxShadow: \`inset 0 2px 2px …, inset 0 -6px 12px …\``}
+>
 
 `LiquidGlassLens` shares `RefractionFilter` and `buildDisplacementMap` with
 the card — but the **geometry**, **pointer contract**, and **reduced-motion
@@ -12,21 +26,10 @@ cursor over a positioned parent, and it disappears entirely under
 Think of the card as a frosted pane on your UI; the lens is a loupe you drag
 across it.
 
-## Disc, fixed glint, full map
-
 The root is `rounded-full` with frost via `backdrop-filter`. Unlike the
 card's pointer-tracked sheen, the specular is a **fixed** radial at
 `32% 28%` — a sphere highlight that stays put relative to the disc, plus an
 inset depth shadow:
-
-```tsx
-backgroundImage: `radial-gradient(
-  circle at 32% 28%,
-  rgba(255,255,255,${0.7 * sheen}) 0%,
-  rgba(255,255,255,0) 55%
-)`
-boxShadow: `inset 0 2px 2px …, inset 0 -6px 12px …`
-```
 
 The displacement map uses `band={0}`: a continuous ramp from edge to edge,
 so the bend feels like a solid converging lens rather than a flat pane with
@@ -40,19 +43,19 @@ Defaults push harder than the card (`strength={80}` vs `60`, `size={160}`)
 because a smaller circular optic needs more bend to read. Storybook demos
 often use `size={220}`.
 
-<LiquidGlassLensAnatomy />
+</LearnChapter>
 
-## Parent owns the pointer
+<LearnChapter
+  label="Parent owns the pointer"
+  scene={<LiquidGlassLensParent />}
+  code={`node.style.setProperty("--lg-px", \`\${e.clientX - rect.left}px\`);
+node.style.setProperty("--lg-py", \`\${e.clientY - rect.top}px\`);`}
+>
 
 Listeners attach to `rootRef.current.parentElement`, **not** the lens. The
 parent must be `relative`; the lens never blocks clicks
 (`pointer-events-none`). On move it writes **pixel** offsets relative to the
 parent box — different units from the card's percentages:
-
-```tsx
-node.style.setProperty("--lg-px", `${e.clientX - rect.left}px`);
-node.style.setProperty("--lg-py", `${e.clientY - rect.top}px`);
-```
 
 Centering is a transform that subtracts half the lens size:
 
@@ -65,8 +68,6 @@ className="… [will-change:transform] z-popover …"
 Opacity fades with `duration-200` while `hovering` is true (enter / leave on
 the parent).
 
-<LiquidGlassLensParent />
-
 ```tsx
 parent.addEventListener("pointermove", move);
 parent.addEventListener("pointerenter", enter);
@@ -74,7 +75,9 @@ parent.addEventListener("pointerleave", leave);
 // cleanup removes all three
 ```
 
-## Rim band vs lens band
+</LearnChapter>
+
+<LearnChapter label="Rim band vs lens band" scene={<LiquidGlassLensMap />}>
 
 Same builder, different `band`. This is the entire optical difference in one
 number. Diagrams use a grayscale ramp (dashed mid = no shift) — the real SVG
@@ -90,7 +93,19 @@ token-neutral:
 | Pointer vars | `--lg-x/y` as `%` | `--lg-px/py` as `px` |
 | Reduced motion | hide sheen, keep frost | hide **entire** lens |
 
-<LiquidGlassLensMap />
+</LearnChapter>
+
+<LearnChapter label="The result" scene={<LiquidGlassLensResult />} isResult>
+
+Hover the stage. The lens tracks without stealing clicks from the content
+beneath.
+
+Same refraction chain as the card — different map, different owner of the
+pointer, different contract with reduced motion.
+
+</LearnChapter>
+
+</LearnPlayer>
 
 ## Accessibility
 
@@ -106,13 +121,3 @@ Same `useRefractionSupport` probe as the card — without
 ## Motion Score
 
 <MotionScorePanel name="liquid-glass-lens" />
-
-## The result
-
-Hover the stage. The lens tracks without stealing clicks from the content
-beneath.
-
-<LiquidGlassLensResult />
-
-Same refraction chain as the card — different map, different owner of the
-pointer, different contract with reduced motion.

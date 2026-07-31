@@ -1,13 +1,26 @@
 ---
 title: Anatomy of the Bento Grid
 description: How a modular bento layout gets its shape from plain CSS grid spans, its entrance from one shared spring, and its hover glow from a single pointer-tracked custom property.
+learnPlayer: true
 ---
+
+<LearnPlayer>
+
+<LearnChapter
+  label="Spans, not a masonry engine"
+  scene={<BentoGridAnatomy />}
+  code={`const GRID_COLS = { 2: "md:grid-cols-2", 3: "md:grid-cols-3", 4: "md:grid-cols-4" };
+const COL_SPAN = { 1: "md:col-span-1", 2: "md:col-span-2", 3: "md:col-span-3" };
+const ROW_SPAN = { 1: "md:row-span-1", 2: "md:row-span-2" };
+
+<motion.div className={\`grid auto-rows-[minmax(11rem,auto)] grid-cols-1 gap-4 \${GRID_COLS[columns]}\`}>
+  {/* each BentoCard: \`\${COL_SPAN[colSpan]} \${ROW_SPAN[rowSpan]}\` */}
+</motion.div>`}
+>
 
 A bento grid looks like it needs a layout engine — cards of different sizes,
 packed with no gaps. It doesn't. `BentoGrid` is `display: grid` with three
 columns; every card just claims more of it.
-
-## Spans, not a masonry engine
 
 `BentoGrid` renders a plain grid — `grid-cols-3` (or however many `columns`
 you pass), `auto-rows-[minmax(11rem,auto)]`. There's no measuring pass, no
@@ -15,34 +28,16 @@ packing algorithm. Each `BentoCard` declares how much room it wants with
 `colSpan`/`rowSpan`, and the browser's normal row-major auto-flow drops it
 into the next cell that fits:
 
-<BentoGridAnatomy />
-
-```tsx
-const GRID_COLS = { 2: "md:grid-cols-2", 3: "md:grid-cols-3", 4: "md:grid-cols-4" };
-const COL_SPAN = { 1: "md:col-span-1", 2: "md:col-span-2", 3: "md:col-span-3" };
-const ROW_SPAN = { 1: "md:row-span-1", 2: "md:row-span-2" };
-
-<motion.div className={`grid auto-rows-[minmax(11rem,auto)] grid-cols-1 gap-4 ${GRID_COLS[columns]}`}>
-  {/* each BentoCard: `${COL_SPAN[colSpan]} ${ROW_SPAN[rowSpan]}` */}
-</motion.div>
-```
-
 Those lookup objects exist because the Tailwind scanner can't see an
 interpolated class like `` `md:col-span-${n}` `` — every valid span has to be a
 literal string somewhere in the source for the class to ship.
 
-## One stagger, driven by scroll-in
+</LearnChapter>
 
-The grid and its cards share one Framer `variants` pair. The grid is
-`hidden`/`visible` with `staggerChildren: 0.08`; every card's `itemVariants`
-resolves `opacity 0→1` and `y 20→0` on a spring. `whileInView` fires it once,
-the moment the grid crosses 15% into the viewport — nothing plays until then,
-and it never replays on its own:
-
-<BentoGridStagger />
-
-```tsx
-const containerVariants: Variants = {
+<LearnChapter
+  label="One stagger, driven by scroll-in"
+  scene={<BentoGridStagger />}
+  code={`const containerVariants: Variants = {
   hidden: {},
   visible: { transition: { staggerChildren: 0.08 } },
 };
@@ -60,35 +55,41 @@ const itemVariants: Variants = {
   viewport={{ once: true, amount: 0.15 }}
 >
   {/* each BentoCard is a motion.div with variants={itemVariants} */}
-</motion.div>
-```
+</motion.div>`}
+>
+
+The grid and its cards share one Framer `variants` pair. The grid is
+`hidden`/`visible` with `staggerChildren: 0.08`; every card's `itemVariants`
+resolves `opacity 0→1` and `y 20→0` on a spring. `whileInView` fires it once,
+the moment the grid crosses 15% into the viewport — nothing plays until then,
+and it never replays on its own:
 
 Because `staggerChildren` lives on the *parent's* transition, no card needs to
 know its own index or delay — Framer walks the children in DOM order and
 staggers them for you.
 
-## Why the spotlight is a CSS variable, not React state
+</LearnChapter>
+
+<LearnChapter
+  label="Why the spotlight is a CSS variable, not React state"
+  scene={<BentoGridGlow />}
+  code={`const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+  const rect = ref.current?.getBoundingClientRect();
+  if (rect) {
+    ref.current.style.setProperty("--x", \`\${e.clientX - rect.left}px\`);
+    ref.current.style.setProperty("--y", \`\${e.clientY - rect.top}px\`);
+  }
+};`}
+>
 
 Hovering a card reveals a soft radial glow that follows the pointer. Tracking
 that in React state would mean a re-render on every `pointermove` — instead,
 `onPointerMove` writes straight to the DOM:
 
-```tsx
-const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-  const rect = ref.current?.getBoundingClientRect();
-  if (rect) {
-    ref.current.style.setProperty("--x", `${e.clientX - rect.left}px`);
-    ref.current.style.setProperty("--y", `${e.clientY - rect.top}px`);
-  }
-};
-```
-
 `--x`/`--y` feed a `radial-gradient` that's already painted and just waiting
 for its center to move — the glow itself only animates `opacity` on
 `group-hover`, so lift and glow both stay off the main thread once they're
 running:
-
-<BentoGridGlow />
 
 ```tsx
 const CARD_BASE =
@@ -103,6 +104,17 @@ const CARD_GLOW =
 to whatever primary color the theme is running, without a second custom
 property just for opacity.
 
+</LearnChapter>
+
+<LearnChapter label="The result" scene={<BentoGridResult />} isResult>
+
+Three columns, a couple of `colSpan`/`rowSpan` numbers, one shared spring for
+the entrance, and a CSS variable for the glow — no layout library required.
+
+</LearnChapter>
+
+</LearnPlayer>
+
 ## Accessibility
 
 Both the stagger and the hover lift respect `motion-reduce`: the card's
@@ -115,10 +127,3 @@ focusable CTAs) works exactly as it would outside the grid.
 ## Motion Score
 
 <MotionScorePanel name="bento-grid" />
-
-## The result
-
-<BentoGridResult />
-
-Three columns, a couple of `colSpan`/`rowSpan` numbers, one shared spring for
-the entrance, and a CSS variable for the glow — no layout library required.

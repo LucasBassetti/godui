@@ -3,6 +3,7 @@
 import { SegmentedControl, type SegmentedOption } from "@godui/components";
 import { CalendarDays, CalendarRange, Sun } from "lucide-react";
 import { useState } from "react";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
  * Closing "here's the finished thing" panel — the real, interactive
@@ -22,6 +23,22 @@ const OPTIONS: SegmentedOption[] = [
 export function SegmentedControlResult() {
   const [view, setView] = useState("week");
 
+  const demo = (
+    <>
+      <SegmentedControl options={OPTIONS} value={view} onChange={setView} />
+      <p className="text-muted-foreground text-xs">
+        Viewing <span className="text-foreground">{view}</span> range
+      </p>
+    </>
+  );
+
+  if (useBareScene())
+    return (
+      <div className="flex min-h-[220px] flex-col items-center justify-center gap-4 p-6 w-full">
+        {demo}
+      </div>
+    );
+
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -33,10 +50,7 @@ export function SegmentedControlResult() {
         </span>
       </div>
       <div className="flex min-h-[220px] flex-col items-center justify-center gap-4 p-10">
-        <SegmentedControl options={OPTIONS} value={view} onChange={setView} />
-        <p className="text-muted-foreground text-xs">
-          Viewing <span className="text-foreground">{view}</span> range
-        </p>
+        {demo}
       </div>
     </div>
   );

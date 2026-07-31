@@ -1,25 +1,15 @@
 ---
 title: Anatomy of Terminal
 description: How a count/typed state machine types commands character-by-character, gates playback with IntersectionObserver, and loops after a two-second pause.
+learnPlayer: true
 ---
 
-`Terminal` is a small state machine dressed as a window. Commands type
-out one character at a time; output and comment lines appear after a
-beat. An optional chrome bar with traffic lights frames the mono body,
-and a pulsing caret marks the active line.
+<LearnPlayer>
 
-## Chrome, body, line roles
-
-`showChrome` (default true) renders the header — three dots, optional
-centered `title`, and a balancing spacer. The body is
-`font-mono text-[13px]` with ligatures off so glyphs don't shift as they
-type. Each line is `command`, `output`, or `comment`, each with its own
-foreground opacity.
-
-<TerminalAnatomy />
-
-```tsx
-{showChrome ? (
+<LearnChapter
+  label="Chrome, body, line roles"
+  scene={<TerminalAnatomy />}
+  code={`{showChrome ? (
   <div className={HEADER_BASE}>
     <div className="flex gap-1.5" aria-hidden>
       <span className="size-3 rounded-full bg-red-500/80" />
@@ -28,21 +18,26 @@ foreground opacity.
     </div>
     {title ? <span className="…">{title}</span> : null}
   </div>
-) : null}
-```
+) : null}`}
+>
 
-## The typing state machine
+`Terminal` is a small state machine dressed as a window. Commands type
+out one character at a time; output and comment lines appear after a
+beat. An optional chrome bar with traffic lights frames the mono body,
+and a pulsing caret marks the active line.
 
-Two pieces of state drive the script: `count` (fully finished lines) and
-`typed` (characters revealed on the current command). While
-`typed < line.text.length` on a command, a timeout bumps `typed` every
-`typingSpeed` ms (default `38`). Then a pause (`320` after a command,
-`line.delay ?? 380` otherwise) advances `count` and resets `typed`.
+`showChrome` (default true) renders the header — three dots, optional
+centered `title`, and a balancing spacer. The body is
+`font-mono text-[13px]` with ligatures off so glyphs don't shift as they
+type. Each line is `command`, `output`, or `comment`, each with its own
+foreground opacity.
 
-<TerminalTyping />
+</LearnChapter>
 
-```tsx
-if (isCommand && typed < line.text.length) {
+<LearnChapter
+  label="The typing state machine"
+  scene={<TerminalTyping />}
+  code={`if (isCommand && typed < line.text.length) {
   const id = window.setTimeout(() => setTyped((t) => t + 1), typingSpeed);
   return () => window.clearTimeout(id);
 }
@@ -51,26 +46,25 @@ const pause = isCommand ? 320 : (line.delay ?? 380);
 const id = window.setTimeout(() => {
   setCount((c) => c + 1);
   setTyped(0);
-}, pause);
-```
+}, pause);`}
+>
+
+Two pieces of state drive the script: `count` (fully finished lines) and
+`typed` (characters revealed on the current command). While
+`typed < line.text.length` on a command, a timeout bumps `typed` every
+`typingSpeed` ms (default `38`). Then a pause (`320` after a command,
+`line.delay ?? 380` otherwise) advances `count` and resets `typed`.
 
 The caret is a primary-colored block with `animate-pulse`, shown on the
 active command — or on the last line when the script is done and
 `loop` is false.
 
-## Start on view, loop, reduce
+</LearnChapter>
 
-Playback stays cold until the terminal crosses an
-`IntersectionObserver` at `threshold: 0.35` (when `startOnView` is
-true). Once active, finishing the script with `loop` waits **2s**, then
-resets `count` and `typed` to zero. Under `prefers-reduced-motion`, the
-machine skips typing entirely and dumps `lines.length` in one shot —
-caret off, full transcript still in `sr-only` for assistive tech.
-
-<TerminalLifecycle />
-
-```tsx
-const io = new IntersectionObserver(
+<LearnChapter
+  label="Start on view, loop, reduce"
+  scene={<TerminalLifecycle />}
+  code={`const io = new IntersectionObserver(
   (entries) => {
     if (entries.some((e) => e.isIntersecting)) {
       setActive(true);
@@ -90,8 +84,26 @@ window.setTimeout(() => {
 if (reduced && active) {
   setCount(lines.length);
   setTyped(0);
-}
-```
+}`}
+>
+
+Playback stays cold until the terminal crosses an
+`IntersectionObserver` at `threshold: 0.35` (when `startOnView` is
+true). Once active, finishing the script with `loop` waits **2s**, then
+resets `count` and `typed` to zero. Under `prefers-reduced-motion`, the
+machine skips typing entirely and dumps `lines.length` in one shot —
+caret off, full transcript still in `sr-only` for assistive tech.
+
+</LearnChapter>
+
+<LearnChapter label="The result" scene={<TerminalResult />} isResult>
+
+A count/typed machine, a 0.35 IO gate, a 2s loop pause, and a caret that
+only blinks when motion is welcome.
+
+</LearnChapter>
+
+</LearnPlayer>
 
 ## Accessibility
 
@@ -102,10 +114,3 @@ the rest — so screen readers never wait on the typewriter.
 ## Motion Score
 
 <MotionScorePanel name="terminal" />
-
-## The result
-
-A count/typed machine, a 0.35 IO gate, a 2s loop pause, and a caret that
-only blinks when motion is welcome.
-
-<TerminalResult />

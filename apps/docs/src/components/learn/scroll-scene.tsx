@@ -8,6 +8,7 @@ import {
   useSyncExternalStore,
 } from "react";
 import { BorderBeam } from "@/components/border-beam";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 import { ReplayButton } from "@/components/replay-button";
 import { cn } from "@/lib/cn";
 
@@ -17,7 +18,7 @@ import { cn } from "@/lib/cn";
  * the live match afterward — no hydration mismatch, and no derived setState in
  * an effect (which `react-hooks/set-state-in-effect` rightly flags).
  */
-function usePrefersReducedMotion() {
+export function usePrefersReducedMotion() {
   return useSyncExternalStore(
     (onChange) => {
       if (typeof matchMedia === "undefined") return () => {};
@@ -52,6 +53,36 @@ type ScrollSceneProps = {
 };
 
 export function ScrollScene({
+  label,
+  note,
+  children,
+  className,
+}: ScrollSceneProps) {
+  const bare = useBareScene();
+
+  // On the LearnPlayer stage the player owns the card + play lifecycle: render
+  // only the animated body, keyed by the player's cycle so it restarts cleanly.
+  // Center the body in the stage — scene roots often use `w-full max-w-*`, which
+  // would otherwise pin left inside a full-width wrapper.
+  if (bare) {
+    return (
+      <div
+        key={bare.cycle}
+        className={cn("flex w-full justify-center", className)}
+      >
+        {children(bare)}
+      </div>
+    );
+  }
+
+  return (
+    <ScrollSceneCard label={label} note={note} className={className}>
+      {children}
+    </ScrollSceneCard>
+  );
+}
+
+function ScrollSceneCard({
   label,
   note,
   children,

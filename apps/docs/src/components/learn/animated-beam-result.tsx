@@ -3,6 +3,7 @@
 import { AnimatedBeam } from "@godui/components";
 import { Box, Cloud, Database, Sparkles } from "lucide-react";
 import * as React from "react";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
  * Closing "here's the finished thing" panel — the real `AnimatedBeam`, a
@@ -29,6 +30,56 @@ export function AnimatedBeamResult() {
   const bRef = React.useRef<HTMLDivElement>(null);
   const cRef = React.useRef<HTMLDivElement>(null);
 
+  const demo = (
+    <>
+      <div
+        ref={containerRef}
+        className="relative flex h-[280px] w-full max-w-md items-center justify-between px-8"
+      >
+        <div className="flex flex-col gap-8">
+          <Node ref={aRef} className="size-12">
+            <Box className="size-5 text-foreground" />
+          </Node>
+          <Node ref={bRef} className="size-12">
+            <Cloud className="size-5 text-foreground" />
+          </Node>
+          <Node ref={cRef} className="size-12">
+            <Database className="size-5 text-foreground" />
+          </Node>
+        </div>
+
+        <Node ref={hubRef} className="size-16 bg-primary">
+          <Sparkles className="size-7 text-primary-foreground" />
+        </Node>
+
+        <AnimatedBeam
+          containerRef={containerRef}
+          fromRef={aRef}
+          toRef={hubRef}
+          curvature={50}
+        />
+        <AnimatedBeam
+          containerRef={containerRef}
+          fromRef={bRef}
+          toRef={hubRef}
+        />
+        <AnimatedBeam
+          containerRef={containerRef}
+          fromRef={cRef}
+          toRef={hubRef}
+          curvature={-50}
+        />
+      </div>
+    </>
+  );
+
+  if (useBareScene())
+    return (
+      <div className="flex min-h-[320px] items-center justify-center p-6 md:p-6 w-full">
+        {demo}
+      </div>
+    );
+
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -40,44 +91,7 @@ export function AnimatedBeamResult() {
         </span>
       </div>
       <div className="flex min-h-[320px] items-center justify-center p-6 md:p-10">
-        <div
-          ref={containerRef}
-          className="relative flex h-[280px] w-full max-w-md items-center justify-between px-8"
-        >
-          <div className="flex flex-col gap-8">
-            <Node ref={aRef} className="size-12">
-              <Box className="size-5 text-foreground" />
-            </Node>
-            <Node ref={bRef} className="size-12">
-              <Cloud className="size-5 text-foreground" />
-            </Node>
-            <Node ref={cRef} className="size-12">
-              <Database className="size-5 text-foreground" />
-            </Node>
-          </div>
-
-          <Node ref={hubRef} className="size-16 bg-primary">
-            <Sparkles className="size-7 text-primary-foreground" />
-          </Node>
-
-          <AnimatedBeam
-            containerRef={containerRef}
-            fromRef={aRef}
-            toRef={hubRef}
-            curvature={50}
-          />
-          <AnimatedBeam
-            containerRef={containerRef}
-            fromRef={bRef}
-            toRef={hubRef}
-          />
-          <AnimatedBeam
-            containerRef={containerRef}
-            fromRef={cRef}
-            toRef={hubRef}
-            curvature={-50}
-          />
-        </div>
+        {demo}
       </div>
     </div>
   );

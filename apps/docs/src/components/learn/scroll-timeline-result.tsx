@@ -1,6 +1,7 @@
 "use client";
 
 import { ScrollTimeline } from "@godui/components";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
  * Closing "here's the finished thing" panel — the real, interactive
@@ -10,6 +11,39 @@ import { ScrollTimeline } from "@godui/components";
  * compact.
  */
 export function ScrollTimelineResult() {
+  const demo = (
+    <>
+      <ScrollTimeline
+        data={[
+          {
+            date: "2021",
+            title: "The first commit",
+            content: (
+              <p className="text-sm text-muted-foreground md:text-base">
+                A single component and a big idea.
+              </p>
+            ),
+          },
+          {
+            date: "2025",
+            title: "One hundred components",
+            content: (
+              <p className="text-sm text-muted-foreground md:text-base">
+                Every surface, polished — you&apos;re looking at the rail right
+                now.
+              </p>
+            ),
+          },
+        ]}
+      />
+    </>
+  );
+
+  if (useBareScene())
+    return (
+      <div className="min-h-[280px] px-4 py-10 md:px-8 w-full">{demo}</div>
+    );
+
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -20,31 +54,7 @@ export function ScrollTimelineResult() {
           the real component — scroll the page through it
         </span>
       </div>
-      <div className="px-4 py-10 md:px-8">
-        <ScrollTimeline
-          data={[
-            {
-              date: "2021",
-              title: "The first commit",
-              content: (
-                <p className="text-sm text-muted-foreground md:text-base">
-                  A single component and a big idea.
-                </p>
-              ),
-            },
-            {
-              date: "2025",
-              title: "One hundred components",
-              content: (
-                <p className="text-sm text-muted-foreground md:text-base">
-                  Every surface, polished — you&apos;re looking at the rail
-                  right now.
-                </p>
-              ),
-            },
-          ]}
-        />
-      </div>
+      <div className="px-4 py-10 md:px-8">{demo}</div>
     </div>
   );
 }

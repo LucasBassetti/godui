@@ -1,23 +1,15 @@
 ---
 title: Anatomy of the App Showcase
 description: A device frame built entirely from width ratios, an entrance and a scroll pan sharing one spring config, and a loop mode that never touches JavaScript per frame.
+learnPlayer: true
 ---
 
-A device mockup that looks convincing at every size usually means someone
-hand-tuned the notch and corner radius for 2–3 fixed breakpoints.
-`AppShowcase` doesn't have breakpoints — every radius, every inset, the
-notch itself, is a ratio of one `width` prop, computed once per render.
+<LearnPlayer>
 
-## The whole frame is derived from one number
-
-`PhoneFrame` reads a `DEVICE` table keyed by `shellR`, `padR`, and `screenR`
-— ratios, not pixels — and multiplies them by `width` to get every geometric
-value the frame needs:
-
-<AppShowcaseAnatomy />
-
-```tsx
-const DEVICE = {
+<LearnChapter
+  label="The whole frame is derived from one number"
+  scene={<AppShowcaseAnatomy />}
+  code={`const DEVICE = {
   iphone: { aspect: "aspect-[433/882]", shellR: 0.17, padR: 0.035, screenR: 0.13 },
   android: { aspect: "aspect-[9/19.5]", shellR: 0.11, padR: 0.028, screenR: 0.085 },
 };
@@ -26,8 +18,17 @@ const geo = DEVICE[device];
 const pad = w * geo.padR;
 const shellRadius = w * geo.shellR;
 const screenRadius = w * geo.screenR;
-const notchW = w * 0.3;
-```
+const notchW = w * 0.3;`}
+>
+
+A device mockup that looks convincing at every size usually means someone
+hand-tuned the notch and corner radius for 2–3 fixed breakpoints.
+`AppShowcase` doesn't have breakpoints — every radius, every inset, the
+notch itself, is a ratio of one `width` prop, computed once per render.
+
+`PhoneFrame` reads a `DEVICE` table keyed by `shellR`, `padR`, and `screenR`
+— ratios, not pixels — and multiplies them by `width` to get every geometric
+value the frame needs:
 
 Nothing here is a fixed `rem` value. Render the same `AppShowcase` at
 `width={140}` and `width={400}` and the shell radius, the padding gap, and
@@ -36,15 +37,12 @@ the notch all scale together — a hand-picked radius would look chunky at
 table (`shellR: 0.11`, hole-punch instead of a notch), not a fork of the
 component.
 
-## One `SPRING`, two motion sources
+</LearnChapter>
 
-`scroll` mode — the default — runs Framer twice off the same config,
-for two unrelated things:
-
-<AppShowcaseScroll />
-
-```tsx
-const SPRING = { stiffness: 320, damping: 32, mass: 0.9 };
+<LearnChapter
+  label="One SPRING, two motion sources"
+  scene={<AppShowcaseScroll />}
+  code={`const SPRING = { stiffness: 320, damping: 32, mass: 0.9 };
 
 // 1. Entrance — fires once, on scroll-into-view
 <motion.div
@@ -57,8 +55,11 @@ const SPRING = { stiffness: 320, damping: 32, mass: 0.9 };
 
 // 2. Scroll pan — tracks scroll position continuously
 const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start end", "end start"] });
-const y = useSpring(useTransform(scrollYProgress, [0, 1], ["0%", "-45%"]), SPRING);
-```
+const y = useSpring(useTransform(scrollYProgress, [0, 1], ["0%", "-45%"]), SPRING);`}
+>
+
+`scroll` mode — the default — runs Framer twice off the same config,
+for two unrelated things:
 
 The entrance is a one-shot spring gated by `viewport={{ once: true }}` — it
 plays exactly once and never re-triggers on re-scroll. The pan is the
@@ -69,20 +70,20 @@ completely different job. `rotateX: 10 → 0` on the entrance, combined with
 `[perspective:1200px]` on the wrapper, is what gives the phone a slight
 "tilting up out of the page" feel rather than a flat slide-up.
 
-## `loop` mode skips Framer entirely
+</LearnChapter>
 
-<AppShowcaseLoop />
-
-```tsx
-<div
-  className={`flex flex-col ${running ? "animate-app-showcase-scroll" : ""} motion-reduce:animate-none`}
-  style={{ willChange: "transform", ["--as-loop"]: `${interval * 6}s` }}
+<LearnChapter
+  label="loop mode skips Framer entirely"
+  scene={<AppShowcaseLoop />}
+  code={`<div
+  className={\`flex flex-col \${running ? "animate-app-showcase-scroll" : ""} motion-reduce:animate-none\`}
+  style={{ willChange: "transform", ["--as-loop"]: \`\${interval * 6}s\` }}
 >
   <img src={src} className="w-full" />
   {/* Duplicate for a seamless wrap. */}
   <img src={src} aria-hidden className="w-full" />
-</div>
-```
+</div>`}
+>
 
 ```css
 @keyframes app-showcase-scroll {
@@ -100,8 +101,6 @@ inView && !reduce && !videoSrc`) rather than a `useAnimationFrame` loop —
 once the class is attached, the browser's compositor drives every frame with
 zero React re-renders and zero Framer Motion overhead.
 
-## Idle when it can't be seen
-
 ```tsx
 const io = new IntersectionObserver(
   ([entry]) => setInView(entry.isIntersecting),
@@ -113,6 +112,18 @@ const io = new IntersectionObserver(
 showcase off-screen and its class drops, the CSS animation pauses, and the
 compositor has nothing left to do for that element. No `requestAnimationFrame`
 loop to cancel, because there never was one.
+
+</LearnChapter>
+
+<LearnChapter label="The result" scene={<AppShowcaseResult />} isResult>
+
+One ratio table building the whole shell, one shared spring config doing two
+unrelated jobs in `scroll` mode, and a `loop` mode that hands the browser's
+compositor a two-copy track and gets out of the way entirely.
+
+</LearnChapter>
+
+</LearnPlayer>
 
 ## Reduced motion, mode by mode
 
@@ -129,11 +140,3 @@ boolean, no mode left animating for a user who asked it to stop.
 ## Motion Score
 
 <MotionScorePanel name="app-showcase" />
-
-## The result
-
-<AppShowcaseResult />
-
-One ratio table building the whole shell, one shared spring config doing two
-unrelated jobs in `scroll` mode, and a `loop` mode that hands the browser's
-compositor a two-copy track and gets out of the way entirely.

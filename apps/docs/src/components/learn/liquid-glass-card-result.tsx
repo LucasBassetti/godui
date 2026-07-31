@@ -1,6 +1,34 @@
 "use client";
 
 import { LiquidGlassCard } from "@godui/components";
+import { useBareScene } from "@/components/learn/bare-scene-context";
+
+/**
+ * The live card over its busy *neutral* backdrop — the interactive demo, with
+ * no card chrome. Shared by the standalone panel and the `LearnPlayer` stage.
+ */
+function LiquidGlassCardDemo() {
+  return (
+    <div
+      className="relative flex min-h-[320px] w-full items-center justify-center overflow-hidden bg-[var(--muted)] p-8 md:min-h-[380px]"
+      style={{
+        backgroundImage:
+          "radial-gradient(circle at 30% 25%, color-mix(in oklab, var(--foreground) 14%, transparent), transparent 42%), radial-gradient(circle at 75% 70%, color-mix(in oklab, var(--foreground) 10%, transparent), transparent 40%), linear-gradient(to right, color-mix(in oklab, var(--foreground) 8%, transparent) 1px, transparent 1px), linear-gradient(to bottom, color-mix(in oklab, var(--foreground) 8%, transparent) 1px, transparent 1px)",
+        backgroundSize: "auto, auto, 28px 28px, 28px 28px",
+      }}
+    >
+      <LiquidGlassCard className="relative w-80 p-8" radius={28} sheen={0.55}>
+        <div className="h-2.5 w-28 rounded-full bg-[var(--foreground)]/50" />
+        <div className="mt-4 h-2 w-full rounded-full bg-[var(--foreground)]/25" />
+        <div className="mt-2 h-2 w-[80%] rounded-full bg-[var(--foreground)]/18" />
+        <div className="mt-6 flex gap-2">
+          <div className="h-8 w-20 rounded-lg bg-[var(--foreground)]/15" />
+          <div className="h-8 w-8 rounded-lg bg-[var(--foreground)]/10" />
+        </div>
+      </LiquidGlassCard>
+    </div>
+  );
+}
 
 /**
  * Live card over a busy *neutral* backdrop — contrast + grid so refraction
@@ -8,6 +36,14 @@ import { LiquidGlassCard } from "@godui/components";
  * only when the subject needs it; glass needs structure behind it, not hue.
  */
 export function LiquidGlassCardResult() {
+  // On the LearnPlayer stage, the player supplies the card — render the live
+  // demo only. (Standalone / classic scroll layout keeps its own card.)
+  if (useBareScene())
+    return (
+      <div className="flex min-h-[280px] w-full items-center justify-center p-6">
+        <LiquidGlassCardDemo />
+      </div>
+    );
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -18,24 +54,7 @@ export function LiquidGlassCardResult() {
           the real component — move across the panel
         </span>
       </div>
-      <div
-        className="relative flex min-h-[320px] items-center justify-center overflow-hidden bg-[var(--muted)] p-8 md:min-h-[380px]"
-        style={{
-          backgroundImage:
-            "radial-gradient(circle at 30% 25%, color-mix(in oklab, var(--foreground) 14%, transparent), transparent 42%), radial-gradient(circle at 75% 70%, color-mix(in oklab, var(--foreground) 10%, transparent), transparent 40%), linear-gradient(to right, color-mix(in oklab, var(--foreground) 8%, transparent) 1px, transparent 1px), linear-gradient(to bottom, color-mix(in oklab, var(--foreground) 8%, transparent) 1px, transparent 1px)",
-          backgroundSize: "auto, auto, 28px 28px, 28px 28px",
-        }}
-      >
-        <LiquidGlassCard className="relative w-80 p-8" radius={28} sheen={0.55}>
-          <div className="h-2.5 w-28 rounded-full bg-[var(--foreground)]/50" />
-          <div className="mt-4 h-2 w-full rounded-full bg-[var(--foreground)]/25" />
-          <div className="mt-2 h-2 w-[80%] rounded-full bg-[var(--foreground)]/18" />
-          <div className="mt-6 flex gap-2">
-            <div className="h-8 w-20 rounded-lg bg-[var(--foreground)]/15" />
-            <div className="h-8 w-8 rounded-lg bg-[var(--foreground)]/10" />
-          </div>
-        </LiquidGlassCard>
-      </div>
+      <LiquidGlassCardDemo />
     </div>
   );
 }

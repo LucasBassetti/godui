@@ -1,32 +1,22 @@
 ---
 title: Anatomy of Globe
 description: How one rAF tick drives an idle drift or a dragged rotation off the same angle, and why the canvas gets destroyed instead of just hidden.
+learnPlayer: true
 ---
 
-`Globe` isn't a spinning image — it's a single WebGL surface that
-[cobe](https://github.com/shuding/cobe) repaints every frame from one
-number: `phi`. Idle or dragged, that's the only thing changing.
+<LearnPlayer>
 
-## One canvas, some markers, a pointer
-
-The whole component is `createGlobe(canvas, config)` handed a merged config
-— your `markers`, colors, and glow over sane defaults — plus pointer
-handlers that never touch the globe directly. They only record how far the
-pointer has moved.
-
-<GlobeAnatomy />
-
-```tsx
-const merged: COBEOptions = {
+<LearnChapter
+  label="One canvas, some markers, a pointer"
+  scene={<GlobeAnatomy />}
+  code={`const merged: COBEOptions = {
   ...DEFAULT_CONFIG,
   ...config,
   width: widthRef.current * 2,
   height: widthRef.current * 2,
 };
 const globe = createGlobe(canvas, merged);
-```
 
-```tsx
 onPointerDown={(e) => {
   pointerInteracting.current = e.clientX - pointerMovement.current;
 }}
@@ -34,21 +24,24 @@ onPointerMove={(e) => {
   if (pointerInteracting.current !== null) {
     pointerMovement.current = e.clientX - pointerInteracting.current;
   }
-}}
-```
+}}`}
+>
 
-## The motion: one tick, two sources for `phi`
+`Globe` isn't a spinning image — it's a single WebGL surface that
+[cobe](https://github.com/shuding/cobe) repaints every frame from one
+number: `phi`. Idle or dragged, that's the only thing changing.
 
-Every frame, the `requestAnimationFrame` loop decides where `phi` comes
-from. Nobody's holding the pointer: it drifts by a fixed `0.005`. Somebody
-is: the drift stops and `pointerMovement.current / 200` takes over instead
-— the same `phi` variable, read from a different place, fed into the exact
-same `globe.update()` call.
+The whole component is `createGlobe(canvas, config)` handed a merged config
+— your `markers`, colors, and glow over sane defaults — plus pointer
+handlers that never touch the globe directly. They only record how far the
+pointer has moved.
 
-<GlobeRotate />
+</LearnChapter>
 
-```tsx
-const tick = () => {
+<LearnChapter
+  label="One tick, two sources for phi"
+  scene={<GlobeRotate />}
+  code={`const tick = () => {
   if (pointerInteracting.current === null && !reduceMotion) {
     phiRef.current += 0.005;
   }
@@ -58,14 +51,18 @@ const tick = () => {
     height: widthRef.current * 2,
   });
   raf = requestAnimationFrame(tick);
-};
-```
+};`}
+>
+
+Every frame, the `requestAnimationFrame` loop decides where `phi` comes
+from. Nobody's holding the pointer: it drifts by a fixed `0.005`. Somebody
+is: the drift stops and `pointerMovement.current / 200` takes over instead
+— the same `phi` variable, read from a different place, fed into the exact
+same `globe.update()` call.
 
 There's no mode switch, no branch that swaps animation systems — `phi` is
 one accumulator, and the pointer's offset is just added on top of it, so
 letting go resumes the drift from wherever the drag left it.
-
-## Why the loop lives outside React
 
 `phi`, pointer state, and canvas width are all refs, not `useState`. If they
 were state, every one of those ~60 updates a second would trigger a React
@@ -78,18 +75,12 @@ const phiRef = React.useRef(0);
 const pointerMovement = React.useRef(0);
 ```
 
-## Lifecycle: a real teardown, not a pause
+</LearnChapter>
 
-Mounting starts the tick and reveals the canvas on the next frame (so it
-never flashes an unpainted state). Unmounting doesn't just stop rendering —
-the effect's cleanup cancels the frame **and** calls `globe.destroy()`,
-which frees the WebGL context cobe allocated. Leaving it running after the
-canvas is gone would leak a context per mount/unmount cycle.
-
-<GlobeLifecycle />
-
-```tsx
-useEffect(() => {
+<LearnChapter
+  label="Lifecycle: a real teardown"
+  scene={<GlobeLifecycle />}
+  code={`useEffect(() => {
   const globe = createGlobe(canvas, merged);
   let raf = requestAnimationFrame(tick);
   const reveal = requestAnimationFrame(() => {
@@ -101,8 +92,25 @@ useEffect(() => {
     cancelAnimationFrame(reveal);
     globe.destroy();
   };
-}, [config]);
-```
+}, [config]);`}
+>
+
+Mounting starts the tick and reveals the canvas on the next frame (so it
+never flashes an unpainted state). Unmounting doesn't just stop rendering —
+the effect's cleanup cancels the frame **and** calls `globe.destroy()`,
+which frees the WebGL context cobe allocated. Leaving it running after the
+canvas is gone would leak a context per mount/unmount cycle.
+
+</LearnChapter>
+
+<LearnChapter label="The result" scene={<GlobeResult />} isResult>
+
+Same tick, same `phi`, same `globe.update()` — whether it's drifting on its
+own or following your cursor.
+
+</LearnChapter>
+
+</LearnPlayer>
 
 ## Accessibility
 
@@ -120,10 +128,3 @@ const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").match
 ## Motion Score
 
 <MotionScorePanel name="globe" />
-
-## The result
-
-<GlobeResult />
-
-Same tick, same `phi`, same `globe.update()` — whether it's drifting on its
-own or following your cursor.

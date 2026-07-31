@@ -1,7 +1,17 @@
 ---
 title: Anatomy of the Prompt Composer
 description: How one form stays one form across chips, an auto-growing textarea, a model picker, and a send button that morphs into stop — no remounts, no separate layouts.
+learnPlayer: true
 ---
+
+<LearnPlayer>
+
+<LearnChapter
+  label="One form, three stacked rows"
+  scene={<PromptComposerAnatomy />}
+  code={`const PANEL_BASE =
+  "group/composer relative flex w-full flex-col gap-2 rounded-2xl border border-border bg-card/80 p-2.5 shadow-sm backdrop-blur-md transition-[box-shadow,border-color] focus-within:border-ring focus-within:shadow-md";`}
+>
 
 Every "chat input" ends up needing the same five things: attachments, a
 field that grows with what you type, a model switcher, a drag target, and a
@@ -9,20 +19,11 @@ send button that has to become a stop button mid-stream. `PromptComposer`
 builds all five as states of one `<form>`, not five components stitched
 together. Here's how each state moves.
 
-## One form, three stacked rows
-
 The panel is a single `<form data-slot="prompt-composer">` with three rows
 that are always present in the DOM in the same order — an attachment row
 that collapses to nothing when empty, the textarea, and a toolbar. Nothing
 here remounts when attachments, streaming, or the model list change; only
 which children exist inside each row changes.
-
-<PromptComposerAnatomy />
-
-```tsx
-const PANEL_BASE =
-  "group/composer relative flex w-full flex-col gap-2 rounded-2xl border border-border bg-card/80 p-2.5 shadow-sm backdrop-blur-md transition-[box-shadow,border-color] focus-within:border-ring focus-within:shadow-md";
-```
 
 `focus-within` is doing the work a `focus` ring normally would — since the
 element that's actually focused is the `<textarea>` two levels down, not the
@@ -30,17 +31,12 @@ element that's actually focused is the `<textarea>` two levels down, not the
 anywhere inside it, which is why clicking the attach button or the model
 picker doesn't dim the "focused" look the way blurring the textarea would.
 
-## Chips spring in, spring out
+</LearnChapter>
 
-Attachments aren't rendered directly inside the panel — they're wrapped in
-two nested `AnimatePresence` regions. The outer one owns the row's own
-mount/unmount (`height: 0 → "auto"`, so the panel never jumps when the first
-file lands); the inner one owns each chip's own spring.
-
-<PromptComposerChips />
-
-```tsx
-<AnimatePresence initial={false}>
+<LearnChapter
+  label="Chips spring in, spring out"
+  scene={<PromptComposerChips />}
+  code={`<AnimatePresence initial={false}>
   {chips.length > 0 ? (
     <motion.div
       initial={{ opacity: 0, height: 0 }}
@@ -64,8 +60,13 @@ file lands); the inner one owns each chip's own spring.
       </AnimatePresence>
     </motion.div>
   ) : null}
-</AnimatePresence>
-```
+</AnimatePresence>`}
+>
+
+Attachments aren't rendered directly inside the panel — they're wrapped in
+two nested `AnimatePresence` regions. The outer one owns the row's own
+mount/unmount (`height: 0 → "auto"`, so the panel never jumps when the first
+file lands); the inner one owns each chip's own spring.
 
 `layout` on each chip is what makes removing one feel physical instead of
 abrupt — Framer measures the chip row before and after a chip leaves and
@@ -100,16 +101,12 @@ synchronously before the browser paints, so there's never a frame where the
 field is the wrong height. Past `maxRows`, `overflowY` flips to `auto` and
 growth stops — the field scrolls instead of pushing the toolbar off-panel.
 
-## Send becomes stop, not a different button
+</LearnChapter>
 
-Streaming doesn't swap in a different `<button>` — the same element stays
-mounted (same size, same position, same `type` toggling under the hood) and
-only its icon cross-fades via `AnimatePresence mode="wait"`:
-
-<PromptComposerSendMorph />
-
-```tsx
-<AnimatePresence mode="wait" initial={false}>
+<LearnChapter
+  label="Send becomes stop, not a different button"
+  scene={<PromptComposerSendMorph />}
+  code={`<AnimatePresence mode="wait" initial={false}>
   {isStreaming ? (
     <motion.span
       key="stop"
@@ -131,8 +128,12 @@ only its icon cross-fades via `AnimatePresence mode="wait"`:
       <ArrowUpIcon />
     </motion.span>
   )}
-</AnimatePresence>
-```
+</AnimatePresence>`}
+>
+
+Streaming doesn't swap in a different `<button>` — the same element stays
+mounted (same size, same position, same `type` toggling under the hood) and
+only its icon cross-fades via `AnimatePresence mode="wait"`:
 
 `mode="wait"` is the detail that makes this read as one icon morphing
 instead of two icons crossing paths: Framer waits for the exiting `key` to
@@ -217,14 +218,18 @@ streaming, the button's `type` is `"button"` and its `onClick` calls
 tracks the same branch (`"Send message"` / `"Stop generating"`), so a
 screen reader announces the swap the icon morph is showing sighted users.
 
-## Motion Score
+</LearnChapter>
 
-<MotionScorePanel name="prompt-composer" />
-
-## The result
-
-<PromptComposerResult />
+<LearnChapter label="The result" scene={<PromptComposerResult />} isResult>
 
 One `<form>`, three rows that never remount, and every "different state" —
 chips present, streaming, a model open, a file mid-drag — expressed as
 props on the same tree instead of a different component underneath it.
+
+</LearnChapter>
+
+</LearnPlayer>
+
+## Motion Score
+
+<MotionScorePanel name="prompt-composer" />

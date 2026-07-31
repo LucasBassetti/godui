@@ -1,15 +1,36 @@
 ---
 title: Anatomy of Text Animate
 description: How text is split into segments, staggered through a preset, and gated by the viewport — with a plain fallback for reduced motion.
+learnPlayer: true
 ---
+
+<LearnPlayer>
+
+<LearnChapter
+  label="Split first"
+  scene={<TextAnimateAnatomy />}
+  code={`const segments = React.useMemo(
+  () => splitTextAnimate(textContent, by),
+  [textContent, by],
+);
+
+{segments.map(({ key, segment }) => (
+  <motion.span
+    key={key}
+    variants={finalVariants.item}
+    className={getSegmentClassName(by, segmentClassName)}
+    aria-hidden={accessible ? true : undefined}
+  >
+    {segment}
+  </motion.span>
+))}`}
+>
 
 TextAnimate doesn't animate a string as one blob. It flattens children to
 text, splits that string by `by`, then hands each segment to Framer Motion
 as a child of a container with `staggerChildren`. The entrance you pick —
 `fadeIn`, `blurInUp`, `slideUp`, and friends — is just the item variant.
 Everything else is orchestration.
-
-## Split first
 
 `getTextContent(children)` collapses the tree to a string. Then
 `splitTextAnimate(text, by)` produces `{ key, segment }[]`:
@@ -24,30 +45,25 @@ Each segment becomes a `motion.span` with a class from
 lines). Keys encode split mode, offset, and content so remounts stay
 stable.
 
-<TextAnimateAnatomy />
-
-```tsx
-const segments = React.useMemo(
-  () => splitTextAnimate(textContent, by),
-  [textContent, by],
-);
-
-{segments.map(({ key, segment }) => (
-  <motion.span
-    key={key}
-    variants={finalVariants.item}
-    className={getSegmentClassName(by, segmentClassName)}
-    aria-hidden={accessible ? true : undefined}
-  >
-    {segment}
-  </motion.span>
-))}
-```
-
 Fewer segments (words) feel like a cascade of phrases. Characters feel like
 typewriter grit. Same preset, different density.
 
-## Stagger is the cascade
+</LearnChapter>
+
+<LearnChapter
+  label="Stagger is the cascade"
+  scene={<TextAnimateStagger />}
+  code={`const staggerChildren =
+  stagger ??
+  (segments.length > 1 ? duration / segments.length : STAGGER_BY_SPLIT[by]);
+
+const finalVariants = resolveTextAnimateVariants({
+  animation,
+  delay,
+  staggerChildren,
+  customVariants: variants,
+});`}
+>
 
 The container variants own the timing. `staggerChildren` defaults to
 `duration / segments.length` when there's more than one segment; otherwise
@@ -58,59 +74,8 @@ it falls back to `STAGGER_BY_SPLIT[by]` (`word: 0.05`, `character: 0.03`,
 Exit reverses the cascade (`staggerDirection: -1`) inside
 `AnimatePresence mode="popLayout"`.
 
-<TextAnimateStagger />
-
-```tsx
-const staggerChildren =
-  stagger ??
-  (segments.length > 1 ? duration / segments.length : STAGGER_BY_SPLIT[by]);
-
-const finalVariants = resolveTextAnimateVariants({
-  animation,
-  delay,
-  staggerChildren,
-  customVariants: variants,
-});
-```
-
 Pass your own `variants` and the resolver swaps the item map while keeping
 the same delay/stagger container shell.
-
-## Presets are item variants
-
-Ten named presets live in `TEXT_ANIMATE_PRESETS`. They share the same
-container shell; only the item `hidden` / `show` / `exit` differ. Two
-useful contrasts:
-
-- **`blurInUp`** — `opacity 0`, `filter: blur(10px)`, `y: 20` → rest
-  (filter and `y` at 0.3s, opacity slightly longer at 0.4s)
-- **`slideUp`** — `opacity 0`, `y: 20` → rest (no blur)
-
-`scaleUp` / `scaleDown` swap the linear duration for a spring on `scale`
-(`damping: 32`, `stiffness: 320`, `mass: 0.9`). Everything stays on the
-compositor: opacity, transform, filter.
-
-<TextAnimatePresets />
-
-```tsx
-blurInUp: {
-  item: {
-    hidden: { opacity: 0, filter: "blur(10px)", y: 20 },
-    show: {
-      opacity: 1,
-      filter: "blur(0px)",
-      y: 0,
-      transition: {
-        y: { duration: 0.3 },
-        opacity: { duration: 0.4 },
-        filter: { duration: 0.3 },
-      },
-    },
-  },
-},
-```
-
-## In view, once
 
 Default `startOnView` is `true`. The motion root uses
 `whileInView="show"` with `viewport={{ once, amount: viewportAmount }}`
@@ -132,6 +97,51 @@ component so a hero can be a real `h1` without losing the stagger.
   aria-label={accessible && textContent ? textContent : undefined}
 >
 ```
+
+</LearnChapter>
+
+<LearnChapter
+  label="Presets are item variants"
+  scene={<TextAnimatePresets />}
+  code={`blurInUp: {
+  item: {
+    hidden: { opacity: 0, filter: "blur(10px)", y: 20 },
+    show: {
+      opacity: 1,
+      filter: "blur(0px)",
+      y: 0,
+      transition: {
+        y: { duration: 0.3 },
+        opacity: { duration: 0.4 },
+        filter: { duration: 0.3 },
+      },
+    },
+  },
+},`}
+>
+
+Ten named presets live in `TEXT_ANIMATE_PRESETS`. They share the same
+container shell; only the item `hidden` / `show` / `exit` differ. Two
+useful contrasts:
+
+- **`blurInUp`** — `opacity 0`, `filter: blur(10px)`, `y: 20` → rest
+  (filter and `y` at 0.3s, opacity slightly longer at 0.4s)
+- **`slideUp`** — `opacity 0`, `y: 20` → rest (no blur)
+
+`scaleUp` / `scaleDown` swap the linear duration for a spring on `scale`
+(`damping: 32`, `stiffness: 320`, `mass: 0.9`). Everything stays on the
+compositor: opacity, transform, filter.
+
+</LearnChapter>
+
+<LearnChapter label="The result" scene={<TextAnimateResult />} isResult>
+
+Word blur-in, character slide-up, and a spring scale on a real heading —
+same splitter, three presets.
+
+</LearnChapter>
+
+</LearnPlayer>
 
 ## Accessibility
 
@@ -158,10 +168,3 @@ if (reducedMotion) {
 ## Motion Score
 
 <MotionScorePanel name="text-animate" />
-
-## The result
-
-Word blur-in, character slide-up, and a spring scale on a real heading —
-same splitter, three presets.
-
-<TextAnimateResult />

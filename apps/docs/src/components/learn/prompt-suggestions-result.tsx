@@ -2,6 +2,7 @@
 
 import { type PromptSuggestion, PromptSuggestions } from "@godui/components";
 import { useState } from "react";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
  * Closing "here's the finished thing" panel — the real, interactive
@@ -23,6 +24,35 @@ const SUGGESTIONS: PromptSuggestion[] = [
 export function PromptSuggestionsResult() {
   const [last, setLast] = useState<string | null>(null);
 
+  const demo = (
+    <>
+      <div className="w-full max-w-lg">
+        <PromptSuggestions
+          suggestions={SUGGESTIONS}
+          onSelect={(suggestion) => setLast(suggestion.label)}
+        />
+      </div>
+      <p className="text-muted-foreground text-xs">
+        {last ? (
+          <>
+            Selected: <span className="text-foreground">{last}</span>
+          </>
+        ) : (
+          "Click or arrow-key to a suggestion and select it"
+        )}
+      </p>
+    </>
+  );
+
+  // On the LearnPlayer stage, the player supplies the card — render the live
+  // component only. (Standalone / classic scroll layout keeps its own card.)
+  if (useBareScene())
+    return (
+      <div className="flex min-h-[280px] w-full flex-col items-center justify-center gap-5 p-6">
+        {demo}
+      </div>
+    );
+
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -34,21 +64,7 @@ export function PromptSuggestionsResult() {
         </span>
       </div>
       <div className="flex min-h-[280px] flex-col items-center justify-center gap-5 p-10">
-        <div className="w-full max-w-lg">
-          <PromptSuggestions
-            suggestions={SUGGESTIONS}
-            onSelect={(suggestion) => setLast(suggestion.label)}
-          />
-        </div>
-        <p className="text-muted-foreground text-xs">
-          {last ? (
-            <>
-              Selected: <span className="text-foreground">{last}</span>
-            </>
-          ) : (
-            "Click or arrow-key to a suggestion and select it"
-          )}
-        </p>
+        {demo}
       </div>
     </div>
   );

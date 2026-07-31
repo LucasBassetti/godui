@@ -2,6 +2,7 @@
 
 import { ReorderItem, ReorderList } from "@godui/components";
 import * as React from "react";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
  * Closing "here's the finished thing" panel — the real, interactive
@@ -17,6 +18,28 @@ const INITIAL = [
 export function ReorderListResult() {
   const [items, setItems] = React.useState(INITIAL);
 
+  const demo = (
+    <>
+      <ReorderList values={items} onReorder={setItems} className="w-72">
+        {items.map((item) => (
+          <ReorderItem key={item.id} value={item}>
+            <span aria-hidden className="text-muted-foreground">
+              ⠿
+            </span>
+            {item.label}
+          </ReorderItem>
+        ))}
+      </ReorderList>
+    </>
+  );
+
+  if (useBareScene())
+    return (
+      <div className="relative flex min-h-[280px] items-center justify-center p-6 sm:p-6 w-full">
+        {demo}
+      </div>
+    );
+
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -28,16 +51,7 @@ export function ReorderListResult() {
         </span>
       </div>
       <div className="relative flex min-h-[280px] items-center justify-center p-6 sm:p-10">
-        <ReorderList values={items} onReorder={setItems} className="w-72">
-          {items.map((item) => (
-            <ReorderItem key={item.id} value={item}>
-              <span aria-hidden className="text-muted-foreground">
-                ⠿
-              </span>
-              {item.label}
-            </ReorderItem>
-          ))}
-        </ReorderList>
+        {demo}
       </div>
     </div>
   );

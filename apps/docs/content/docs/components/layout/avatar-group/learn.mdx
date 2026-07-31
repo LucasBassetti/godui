@@ -1,23 +1,15 @@
 ---
 title: Anatomy of the Avatar Group
 description: An overlapping stack built from ordinary flex flow, and two hover-triggered springs — one on the whole row, one on a single avatar — that layer on top of each other.
+learnPlayer: true
 ---
 
-Overlapping avatar stacks are usually faked with `position: absolute` and
-manually offset `left` values. `AvatarGroup` doesn't reach for absolute
-positioning at all — it overlaps avatars with plain flex flow and negative
-margin, which is what lets the "fan out on hover" motion be a single
-`marginLeft` spring instead of a layout rewrite.
+<LearnPlayer>
 
-## Negative margin, not absolute position
-
-Every avatar past the first pulls itself left into its neighbor by a fixed
-overlap, and `zIndex: i` stacks later avatars on top:
-
-<AvatarGroupAnatomy />
-
-```tsx
-const overlap = { sm: 10, md: 12, lg: 14 };
+<LearnChapter
+  label="Negative margin, not absolute position"
+  scene={<AvatarGroupAnatomy />}
+  code={`const overlap = { sm: 10, md: 12, lg: 14 };
 const margin = -overlap[size];
 
 <motion.div
@@ -26,8 +18,17 @@ const margin = -overlap[size];
   className="relative size-10 ring-2 ring-background rounded-full overflow-hidden bg-background"
 >
   <Initials avatar={avatar} />
-</motion.div>
-```
+</motion.div>`}
+>
+
+Overlapping avatar stacks are usually faked with `position: absolute` and
+manually offset `left` values. `AvatarGroup` doesn't reach for absolute
+positioning at all — it overlaps avatars with plain flex flow and negative
+margin, which is what lets the "fan out on hover" motion be a single
+`marginLeft` spring instead of a layout rewrite.
+
+Every avatar past the first pulls itself left into its neighbor by a fixed
+overlap, and `zIndex: i` stacks later avatars on top.
 
 Because it's real flow layout, the `+N` overflow chip is just one more item
 in the same row with the same negative-margin treatment — not a
@@ -37,12 +38,12 @@ instead of clipped rectangles — the ring is the same color as the page
 background, so it fakes a gap between avatars that don't actually have one
 in the DOM.
 
-## Two springs, two independent triggers
+</LearnChapter>
 
-<AvatarGroupSpread />
-
-```tsx
-<motion.div
+<LearnChapter
+  label="Two springs, two independent triggers"
+  scene={<AvatarGroupSpread />}
+  code={`<motion.div
   initial="rest"
   whileHover={spreadOnHover && !reduceMotion ? "spread" : undefined}
   animate="rest"
@@ -59,8 +60,8 @@ in the DOM.
       <Initials avatar={avatar} />
     </motion.div>
   ))}
-</motion.div>
-```
+</motion.div>`}
+>
 
 Hovering anywhere over the outer `motion.div` flips every avatar's
 `variants` from `rest` to `spread` — `marginLeft` relaxes from a tight
@@ -73,13 +74,24 @@ vs. the individual avatar), and Framer resolves both onto the same node.
 Move the pointer across the row and you get the fan-out; stop over one
 avatar and it additionally pops up above its neighbors.
 
-## The overflow chip spreads, but never lifts
-
 The `+N` chip shares the row's `spread` variant — hover the group and it
 slides right along with everything else — but it has no `whileHover` of its
 own, so it never gets the individual `y`/`scale` lift. It communicates
 "more people, not a person" by opting out of exactly one of the two
 animations everything else has both of.
+
+</LearnChapter>
+
+<LearnChapter label="The result" scene={<AvatarGroupResult />} isResult>
+
+Ordinary flex flow with negative margins for the overlap, one spring on the
+group's hover and a second, independent spring on each avatar's own hover —
+sweep the row, then rest on one avatar, and watch both springs settle
+without ever touching each other's state.
+
+</LearnChapter>
+
+</LearnPlayer>
 
 ## Reduced motion removes the trigger, not just the transition
 
@@ -116,12 +128,3 @@ at a time.
 ## Motion Score
 
 <MotionScorePanel name="avatar-group" />
-
-## The result
-
-<AvatarGroupResult />
-
-Ordinary flex flow with negative margins for the overlap, one spring on the
-group's hover and a second, independent spring on each avatar's own hover —
-sweep the row, then rest on one avatar, and watch both springs settle
-without ever touching each other's state.

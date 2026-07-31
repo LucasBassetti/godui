@@ -1,6 +1,7 @@
 "use client";
 
 import { Globe } from "@godui/components";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
  * Closing "here's the finished thing" panel — the real `Globe`, tuned with
@@ -24,6 +25,20 @@ const GLOBE_CONFIG = {
 };
 
 export function GlobeResult() {
+  const demo = (
+    <>
+      <div className="absolute left-1/2 top-1/2 size-[420px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#2b50b8]/25 blur-3xl" />
+      <Globe config={GLOBE_CONFIG} className="relative max-w-[380px]" />
+    </>
+  );
+
+  if (useBareScene())
+    return (
+      <div className="relative flex min-h-[360px] items-center justify-center overflow-hidden bg-[#04060f] p-6 md:min-h-[420px] md:p-6 w-full">
+        {demo}
+      </div>
+    );
+
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -35,8 +50,7 @@ export function GlobeResult() {
         </span>
       </div>
       <div className="relative flex min-h-[360px] items-center justify-center overflow-hidden bg-[#04060f] p-6 md:min-h-[420px] md:p-10">
-        <div className="absolute left-1/2 top-1/2 size-[420px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#2b50b8]/25 blur-3xl" />
-        <Globe config={GLOBE_CONFIG} className="relative max-w-[380px]" />
+        {demo}
       </div>
     </div>
   );

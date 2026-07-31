@@ -1,24 +1,15 @@
 ---
 title: Anatomy of the Stack Badge
 description: A tech-stack wall built from one flex row, a lookup table that normalizes built-in and custom logos to the same shape, and two independent springs — one that enters once, one that only ever plays on hover.
+learnPlayer: true
 ---
 
-A tech-stack wall usually means dropping in a row of brand SVGs and calling it
-done. `StackBadge` treats that row as two problems: normalizing whatever you
-hand it (a built-in name or a custom `{ name, icon, color }`) into one uniform
-chip shape, and layering exactly two motions onto that chip — an entrance that
-fires once, and a hover that fires forever.
+<LearnPlayer>
 
-## One pill, two tokens
-
-Every chip is the same `inline-flex items-center rounded-full` row — an icon,
-then a label — regardless of whether it came from the built-in registry or a
-custom object:
-
-<StackBadgeAnatomy />
-
-```tsx
-function resolveItem(item: StackBadgeItem, size: number): ResolvedItem {
+<LearnChapter
+  label="One pill, two tokens"
+  scene={<StackBadgeAnatomy />}
+  code={`function resolveItem(item: StackBadgeItem, size: number): ResolvedItem {
   if (typeof item === "string") {
     const entry: TechEntry = TECH[item];
     return {
@@ -27,7 +18,7 @@ function resolveItem(item: StackBadgeItem, size: number): ResolvedItem {
       color: entry.color,
       glow: entry.mono
         ? "color-mix(in oklch, var(--foreground) 16%, transparent)"
-        : `${entry.color}3d`,
+        : \`\${entry.color}3d\`,
       icon: <TechIcon path={entry.path} label={entry.label} size={size} />,
     };
   }
@@ -36,12 +27,22 @@ function resolveItem(item: StackBadgeItem, size: number): ResolvedItem {
     label: item.name,
     color: item.color,
     glow: item.color.startsWith("#")
-      ? `${item.color}3d`
+      ? \`\${item.color}3d\`
       : "color-mix(in oklch, var(--foreground) 16%, transparent)",
     icon: item.icon,
   };
-}
-```
+}`}
+>
+
+A tech-stack wall usually means dropping in a row of brand SVGs and calling it
+done. `StackBadge` treats that row as two problems: normalizing whatever you
+hand it (a built-in name or a custom `{ name, icon, color }`) into one uniform
+chip shape, and layering exactly two motions onto that chip — an entrance that
+fires once, and a hover that fires forever.
+
+Every chip is the same `inline-flex items-center rounded-full` row — an icon,
+then a label — regardless of whether it came from the built-in registry or a
+custom object.
 
 `resolveItem` is the whole trick: it runs before render and returns the same
 `{ key, label, color, glow, icon }` shape either way. The chip component below
@@ -51,12 +52,12 @@ with no color of their own) get a neutral `color-mix` glow instead of a hex
 suffix, so they still warm up on hover without inventing a brand color that
 doesn't exist.
 
-## Enter once, hover forever
+</LearnChapter>
 
-<StackBadgeStagger />
-
-```tsx
-<motion.div
+<LearnChapter
+  label="Enter once, hover forever"
+  scene={<StackBadgeStagger />}
+  code={`<motion.div
   initial={reduce || !animateIn ? false : { opacity: 0, y: 8 }}
   whileInView={reduce || !animateIn ? undefined : { opacity: 1, y: 0 }}
   viewport={{ once: true, margin: "0px 0px -10% 0px" }}
@@ -70,8 +71,8 @@ doesn't exist.
       ? undefined
       : { y: -3, transition: { type: "spring", stiffness: 520, damping: 32 } }
   }
+>`}
 >
-```
 
 `viewport={{ once: true }}` means the stagger spring is a one-shot: it plays
 the moment the row is 10% into view and Framer detaches the observer —
@@ -80,7 +81,12 @@ separate animation living on the same node; it has no `viewport`, no `once`,
 so it fires every time the pointer enters, indefinitely, for the lifetime of
 the chip. Two `transition` objects, two lifespans, one element.
 
-## The glow is a shadow, not a background swap
+The glow is a shadow, not a background swap. The halo is a `box-shadow`
+that's *already painted* at `opacity-0` — hovering only flips its opacity to
+1 over 240ms, so the glow itself never repaints or resizes, just fades in.
+`--glow` is set once per chip in inline `style` (the `3d` hex suffix or the
+`color-mix` fallback from `resolveItem`), so the shadow's color is fixed
+per-item and the transition only ever touches `opacity`.
 
 ```tsx
 {glow ? (
@@ -91,12 +97,18 @@ the chip. Two `transition` objects, two lifespans, one element.
 ) : null}
 ```
 
-The halo is a `box-shadow` that's *already painted* at `opacity-0` — hovering
-only flips its opacity to 1 over 240ms, so the glow itself never repaints or
-resizes, just fades in. `--glow` is set once per chip in inline `style` (the
-`3d` hex suffix or the `color-mix` fallback from `resolveItem`), so the
-shadow's color is fixed per-item and the transition only ever touches
-`opacity`.
+</LearnChapter>
+
+<LearnChapter label="The result" scene={<StackBadgeResult />} isResult>
+
+A lookup table that normalizes every item to one shape, one spring that plays
+once on scroll-in, and one independent spring that plays forever on hover —
+scroll past this wall and nothing happens twice, but you can hover the same
+chip a hundred times.
+
+</LearnChapter>
+
+</LearnPlayer>
 
 ## Reduced motion turns off the trigger, not the transition
 
@@ -114,12 +126,3 @@ two springs are removed.
 ## Motion Score
 
 <MotionScorePanel name="stack-badge" />
-
-## The result
-
-<StackBadgeResult />
-
-A lookup table that normalizes every item to one shape, one spring that plays
-once on scroll-in, and one independent spring that plays forever on hover —
-scroll past this wall and nothing happens twice, but you can hover the same
-chip a hundred times.

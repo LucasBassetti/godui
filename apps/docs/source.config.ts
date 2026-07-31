@@ -17,6 +17,10 @@ export const docs = defineDocs({
       // "Workbench" layout (live stage + dock + drawer) instead of the classic
       // linear column. Opt-in per page so un-migrated pages keep the old layout.
       workbench: frontmatterSchema.shape.full.optional(),
+      // When true, a Learn page renders in the stage-first <LearnPlayer> layout
+      // (pinned preview + chapter rail) and its auto-TOC is suppressed. Opt-in
+      // per page so un-migrated Learn articles keep the classic scroll layout.
+      learnPlayer: frontmatterSchema.shape.full.optional(),
     }),
   },
 });

@@ -3,6 +3,7 @@
 import { type Notification, NotificationInbox } from "@godui/components";
 import { GitPullRequest, MessageCircle, UserPlus } from "lucide-react";
 import { useState } from "react";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
  * Closing "here's the finished thing" panel — the real, stateful
@@ -52,6 +53,33 @@ const SEED: Notification[] = [
 
 export function NotificationInboxResult() {
   const [items, setItems] = useState(SEED);
+  const bare = useBareScene();
+
+  const demo = (
+    <NotificationInbox
+      notifications={items}
+      onRead={(id) =>
+        setItems((prev) =>
+          prev.map((n) => (n.id === id ? { ...n, read: true } : n)),
+        )
+      }
+      onArchive={(id) => setItems((prev) => prev.filter((n) => n.id !== id))}
+      onMarkAllRead={() =>
+        setItems((prev) => prev.map((n) => ({ ...n, read: true })))
+      }
+      className="max-w-sm"
+    />
+  );
+
+  // On the LearnPlayer stage, the player supplies the card — render the live
+  // component only. (Standalone / classic scroll layout keeps its own card.)
+  if (bare) {
+    return (
+      <div className="flex min-h-[280px] w-full items-center justify-center p-6">
+        {demo}
+      </div>
+    );
+  }
 
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
@@ -64,21 +92,7 @@ export function NotificationInboxResult() {
         </span>
       </div>
       <div className="flex min-h-[280px] items-center justify-center p-10">
-        <NotificationInbox
-          notifications={items}
-          onRead={(id) =>
-            setItems((prev) =>
-              prev.map((n) => (n.id === id ? { ...n, read: true } : n)),
-            )
-          }
-          onArchive={(id) =>
-            setItems((prev) => prev.filter((n) => n.id !== id))
-          }
-          onMarkAllRead={() =>
-            setItems((prev) => prev.map((n) => ({ ...n, read: true })))
-          }
-          className="max-w-sm"
-        />
+        {demo}
       </div>
     </div>
   );

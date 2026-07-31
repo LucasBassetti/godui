@@ -2,6 +2,7 @@
 
 import { AgentStep, AgentTimeline, type StepStatus } from "@godui/components";
 import * as React from "react";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
  * Closing "here's the finished thing" panel — the real, interactive
@@ -53,6 +54,36 @@ export function AgentTimelineResult() {
   const statusFor = (i: number): StepStatus =>
     i < active ? "success" : i === active ? "running" : "pending";
 
+  // The live, interactive timeline — reused by both the bare stage render and
+  // the classic card below.
+  const demo = (
+    <div key={run} className="w-full max-w-md">
+      <AgentTimeline>
+        {STEPS.map((step, i) => (
+          <AgentStep
+            key={step.title}
+            status={statusFor(i)}
+            title={step.title}
+            meta={statusFor(i) === "pending" ? undefined : step.meta}
+            defaultOpen={i === active}
+            last={i === STEPS.length - 1}
+          >
+            {step.body}
+          </AgentStep>
+        ))}
+      </AgentTimeline>
+    </div>
+  );
+
+  // On the LearnPlayer stage, the player supplies the card — render the live
+  // component only. (Standalone / classic scroll layout keeps its own card.)
+  if (useBareScene())
+    return (
+      <div className="flex min-h-[280px] w-full items-center justify-center p-6">
+        {demo}
+      </div>
+    );
+
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -90,22 +121,7 @@ export function AgentTimelineResult() {
         </button>
       </div>
       <div className="flex min-h-[280px] items-center justify-center p-6 md:p-10">
-        <div key={run} className="w-full max-w-md">
-          <AgentTimeline>
-            {STEPS.map((step, i) => (
-              <AgentStep
-                key={step.title}
-                status={statusFor(i)}
-                title={step.title}
-                meta={statusFor(i) === "pending" ? undefined : step.meta}
-                defaultOpen={i === active}
-                last={i === STEPS.length - 1}
-              >
-                {step.body}
-              </AgentStep>
-            ))}
-          </AgentTimeline>
-        </div>
+        {demo}
       </div>
     </div>
   );

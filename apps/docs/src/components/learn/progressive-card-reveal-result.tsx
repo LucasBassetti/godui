@@ -2,6 +2,7 @@
 
 import { ProgressiveCardReveal } from "@godui/components";
 import * as React from "react";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
  * Closing "here's the finished thing" panel — the real, interactive
@@ -50,6 +51,61 @@ const LEGS: Leg[] = [
 export function ProgressiveCardRevealResult() {
   const [active, setActive] = React.useState(0);
 
+  const demo = (
+    <>
+      <ProgressiveCardReveal
+        activeIndex={active}
+        onActiveChange={setActive}
+        className="w-full max-w-[360px]"
+      >
+        {LEGS.map((leg) => (
+          <ProgressiveCardReveal.Card key={leg.label}>
+            <ProgressiveCardReveal.CardCollapsed>
+              <div className="flex items-center justify-between gap-4">
+                <span className="flex items-center gap-2 font-medium">
+                  <span aria-hidden>{leg.icon}</span>
+                  {leg.label}
+                </span>
+                <span className="text-muted-foreground text-sm">
+                  {leg.meta}
+                </span>
+              </div>
+            </ProgressiveCardReveal.CardCollapsed>
+            <ProgressiveCardReveal.CardExpanded>
+              <div className="flex flex-col gap-4">
+                <span className="flex items-center gap-2 font-medium">
+                  <span aria-hidden>{leg.icon}</span>
+                  {leg.label}
+                </span>
+                <div className="flex items-end justify-between gap-6">
+                  <div>
+                    <p className="text-muted-foreground text-xs uppercase tracking-wide">
+                      Distance
+                    </p>
+                    <p className="font-semibold text-2xl">{leg.distance}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-muted-foreground text-xs uppercase tracking-wide">
+                      Time
+                    </p>
+                    <p className="font-semibold text-2xl">{leg.time}</p>
+                  </div>
+                </div>
+              </div>
+            </ProgressiveCardReveal.CardExpanded>
+          </ProgressiveCardReveal.Card>
+        ))}
+      </ProgressiveCardReveal>
+    </>
+  );
+
+  if (useBareScene())
+    return (
+      <div className="relative flex min-h-[280px] items-center justify-center p-6 sm:p-6 w-full">
+        {demo}
+      </div>
+    );
+
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -61,49 +117,7 @@ export function ProgressiveCardRevealResult() {
         </span>
       </div>
       <div className="relative flex min-h-[280px] items-center justify-center p-6 sm:p-10">
-        <ProgressiveCardReveal
-          activeIndex={active}
-          onActiveChange={setActive}
-          className="w-full max-w-[360px]"
-        >
-          {LEGS.map((leg) => (
-            <ProgressiveCardReveal.Card key={leg.label}>
-              <ProgressiveCardReveal.CardCollapsed>
-                <div className="flex items-center justify-between gap-4">
-                  <span className="flex items-center gap-2 font-medium">
-                    <span aria-hidden>{leg.icon}</span>
-                    {leg.label}
-                  </span>
-                  <span className="text-muted-foreground text-sm">
-                    {leg.meta}
-                  </span>
-                </div>
-              </ProgressiveCardReveal.CardCollapsed>
-              <ProgressiveCardReveal.CardExpanded>
-                <div className="flex flex-col gap-4">
-                  <span className="flex items-center gap-2 font-medium">
-                    <span aria-hidden>{leg.icon}</span>
-                    {leg.label}
-                  </span>
-                  <div className="flex items-end justify-between gap-6">
-                    <div>
-                      <p className="text-muted-foreground text-xs uppercase tracking-wide">
-                        Distance
-                      </p>
-                      <p className="font-semibold text-2xl">{leg.distance}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-muted-foreground text-xs uppercase tracking-wide">
-                        Time
-                      </p>
-                      <p className="font-semibold text-2xl">{leg.time}</p>
-                    </div>
-                  </div>
-                </div>
-              </ProgressiveCardReveal.CardExpanded>
-            </ProgressiveCardReveal.Card>
-          ))}
-        </ProgressiveCardReveal>
+        {demo}
       </div>
     </div>
   );

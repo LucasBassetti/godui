@@ -2,6 +2,7 @@
 
 import { Stepper } from "@godui/components";
 import * as React from "react";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
  * Closing "here's the finished thing" panel — the real, interactive
@@ -21,6 +22,39 @@ const buttonClass =
 export function StepperResult() {
   const [active, setActive] = React.useState(1);
 
+  const demo = (
+    <>
+      <div className="w-full max-w-xl">
+        <Stepper steps={STEPS} active={active} />
+      </div>
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          className={buttonClass}
+          disabled={active === 0}
+          onClick={() => setActive((s) => Math.max(0, s - 1))}
+        >
+          Back
+        </button>
+        <button
+          type="button"
+          className={`${buttonClass} border-primary bg-primary text-primary-foreground hover:bg-primary/90`}
+          disabled={active === STEPS.length}
+          onClick={() => setActive((s) => Math.min(STEPS.length, s + 1))}
+        >
+          {active >= STEPS.length - 1 ? "Finish" : "Next"}
+        </button>
+      </div>
+    </>
+  );
+
+  if (useBareScene())
+    return (
+      <div className="relative flex min-h-[280px] flex-col items-center justify-center gap-8 p-6 md:p-6 w-full">
+        {demo}
+      </div>
+    );
+
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -32,27 +66,7 @@ export function StepperResult() {
         </span>
       </div>
       <div className="relative flex min-h-[280px] flex-col items-center justify-center gap-8 p-6 md:p-10">
-        <div className="w-full max-w-xl">
-          <Stepper steps={STEPS} active={active} />
-        </div>
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            className={buttonClass}
-            disabled={active === 0}
-            onClick={() => setActive((s) => Math.max(0, s - 1))}
-          >
-            Back
-          </button>
-          <button
-            type="button"
-            className={`${buttonClass} border-primary bg-primary text-primary-foreground hover:bg-primary/90`}
-            disabled={active === STEPS.length}
-            onClick={() => setActive((s) => Math.min(STEPS.length, s + 1))}
-          >
-            {active >= STEPS.length - 1 ? "Finish" : "Next"}
-          </button>
-        </div>
+        {demo}
       </div>
     </div>
   );

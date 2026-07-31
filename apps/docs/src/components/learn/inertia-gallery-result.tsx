@@ -1,6 +1,7 @@
 "use client";
 
 import { InertiaGallery } from "@godui/components";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
  * Closing "here's the finished thing" panel — the real, interactive
@@ -31,6 +32,23 @@ function Shot({ label, img }: (typeof SHOTS)[number]) {
 }
 
 export function InertiaGalleryResult() {
+  const demo = (
+    <>
+      <InertiaGallery snap defaultIndex={2} itemWidth={200} gap={24}>
+        {SHOTS.map((s) => (
+          <Shot key={s.label} {...s} />
+        ))}
+      </InertiaGallery>
+    </>
+  );
+
+  if (useBareScene())
+    return (
+      <div className="relative flex min-h-[300px] items-center justify-center overflow-hidden p-6 sm:p-6 w-full">
+        {demo}
+      </div>
+    );
+
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -42,11 +60,7 @@ export function InertiaGalleryResult() {
         </span>
       </div>
       <div className="relative flex min-h-[300px] items-center justify-center overflow-hidden p-6 sm:p-10">
-        <InertiaGallery snap defaultIndex={2} itemWidth={200} gap={24}>
-          {SHOTS.map((s) => (
-            <Shot key={s.label} {...s} />
-          ))}
-        </InertiaGallery>
+        {demo}
       </div>
     </div>
   );

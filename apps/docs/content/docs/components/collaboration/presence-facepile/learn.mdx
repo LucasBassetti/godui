@@ -1,19 +1,15 @@
 ---
 title: Anatomy of the Presence Facepile
 description: How a live avatar stack overlaps with ordinary flex flow, springs people in and out with popLayout, and turns status into color instead of a label.
+learnPlayer: true
 ---
 
-A facepile has to answer "who's here, and what are they doing" in the width
-of a few avatars. Presence Facepile gets there with plain flex overlap, one
-shared spring for every avatar entering or leaving, and status encoded
-entirely as color and motion rather than text.
+<LearnPlayer>
 
-## Overlap is flex flow, not absolute position
-
-<PresenceFacepileAnatomy />
-
-```tsx
-<div className="flex items-center -space-x-2">
+<LearnChapter
+  label="Overlap is flex flow, not absolute position"
+  scene={<PresenceFacepileAnatomy />}
+  code={`<div className="flex items-center -space-x-2">
   {visible.map((user) => (
     <motion.div key={user.id} layout /* ... */>
       <Avatar user={user} sizeClass={sizeClass} showStatus={showStatus} />
@@ -22,8 +18,13 @@ entirely as color and motion rather than text.
   {overflow.length > 0 ? (
     <motion.button layout /* +N chip, same row */ />
   ) : null}
-</div>
-```
+</div>`}
+>
+
+A facepile has to answer "who's here, and what are they doing" in the width
+of a few avatars. Presence Facepile gets there with plain flex overlap, one
+shared spring for every avatar entering or leaving, and status encoded
+entirely as color and motion rather than text.
 
 `-space-x-2` is Tailwind's negative-margin utility applied to every child
 but the first — the row is still ordinary flex flow, so tab order and DOM
@@ -33,12 +34,12 @@ anywhere. The `+N` chip isn't a specially-positioned badge; it's the same
 flex row's last child, sharing the identical overlap and `ring-2
 ring-background` treatment that separates every avatar from its neighbor.
 
-## One spring for entering, leaving, and shifting
+</LearnChapter>
 
-<PresenceFacepileEnter />
-
-```tsx
-<AnimatePresence initial={false} mode="popLayout">
+<LearnChapter
+  label="One spring for entering, leaving, and shifting"
+  scene={<PresenceFacepileEnter />}
+  code={`<AnimatePresence initial={false} mode="popLayout">
   {visible.map((user) => (
     <motion.div
       key={user.id}
@@ -51,8 +52,8 @@ ring-background` treatment that separates every avatar from its neighbor.
       <Avatar user={user} sizeClass={sizeClass} showStatus={showStatus} />
     </motion.div>
   ))}
-</AnimatePresence>
-```
+</AnimatePresence>`}
+>
 
 `mode="popLayout"` is what makes a departure feel instant instead of
 laggy: the leaving avatar is pulled out of layout the moment it starts
@@ -72,7 +73,28 @@ plain CSS `transition` on `hover:-translate-y-0.5`, paired with
 `hover:z-raised` so the lifted avatar clears its neighbors' overlap instead
 of disappearing behind them.
 
-## Status is color, not a label
+</LearnChapter>
+
+<LearnChapter
+  label="Status is color, not a label"
+  scene={<PresenceFacepileStatus />}
+  code={`{status === "typing" ? (
+  <span className="absolute -bottom-0.5 -right-0.5 flex items-center gap-px rounded-full bg-background px-0.5 py-1 shadow-sm">
+    {[0, 1, 2].map((i) => (
+      <span
+        key={i}
+        className="size-1 rounded-full bg-primary motion-safe:animate-bounce"
+        style={{ animationDelay: \`\${i * 120}ms\` }}
+      />
+    ))}
+  </span>
+) : (
+  <span
+    className="absolute bottom-0 right-0 size-2.5 rounded-full ring-2 ring-background"
+    style={{ backgroundColor: STATUS_COLOR[status] }}
+  />
+)}`}
+>
 
 Every avatar can carry a status ring, resolved from one lookup table:
 
@@ -87,28 +109,7 @@ const STATUS_COLOR: Record<PresenceStatus, string> = {
 
 `typing` is the one status that isn't a static ring — it swaps in three
 1px dots instead, each bouncing on `motion-safe:animate-bounce` with a
-`120ms` stagger per dot:
-
-<PresenceFacepileStatus />
-
-```tsx
-{status === "typing" ? (
-  <span className="absolute -bottom-0.5 -right-0.5 flex items-center gap-px rounded-full bg-background px-0.5 py-1 shadow-sm">
-    {[0, 1, 2].map((i) => (
-      <span
-        key={i}
-        className="size-1 rounded-full bg-primary motion-safe:animate-bounce"
-        style={{ animationDelay: `${i * 120}ms` }}
-      />
-    ))}
-  </span>
-) : (
-  <span
-    className="absolute bottom-0 right-0 size-2.5 rounded-full ring-2 ring-background"
-    style={{ backgroundColor: STATUS_COLOR[status] }}
-  />
-)}
-```
+`120ms` stagger per dot.
 
 `motion-safe:` is what pauses the bounce for anyone who's asked for reduced
 motion — the dots still render (typing is still communicated by their
@@ -116,8 +117,6 @@ presence and position), they just stop moving. Every other status stays
 exactly what it looks like: a ring, in a fixed color, never fading or
 pulsing, because "idle" or "offline" isn't information that benefits from
 motion drawing your eye to it every few seconds.
-
-## The overflow chip opts out of the lift
 
 Beyond `max`, the rest collapse into a `+N` button that shares the row's
 `layout` animation (so it slides smoothly as the row's contents change) but
@@ -135,6 +134,19 @@ different statuses at once anyway.
 />
 ```
 
+</LearnChapter>
+
+<LearnChapter label="The result" scene={<PresenceFacepileResult />} isResult>
+
+Flex overlap for the stack, one spring shared by every avatar that enters,
+leaves, or shifts to fill a gap, and a status system that's just a color
+lookup — except for the one status that earns its own motion because it's
+the one that's actually happening right now.
+
+</LearnChapter>
+
+</LearnPlayer>
+
 ## Accessibility
 
 Every avatar carries a `title` combining the user's name and status
@@ -148,12 +160,3 @@ correctly, it just does so without animating the transition.
 ## Motion Score
 
 <MotionScorePanel name="presence-facepile" />
-
-## The result
-
-<PresenceFacepileResult />
-
-Flex overlap for the stack, one spring shared by every avatar that enters,
-leaves, or shifts to fill a gap, and a status system that's just a color
-lookup — except for the one status that earns its own motion because it's
-the one that's actually happening right now.

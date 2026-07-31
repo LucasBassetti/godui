@@ -1,14 +1,26 @@
 ---
 title: Anatomy of Image Trail
 description: How a recycled DOM pool, a travel threshold, and the Web Animations API leave a trail of images without a React re-render per move.
+learnPlayer: true
 ---
+
+<LearnPlayer>
+
+<LearnChapter
+  label="A pool, not a stream of mounts"
+  scene={<ImageTrailAnatomy />}
+  code={`const slots = React.useRef<(HTMLImageElement | null)[]>([]);
+const slotIndex = React.useRef(0);
+
+const img = slots.current[slotIndex.current % max];
+slotIndex.current += 1;
+img.src = images[imageIndex.current % images.length];`}
+>
 
 `ImageTrail` doesn't mount a new `<img>` every time the pointer moves. It
 keeps a fixed pool of slots, skips spawns until you've travelled far enough,
 and drives each appearance with `element.animate()` — direct style writes,
 zero React updates on the hot path.
-
-## A pool, not a stream of mounts
 
 On render, `max` (default 12) invisible `<img>` nodes are created once and
 stored in `slots.current`. Each spawn takes `slots[slotIndex % max]`, bumps
@@ -16,18 +28,17 @@ the index, swaps `src` from the `images` array, and animates. When the pool
 wraps, the oldest slot is reused mid-flight — that's intentional: the
 previous animation is simply overwritten.
 
-<ImageTrailAnatomy />
+</LearnChapter>
 
-```tsx
-const slots = React.useRef<(HTMLImageElement | null)[]>([]);
-const slotIndex = React.useRef(0);
-
-const img = slots.current[slotIndex.current % max];
-slotIndex.current += 1;
-img.src = images[imageIndex.current % images.length];
-```
-
-## Distance gate before spawn
+<LearnChapter
+  label="Distance gate before spawn"
+  scene={<ImageTrailThreshold />}
+  code={`const dx = x - prev.x;
+const dy = y - prev.y;
+if (Math.hypot(dx, dy) < threshold) return;
+spawn(x, y, Math.atan2(dy, dx));
+last.current = { x, y };`}
+>
 
 `onPointerMove` converts the event to container-local coordinates and
 compares against `last`. If `Math.hypot(dx, dy)` is under `threshold`
@@ -35,17 +46,20 @@ compares against `last`. If `Math.hypot(dx, dy)` is under `threshold`
 threshold, `atan2(dy, dx)` becomes a clamped tilt (±12°) so each image leans
 slightly into the direction of travel.
 
-<ImageTrailThreshold />
+</LearnChapter>
 
-```tsx
-const dx = x - prev.x;
-const dy = y - prev.y;
-if (Math.hypot(dx, dy) < threshold) return;
-spawn(x, y, Math.atan2(dy, dx));
-last.current = { x, y };
-```
-
-## WAAPI keyframes, not React state
+<LearnChapter
+  label="WAAPI keyframes, not React state"
+  scene={<ImageTrailWaapi />}
+  code={`img.animate(
+  [
+    { opacity: 0, transform: \`translate(-50%, -50%) scale(0.4) rotate(\${tilt}deg)\` },
+    { opacity: 1, transform: \`translate(-50%, -50%) scale(1) rotate(\${tilt}deg)\`, offset: 0.18 },
+    { opacity: 0, transform: \`translate(-50%, -65%) scale(0.92) rotate(\${tilt}deg)\` },
+  ],
+  { duration, easing: "cubic-bezier(0.22,1,0.36,1)", fill: "forwards" },
+);`}
+>
 
 `spawn` sets `left`/`top`, then calls `img.animate` with three keyframes:
 fade/scale in to full size at 18%, then fade out while drifting slightly
@@ -53,18 +67,19 @@ upward (`translate(-50%, -65%)`) and settling at `scale(0.92)`. Easing is
 `cubic-bezier(0.22, 1, 0.36, 1)` with `fill: "forwards"`. Nothing in that
 path calls `setState`.
 
-<ImageTrailWaapi />
+</LearnChapter>
 
-```tsx
-img.animate(
-  [
-    { opacity: 0, transform: `translate(-50%, -50%) scale(0.4) rotate(${tilt}deg)` },
-    { opacity: 1, transform: `translate(-50%, -50%) scale(1) rotate(${tilt}deg)`, offset: 0.18 },
-    { opacity: 0, transform: `translate(-50%, -65%) scale(0.92) rotate(${tilt}deg)` },
-  ],
-  { duration, easing: "cubic-bezier(0.22,1,0.36,1)", fill: "forwards" },
-);
-```
+<LearnChapter label="The result" scene={<ImageTrailResult />} isResult>
+
+Move across the stage — images spawn only after you've travelled, then drift
+away on their own timeline.
+
+One recycled pool, one distance check, one `animate()` call — that's the
+whole trail.
+
+</LearnChapter>
+
+</LearnPlayer>
 
 ## Reduced motion
 
@@ -84,13 +99,3 @@ row of photos.
 ## Motion Score
 
 <MotionScorePanel name="image-trail" />
-
-## The result
-
-Move across the stage — images spawn only after you've travelled, then drift
-away on their own timeline.
-
-<ImageTrailResult />
-
-One recycled pool, one distance check, one `animate()` call — that's the
-whole trail.

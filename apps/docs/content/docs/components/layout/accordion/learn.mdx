@@ -1,23 +1,15 @@
 ---
 title: Anatomy of the Accordion
 description: How a spring-driven height animation and a flat CSS rotate can share one click without ever touching each other's timing.
+learnPlayer: true
 ---
 
-An accordion looks like a single animation — click, and the panel opens.
-It's actually two unrelated timing systems firing off the same state change:
-Framer Motion drives the panel, plain CSS drives the chevron, and neither
-knows the other exists.
+<LearnPlayer>
 
-## One border, N rows, one open flag
-
-`Accordion` isn't a stack of cards. It's a single `rounded-xl border`
-wrapper with `divide-y` between rows, and each row's "open-ness" lives in one
-piece of state — an array of open values, not a boolean per item:
-
-<AccordionAnatomy />
-
-```tsx
-const [open, setOpen] = React.useState<string[]>(/* … */);
+<LearnChapter
+  label="One border, N rows, one open flag"
+  scene={<AccordionAnatomy />}
+  code={`const [open, setOpen] = React.useState<string[]>(/* … */);
 
 <div className="w-full divide-y divide-border overflow-hidden rounded-xl border border-border">
   {items.map((item) => {
@@ -34,23 +26,28 @@ const [open, setOpen] = React.useState<string[]>(/* … */);
       </div>
     );
   })}
-</div>
-```
+</div>`}
+>
+
+An accordion looks like a single animation — click, and the panel opens.
+It's actually two unrelated timing systems firing off the same state change:
+Framer Motion drives the panel, plain CSS drives the chevron, and neither
+knows the other exists.
+
+`Accordion` isn't a stack of cards. It's a single `rounded-xl border`
+wrapper with `divide-y` between rows, and each row's "open-ness" lives in one
+piece of state — an array of open values, not a boolean per item:
 
 `type="single"` collapses that array to at most one value; `type="multiple"`
 just lets it grow. Same render tree, same toggle function — the mode is a
 three-line branch inside `toggle()`, not a different component.
 
-## A spring for height, a flat ease for the chevron
+</LearnChapter>
 
-The panel's entrance and exit are one `motion.div` inside `AnimatePresence`,
-and its `height`/`opacity` are driven by two different transitions on the
-*same* animate call:
-
-<AccordionHeight />
-
-```tsx
-<motion.div
+<LearnChapter
+  label="A spring for height, a flat ease for the chevron"
+  scene={<AccordionHeight />}
+  code={`<motion.div
   initial={reduceMotion ? false : { height: 0, opacity: 0 }}
   animate={{ height: "auto", opacity: 1 }}
   exit={reduceMotion ? undefined : { height: 0, opacity: 0 }}
@@ -61,8 +58,12 @@ and its `height`/`opacity` are driven by two different transitions on the
   className="overflow-hidden"
 >
   {item.content}
-</motion.div>
-```
+</motion.div>`}
+>
+
+The panel's entrance and exit are one `motion.div` inside `AnimatePresence`,
+and its `height`/`opacity` are driven by two different transitions on the
+*same* animate call:
 
 `stiffness: 500` with `damping: 40` is slightly underdamped — the panel
 overshoots its resting height by a hair before settling, instead of easing
@@ -86,13 +87,24 @@ no shared animation controller. The chevron's `250ms ease` and the panel's
 spring are unrelated curves that happen to start on the same click; nothing
 keeps them in lockstep, and nothing needs to.
 
-## `overflow-hidden` does the real clipping
-
 The panel's `className="overflow-hidden"` isn't decoration — it's what
 makes animating a growing/shrinking `height` look clean instead of showing
 un-clipped content flash at the edges mid-animation. Framer measures the
 child's natural height for `"auto"`, but the visible box is clipped by that
 one utility for the whole transition.
+
+</LearnChapter>
+
+<LearnChapter label="The result" scene={<AccordionResult />} isResult>
+
+One `open` array, one `AnimatePresence` panel per row, one spring for the
+height and a completely separate 250ms ease for the chevron — click through
+the questions above and watch the two curves run independently on the same
+click.
+
+</LearnChapter>
+
+</LearnPlayer>
 
 ## Reduced motion skips the spring, not the state
 
@@ -136,12 +148,3 @@ disabled>`, which removes it from the tab order for free.
 ## Motion Score
 
 <MotionScorePanel name="accordion" />
-
-## The result
-
-<AccordionResult />
-
-One `open` array, one `AnimatePresence` panel per row, one spring for the
-height and a completely separate 250ms ease for the chevron — click through
-the questions above and watch the two curves run independently on the same
-click.

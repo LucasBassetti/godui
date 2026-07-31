@@ -3,6 +3,7 @@
 import { TabBar, type TabBarTab } from "@godui/components";
 import { Bell, Home, Search, User } from "lucide-react";
 import { useState } from "react";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
  * Closing "here's the finished thing" panel — the real, interactive Tab Bar.
@@ -24,6 +25,22 @@ const TABS: TabBarTab[] = [
 export function TabBarResult() {
   const [tab, setTab] = useState("home");
 
+  const demo = (
+    <>
+      <TabBar tabs={TABS} value={tab} onChange={setTab} />
+      <p className="text-muted-foreground text-xs">
+        Active tab: <span className="text-foreground">{tab}</span>
+      </p>
+    </>
+  );
+
+  if (useBareScene())
+    return (
+      <div className="flex min-h-[240px] flex-col items-center justify-center gap-4 p-6 w-full">
+        {demo}
+      </div>
+    );
+
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -35,10 +52,7 @@ export function TabBarResult() {
         </span>
       </div>
       <div className="flex min-h-[240px] flex-col items-center justify-center gap-4 p-10">
-        <TabBar tabs={TABS} value={tab} onChange={setTab} />
-        <p className="text-muted-foreground text-xs">
-          Active tab: <span className="text-foreground">{tab}</span>
-        </p>
+        {demo}
       </div>
     </div>
   );

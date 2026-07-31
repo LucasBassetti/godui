@@ -3,6 +3,7 @@
 import { AnimatedTooltip } from "@godui/components";
 import { Bold, Italic, Link, Underline } from "lucide-react";
 import type { ComponentType } from "react";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 type Member = {
   name: string;
@@ -47,6 +48,52 @@ const TOOLS: { label: string; Icon: ComponentType<{ className?: string }> }[] =
  * screen at once.
  */
 export function AnimatedTooltipResult() {
+  const demo = (
+    <>
+      <div className="flex">
+        {TEAM.map((m) => (
+          <AnimatedTooltip
+            key={m.name}
+            className="-ml-3 first:ml-0"
+            content={
+              <span className="flex flex-col">
+                <span className="font-semibold">{m.name}</span>
+                <span className="text-background/70">{m.role}</span>
+              </span>
+            }
+          >
+            <span
+              className={`flex size-12 items-center justify-center rounded-full bg-gradient-to-br ${m.gradient} text-sm font-semibold text-white ring-2 ring-background`}
+            >
+              {m.initials}
+            </span>
+          </AnimatedTooltip>
+        ))}
+      </div>
+
+      <div className="flex items-center gap-1 rounded-xl border border-border bg-card p-1.5 shadow-sm">
+        {TOOLS.map(({ label, Icon }) => (
+          <AnimatedTooltip key={label} content={label} side="bottom">
+            <button
+              type="button"
+              aria-label={label}
+              className="flex size-9 items-center justify-center rounded-lg text-muted-foreground [transition:background_200ms_ease,color_200ms_ease] hover:bg-accent hover:text-foreground"
+            >
+              <Icon className="size-4" />
+            </button>
+          </AnimatedTooltip>
+        ))}
+      </div>
+    </>
+  );
+
+  if (useBareScene())
+    return (
+      <div className="flex min-h-[300px] w-full flex-col items-center justify-center gap-12 p-6">
+        {demo}
+      </div>
+    );
+
   return (
     <div className="not-prose my-8 rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -58,40 +105,7 @@ export function AnimatedTooltipResult() {
         </span>
       </div>
       <div className="flex min-h-[300px] w-full flex-col items-center justify-center gap-12 p-10">
-        <div className="flex">
-          {TEAM.map((m) => (
-            <AnimatedTooltip
-              key={m.name}
-              className="-ml-3 first:ml-0"
-              content={
-                <span className="flex flex-col">
-                  <span className="font-semibold">{m.name}</span>
-                  <span className="text-background/70">{m.role}</span>
-                </span>
-              }
-            >
-              <span
-                className={`flex size-12 items-center justify-center rounded-full bg-gradient-to-br ${m.gradient} text-sm font-semibold text-white ring-2 ring-background`}
-              >
-                {m.initials}
-              </span>
-            </AnimatedTooltip>
-          ))}
-        </div>
-
-        <div className="flex items-center gap-1 rounded-xl border border-border bg-card p-1.5 shadow-sm">
-          {TOOLS.map(({ label, Icon }) => (
-            <AnimatedTooltip key={label} content={label} side="bottom">
-              <button
-                type="button"
-                aria-label={label}
-                className="flex size-9 items-center justify-center rounded-lg text-muted-foreground [transition:background_200ms_ease,color_200ms_ease] hover:bg-accent hover:text-foreground"
-              >
-                <Icon className="size-4" />
-              </button>
-            </AnimatedTooltip>
-          ))}
-        </div>
+        {demo}
       </div>
     </div>
   );

@@ -2,6 +2,7 @@
 
 import { GooeyStack } from "@godui/components";
 import * as React from "react";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 function GitHubMark() {
   return (
@@ -114,6 +115,24 @@ function PromptCard({
 export function GooeyStackResult() {
   const [open, setOpen] = React.useState(false);
 
+  const demo = (
+    <>
+      <div className="w-full max-w-[26rem]">
+        <GooeyStack collapsed={!open}>
+          <ConnectorCard onClose={() => setOpen(false)} />
+          <PromptCard open={open} onToggle={() => setOpen((o) => !o)} />
+        </GooeyStack>
+      </div>
+    </>
+  );
+
+  if (useBareScene())
+    return (
+      <div className="relative flex min-h-[300px] items-center justify-center p-6 md:min-h-[360px] md:p-6 w-full">
+        {demo}
+      </div>
+    );
+
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -125,12 +144,7 @@ export function GooeyStackResult() {
         </span>
       </div>
       <div className="relative flex min-h-[300px] items-center justify-center p-6 md:min-h-[360px] md:p-10">
-        <div className="w-full max-w-[26rem]">
-          <GooeyStack collapsed={!open}>
-            <ConnectorCard onClose={() => setOpen(false)} />
-            <PromptCard open={open} onToggle={() => setOpen((o) => !o)} />
-          </GooeyStack>
-        </div>
+        {demo}
       </div>
     </div>
   );

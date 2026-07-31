@@ -1,6 +1,7 @@
 "use client";
 
 import { ThreeDMarquee } from "@godui/components";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 const IMAGES = [
   "1015",
@@ -26,6 +27,14 @@ const IMAGES = [
  * ThreeDMarquee, drifting on its tilted plane.
  */
 export function ThreeDMarqueeResult() {
+  const demo = (
+    <>
+      <ThreeDMarquee images={IMAGES} />
+    </>
+  );
+
+  if (useBareScene()) return <div className="h-[26rem] w-full p-6">{demo}</div>;
+
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -36,9 +45,7 @@ export function ThreeDMarqueeResult() {
           the real component — ambient, no interaction needed
         </span>
       </div>
-      <div className="h-[26rem] w-full p-6">
-        <ThreeDMarquee images={IMAGES} />
-      </div>
+      <div className="h-[26rem] w-full p-6">{demo}</div>
     </div>
   );
 }

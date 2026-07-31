@@ -1,15 +1,25 @@
 ---
 title: Anatomy of the Liquid Glass Card
 description: How a rim-banded displacement map, a chromatic triple-displace filter, and a pointer sheen turn backdrop-filter into living glass — with a clean frost fallback when url() is unsupported.
+learnPlayer: true
 ---
+
+<LearnPlayer>
+
+<LearnChapter
+  label="Frost, sheen, rim — three layers"
+  scene={<LiquidGlassCardAnatomy />}
+  code={`backdropFilter: active
+  ? \`blur(\${blur}px) saturate(\${saturation}) url(#\${filterId})\`
+  : \`blur(\${blur}px) saturate(\${saturation})\`;
+// WebkitBackdropFilter stays blur+saturate only — Safari can't take url()`}
+>
 
 `LiquidGlassCard` is not a PNG overlay or a static blur. It samples the
 **live DOM** behind the panel through `backdrop-filter`, bends that sample
 with an SVG displacement map sized to the card, and fringes color at the rim
 by running the bend at three scales. Children stay crisp above the glass in
 `relative z-raised`.
-
-## Frost, sheen, rim — three layers
 
 Three absolute layers share the same rounded box:
 
@@ -19,19 +29,10 @@ Three absolute layers share the same rounded box:
 | Sheen | `mix-blend-screen` radial that tracks the pointer |
 | Rim | static inset highlight / shadow for a wet edge |
 
-```tsx
-backdropFilter: active
-  ? `blur(${blur}px) saturate(${saturation}) url(#${filterId})`
-  : `blur(${blur}px) saturate(${saturation})`;
-// WebkitBackdropFilter stays blur+saturate only — Safari can't take url()
-```
-
 Defaults: `radius={28}`, `blur={2}`, `strength={60}`, `dispersion={0.15}`,
 `saturation={1.6}`, `sheen={0.5}`.
 
-<LiquidGlassCardAnatomy />
-
-## The map bends the rim, not the center
+**The map bends the rim, not the center**
 
 `buildDisplacementMap(w, h, band)` paints a data-URL SVG. Under the hood, red
 encodes horizontal shift and green vertical; mid-gray `128`
@@ -54,7 +55,18 @@ reflows.
 const map = buildDisplacementMap(size.width, size.height, 0.3);
 ```
 
-## Chromatic triple displace
+</LearnChapter>
+
+<LearnChapter
+  label="Chromatic triple displace"
+  scene={<LiquidGlassCardDispersion />}
+  code={`<feImage href={map} result="map" preserveAspectRatio="none" />
+<feDisplacementMap scale={strength * (1 + dispersion)} result="dispR" />
+<feColorMatrix in="dispR" values={RED_CHANNEL} result="red" />
+{/* green @ strength, blue @ strength * (1 - dispersion) */}
+<feBlend in="red" in2="green" mode="screen" result="rg" />
+<feBlend in="rg" in2="blue" mode="screen" />`}
+>
 
 `RefractionFilter` runs `feDisplacementMap` three times against the same map,
 isolates R / G / B with `feColorMatrix`, then recombines with
@@ -68,35 +80,26 @@ mechanism is the scale difference, not a rainbow UI.
 | Green | `strength` |
 | Blue | `strength * (1 - dispersion)` |
 
-```tsx
-<feImage href={map} result="map" preserveAspectRatio="none" />
-<feDisplacementMap scale={strength * (1 + dispersion)} result="dispR" />
-<feColorMatrix in="dispR" values={RED_CHANNEL} result="red" />
-{/* green @ strength, blue @ strength * (1 - dispersion) */}
-<feBlend in="red" in2="green" mode="screen" result="rg" />
-<feBlend in="rg" in2="blue" mode="screen" />
-```
-
-<LiquidGlassCardDispersion />
-
 Push `strength` / `dispersion` up for a heavier prismatic edge; drop them for
 subtle frost.
 
-## Pointer sheen
+</LearnChapter>
 
-On `pointermove`, the card writes CSS variables as **percentages** of its own
-box (not pixels):
-
-```tsx
-node.style.setProperty(
+<LearnChapter
+  label="Pointer sheen"
+  scene={<LiquidGlassCardSheen />}
+  code={`node.style.setProperty(
   "--lg-x",
-  `${((e.clientX - rect.left) / rect.width) * 100}%`,
+  \`\${((e.clientX - rect.left) / rect.width) * 100}%\`,
 );
 node.style.setProperty(
   "--lg-y",
-  `${((e.clientY - rect.top) / rect.height) * 100}%`,
-);
-```
+  \`\${((e.clientY - rect.top) / rect.height) * 100}%\`,
+);`}
+>
+
+On `pointermove`, the card writes CSS variables as **percentages** of its own
+box (not pixels):
 
 The sheen layer paints
 `radial-gradient(circle at var(--lg-x) var(--lg-y), …)` and toggles opacity
@@ -105,9 +108,7 @@ on enter / leave with `transition-opacity duration-200`.
 Under `prefers-reduced-motion`, pointer updates are **skipped** and the sheen
 layer is `motion-reduce:hidden` — frost stays, specular dies.
 
-<LiquidGlassCardSheen />
-
-## Chrome-only `url()`, clean fallback
+**Chrome-only `url()`, clean fallback**
 
 Live-DOM refraction needs `backdrop-filter: url(#id)` — Chrome and Edge
 today. `useRefractionSupport` probes once:
@@ -121,15 +122,19 @@ Safari and Firefox still get a believable glass panel; they never render as a
 broken transparent box. Decorative layers and the filter SVG are
 `aria-hidden`.
 
-## Motion Score
+</LearnChapter>
 
-<MotionScorePanel name="liquid-glass-card" />
-
-## The result
+<LearnChapter label="The result" scene={<LiquidGlassCardResult />} isResult>
 
 Move across the panel. Watch the rim fringe and the specular follow.
 
-<LiquidGlassCardResult />
-
 One map, three displaces, one CSS sheen — and a frost fallback when the GPU
 path is unavailable.
+
+</LearnChapter>
+
+</LearnPlayer>
+
+## Motion Score
+
+<MotionScorePanel name="liquid-glass-card" />

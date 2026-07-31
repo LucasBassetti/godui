@@ -2,6 +2,7 @@
 
 import { HeroParallax } from "@godui/components";
 import * as React from "react";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
  * Closing "here's the finished thing" panel — the real Hero Parallax in a
@@ -61,6 +62,26 @@ export function HeroParallaxResult() {
     return () => cancelAnimationFrame(id);
   }, []);
 
+  const demo = (
+    <>
+      <HeroParallax
+        products={PRODUCTS}
+        header={HEADER}
+        scrollContainer={scrollerRef}
+      />
+    </>
+  );
+
+  if (useBareScene())
+    return (
+      <div
+        ref={scrollerRef}
+        className="relative h-[min(720px,75vh)] overflow-x-hidden overflow-y-auto overscroll-contain w-full"
+      >
+        {demo}
+      </div>
+    );
+
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -75,11 +96,7 @@ export function HeroParallaxResult() {
         ref={scrollerRef}
         className="relative h-[min(720px,75vh)] overflow-x-hidden overflow-y-auto overscroll-contain"
       >
-        <HeroParallax
-          products={PRODUCTS}
-          header={HEADER}
-          scrollContainer={scrollerRef}
-        />
+        {demo}
       </div>
     </div>
   );

@@ -3,6 +3,7 @@
 import { Breadcrumbs } from "@godui/components";
 import { Folder, FolderOpen, Home, Layers } from "lucide-react";
 import { useState } from "react";
+import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
  * Closing "here's the finished thing" panel — the real, interactive
@@ -11,6 +12,61 @@ import { useState } from "react";
  */
 export function BreadcrumbsResult() {
   const [path, setPath] = useState("billing");
+
+  const demo = (
+    <>
+      <div className="flex w-full max-w-md flex-col items-center gap-2">
+        <Breadcrumbs
+          items={[
+            {
+              label: "Home",
+              href: "home",
+              icon: <Home className="size-3.5" />,
+            },
+            {
+              label: "Workspace",
+              href: "workspace",
+              icon: <Layers className="size-3.5" />,
+            },
+            {
+              label: "Settings",
+              href: "settings",
+              icon: <Folder className="size-3.5" />,
+            },
+            { label: "Billing", icon: <FolderOpen className="size-3.5" /> },
+          ]}
+          onNavigate={setPath}
+        />
+        <p className="text-muted-foreground text-xs">
+          Viewing <span className="text-foreground">/{path}</span>
+        </p>
+      </div>
+
+      <div className="flex w-full max-w-md flex-col items-center gap-2 border-fd-border border-t pt-8">
+        <Breadcrumbs
+          maxItems={3}
+          items={[
+            { label: "Home", href: "#" },
+            { label: "Engineering", href: "#" },
+            { label: "Platform", href: "#" },
+            { label: "Services", href: "#" },
+            { label: "Auth", href: "#" },
+            { label: "Tokens" },
+          ]}
+        />
+        <p className="font-mono text-muted-foreground text-xs">
+          maxItems={"{3}"}
+        </p>
+      </div>
+    </>
+  );
+
+  if (useBareScene())
+    return (
+      <div className="flex min-h-[260px] flex-col items-center justify-center gap-8 p-6 w-full">
+        {demo}
+      </div>
+    );
 
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
@@ -23,49 +79,7 @@ export function BreadcrumbsResult() {
         </span>
       </div>
       <div className="flex min-h-[260px] flex-col items-center justify-center gap-8 p-10">
-        <div className="flex w-full max-w-md flex-col items-center gap-2">
-          <Breadcrumbs
-            items={[
-              {
-                label: "Home",
-                href: "home",
-                icon: <Home className="size-3.5" />,
-              },
-              {
-                label: "Workspace",
-                href: "workspace",
-                icon: <Layers className="size-3.5" />,
-              },
-              {
-                label: "Settings",
-                href: "settings",
-                icon: <Folder className="size-3.5" />,
-              },
-              { label: "Billing", icon: <FolderOpen className="size-3.5" /> },
-            ]}
-            onNavigate={setPath}
-          />
-          <p className="text-muted-foreground text-xs">
-            Viewing <span className="text-foreground">/{path}</span>
-          </p>
-        </div>
-
-        <div className="flex w-full max-w-md flex-col items-center gap-2 border-fd-border border-t pt-8">
-          <Breadcrumbs
-            maxItems={3}
-            items={[
-              { label: "Home", href: "#" },
-              { label: "Engineering", href: "#" },
-              { label: "Platform", href: "#" },
-              { label: "Services", href: "#" },
-              { label: "Auth", href: "#" },
-              { label: "Tokens" },
-            ]}
-          />
-          <p className="font-mono text-muted-foreground text-xs">
-            maxItems={"{3}"}
-          </p>
-        </div>
+        {demo}
       </div>
     </div>
   );

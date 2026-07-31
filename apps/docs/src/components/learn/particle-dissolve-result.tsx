@@ -1,12 +1,38 @@
 "use client";
 
 import { ParticleDissolve } from "@godui/components";
+import { useBareScene } from "@/components/learn/bare-scene-context";
+
+/**
+ * The real, interactive `ParticleDissolve` in loop mode — no card chrome.
+ * Rendered on the shared `LearnPlayer` stage as the final chapter.
+ */
+export function ParticleDissolveResultBody() {
+  return (
+    <ParticleDissolve
+      text="GodUI"
+      mode="loop"
+      trigger="in-view"
+      width={520}
+      height={200}
+      className="max-w-full text-primary"
+    />
+  );
+}
 
 /**
  * Closing panel — real `ParticleDissolve` looping so the reader sees
  * scatter → form → disperse with per-particle delay and idle shimmer.
  */
 export function ParticleDissolveResult() {
+  // On the LearnPlayer stage, the player supplies the card — render the live
+  // component only. (Standalone / classic scroll layout keeps its own card.)
+  if (useBareScene())
+    return (
+      <div className="flex min-h-[280px] w-full items-center justify-center p-6">
+        <ParticleDissolveResultBody />
+      </div>
+    );
   return (
     <div className="not-prose my-8 overflow-hidden rounded-2xl border border-fd-border bg-fd-card">
       <div className="flex items-center gap-2.5 border-b border-fd-border px-2.5 py-2">
@@ -18,14 +44,7 @@ export function ParticleDissolveResult() {
         </span>
       </div>
       <div className="flex min-h-[280px] items-center justify-center p-6 md:p-10">
-        <ParticleDissolve
-          text="GodUI"
-          mode="loop"
-          trigger="in-view"
-          width={520}
-          height={200}
-          className="max-w-full text-primary"
-        />
+        <ParticleDissolveResultBody />
       </div>
     </div>
   );
