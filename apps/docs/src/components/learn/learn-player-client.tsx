@@ -96,23 +96,30 @@ const STEP_TITLE =
   "flex items-baseline gap-3 [&>h2]:text-balance [&>h2]:font-semibold [&>h2]:text-2xl [&>h2]:text-[var(--foreground)] [&>h2]:tracking-tight";
 
 /** Prettier-formats a chapter's code; seeds with the raw source so there's no
- * empty flash before prettier resolves. */
+ * empty flash before prettier resolves. Empty / chapter switches derive the
+ * seed during render — no sync setState in the effect. */
 function useFormattedCode(code: string | undefined, lang: string) {
-  const [formatted, setFormatted] = useState(() => code?.trim() ?? "");
+  const seed = code?.trim() ?? "";
+  const [pretty, setPretty] = useState<{
+    source: string;
+    value: string;
+  } | null>(null);
+
   useEffect(() => {
-    if (!code) {
-      setFormatted("");
-      return;
-    }
+    if (!code) return;
     let alive = true;
-    void formatCode(code, lang).then((next) => {
-      if (alive) setFormatted(next);
+    const source = code;
+    void formatCode(source, lang).then((next) => {
+      if (alive) setPretty({ source, value: next });
     });
     return () => {
       alive = false;
     };
   }, [code, lang]);
-  return formatted;
+
+  if (!code) return "";
+  if (pretty?.source === code) return pretty.value;
+  return seed;
 }
 
 function StepDot({
