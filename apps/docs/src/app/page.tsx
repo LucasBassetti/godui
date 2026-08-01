@@ -68,14 +68,14 @@ export default function Home() {
           <section className="relative flex min-h-[calc(100svh-3.5rem)] flex-col items-center justify-center gap-8 overflow-hidden px-4 text-center">
             <HeroGrid />
             <Link
-              href="/docs/components/buttons/jelly-button"
+              href="/docs/templates/portfolio"
               className="group relative z-10 inline-flex items-center gap-2 rounded-full border bg-fd-card px-3 py-1 font-medium text-fd-muted-foreground text-xs transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground"
             >
               <span className="relative flex size-2">
                 <span className="absolute inline-flex size-full animate-ping rounded-full bg-fd-primary opacity-75" />
                 <span className="relative inline-flex size-2 rounded-full bg-fd-primary" />
               </span>
-              Introducing Jelly Button — squishy tactile press
+              Introducing the Portfolio template
               <span
                 aria-hidden="true"
                 className="transition-transform group-hover:translate-x-0.5"

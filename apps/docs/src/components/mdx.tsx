@@ -409,6 +409,7 @@ import { WorldMapDraw } from "@/components/learn/world-map-draw";
 import { WorldMapPulse } from "@/components/learn/world-map-pulse";
 import { WorldMapResult } from "@/components/learn/world-map-result";
 import { MCPInstall } from "@/components/mcp-install";
+import { TemplateShowcase } from "@/components/template-showcase";
 import { Example } from "@/components/workbench/example";
 import { Workbench } from "@/components/workbench/workbench";
 
@@ -494,6 +495,7 @@ export function getMDXComponents(components?: MDXComponents) {
     MCPInstall,
     BackgroundShowcase,
     PreviewCard,
+    TemplateShowcase,
     AccordionAnatomy,
     AccordionHeight,
     AccordionResult,
