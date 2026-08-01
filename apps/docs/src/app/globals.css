@@ -399,6 +399,13 @@ p.docs-lead {
   column-gap: var(--wb-panel-gap);
 }
 
+/* Template stages have no Docs pane — ignore a persisted open panel from a
+   component page so the stage doesn't leave an empty second column. */
+:root[data-wb-panel="open"] .workbench-root[data-wb-solo] {
+  --wb-panel-col: 0px;
+  column-gap: 0px;
+}
+
 /* Column width isn't compositor-accelerated — keep it short, and off entirely
    for users who asked for less motion. */
 @media (prefers-reduced-motion: no-preference) {
@@ -461,6 +468,12 @@ p.docs-lead {
 
 :root[data-wb-code="open"] .stage-frame {
   --wb-code-row: var(--wb-code-h);
+}
+
+/* Template stages have no code pane — ignore a persisted open code row from a
+   component page so the video stage doesn't leave an empty bottom strip. */
+:root[data-wb-code="open"] [data-wb-solo] .stage-frame {
+  --wb-code-row: 0px;
 }
 
 @media (prefers-reduced-motion: no-preference) {

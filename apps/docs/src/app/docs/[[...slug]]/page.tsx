@@ -84,6 +84,13 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
       });
       if (isLearnPage) crumbs.push({ name: "Learn" });
     }
+  } else if (slug[0] === "templates") {
+    // Docs → Templates → Portfolio (mirror Components → Gooey FAB).
+    // No templates index page yet, so the section crumb is non-linking.
+    crumbs.push({ name: "Templates" });
+    if (slug.length > 1) {
+      crumbs.push({ name: page.data.title });
+    }
   } else if (slug.length) {
     crumbs.push({ name: page.data.title });
   }
@@ -192,6 +199,23 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
         >
           <MDX components={getMDXComponents()} />
         </WorkbenchProvider>
+      </DocsPage>
+    );
+  }
+
+  // Template pages (e.g. `templates/portfolio`) reuse the full-bleed Workbench
+  // shell: the MDX body is a <TemplateShowcase> (looping video + Download /
+  // Live preview in the top rail). No Docs pane or title chip.
+  if (slug[0] === "templates") {
+    return (
+      <DocsPage
+        full
+        toc={[]}
+        breadcrumb={{ enabled: false }}
+        footer={{ enabled: false }}
+        className="workbench-page max-w-none gap-0 p-0 md:p-0 xl:p-0"
+      >
+        <MDX components={getMDXComponents()} />
       </DocsPage>
     );
   }

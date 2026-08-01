@@ -8,6 +8,8 @@
     "---Motion Guidelines---",
     "guidelines/principles",
     "guidelines/patterns",
+    "---Templates---",
+    "templates/portfolio",
     "---Buttons---",
     "components/buttons/gooey-fab",
     "components/buttons/hold-confirm-button",
