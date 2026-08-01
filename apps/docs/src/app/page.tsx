@@ -75,7 +75,7 @@ export default function Home() {
                 <span className="absolute inline-flex size-full animate-ping rounded-full bg-fd-primary opacity-75" />
                 <span className="relative inline-flex size-2 rounded-full bg-fd-primary" />
               </span>
-              Introducing the Portfolio template — clone, customize, ship
+              Introducing the Portfolio template
               <span
                 aria-hidden="true"
                 className="transition-transform group-hover:translate-x-0.5"
