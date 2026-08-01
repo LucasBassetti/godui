@@ -215,6 +215,14 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
         footer={{ enabled: false }}
         className="workbench-page max-w-none gap-0 p-0 md:p-0 xl:p-0"
       >
+        {/* Mobile only: the desktop stage carries no chrome, but the shorter
+            mobile stage leaves room — surface the breadcrumb + title above it. */}
+        <div className="flex flex-col gap-1.5 px-4 pt-3 sm:hidden">
+          <Breadcrumbs crumbs={crumbs} />
+          <h1 className="font-semibold text-fd-foreground text-xl tracking-tight">
+            {page.data.title}
+          </h1>
+        </div>
         <MDX components={getMDXComponents()} />
       </DocsPage>
     );

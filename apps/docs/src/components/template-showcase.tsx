@@ -48,12 +48,17 @@ export function TemplateShowcase({
         "workbench-root overflow-hidden bg-fd-background",
         fullscreen
           ? "fixed inset-0 z-50"
-          : "relative h-[calc(100dvh-3.5rem)] p-3 sm:p-4",
+          : // Mobile: short auto-height stage so the whole video is visible
+            // instead of a cover-cropped middle strip. Desktop: fill the viewport.
+            "relative h-auto p-3 sm:h-[calc(100dvh-3.5rem)] sm:p-4",
       )}
     >
       <div
         className={cn(
           "stage-frame relative min-h-0 min-w-0 overflow-hidden bg-fd-background",
+          // Mobile height comes from the video's aspect ratio; desktop fills its
+          // grid row (aspect-auto lets the grid drive height again).
+          fullscreen ? "aspect-auto" : "aspect-video sm:aspect-auto",
           fullscreen
             ? ""
             : "rounded-[20px] border shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_-12px_rgba(0,0,0,0.10)]",
@@ -75,7 +80,9 @@ export function TemplateShowcase({
             aria-hidden
           />
 
-          <div className="pointer-events-none absolute inset-x-4 top-4 z-20 flex items-start justify-end gap-4">
+          {/* Desktop only: top-right rail overlaid on the video, beside the
+              fullscreen toggle. Mobile actions live below the stage (see below). */}
+          <div className="pointer-events-none absolute inset-x-4 top-4 z-20 hidden items-start justify-end gap-4 sm:flex">
             <div className="pointer-events-auto flex shrink-0 flex-nowrap items-center gap-1.5">
               <RailLink href={downloadHref} label="Download">
                 <Download className="size-4" aria-hidden />
@@ -106,6 +113,20 @@ export function TemplateShowcase({
           </div>
         </div>
       </div>
+
+      {/* Mobile only: actions in normal flow below the video, centered.
+          col-span-full pushes it to a new full-width row (the workbench-root
+          grid's second column is the 0px docs-pane slot). */}
+      <div className="col-span-full mt-3 flex items-center justify-center gap-2 sm:hidden">
+        <RailLink href={downloadHref} label="Download" variant="outline">
+          <Download className="size-4" aria-hidden />
+          <span className="font-medium text-[13px]">Download</span>
+        </RailLink>
+        <RailLink href={previewHref} label="Live preview">
+          <ExternalLink className="size-4" aria-hidden />
+          <span className="font-medium text-[13px]">Live preview</span>
+        </RailLink>
+      </div>
     </div>
   );
 }
@@ -114,10 +135,12 @@ export function TemplateShowcase({
 function RailLink({
   href,
   label,
+  variant = "default",
   children,
 }: {
   href: string;
   label: string;
+  variant?: "default" | "outline";
   children: ReactNode;
 }) {
   return (
@@ -127,7 +150,12 @@ function RailLink({
       rel="noreferrer"
       aria-label={label}
       title={label}
-      className="inline-flex h-8 items-center justify-center gap-1.5 rounded-[10px] border border-fd-border bg-fd-card px-2.5 text-fd-muted-foreground transition-colors hover:text-fd-foreground active:scale-95"
+      className={cn(
+        "inline-flex h-8 items-center justify-center gap-1.5 rounded-[10px] border px-2.5 transition-colors active:scale-95",
+        variant === "outline"
+          ? "border-fd-primary/60 bg-transparent text-fd-primary hover:bg-fd-primary/10"
+          : "border-fd-border bg-fd-card text-fd-muted-foreground hover:text-fd-foreground",
+      )}
     >
       {children}
     </a>
