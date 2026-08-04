@@ -45,6 +45,9 @@ export function NowShowing() {
   code={`import { SplitFlapDisplay } from "@/components/godui/split-flap-display";
 import { useEffect, useState } from "react";
 
+// One reel per HH:MM:SS column, so each digit wraps in a single flip.
+const CLOCK = ["012", "0123456789", ":", "012345", "0123456789", ":", "012345", "0123456789"];
+
 export function Clock() {
   const [time, setTime] = useState("");
   useEffect(() => {
@@ -58,7 +61,7 @@ export function Clock() {
     return () => clearInterval(id);
   }, []);
 
-  return <SplitFlapDisplay value={time} align="center" size="sm" charset="0123456789" />;
+  return <SplitFlapDisplay value={time} align="center" size="sm" charset={CLOCK} />;
 }`}
 >
   <SplitFlapClockDemo />
@@ -88,12 +91,15 @@ reflows the board:
 <SplitFlapDisplay value="GATE 22" length={12} align="left" />
 ```
 
-Restrict the flap sequence to just the glyphs you need — a digits-only `charset`
-keeps a clock's `9 → 0` roll a single clean flip (glyphs outside the charset,
-like the `:`, simply snap into place instead of spinning):
+Restrict the flap sequence to just the glyphs you need, and pass an **array** to
+give each column its own reel by position. A clock's seconds-tens digit only
+cycles `0–5`, so `5 → 0` wraps in a single flip instead of climbing `6 7 8 9`;
+the `:` columns get a reel of just `":"` so they never spin:
 
 ```tsx
-<SplitFlapDisplay value="12:45:07" size="sm" charset="0123456789" />
+const CLOCK = ["012", "0123456789", ":", "012345", "0123456789", ":", "012345", "0123456789"];
+
+<SplitFlapDisplay value="12:45:07" size="sm" charset={CLOCK} />
 ```
 
 ## Props
@@ -104,7 +110,7 @@ like the `:`, simply snap into place instead of spinning):
 | `length`   | `number`                          | value length | Fixed flap count — shorter values pad, longer ones truncate.             |
 | `align`    | `"left" \| "center" \| "right"`   | `"left"`     | How the value sits inside a wider `length`.                              |
 | `size`     | `"sm" \| "md" \| "lg"`            | `"md"`       | Flap size preset.                                                        |
-| `charset`  | `string`                          | A–Z 0–9 …    | Ordered glyphs the flaps rotate through. Leading space is the blank flap. |
+| `charset`  | `string \| string[]`              | A–Z 0–9 …    | Glyphs the flaps rotate through. An array gives each column its own reel by position. Leading space is the blank flap. |
 | `stagger`  | `number`                          | `0.06`       | Seconds each successive column waits before it starts — the wave.        |
 | `maxFlaps` | `number`                          | `12`         | Cap on how many flips one column spins before settling.                  |
 

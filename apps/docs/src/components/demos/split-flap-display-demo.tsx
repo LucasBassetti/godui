@@ -38,6 +38,11 @@ function useClock() {
   return time;
 }
 
+const D = "0123456789";
+// One reel per HH:MM:SS column so each digit only cycles its valid range and
+// wraps in a single flip (e.g. seconds-tens 5 → 0, never climbing 6 7 8 9).
+const CLOCK_CHARSET = ["012", D, ":", "012345", D, ":", "012345", D];
+
 export function SplitFlapClockDemo() {
   const time = useClock();
   return (
@@ -49,7 +54,7 @@ export function SplitFlapClockDemo() {
         value={time}
         align="center"
         size="sm"
-        charset="0123456789"
+        charset={CLOCK_CHARSET}
       />
     </DemoCenter>
   );

@@ -50,8 +50,13 @@ export type SplitFlapDisplayProps = Omit<
   align?: SplitFlapAlign;
   /** Flap size preset. */
   size?: SplitFlapSize;
-  /** Ordered glyph sequence the flaps rotate through. Space is the blank flap. */
-  charset?: string;
+  /**
+   * Ordered glyph sequence the flaps rotate through (space is the blank flap).
+   * Pass an array to give each column its own reel by position — e.g. a clock's
+   * tens-of-seconds column only cycles `"012345"` so `5 → 0` wraps in one flip
+   * instead of climbing `6 7 8 9`.
+   */
+  charset?: string | string[];
   /** Seconds each successive column waits before it starts — the wave. */
   stagger?: number;
   /** Cap on how many flips a single column will spin before settling. */
@@ -273,7 +278,9 @@ const SplitFlapDisplay = React.forwardRef<
             active={inView}
             startDelay={i * stagger}
             size={size}
-            charset={charset}
+            charset={
+              Array.isArray(charset) ? (charset[i] ?? DEFAULT_CHARSET) : charset
+            }
             maxFlaps={maxFlaps}
           />
         ))}

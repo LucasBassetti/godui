@@ -31,6 +31,17 @@ describe("SplitFlapDisplay", () => {
     expect(flaps(clipped)).toHaveLength(4);
   });
 
+  it("accepts a per-column charset array", () => {
+    const { container } = render(
+      <SplitFlapDisplay
+        value="12:34"
+        charset={["012", "0123456789", ":", "012345", "0123456789"]}
+      />,
+    );
+    expect(flaps(container)).toHaveLength(5);
+    expect(getRoot(container)).toHaveAttribute("aria-label", "12:34");
+  });
+
   it("exposes the value as an accessible label", () => {
     const { container } = render(<SplitFlapDisplay value="Gate 22" />);
     expect(getRoot(container)).toHaveAttribute("aria-label", "Gate 22");
