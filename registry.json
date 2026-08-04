@@ -1183,6 +1183,45 @@
       ]
     },
     {
+      "name": "split-flap-display",
+      "type": "registry:ui",
+      "title": "Split-Flap Display",
+      "description": "A Solari departure-board display: each character spins through the charset on stacked flip leaves — the old top hinges away, the new bottom rises into place — settling on the value with a staggered column wave. View-only, compositor-only motion, reveals on scroll.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/split-flap-display/split-flap-display.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/split-flap-display.tsx"
+        }
+      ],
+      "cssVars": {
+        "theme": {
+          "animate-split-flap-fall": "split-flap-fall 0.12s cubic-bezier(0.3, 0.7, 0.4, 1) forwards",
+          "animate-split-flap-rise": "split-flap-rise 0.12s cubic-bezier(0.22, 1, 0.36, 1) both"
+        }
+      },
+      "css": {
+        "@keyframes split-flap-fall": {
+          "from": {
+            "transform": "rotateX(0deg)"
+          },
+          "to": {
+            "transform": "rotateX(-90deg)"
+          }
+        },
+        "@keyframes split-flap-rise": {
+          "from": {
+            "transform": "rotateX(90deg)"
+          },
+          "to": {
+            "transform": "rotateX(0deg)"
+          }
+        }
+      }
+    },
+    {
       "name": "stack-badge",
       "type": "registry:ui",
       "title": "Stack Badge",

@@ -97,6 +97,7 @@ import ShimmerButton from "./previews/shimmer-button";
 import SlideConfirmButton from "./previews/slide-confirm-button";
 import SourceCitations from "./previews/source-citations";
 import SpinViewer from "./previews/spin-viewer";
+import SplitFlapDisplay from "./previews/split-flap-display";
 import SpotlightCard from "./previews/spotlight-card";
 import SpotlightReveal from "./previews/spotlight-reveal";
 import StackBadge from "./previews/stack-badge";
@@ -172,6 +173,7 @@ export const cardPreviews: Record<string, Preview> = {
   "reorder-list": ReorderList,
   "scroll-stack": ScrollStack,
   "spin-viewer": SpinViewer,
+  "split-flap-display": SplitFlapDisplay,
   "stack-badge": StackBadge,
   stepper: Stepper,
   "sticky-scroll": StickyScroll,

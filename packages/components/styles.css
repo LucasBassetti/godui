@@ -135,6 +135,12 @@
   --animate-voice-orb-spin: voice-orb-spin 8s linear infinite;
   --animate-voice-orb-breathe: voice-orb-breathe 4s ease-in-out infinite;
   --animate-voice-orb-ring: voice-orb-ring 1.6s ease-out infinite;
+
+  /* Split-flap: the old top leaf falls away, then the new bottom leaf rises */
+  --animate-split-flap-fall: split-flap-fall 0.12s
+    cubic-bezier(0.3, 0.7, 0.4, 1) forwards;
+  --animate-split-flap-rise: split-flap-rise 0.12s
+    cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 @keyframes voice-orb-spin {
@@ -161,6 +167,26 @@
   100% {
     transform: scale(1.4);
     opacity: 0;
+  }
+}
+
+/* Split-flap: top leaf hinges down and away (front carries the old glyph top) */
+@keyframes split-flap-fall {
+  from {
+    transform: rotateX(0deg);
+  }
+  to {
+    transform: rotateX(-90deg);
+  }
+}
+
+/* Split-flap: bottom leaf hinges up into place (front carries the new glyph bottom) */
+@keyframes split-flap-rise {
+  from {
+    transform: rotateX(90deg);
+  }
+  to {
+    transform: rotateX(0deg);
   }
 }
 

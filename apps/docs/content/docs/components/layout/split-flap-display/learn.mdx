@@ -1,0 +1,157 @@
+---
+title: Anatomy of the Split-Flap Display
+description: How a Solari departure board is built from four stacked leaves, a two-phase rotateX flip, and a per-column stagger — all on the compositor, revealing on scroll.
+learnPlayer: true
+---
+
+<LearnPlayer>
+
+<LearnChapter
+  label="Four leaves per flap"
+  scene={<SplitFlapAnatomy />}
+  code={`{/* two static background halves */}
+<Half char={next} part="top" />      {/* new top, revealed as the old top falls */}
+<Half char={settled} part="bottom" /> {/* old bottom, holds until the new rises */}
+
+{/* two moving leaves, hinged at the seam */}
+<Half char={settled} part="top"
+  className="origin-bottom animate-split-flap-fall [backface-visibility:hidden]" />
+<Half char={next} part="bottom"
+  className="origin-top animate-split-flap-rise [backface-visibility:hidden]" />`}
+>
+
+Every flap is four leaves sharing one hinge line down the middle. Two are
+**static background halves** — the *new* glyph's top (waiting to be revealed) and
+the *old* glyph's bottom (still showing). The other two **move**: the old top
+hinges away, the new bottom hinges in.
+
+The trick that makes one glyph read as two halves is a single clip. Each `Half`
+renders the glyph at **full card height inside a half-height overflow-clip**, one
+anchored to the top and one to the bottom, so the two leaves reconstruct one
+seamless letter:
+
+```tsx
+<div className="absolute top-0 h-1/2 overflow-hidden">
+  {/* inner is 200% of the half = full card height, glyph centered */}
+  <div className="absolute top-0 flex h-[200%] items-center justify-center">
+    {char}
+  </div>
+</div>
+```
+
+Because the same `Half` is used for the static leaves *and* — with animation
+classes — the moving folds, every leaf always occupies exactly half the digit it
+sits in, and `backface-visibility: hidden` keeps a leaf from showing its reverse
+as it passes edge-on.
+
+</LearnChapter>
+
+<LearnChapter
+  label="Fall, then rise"
+  scene={<SplitFlapFlip />}
+  code={`@keyframes split-flap-fall {
+  from { transform: rotateX(0deg); }
+  to   { transform: rotateX(-90deg); }
+}
+@keyframes split-flap-rise {
+  from { transform: rotateX(90deg); }
+  to   { transform: rotateX(0deg); }
+}
+
+--animate-split-flap-fall: split-flap-fall 0.12s cubic-bezier(0.3,0.7,0.4,1) forwards;
+--animate-split-flap-rise: split-flap-rise 0.12s cubic-bezier(0.22,1,0.36,1) both;`}
+>
+
+A single flip is two hinge moves that hand off at the seam. The **fall** leaf
+carries the old top and rotates `0 → −90°` around `origin-bottom`, dropping out of
+sight. The **rise** leaf carries the new bottom and rotates `90 → 0°` around
+`origin-top`, delayed by exactly one tick so it starts as the fall lands:
+
+```tsx
+style={{ animationDelay: `${fallDelay + TICK}s` }}
+```
+
+The `rise` keyframe uses fill mode `both`, so during that delay it holds its
+start state — `rotateX(90deg)`, edge-on and invisible — and the old bottom stays
+visible underneath until the moment the new bottom sweeps over it. Two eased
+`rotateX` curves, `0.12s` each, and the swap is seamless.
+
+To spin through the alphabet, the digit doesn't jump — it steps. Each landed flip
+commits `settled = next` and re-renders; while `settled !== target` it flips
+again, one glyph forward along the `charset`, keyed on the step so the keyframes
+remount and restart cleanly:
+
+```tsx
+const next = flipping ? stepToward(settled, target, charset) : settled;
+// …on the rise leaf:
+onAnimationEnd={() => { steppedRef.current += 1; setSettled(next); }}
+```
+
+</LearnChapter>
+
+<LearnChapter
+  label="The column wave"
+  scene={<SplitFlapWave />}
+  code={`<FlapDigit
+  target={char}
+  active={inView}
+  startDelay={i * stagger}  // column i starts i × stagger later
+/>`}
+>
+
+Snapping every column at once looks digital; a real Solari resolves left to
+right. Each column gets `startDelay = index × stagger` and applies it only to its
+**first** flip of a new target, so the board opens on a wave and then each column
+spins freely to its letter:
+
+```tsx
+const firstOfRun = steppedRef.current === 0;
+const fallDelay = firstOfRun ? startDelay : 0;
+```
+
+The board also starts **blank**. A `useInView(ref, { once: true })` gates the
+whole display: until it scrolls into view every column holds a space, then they
+all retarget to the value and flip up from nothing — the reveal you get for free
+the first time the board enters the viewport.
+
+`maxFlaps` caps the spin. If a column's forward distance along the charset is
+longer than the cap, it fast-forwards the head of the run so no single flap ever
+spins more than `maxFlaps` ticks:
+
+```tsx
+if (fwdDistance(settled, desired, charset) > maxFlaps) {
+  setSettled(charAtOffset(desired, -maxFlaps, charset));
+}
+```
+
+</LearnChapter>
+
+<LearnChapter label="The result" scene={<SplitFlapResult />} isResult>
+
+Four leaves, two eased `rotateX` curves that hand off at the seam, and a
+per-column delay: that's an airport board in the browser — pure transform, no
+canvas, resolving on a wave whenever the value changes.
+
+</LearnChapter>
+
+</LearnPlayer>
+
+## Accessibility
+
+```tsx
+const reduce = useReducedMotion();
+// …
+if (reduce) { setSettled(desired); return; }  // land, don't flip
+// root:
+<div role="img" aria-label={value}>
+```
+
+Under `prefers-reduced-motion` the flip is skipped entirely — each column sets
+straight to its final glyph, no `rotateX` at all. The individual flaps are
+`aria-hidden` (they're decorative mechanics), and the board as a whole carries
+`role="img"` with an `aria-label` of the current value, so a screen reader gets
+the word, not a stream of single characters.
+
+## Motion Score
+
+<MotionScorePanel name="split-flap-display" />

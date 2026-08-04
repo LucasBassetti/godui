@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "generatedAt": "2026-07-24T21:13:15.351Z",
+  "generatedAt": "2026-08-04T18:42:17.397Z",
   "components": [
     {
       "name": "accordion",
@@ -776,6 +776,15 @@
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add @godui/spin-viewer"
+    },
+    {
+      "name": "split-flap-display",
+      "title": "Split-Flap Display",
+      "description": "A Solari departure-board display: each character spins through the charset on stacked flip leaves — the old top hinges away, the new bottom rises into place — settling on the value with a staggered column wave. View-only, compositor-only motion, reveals on scroll.",
+      "category": "Layout",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/split-flap-display"
     },
     {
       "name": "spotlight-card",

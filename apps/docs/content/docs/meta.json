@@ -63,6 +63,7 @@
     "components/layout/reorder-list",
     "components/layout/scroll-stack",
     "components/layout/spin-viewer",
+    "components/layout/split-flap-display",
     "components/layout/stepper",
     "components/layout/sticky-scroll",
     "components/layout/stack-badge",

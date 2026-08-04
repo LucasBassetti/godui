@@ -343,6 +343,10 @@ import { SourceCitationsTooltip } from "@/components/learn/source-citations-tool
 import { SpinViewerAnatomy } from "@/components/learn/spin-viewer-anatomy";
 import { SpinViewerDrag } from "@/components/learn/spin-viewer-drag";
 import { SpinViewerResult } from "@/components/learn/spin-viewer-result";
+import { SplitFlapAnatomy } from "@/components/learn/split-flap-anatomy";
+import { SplitFlapFlip } from "@/components/learn/split-flap-flip";
+import { SplitFlapResult } from "@/components/learn/split-flap-result";
+import { SplitFlapWave } from "@/components/learn/split-flap-wave";
 import { SpotlightCardAnatomy } from "@/components/learn/spotlight-card-anatomy";
 import { SpotlightCardBorder } from "@/components/learn/spotlight-card-border";
 import { SpotlightCardFollow } from "@/components/learn/spotlight-card-follow";
@@ -827,6 +831,10 @@ export function getMDXComponents(components?: MDXComponents) {
     SpinViewerAnatomy,
     SpinViewerDrag,
     SpinViewerResult,
+    SplitFlapAnatomy,
+    SplitFlapFlip,
+    SplitFlapResult,
+    SplitFlapWave,
     SpotlightCardAnatomy,
     SpotlightCardBorder,
     SpotlightCardFollow,

@@ -1,0 +1,122 @@
+---
+title: Split-Flap Display
+description: A Solari departure-board display where every character spins through the charset on stacked flip leaves, settling on the value with a staggered column wave.
+date: "2026-08-04"
+workbench: true
+---
+
+import {
+  SplitFlapDisplayDemo,
+  SplitFlapClockDemo,
+} from "@/components/demos/split-flap-display-demo";
+
+<Workbench>
+
+The airport board, in the browser. `SplitFlapDisplay` renders each character as a
+mechanical flap that spins through the charset — the old top leaf hinges away, the
+new bottom leaf rises into place — until it lands on your value. Columns start on a
+staggered wave, so the whole board resolves like a real Solari. It reveals from
+blanks the first time it scrolls into view, then re-flips whenever `value` changes.
+
+<Example
+  label="Now showing"
+  story="layout-split-flap-display"
+  code={`import { SplitFlapDisplay } from "@/components/godui/split-flap-display";
+import { useEffect, useState } from "react";
+
+const WORDS = ["SPLIT", "FLAP", "SOLARI", "REVEAL", "GODUI"];
+
+export function NowShowing() {
+  const [i, setI] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setI((n) => (n + 1) % WORDS.length), 2600);
+    return () => clearInterval(id);
+  }, []);
+
+  return <SplitFlapDisplay value={WORDS[i]} length={6} align="center" />;
+}`}
+>
+  <SplitFlapDisplayDemo />
+</Example>
+
+<Example
+  label="Live clock"
+  story="layout-split-flap-display"
+  code={`import { SplitFlapDisplay } from "@/components/godui/split-flap-display";
+import { useEffect, useState } from "react";
+
+// One reel per HH:MM:SS column, so each digit wraps in a single flip.
+const CLOCK = ["012", "0123456789", ":", "012345", "0123456789", ":", "012345", "0123456789"];
+
+export function Clock() {
+  const [time, setTime] = useState("");
+  useEffect(() => {
+    const tick = () => {
+      const d = new Date();
+      const p = (n) => String(n).padStart(2, "0");
+      setTime(\`\${p(d.getHours())}:\${p(d.getMinutes())}:\${p(d.getSeconds())}\`);
+    };
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  return <SplitFlapDisplay value={time} align="center" size="sm" charset={CLOCK} />;
+}`}
+>
+  <SplitFlapClockDemo />
+</Example>
+
+## Installation
+
+<ComponentInstall componentName="SplitFlapDisplay" />
+
+## Usage
+
+```tsx
+import { SplitFlapDisplay } from "@/components/godui/split-flap-display";
+```
+
+Point it at a value — it reveals from blank flaps on scroll-in, then flips to any
+new `value`:
+
+```tsx
+<SplitFlapDisplay value="BOARDING" />
+```
+
+Pad to a fixed width and align the content inside it, so a changing value never
+reflows the board:
+
+```tsx
+<SplitFlapDisplay value="GATE 22" length={12} align="left" />
+```
+
+Restrict the flap sequence to just the glyphs you need, and pass an **array** to
+give each column its own reel by position. A clock's seconds-tens digit only
+cycles `0–5`, so `5 → 0` wraps in a single flip instead of climbing `6 7 8 9`;
+the `:` columns get a reel of just `":"` so they never spin:
+
+```tsx
+const CLOCK = ["012", "0123456789", ":", "012345", "0123456789", ":", "012345", "0123456789"];
+
+<SplitFlapDisplay value="12:45:07" size="sm" charset={CLOCK} />
+```
+
+## Props
+
+| Prop       | Type                              | Default      | Description                                                              |
+| ---------- | --------------------------------- | ------------ | ------------------------------------------------------------------------ |
+| `value`    | `string`                          | —            | The text the board settles on. Uppercased against `charset`.             |
+| `length`   | `number`                          | value length | Fixed flap count — shorter values pad, longer ones truncate.             |
+| `align`    | `"left" \| "center" \| "right"`   | `"left"`     | How the value sits inside a wider `length`.                              |
+| `size`     | `"sm" \| "md" \| "lg"`            | `"md"`       | Flap size preset.                                                        |
+| `charset`  | `string \| string[]`              | A–Z 0–9 …    | Glyphs the flaps rotate through. An array gives each column its own reel by position. Leading space is the blank flap. |
+| `stagger`  | `number`                          | `0.06`       | Seconds each successive column waits before it starts — the wave.        |
+| `maxFlaps` | `number`                          | `12`         | Cap on how many flips one column spins before settling.                  |
+
+`SplitFlapDisplay` forwards every standard `<div>` attribute and exposes the
+current `value` as an `aria-label`. Motion is compositor-only (`rotateX`) and
+respects `prefers-reduced-motion` — reduced-motion viewers get the settled value
+with no flip.
+
+</Workbench>
