@@ -1453,6 +1453,16 @@ export const MOTION_SCORE_PANELS: Record<string, MotionScorePanelEntry> = {
       },
     ],
   },
+  "split-flap-display": {
+    title: "Split-Flap Display",
+    properties: [
+      {
+        prop: "transform",
+        label: "transform: rotateX",
+        note: "The flip leaves hinge on the X axis — top falls, bottom rises",
+      },
+    ],
+  },
   "spotlight-card": {
     title: "Spotlight Card",
     properties: [

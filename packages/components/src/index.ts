@@ -448,6 +448,12 @@ export {
 } from "./source-citations";
 export { SpinViewer, type SpinViewerProps } from "./spin-viewer";
 export {
+  type SplitFlapAlign,
+  SplitFlapDisplay,
+  type SplitFlapDisplayProps,
+  type SplitFlapSize,
+} from "./split-flap-display";
+export {
   SpotlightCard,
   type SpotlightCardProps,
 } from "./spotlight-card";
