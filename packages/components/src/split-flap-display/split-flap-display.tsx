@@ -85,8 +85,11 @@ function fwdDistance(a: string, b: string, charset: string): number {
   return (j - i + charset.length) % charset.length;
 }
 
-/** One step forward along the charset toward `to`. */
+/** One step forward along the charset toward `to`. Blank is the empty state,
+ * not a reel glyph, so clearing to a space is always a single flip (never a
+ * long forward spin from wherever the space sits in the charset). */
 function stepToward(from: string, to: string, charset: string): string {
+  if (to === " ") return " ";
   const i = charset.indexOf(from);
   const j = charset.indexOf(to);
   if (i < 0 || j < 0 || i === j) return to;
@@ -167,7 +170,8 @@ function FlapDigit({
       return;
     }
     // Never spin more than `maxFlaps` — fast-forward the head of a long run.
-    if (fwdDistance(settled, desired, charset) > maxFlaps) {
+    // Blanks clear in one flip (see stepToward), so they never pre-position.
+    if (desired !== " " && fwdDistance(settled, desired, charset) > maxFlaps) {
       setSettled(charAtOffset(desired, -maxFlaps, charset));
     }
   }, [reduce, desired, settled, charset, maxFlaps]);

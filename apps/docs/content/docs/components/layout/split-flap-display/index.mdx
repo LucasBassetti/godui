@@ -58,7 +58,7 @@ export function Clock() {
     return () => clearInterval(id);
   }, []);
 
-  return <SplitFlapDisplay value={time} align="center" size="sm" charset=" 0123456789:" />;
+  return <SplitFlapDisplay value={time} align="center" size="sm" charset="0123456789" />;
 }`}
 >
   <SplitFlapClockDemo />
@@ -88,11 +88,12 @@ reflows the board:
 <SplitFlapDisplay value="GATE 22" length={12} align="left" />
 ```
 
-Restrict the flap sequence to just the glyphs you need — a numeric clock only
-spins through digits and the colon:
+Restrict the flap sequence to just the glyphs you need — a digits-only `charset`
+keeps a clock's `9 → 0` roll a single clean flip (glyphs outside the charset,
+like the `:`, simply snap into place instead of spinning):
 
 ```tsx
-<SplitFlapDisplay value="12:45:07" size="sm" charset=" 0123456789:" />
+<SplitFlapDisplay value="12:45:07" size="sm" charset="0123456789" />
 ```
 
 ## Props

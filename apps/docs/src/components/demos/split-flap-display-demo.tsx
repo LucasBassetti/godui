@@ -49,7 +49,7 @@ export function SplitFlapClockDemo() {
         value={time}
         align="center"
         size="sm"
-        charset=" 0123456789:"
+        charset="0123456789"
       />
     </DemoCenter>
   );

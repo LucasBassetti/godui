@@ -42,5 +42,5 @@ export const Large: Story = {
 };
 
 export const Numeric: Story = {
-  args: { value: "13:45", size: "lg" },
+  args: { value: "13:45", size: "lg", charset: "0123456789" },
 };
