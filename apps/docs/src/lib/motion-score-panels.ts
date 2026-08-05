@@ -1159,6 +1159,17 @@ export const MOTION_SCORE_PANELS: Record<string, MotionScorePanelEntry> = {
       },
     ],
   },
+  "ascii-dither": {
+    title: "ASCII Dither",
+    properties: [
+      {
+        prop: "opacity",
+        label: "canvas paint",
+        note: "redraws every cell as a glyph or dot per frame",
+        tier: "C",
+      },
+    ],
+  },
   "particle-dissolve": {
     title: "Particle Dissolve",
     properties: [

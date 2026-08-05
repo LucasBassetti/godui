@@ -35,6 +35,12 @@ export {
   type ShowcaseFrameColor,
   type ShowcaseMode,
 } from "./app-showcase";
+export {
+  AsciiDither,
+  type AsciiDitherColor,
+  type AsciiDitherProps,
+  type AsciiDitherVariant,
+} from "./ascii-dither";
 export { AuroraText, type AuroraTextProps } from "./aurora-text";
 export {
   type Avatar,

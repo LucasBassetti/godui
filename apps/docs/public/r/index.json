@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "generatedAt": "2026-08-04T18:42:17.397Z",
+  "generatedAt": "2026-08-05T14:38:13.682Z",
   "components": [
     {
       "name": "accordion",
@@ -65,6 +65,15 @@
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add @godui/app-showcase"
+    },
+    {
+      "name": "ascii-dither",
+      "title": "ASCII Dither",
+      "description": "Renders an image or video as a live field of ASCII characters or halftone dither dots, inked by theme or source color.",
+      "category": "Effects",
+      "dependencies": [],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/ascii-dither"
     },
     {
       "name": "aurora-text",

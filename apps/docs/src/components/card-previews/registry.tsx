@@ -15,6 +15,7 @@ import AnimatedBeam from "./previews/animated-beam";
 import AnimatedTestimonials from "./previews/animated-testimonials";
 import AnimatedTooltip from "./previews/animated-tooltip";
 import AppShowcase from "./previews/app-showcase";
+import AsciiDither from "./previews/ascii-dither";
 import AuroraText from "./previews/aurora-text";
 import AvatarGroup from "./previews/avatar-group";
 import BeamDraw from "./previews/beam-draw";
@@ -205,6 +206,7 @@ export const cardPreviews: Record<string, Preview> = {
   "orbiting-circles": OrbitingCircles,
   "scroll-timeline": ScrollTimeline,
   "world-map": WorldMap,
+  "ascii-dither": AsciiDither,
   "beam-draw": BeamDraw,
   "border-beam": BorderBeam,
   confetti: Confetti,

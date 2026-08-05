@@ -40,6 +40,10 @@ import { AppShowcaseAnatomy } from "@/components/learn/app-showcase-anatomy";
 import { AppShowcaseLoop } from "@/components/learn/app-showcase-loop";
 import { AppShowcaseResult } from "@/components/learn/app-showcase-result";
 import { AppShowcaseScroll } from "@/components/learn/app-showcase-scroll";
+import { AsciiDitherGrid } from "@/components/learn/ascii-dither-grid";
+import { AsciiDitherLens } from "@/components/learn/ascii-dither-lens";
+import { AsciiDitherRamp } from "@/components/learn/ascii-dither-ramp";
+import { AsciiDitherResult } from "@/components/learn/ascii-dither-result";
 import { AuroraTextAnatomy } from "@/components/learn/aurora-text-anatomy";
 import { AuroraTextLifecycle } from "@/components/learn/aurora-text-lifecycle";
 import { AuroraTextResult } from "@/components/learn/aurora-text-result";
@@ -527,6 +531,10 @@ export function getMDXComponents(components?: MDXComponents) {
     AppShowcaseLoop,
     AppShowcaseResult,
     AppShowcaseScroll,
+    AsciiDitherGrid,
+    AsciiDitherLens,
+    AsciiDitherRamp,
+    AsciiDitherResult,
     AuroraTextAnatomy,
     AuroraTextLifecycle,
     AuroraTextResult,

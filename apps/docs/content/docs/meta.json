@@ -101,6 +101,7 @@
     "components/visualizations/scroll-timeline",
     "components/visualizations/world-map",
     "---Effects---",
+    "components/effects/ascii-dither",
     "components/effects/beam-draw",
     "components/effects/border-beam",
     "components/effects/confetti",
