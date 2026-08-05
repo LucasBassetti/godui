@@ -1,0 +1,141 @@
+---
+title: Anatomy of ASCII Dither
+description: How a photo or video becomes a live field of characters and halftone dots — sampled to a low-res grid, mapped by luminance, and revealed with a center-out wipe and a pointer focus-lens, all on a single 2D canvas.
+learnPlayer: true
+---
+
+<LearnPlayer>
+
+<LearnChapter
+  label="Sampled to a grid"
+  scene={<AsciiDitherGrid />}
+  code={`// One offscreen canvas, sized to the grid — one pixel per cell.
+off.width = cols;   // cols = floor(width / cellSize)
+off.height = rows;  // rows = floor(height / cellSize)
+
+const scale = Math.min(cols / sw, rows / sh); // "contain"
+octx.drawImage(source, (cols - dw) / 2, (rows - dh) / 2, dw, dh);
+pixels = octx.getImageData(0, 0, cols, rows).data;`}
+>
+
+The whole effect starts by throwing away resolution. The source — image or video
+— is drawn *"contain"* into a tiny offscreen canvas that's exactly `cols × rows`,
+one pixel per output cell. Reading it back with `getImageData` gives a flat
+`RGBA` buffer: the average color of each cell, for free, courtesy of the
+browser's own downscaling.
+
+Nothing about the source's real dimensions survives — a 4K photo and a 400px
+thumbnail both collapse to the same little grid, so the cost of a frame scales
+with the *grid*, not the media. Cross-origin sources without CORS throw on
+`getImageData`; that's caught and the field simply stays empty rather than
+crashing.
+
+</LearnChapter>
+
+<LearnChapter
+  label="Luminance becomes ink"
+  scene={<AsciiDitherRamp />}
+  code={`// Rec. 601 luma → ink coverage (0 = blank, 1 = full).
+const luma = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+const ink = (invert ? luma : 1 - luma) * a;
+
+// ASCII: index the ramp by ink.
+ctx.fillText(charset[Math.round(ink * maxLen)], px, py);
+
+// Dither: Bayer 4×4 threshold, quantized to \`levels\`.
+const t = BAYER[cy % 4][cx % 4];
+const v = ink + (t - 0.5) / levels;
+const level = clamp01(Math.round(v / lvlStep) * lvlStep);`}
+>
+
+Each cell reduces to a single number: **ink coverage**, the perceptual luminance
+(Rec. 601 weights) flipped so dark pixels want more ink. That one value feeds
+both variants.
+
+For **ASCII**, ink indexes the character ramp `" .:-=+*#%@"` — bright cells land
+on a space, dark cells on `@`, and the glyph is stamped dead-center in its cell
+with `textAlign`/`textBaseline` set to `center`/`middle`.
+
+For **dither**, ink is thresholded against a 4×4 **Bayer** matrix (or diffused
+with **Floyd–Steinberg**) and quantized to `levels` steps — `2` gives crisp
+1-bit halftone. The surviving level sets the dot's size, drawn as a square or a
+circle. Either way the color comes from `color`: the `--foreground` token, the
+sampled source pixel, or any CSS string.
+
+</LearnChapter>
+
+<LearnChapter
+  label="Reveal & focus-lens"
+  scene={<AsciiDitherLens />}
+  code={`// Reveal: a center-out wipe over ~700ms.
+const dist = Math.hypot(cx / cols - 0.5, cy / rows - 0.5) / 0.72;
+alpha = clamp01((revealP * 1.35 - dist) / 0.25);
+
+// Interactive: pointer is a focus lens — near = sharp, far = faded.
+const focus = clamp01(1 - Math.hypot(px - ptr.x, py - ptr.y) / lensRadius);
+alpha *= 0.25 + 0.75 * easeInOut(focus);`}
+>
+
+Because every cell is drawn by hand each frame, motion is just a per-cell alpha
+term — no extra layers, no DOM. The **reveal** compares each cell's normalized
+distance from center against an advancing `revealP`, so the field resolves in a
+soft wipe outward from the middle the first time it scrolls into view.
+
+The **focus-lens** turns the pointer into a magnifier of *detail*: a cell's alpha
+falls off with its distance from the cursor, so glyphs snap sharp under the
+pointer and recede to a quarter-opacity ghost further out. (The scene above fakes
+the cursor with a roaming window — the real component tracks `pointermove`.) Both
+effects stack multiplicatively on the same `alpha`, so a cell revealing *and*
+sitting outside the lens gets both discounts at once.
+
+</LearnChapter>
+
+<LearnChapter label="The result" scene={<AsciiDitherResult />} isResult>
+
+A tiny offscreen sample, one luminance per cell, a ramp or a Bayer threshold, and
+two alpha terms — that's a photo turned into living type on one canvas. Hover it
+to sweep the lens; it cycles variants and color modes on its own.
+
+</LearnChapter>
+
+</LearnPlayer>
+
+## Cheap when idle
+
+The render loop only runs when something is actually moving. A **static image with
+no motion flags draws exactly once** and then sits there — no `requestAnimationFrame`
+at all.
+
+```tsx
+const needsLoop = () =>
+  !reduced.matches &&
+  (isVideo || glitch || (interactive && pointerRef.current.active));
+
+// after the source loads:
+if (needsLoop() || (reveal && !reduced.matches)) start();
+else render(performance.now());
+```
+
+Video, glitch, and an active pointer are the only things that keep the loop
+alive, and it's capped to `fps` (default 30) so a 60Hz display doesn't double the
+work. An `IntersectionObserver` stops the loop when the canvas scrolls off-screen
+and a `visibilitychange` listener pauses it when the tab is hidden; a
+`ResizeObserver` re-measures the grid and re-samples on layout changes.
+
+## Accessibility
+
+```tsx
+<div role="img" aria-label={alt}>
+  <canvas className="pointer-events-none size-full" />
+</div>
+```
+
+The container is a single `role="img"` labelled by `alt`; the canvas underneath
+is decorative, so it isn't announced separately. Under
+`prefers-reduced-motion` the reveal and glitch are skipped, the loop never starts
+for those effects, and a video source is drawn as one still frame instead of
+playing — the reader gets the picture, not the animation.
+
+## Motion Score
+
+<MotionScorePanel name="ascii-dither" />

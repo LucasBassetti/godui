@@ -193,6 +193,11 @@ export const MOTION_NOTES: Record<string, MotionNote> = {
     reason:
       "Bursts particles onto a <canvas> via canvas-confetti each time it fires — main-thread paint for ~2s, then it stops on its own.",
   },
+  "ascii-dither": {
+    kind: "compute",
+    reason:
+      "Samples the source and redraws every cell as a glyph or dot on a 2D canvas — main-thread paint. A static image draws once; video, glitch and the pointer lens run a capped loop that pauses when off screen.",
+  },
 };
 
 /**

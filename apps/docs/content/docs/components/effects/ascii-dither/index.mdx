@@ -1,0 +1,181 @@
+---
+title: ASCII Dither
+description: Renders an image or video as a live field of ASCII characters or halftone dither dots.
+date: "2026-08-05"
+workbench: true
+---
+
+import {
+  AsciiDitherDemo,
+  AsciiDitherDitherDemo,
+  AsciiDitherGlitchDemo,
+  AsciiDitherVideoDemo,
+} from "@/components/demos/ascii-dither-demo";
+
+<Workbench>
+
+Any image or video, sampled on a grid and re-drawn as luminance-mapped ASCII glyphs or halftone dither dots. The ink follows your theme, the source colors, or any CSS color — a retro-computed hero moment that stays crisp at any size.
+
+<Example
+  label="ASCII"
+  story="effects-asciidither"
+  code={`import { AsciiDither } from "@/components/godui/ascii-dither";
+
+export function Portrait() {
+  return (
+    <div className="aspect-[4/5] w-80 overflow-hidden rounded-xl border">
+      <AsciiDither
+        src="/portrait.jpg"
+        alt="Portrait rendered as ASCII"
+        cellSize={9}
+        color="theme"
+        interactive
+      />
+    </div>
+  );
+}`}
+>
+  <AsciiDitherDemo />
+</Example>
+
+<Example
+  label="Dither"
+  code={`import { AsciiDither } from "@/components/godui/ascii-dither";
+
+export function Halftone() {
+  return (
+    <AsciiDither
+      src="/portrait.jpg"
+      alt="Portrait as halftone"
+      variant="dither"
+      dotShape="circle"
+      cellSize={7}
+      color="source"
+    />
+  );
+}`}
+>
+  <AsciiDitherDitherDemo />
+</Example>
+
+<Example
+  label="Video"
+  code={`import { AsciiDither } from "@/components/godui/ascii-dither";
+
+export function Reel() {
+  return (
+    <AsciiDither
+      src="/reel.mp4"
+      alt="Video as ASCII"
+      type="video"
+      cellSize={8}
+    />
+  );
+}`}
+>
+  <AsciiDitherVideoDemo />
+</Example>
+
+<Example
+  label="Glitch"
+  code={`import { AsciiDither } from "@/components/godui/ascii-dither";
+
+export function Retro() {
+  return (
+    <AsciiDither
+      src="/portrait.jpg"
+      alt="Glitching ASCII portrait"
+      color="source"
+      glitch
+    />
+  );
+}`}
+>
+  <AsciiDitherGlitchDemo />
+</Example>
+
+## Installation
+
+<ComponentInstall componentName="AsciiDither" />
+
+The source is drawn "contain" into a tiny offscreen canvas (one pixel per cell),
+read back with `getImageData`, and each cell is redrawn as a glyph or dot. A
+static image renders in a single pass; video, glitch, and the pointer lens run a
+capped `requestAnimationFrame` loop that pauses when off-screen.
+
+## Usage
+
+```tsx
+import { AsciiDither } from "@/components/godui/ascii-dither";
+```
+
+The component fills its parent, so give it a sized, `overflow-hidden` container.
+
+```tsx
+<div className="aspect-[4/5] w-80 overflow-hidden rounded-xl border">
+  <AsciiDither src="/portrait.jpg" alt="Portrait" />
+</div>
+```
+
+### Variants
+
+`variant="ascii"` maps luminance to a character ramp; `variant="dither"` draws
+halftone dots via ordered `bayer` or `floyd-steinberg` diffusion, quantized to
+`levels`.
+
+```tsx
+<AsciiDither src="/img.jpg" variant="dither" ditherType="floyd-steinberg" levels={3} />
+```
+
+### Video
+
+Point `src` at a video file (or set `type="video"`). Each frame is re-sampled;
+`muted` autoplay is required by most browsers.
+
+```tsx
+<AsciiDither src="/reel.mp4" type="video" />
+```
+
+### Color
+
+`color="theme"` inks with the `--foreground` token (adapts to light/dark),
+`color="source"` tints each cell with the underlying pixel, or pass any CSS color.
+
+### Motion
+
+`reveal` staggers cells in from the center, `interactive` turns the pointer into a
+focus lens, and `glitch` adds an ambient retro flicker — all independent flags.
+
+## Accessibility
+
+The container is exposed as `role="img"` with your `alt` as its label. Under
+`prefers-reduced-motion`, reveal and glitch are skipped and video is drawn as a
+single still frame.
+
+## Props
+
+| Prop          | Type                                | Default     | Description                                             |
+| ------------- | ----------------------------------- | ----------- | ------------------------------------------------------- |
+| `src`         | `string`                            | —           | Image or video URL (required).                          |
+| `alt`         | `string`                            | `""`        | Accessible label (`role="img"`).                        |
+| `type`        | `"auto" \| "image" \| "video"`      | `"auto"`    | Source kind; `auto` infers video from the extension.    |
+| `variant`     | `"ascii" \| "dither"`               | `"ascii"`   | Glyph ramp or halftone dots.                            |
+| `cellSize`    | `number`                            | `8`         | Cell size in CSS px — smaller is finer.                 |
+| `charset`     | `string`                            | `" .:-=+*#%@"` | ASCII ramp, brightest → darkest.                     |
+| `fontFamily`  | `string`                            | mono        | Font for the glyphs.                                    |
+| `ditherType`  | `"bayer" \| "floyd-steinberg"`      | `"bayer"`   | Dither algorithm.                                       |
+| `levels`      | `number`                            | `2`         | Quantization levels (`2` = 1-bit).                      |
+| `dotShape`    | `"square" \| "circle"`              | `"square"`  | Dither dot shape.                                       |
+| `color`       | `"theme" \| "source" \| string`     | `"theme"`   | Ink color source.                                       |
+| `background`  | `string`                            | transparent | Canvas background.                                      |
+| `invert`      | `boolean`                           | `false`     | Invert the luminance mapping.                           |
+| `contrast`    | `number`                            | `1`         | Midtone contrast — `>1` sharpens features.              |
+| `reveal`      | `boolean`                           | `true`      | Stagger cells in from the center on view.               |
+| `interactive` | `boolean`                           | `false`     | Pointer focus-lens.                                     |
+| `glitch`      | `boolean`                           | `false`     | Ambient retro flicker.                                  |
+| `lensRadius`  | `number`                            | `120`       | Focus-lens radius in px.                                |
+| `fps`         | `number`                            | `30`        | Frame cap for video / glitch.                           |
+
+`AsciiDither` also forwards every standard `<div>` attribute.
+
+</Workbench>
