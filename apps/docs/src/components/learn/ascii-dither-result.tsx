@@ -5,8 +5,6 @@ import { useBareScene } from "@/components/learn/bare-scene-context";
 
 const PORTRAIT =
   "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=512&h=640&fit=crop&q=80";
-const VIDEO =
-  "https://videos.pexels.com/video-files/1409899/1409899-sd_640_360_25fps.mp4";
 
 function Demo() {
   return (
@@ -21,25 +19,13 @@ function Demo() {
           interactive
         />
       </div>
-      <div className="aspect-video w-full max-w-[30rem] overflow-hidden rounded-xl border border-fd-border bg-fd-card">
-        <AsciiDither
-          src={VIDEO}
-          alt="Ocean waves rendered as halftone dither"
-          type="video"
-          variant="dither"
-          dotShape="circle"
-          cellSize={5}
-          contrast={1.3}
-          color="theme"
-        />
-      </div>
     </div>
   );
 }
 
 /**
  * Closing "here's the finished thing" panel — the real component: a photo as
- * ASCII (hover to sweep the lens) and a live video as halftone dither.
+ * ASCII (hover to sweep the lens).
  */
 export function AsciiDitherResult() {
   if (useBareScene())
