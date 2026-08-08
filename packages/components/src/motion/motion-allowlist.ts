@@ -52,6 +52,12 @@ export const MOTION_ALLOWLIST: Record<string, MotionAllowEntry[]> = {
     { prop: "height", reason: "panel + mobile-accordion shared-layout morph" },
     { prop: "width", reason: "panel shared-layout morph" },
   ],
+  "multi-button/multi-button.tsx": [
+    {
+      prop: "width",
+      reason: "intrinsic action-label reveal while sibling icons stay fixed",
+    },
+  ],
   "toast/toast.tsx": [
     {
       prop: "height",

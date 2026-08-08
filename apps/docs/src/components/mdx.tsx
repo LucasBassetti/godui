@@ -258,6 +258,10 @@ import { MorphingDialogBackdrop } from "@/components/learn/morphing-dialog-backd
 import { MorphingDialogResult } from "@/components/learn/morphing-dialog-result";
 import { MorphingDialogSpring } from "@/components/learn/morphing-dialog-spring";
 import { MotionScorePanel } from "@/components/learn/motion-score-panel";
+import { MultiButtonAnatomy } from "@/components/learn/multi-button-anatomy";
+import { MultiButtonGooey } from "@/components/learn/multi-button-gooey";
+import { MultiButtonHover } from "@/components/learn/multi-button-hover";
+import { MultiButtonResult } from "@/components/learn/multi-button-result";
 import { NotificationInboxAnatomy } from "@/components/learn/notification-inbox-anatomy";
 import { NotificationInboxBadge } from "@/components/learn/notification-inbox-badge";
 import { NotificationInboxResult } from "@/components/learn/notification-inbox-result";
@@ -750,6 +754,10 @@ export function getMDXComponents(components?: MDXComponents) {
     MorphingDialogResult,
     MorphingDialogSpring,
     MotionScorePanel,
+    MultiButtonAnatomy,
+    MultiButtonGooey,
+    MultiButtonHover,
+    MultiButtonResult,
     NotificationInboxAnatomy,
     NotificationInboxBadge,
     NotificationInboxResult,

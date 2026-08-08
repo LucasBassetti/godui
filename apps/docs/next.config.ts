@@ -6,6 +6,7 @@ const withMDX = createMDX();
 const storybookDevOrigin = "http://127.0.0.1:6006";
 
 const nextConfig: NextConfig = {
+  allowedDevOrigins: ["127.0.0.1"],
   transpilePackages: ["@godui/components"],
   async rewrites() {
     if (process.env.NODE_ENV === "development") {

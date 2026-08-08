@@ -984,6 +984,52 @@ export const MOTION_SCORE_PANELS: Record<string, MotionScorePanelEntry> = {
       },
     ],
   },
+  "multi-button": {
+    title: "Multi Button",
+    properties: [
+      {
+        prop: "width",
+        label: "width",
+        note: "Coordinated rail and action-cell width morph",
+      },
+      {
+        prop: "transform",
+        label: "transform",
+        note: "Icon centering as cells redistribute",
+      },
+      {
+        prop: "scale",
+        label: "scale",
+        note: "Press feedback, label reveal, and Gooey blob collapse",
+      },
+      {
+        prop: "opacity",
+        label: "opacity",
+        note: "Label reveal and separator fade",
+      },
+      {
+        prop: "filter",
+        label: "filter",
+        note: "Label blur and the optional SVG metaball treatment",
+      },
+      {
+        prop: "backgroundcolor",
+        label: "background-color",
+        note: "Action hover and active-state paint",
+      },
+      {
+        prop: "color",
+        label: "color",
+        note: "Action foreground changes across interactive states",
+      },
+      {
+        prop: "x",
+        label: "SVG x",
+        note: "Gooey rectangles follow each measured action cell",
+        tier: "C",
+      },
+    ],
+  },
   marquee: {
     title: "Marquee",
     properties: [
