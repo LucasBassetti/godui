@@ -1,0 +1,149 @@
+---
+title: Anatomy of the Multi Button
+description: How one measured action rail redistributes any set of options, delays its labels, and optionally turns them into one liquid surface.
+learnPlayer: true
+---
+
+<LearnPlayer>
+
+<LearnChapter
+  label="One rail, many actions"
+  scene={<MultiButtonAnatomy />}
+  code={`const expandedWidth =
+  items.length > 0
+    ? items.length * cfg.cell + effectiveLabelWidth + dividerWidth
+    : cfg.cell;
+
+const itemWidths = items.map((item) =>
+  actionWidth(
+    item,
+    activeId,
+    items.length,
+    cfg.cell,
+    labelWidths,
+    effectiveLabelWidth,
+  ),
+);`}
+>
+
+The Standard control always reserves one rail width. The scene uses four actions as
+one illustrative dataset; the geometry is data-driven for any 2+ options, with no
+fixed maximum. At rest, the widest measured label allowance is distributed across
+every action cell. When an action becomes
+active, that cell takes exactly its icon width plus its own label width; any unused
+allowance is shared by its siblings. The rail therefore stays stable while the space
+inside it moves toward the action that needs to speak.
+
+Compact reuses the same measurements and cells. Its collapsed root is only one cell
+wide, with one visible, tabbable trigger. By default that trigger shows the selected
+action's icon. Optional `restIcon` and `restAriaLabel` can give it an independent
+collapsed identity without adding an item. As soon as opening begins, that rest icon
+crossfades toward the selected or focused action icon. The other actions and every
+label remain gated until the rail finishes expanding. Nothing is rebuilt for Classic
+or Gooey—the same geometry feeds both treatments.
+
+</LearnChapter>
+
+<LearnChapter
+  label="Open together, label last"
+  scene={<MultiButtonHover />}
+  code={`const width =
+  compact && !expanded
+    ? selected
+      ? cfg.cell
+      : 0
+    : (itemWidths[index] ?? cfg.cell);
+
+const iconOffset =
+  compact && !expanded
+    ? 0
+    : active
+      ? 0
+      : Math.max(0, (width - cfg.cell) / 2);
+
+const activeId =
+  iconOnly || !isExpanded || !compactRailReady
+    ? null
+    : (hoveredId ?? touchExpandedId);`}
+>
+
+Compact opening is one coordinated redistribution. The root rail, the width of every
+mapped action, every icon offset, and the temporary dividers begin moving on the same state
+change. Classic uses a restrained `200ms ease-out`; Gooey uses a `300ms` overshooting
+open and a firmer `200ms` close. An optional rest icon begins its crossfade on that
+opening state change; it does not wait for rail readiness.
+
+The label has a separate gate. While `compactRailReady` is false, `activeId` remains
+`null`, so no action can claim label space before the rail has finished opening. Once
+ready, the active label resolves from `scale: 0.25`, `opacity: 0`, and `blur(4px)`.
+That sequence keeps the text legible and makes the opening read as one shape change,
+not a row of buttons racing a label.
+
+</LearnChapter>
+
+<LearnChapter
+  label="The Gooey treatment"
+  scene={<MultiButtonGooey />}
+  code={`<filter
+  id={filterId}
+  x="-100%"
+  y="-400%"
+  width="300%"
+  height="900%"
+  colorInterpolationFilters="sRGB"
+>
+  <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur" />
+  <feColorMatrix
+    in="blur"
+    mode="matrix"
+    values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -10"
+  />
+</filter>`}
+>
+
+Gooey changes paint, not structure. A native SVG rectangle mirrors every measured
+action cell underneath the rail. Gaussian blur lets neighboring rectangles overlap;
+the alpha matrix hardens that overlap into a metaball bridge. Because the geometry
+comes from the shared layout calculation, each blob and its icon move from the same
+numbers on the same transition.
+
+The filtered SVG is decorative and `aria-hidden`. Transparent native buttons sit
+above it with sharp icons, hit targets, labels, and focus rings. Keeping those layers
+separate preserves both the liquid silhouette and readable controls. Under reduced
+motion the filtered interpolation is removed and the shapes resolve immediately.
+
+</LearnChapter>
+
+<LearnChapter label="The result" scene={<MultiButtonResult />} isResult>
+
+The treatment switch changes only the surface construction. This live result uses four
+items for readability, but `items.map` drives the same Standard and Compact geometry
+for any 2+ options with no fixed maximum. Its Compact example also uses the optional
+rest trigger; the ellipsis is not a fifth action. Label allowance, action icons,
+interaction states, and accessible buttons still come from the same shared rail.
+
+</LearnChapter>
+
+</LearnPlayer>
+
+## Accessibility
+
+Every action is a native `<button>` with its own accessible name, disabled state, and
+visible `focus-visible` ring. Collapsed Compact keeps all actions mounted, but only
+its trigger target is initially exposed to assistive technology and the tab order.
+When `restIcon` is present, `restAriaLabel` names that collapsed trigger independently;
+neither prop changes the `items` collection. Once the expanded rail is
+interaction-ready, it exposes the mapped actions:
+
+```tsx
+accessible={!compact || interactionReady || selected}
+```
+
+Pointer hover and keyboard focus reveal the same label. On touch, the first tap opens
+Compact and the second tap activates the chosen action; an outside press closes an
+open rail. Reduced motion skips interpolation, removes the Gooey filter, and resolves
+the final layout immediately without removing labels or controls.
+
+## Motion Score
+
+<MotionScorePanel name="multi-button" />

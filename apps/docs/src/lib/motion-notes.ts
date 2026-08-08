@@ -44,6 +44,11 @@ export const MOTION_NOTES: Record<string, MotionNote> = {
     reason:
       "The active tab reveals its label by animating width to auto — a layout property.",
   },
+  "multi-button": {
+    kind: "layout",
+    reason:
+      "The compact rail and its action cells coordinate intrinsic width changes during open and close.",
+  },
   "dynamic-island": {
     kind: "layout",
     reason:

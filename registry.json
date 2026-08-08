@@ -388,6 +388,21 @@
       ]
     },
     {
+      "name": "multi-button",
+      "type": "registry:ui",
+      "title": "Multi Button",
+      "description": "A responsive action rail where Standard reserves width, Compact collapses, Original pairs ease-out redistribution with spring labels, and Gooey adds elastic metaballs.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/components/src/multi-button/multi-button.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/multi-button.tsx"
+        }
+      ]
+    },
+    {
       "name": "progressive-card-reveal",
       "type": "registry:ui",
       "title": "Progressive Card Reveal",

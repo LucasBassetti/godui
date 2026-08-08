@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "generatedAt": "2026-08-05T14:38:13.682Z",
+  "generatedAt": "2026-08-08T06:24:25.282Z",
   "components": [
     {
       "name": "accordion",
@@ -569,6 +569,15 @@
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add @godui/morphing-dialog"
+    },
+    {
+      "name": "multi-button",
+      "title": "Multi Button",
+      "description": "A responsive action rail where Standard reserves width, Compact collapses, Original pairs ease-out redistribution with spring labels, and Gooey adds elastic metaballs.",
+      "category": "Buttons",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add @godui/multi-button"
     },
     {
       "name": "notification-inbox",

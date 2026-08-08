@@ -23,14 +23,10 @@ const PANE_MIN = 360;
 const PANE_MAX = 720;
 const PANE_DEFAULT = 440;
 
-// Runs during the server render too (for the initial aria-valuemax), so it
-// cannot assume a window.
 const clampPane = (containerPx: number): [number, number] => {
-  const viewportCap =
-    typeof window === "undefined" ? PANE_MAX : window.innerWidth * 0.55;
   const max = Math.max(
     PANE_MIN,
-    Math.min(PANE_MAX, viewportCap, containerPx - MIN_STAGE_PX),
+    Math.min(PANE_MAX, containerPx - MIN_STAGE_PX),
   );
   return [PANE_MIN, max];
 };

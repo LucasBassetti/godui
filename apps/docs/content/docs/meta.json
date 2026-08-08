@@ -17,6 +17,7 @@
     "components/buttons/magic-button",
     "components/buttons/magnetic-button",
     "components/buttons/mask-button",
+    "components/buttons/multi-button",
     "components/buttons/progress-fold-button",
     "components/buttons/shimmer-button",
     "components/buttons/slide-confirm-button",

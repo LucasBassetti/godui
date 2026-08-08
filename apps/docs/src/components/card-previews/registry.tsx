@@ -75,6 +75,7 @@ import MaskButton from "./previews/mask-button";
 import MegaMenu from "./previews/mega-menu";
 import MorphGallery from "./previews/morph-gallery";
 import MorphingDialog from "./previews/morphing-dialog";
+import MultiButton from "./previews/multi-button";
 import NumberTicker from "./previews/number-ticker";
 import OrbitCarousel from "./previews/orbit-carousel";
 import OrbitingCircles from "./previews/orbiting-circles";
@@ -133,6 +134,7 @@ export const cardPreviews: Record<string, Preview> = {
   "magic-button": MagicButton,
   "magnetic-button": MagneticButton,
   "mask-button": MaskButton,
+  "multi-button": MultiButton,
   "progress-fold-button": ProgressFoldButton,
   "shimmer-button": ShimmerButton,
   "slide-confirm-button": SlideConfirmButton,
