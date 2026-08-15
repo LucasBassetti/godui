@@ -687,6 +687,39 @@ describe("CompactMultiButton", () => {
     expect(screen.getAllByRole("button")).toHaveLength(1);
   });
 
+  it("closes after an outside touch in the component's owner document", () => {
+    const iframe = document.createElement("iframe");
+    document.body.appendChild(iframe);
+    const iframeDocument = iframe.contentDocument;
+
+    if (!iframeDocument) {
+      iframe.remove();
+      throw new Error("Expected the test iframe to have a content document");
+    }
+
+    const { unmount } = render(
+      <CompactMultiButton items={items} selectedId="edit" />,
+      { container: iframeDocument.body },
+    );
+    const group = within(iframeDocument.body).getByRole("group");
+    const editButton = within(group).getByRole("button", { name: "Edit" });
+
+    touchTap(editButton);
+    expect(group).toHaveAttribute("aria-expanded", "true");
+
+    fireEvent.pointerDown(iframeDocument.body, {
+      button: 0,
+      isPrimary: true,
+      pointerId: 2,
+      pointerType: "touch",
+    });
+
+    expect(group).toHaveAttribute("aria-expanded", "false");
+
+    unmount();
+    iframe.remove();
+  });
+
   it("closes after keyboard activation while retaining sensible focus", async () => {
     const onClick = vi.fn();
     const user = userEvent.setup();

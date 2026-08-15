@@ -229,11 +229,15 @@ function useOutsidePointerDown(
 ) {
   React.useEffect(() => {
     if (!active) return;
+    // The rail may be portaled into a preview iframe, whose document is
+    // different from the page document running this component.
+    const ownerDocument = containerRef.current?.ownerDocument ?? document;
     const handlePointerDown = (event: PointerEvent) => {
       if (!containerRef.current?.contains(event.target as Node)) onOutside();
     };
-    document.addEventListener("pointerdown", handlePointerDown);
-    return () => document.removeEventListener("pointerdown", handlePointerDown);
+    ownerDocument.addEventListener("pointerdown", handlePointerDown);
+    return () =>
+      ownerDocument.removeEventListener("pointerdown", handlePointerDown);
   }, [active, containerRef, onOutside]);
 }
 
