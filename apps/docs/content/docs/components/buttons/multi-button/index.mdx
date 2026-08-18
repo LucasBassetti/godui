@@ -1,0 +1,322 @@
+---
+title: Multi Button
+description: A responsive action rail where Standard reserves width, Compact collapses, Original pairs ease-out redistribution with spring labels, and Gooey adds elastic metaballs.
+date: "2026-08-08"
+workbench: true
+---
+
+import { MultiButtonDemo } from "@/components/demos/multi-button-demo";
+
+<Workbench>
+
+Multi Button keeps related secondary actions available without giving every label permanent visual weight. Standard reserves the rail's full width and redistributes it with an ease-out transition while the active label springs into view. Compact rests on one trigger icon, crossfades to the selected action icon as opening begins, then reveals labels after the rail finishes expanding. Choose Gooey when the interaction should feel more elastic.
+
+<Example
+  label="Action rail"
+  story="buttons-multi-button"
+  code={`"use client";
+
+import {
+  CompactMultiButton,
+  MultiButton,
+  type MultiButtonItem,
+} from "@/components/godui/multi-button";
+import {
+  Archive,
+  Bookmark,
+  Copy,
+  Download,
+  EllipsisVertical,
+  Eye,
+  MessageSquare,
+  Share2,
+  Trash2,
+} from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+
+const actionDefinitions = [
+  { id: "review", icon: Eye, label: "Review" },
+  { id: "download", icon: Download, label: "Download" },
+  { id: "share", icon: Share2, label: "Share" },
+  { id: "archive", icon: Archive, label: "Archive" },
+  { id: "duplicate", icon: Copy, label: "Duplicate" },
+  { id: "comment", icon: MessageSquare, label: "Comment" },
+  { id: "save", icon: Bookmark, label: "Save" },
+  { id: "delete", icon: Trash2, label: "Delete" },
+] satisfies Omit<MultiButtonItem, "onClick">[];
+
+export function ActionRail() {
+  const [selectedId, setSelectedId] = useState("review");
+  const [lastAction, setLastAction] = useState<string | null>(null);
+  const [gooey, setGooey] = useState(false);
+  const [optionCount, setOptionCount] = useState(4);
+  const [isMobile, setIsMobile] = useState(false);
+  const demoRef = useRef<HTMLDivElement>(null);
+  const maxOptions = isMobile ? 4 : 8;
+  const visibleDefinitions = actionDefinitions.slice(0, optionCount);
+  const items = visibleDefinitions.map((item) => ({
+    ...item,
+    onClick: () => setLastAction(item.label),
+  }));
+  const compactItems = visibleDefinitions.map((item) => ({
+    ...item,
+    onClick: () => {
+      setSelectedId(item.id);
+      setLastAction(item.label);
+    },
+  }));
+
+  const changeOptionCount = (nextCount: number) => {
+    const boundedCount = Math.min(nextCount, maxOptions);
+    const nextDefinitions = actionDefinitions.slice(0, boundedCount);
+    setOptionCount(boundedCount);
+    setSelectedId((current) =>
+      nextDefinitions.some((item) => item.id === current)
+        ? current
+        : nextDefinitions[0].id,
+    );
+  };
+
+  useEffect(() => {
+    const view = demoRef.current?.ownerDocument.defaultView ?? window;
+    const mediaQuery = view.matchMedia("(max-width: 639px)");
+    const syncMobileLimit = () => {
+      const mobile = mediaQuery.matches;
+      setIsMobile(mobile);
+      if (!mobile) return;
+      setOptionCount((current) => Math.min(current, 4));
+      setSelectedId((current) =>
+        actionDefinitions.slice(0, 4).some((item) => item.id === current)
+          ? current
+          : actionDefinitions[0].id,
+      );
+    };
+
+    syncMobileLimit();
+    mediaQuery.addEventListener("change", syncMobileLimit);
+    view.addEventListener("resize", syncMobileLimit);
+    return () => {
+      mediaQuery.removeEventListener("change", syncMobileLimit);
+      view.removeEventListener("resize", syncMobileLimit);
+    };
+  }, []);
+
+  return (
+    <div ref={demoRef} className="flex w-full max-w-xl flex-col items-center gap-6">
+      <MultiButton
+        items={items}
+        gooey={gooey}
+        highlightColor="var(--primary-foreground)"
+        size="lg"
+      />
+      <CompactMultiButton
+        items={compactItems}
+        selectedId={selectedId}
+        restIcon={EllipsisVertical}
+        restAriaLabel="Open actions"
+        gooey={gooey}
+        highlightColor="var(--primary)"
+        size="lg"
+        variant="outline"
+      />
+      <label>
+        Options
+        <input
+          type="range"
+          min={2}
+          max={maxOptions}
+          value={optionCount}
+          onChange={(event) => changeOptionCount(Number(event.target.value))}
+        />
+        <output>{optionCount}</output>
+      </label>
+      <div className="flex rounded-full bg-muted p-1" aria-label="Motion treatment">
+        <button type="button" aria-pressed={!gooey} onClick={() => setGooey(false)}>
+          Original
+        </button>
+        <button type="button" aria-pressed={gooey} onClick={() => setGooey(true)}>
+          Gooey
+        </button>
+      </div>
+      <p aria-live="polite">{lastAction ? \`Last action: \${lastAction}\` : "Choose an action"}</p>
+    </div>
+  );
+}`}
+>
+  <MultiButtonDemo />
+</Example>
+
+## Installation
+
+<ComponentInstall name="multi-button" />
+
+## Usage
+
+`items` is cardinality-agnostic: pass any array of two or more actions. The Workbench starts with four; its Options slider previews two through eight on desktop and caps the mobile preview at four. Those ranges belong to the demo, not the component API.
+
+### Standard
+
+Standard keeps its expanded width at rest. Hovering, focusing, or tapping an action redistributes that reserved space to reveal the active label without moving adjacent layout.
+
+```tsx
+"use client";
+
+import {
+  MultiButton,
+  type MultiButtonItem,
+} from "@/components/godui/multi-button";
+import { Download, Eye, Share2 } from "lucide-react";
+
+const actions: MultiButtonItem[] = [
+  {
+    id: "review",
+    icon: Eye,
+    label: "Review",
+    onClick: () => console.info("Review file"),
+  },
+  {
+    id: "download",
+    icon: Download,
+    label: "Download",
+    onClick: () => console.info("Download file"),
+  },
+  {
+    id: "share",
+    icon: Share2,
+    label: "Share",
+    onClick: () => console.info("Share file"),
+  },
+];
+
+export function FileActions() {
+  return <MultiButton items={actions} highlightColor="var(--primary)" />;
+}
+```
+
+### Compact
+
+Compact collapses to one trigger cell. By default it uses the `selectedId` action's icon and accessible name. Pass `restIcon` and `restAriaLabel` to give the collapsed trigger an independent affordance, such as an overflow icon. That trigger is not added to `items`; `selectedId` still identifies the selected action and remains the focus target when the rail closes. As soon as opening begins, `restIcon` crossfades to the selected action icon. Labels and the remaining actions' accessibility exposure wait until the rail has finished expanding.
+
+With a keyboard, focus expands the rail and exposes the remaining native buttons; activating an action collapses the rail while preserving a usable focus position. On touch, the first tap expands the rail and the next tap activates an action and closes it.
+
+```tsx
+"use client";
+
+import {
+  CompactMultiButton,
+  type MultiButtonItem,
+} from "@/components/godui/multi-button";
+import { Archive, Download, EllipsisVertical, Eye } from "lucide-react";
+import { useState } from "react";
+
+const actionDefinitions = [
+  { id: "review", icon: Eye, label: "Review" },
+  { id: "download", icon: Download, label: "Download" },
+  { id: "archive", icon: Archive, label: "Archive" },
+] satisfies Omit<MultiButtonItem, "onClick">[];
+
+export function CompactFileActions() {
+  const [selectedId, setSelectedId] = useState("review");
+  const actions = actionDefinitions.map((item) => ({
+    ...item,
+    onClick: () => setSelectedId(item.id),
+  }));
+
+  return (
+    <CompactMultiButton
+      items={actions}
+      selectedId={selectedId}
+      restIcon={EllipsisVertical}
+      restAriaLabel="Open actions"
+      highlightColor="var(--primary)"
+      variant="outline"
+    />
+  );
+}
+```
+
+Set `iconOnly` when Compact should expose the other actions without revealing their text. Add `gooey` to Standard or Compact for the elastic SVG metaball treatment; Original remains the quieter default.
+
+### Synchronized rows
+
+`MultiButtonGroup` lets separate rows reserve the same label width. Use it when several rails need aligned expanded footprints without manually maintaining a shared `syncWidthTo` list.
+
+```tsx
+import {
+  MultiButton,
+  MultiButtonGroup,
+  type MultiButtonItem,
+} from "@/components/godui/multi-button";
+import { Download, Eye, Share2, Trash2 } from "lucide-react";
+
+const documentActions: MultiButtonItem[] = [
+  { id: "review", icon: Eye, label: "Review document" },
+  { id: "download", icon: Download, label: "Download" },
+];
+const sharingActions: MultiButtonItem[] = [
+  { id: "share", icon: Share2, label: "Share with team" },
+  { id: "delete", icon: Trash2, label: "Delete" },
+];
+
+export function AlignedActionRows() {
+  return (
+    <MultiButtonGroup>
+      <div className="flex flex-col items-start gap-2">
+        <MultiButton items={documentActions} />
+        <MultiButton items={sharingActions} />
+      </div>
+    </MultiButtonGroup>
+  );
+}
+```
+
+## Accessibility
+
+Each action renders as a native button. Supply `ariaLabel` when `label` is not a readable string, and use `disabled` for unavailable actions so pointer and keyboard behavior stay aligned. Standard exposes every action in the tab order. Collapsed Compact initially exposes its trigger target; once expansion finishes, it exposes the remaining actions. The rest-to-selected icon crossfade begins immediately and does not wait for that accessibility gate.
+
+## Shared props
+
+These props apply to both `MultiButton` and `CompactMultiButton`.
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `items` | `MultiButtonItem[]` | — | Two or more ordered actions; the item count is not fixed |
+| `variant` | `"default" \| "outline" \| "secondary" \| "ghost"` | `"default"` | Surface treatment |
+| `size` | `"sm" \| "md" \| "lg"` | `"md"` | Control height, icon scale, and label typography |
+| `syncWidthTo` | `MultiButtonItem[]` | — | Reserves label space from another item set without a group |
+| `highlightColor` | `string` | — | CSS color or token reference for the faint active-action tint |
+| `gooey` | `boolean` | `false` | Uses the elastic SVG metaball treatment instead of Original motion |
+| `className` | `string` | — | Adds classes to the rail root |
+| `style` | `React.CSSProperties` | — | Adds inline styles to the rail root |
+
+The root also accepts compatible `HTMLDivElement` attributes. Internal interaction handlers are composed with consumer handlers.
+
+## Compact props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `selectedId` | `string` | — | Required ID of the selected action, independent of a custom collapsed trigger |
+| `iconOnly` | `boolean` | `false` | Keeps labels hidden after Compact expands |
+| `restIcon` | `MultiButtonItem["icon"]` | — | Independent collapsed-trigger icon that crossfades to the selected action icon as opening begins; it is not part of `items` |
+| `restAriaLabel` | `string` | `"Open actions"` | Accessible name for the independent collapsed trigger |
+
+## MultiButtonItem
+
+| Field | Type | Required | Description |
+| ----- | ---- | -------- | ----------- |
+| `id` | `string` | Yes | Stable action identifier |
+| `icon` | `React.ElementType` | Yes | Icon component rendered inside the action |
+| `label` | `React.ReactNode` | Yes | Visible label and accessible-name fallback for string content |
+| `ariaLabel` | `string` | No | Accessible name override, especially for non-string labels |
+| `onClick` | `(event) => void` | No | Runs when the native action button activates |
+| `disabled` | `boolean` | No | Disables the action and removes its interactive affordances |
+| `className` | `string` | No | Adds classes to one action button |
+| `hoverClassName` | `string` | No | Alias for a per-action hover-treatment class |
+
+## MultiButtonGroup props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `children` | `React.ReactNode` | — | Descendant Standard or Compact rails whose reserved label widths should match |
+
+</Workbench>
