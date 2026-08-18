@@ -493,16 +493,24 @@ const AsciiDither = React.forwardRef<HTMLDivElement, AsciiDitherProps>(
       });
       resizeObserver.observe(container);
 
-      const intersectionObserver = new IntersectionObserver(
-        ([entry]) => {
-          visible = !!entry?.isIntersecting;
-          if (!visible) stop();
-          else if (needsLoop()) start();
-          else if (ready) render(performance.now());
-        },
-        { threshold: 0 },
-      );
-      intersectionObserver.observe(container);
+      // A portaled preview can live in a different window (the docs mobile
+      // preview uses an iframe). IntersectionObserver is scoped to the window
+      // that creates it, so use the container's realm instead of the module's
+      // parent window; otherwise the iframe canvas is reported as not visible.
+      const view = container.ownerDocument.defaultView ?? window;
+      const intersectionObserver =
+        "IntersectionObserver" in view
+          ? new view.IntersectionObserver(
+              ([entry]) => {
+                visible = !!entry?.isIntersecting;
+                if (!visible) stop();
+                else if (needsLoop()) start();
+                else if (ready) render(performance.now());
+              },
+              { threshold: 0 },
+            )
+          : undefined;
+      intersectionObserver?.observe(container);
 
       const onVisibility = () => {
         if (document.hidden) stop();
@@ -532,7 +540,7 @@ const AsciiDither = React.forwardRef<HTMLDivElement, AsciiDitherProps>(
         cancelled = true;
         stop();
         resizeObserver.disconnect();
-        intersectionObserver.disconnect();
+        intersectionObserver?.disconnect();
         document.removeEventListener("visibilitychange", onVisibility);
         container.removeEventListener("pointermove", onPointerMove);
         container.removeEventListener("pointerleave", onPointerLeave);
