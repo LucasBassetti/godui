@@ -105,7 +105,7 @@ export async function getComponent(
   }
 
   let installTarget = variant
-    ? `"https://godui.design/r/${slug}.json?variant=${variant}"`
+    ? `"https://godui.design/r/${slug}.json?variant=${encodeURIComponent(variant)}"`
     : `@godui/${slug}`;
   if (!variant) {
     try {

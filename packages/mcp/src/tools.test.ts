@@ -171,6 +171,18 @@ describe("getComponent", () => {
     );
   });
 
+  it("URL-encodes variant values in the install command", async () => {
+    const out = await getComponent(
+      fakeClient(),
+      "gradient-background",
+      "aurora glow/sunset?contrast=high&mode=soft",
+    );
+
+    expect(out).toContain(
+      'add "https://godui.design/r/gradient-background.json?variant=aurora%20glow%2Fsunset%3Fcontrast%3Dhigh%26mode%3Dsoft"',
+    );
+  });
+
   it("returns a friendly error when the component is missing", async () => {
     const client = fakeClient({
       getComponent: async () => {
