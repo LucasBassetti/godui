@@ -104,10 +104,11 @@ toast({
 
 ### `ToastProvider`
 
-| Prop       | Type            | Default          | Description                       |
-| ---------- | --------------- | ---------------- | --------------------------------- |
-| `position` | `ToastPosition` | `"bottom-right"` | Corner the stack is anchored to.  |
-| `duration` | `number`        | `4000`           | Default auto-dismiss delay in ms. |
+| Prop        | Type                   | Default              | Description                       |
+| ----------- | ---------------------- | -------------------- | --------------------------------- |
+| `position`  | `ToastPosition`        | `"bottom-right"`     | Corner the stack is anchored to.  |
+| `duration`  | `number`               | `4000`               | Default auto-dismiss delay in ms. |
+| `container` | `HTMLElement \| null` | Owning document body | Portal target for the stack.      |
 
 ### `toast(options)`
 
