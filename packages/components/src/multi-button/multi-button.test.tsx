@@ -369,6 +369,46 @@ describe("MultiButton", () => {
 });
 
 describe("CompactMultiButton", () => {
+  it.each([
+    { gooey: false, mode: "classic" },
+    { gooey: true, mode: "gooey" },
+  ])("keeps enabled sibling actions reachable when the selected action is disabled in $mode mode", ({
+    gooey,
+  }) => {
+    const disabledOnClick = vi.fn();
+    const enabledOnClick = vi.fn();
+    const { container } = render(
+      <CompactMultiButton
+        items={[
+          { ...items[0], disabled: true, onClick: disabledOnClick },
+          { ...items[1], onClick: enabledOnClick },
+        ]}
+        selectedId="view"
+        gooey={gooey}
+      />,
+    );
+
+    const group = screen.getByRole("group");
+    const selectedButton = screen.getByRole("button", { name: "View" });
+    expect(selectedButton).not.toBeDisabled();
+
+    touchTap(selectedButton);
+
+    expect(group).toHaveAttribute("aria-expanded", "true");
+    expect(disabledOnClick).not.toHaveBeenCalled();
+    finishWidthTransition(group);
+
+    const enabledButton = screen.getByRole("button", { name: "Edit" });
+    expect(selectedButton).toBeDisabled();
+    expect(enabledButton).not.toBeDisabled();
+
+    touchTap(enabledButton);
+
+    expect(enabledOnClick).toHaveBeenCalledOnce();
+    expect(disabledOnClick).not.toHaveBeenCalled();
+    expect(container.querySelectorAll("button")).toHaveLength(2);
+  });
+
   it.each(
     itemCountCases,
   )("uses a rest icon for $count $treatment actions", async ({

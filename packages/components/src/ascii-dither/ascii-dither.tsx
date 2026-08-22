@@ -25,7 +25,7 @@ export type AsciiDitherProps = Omit<
   fontFamily?: string;
   /** Dither algorithm. */
   ditherType?: "bayer" | "floyd-steinberg";
-  /** Quantization levels for dithering — `2` is 1-bit. */
+  /** Quantization levels for dithering — `2` is 1-bit; invalid values are clamped to `2`. */
   levels?: number;
   /** Dot shape for the dither variant. */
   dotShape?: "square" | "circle";
@@ -86,6 +86,8 @@ function rgbTriple(input: string): [number, number, number] {
 const easeInOut = (t: number) =>
   t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2;
 const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
+const normalizeDitherLevels = (levels: number) =>
+  Number.isFinite(levels) ? Math.max(2, Math.floor(levels)) : 2;
 
 function isVideoSrc(src: string, type: AsciiDitherProps["type"]) {
   if (type === "video") return true;
@@ -174,6 +176,7 @@ const AsciiDither = React.forwardRef<HTMLDivElement, AsciiDitherProps>(
       if (!container || !canvas) return;
       const ctx = canvas.getContext("2d");
       if (!ctx) return;
+      const quantizationLevels = normalizeDitherLevels(levels);
 
       const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
       const off = document.createElement("canvas");
@@ -276,7 +279,7 @@ const AsciiDither = React.forwardRef<HTMLDivElement, AsciiDitherProps>(
             buf[y * cols + x] = inkAt((y * cols + x) * 4);
           }
         }
-        const step = 1 / (levels - 1);
+        const step = 1 / (quantizationLevels - 1);
         for (let y = 0; y < rows; y++) {
           for (let x = 0; x < cols; x++) {
             const idx = y * cols + x;
@@ -313,7 +316,7 @@ const AsciiDither = React.forwardRef<HTMLDivElement, AsciiDitherProps>(
           variant === "dither" && ditherType === "floyd-steinberg"
             ? diffuse()
             : null;
-        const lvlStep = 1 / (levels - 1);
+        const lvlStep = 1 / (quantizationLevels - 1);
 
         if (variant === "ascii") {
           ctx.font = `${Math.ceil(cellH * 1.05)}px ${fontFamily}`;
@@ -380,7 +383,7 @@ const AsciiDither = React.forwardRef<HTMLDivElement, AsciiDitherProps>(
                   ? (diffused[cy * cols + cx] as number)
                   : (() => {
                       const t = BAYER[cy % 4]?.[cx % 4] ?? 0.5;
-                      const v = ink + (t - 0.5) / levels;
+                      const v = ink + (t - 0.5) / quantizationLevels;
                       return clamp01(Math.round(v / lvlStep) * lvlStep);
                     })();
               if (level <= 0) continue;

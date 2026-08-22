@@ -80,4 +80,63 @@ describe("AsciiDither", () => {
     expect(frameDisconnect).toHaveBeenCalledOnce();
     frame.remove();
   });
+
+  it.each([
+    "bayer",
+    "floyd-steinberg",
+  ] as const)("clamps levels=1 to finite dither geometry (%s)", (ditherType) => {
+    class MockImage {
+      naturalWidth = 1;
+      naturalHeight = 1;
+      crossOrigin = "";
+      onload: (() => void) | null = null;
+
+      set src(_value: string) {
+        this.onload?.();
+      }
+    }
+
+    const fillRect = vi.fn();
+    const context = {
+      clearRect: vi.fn(),
+      drawImage: vi.fn(),
+      fillRect,
+      getImageData: vi.fn(() => ({
+        data: new Uint8ClampedArray([0, 0, 0, 255]),
+      })),
+      setTransform: vi.fn(),
+    } as unknown as CanvasRenderingContext2D;
+
+    vi.stubGlobal("Image", MockImage);
+    Object.defineProperty(HTMLCanvasElement.prototype, "getContext", {
+      configurable: true,
+      value: vi.fn(() => context),
+    });
+
+    let unmount: (() => void) | undefined;
+    try {
+      ({ unmount } = render(
+        <AsciiDither
+          color="red"
+          ditherType={ditherType}
+          levels={1}
+          reveal={false}
+          src="/poster.png"
+          variant="dither"
+        />,
+      ));
+
+      expect(fillRect).toHaveBeenCalled();
+      expect(
+        fillRect.mock.calls
+          .flat()
+          .every(
+            (value) => typeof value === "number" && Number.isFinite(value),
+          ),
+      ).toBe(true);
+    } finally {
+      unmount?.();
+      vi.unstubAllGlobals();
+    }
+  });
 });

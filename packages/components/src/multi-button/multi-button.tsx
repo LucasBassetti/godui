@@ -658,6 +658,7 @@ type MultiButtonItemButtonProps = {
   active: boolean;
   accessible?: boolean;
   ariaLabel?: string;
+  disabled: boolean;
   disclosureExpanded?: boolean;
   highlighted: boolean;
   gooey?: boolean;
@@ -752,6 +753,7 @@ function MultiButtonItemButton({
   active,
   accessible = true,
   ariaLabel,
+  disabled,
   disclosureExpanded,
   highlighted,
   gooey = false,
@@ -781,7 +783,7 @@ function MultiButtonItemButton({
       aria-expanded={disclosureExpanded}
       aria-hidden={accessible ? undefined : true}
       tabIndex={accessible ? undefined : -1}
-      disabled={item.disabled}
+      disabled={disabled}
       onClick={(event) => {
         item.onClick?.(event);
         onAction?.(event);
@@ -952,6 +954,9 @@ function MultiButtonItems({
               ? (restAriaLabel ?? (restIcon ? "Open actions" : undefined))
               : undefined
           }
+          disabled={Boolean(
+            item.disabled && !(compact && selected && !expanded),
+          )}
           disclosureExpanded={compact && selected ? expanded : undefined}
           highlighted={!gooey && Boolean(highlightColor) && active}
           gooey={gooey}
