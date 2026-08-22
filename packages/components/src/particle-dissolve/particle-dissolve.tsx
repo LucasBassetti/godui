@@ -75,6 +75,8 @@ const ParticleDissolve = React.forwardRef<
     const goal = React.useRef(mode === "disperse" ? 1 : 0); // hold until triggered
     const raf = React.useRef<number | null>(null);
     const phaseTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+    const startAnimation = React.useRef<(() => void) | null>(null);
+    const hovered = React.useRef(false);
 
     // Build particle targets by rendering the source offscreen and sampling it.
     const build = React.useCallback(
@@ -180,6 +182,7 @@ const ParticleDissolve = React.forwardRef<
       const resolved = color || getComputedStyle(canvas).color || "rgb(0,0,0)";
 
       let cancelled = false;
+      let observer: IntersectionObserver | null = null;
       build(resolved).then(() => {
         if (cancelled) return;
 
@@ -190,15 +193,23 @@ const ParticleDissolve = React.forwardRef<
           return;
         }
 
+        let started = false;
         const loop = (time: number) => {
+          if (cancelled) return;
           p.current += (goal.current - p.current) * 0.06;
           draw(ctx, time);
           raf.current = requestAnimationFrame(loop);
         };
-        raf.current = requestAnimationFrame(loop);
+
+        const startLoop = () => {
+          if (raf.current == null) {
+            raf.current = requestAnimationFrame(loop);
+          }
+        };
 
         const runLoopMode = () => {
           const cycle = () => {
+            if (cancelled) return;
             goal.current = goal.current > 0.5 ? 0 : 1;
             phaseTimer.current = setTimeout(cycle, 2600);
           };
@@ -206,31 +217,41 @@ const ParticleDissolve = React.forwardRef<
         };
 
         const start = () => {
+          if (cancelled || started) return;
+          started = true;
           if (mode === "loop") runLoopMode();
           else goal.current = mode === "disperse" ? 0 : 1;
+          startLoop();
         };
+        startAnimation.current = start;
 
         if (trigger === "mount") {
           start();
         } else if (trigger === "in-view") {
-          const io = new IntersectionObserver(
+          observer = new IntersectionObserver(
             (entries) => {
               if (entries.some((e) => e.isIntersecting)) {
                 start();
-                io.disconnect();
+                observer?.disconnect();
               }
             },
             { threshold: 0.3 },
           );
-          io.observe(canvas);
+          observer.observe(canvas);
+        } else if (trigger === "hover" && hovered.current) {
+          start();
         }
         // `hover` is handled by the pointer handlers below.
       });
 
       return () => {
         cancelled = true;
+        startAnimation.current = null;
+        observer?.disconnect();
         if (raf.current != null) cancelAnimationFrame(raf.current);
+        raf.current = null;
         if (phaseTimer.current != null) clearTimeout(phaseTimer.current);
+        phaseTimer.current = null;
       };
     }, [build, draw, reduce, mode, trigger, width, height, color]);
 
@@ -238,9 +259,12 @@ const ParticleDissolve = React.forwardRef<
       trigger === "hover" && !reduce
         ? {
             onPointerEnter: () => {
+              hovered.current = true;
               goal.current = mode === "disperse" ? 0 : 1;
+              startAnimation.current?.();
             },
             onPointerLeave: () => {
+              hovered.current = false;
               goal.current = mode === "disperse" ? 1 : 0;
             },
           }
