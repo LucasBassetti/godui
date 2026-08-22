@@ -15,8 +15,11 @@ import {
   gradientBackgroundPresets,
   gradientBackgroundSource,
 } from "../gradient-background";
+import backgroundCatalog from "./background-catalog.json";
 
 type Entry = {
+  description: string;
+  registryDependencies: string[];
   source: string;
   presets: Record<string, CSSProperties>;
   defaultVariant: string;
@@ -25,28 +28,28 @@ type Entry = {
 
 const REGISTRY: Record<string, Entry> = {
   "gradient-background": {
+    ...backgroundCatalog["gradient-background"],
     source: gradientBackgroundSource,
     presets: gradientBackgroundPresets,
     defaultVariant: "dark-radial-glow",
-    title: "Gradient Background",
   },
   "geometric-background": {
+    ...backgroundCatalog["geometric-background"],
     source: geometricBackgroundSource,
     presets: geometricBackgroundPresets,
     defaultVariant: "purple-gradient-grid-right",
-    title: "Geometric Background",
   },
   "decorative-background": {
+    ...backgroundCatalog["decorative-background"],
     source: decorativeBackgroundSource,
     presets: decorativeBackgroundPresets,
     defaultVariant: "top-gradient-radial",
-    title: "Decorative Background",
   },
   "effect-background": {
+    ...backgroundCatalog["effect-background"],
     source: effectBackgroundSource,
     presets: effectBackgroundPresets,
     defaultVariant: "aurora-dream-corner-whispers",
-    title: "Effect Background",
   },
 };
 
@@ -82,6 +85,7 @@ export type BackgroundRegistryItem = {
   name: string;
   type: "registry:ui";
   title: string;
+  description: string;
   registryDependencies: string[];
   files: Array<{
     path: string;
@@ -103,7 +107,8 @@ export function buildBackgroundRegistryItem(
     name,
     type: "registry:ui",
     title: entry.title,
-    registryDependencies: ["@godui/godui-theme"],
+    description: entry.description,
+    registryDependencies: entry.registryDependencies,
     files: [
       {
         path: `packages/components/src/${name}/${name}.tsx`,

@@ -104,9 +104,22 @@ export async function getComponent(
     }\nUse list_components or search_components to find a valid name.`;
   }
 
-  const installTarget = variant
+  let installTarget = variant
     ? `"https://godui.design/r/${slug}.json?variant=${variant}"`
     : `@godui/${slug}`;
+  if (!variant) {
+    try {
+      const catalogEntry = (await client.getIndex()).components.find(
+        (component) => component.name === slug,
+      );
+      const catalogInstallPrefix = "npx shadcn@latest add ";
+      if (catalogEntry?.install.startsWith(catalogInstallPrefix)) {
+        installTarget = catalogEntry.install.slice(catalogInstallPrefix.length);
+      }
+    } catch {
+      // Keep the package target as a fallback if catalog lookup is unavailable.
+    }
+  }
 
   const parts: string[] = [
     `# ${item.title ?? slug}`,

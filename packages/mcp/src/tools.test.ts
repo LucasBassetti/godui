@@ -40,6 +40,24 @@ const index: CatalogIndex = {
   ],
 };
 
+const dynamicBackgroundIndex: CatalogIndex = {
+  ...index,
+  components: [
+    ...index.components,
+    {
+      name: "gradient-background",
+      title: "Gradient Background",
+      description:
+        "Full-bleed gradient backgrounds — radial glows, aurora washes, and depth fades.",
+      category: "Static Effects",
+      dependencies: [],
+      registryDependencies: ["@godui/godui-theme"],
+      install:
+        'npx shadcn@latest add "https://godui.design/r/gradient-background.json"',
+    },
+  ],
+};
+
 const magicButtonItem: RegistryItem = {
   name: "magic-button",
   title: "Magic Button",
@@ -133,6 +151,23 @@ describe("getComponent", () => {
     );
     expect(out).toContain(
       'add "https://godui.design/r/gradient-background.json?variant=aurora-glow"',
+    );
+  });
+
+  it("uses the catalog URL for a dynamic background without a variant", async () => {
+    const out = await getComponent(
+      fakeClient({
+        getIndex: async () => dynamicBackgroundIndex,
+        getComponent: async () => ({
+          ...magicButtonItem,
+          name: "gradient-background",
+          title: "Gradient Background",
+        }),
+      }),
+      "gradient-background",
+    );
+    expect(out).toContain(
+      'add "https://godui.design/r/gradient-background.json"',
     );
   });
 
