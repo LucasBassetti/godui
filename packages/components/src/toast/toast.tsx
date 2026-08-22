@@ -33,6 +33,8 @@ export type ToastProviderProps = {
   position?: ToastPosition;
   /** Default auto-dismiss delay in ms. */
   duration?: number;
+  /** Element to portal into. Defaults to the owning document's body. */
+  container?: HTMLElement | null;
 };
 
 // Minimal external store so `toast()` can be called from anywhere, no context needed.
@@ -98,6 +100,27 @@ function useMounted() {
   const [mounted, setMounted] = React.useState(false);
   React.useEffect(() => setMounted(true), []);
   return mounted;
+}
+
+function usePortalTarget(container: HTMLElement | null | undefined) {
+  const [ownerDocument, setOwnerDocument] = React.useState<Document | null>(
+    null,
+  );
+  const registerOwnerNode = React.useCallback(
+    (node: HTMLSpanElement | null) => {
+      if (node) {
+        setOwnerDocument((current) =>
+          current === node.ownerDocument ? current : node.ownerDocument,
+        );
+      }
+    },
+    [],
+  );
+
+  return {
+    portalTarget: container ?? ownerDocument?.body ?? null,
+    registerOwnerNode,
+  };
 }
 
 function ToastItem({
@@ -206,8 +229,10 @@ function ToastItem({
 function ToastProvider({
   position = "bottom-right",
   duration = 4000,
+  container,
 }: ToastProviderProps) {
   const mounted = useMounted();
+  const { portalTarget, registerOwnerNode } = usePortalTarget(container);
   const [items, setItems] = React.useState<ToastRecord[]>(records);
   const [expanded, setExpanded] = React.useState(false);
   const [heights, setHeights] = React.useState<Record<number, number>>({});
@@ -259,34 +284,43 @@ function ToastProvider({
     frontHeight + Math.min(items.length - 1, MAX_VISIBLE - 1) * PEEK;
   const regionHeight = Math.max(0, expanded ? totalHeight : collapsedHeight);
 
-  return createPortal(
-    <motion.ol
-      data-slot="toaster"
-      aria-live="polite"
-      onMouseEnter={() => setExpanded(true)}
-      onMouseLeave={() => setExpanded(false)}
-      animate={{ height: regionHeight }}
-      transition={TOAST_SPRING}
-      style={{ transformOrigin: isBottom ? "bottom" : "top" }}
-      className={`fixed z-toast w-[min(24rem,calc(100vw-2rem))] ${items.length ? "pointer-events-auto" : "pointer-events-none"} ${POSITION_CLASS[position]}`}
-    >
-      <AnimatePresence initial={false}>
-        {items.map((record, index) => (
-          <ToastItem
-            key={record.id}
-            record={record}
-            index={index}
-            total={items.length}
-            expanded={expanded}
-            isBottom={isBottom}
-            expandedOffset={offsets[index]}
-            onHeight={setHeight}
-            defaultDuration={duration}
-          />
-        ))}
-      </AnimatePresence>
-    </motion.ol>,
-    document.body,
+  return (
+    <>
+      {!container ? (
+        <span ref={registerOwnerNode} hidden aria-hidden="true" />
+      ) : null}
+      {portalTarget
+        ? createPortal(
+            <motion.ol
+              data-slot="toaster"
+              aria-live="polite"
+              onMouseEnter={() => setExpanded(true)}
+              onMouseLeave={() => setExpanded(false)}
+              animate={{ height: regionHeight }}
+              transition={TOAST_SPRING}
+              style={{ transformOrigin: isBottom ? "bottom" : "top" }}
+              className={`fixed z-toast w-[min(24rem,calc(100vw-2rem))] ${items.length ? "pointer-events-auto" : "pointer-events-none"} ${POSITION_CLASS[position]}`}
+            >
+              <AnimatePresence initial={false}>
+                {items.map((record, index) => (
+                  <ToastItem
+                    key={record.id}
+                    record={record}
+                    index={index}
+                    total={items.length}
+                    expanded={expanded}
+                    isBottom={isBottom}
+                    expandedOffset={offsets[index]}
+                    onHeight={setHeight}
+                    defaultDuration={duration}
+                  />
+                ))}
+              </AnimatePresence>
+            </motion.ol>,
+            portalTarget,
+          )
+        : null}
+    </>
   );
 }
 

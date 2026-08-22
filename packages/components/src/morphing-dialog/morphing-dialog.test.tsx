@@ -1,4 +1,4 @@
-import { fireEvent, render } from "@testing-library/react";
+import { act, fireEvent, render, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import {
   MorphingDialog,
@@ -56,5 +56,27 @@ describe("MorphingDialog", () => {
       </MorphingDialog>,
     );
     expect(getByRole("dialog")).toBeInTheDocument();
+  });
+
+  it("portals into the trigger owner document and locks that body", async () => {
+    const frameDocument = document.implementation.createHTMLDocument("preview");
+    const mount = frameDocument.createElement("div");
+    frameDocument.body.appendChild(mount);
+    const { unmount } = render(<Example />, { container: mount });
+
+    act(() => {
+      mount
+        .querySelector<HTMLElement>('[data-slot="morphing-dialog-trigger"]')
+        ?.click();
+    });
+
+    await waitFor(() => {
+      expect(frameDocument.body.querySelector('[role="dialog"]')).toBeTruthy();
+    });
+    expect(document.body.querySelector('[role="dialog"]')).toBeNull();
+    expect(frameDocument.body.style.overflow).toBe("hidden");
+
+    unmount();
+    expect(frameDocument.body.style.overflow).toBe("");
   });
 });
