@@ -174,6 +174,9 @@ const AsciiDither = React.forwardRef<HTMLDivElement, AsciiDitherProps>(
       if (!container || !canvas) return;
       const ctx = canvas.getContext("2d");
       if (!ctx) return;
+      const normalizedLevels = Number.isFinite(levels)
+        ? Math.max(2, Math.floor(levels))
+        : 2;
 
       const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
       const off = document.createElement("canvas");
@@ -276,7 +279,7 @@ const AsciiDither = React.forwardRef<HTMLDivElement, AsciiDitherProps>(
             buf[y * cols + x] = inkAt((y * cols + x) * 4);
           }
         }
-        const step = 1 / (levels - 1);
+        const step = 1 / (normalizedLevels - 1);
         for (let y = 0; y < rows; y++) {
           for (let x = 0; x < cols; x++) {
             const idx = y * cols + x;
@@ -313,7 +316,7 @@ const AsciiDither = React.forwardRef<HTMLDivElement, AsciiDitherProps>(
           variant === "dither" && ditherType === "floyd-steinberg"
             ? diffuse()
             : null;
-        const lvlStep = 1 / (levels - 1);
+        const lvlStep = 1 / (normalizedLevels - 1);
 
         if (variant === "ascii") {
           ctx.font = `${Math.ceil(cellH * 1.05)}px ${fontFamily}`;
@@ -380,7 +383,7 @@ const AsciiDither = React.forwardRef<HTMLDivElement, AsciiDitherProps>(
                   ? (diffused[cy * cols + cx] as number)
                   : (() => {
                       const t = BAYER[cy % 4]?.[cx % 4] ?? 0.5;
-                      const v = ink + (t - 0.5) / levels;
+                      const v = ink + (t - 0.5) / normalizedLevels;
                       return clamp01(Math.round(v / lvlStep) * lvlStep);
                     })();
               if (level <= 0) continue;
