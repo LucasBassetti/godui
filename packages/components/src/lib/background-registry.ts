@@ -71,7 +71,9 @@ export function buildBackgroundFileContent(
   const entry = REGISTRY[name];
   if (!entry) return null;
   const id =
-    variant && variant in entry.presets ? variant : entry.defaultVariant;
+    variant && Object.hasOwn(entry.presets, variant)
+      ? variant
+      : entry.defaultVariant;
   // The committed source already bakes the default variant.
   if (id === entry.defaultVariant) return entry.source;
   return entry.source.replace(
