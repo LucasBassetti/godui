@@ -687,6 +687,88 @@ describe("CompactMultiButton", () => {
     expect(screen.getAllByRole("button")).toHaveLength(1);
   });
 
+  it.each([
+    { gooey: false, mode: "classic" },
+    { gooey: true, mode: "gooey" },
+  ])("opens the $mode rail from a disabled selected action and activates its sibling", ({
+    gooey,
+  }) => {
+    const disabledOnClick = vi.fn();
+    const siblingOnClick = vi.fn();
+    const selectedItem = {
+      ...items[0],
+      disabled: true,
+      onClick: disabledOnClick,
+    };
+    const siblingItem = { ...items[1], onClick: siblingOnClick };
+    render(
+      <CompactMultiButton
+        items={[selectedItem, siblingItem]}
+        selectedId={selectedItem.id}
+        gooey={gooey}
+      />,
+    );
+
+    const group = screen.getByRole("group");
+    const selectedButton = screen.getByRole("button", { name: "View" });
+    expect(selectedButton).not.toBeDisabled();
+
+    touchTap(selectedButton);
+
+    expect(disabledOnClick).not.toHaveBeenCalled();
+    expect(group).toHaveAttribute("aria-expanded", "true");
+    expect(selectedButton).toBeDisabled();
+
+    finishWidthTransition(group);
+    const siblingButton = screen.getByRole("button", { name: "Edit" });
+    expect(siblingButton).not.toBeDisabled();
+
+    touchTap(siblingButton);
+
+    expect(siblingOnClick).toHaveBeenCalledOnce();
+    expect(disabledOnClick).not.toHaveBeenCalled();
+    expect(group).toHaveAttribute("aria-expanded", "false");
+  });
+
+  it.each([
+    { gooey: false, mode: "classic" },
+    { gooey: true, mode: "gooey" },
+  ])("keeps the $mode disabled selected trigger focusable as a disclosure", async ({
+    gooey,
+  }) => {
+    const disabledOnClick = vi.fn();
+    const user = userEvent.setup();
+    const selectedItem = {
+      ...items[0],
+      disabled: true,
+      onClick: disabledOnClick,
+    };
+    render(
+      <CompactMultiButton
+        items={[selectedItem, items[1]]}
+        selectedId={selectedItem.id}
+        gooey={gooey}
+      />,
+    );
+
+    const group = screen.getByRole("group");
+    const selectedButton = screen.getByRole("button", { name: "View" });
+    expect(group).toHaveAttribute("aria-expanded", "false");
+    expect(selectedButton).not.toBeDisabled();
+
+    await user.tab();
+
+    expect(selectedButton).toHaveFocus();
+    expect(group).toHaveAttribute("aria-expanded", "true");
+    expect(selectedButton).toHaveAttribute("aria-expanded", "true");
+    expect(selectedButton).toBeDisabled();
+
+    await user.keyboard("{Enter}");
+
+    expect(disabledOnClick).not.toHaveBeenCalled();
+    expect(group).toHaveAttribute("aria-expanded", "true");
+  });
+
   it("closes after an outside touch in the component's owner document", () => {
     const iframe = document.createElement("iframe");
     document.body.appendChild(iframe);
