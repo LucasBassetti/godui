@@ -18,6 +18,8 @@ export type DrawerProps = {
   /** Extra classes for the panel. */
   className?: string;
   children?: React.ReactNode;
+  /** Element to portal into. Defaults to the owning document's body. */
+  container?: HTMLElement | null;
 };
 
 const PANEL_BY_SIDE: Record<DrawerSide, string> = {
@@ -36,27 +38,59 @@ function useMounted() {
   return mounted;
 }
 
+function usePortalTarget(container: HTMLElement | null | undefined) {
+  const [ownerDocument, setOwnerDocument] = React.useState<Document | null>(
+    null,
+  );
+  const registerOwnerNode = React.useCallback(
+    (node: HTMLSpanElement | null) => {
+      if (node) {
+        setOwnerDocument((current) =>
+          current === node.ownerDocument ? current : node.ownerDocument,
+        );
+      }
+    },
+    [],
+  );
+
+  return {
+    ownerDocument: container?.ownerDocument ?? ownerDocument,
+    portalTarget: container ?? ownerDocument?.body ?? null,
+    registerOwnerNode,
+  };
+}
+
 const Drawer = React.forwardRef<HTMLDivElement, DrawerProps>(
   (
-    { open, onOpenChange, side = "bottom", title, className, children },
+    {
+      open,
+      onOpenChange,
+      side = "bottom",
+      title,
+      className,
+      children,
+      container,
+    },
     ref,
   ) => {
     const mounted = useMounted();
+    const { ownerDocument, portalTarget, registerOwnerNode } =
+      usePortalTarget(container);
     const isBottom = side === "bottom";
 
     React.useEffect(() => {
-      if (!open) return;
+      if (!open || !ownerDocument) return;
       const onKey = (e: KeyboardEvent) => {
         if (e.key === "Escape") onOpenChange(false);
       };
-      document.addEventListener("keydown", onKey);
-      const prevOverflow = document.body.style.overflow;
-      document.body.style.overflow = "hidden";
+      ownerDocument.addEventListener("keydown", onKey);
+      const prevOverflow = ownerDocument.body.style.overflow;
+      ownerDocument.body.style.overflow = "hidden";
       return () => {
-        document.removeEventListener("keydown", onKey);
-        document.body.style.overflow = prevOverflow;
+        ownerDocument.removeEventListener("keydown", onKey);
+        ownerDocument.body.style.overflow = prevOverflow;
       };
-    }, [open, onOpenChange]);
+    }, [open, onOpenChange, ownerDocument]);
 
     const handleDragEnd = (
       _e: MouseEvent | TouchEvent | PointerEvent,
@@ -74,54 +108,65 @@ const Drawer = React.forwardRef<HTMLDivElement, DrawerProps>(
     const hidden = isBottom ? { y: "100%" } : { x: "100%" };
     const shown = isBottom ? { y: 0 } : { x: 0 };
 
-    return createPortal(
-      <AnimatePresence>
-        {open ? (
-          <div className="fixed inset-0 z-modal">
-            <motion.div
-              aria-hidden
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => onOpenChange(false)}
-              className="absolute inset-0 bg-foreground/40 backdrop-blur-sm"
-            />
-            <motion.div
-              ref={ref}
-              role="dialog"
-              aria-modal="true"
-              data-slot="drawer"
-              initial={hidden}
-              animate={shown}
-              exit={hidden}
-              transition={{
-                type: "spring",
-                damping: 32,
-                stiffness: 320,
-                mass: 0.9,
-              }}
-              drag={isBottom ? "y" : "x"}
-              dragConstraints={{ top: 0, bottom: 0, left: 0, right: 0 }}
-              dragElastic={
-                isBottom ? { top: 0, bottom: 0.6 } : { left: 0, right: 0.6 }
-              }
-              onDragEnd={handleDragEnd}
-              className={`absolute flex flex-col bg-card p-5 text-card-foreground shadow-xl ${PANEL_BY_SIDE[side]} ${className ?? ""}`}
-            >
-              {isBottom ? (
-                <div className="mx-auto mb-4 h-1.5 w-12 shrink-0 cursor-grab rounded-full bg-muted-foreground/30 active:cursor-grabbing" />
-              ) : null}
-              {title ? (
-                <h2 className="mb-3 text-lg font-semibold text-foreground">
-                  {title}
-                </h2>
-              ) : null}
-              <div className="overflow-y-auto">{children}</div>
-            </motion.div>
-          </div>
+    const portal = portalTarget
+      ? createPortal(
+          <AnimatePresence>
+            {open ? (
+              <div className="fixed inset-0 z-modal">
+                <motion.div
+                  aria-hidden
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onClick={() => onOpenChange(false)}
+                  className="absolute inset-0 bg-foreground/40 backdrop-blur-sm"
+                />
+                <motion.div
+                  ref={ref}
+                  role="dialog"
+                  aria-modal="true"
+                  data-slot="drawer"
+                  initial={hidden}
+                  animate={shown}
+                  exit={hidden}
+                  transition={{
+                    type: "spring",
+                    damping: 32,
+                    stiffness: 320,
+                    mass: 0.9,
+                  }}
+                  drag={isBottom ? "y" : "x"}
+                  dragConstraints={{ top: 0, bottom: 0, left: 0, right: 0 }}
+                  dragElastic={
+                    isBottom ? { top: 0, bottom: 0.6 } : { left: 0, right: 0.6 }
+                  }
+                  onDragEnd={handleDragEnd}
+                  className={`absolute flex flex-col bg-card p-5 text-card-foreground shadow-xl ${PANEL_BY_SIDE[side]} ${className ?? ""}`}
+                >
+                  {isBottom ? (
+                    <div className="mx-auto mb-4 h-1.5 w-12 shrink-0 cursor-grab rounded-full bg-muted-foreground/30 active:cursor-grabbing" />
+                  ) : null}
+                  {title ? (
+                    <h2 className="mb-3 text-lg font-semibold text-foreground">
+                      {title}
+                    </h2>
+                  ) : null}
+                  <div className="overflow-y-auto">{children}</div>
+                </motion.div>
+              </div>
+            ) : null}
+          </AnimatePresence>,
+          portalTarget,
+        )
+      : null;
+
+    return (
+      <>
+        {!container ? (
+          <span ref={registerOwnerNode} hidden aria-hidden="true" />
         ) : null}
-      </AnimatePresence>,
-      document.body,
+        {portal}
+      </>
     );
   },
 );

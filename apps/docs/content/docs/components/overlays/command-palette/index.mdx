@@ -48,6 +48,8 @@ export function CommandPaletteDemo() {
 `CommandPalette` is a controlled, portalled ⌘K menu. It filters as you type, moves the
 active highlight with a spring (`layoutId`), and supports `↑` `↓` to navigate, `Enter`
 to select, and `Escape` to close. With `enableShortcut` it toggles on ⌘K / Ctrl+K.
+The portal defaults to the document where the component is rendered; pass `container`
+to target a specific document body or element.
 
 ## Usage
 
@@ -74,13 +76,14 @@ export function Example() {
 
 ## Props
 
-| Prop             | Type                       | Default                            | Description                          |
-| ---------------- | -------------------------- | ---------------------------------- | ------------------------------------ |
-| `open`           | `boolean`                  | —                                  | Controlled open state.               |
-| `onOpenChange`   | `(open: boolean) => void`  | —                                  | Called when the palette opens/closes.|
-| `groups`         | `CommandGroup[]`           | —                                  | Grouped commands to show.            |
-| `placeholder`    | `string`                   | `"Type a command or search…"`      | Input placeholder.                   |
-| `enableShortcut` | `boolean`                  | `true`                             | Toggle with ⌘K / Ctrl+K.             |
+| Prop             | Type                       | Default                       | Description                                           |
+| ---------------- | -------------------------- | ----------------------------- | ----------------------------------------------------- |
+| `open`           | `boolean`                  | —                             | Controlled open state.                                |
+| `onOpenChange`   | `(open: boolean) => void`  | —                             | Called when the palette opens/closes.                 |
+| `groups`         | `CommandGroup[]`           | —                             | Grouped commands to show.                             |
+| `placeholder`    | `string`                   | `"Type a command or search…"` | Input placeholder.                                    |
+| `enableShortcut` | `boolean`                  | `true`                        | Toggle with ⌘K / Ctrl+K.                              |
+| `container`      | `HTMLElement \| null`      | Owning document body          | Portal target; also determines listeners and locking. |
 
 A `CommandItem` is `{ id, label, icon?, shortcut?, keywords?, onSelect? }`; a
 `CommandGroup` is `{ heading?, items }`.
