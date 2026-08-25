@@ -70,6 +70,75 @@ function setupMatchMedia() {
   });
 }
 
+class ImmediateImage {
+  crossOrigin = "";
+  naturalHeight = 0;
+  naturalWidth = 0;
+  onload: (() => void) | null = null;
+
+  set src(_value: string) {
+    this.onload?.();
+  }
+}
+
+function captureGridDimensions(cellSize: number) {
+  const widthDescriptor = Object.getOwnPropertyDescriptor(
+    HTMLCanvasElement.prototype,
+    "width",
+  );
+  const heightDescriptor = Object.getOwnPropertyDescriptor(
+    HTMLCanvasElement.prototype,
+    "height",
+  );
+  if (!widthDescriptor?.get || !widthDescriptor.set || !heightDescriptor?.get || !heightDescriptor.set) {
+    throw new Error("Canvas dimension descriptors are unavailable");
+  }
+
+  const widthAssignments: number[] = [];
+  const heightAssignments: number[] = [];
+  vi.spyOn(HTMLCanvasElement.prototype, "getContext").mockReturnValue({
+    clearRect: vi.fn(),
+    fillRect: vi.fn(),
+    setTransform: vi.fn(),
+  } as unknown as CanvasRenderingContext2D);
+  Object.defineProperty(HTMLElement.prototype, "clientWidth", {
+    configurable: true,
+    value: 80,
+  });
+  Object.defineProperty(HTMLElement.prototype, "clientHeight", {
+    configurable: true,
+    value: 60,
+  });
+  for (const [dimension, descriptor, assignments] of [
+    ["width", widthDescriptor, widthAssignments],
+    ["height", heightDescriptor, heightAssignments],
+  ] as const) {
+    Object.defineProperty(HTMLCanvasElement.prototype, dimension, {
+      configurable: true,
+      get: descriptor.get,
+      set(value: number) {
+        assignments.push(value);
+        descriptor.set?.call(this, value);
+      },
+    });
+  }
+  vi.stubGlobal("Image", ImmediateImage);
+  setupMatchMedia();
+  const rendered = render(
+    <AsciiDither
+      cellSize={cellSize}
+      color="red"
+      reveal={false}
+      src="/poster.png"
+      type="image"
+    />,
+  );
+  rendered.unmount();
+  Object.defineProperty(HTMLCanvasElement.prototype, "width", widthDescriptor);
+  Object.defineProperty(HTMLCanvasElement.prototype, "height", heightDescriptor);
+  return { heightAssignments, widthAssignments };
+}
+
 function renderDither(ditherType: "bayer" | "floyd-steinberg", levels: number) {
   setupMatchMedia();
   const image = setupImage();
@@ -238,5 +307,23 @@ describe("AsciiDither", () => {
       expectFiniteDrawingArguments(level3.context);
       level3.unmount();
     });
+  });
+
+  it.each([0, -4, Number.NaN, Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY])(
+    "keeps grid dimensions finite for cellSize %s",
+    (cellSize) => {
+      const { heightAssignments, widthAssignments } =
+        captureGridDimensions(cellSize);
+      expect(widthAssignments.every(Number.isFinite)).toBe(true);
+      expect(heightAssignments.every(Number.isFinite)).toBe(true);
+      expect(widthAssignments.at(-1)).toBe(80);
+      expect(heightAssignments.at(-1)).toBe(60);
+    },
+  );
+
+  it("preserves grid density for valid cell sizes", () => {
+    const { heightAssignments, widthAssignments } = captureGridDimensions(4);
+    expect(widthAssignments.at(-1)).toBe(20);
+    expect(heightAssignments.at(-1)).toBe(15);
   });
 });

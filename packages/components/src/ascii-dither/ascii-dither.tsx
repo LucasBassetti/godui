@@ -149,6 +149,8 @@ const AsciiDither = React.forwardRef<HTMLDivElement, AsciiDitherProps>(
     const isVideo = isVideoSrc(src, type);
     const usesTheme = color === "theme";
     const normalizedLevels = normalizeLevels(levels);
+    const safeCellSize =
+      Number.isFinite(cellSize) && cellSize > 0 ? cellSize : 1;
 
     // Resolve the theme ink color and keep it in sync with theme switches.
     React.useEffect(() => {
@@ -187,8 +189,8 @@ const AsciiDither = React.forwardRef<HTMLDivElement, AsciiDitherProps>(
       let h = 0;
       let cols = 0;
       let rows = 0;
-      let cellW = cellSize;
-      let cellH = cellSize;
+      let cellW = safeCellSize;
+      let cellH = safeCellSize;
       let pixels: Uint8ClampedArray | null = null;
       let source: HTMLImageElement | HTMLVideoElement | null = null;
       let ready = false;
@@ -208,8 +210,8 @@ const AsciiDither = React.forwardRef<HTMLDivElement, AsciiDitherProps>(
       const measure = () => {
         w = container.clientWidth;
         h = container.clientHeight;
-        cols = Math.max(1, Math.floor(w / cellSize));
-        rows = Math.max(1, Math.floor(h / cellSize));
+        cols = Math.max(1, Math.floor(w / safeCellSize));
+        rows = Math.max(1, Math.floor(h / safeCellSize));
         cellW = w / cols;
         cellH = h / rows;
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -557,7 +559,7 @@ const AsciiDither = React.forwardRef<HTMLDivElement, AsciiDitherProps>(
       src,
       isVideo,
       variant,
-      cellSize,
+      safeCellSize,
       charset,
       fontFamily,
       ditherType,
