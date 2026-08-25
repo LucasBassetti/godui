@@ -55,6 +55,15 @@ describe("buildBackgroundRegistryItem", () => {
     expect(item?.files[0].content.length).toBeGreaterThan(0);
   });
 
+  it("includes the shared catalog metadata", () => {
+    expect(buildBackgroundRegistryItem("effect-background")).toMatchObject({
+      title: "Effect Background",
+      description:
+        "Full-bleed effect backgrounds — radial glows, aurora dreams, and soft pastel washes.",
+      registryDependencies: ["@godui/godui-theme"],
+    });
+  });
+
   it("returns null for a non-background item", () => {
     expect(buildBackgroundRegistryItem("magic-button")).toBeNull();
   });
