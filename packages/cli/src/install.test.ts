@@ -64,6 +64,15 @@ describe("getConfigPath", () => {
 });
 
 describe("mergeMcpConfig", () => {
+  it("writes the approved pinned MCP server version", () => {
+    const out = mergeMcpConfig(null);
+
+    expect(out.mcpServers?.[GODUI_SERVER_KEY]).toEqual({
+      command: "npx",
+      args: ["-y", "@godui/mcp@0.1.0"],
+    });
+  });
+
   it("adds the godui server to an empty config", () => {
     const out = mergeMcpConfig(null);
     expect(out.mcpServers?.[GODUI_SERVER_KEY]).toEqual(GODUI_SERVER);
