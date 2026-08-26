@@ -49,7 +49,6 @@ const components = registry.items
 const index = {
   name: registry.name,
   homepage: registry.homepage,
-  generatedAt: new Date().toISOString(),
   components,
 };
 
