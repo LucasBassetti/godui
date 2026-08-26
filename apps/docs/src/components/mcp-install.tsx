@@ -22,7 +22,7 @@ const MANUAL_CONFIG = `{
   "mcpServers": {
     "godui": {
       "command": "npx",
-      "args": ["-y", "@godui/mcp@latest"]
+      "args": ["-y", "@godui/mcp@0.1.0"]
     }
   }
 }`;
