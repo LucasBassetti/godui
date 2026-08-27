@@ -36,12 +36,25 @@ const AnimatedTestimonials = React.forwardRef<
   ) => {
     const [active, setActive] = React.useState(0);
     const count = testimonials.length;
+    const maxActive = Math.max(0, count - 1);
+    const activeIndex = Math.min(active, maxActive);
 
-    const next = React.useCallback(
-      () => setActive((prev) => (prev + 1) % count),
-      [count],
-    );
-    const prev = () => setActive((p) => (p - 1 + count) % count);
+    // Effects run after the first render, so derive a safe index above while
+    // also bringing the stored index back into range for subsequent updates.
+    React.useEffect(() => {
+      setActive((current) => Math.min(current, maxActive));
+    }, [maxActive]);
+
+    const next = React.useCallback(() => {
+      if (count === 0) return;
+      setActive((previous) => (Math.min(previous, maxActive) + 1) % count);
+    }, [count, maxActive]);
+    const prev = React.useCallback(() => {
+      if (count === 0) return;
+      setActive(
+        (previous) => (Math.min(previous, maxActive) - 1 + count) % count,
+      );
+    }, [count, maxActive]);
 
     // Stable per-item rotation so inactive cards fan out consistently.
     const rotations = React.useMemo(
@@ -59,7 +72,7 @@ const AnimatedTestimonials = React.forwardRef<
     }, [autoplay, interval, next, count, active]);
 
     if (count === 0) return null;
-    const current = testimonials[active];
+    const current = testimonials[activeIndex];
 
     return (
       <div
@@ -71,7 +84,7 @@ const AnimatedTestimonials = React.forwardRef<
         <div className="relative h-72 [perspective:1000px]">
           <AnimatePresence>
             {testimonials.map((t, i) => {
-              const isActive = i === active;
+              const isActive = i === activeIndex;
               return (
                 <motion.img
                   // biome-ignore lint/suspicious/noArrayIndexKey: stack position is the identity here
@@ -84,7 +97,9 @@ const AnimatedTestimonials = React.forwardRef<
                     opacity: isActive ? 1 : 0.5,
                     scale: isActive ? 1 : 0.92,
                     rotate: isActive ? 0 : rotations[i],
-                    zIndex: isActive ? count : count - Math.abs(active - i),
+                    zIndex: isActive
+                      ? count
+                      : count - Math.abs(activeIndex - i),
                     y: isActive ? 0 : 8,
                   }}
                   exit={{ opacity: 0, scale: 0.9 }}
@@ -104,7 +119,7 @@ const AnimatedTestimonials = React.forwardRef<
         <div className="flex flex-col justify-between">
           <AnimatePresence mode="wait">
             <motion.div
-              key={active}
+              key={activeIndex}
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -12 }}
@@ -114,7 +129,7 @@ const AnimatedTestimonials = React.forwardRef<
                 {current.quote.split(" ").map((word, i) => (
                   <motion.span
                     // biome-ignore lint/suspicious/noArrayIndexKey: words are positional within a quote
-                    key={`${active}-${i}`}
+                    key={`${activeIndex}-${i}`}
                     initial={{ opacity: 0, filter: "blur(6px)", y: 6 }}
                     animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
                     transition={{ duration: 0.2, delay: 0.02 * i }}
