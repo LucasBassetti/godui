@@ -3,7 +3,8 @@
   "private": true,
   "scripts": {
     "build": "turbo build",
-    "build:registry": "shadcn build --output apps/docs/public/r && node apps/docs/scripts/generate-mcp-index.mjs",
+    "build:registry": "rm -rf apps/docs/public/r && shadcn build --output apps/docs/public/r && node apps/docs/scripts/generate-mcp-index.mjs && biome format --write apps/docs/public/r",
+    "check:registry": "pnpm build:registry && git diff --exit-code -- apps/docs/public/r && test -z \"$(git status --short --untracked-files=all -- apps/docs/public/r)\"",
     "dev": "turbo dev",
     "dev:portless": "portless",
     "lint": "turbo lint",

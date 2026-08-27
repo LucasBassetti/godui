@@ -26,5 +26,11 @@ jobs:
       - name: Lint
         run: pnpm lint
 
+      - name: Check
+        run: pnpm check
+
+      - name: Check generated registry
+        run: pnpm check:registry
+
       - name: Test
         run: pnpm test
