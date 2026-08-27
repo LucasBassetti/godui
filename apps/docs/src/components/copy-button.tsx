@@ -8,19 +8,36 @@ type CopyButtonProps = {
   className?: string;
 };
 
+type CopyStatus = "idle" | "copied" | "error";
+
 export function CopyButton({ value, className }: CopyButtonProps) {
-  const [copied, setCopied] = useState(false);
+  const [status, setStatus] = useState<CopyStatus>("idle");
 
   const onCopy = useCallback(async () => {
-    await navigator.clipboard.writeText(value);
-    setCopied(true);
-    window.setTimeout(() => setCopied(false), 2000);
+    try {
+      const clipboard = navigator.clipboard;
+      if (typeof clipboard?.writeText !== "function") {
+        throw new Error("Clipboard API is unavailable");
+      }
+
+      await clipboard.writeText(value);
+      setStatus("copied");
+    } catch {
+      setStatus("error");
+    }
+
+    window.setTimeout(() => setStatus("idle"), 2000);
   }, [value]);
+
+  const copied = status === "copied";
+  const failed = status === "error";
 
   return (
     <button
       type="button"
-      aria-label={copied ? "Copied" : "Copy to clipboard"}
+      aria-label={
+        copied ? "Copied" : failed ? "Copy failed" : "Copy to clipboard"
+      }
       onClick={onCopy}
       className={cn(
         // Radius comes from the call site (cn has no tailwind-merge, so a base
@@ -64,6 +81,9 @@ export function CopyButton({ value, className }: CopyButtonProps) {
             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
           </svg>
         )}
+      </span>
+      <span aria-live="polite" role="status" className="sr-only">
+        {copied ? "Copied" : failed ? "Copy failed" : ""}
       </span>
     </button>
   );
