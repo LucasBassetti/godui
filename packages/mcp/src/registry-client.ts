@@ -82,7 +82,16 @@ export function createRegistryClient(
 
   return {
     getIndex() {
-      indexCache ??= get<CatalogIndex>(`${baseUrl}/index.json`);
+      if (!indexCache) {
+        const request = get<CatalogIndex>(`${baseUrl}/index.json`);
+        const pending = request.catch((error) => {
+          if (indexCache === pending) {
+            indexCache = undefined;
+          }
+          throw error;
+        });
+        indexCache = pending;
+      }
       return indexCache;
     },
     getComponent(name, variant) {
@@ -91,7 +100,13 @@ export function createRegistryClient(
       const key = `${slug}${query}`;
       let pending = componentCache.get(key);
       if (!pending) {
-        pending = get<RegistryItem>(`${baseUrl}/${slug}.json${query}`);
+        const request = get<RegistryItem>(`${baseUrl}/${slug}.json${query}`);
+        pending = request.catch((error) => {
+          if (componentCache.get(key) === pending) {
+            componentCache.delete(key);
+          }
+          throw error;
+        });
         componentCache.set(key, pending);
       }
       return pending;
