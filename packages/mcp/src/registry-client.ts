@@ -182,10 +182,19 @@ export function createRegistryClient(
   const componentCache = new Map<string, Promise<RegistryItem>>();
 
   const getIndex = () => {
-    const url = `${baseUrl}/index.json`;
-    indexCache ??= get<CatalogIndex>(url).then((index) =>
-      validateCatalogIndex(index, url, expectedRevision),
-    );
+    if (!indexCache) {
+      const url = `${baseUrl}/index.json`;
+      const request = get<CatalogIndex>(url).then((index) =>
+        validateCatalogIndex(index, url, expectedRevision),
+      );
+      const pending = request.catch((error) => {
+        if (indexCache === pending) {
+          indexCache = undefined;
+        }
+        throw error;
+      });
+      indexCache = pending;
+    }
     return indexCache;
   };
 
@@ -198,9 +207,15 @@ export function createRegistryClient(
       let pending = componentCache.get(key);
       if (!pending) {
         const url = `${baseUrl}/${slug}.json${query}`;
-        pending = (expectedRevision ? getIndex() : Promise.resolve())
+        const request = (expectedRevision ? getIndex() : Promise.resolve())
           .then(() => get<RegistryItem>(url))
           .then((item) => validateRegistryItem(item, url, expectedRevision));
+        pending = request.catch((error) => {
+          if (componentCache.get(key) === pending) {
+            componentCache.delete(key);
+          }
+          throw error;
+        });
         componentCache.set(key, pending);
       }
       return pending;
