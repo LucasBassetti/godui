@@ -3,9 +3,7 @@
   "name": "ascii-dither",
   "title": "ASCII Dither",
   "description": "Renders an image or video as a live field of ASCII characters or halftone dither dots, inked by theme or source color.",
-  "registryDependencies": [
-    "@godui/godui-theme"
-  ],
+  "registryDependencies": ["@godui/godui-theme"],
   "files": [
     {
       "path": "packages/components/src/ascii-dither/ascii-dither.tsx",

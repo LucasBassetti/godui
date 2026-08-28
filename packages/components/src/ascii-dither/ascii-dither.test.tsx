@@ -265,58 +265,58 @@ describe("AsciiDither", () => {
     frame.remove();
   });
 
-  describe.each(["bayer", "floyd-steinberg"] as const)(
-    "%s dithering",
-    (ditherType) => {
-      it.each([
-        1,
-        0,
-        -1,
-        2.5,
-        Number.NaN,
-        Number.POSITIVE_INFINITY,
-        Number.NEGATIVE_INFINITY,
-      ])("normalizes invalid levels (%s) to the level-2 output", (levels) => {
-        const expected = renderDither(ditherType, 2);
-        const expectedCalls = (
-          expected.context.fillRect as unknown as {
-            mock: { calls: unknown[][] };
-          }
-        ).mock.calls;
-        expected.unmount();
+  describe.each([
+    "bayer",
+    "floyd-steinberg",
+  ] as const)("%s dithering", (ditherType) => {
+    it.each([
+      1,
+      0,
+      -1,
+      2.5,
+      Number.NaN,
+      Number.POSITIVE_INFINITY,
+      Number.NEGATIVE_INFINITY,
+    ])("normalizes invalid levels (%s) to the level-2 output", (levels) => {
+      const expected = renderDither(ditherType, 2);
+      const expectedCalls = (
+        expected.context.fillRect as unknown as {
+          mock: { calls: unknown[][] };
+        }
+      ).mock.calls;
+      expected.unmount();
 
-        const actual = renderDither(ditherType, levels);
-        const actualCalls = (
-          actual.context.fillRect as unknown as {
-            mock: { calls: unknown[][] };
-          }
-        ).mock.calls;
-        expect(actualCalls).toEqual(expectedCalls);
-        expectFiniteDrawingArguments(actual.context);
-        actual.unmount();
-      });
+      const actual = renderDither(ditherType, levels);
+      const actualCalls = (
+        actual.context.fillRect as unknown as {
+          mock: { calls: unknown[][] };
+        }
+      ).mock.calls;
+      expect(actualCalls).toEqual(expectedCalls);
+      expectFiniteDrawingArguments(actual.context);
+      actual.unmount();
+    });
 
-      it("keeps valid level counts distinct", () => {
-        const level2 = renderDither(ditherType, 2);
-        const level2Calls = (
-          level2.context.fillRect as unknown as {
-            mock: { calls: unknown[][] };
-          }
-        ).mock.calls;
-        level2.unmount();
+    it("keeps valid level counts distinct", () => {
+      const level2 = renderDither(ditherType, 2);
+      const level2Calls = (
+        level2.context.fillRect as unknown as {
+          mock: { calls: unknown[][] };
+        }
+      ).mock.calls;
+      level2.unmount();
 
-        const level3 = renderDither(ditherType, 3);
-        const level3Calls = (
-          level3.context.fillRect as unknown as {
-            mock: { calls: unknown[][] };
-          }
-        ).mock.calls;
-        expect(level3Calls).not.toEqual(level2Calls);
-        expectFiniteDrawingArguments(level3.context);
-        level3.unmount();
-      });
-    },
-  );
+      const level3 = renderDither(ditherType, 3);
+      const level3Calls = (
+        level3.context.fillRect as unknown as {
+          mock: { calls: unknown[][] };
+        }
+      ).mock.calls;
+      expect(level3Calls).not.toEqual(level2Calls);
+      expectFiniteDrawingArguments(level3.context);
+      level3.unmount();
+    });
+  });
 
   it.each([
     0,
