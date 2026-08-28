@@ -42,6 +42,32 @@ async function flushBuild() {
   await act(async () => {});
 }
 
+async function sampleCount(density: number) {
+  const fillRect = context.fillRect as unknown as {
+    mockClear: () => void;
+    mock: { calls: unknown[][] };
+  };
+  const getImageData = context.getImageData as unknown as {
+    mockReturnValue: (value: ImageData) => void;
+  };
+  fillRect.mockClear();
+  getImageData.mockReturnValue({
+    data: new Uint8ClampedArray(8 * 8 * 4).fill(255),
+  } as ImageData);
+  const { unmount } = render(
+    <ParticleDissolve density={density} trigger="mount" width={8} height={8} />,
+  );
+
+  await flushBuild();
+  act(() => {
+    frameCallback?.(0);
+  });
+
+  const count = fillRect.mock.calls.length;
+  unmount();
+  return count;
+}
+
 beforeEach(() => {
   frameCallback = undefined;
   frameId = 0;
@@ -54,6 +80,7 @@ beforeEach(() => {
   disconnect.mockClear();
   requestFrame.mockClear();
   cancelFrame.mockClear();
+  vi.clearAllMocks();
 });
 
 afterEach(() => {
@@ -146,5 +173,18 @@ describe("ParticleDissolve", () => {
     expect(setTimeoutSpy).toHaveBeenCalledWith(expect.any(Function), 2600);
     unmount();
     expect(clearTimeoutSpy).toHaveBeenCalled();
+  });
+
+  it.each([
+    ["zero", 0],
+    ["negative", -1],
+    ["NaN", Number.NaN],
+    ["Infinity", Number.POSITIVE_INFINITY],
+  ])("uses a safe sampling step for %s density", async (_label, density) => {
+    expect(await sampleCount(density)).toBe(4);
+  });
+
+  it("keeps sampling unchanged for a valid density", async () => {
+    expect(await sampleCount(2)).toBe(16);
   });
 });
