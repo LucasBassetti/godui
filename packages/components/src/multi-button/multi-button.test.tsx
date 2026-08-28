@@ -1,5 +1,6 @@
 import {
   act,
+  createEvent,
   fireEvent,
   render,
   screen,
@@ -93,18 +94,24 @@ function expectRestIconVisibility(button: HTMLElement, visible: boolean) {
 }
 
 function touchTap(element: HTMLElement) {
-  const shouldClick = fireEvent.pointerDown(element, {
+  const pointerDown = createEvent.pointerDown(element, {
     button: 0,
     isPrimary: true,
     pointerId: 1,
     pointerType: "touch",
   });
-  fireEvent.pointerUp(element, {
+  Object.defineProperty(pointerDown, "pointerType", { value: "touch" });
+  const shouldClick = fireEvent(element, pointerDown);
+
+  const pointerUp = createEvent.pointerUp(element, {
     button: 0,
     isPrimary: true,
     pointerId: 1,
     pointerType: "touch",
   });
+  Object.defineProperty(pointerUp, "pointerType", { value: "touch" });
+  fireEvent(element, pointerUp);
+
   if (shouldClick) fireEvent.click(element);
 }
 
@@ -162,6 +169,28 @@ describe("MultiButton", () => {
     expect(within(viewButton).getByText("View")).toBeInTheDocument();
     await user.click(viewButton);
     expect(onClick).toHaveBeenCalledOnce();
+  });
+
+  it("fires the item action on the first touch tap", () => {
+    const onClick = vi.fn();
+    render(
+      <MultiButton
+        items={[{ ...items[0], onClick }, items[1]]}
+        variant="outline"
+      />,
+    );
+
+    const viewButton = screen.getByRole("button", { name: "View" });
+    expect(within(viewButton).queryByText("View")).not.toBeInTheDocument();
+
+    touchTap(viewButton);
+
+    expect(onClick).toHaveBeenCalledOnce();
+    expect(viewButton).toHaveAttribute("data-state", "open");
+    expect(within(viewButton).getByText("View")).toBeInTheDocument();
+
+    touchTap(viewButton);
+    expect(onClick).toHaveBeenCalledTimes(2);
   });
 
   it("reserves label space without changing the rail width on hover", async () => {

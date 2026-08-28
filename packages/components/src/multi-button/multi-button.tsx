@@ -1211,7 +1211,6 @@ const MultiButton = React.forwardRef<HTMLDivElement, MultiButtonProps>(
     ) => {
       if (event.pointerType !== "touch") return;
       if (touchExpandedId !== id) {
-        event.preventDefault();
         setTouchExpandedId(id);
       }
     };
