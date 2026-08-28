@@ -1,4 +1,4 @@
-import { render } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import { createRef } from "react";
 import { describe, expect, it } from "vitest";
 
@@ -33,6 +33,38 @@ describe("WorldMap", () => {
       />,
     );
     expect(getRoot(container).querySelectorAll("path").length).toBe(1);
+  });
+
+  it("exposes labeled endpoints while keeping the decorative SVG hidden", () => {
+    const { container } = render(
+      <WorldMap
+        connections={[
+          {
+            start: { lat: 37.7749, lng: -122.4194, label: "San Francisco" },
+            end: { lat: 51.5074, lng: -0.1278, label: "London" },
+          },
+          {
+            start: { lat: 35.6762, lng: 139.6503 },
+            end: { lat: -33.8688, lng: 151.2093 },
+          },
+        ]}
+      />,
+    );
+    const root = getRoot(container);
+    const svg = root.querySelector("svg");
+    const endpoints = screen.getByRole("list", {
+      name: "World map endpoints",
+    });
+
+    expect(
+      within(endpoints).getByRole("listitem", { name: "San Francisco" }),
+    ).toBeInTheDocument();
+    expect(
+      within(endpoints).getByRole("listitem", { name: "London" }),
+    ).toBeInTheDocument();
+    expect(within(endpoints).getAllByRole("listitem")).toHaveLength(2);
+    expect(svg).toHaveAttribute("aria-hidden", "true");
+    expect(svg).toHaveAttribute("role", "presentation");
   });
 
   it("forwards the ref and sets a displayName", () => {
