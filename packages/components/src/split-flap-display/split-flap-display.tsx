@@ -44,7 +44,11 @@ export type SplitFlapDisplayProps = Omit<
 > & {
   /** The text the board settles on. Rendered uppercase against `charset`. */
   value: string;
-  /** Fixed number of flaps. Shorter values are padded, longer ones truncated. */
+  /**
+   * Fixed number of flaps. Shorter values are padded, longer ones truncated.
+   * Values are clamped to 0–100; non-finite or fractional values fall back to
+   * the value length, also capped at 100.
+   */
   length?: number;
   /** How the value sits inside a wider `length`. */
   align?: SplitFlapAlign;
@@ -69,6 +73,15 @@ export type SplitFlapDisplayProps = Omit<
 const TICK = 0.12;
 
 const DEFAULT_CHARSET = " ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,:-'!?@#&/";
+/** Practical cap for the board's per-render DOM and padding work. */
+const MAX_LENGTH = 100;
+
+function normalizeLength(length: number | undefined, valueLength: number) {
+  if (length == null || !Number.isFinite(length) || !Number.isInteger(length)) {
+    return Math.min(valueLength, MAX_LENGTH);
+  }
+  return Math.min(Math.max(length, 0), MAX_LENGTH);
+}
 
 const sizeClasses: Record<SplitFlapSize, string> = {
   sm: "h-9 w-6 text-xl [perspective:180px]",
@@ -251,7 +264,7 @@ const SplitFlapDisplay = React.forwardRef<
     const inView = useInViewOnce(ref);
 
     const upper = value.toUpperCase();
-    const count = length ?? upper.length;
+    const count = normalizeLength(length, upper.length);
     const chars = React.useMemo(() => {
       const pad = Math.max(0, count - upper.length);
       const body = upper.slice(0, count);
