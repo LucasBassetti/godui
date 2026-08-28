@@ -90,7 +90,12 @@ function captureGridDimensions(cellSize: number) {
     HTMLCanvasElement.prototype,
     "height",
   );
-  if (!widthDescriptor?.get || !widthDescriptor.set || !heightDescriptor?.get || !heightDescriptor.set) {
+  if (
+    !widthDescriptor?.get ||
+    !widthDescriptor.set ||
+    !heightDescriptor?.get ||
+    !heightDescriptor.set
+  ) {
     throw new Error("Canvas dimension descriptors are unavailable");
   }
 
@@ -135,7 +140,11 @@ function captureGridDimensions(cellSize: number) {
   );
   rendered.unmount();
   Object.defineProperty(HTMLCanvasElement.prototype, "width", widthDescriptor);
-  Object.defineProperty(HTMLCanvasElement.prototype, "height", heightDescriptor);
+  Object.defineProperty(
+    HTMLCanvasElement.prototype,
+    "height",
+    heightDescriptor,
+  );
   return { heightAssignments, widthAssignments };
 }
 
@@ -256,70 +265,73 @@ describe("AsciiDither", () => {
     frame.remove();
   });
 
-  describe.each([
-    "bayer",
-    "floyd-steinberg",
-  ] as const)("%s dithering", (ditherType) => {
-    it.each([
-      1,
-      0,
-      -1,
-      2.5,
-      Number.NaN,
-      Number.POSITIVE_INFINITY,
-      Number.NEGATIVE_INFINITY,
-    ])("normalizes invalid levels (%s) to the level-2 output", (levels) => {
-      const expected = renderDither(ditherType, 2);
-      const expectedCalls = (
-        expected.context.fillRect as unknown as {
-          mock: { calls: unknown[][] };
-        }
-      ).mock.calls;
-      expected.unmount();
+  describe.each(["bayer", "floyd-steinberg"] as const)(
+    "%s dithering",
+    (ditherType) => {
+      it.each([
+        1,
+        0,
+        -1,
+        2.5,
+        Number.NaN,
+        Number.POSITIVE_INFINITY,
+        Number.NEGATIVE_INFINITY,
+      ])("normalizes invalid levels (%s) to the level-2 output", (levels) => {
+        const expected = renderDither(ditherType, 2);
+        const expectedCalls = (
+          expected.context.fillRect as unknown as {
+            mock: { calls: unknown[][] };
+          }
+        ).mock.calls;
+        expected.unmount();
 
-      const actual = renderDither(ditherType, levels);
-      const actualCalls = (
-        actual.context.fillRect as unknown as {
-          mock: { calls: unknown[][] };
-        }
-      ).mock.calls;
-      expect(actualCalls).toEqual(expectedCalls);
-      expectFiniteDrawingArguments(actual.context);
-      actual.unmount();
-    });
+        const actual = renderDither(ditherType, levels);
+        const actualCalls = (
+          actual.context.fillRect as unknown as {
+            mock: { calls: unknown[][] };
+          }
+        ).mock.calls;
+        expect(actualCalls).toEqual(expectedCalls);
+        expectFiniteDrawingArguments(actual.context);
+        actual.unmount();
+      });
 
-    it("keeps valid level counts distinct", () => {
-      const level2 = renderDither(ditherType, 2);
-      const level2Calls = (
-        level2.context.fillRect as unknown as {
-          mock: { calls: unknown[][] };
-        }
-      ).mock.calls;
-      level2.unmount();
+      it("keeps valid level counts distinct", () => {
+        const level2 = renderDither(ditherType, 2);
+        const level2Calls = (
+          level2.context.fillRect as unknown as {
+            mock: { calls: unknown[][] };
+          }
+        ).mock.calls;
+        level2.unmount();
 
-      const level3 = renderDither(ditherType, 3);
-      const level3Calls = (
-        level3.context.fillRect as unknown as {
-          mock: { calls: unknown[][] };
-        }
-      ).mock.calls;
-      expect(level3Calls).not.toEqual(level2Calls);
-      expectFiniteDrawingArguments(level3.context);
-      level3.unmount();
-    });
-  });
-
-  it.each([0, -4, Number.NaN, Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY])(
-    "keeps grid dimensions finite for cellSize %s",
-    (cellSize) => {
-      const { heightAssignments, widthAssignments } =
-        captureGridDimensions(cellSize);
-      expect(widthAssignments.every(Number.isFinite)).toBe(true);
-      expect(heightAssignments.every(Number.isFinite)).toBe(true);
-      expect(widthAssignments.at(-1)).toBe(80);
-      expect(heightAssignments.at(-1)).toBe(60);
+        const level3 = renderDither(ditherType, 3);
+        const level3Calls = (
+          level3.context.fillRect as unknown as {
+            mock: { calls: unknown[][] };
+          }
+        ).mock.calls;
+        expect(level3Calls).not.toEqual(level2Calls);
+        expectFiniteDrawingArguments(level3.context);
+        level3.unmount();
+      });
     },
   );
+
+  it.each([
+    0,
+    -4,
+    Number.NaN,
+    Number.POSITIVE_INFINITY,
+    Number.NEGATIVE_INFINITY,
+  ])("keeps grid dimensions finite for cellSize %s", (cellSize) => {
+    const { heightAssignments, widthAssignments } =
+      captureGridDimensions(cellSize);
+    expect(widthAssignments.every(Number.isFinite)).toBe(true);
+    expect(heightAssignments.every(Number.isFinite)).toBe(true);
+    expect(widthAssignments.at(-1)).toBe(80);
+    expect(heightAssignments.at(-1)).toBe(60);
+  });
 
   it("preserves grid density for valid cell sizes", () => {
     const { heightAssignments, widthAssignments } = captureGridDimensions(4);
