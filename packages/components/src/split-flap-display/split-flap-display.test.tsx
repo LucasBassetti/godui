@@ -31,6 +31,41 @@ describe("SplitFlapDisplay", () => {
     expect(flaps(clipped)).toHaveLength(4);
   });
 
+  it("normalizes invalid and oversized lengths without throwing", () => {
+    const cases = [
+      { length: Infinity, expected: 2 },
+      { length: Number.MAX_SAFE_INTEGER, expected: 100 },
+      { length: Number.NaN, expected: 2 },
+      { length: 2.5, expected: 2 },
+      { length: -1, expected: 0 },
+      { length: 0, expected: 0 },
+      { length: 6, expected: 6 },
+    ];
+
+    for (const { length, expected } of cases) {
+      const { container } = render(
+        <SplitFlapDisplay value="HI" length={length} />,
+      );
+      expect(flaps(container)).toHaveLength(expected);
+    }
+  });
+
+  it("preserves alignment for valid lengths", () => {
+    const cases = [
+      { align: "left" as const, className: "justify-start" },
+      { align: "center" as const, className: "justify-center" },
+      { align: "right" as const, className: "justify-end" },
+    ];
+
+    for (const { align, className } of cases) {
+      const { container } = render(
+        <SplitFlapDisplay value="HI" length={6} align={align} />,
+      );
+      expect(getRoot(container)).toHaveClass(className);
+      expect(flaps(container)).toHaveLength(6);
+    }
+  });
+
   it("accepts a per-column charset array", () => {
     const { container } = render(
       <SplitFlapDisplay
