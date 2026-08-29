@@ -69,6 +69,10 @@ const ParticleDissolve = React.forwardRef<
       () => canvasRef.current as HTMLCanvasElement,
     );
     const reduce = useReducedMotion();
+    const samplingDensity =
+      Number.isFinite(density) && density > 0
+        ? Math.max(1, Math.floor(density))
+        : 4;
 
     const particles = React.useRef<Particle[]>([]);
     const p = React.useRef(mode === "disperse" ? 1 : 0); // 0 = scattered, 1 = formed
@@ -88,8 +92,8 @@ const ParticleDissolve = React.forwardRef<
         const sample = () => {
           const data = octx.getImageData(0, 0, width, height).data;
           const next: Particle[] = [];
-          for (let y = 0; y < height; y += density) {
-            for (let x = 0; x < width; x += density) {
+          for (let y = 0; y < height; y += samplingDensity) {
+            for (let x = 0; x < width; x += samplingDensity) {
               const i = (y * width + x) * 4;
               if ((data[i + 3] as number) > 128) {
                 const r = data[i] as number;
@@ -140,7 +144,7 @@ const ParticleDissolve = React.forwardRef<
         sample();
         return Promise.resolve();
       },
-      [width, height, density, src, text, font],
+      [width, height, samplingDensity, src, text, font],
     );
 
     const draw = React.useCallback(
