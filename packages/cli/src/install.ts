@@ -113,10 +113,14 @@ export type McpServerConfig = {
   args: string[];
 };
 
+// Deliberately pin the runtime version written into IDE configs. Update this
+// only after reviewing and publishing a new @godui/mcp release.
+const GODUI_MCP_VERSION = "0.1.0";
+
 /** The GodUI MCP server entry written into every client config. */
 export const GODUI_SERVER: McpServerConfig = {
   command: "npx",
-  args: ["-y", "@godui/mcp@latest"],
+  args: ["-y", `@godui/mcp@${GODUI_MCP_VERSION}`],
 };
 
 export const GODUI_SERVER_KEY = "godui";

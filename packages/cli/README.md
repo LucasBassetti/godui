@@ -26,6 +26,10 @@ npx @godui/cli@latest install <client>
 The command merges the GodUI server into the client's existing MCP config
 (creating it if needed) without touching your other servers.
 
+The installer writes the approved MCP release `@godui/mcp@0.1.0`, rather than
+npm's mutable `latest` tag. Update the pin only after reviewing and publishing
+a new MCP release, then release a new CLI version.
+
 ## What it writes
 
 ```json
@@ -33,7 +37,7 @@ The command merges the GodUI server into the client's existing MCP config
   "mcpServers": {
     "godui": {
       "command": "npx",
-      "args": ["-y", "@godui/mcp@latest"]
+      "args": ["-y", "@godui/mcp@0.1.0"]
     }
   }
 }
