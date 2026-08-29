@@ -15,7 +15,7 @@ Add this to your MCP config file:
   "mcpServers": {
     "godui": {
       "command": "npx",
-      "args": ["-y", "@godui/mcp@latest"]
+      "args": ["-y", "@godui/mcp@0.1.0"]
     }
   }
 }
@@ -45,13 +45,28 @@ Ask your IDE to use any GodUI component:
 
 ## How it works
 
-The server fetches the live GodUI registry at `https://godui.design/r`, so it
-always serves the latest components without an update. Override the base for
-local testing:
+The server fetches the live GodUI registry at `https://godui.design/r`, so a
+new process serves the latest components without an MCP package update. The
+registry publishes a versioned `manifest.json`; before returning the catalog or
+component source, the server verifies the response against its SHA-256 digest.
+Missing or mismatched entries fail closed. Override the base for local testing:
 
 ```bash
-GODUI_REGISTRY_URL=http://localhost:3000/r npx @godui/mcp@latest
+GODUI_REGISTRY_URL=http://localhost:3000/r npx @godui/mcp@0.1.0
 ```
+
+The live endpoint is freshness-first and may advance between processes. For a
+reproducible or rollback run, use an immutable snapshot URL and require its
+source revision:
+
+```bash
+GODUI_REGISTRY_URL=https://raw.githubusercontent.com/godui-design/godui/<revision>/apps/docs/public/r \
+GODUI_REGISTRY_REVISION=<revision> npx @godui/mcp@0.1.0
+```
+
+The CLI and manual configuration pin the MCP package to `0.1.0`; new releases
+require review and a new CLI release. See the [MCP registry trust policy](../../MCP_REGISTRY_POLICY.md)
+for the trust boundary and rollback guidance.
 
 ## License
 
