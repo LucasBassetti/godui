@@ -659,6 +659,7 @@ type MultiButtonItemButtonProps = {
   accessible?: boolean;
   ariaLabel?: string;
   disclosureExpanded?: boolean;
+  disabled: boolean;
   highlighted: boolean;
   gooey?: boolean;
   gooeyExpanded?: boolean;
@@ -753,6 +754,7 @@ function MultiButtonItemButton({
   accessible = true,
   ariaLabel,
   disclosureExpanded,
+  disabled,
   highlighted,
   gooey = false,
   gooeyExpanded = true,
@@ -781,8 +783,9 @@ function MultiButtonItemButton({
       aria-expanded={disclosureExpanded}
       aria-hidden={accessible ? undefined : true}
       tabIndex={accessible ? undefined : -1}
-      disabled={item.disabled}
+      disabled={disabled}
       onClick={(event) => {
+        if (item.disabled) return;
         item.onClick?.(event);
         onAction?.(event);
       }}
@@ -919,6 +922,7 @@ function MultiButtonItems({
   return items.map((item, index) => {
     const active = activeId === item.id;
     const selected = selectedId === item.id;
+    const collapsedSelectedTrigger = compact && selected && !expanded;
     const width =
       compact && !expanded
         ? selected
@@ -948,11 +952,12 @@ function MultiButtonItems({
           active={active}
           accessible={!compact || interactionReady || selected}
           ariaLabel={
-            compact && selected && !expanded
+            collapsedSelectedTrigger
               ? (restAriaLabel ?? (restIcon ? "Open actions" : undefined))
               : undefined
           }
           disclosureExpanded={compact && selected ? expanded : undefined}
+          disabled={Boolean(item.disabled && !collapsedSelectedTrigger)}
           highlighted={!gooey && Boolean(highlightColor) && active}
           gooey={gooey}
           gooeyExpanded={expanded}
@@ -1211,7 +1216,6 @@ const MultiButton = React.forwardRef<HTMLDivElement, MultiButtonProps>(
     ) => {
       if (event.pointerType !== "touch") return;
       if (touchExpandedId !== id) {
-        event.preventDefault();
         setTouchExpandedId(id);
       }
     };
