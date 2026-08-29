@@ -81,6 +81,19 @@ export function useResizablePane({
   const pending = useRef(defaultPx);
   const start = useRef({ coord: 0, px: defaultPx });
 
+  // Navigation can unmount the workbench before pointerup. Cancel only the
+  // transient drag work here: there is no settled value to commit once this
+  // hook's owner is gone.
+  useEffect(() => {
+    return () => {
+      if (frame.current) {
+        cancelAnimationFrame(frame.current);
+        frame.current = 0;
+      }
+      delete document.documentElement.dataset.wbResizing;
+    };
+  }, []);
+
   const measure = useCallback(() => {
     const container = containerRef.current;
     const containerPx = container
