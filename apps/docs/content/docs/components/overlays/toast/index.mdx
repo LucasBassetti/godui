@@ -64,6 +64,8 @@ export function ToastDemo() {
 
 Render a single `<ToastProvider />` near the root of your app, then call `toast()`
 from anywhere. Toasts spring in, auto-dismiss, pause on hover, and can be swiped away.
+The portal defaults to the document where the provider is rendered; pass `container`
+to target a specific document body or element.
 
 ## Usage
 
@@ -104,10 +106,11 @@ toast({
 
 ### `ToastProvider`
 
-| Prop       | Type            | Default          | Description                       |
-| ---------- | --------------- | ---------------- | --------------------------------- |
-| `position` | `ToastPosition` | `"bottom-right"` | Corner the stack is anchored to.  |
-| `duration` | `number`        | `4000`           | Default auto-dismiss delay in ms. |
+| Prop        | Type                   | Default              | Description                       |
+| ----------- | ---------------------- | -------------------- | --------------------------------- |
+| `position`  | `ToastPosition`        | `"bottom-right"`     | Corner the stack is anchored to.  |
+| `duration`  | `number`               | `4000`               | Default auto-dismiss delay in ms. |
+| `container` | `HTMLElement \| null` | Owning document body | Portal target for the stack.      |
 
 ### `toast(options)`
 

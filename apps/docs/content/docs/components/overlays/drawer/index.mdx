@@ -47,7 +47,9 @@ export function CartDrawer({ lines, total }) {
 
 `Drawer` is a controlled, portalled sheet. Drag the handle down (or flick) past the
 threshold to dismiss; it also closes on scrim click and `Escape`, and locks body
-scroll while open. Use `side="right"` for a side panel.
+scroll while open. Use `side="right"` for a side panel. The portal defaults to the
+document where the component is rendered; pass `container` to target a specific
+document body or element.
 
 ## Usage
 
@@ -85,12 +87,13 @@ dismiss. Great for share menus, quick actions, and confirmations.
 
 ## Props
 
-| Prop           | Type                       | Default    | Description                              |
-| -------------- | -------------------------- | ---------- | ---------------------------------------- |
-| `open`         | `boolean`                  | —          | Controlled open state.                   |
-| `onOpenChange` | `(open: boolean) => void`  | —          | Called when the drawer opens or closes.  |
-| `side`         | `"bottom" \| "right"`      | `"bottom"` | Side the drawer slides in from.          |
-| `title`        | `ReactNode`                | —          | Accessible title rendered at the top.    |
-| `className`    | `string`                   | —          | Extra classes for the panel.             |
+| Prop           | Type                   | Default              | Description                             |
+| -------------- | ---------------------- | -------------------- | --------------------------------------- |
+| `open`         | `boolean`              | —                    | Controlled open state.                  |
+| `onOpenChange` | `(open: boolean) => void` | —                 | Called when the drawer opens or closes. |
+| `side`         | `"bottom" \| "right"` | `"bottom"`           | Side the drawer slides in from.         |
+| `title`        | `ReactNode`             | —                    | Accessible title rendered at the top.  |
+| `className`    | `string`               | —                    | Extra classes for the panel.            |
+| `container`    | `HTMLElement \| null` | Owning document body | Portal target for the drawer.           |
 
 </Workbench>
