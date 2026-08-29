@@ -4,7 +4,7 @@
 // catalog. Categories come from the docs sidebar config (meta.json). Run via
 // `pnpm build:registry`.
 
-import { execFileSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -12,21 +12,16 @@ import { fileURLToPath } from "node:url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(__dirname, "../../..");
 
-function getSourceRevision() {
-  const configured = [
-    process.env.GITHUB_SHA,
-    process.env.VERCEL_GIT_COMMIT_SHA,
-  ].find((value) => value?.trim());
-  if (configured) return configured.trim();
-
-  try {
-    return execFileSync("git", ["rev-parse", "HEAD"], {
-      cwd: repoRoot,
-      encoding: "utf8",
-    }).trim();
-  } catch {
-    return "unknown";
-  }
+// A content-addressed revision: the sha256 of the catalog payload. Because it is
+// derived only from the committed registry contents (never the git HEAD or a
+// build-time env var), regeneration is deterministic — `pnpm check:registry` can
+// assert the committed index.json is up to date, and consumers can use it for
+// the optional reproducibility check in @godui/mcp's registry-client.
+function computeRevision(payload) {
+  return createHash("sha256")
+    .update(JSON.stringify(payload))
+    .digest("hex")
+    .slice(0, 40);
 }
 
 const registry = JSON.parse(
@@ -97,7 +92,11 @@ const components = [
 const index = {
   name: registry.name,
   homepage: registry.homepage,
-  revision: getSourceRevision(),
+  revision: computeRevision({
+    name: registry.name,
+    homepage: registry.homepage,
+    components,
+  }),
   components,
 };
 
