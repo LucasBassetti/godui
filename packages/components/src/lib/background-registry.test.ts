@@ -33,6 +33,16 @@ describe("buildBackgroundFileContent", () => {
     );
   });
 
+  it.each([
+    "toString",
+    "constructor",
+    "__proto__",
+  ])("falls back to the default variant for inherited preset key %s", (variant) => {
+    expect(buildBackgroundFileContent("geometric-background", variant)).toBe(
+      buildBackgroundFileContent("geometric-background"),
+    );
+  });
+
   it("returns null for a non-background item", () => {
     expect(buildBackgroundFileContent("magic-button")).toBeNull();
   });
@@ -53,6 +63,15 @@ describe("buildBackgroundRegistryItem", () => {
       "components/godui/gradient-background.tsx",
     );
     expect(item?.files[0].content.length).toBeGreaterThan(0);
+  });
+
+  it("includes the shared catalog metadata", () => {
+    expect(buildBackgroundRegistryItem("effect-background")).toMatchObject({
+      title: "Effect Background",
+      description:
+        "Full-bleed effect backgrounds — radial glows, aurora dreams, and soft pastel washes.",
+      registryDependencies: ["@godui/godui-theme"],
+    });
   });
 
   it("returns null for a non-background item", () => {

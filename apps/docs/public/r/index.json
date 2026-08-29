@@ -1,6 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
+  "generatedAt": "2026-08-25T04:42:11.887Z",
   "components": [
     {
       "name": "accordion",
@@ -219,6 +220,15 @@
       "install": "npx shadcn@latest add @godui/cover-flow"
     },
     {
+      "name": "decorative-background",
+      "title": "Decorative Background",
+      "description": "Full-bleed decorative backgrounds — radial and corner gradient washes.",
+      "category": "Static Effects",
+      "dependencies": [],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add \"https://godui.design/r/decorative-background.json\""
+    },
+    {
       "name": "dock",
       "title": "Dock",
       "description": "A macOS-style dock whose items magnify with spring physics as the pointer moves across them.",
@@ -253,6 +263,15 @@
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add @godui/dynamic-island"
+    },
+    {
+      "name": "effect-background",
+      "title": "Effect Background",
+      "description": "Full-bleed effect backgrounds — radial glows, aurora dreams, and soft pastel washes.",
+      "category": "Static Effects",
+      "dependencies": [],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add \"https://godui.design/r/effect-background.json\""
     },
     {
       "name": "elastic-text",
@@ -309,6 +328,15 @@
       "install": "npx shadcn@latest add @godui/fluid-cursor"
     },
     {
+      "name": "geometric-background",
+      "title": "Geometric Background",
+      "description": "Full-bleed geometric backgrounds — grids, dashed grids, diagonal crosses, and masked fades.",
+      "category": "Static Effects",
+      "dependencies": [],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add \"https://godui.design/r/geometric-background.json\""
+    },
+    {
       "name": "globe",
       "title": "Globe",
       "description": "A draggable, auto-rotating WebGL globe with glowing location markers.",
@@ -334,6 +362,15 @@
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add @godui/gooey-stack"
+    },
+    {
+      "name": "gradient-background",
+      "title": "Gradient Background",
+      "description": "Full-bleed gradient backgrounds — radial glows, aurora washes, and depth fades.",
+      "category": "Static Effects",
+      "dependencies": [],
+      "registryDependencies": ["@godui/godui-theme"],
+      "install": "npx shadcn@latest add \"https://godui.design/r/gradient-background.json\""
     },
     {
       "name": "gravity",
