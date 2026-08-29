@@ -15,7 +15,7 @@ Add this to your MCP config file:
   "mcpServers": {
     "godui": {
       "command": "npx",
-      "args": ["-y", "@godui/mcp@latest"]
+      "args": ["-y", "@godui/mcp@0.1.0"]
     }
   }
 }
@@ -50,7 +50,7 @@ always serves the latest components without an update. Override the base for
 local testing:
 
 ```bash
-GODUI_REGISTRY_URL=http://localhost:3000/r npx @godui/mcp@latest
+GODUI_REGISTRY_URL=http://localhost:3000/r npx @godui/mcp@0.1.0
 ```
 
 ## License

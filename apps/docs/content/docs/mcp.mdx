@@ -45,8 +45,11 @@ The server exposes three tools:
 
 The server fetches the live registry at `https://godui.design/r`, so it always
 serves the latest components — no upgrade needed when GodUI ships something new.
-Point it at a local registry for development by setting `GODUI_REGISTRY_URL`:
+The installer and manual config pin the server to the approved `0.1.0` release.
+To update the server, review and publish the new release, then update the pinned
+version and rerun the installer. Point it at a local registry for development
+by setting `GODUI_REGISTRY_URL`:
 
 ```bash
-GODUI_REGISTRY_URL=http://localhost:3000/r npx @godui/mcp@latest
+GODUI_REGISTRY_URL=http://localhost:3000/r npx @godui/mcp@0.1.0
 ```
