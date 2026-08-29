@@ -164,7 +164,7 @@ single still frame.
 | `charset`     | `string`                            | `" .:-=+*#%@"` | ASCII ramp, brightest → darkest.                     |
 | `fontFamily`  | `string`                            | mono        | Font for the glyphs.                                    |
 | `ditherType`  | `"bayer" \| "floyd-steinberg"`      | `"bayer"`   | Dither algorithm.                                       |
-| `levels`      | `number`                            | `2`         | Quantization levels (`2` = 1-bit).                      |
+| `levels`      | `number`                            | `2`         | Finite integer ≥ 2 (`2` = 1-bit); invalid values normalize to `2`. |
 | `dotShape`    | `"square" \| "circle"`              | `"square"`  | Dither dot shape.                                       |
 | `color`       | `"theme" \| "source" \| string`     | `"theme"`   | Ink color source.                                       |
 | `background`  | `string`                            | transparent | Canvas background.                                      |

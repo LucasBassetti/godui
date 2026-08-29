@@ -15,7 +15,7 @@ Add this to your MCP config file:
   "mcpServers": {
     "godui": {
       "command": "npx",
-      "args": ["-y", "@godui/mcp@latest"]
+      "args": ["-y", "@godui/mcp@0.1.0"]
     }
   }
 }
@@ -45,13 +45,23 @@ Ask your IDE to use any GodUI component:
 
 ## How it works
 
-The server fetches the live GodUI registry at `https://godui.design/r`, so it
-always serves the latest components without an update. Override the base for
-local testing:
+The server fetches the live GodUI registry at `https://godui.design/r`, so a new
+process serves the latest components without an MCP package update. Responses
+are cached only for the lifetime of that process; failed or invalid responses
+are not replaced with stale data. The default catalog is freshness-first, not
+an immutable snapshot. For reproducible or rollback runs, point the client at
+an immutable registry snapshot and pin its revision:
 
 ```bash
-GODUI_REGISTRY_URL=http://localhost:3000/r npx @godui/mcp@latest
+GODUI_REGISTRY_URL=https://raw.githubusercontent.com/godui-design/godui/<revision>/apps/docs/public/r \
+GODUI_REGISTRY_REVISION=<revision> npx @godui/mcp@0.1.0
 ```
+
+The CLI writes the exact `@godui/mcp@0.1.0` release into IDE configuration;
+new releases require review and a new CLI release. Registry indexes identify
+their source revision, and the build/release workflow records npm provenance.
+See the [MCP registry policy](https://github.com/godui-design/godui/blob/main/MCP_REGISTRY_POLICY.md)
+for integrity, audit, and rollback requirements.
 
 ## License
 

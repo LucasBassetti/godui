@@ -25,7 +25,7 @@ export type AsciiDitherProps = Omit<
   fontFamily?: string;
   /** Dither algorithm. */
   ditherType?: "bayer" | "floyd-steinberg";
-  /** Quantization levels for dithering — `2` is 1-bit. */
+  /** Quantization levels for dithering — finite integers >= 2; invalid values normalize to 2. */
   levels?: number;
   /** Dot shape for the dither variant. */
   dotShape?: "square" | "circle";
@@ -86,6 +86,8 @@ function rgbTriple(input: string): [number, number, number] {
 const easeInOut = (t: number) =>
   t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2;
 const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
+const normalizeLevels = (value: number) =>
+  Number.isFinite(value) ? Math.max(2, Math.floor(value)) : 2;
 
 function isVideoSrc(src: string, type: AsciiDitherProps["type"]) {
   if (type === "video") return true;
@@ -146,6 +148,9 @@ const AsciiDither = React.forwardRef<HTMLDivElement, AsciiDitherProps>(
 
     const isVideo = isVideoSrc(src, type);
     const usesTheme = color === "theme";
+    const normalizedLevels = normalizeLevels(levels);
+    const safeCellSize =
+      Number.isFinite(cellSize) && cellSize > 0 ? cellSize : 1;
 
     // Resolve the theme ink color and keep it in sync with theme switches.
     React.useEffect(() => {
@@ -184,8 +189,8 @@ const AsciiDither = React.forwardRef<HTMLDivElement, AsciiDitherProps>(
       let h = 0;
       let cols = 0;
       let rows = 0;
-      let cellW = cellSize;
-      let cellH = cellSize;
+      let cellW = safeCellSize;
+      let cellH = safeCellSize;
       let pixels: Uint8ClampedArray | null = null;
       let source: HTMLImageElement | HTMLVideoElement | null = null;
       let ready = false;
@@ -205,8 +210,8 @@ const AsciiDither = React.forwardRef<HTMLDivElement, AsciiDitherProps>(
       const measure = () => {
         w = container.clientWidth;
         h = container.clientHeight;
-        cols = Math.max(1, Math.floor(w / cellSize));
-        rows = Math.max(1, Math.floor(h / cellSize));
+        cols = Math.max(1, Math.floor(w / safeCellSize));
+        rows = Math.max(1, Math.floor(h / safeCellSize));
         cellW = w / cols;
         cellH = h / rows;
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -276,7 +281,7 @@ const AsciiDither = React.forwardRef<HTMLDivElement, AsciiDitherProps>(
             buf[y * cols + x] = inkAt((y * cols + x) * 4);
           }
         }
-        const step = 1 / (levels - 1);
+        const step = 1 / (normalizedLevels - 1);
         for (let y = 0; y < rows; y++) {
           for (let x = 0; x < cols; x++) {
             const idx = y * cols + x;
@@ -313,7 +318,7 @@ const AsciiDither = React.forwardRef<HTMLDivElement, AsciiDitherProps>(
           variant === "dither" && ditherType === "floyd-steinberg"
             ? diffuse()
             : null;
-        const lvlStep = 1 / (levels - 1);
+        const lvlStep = 1 / (normalizedLevels - 1);
 
         if (variant === "ascii") {
           ctx.font = `${Math.ceil(cellH * 1.05)}px ${fontFamily}`;
@@ -380,7 +385,7 @@ const AsciiDither = React.forwardRef<HTMLDivElement, AsciiDitherProps>(
                   ? (diffused[cy * cols + cx] as number)
                   : (() => {
                       const t = BAYER[cy % 4]?.[cx % 4] ?? 0.5;
-                      const v = ink + (t - 0.5) / levels;
+                      const v = ink + (t - 0.5) / normalizedLevels;
                       return clamp01(Math.round(v / lvlStep) * lvlStep);
                     })();
               if (level <= 0) continue;
@@ -554,11 +559,11 @@ const AsciiDither = React.forwardRef<HTMLDivElement, AsciiDitherProps>(
       src,
       isVideo,
       variant,
-      cellSize,
+      safeCellSize,
       charset,
       fontFamily,
       ditherType,
-      levels,
+      normalizedLevels,
       dotShape,
       color,
       usesTheme,

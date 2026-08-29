@@ -1,5 +1,6 @@
 import {
   act,
+  createEvent,
   fireEvent,
   render,
   screen,
@@ -93,18 +94,24 @@ function expectRestIconVisibility(button: HTMLElement, visible: boolean) {
 }
 
 function touchTap(element: HTMLElement) {
-  const shouldClick = fireEvent.pointerDown(element, {
+  const pointerDown = createEvent.pointerDown(element, {
     button: 0,
     isPrimary: true,
     pointerId: 1,
     pointerType: "touch",
   });
-  fireEvent.pointerUp(element, {
+  Object.defineProperty(pointerDown, "pointerType", { value: "touch" });
+  const shouldClick = fireEvent(element, pointerDown);
+
+  const pointerUp = createEvent.pointerUp(element, {
     button: 0,
     isPrimary: true,
     pointerId: 1,
     pointerType: "touch",
   });
+  Object.defineProperty(pointerUp, "pointerType", { value: "touch" });
+  fireEvent(element, pointerUp);
+
   if (shouldClick) fireEvent.click(element);
 }
 
@@ -162,6 +169,28 @@ describe("MultiButton", () => {
     expect(within(viewButton).getByText("View")).toBeInTheDocument();
     await user.click(viewButton);
     expect(onClick).toHaveBeenCalledOnce();
+  });
+
+  it("fires the item action on the first touch tap", () => {
+    const onClick = vi.fn();
+    render(
+      <MultiButton
+        items={[{ ...items[0], onClick }, items[1]]}
+        variant="outline"
+      />,
+    );
+
+    const viewButton = screen.getByRole("button", { name: "View" });
+    expect(within(viewButton).queryByText("View")).not.toBeInTheDocument();
+
+    touchTap(viewButton);
+
+    expect(onClick).toHaveBeenCalledOnce();
+    expect(viewButton).toHaveAttribute("data-state", "open");
+    expect(within(viewButton).getByText("View")).toBeInTheDocument();
+
+    touchTap(viewButton);
+    expect(onClick).toHaveBeenCalledTimes(2);
   });
 
   it("reserves label space without changing the rail width on hover", async () => {
@@ -685,6 +714,88 @@ describe("CompactMultiButton", () => {
     expect(onClick).toHaveBeenCalledOnce();
     expect(group).toHaveAttribute("aria-expanded", "false");
     expect(screen.getAllByRole("button")).toHaveLength(1);
+  });
+
+  it.each([
+    { gooey: false, mode: "classic" },
+    { gooey: true, mode: "gooey" },
+  ])("opens the $mode rail from a disabled selected action and activates its sibling", ({
+    gooey,
+  }) => {
+    const disabledOnClick = vi.fn();
+    const siblingOnClick = vi.fn();
+    const selectedItem = {
+      ...items[0],
+      disabled: true,
+      onClick: disabledOnClick,
+    };
+    const siblingItem = { ...items[1], onClick: siblingOnClick };
+    render(
+      <CompactMultiButton
+        items={[selectedItem, siblingItem]}
+        selectedId={selectedItem.id}
+        gooey={gooey}
+      />,
+    );
+
+    const group = screen.getByRole("group");
+    const selectedButton = screen.getByRole("button", { name: "View" });
+    expect(selectedButton).not.toBeDisabled();
+
+    touchTap(selectedButton);
+
+    expect(disabledOnClick).not.toHaveBeenCalled();
+    expect(group).toHaveAttribute("aria-expanded", "true");
+    expect(selectedButton).toBeDisabled();
+
+    finishWidthTransition(group);
+    const siblingButton = screen.getByRole("button", { name: "Edit" });
+    expect(siblingButton).not.toBeDisabled();
+
+    touchTap(siblingButton);
+
+    expect(siblingOnClick).toHaveBeenCalledOnce();
+    expect(disabledOnClick).not.toHaveBeenCalled();
+    expect(group).toHaveAttribute("aria-expanded", "false");
+  });
+
+  it.each([
+    { gooey: false, mode: "classic" },
+    { gooey: true, mode: "gooey" },
+  ])("keeps the $mode disabled selected trigger focusable as a disclosure", async ({
+    gooey,
+  }) => {
+    const disabledOnClick = vi.fn();
+    const user = userEvent.setup();
+    const selectedItem = {
+      ...items[0],
+      disabled: true,
+      onClick: disabledOnClick,
+    };
+    render(
+      <CompactMultiButton
+        items={[selectedItem, items[1]]}
+        selectedId={selectedItem.id}
+        gooey={gooey}
+      />,
+    );
+
+    const group = screen.getByRole("group");
+    const selectedButton = screen.getByRole("button", { name: "View" });
+    expect(group).toHaveAttribute("aria-expanded", "false");
+    expect(selectedButton).not.toBeDisabled();
+
+    await user.tab();
+
+    expect(selectedButton).toHaveFocus();
+    expect(group).toHaveAttribute("aria-expanded", "true");
+    expect(selectedButton).toHaveAttribute("aria-expanded", "true");
+    expect(selectedButton).toBeDisabled();
+
+    await user.keyboard("{Enter}");
+
+    expect(disabledOnClick).not.toHaveBeenCalled();
+    expect(group).toHaveAttribute("aria-expanded", "true");
   });
 
   it("closes after an outside touch in the component's owner document", () => {

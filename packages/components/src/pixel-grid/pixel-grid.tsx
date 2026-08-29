@@ -3,9 +3,9 @@
 import * as React from "react";
 
 export type PixelGridProps = React.HTMLAttributes<HTMLDivElement> & {
-  /** Side length of each square in px. */
+  /** Side length of each square in px; invalid values normalize to 1. */
   squareSize?: number;
-  /** Gap between squares in px. */
+  /** Gap between squares in px; invalid or negative values normalize to 0. */
   gridGap?: number;
   /** Per-second probability that a square re-rolls its opacity. */
   flickerChance?: number;
@@ -143,7 +143,13 @@ const PixelGrid = React.forwardRef<HTMLDivElement, PixelGridProps>(
       if (!ctx) return;
 
       const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
-      const step = squareSize + gridGap;
+      const safeSquareSize = Number.isFinite(squareSize)
+        ? Math.max(1, squareSize)
+        : 1;
+      const safeGridGap = Number.isFinite(gridGap) ? Math.max(0, gridGap) : 0;
+      const candidateStep = safeSquareSize + safeGridGap;
+      const step =
+        Number.isFinite(candidateStep) && candidateStep > 0 ? candidateStep : 1;
 
       let cols = 0;
       let rows = 0;
@@ -176,7 +182,7 @@ const PixelGrid = React.forwardRef<HTMLDivElement, PixelGridProps>(
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         const pointer = pointerRef.current;
         const cursorActive = interactive && pointer.intensity > 0.001;
-        const sizePx = squareSize * dpr;
+        const sizePx = safeSquareSize * dpr;
         for (let i = 0; i < cols; i++) {
           for (let j = 0; j < rows; j++) {
             const base = squares[i * rows + j];
@@ -185,8 +191,8 @@ const PixelGrid = React.forwardRef<HTMLDivElement, PixelGridProps>(
               // Automatic mode: the whole field flickers.
               opacity = base;
             } else if (cursorActive) {
-              const cx = i * step + squareSize / 2;
-              const cy = j * step + squareSize / 2;
+              const cx = i * step + safeSquareSize / 2;
+              const cy = j * step + safeSquareSize / 2;
               const dist = Math.hypot(cx - pointer.x, cy - pointer.y);
               const t = Math.max(0, 1 - dist / interactionRadius);
               // smoothstep falloff, scaled by strength and the lerped intensity.

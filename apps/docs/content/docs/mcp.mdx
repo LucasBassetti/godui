@@ -43,10 +43,27 @@ The server exposes three tools:
 
 ## How it works
 
-The server fetches the live registry at `https://godui.design/r`, so it always
-serves the latest components — no upgrade needed when GodUI ships something new.
-Point it at a local registry for development by setting `GODUI_REGISTRY_URL`:
+The server fetches the live registry at `https://godui.design/r`, so a new
+process serves the latest components — no MCP package upgrade is needed when
+GodUI ships something new. Each process caches the catalog only for its own
+lifetime and fails closed on invalid data; it does not silently fall back to a
+stale catalog. Point it at a local registry for development by setting
+`GODUI_REGISTRY_URL`:
 
 ```bash
-GODUI_REGISTRY_URL=http://localhost:3000/r npx @godui/mcp@latest
+GODUI_REGISTRY_URL=http://localhost:3000/r npx @godui/mcp@0.1.0
 ```
+
+The live endpoint is intentionally freshness-first and is not an immutable
+snapshot. For reproducible installs or rollback, use a commit-addressed
+registry snapshot and require its source revision:
+
+```bash
+GODUI_REGISTRY_URL=https://raw.githubusercontent.com/godui-design/godui/<revision>/apps/docs/public/r \
+GODUI_REGISTRY_REVISION=<revision> npx @godui/mcp@0.1.0
+```
+
+The CLI and manual configuration pin the MCP package to `0.1.0`; package
+versions are never republished. Registry indexes carry the source revision
+used to audit a deployment. See the [MCP registry policy](https://github.com/godui-design/godui/blob/main/MCP_REGISTRY_POLICY.md)
+for integrity, provenance, and rollback requirements.

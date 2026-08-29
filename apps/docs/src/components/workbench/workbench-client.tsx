@@ -11,8 +11,10 @@ import {
   Smartphone,
 } from "lucide-react";
 import {
+  type KeyboardEvent as ReactKeyboardEvent,
   type ReactNode,
   useEffect,
+  useId,
   useLayoutEffect,
   useRef,
   useState,
@@ -427,7 +429,19 @@ function ExampleSelect({
   onSelect: (index: number) => void;
 }) {
   const [open, setOpen] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(value);
+  const id = useId();
+  const listboxId = `example-select-listbox-${id}`;
+  const triggerId = `example-select-trigger-${id}`;
   const ref = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const optionRefs = useRef<Array<HTMLButtonElement | null>>([]);
+
+  const selectedIndex = Math.max(0, Math.min(value, items.length - 1));
+  const currentIndex = Math.max(
+    0,
+    Math.min(activeIndex, Math.max(items.length - 1, 0)),
+  );
 
   useEffect(() => {
     if (!open) return;
@@ -436,24 +450,89 @@ function ExampleSelect({
         setOpen(false);
       }
     };
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
-    };
     document.addEventListener("pointerdown", onDown);
-    document.addEventListener("keydown", onKey);
     return () => {
       document.removeEventListener("pointerdown", onDown);
-      document.removeEventListener("keydown", onKey);
     };
   }, [open]);
+
+  // Keep the one active option in the tab order and move focus to it whenever
+  // the popup opens or an arrow key changes the active index.
+  useEffect(() => {
+    if (!open) return;
+    optionRefs.current[currentIndex]?.focus({ preventScroll: true });
+  }, [currentIndex, open]);
+
+  const select = (index: number) => {
+    setActiveIndex(index);
+    onSelect(index);
+    setOpen(false);
+    triggerRef.current?.focus();
+  };
+
+  const onTriggerClick = () => {
+    if (open) {
+      setOpen(false);
+      triggerRef.current?.focus();
+      return;
+    }
+    setActiveIndex(selectedIndex);
+    setOpen(true);
+  };
+
+  const onTriggerKeyDown = (e: ReactKeyboardEvent<HTMLButtonElement>) => {
+    // Enter and Space use the button's native activation (onClick). Arrow keys
+    // also open the popup so the picker is usable without a pointer.
+    if (
+      open ||
+      (e.key !== "ArrowDown" && e.key !== "ArrowUp") ||
+      items.length === 0
+    ) {
+      return;
+    }
+    e.preventDefault();
+    setActiveIndex(selectedIndex);
+    setOpen(true);
+  };
+
+  const onListboxKeyDown = (e: ReactKeyboardEvent<HTMLDivElement>) => {
+    if (items.length === 0) return;
+
+    let nextIndex: number | null = null;
+    if (e.key === "ArrowDown") {
+      nextIndex = (currentIndex + 1) % items.length;
+    } else if (e.key === "ArrowUp") {
+      nextIndex = (currentIndex - 1 + items.length) % items.length;
+    } else if (e.key === "Home") {
+      nextIndex = 0;
+    } else if (e.key === "End") {
+      nextIndex = items.length - 1;
+    }
+
+    if (nextIndex !== null) {
+      e.preventDefault();
+      setActiveIndex(nextIndex);
+      return;
+    }
+
+    if (e.key === "Escape") {
+      e.preventDefault();
+      setOpen(false);
+      triggerRef.current?.focus();
+    }
+  };
 
   return (
     <div ref={ref} className="relative w-full">
       <button
+        ref={triggerRef}
+        id={triggerId}
         type="button"
         aria-haspopup="listbox"
         aria-expanded={open}
-        onClick={() => setOpen((o) => !o)}
+        aria-controls={listboxId}
+        onClick={onTriggerClick}
+        onKeyDown={onTriggerKeyDown}
         className="flex w-full items-center justify-between gap-2 rounded-2xl border border-fd-border bg-fd-card/85 py-2 pr-3 pl-3.5 font-medium text-fd-foreground text-sm shadow-lg backdrop-blur-md active:scale-[0.99]"
       >
         <span className="truncate">{items[value]}</span>
@@ -469,28 +548,34 @@ function ExampleSelect({
         // Opens upward (bottom-full) since the control sits at the screen bottom.
         // Inner radius (xl=12) + p-1 (4) = 16 = the outer 2xl radius (concentric).
         <div
+          id={listboxId}
           role="listbox"
+          aria-labelledby={triggerId}
+          onKeyDown={onListboxKeyDown}
           className="absolute bottom-full left-0 z-30 mb-2 max-h-[50vh] w-full overflow-auto rounded-2xl border border-fd-border bg-fd-popover p-1 shadow-xl"
         >
           {items.map((label, i) => (
             <button
+              ref={(node) => {
+                optionRefs.current[i] = node;
+              }}
+              id={`${listboxId}-option-${i}`}
               key={label}
               type="button"
               role="option"
-              aria-selected={i === value}
-              onClick={() => {
-                onSelect(i);
-                setOpen(false);
-              }}
+              aria-selected={i === selectedIndex}
+              tabIndex={i === currentIndex ? 0 : -1}
+              onFocus={() => setActiveIndex(i)}
+              onClick={() => select(i)}
               className={cn(
                 "flex w-full items-center justify-between gap-2 rounded-xl px-3 py-2 text-left text-sm transition-colors",
-                i === value
+                i === currentIndex
                   ? "bg-fd-accent font-medium text-fd-foreground"
                   : "text-fd-muted-foreground hover:bg-fd-accent hover:text-fd-foreground",
               )}
             >
               {label}
-              {i === value ? (
+              {i === selectedIndex ? (
                 <Check aria-hidden className="size-4 shrink-0" />
               ) : null}
             </button>
