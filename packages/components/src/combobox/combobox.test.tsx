@@ -248,6 +248,66 @@ describe("Combobox", () => {
     );
   });
 
+  it("async: clears loading and shows the empty state when search rejects", async () => {
+    const onSearch = vi.fn(() => Promise.reject(new Error("network error")));
+    render(
+      <Combobox onSearch={onSearch} emptyMessage="Unable to load results" />,
+    );
+    await userEvent.click(screen.getByRole("combobox"));
+    expect(await screen.findByText(/Searching/)).toBeInTheDocument();
+
+    expect(
+      await screen.findByText("Unable to load results"),
+    ).toBeInTheDocument();
+    expect(screen.queryByText(/Searching/)).not.toBeInTheDocument();
+    expect(screen.getByRole("listbox")).not.toHaveAttribute("aria-busy");
+  });
+
+  it("async: clears loading when the search throws synchronously", async () => {
+    const onSearch = vi.fn(() => {
+      throw new Error("search failed");
+    });
+    render(<Combobox onSearch={onSearch} />);
+    await userEvent.click(screen.getByRole("combobox"));
+    expect(await screen.findByText("No results")).toBeInTheDocument();
+    expect(screen.queryByText(/Searching/)).not.toBeInTheDocument();
+    expect(screen.getByRole("listbox")).not.toHaveAttribute("aria-busy");
+  });
+
+  it("async: ignores a stale rejection after a newer query resolves", async () => {
+    let rejectInitial: (reason?: unknown) => void = () => {};
+    let resolveNext: (options: ComboboxOption[]) => void = () => {};
+    const onSearch = vi.fn(
+      (searchQuery: string) =>
+        new Promise<ComboboxOption[]>((resolve, reject) => {
+          if (searchQuery === "") {
+            rejectInitial = reject;
+          } else {
+            resolveNext = resolve;
+          }
+        }),
+    );
+    render(<Combobox onSearch={onSearch} />);
+    const input = screen.getByRole("combobox");
+    await userEvent.click(input);
+    await waitFor(() => expect(onSearch).toHaveBeenCalledWith(""));
+    await userEvent.type(input, "n");
+    await waitFor(() => expect(onSearch).toHaveBeenCalledWith("n"));
+
+    resolveNext([{ label: "New result", value: "new" }]);
+    expect(
+      await screen.findByRole("option", { name: "New result" }),
+    ).toBeInTheDocument();
+
+    rejectInitial(new Error("stale failure"));
+    await waitFor(() => {
+      expect(
+        screen.getByRole("option", { name: "New result" }),
+      ).toBeInTheDocument();
+      expect(screen.getByRole("listbox")).not.toHaveAttribute("aria-busy");
+    });
+  });
+
   it("creatable: flashes a check icon in the field as success feedback after creating", async () => {
     render(<Combobox options={options} creatable />);
     const input = screen.getByRole("combobox");

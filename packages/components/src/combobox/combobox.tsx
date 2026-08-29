@@ -226,14 +226,23 @@ const Combobox = React.forwardRef<HTMLDivElement, ComboboxProps>(
       const id = ++reqId.current;
       setLoading(true);
       const t = setTimeout(() => {
-        onSearch(query).then((res) => {
-          if (id === reqId.current) {
-            setAsyncResults(res);
-            fetchedQuery.current = query;
-            setLoading(false);
-            setActive(0);
+        void (async () => {
+          try {
+            const res = await onSearch(query);
+            if (id === reqId.current) {
+              setAsyncResults(res);
+              fetchedQuery.current = query;
+              setLoading(false);
+              setActive(0);
+            }
+          } catch {
+            if (id === reqId.current) {
+              setAsyncResults([]);
+              setLoading(false);
+              setActive(0);
+            }
           }
-        });
+        })();
       }, 180);
       return () => clearTimeout(t);
     }, [query, onSearch, open]);
