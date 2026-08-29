@@ -33,6 +33,16 @@ describe("buildBackgroundFileContent", () => {
     );
   });
 
+  it.each([
+    "constructor",
+    "toString",
+    "__proto__",
+  ])("falls back to the default variant for inherited preset name %s", (variant) => {
+    expect(buildBackgroundFileContent("geometric-background", variant)).toBe(
+      buildBackgroundFileContent("geometric-background"),
+    );
+  });
+
   it("returns null for a non-background item", () => {
     expect(buildBackgroundFileContent("magic-button")).toBeNull();
   });
