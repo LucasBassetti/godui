@@ -25,7 +25,10 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "preset": "recommended"
+      "preset": "recommended",
+      "performance": {
+        "noImgElement": "off"
+      }
     }
   },
   "overrides": [

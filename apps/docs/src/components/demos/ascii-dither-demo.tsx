@@ -79,7 +79,6 @@ export function AsciiDitherDemo() {
     <Compare
       label="ascii"
       original={
-        // biome-ignore lint/performance/noImgElement: static demo comparison
         <img
           src={PORTRAIT}
           alt="Original headphones"
@@ -107,7 +106,6 @@ export function AsciiDitherDitherDemo() {
     <Compare
       label="dither"
       original={
-        // biome-ignore lint/performance/noImgElement: static demo comparison
         <img
           src={PORTRAIT}
           alt="Original headphones"
@@ -166,7 +164,6 @@ export function AsciiDitherGlitchDemo() {
     <Compare
       label="glitch"
       original={
-        // biome-ignore lint/performance/noImgElement: static demo comparison
         <img
           src={PORTRAIT}
           alt="Original headphones"
