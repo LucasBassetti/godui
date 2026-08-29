@@ -4,12 +4,30 @@
 // catalog. Categories come from the docs sidebar config (meta.json). Run via
 // `pnpm build:registry`.
 
+import { execFileSync } from "node:child_process";
 import { readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(__dirname, "../../..");
+
+function getSourceRevision() {
+  const configured = [
+    process.env.GITHUB_SHA,
+    process.env.VERCEL_GIT_COMMIT_SHA,
+  ].find((value) => value?.trim());
+  if (configured) return configured.trim();
+
+  try {
+    return execFileSync("git", ["rev-parse", "HEAD"], {
+      cwd: repoRoot,
+      encoding: "utf8",
+    }).trim();
+  } catch {
+    return "unknown";
+  }
+}
 
 const registry = JSON.parse(
   readFileSync(resolve(repoRoot, "registry.json"), "utf8"),
@@ -79,6 +97,7 @@ const components = [
 const index = {
   name: registry.name,
   homepage: registry.homepage,
+  revision: getSourceRevision(),
   components,
 };
 

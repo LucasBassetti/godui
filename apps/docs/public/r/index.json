@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "generatedAt": "2026-08-25T04:42:11.887Z",
+  "revision": "97f2131b5ca42ae2fae51c61c5c21dd469030403",
   "components": [
     {
       "name": "accordion",
