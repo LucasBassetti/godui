@@ -1,5 +1,5 @@
 import { render } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { GeometricBackground } from "./geometric-background";
 import { PixelGrid } from "./pixel-grid";
 
@@ -78,5 +78,68 @@ describe("PixelGrid", () => {
   it("unmounts cleanly without leaking animation frames", () => {
     const { unmount } = render(<PixelGrid />);
     expect(() => unmount()).not.toThrow();
+  });
+
+  it.each([
+    [0, 0],
+    [-4, 2],
+    [Number.NaN, 6],
+    [4, Number.NaN],
+    [4, -4],
+  ])("normalizes squareSize=%s and gridGap=%s without invalid allocations", (squareSize, gridGap) => {
+    const clearRect = vi.fn();
+    const fillRect = vi.fn();
+    const context = {
+      clearRect,
+      fillRect,
+      fillStyle: "",
+      getImageData: vi.fn(() => ({
+        data: new Uint8ClampedArray([0, 0, 0, 255]),
+      })),
+    } as unknown as CanvasRenderingContext2D;
+    const getContext = vi
+      .spyOn(HTMLCanvasElement.prototype, "getContext")
+      .mockReturnValue(context);
+    const matchMedia = vi.spyOn(window, "matchMedia").mockReturnValue({
+      matches: true,
+      media: "(prefers-reduced-motion: reduce)",
+      onchange: null,
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    } as unknown as MediaQueryList);
+    const random = vi.spyOn(Math, "random").mockReturnValue(0.5);
+
+    try {
+      const { container } = render(
+        <PixelGrid
+          width={96}
+          height={72}
+          squareSize={squareSize}
+          gridGap={gridGap}
+          interactive={false}
+          maxOpacity={1}
+          color="rgb(0, 0, 0)"
+        />,
+      );
+      const canvas = container.querySelector<HTMLCanvasElement>("canvas");
+      expect(canvas?.width).toBe(96);
+      expect(canvas?.height).toBe(72);
+      expect(clearRect).toHaveBeenCalled();
+      const gridCalls = fillRect.mock.calls.slice(1);
+      expect(gridCalls.length).toBeGreaterThan(1);
+      for (const [, , width, height] of gridCalls) {
+        expect(width).toBeGreaterThan(0);
+        expect(height).toBeGreaterThan(0);
+        expect(Number.isFinite(width)).toBe(true);
+        expect(Number.isFinite(height)).toBe(true);
+      }
+    } finally {
+      getContext.mockRestore();
+      matchMedia.mockRestore();
+      random.mockRestore();
+    }
   });
 });
