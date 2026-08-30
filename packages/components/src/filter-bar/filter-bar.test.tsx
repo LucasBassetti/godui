@@ -1,4 +1,10 @@
-import { render, screen } from "@testing-library/react";
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { createRef } from "react";
 import { describe, expect, it, vi } from "vitest";
@@ -22,6 +28,19 @@ const facets: Facet[] = [
     ],
   },
 ];
+
+function createFrameMount() {
+  const frame = document.createElement("iframe");
+  document.body.appendChild(frame);
+  const frameDocument = frame.contentDocument;
+  if (!frameDocument) {
+    frame.remove();
+    throw new Error("Expected the test iframe to have a content document");
+  }
+  const mount = frameDocument.createElement("div");
+  frameDocument.body.appendChild(mount);
+  return { frame, frameDocument, mount };
+}
 
 describe("FilterBar", () => {
   it("opens a facet popover and selects an option", async () => {
@@ -58,6 +77,36 @@ describe("FilterBar", () => {
     );
     await userEvent.click(screen.getByRole("button", { name: "Clear all" }));
     expect(onChange).toHaveBeenCalledWith({});
+  });
+
+  it("uses the mounted owner document for outside clicks and Escape", async () => {
+    const { frame, frameDocument, mount } = createFrameMount();
+    const { unmount } = render(<FilterBar facets={facets} />, {
+      container: mount,
+    });
+    const trigger = within(mount).getByRole("button", { name: /Status/ });
+
+    fireEvent.click(trigger);
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
+
+    fireEvent.keyDown(document, { key: "Escape" });
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
+
+    fireEvent.keyDown(frameDocument, { key: "Escape" });
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+    await waitFor(() =>
+      expect(frameDocument.querySelector('[role="listbox"]')).toBeNull(),
+    );
+
+    fireEvent.click(trigger);
+    fireEvent.mouseDown(document.body);
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
+
+    fireEvent.mouseDown(frameDocument.body);
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+
+    unmount();
+    frame.remove();
   });
 
   it("forwards the ref and sets a displayName", () => {
