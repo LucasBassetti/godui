@@ -108,7 +108,9 @@ const MenuPanel = ({
 
   const focusable = () =>
     Array.from(
-      listRef.current?.querySelectorAll<HTMLElement>("[data-menu-item]") ?? [],
+      listRef.current?.querySelectorAll<HTMLElement>(
+        '[data-menu-item]:not([disabled]):not([aria-disabled="true"])',
+      ) ?? [],
     );
 
   const moveFocus = (dir: 1 | -1) => {
@@ -241,7 +243,11 @@ const MenuPanel = ({
           );
         }
 
-        const handleSelect = () => {
+        const handleSelect = (event: React.MouseEvent<HTMLElement>) => {
+          if (item.disabled) {
+            event.preventDefault();
+            return;
+          }
           item.onSelect?.();
           onClose();
         };
@@ -253,6 +259,8 @@ const MenuPanel = ({
               key={`item-${index}`}
               role="menuitem"
               data-menu-item
+              aria-disabled={item.disabled || undefined}
+              tabIndex={item.disabled ? -1 : undefined}
               href={item.href}
               onClick={handleSelect}
               className={baseClass}
