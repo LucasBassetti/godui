@@ -131,6 +131,8 @@ const WorldMap = React.forwardRef<HTMLDivElement, WorldMapProps>(
       return [...seen.values()];
     }, [arcs]);
 
+    const labeledPins = pins.filter((pin) => pin.label);
+
     return (
       <div
         ref={ref}
@@ -217,6 +219,16 @@ const WorldMap = React.forwardRef<HTMLDivElement, WorldMapProps>(
             </g>
           ))}
         </svg>
+
+        {labeledPins.length > 0 ? (
+          <ul aria-label="World map endpoints" className="sr-only">
+            {labeledPins.map((pin) => (
+              <li key={`${pin.x},${pin.y}`} aria-label={pin.label}>
+                {pin.label}
+              </li>
+            ))}
+          </ul>
+        ) : null}
       </div>
     );
   },
