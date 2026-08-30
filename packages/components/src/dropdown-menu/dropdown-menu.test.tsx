@@ -44,6 +44,47 @@ describe("DropdownMenu", () => {
     expect(onSelect).toHaveBeenCalledOnce();
   });
 
+  it("keeps disabled links inert and out of the menu focus order", async () => {
+    const onSelect = vi.fn();
+    render(
+      <DropdownMenu
+        trigger="Open"
+        items={[
+          {
+            label: "Disabled link",
+            href: "/disabled",
+            disabled: true,
+            onSelect,
+          },
+          { label: "Enabled link", href: "/enabled" },
+        ]}
+      />,
+    );
+
+    const trigger = screen.getByRole("button", { name: "Open" });
+    await userEvent.click(trigger);
+    const disabledLink = screen.getByRole("menuitem", {
+      name: "Disabled link",
+    });
+    const enabledLink = screen.getByRole("menuitem", {
+      name: "Enabled link",
+    });
+
+    expect(disabledLink).toHaveAttribute("aria-disabled", "true");
+    expect(disabledLink).toHaveAttribute("tabindex", "-1");
+    expect(enabledLink).toHaveFocus();
+
+    const clickEvent = new MouseEvent("click", {
+      bubbles: true,
+      cancelable: true,
+    });
+    fireEvent(disabledLink, clickEvent);
+
+    expect(clickEvent.defaultPrevented).toBe(true);
+    expect(onSelect).not.toHaveBeenCalled();
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
+  });
+
   it("closes on Escape", async () => {
     render(<DropdownMenu trigger="Open" items={makeItems(() => {})} />);
     const trigger = screen.getByRole("button", { name: "Open" });
