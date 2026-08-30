@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { createRef } from "react";
 import { describe, expect, it, vi } from "vitest";
@@ -10,6 +10,19 @@ const makeItems = (onSelect: () => void): DropdownMenuItem[] => [
   { type: "separator" },
   { label: "Disabled", disabled: true },
 ];
+
+function createFrameMount() {
+  const frame = document.createElement("iframe");
+  document.body.appendChild(frame);
+  const frameDocument = frame.contentDocument;
+  if (!frameDocument) {
+    frame.remove();
+    throw new Error("Expected the test iframe to have a content document");
+  }
+  const mount = frameDocument.createElement("div");
+  frameDocument.body.appendChild(mount);
+  return { frame, frameDocument, mount };
+}
 
 describe("DropdownMenu", () => {
   it("opens on trigger click and renders items", async () => {
@@ -37,6 +50,27 @@ describe("DropdownMenu", () => {
     await userEvent.click(trigger);
     await userEvent.keyboard("{Escape}");
     expect(trigger).toHaveAttribute("aria-expanded", "false");
+  });
+
+  it("uses the mounted owner document for outside clicks", () => {
+    const { frame, frameDocument, mount } = createFrameMount();
+    const { unmount } = render(
+      <DropdownMenu trigger="Open" items={makeItems(() => {})} />,
+      { container: mount },
+    );
+    const trigger = within(mount).getByRole("button", { name: "Open" });
+
+    fireEvent.click(trigger);
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
+
+    fireEvent.mouseDown(document.body);
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
+
+    fireEvent.mouseDown(frameDocument.body);
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+
+    unmount();
+    frame.remove();
   });
 
   it("forwards the ref and sets a displayName", () => {

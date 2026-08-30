@@ -114,7 +114,9 @@ const MenuPanel = ({
   const moveFocus = (dir: 1 | -1) => {
     const nodes = focusable();
     if (nodes.length === 0) return;
-    const idx = nodes.indexOf(document.activeElement as HTMLElement);
+    const idx = nodes.indexOf(
+      listRef.current?.ownerDocument.activeElement as HTMLElement,
+    );
     const next = (idx + dir + nodes.length) % nodes.length;
     nodes[next]?.focus();
   };
@@ -289,13 +291,15 @@ const DropdownMenu = React.forwardRef<HTMLDivElement, DropdownMenuProps>(
 
     React.useEffect(() => {
       if (!open) return;
+      const ownerDocument = rootRef.current?.ownerDocument;
+      if (!ownerDocument) return;
       const onDown = (e: MouseEvent) => {
         if (rootRef.current && !rootRef.current.contains(e.target as Node)) {
           setOpen(false);
         }
       };
-      document.addEventListener("mousedown", onDown);
-      return () => document.removeEventListener("mousedown", onDown);
+      ownerDocument.addEventListener("mousedown", onDown);
+      return () => ownerDocument.removeEventListener("mousedown", onDown);
     }, [open]);
 
     const close = () => {
