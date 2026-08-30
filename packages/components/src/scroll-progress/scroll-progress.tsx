@@ -72,6 +72,7 @@ const ScrollProgress = React.forwardRef<HTMLDivElement, ScrollProgressProps>(
           showAfter={showAfter}
           pinned={pinned}
           position={position}
+          container={container}
           className={className}
           {...props}
         />
@@ -110,6 +111,7 @@ const CircleProgress = React.forwardRef<HTMLDivElement, CircleProps>(
       showAfter = 0.05,
       pinned,
       position = "bottom-right",
+      container,
       className,
     },
     ref,
@@ -136,12 +138,18 @@ const CircleProgress = React.forwardRef<HTMLDivElement, CircleProps>(
         type="button"
         aria-label="Back to top"
         onClick={(e) => {
-          const scroller =
-            (e.currentTarget.closest(
-              "[data-scroll-container]",
-            ) as HTMLElement | null) ?? null;
+          const scroller = container?.current;
           if (scroller) {
             scroller.scrollTo({ top: 0, behavior: "smooth" });
+            return;
+          }
+          if (container) return;
+
+          const ancestor = e.currentTarget.closest(
+            "[data-scroll-container]",
+          ) as HTMLElement | null;
+          if (ancestor) {
+            ancestor.scrollTo({ top: 0, behavior: "smooth" });
           } else {
             window.scrollTo({ top: 0, behavior: "smooth" });
           }
