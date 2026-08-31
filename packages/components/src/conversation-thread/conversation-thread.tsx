@@ -254,16 +254,32 @@ ConversationMessage.displayName = "ConversationMessage";
 export type StreamingTextProps = {
   /** Full text to reveal token-by-token. */
   text: string;
-  /** Characters revealed per tick. */
+  /** Characters revealed per tick; non-finite values use 1, and finite values are floored and clamped to 1. */
   chunk?: number;
-  /** Milliseconds between ticks. */
+  /** Milliseconds between ticks; non-finite values and values below 1 use a 1 ms minimum. */
   speed?: number;
   /** Fired once the full text is revealed. */
   onDone?: () => void;
 };
 
+const MIN_STREAMING_TEXT_CHUNK = 1;
+const MIN_STREAMING_TEXT_SPEED = 1;
+
+function normalizeStreamingTextChunk(value: number) {
+  return Number.isFinite(value)
+    ? Math.max(MIN_STREAMING_TEXT_CHUNK, Math.floor(value))
+    : MIN_STREAMING_TEXT_CHUNK;
+}
+
+function normalizeStreamingTextSpeed(value: number) {
+  return Number.isFinite(value)
+    ? Math.max(MIN_STREAMING_TEXT_SPEED, value)
+    : MIN_STREAMING_TEXT_SPEED;
+}
+
 /**
- * Reveals `text` progressively. Honors reduced-motion by showing it instantly.
+ * Reveals `text` progressively. Honors reduced-motion by showing it instantly;
+ * empty text calls `onDone` without scheduling a timer.
  */
 function StreamingText({
   text,
@@ -273,6 +289,8 @@ function StreamingText({
 }: StreamingTextProps) {
   const reduce = useReducedMotion();
   const [count, setCount] = React.useState(reduce ? text.length : 0);
+  const normalizedChunk = normalizeStreamingTextChunk(chunk);
+  const normalizedSpeed = normalizeStreamingTextSpeed(speed);
 
   React.useEffect(() => {
     if (reduce) {
@@ -281,17 +299,21 @@ function StreamingText({
       return;
     }
     setCount(0);
+    if (text.length === 0) {
+      onDone?.();
+      return;
+    }
     let current = 0;
     const id = setInterval(() => {
-      current = Math.min(current + chunk, text.length);
+      current = Math.min(current + normalizedChunk, text.length);
       setCount(current);
       if (current >= text.length) {
         clearInterval(id);
         onDone?.();
       }
-    }, speed);
+    }, normalizedSpeed);
     return () => clearInterval(id);
-  }, [text, chunk, speed, reduce, onDone]);
+  }, [text, normalizedChunk, normalizedSpeed, reduce, onDone]);
 
   return <>{text.slice(0, count)}</>;
 }
