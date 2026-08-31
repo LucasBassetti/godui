@@ -97,6 +97,21 @@ describe("registry client", () => {
     ]);
   });
 
+  it.each([
+    ["@godui/../private", "path traversal"],
+    ["..%2Fprivate", "encoded path traversal"],
+    ["private/component", "slash"],
+    ["private\\component", "backslash"],
+  ])("rejects %s (%s) before fetching", async (name) => {
+    const fetchImpl = vi.fn();
+    const client = createRegistryClient({ fetchImpl });
+
+    await expect(client.getComponent(name)).rejects.toThrow(
+      "Invalid GodUI component name",
+    );
+    expect(fetchImpl).not.toHaveBeenCalled();
+  });
+
   it("supports verified variant payloads", async () => {
     const variantPath = "gradient-background.json?variant=aurora-glow";
     const fetchImpl = registryFetch({

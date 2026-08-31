@@ -5,6 +5,7 @@ import { createHash } from "node:crypto";
 const DEFAULT_BASE_URL = "https://godui.design/r";
 const MANIFEST_PATH = "manifest.json";
 const SHA256_HEX = /^[a-f0-9]{64}$/;
+const COMPONENT_SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 /** Base registry URL, overridable for local testing (e.g. http://localhost:3000/r). */
 export const registryBaseUrl = (
@@ -85,6 +86,11 @@ function isDigestMap(value: unknown): value is Record<string, string> {
         SHA256_HEX.test(digest),
     )
   );
+}
+
+function normalizeComponentSlug(name: string): string | undefined {
+  const slug = name.trim().replace(/^@godui\//, "");
+  return COMPONENT_SLUG.test(slug) ? slug : undefined;
 }
 
 function validateManifest(value: unknown, url: string): RegistryManifest {
@@ -230,7 +236,14 @@ export function createRegistryClient(
       return indexCache;
     },
     getComponent(name, variant) {
-      const slug = name.trim().replace(/^@godui\//, "");
+      const slug = normalizeComponentSlug(name);
+      if (!slug) {
+        return Promise.reject(
+          new Error(
+            "Invalid GodUI component name; expected a single catalog slug",
+          ),
+        );
+      }
       const query = variant ? `?variant=${encodeURIComponent(variant)}` : "";
       const path = `${slug}.json${query}`;
       const url = `${baseUrl}/${path}`;
