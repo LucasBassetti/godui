@@ -21,16 +21,29 @@ export type ContextMenuProps = React.HTMLAttributes<HTMLDivElement> & {
   children: React.ReactNode;
 };
 
-type Coords = { x: number; y: number; flipX: boolean; flipY: boolean };
+type Coords = {
+  x: number;
+  y: number;
+  flipX: boolean;
+  flipY: boolean;
+  viewportWidth: number;
+  viewportHeight: number;
+};
 
 const ContextMenu = React.forwardRef<HTMLDivElement, ContextMenuProps>(
   ({ items, children, className, ...props }, ref) => {
     const reduceMotion = useReducedMotion();
     const [coords, setCoords] = React.useState<Coords | null>(null);
+    const rootRef = React.useRef<HTMLDivElement>(null);
     const menuRef = React.useRef<HTMLDivElement>(null);
+
+    React.useImperativeHandle(ref, () => rootRef.current as HTMLDivElement);
 
     React.useEffect(() => {
       if (!coords) return;
+      const ownerDocument = rootRef.current?.ownerDocument;
+      if (!ownerDocument) return;
+      const ownerWindow = ownerDocument.defaultView;
       const onDown = (e: MouseEvent) => {
         if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
           setCoords(null);
@@ -40,13 +53,13 @@ const ContextMenu = React.forwardRef<HTMLDivElement, ContextMenuProps>(
       const onKey = (e: KeyboardEvent) => {
         if (e.key === "Escape") setCoords(null);
       };
-      document.addEventListener("mousedown", onDown);
-      window.addEventListener("scroll", onScroll, true);
-      document.addEventListener("keydown", onKey);
+      ownerDocument.addEventListener("mousedown", onDown);
+      ownerWindow?.addEventListener("scroll", onScroll, true);
+      ownerDocument.addEventListener("keydown", onKey);
       return () => {
-        document.removeEventListener("mousedown", onDown);
-        window.removeEventListener("scroll", onScroll, true);
-        document.removeEventListener("keydown", onKey);
+        ownerDocument.removeEventListener("mousedown", onDown);
+        ownerWindow?.removeEventListener("scroll", onScroll, true);
+        ownerDocument.removeEventListener("keydown", onKey);
       };
     }, [coords]);
 
@@ -61,9 +74,20 @@ const ContextMenu = React.forwardRef<HTMLDivElement, ContextMenuProps>(
     const openAt = (clientX: number, clientY: number) => {
       const menuW = 220;
       const menuH = Math.min(items.length * 40 + 12, 360);
-      const flipX = clientX + menuW > window.innerWidth;
-      const flipY = clientY + menuH > window.innerHeight;
-      setCoords({ x: clientX, y: clientY, flipX, flipY });
+      const ownerWindow = rootRef.current?.ownerDocument.defaultView;
+      const viewportWidth = ownerWindow?.innerWidth ?? Number.POSITIVE_INFINITY;
+      const viewportHeight =
+        ownerWindow?.innerHeight ?? Number.POSITIVE_INFINITY;
+      const flipX = clientX + menuW > viewportWidth;
+      const flipY = clientY + menuH > viewportHeight;
+      setCoords({
+        x: clientX,
+        y: clientY,
+        flipX,
+        flipY,
+        viewportWidth,
+        viewportHeight,
+      });
     };
 
     const moveFocus = (dir: 1 | -1) => {
@@ -72,7 +96,9 @@ const ContextMenu = React.forwardRef<HTMLDivElement, ContextMenuProps>(
           [],
       );
       if (!nodes.length) return;
-      const idx = nodes.indexOf(document.activeElement as HTMLElement);
+      const idx = nodes.indexOf(
+        menuRef.current?.ownerDocument.activeElement as HTMLElement,
+      );
       nodes[(idx + dir + nodes.length) % nodes.length]?.focus();
     };
 
@@ -81,7 +107,7 @@ const ContextMenu = React.forwardRef<HTMLDivElement, ContextMenuProps>(
       : ({ type: "spring", stiffness: 520, damping: 32 } as const);
 
     return (
-      <div ref={ref} className={className} {...props}>
+      <div ref={rootRef} className={className} {...props}>
         {/* biome-ignore lint/a11y/noStaticElementInteractions: right-click capture region */}
         <div
           onContextMenu={(e) => {
@@ -116,10 +142,12 @@ const ContextMenu = React.forwardRef<HTMLDivElement, ContextMenuProps>(
               style={{
                 position: "fixed",
                 left: coords.flipX ? undefined : coords.x,
-                right: coords.flipX ? window.innerWidth - coords.x : undefined,
+                right: coords.flipX
+                  ? coords.viewportWidth - coords.x
+                  : undefined,
                 top: coords.flipY ? undefined : coords.y,
                 bottom: coords.flipY
-                  ? window.innerHeight - coords.y
+                  ? coords.viewportHeight - coords.y
                   : undefined,
                 transformOrigin: `${coords.flipX ? "right" : "left"} ${
                   coords.flipY ? "bottom" : "top"

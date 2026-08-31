@@ -108,13 +108,17 @@ const MenuPanel = ({
 
   const focusable = () =>
     Array.from(
-      listRef.current?.querySelectorAll<HTMLElement>("[data-menu-item]") ?? [],
+      listRef.current?.querySelectorAll<HTMLElement>(
+        '[data-menu-item]:not([disabled]):not([aria-disabled="true"])',
+      ) ?? [],
     );
 
   const moveFocus = (dir: 1 | -1) => {
     const nodes = focusable();
     if (nodes.length === 0) return;
-    const idx = nodes.indexOf(document.activeElement as HTMLElement);
+    const idx = nodes.indexOf(
+      listRef.current?.ownerDocument.activeElement as HTMLElement,
+    );
     const next = (idx + dir + nodes.length) % nodes.length;
     nodes[next]?.focus();
   };
@@ -239,7 +243,11 @@ const MenuPanel = ({
           );
         }
 
-        const handleSelect = () => {
+        const handleSelect = (event: React.MouseEvent<HTMLElement>) => {
+          if (item.disabled) {
+            event.preventDefault();
+            return;
+          }
           item.onSelect?.();
           onClose();
         };
@@ -251,6 +259,8 @@ const MenuPanel = ({
               key={`item-${index}`}
               role="menuitem"
               data-menu-item
+              aria-disabled={item.disabled || undefined}
+              tabIndex={item.disabled ? -1 : undefined}
               href={item.href}
               onClick={handleSelect}
               className={baseClass}
@@ -289,13 +299,15 @@ const DropdownMenu = React.forwardRef<HTMLDivElement, DropdownMenuProps>(
 
     React.useEffect(() => {
       if (!open) return;
+      const ownerDocument = rootRef.current?.ownerDocument;
+      if (!ownerDocument) return;
       const onDown = (e: MouseEvent) => {
         if (rootRef.current && !rootRef.current.contains(e.target as Node)) {
           setOpen(false);
         }
       };
-      document.addEventListener("mousedown", onDown);
-      return () => document.removeEventListener("mousedown", onDown);
+      ownerDocument.addEventListener("mousedown", onDown);
+      return () => ownerDocument.removeEventListener("mousedown", onDown);
     }, [open]);
 
     const close = () => {

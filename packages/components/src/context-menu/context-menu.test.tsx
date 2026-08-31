@@ -1,4 +1,10 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { createRef } from "react";
 import { describe, expect, it, vi } from "vitest";
@@ -10,6 +16,19 @@ const items: ContextMenuItem[] = [
   { type: "separator" },
   { label: "Delete", destructive: true, onSelect: () => {} },
 ];
+
+function createFrameMount() {
+  const frame = document.createElement("iframe");
+  document.body.appendChild(frame);
+  const frameDocument = frame.contentDocument;
+  if (!frameDocument) {
+    frame.remove();
+    throw new Error("Expected the test iframe to have a content document");
+  }
+  const mount = frameDocument.createElement("div");
+  frameDocument.body.appendChild(mount);
+  return { frame, frameDocument, mount };
+}
 
 describe("ContextMenu", () => {
   it("opens at the cursor on right-click", () => {
@@ -50,6 +69,83 @@ describe("ContextMenu", () => {
     await waitFor(() =>
       expect(screen.queryByRole("menu")).not.toBeInTheDocument(),
     );
+  });
+
+  it("uses the iframe owner document and viewport", () => {
+    const { frame, frameDocument, mount } = createFrameMount();
+    const frameWindow = frameDocument.defaultView;
+    if (!frameWindow) {
+      frame.remove();
+      throw new Error("Expected the test iframe to have a default view");
+    }
+    Object.defineProperty(frameWindow, "innerWidth", {
+      configurable: true,
+      value: 200,
+    });
+    Object.defineProperty(frameWindow, "innerHeight", {
+      configurable: true,
+      value: 200,
+    });
+
+    const parentDocumentAdd = vi.spyOn(document, "addEventListener");
+    const frameDocumentAdd = vi.spyOn(frameDocument, "addEventListener");
+    const parentWindowAdd = vi.spyOn(window, "addEventListener");
+    const frameWindowAdd = vi.spyOn(frameWindow, "addEventListener");
+    let unmount: (() => void) | undefined;
+
+    try {
+      ({ unmount } = render(
+        <ContextMenu items={items}>
+          <div>Target</div>
+        </ContextMenu>,
+        { container: mount },
+      ));
+      fireEvent.contextMenu(within(mount).getByText("Target"), {
+        clientX: 100,
+        clientY: 80,
+      });
+
+      const menu = frameDocument.querySelector<HTMLElement>('[role="menu"]');
+      expect(menu).not.toBeNull();
+      expect(menu?.style.left).toBe("");
+      expect(menu?.style.right).toBe("100px");
+      expect(menu?.style.top).toBe("");
+      expect(menu?.style.bottom).toBe("120px");
+
+      expect(frameDocumentAdd).toHaveBeenCalledWith(
+        "mousedown",
+        expect.any(Function),
+      );
+      expect(frameDocumentAdd).toHaveBeenCalledWith(
+        "keydown",
+        expect.any(Function),
+      );
+      expect(parentDocumentAdd).not.toHaveBeenCalledWith(
+        "mousedown",
+        expect.any(Function),
+      );
+      expect(parentDocumentAdd).not.toHaveBeenCalledWith(
+        "keydown",
+        expect.any(Function),
+      );
+      expect(frameWindowAdd).toHaveBeenCalledWith(
+        "scroll",
+        expect.any(Function),
+        true,
+      );
+      expect(parentWindowAdd).not.toHaveBeenCalledWith(
+        "scroll",
+        expect.any(Function),
+        true,
+      );
+    } finally {
+      unmount?.();
+      parentDocumentAdd.mockRestore();
+      frameDocumentAdd.mockRestore();
+      parentWindowAdd.mockRestore();
+      frameWindowAdd.mockRestore();
+      frame.remove();
+    }
   });
 
   it("forwards the ref and sets a displayName", () => {
