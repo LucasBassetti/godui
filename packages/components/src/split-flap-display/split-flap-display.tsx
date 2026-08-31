@@ -63,7 +63,10 @@ export type SplitFlapDisplayProps = Omit<
   charset?: string | string[];
   /** Seconds each successive column waits before it starts — the wave. */
   stagger?: number;
-  /** Cap on how many flips a single column will spin before settling. */
+  /**
+   * Cap on how many flips a single column will spin before settling. Negative
+   * or non-finite values use the default cap; finite fractions round down.
+   */
   maxFlaps?: number;
 };
 
@@ -73,6 +76,7 @@ export type SplitFlapDisplayProps = Omit<
 const TICK = 0.12;
 
 const DEFAULT_CHARSET = " ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,:-'!?@#&/";
+const DEFAULT_MAX_FLAPS = 12;
 /** Practical cap for the board's per-render DOM and padding work. */
 const MAX_LENGTH = 100;
 
@@ -81,6 +85,13 @@ function normalizeLength(length: number | undefined, valueLength: number) {
     return Math.min(valueLength, MAX_LENGTH);
   }
   return Math.min(Math.max(length, 0), MAX_LENGTH);
+}
+
+function normalizeMaxFlaps(maxFlaps: number | undefined): number {
+  if (maxFlaps == null || !Number.isFinite(maxFlaps) || maxFlaps < 0) {
+    return DEFAULT_MAX_FLAPS;
+  }
+  return Math.floor(maxFlaps);
 }
 
 const sizeClasses: Record<SplitFlapSize, string> = {
@@ -250,7 +261,7 @@ const SplitFlapDisplay = React.forwardRef<
       size = "md",
       charset = DEFAULT_CHARSET,
       stagger = 0.06,
-      maxFlaps = 12,
+      maxFlaps = DEFAULT_MAX_FLAPS,
       className,
       ...props
     },
@@ -265,6 +276,7 @@ const SplitFlapDisplay = React.forwardRef<
 
     const upper = value.toUpperCase();
     const count = normalizeLength(length, upper.length);
+    const normalizedMaxFlaps = normalizeMaxFlaps(maxFlaps);
     const chars = React.useMemo(() => {
       const pad = Math.max(0, count - upper.length);
       const body = upper.slice(0, count);
@@ -294,7 +306,7 @@ const SplitFlapDisplay = React.forwardRef<
             charset={
               Array.isArray(charset) ? (charset[i] ?? DEFAULT_CHARSET) : charset
             }
-            maxFlaps={maxFlaps}
+            maxFlaps={normalizedMaxFlaps}
           />
         ))}
       </div>

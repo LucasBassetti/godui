@@ -1,7 +1,18 @@
-import { render } from "@testing-library/react";
+import { act, fireEvent, render } from "@testing-library/react";
 import { createRef } from "react";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { SplitFlapDisplay } from "./split-flap-display";
+
+let intersectionCallback: IntersectionObserverCallback | undefined;
+
+class MockIntersectionObserver {
+  constructor(callback: IntersectionObserverCallback) {
+    intersectionCallback = callback;
+  }
+
+  observe() {}
+  disconnect() {}
+}
 
 function getRoot(container: HTMLElement) {
   return container.querySelector<HTMLElement>(
@@ -12,6 +23,18 @@ function getRoot(container: HTMLElement) {
 function flaps(container: HTMLElement) {
   return getRoot(container).querySelectorAll(":scope > [aria-hidden]");
 }
+
+function risingHalves(container: HTMLElement) {
+  return Array.from(flaps(container)).flatMap((flap) => {
+    const rise = flap.querySelector<HTMLElement>(".animate-split-flap-rise");
+    return rise ? [rise] : [];
+  });
+}
+
+afterEach(() => {
+  intersectionCallback = undefined;
+  vi.unstubAllGlobals();
+});
 
 describe("SplitFlapDisplay", () => {
   it("renders one flap per character of the value", () => {
@@ -64,6 +87,35 @@ describe("SplitFlapDisplay", () => {
       expect(getRoot(container)).toHaveClass(className);
       expect(flaps(container)).toHaveLength(6);
     }
+  });
+
+  it("settles every digit when animation ends with a negative maxFlaps", () => {
+    vi.stubGlobal("IntersectionObserver", MockIntersectionObserver);
+    const { container } = render(
+      <SplitFlapDisplay value="ABC" charset=" ABC" maxFlaps={-1} />,
+    );
+
+    act(() => {
+      intersectionCallback?.(
+        [{ isIntersecting: true } as IntersectionObserverEntry],
+        {} as IntersectionObserver,
+      );
+    });
+
+    expect(risingHalves(container)).toHaveLength(3);
+
+    for (let i = 0; i < 10; i++) {
+      const rises = risingHalves(container);
+      if (rises.length === 0) break;
+      act(() => {
+        for (const rise of rises) fireEvent.animationEnd(rise);
+      });
+    }
+
+    expect(risingHalves(container)).toHaveLength(0);
+    expect(
+      Array.from(flaps(container)).map((flap) => flap.textContent),
+    ).toEqual(["AA", "BB", "CC"]);
   });
 
   it("accepts a per-column charset array", () => {
