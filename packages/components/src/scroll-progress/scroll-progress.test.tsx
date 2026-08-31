@@ -20,6 +20,33 @@ describe("ScrollProgress", () => {
     ).not.toBeInTheDocument();
   });
 
+  it("forwards circle props and its div ref to the root", async () => {
+    const ref = createRef<HTMLDivElement>();
+    const onClick = vi.fn();
+    vi.spyOn(window, "scrollTo").mockImplementation(() => {});
+
+    render(
+      <ScrollProgress
+        ref={ref}
+        variant="circle"
+        showAfter={-1}
+        data-testid="circle-progress"
+        aria-describedby="progress-description"
+        onClick={onClick}
+      />,
+    );
+
+    const button = await screen.findByRole("button", { name: "Back to top" });
+    const root = screen.getByTestId("circle-progress");
+
+    expect(root).toBe(ref.current);
+    expect(root).toBeInstanceOf(HTMLDivElement);
+    expect(root).toHaveAttribute("aria-describedby", "progress-description");
+
+    fireEvent.click(button);
+    expect(onClick).toHaveBeenCalledTimes(1);
+  });
+
   it("scrolls the supplied container to the top for the circle variant", async () => {
     const containerRef = createRef<HTMLDivElement>();
     const containerScrollTo = vi.fn();
