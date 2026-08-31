@@ -1,5 +1,5 @@
 // biome-ignore-all lint/a11y/useValidAriaRole: "role" is a chat-message domain prop, not an ARIA role
-import { act, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import {
   ConversationMessage,
@@ -13,6 +13,30 @@ describe("ConversationThread", () => {
     render(<ConversationThread ref={ref} variant="document" />);
     expect(ref.current).toBeInstanceOf(HTMLDivElement);
     expect(ref.current?.getAttribute("data-variant")).toBe("document");
+  });
+
+  it("preserves pin bookkeeping when a consumer supplies onScroll", () => {
+    const onScroll = vi.fn();
+    render(
+      <ConversationThread onScroll={onScroll}>
+        <ConversationMessage role="assistant">Hello</ConversationMessage>
+      </ConversationThread>,
+    );
+    const thread = document.querySelector(
+      '[data-slot="conversation-thread"]',
+    ) as HTMLDivElement;
+    Object.defineProperties(thread, {
+      clientHeight: { configurable: true, value: 100 },
+      scrollHeight: { configurable: true, value: 200 },
+      scrollTop: { configurable: true, value: 0 },
+    });
+
+    fireEvent.scroll(thread);
+
+    expect(onScroll).toHaveBeenCalledOnce();
+    expect(
+      screen.getByRole("button", { name: /Jump to latest/ }),
+    ).toBeInTheDocument();
   });
 
   it("renders messages with their role attribute", () => {
