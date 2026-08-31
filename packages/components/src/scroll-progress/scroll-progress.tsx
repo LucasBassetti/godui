@@ -113,6 +113,7 @@ const CircleProgress = React.forwardRef<HTMLDivElement, CircleProps>(
       position = "bottom-right",
       container,
       className,
+      ...props
     },
     ref,
   ) => {
@@ -134,7 +135,6 @@ const CircleProgress = React.forwardRef<HTMLDivElement, CircleProps>(
 
     const button = (
       <motion.button
-        ref={ref as React.Ref<HTMLButtonElement>}
         type="button"
         aria-label="Back to top"
         onClick={(e) => {
@@ -210,17 +210,21 @@ const CircleProgress = React.forwardRef<HTMLDivElement, CircleProps>(
         {visible &&
           (pinned === "sticky" ? (
             <div
+              ref={ref}
               className={`pointer-events-none sticky bottom-6 z-sticky flex ${
                 left ? "justify-start pl-6" : "justify-end pr-6"
               } ${className ?? ""}`}
+              {...props}
             >
               {button}
             </div>
           ) : (
             <div
+              ref={ref}
               className={`pointer-events-none fixed bottom-6 z-sticky ${
                 left ? "left-6" : "right-6"
               } ${className ?? ""}`}
+              {...props}
             >
               {button}
             </div>
