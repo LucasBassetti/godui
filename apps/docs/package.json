@@ -5,6 +5,7 @@
   "scripts": {
     "predev": "node scripts/free-dev-port.mjs",
     "dev": "next dev --turbopack",
+    "test": "node --test scripts/free-dev-port.test.mjs",
     "build": "next build --turbopack && node scripts/aeo-postbuild.mjs",
     "start": "next start",
     "lint": "eslint",
