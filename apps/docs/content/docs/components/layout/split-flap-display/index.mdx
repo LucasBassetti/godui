@@ -112,7 +112,7 @@ const CLOCK = ["012", "0123456789", ":", "012345", "0123456789", ":", "012345", 
 | `size`     | `"sm" \| "md" \| "lg"`            | `"md"`       | Flap size preset.                                                        |
 | `charset`  | `string \| string[]`              | A–Z 0–9 …    | Glyphs the flaps rotate through. An array gives each column its own reel by position. Leading space is the blank flap. |
 | `stagger`  | `number`                          | `0.06`       | Seconds each successive column waits before it starts — the wave.        |
-| `maxFlaps` | `number`                          | `12`         | Cap on how many flips one column spins before settling.                  |
+| `maxFlaps` | `number`                          | `12`         | Cap on how many flips one column spins; finite non-negative values round down, while negative or non-finite values use `12`. |
 
 `SplitFlapDisplay` forwards every standard `<div>` attribute and exposes the
 current `value` as an `aria-label`. Motion is compositor-only (`rotateX`) and
