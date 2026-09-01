@@ -118,6 +118,90 @@ describe("SplitFlapDisplay", () => {
     ).toEqual(["AA", "BB", "CC"]);
   });
 
+  it("normalizes zero, fractional, and non-finite maxFlaps", () => {
+    vi.stubGlobal("IntersectionObserver", MockIntersectionObserver);
+    const cases = [
+      {
+        maxFlaps: 0,
+        value: "C",
+        charset: " ABC",
+        expectedRises: 0,
+        expectedFlips: 0,
+      },
+      {
+        maxFlaps: 1.9,
+        value: "C",
+        charset: " ABC",
+        expectedRises: 1,
+        expectedFlips: 1,
+      },
+      {
+        maxFlaps: Infinity,
+        value: "M",
+        charset: " ABCDEFGHIJKLM",
+        expectedRises: 1,
+        expectedFlips: 12,
+      },
+      {
+        maxFlaps: Number.NaN,
+        value: "M",
+        charset: " ABCDEFGHIJKLM",
+        expectedRises: 1,
+        expectedFlips: 12,
+      },
+    ];
+
+    for (const {
+      maxFlaps,
+      value,
+      charset,
+      expectedRises,
+      expectedFlips,
+    } of cases) {
+      const { container, unmount } = render(
+        <SplitFlapDisplay
+          value={value}
+          charset={charset}
+          maxFlaps={maxFlaps}
+        />,
+      );
+
+      act(() => {
+        intersectionCallback?.(
+          [{ isIntersecting: true } as IntersectionObserverEntry],
+          {} as IntersectionObserver,
+        );
+      });
+
+      expect(
+        risingHalves(container),
+        `initial rises for maxFlaps=${String(maxFlaps)}`,
+      ).toHaveLength(expectedRises);
+
+      let flips = 0;
+      for (let i = 0; i <= 12; i++) {
+        const rises = risingHalves(container);
+        if (rises.length === 0) break;
+        flips += rises.length;
+        act(() => {
+          for (const rise of rises) fireEvent.animationEnd(rise);
+        });
+      }
+
+      expect(flips, `flips for maxFlaps=${String(maxFlaps)}`).toBe(
+        expectedFlips,
+      );
+      expect(
+        risingHalves(container),
+        `remaining rises for maxFlaps=${String(maxFlaps)}`,
+      ).toHaveLength(0);
+      expect(
+        Array.from(flaps(container)).map((flap) => flap.textContent),
+      ).toEqual([value + value]);
+      unmount();
+    }
+  });
+
   it("accepts a per-column charset array", () => {
     const { container } = render(
       <SplitFlapDisplay
