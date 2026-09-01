@@ -509,6 +509,7 @@ const AsciiDither = React.forwardRef<HTMLDivElement, AsciiDitherProps>(
         img.crossOrigin = "anonymous";
         img.onload = kickoff;
         img.onerror = () => {
+          if (cancelled) return;
           ready = true;
           render(performance.now());
         };
@@ -584,6 +585,10 @@ const AsciiDither = React.forwardRef<HTMLDivElement, AsciiDitherProps>(
           source.pause();
           source.removeAttribute("src");
           source.load();
+        } else if (source) {
+          source.onload = null;
+          source.onerror = null;
+          source.src = "";
         }
       };
     }, [
