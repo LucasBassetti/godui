@@ -70,6 +70,69 @@ function setupMatchMedia() {
   });
 }
 
+function captureVideo() {
+  let video: HTMLVideoElement | null = null;
+  const createElement = document.createElement.bind(document);
+  vi.spyOn(document, "createElement").mockImplementation((tagName) => {
+    const element = createElement(tagName);
+    if (tagName === "video") video = element as HTMLVideoElement;
+    return element;
+  });
+  return () => {
+    if (!video) throw new Error("Video element was not created");
+    return video;
+  };
+}
+
+function setupAnimationFrame() {
+  let nextId = 0;
+  const request = vi.fn((_callback: FrameRequestCallback) => ++nextId);
+  const cancel = vi.fn((_id: number) => {});
+  vi.stubGlobal("requestAnimationFrame", request);
+  vi.stubGlobal("cancelAnimationFrame", cancel);
+  return { cancel, request };
+}
+
+function setupVideoState(video: HTMLVideoElement) {
+  let currentTime = 0;
+  let paused = true;
+  let ended = false;
+  Object.defineProperties(video, {
+    currentTime: {
+      configurable: true,
+      get: () => currentTime,
+      set: (value: number) => {
+        currentTime = value;
+      },
+    },
+    ended: { configurable: true, get: () => ended },
+    paused: { configurable: true, get: () => paused },
+    videoHeight: { configurable: true, value: 1 },
+    videoWidth: { configurable: true, value: 1 },
+  });
+  const play = vi.spyOn(video, "play").mockImplementation(() => {
+    paused = false;
+    return Promise.resolve();
+  });
+  vi.spyOn(video, "pause").mockImplementation(() => {
+    paused = true;
+  });
+  vi.spyOn(video, "load").mockImplementation(() => {});
+  return {
+    end() {
+      paused = true;
+      ended = true;
+    },
+    pause() {
+      paused = true;
+    },
+    play() {
+      paused = false;
+    },
+    playMethod: play,
+  };
+}
+
 class ImmediateImage {
   crossOrigin = "";
   naturalHeight = 0;
@@ -263,6 +326,81 @@ describe("AsciiDither", () => {
     unmount();
     expect(frameDisconnect).toHaveBeenCalledOnce();
     frame.remove();
+  });
+
+  it("does not loop a paused video when autoplay is disabled", () => {
+    setupMatchMedia();
+    setupCanvas();
+    const getVideo = captureVideo();
+    const { request } = setupAnimationFrame();
+    const rendered = render(
+      <AsciiDither
+        autoPlay={false}
+        color="red"
+        loop={false}
+        reveal={false}
+        src="/clip.mp4"
+        type="video"
+      />,
+    );
+    const video = getVideo();
+    const state = setupVideoState(video);
+
+    act(() => video.dispatchEvent(new Event("loadeddata")));
+
+    expect(state.playMethod).not.toHaveBeenCalled();
+    expect(request).not.toHaveBeenCalled();
+    rendered.unmount();
+  });
+
+  it("syncs the loop with video playback and paints the terminal frame", () => {
+    setupMatchMedia();
+    const { context } = setupCanvas();
+    const getVideo = captureVideo();
+    const { cancel, request } = setupAnimationFrame();
+    const rendered = render(
+      <AsciiDither
+        autoPlay={false}
+        color="red"
+        loop={false}
+        reveal={false}
+        src="/clip.mp4"
+        type="video"
+      />,
+    );
+    const video = getVideo();
+    const state = setupVideoState(video);
+
+    act(() => video.dispatchEvent(new Event("loadeddata")));
+    expect(request).not.toHaveBeenCalled();
+
+    state.play();
+    act(() => video.dispatchEvent(new Event("play")));
+    expect(request).toHaveBeenCalledTimes(1);
+
+    state.pause();
+    act(() => video.dispatchEvent(new Event("pause")));
+    expect(cancel).toHaveBeenLastCalledWith(1);
+
+    state.play();
+    act(() => video.dispatchEvent(new Event("play")));
+    expect(request).toHaveBeenCalledTimes(2);
+
+    const drawImage = context.drawImage as unknown as {
+      mock: { calls: unknown[][] };
+    };
+    const clearRect = context.clearRect as unknown as {
+      mock: { calls: unknown[][] };
+    };
+    const drawsBeforeEnded = drawImage.mock.calls.length;
+    const clearsBeforeEnded = clearRect.mock.calls.length;
+    state.end();
+    act(() => video.dispatchEvent(new Event("ended")));
+
+    expect(cancel).toHaveBeenLastCalledWith(2);
+    expect(drawImage.mock.calls.length).toBeGreaterThan(drawsBeforeEnded);
+    expect(clearRect.mock.calls.length).toBeGreaterThan(clearsBeforeEnded);
+    rendered.unmount();
   });
 
   describe.each([
