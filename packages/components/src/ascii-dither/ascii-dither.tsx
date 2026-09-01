@@ -205,7 +205,12 @@ const AsciiDither = React.forwardRef<HTMLDivElement, AsciiDitherProps>(
       const frameGap = () => 1000 / Math.max(1, fps);
       const needsLoop = () =>
         !reduced.matches &&
-        (isVideo || glitch || (interactive && pointerRef.current.active));
+        ((isVideo &&
+          source instanceof HTMLVideoElement &&
+          !source.paused &&
+          !source.ended) ||
+          glitch ||
+          (interactive && pointerRef.current.active));
 
       const measure = () => {
         w = container.clientWidth;
@@ -444,6 +449,26 @@ const AsciiDither = React.forwardRef<HTMLDivElement, AsciiDitherProps>(
         rafId = 0;
       };
 
+      const syncLoop = () => {
+        const revealing =
+          reveal &&
+          !reduced.matches &&
+          revealStart > 0 &&
+          performance.now() - revealStart < 700;
+        if (visible && (needsLoop() || revealing)) start();
+        else stop();
+      };
+
+      const onVideoPlay = () => syncLoop();
+      const onVideoPause = () => syncLoop();
+      const onVideoEnded = () => {
+        if (cancelled) return;
+        // Sample and paint the terminal frame before syncing the loop state.
+        sample();
+        render(performance.now());
+        syncLoop();
+      };
+
       const kickoff = () => {
         if (cancelled) return;
         ready = true;
@@ -466,6 +491,9 @@ const AsciiDither = React.forwardRef<HTMLDivElement, AsciiDitherProps>(
         video.playsInline = true;
         video.preload = "auto";
         source = video;
+        video.addEventListener("play", onVideoPlay);
+        video.addEventListener("pause", onVideoPause);
+        video.addEventListener("ended", onVideoEnded);
         const onReady = () => {
           if (reduced.matches || !autoPlay) {
             video.currentTime = 0.001;
@@ -550,6 +578,9 @@ const AsciiDither = React.forwardRef<HTMLDivElement, AsciiDitherProps>(
         container.removeEventListener("pointermove", onPointerMove);
         container.removeEventListener("pointerleave", onPointerLeave);
         if (source instanceof HTMLVideoElement) {
+          source.removeEventListener("play", onVideoPlay);
+          source.removeEventListener("pause", onVideoPause);
+          source.removeEventListener("ended", onVideoEnded);
           source.pause();
           source.removeAttribute("src");
           source.load();
