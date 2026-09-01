@@ -128,9 +128,10 @@ const MagicTab = React.forwardRef<HTMLDivElement, MagicTabProps>(
     );
     React.useEffect(() => {
       const root = rootRef.current;
-      if (!rainbow || !root || typeof IntersectionObserver === "undefined")
-        return;
-      const io = new IntersectionObserver(
+      if (!rainbow || !root) return;
+      const view = root.ownerDocument.defaultView ?? window;
+      if (typeof view.IntersectionObserver === "undefined") return;
+      const io = new view.IntersectionObserver(
         ([entry]) => {
           for (const layer of root.querySelectorAll<HTMLElement>(
             ".animate-magic-rainbow",
