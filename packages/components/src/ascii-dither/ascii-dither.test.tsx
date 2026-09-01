@@ -6,6 +6,7 @@ type MockImage = {
   crossOrigin: string;
   naturalHeight: number;
   naturalWidth: number;
+  onerror: (() => void) | null;
   onload: (() => void) | null;
   src: string;
 };
@@ -39,14 +40,32 @@ function setupCanvas() {
   return { context };
 }
 
-function setupImage() {
-  const image: MockImage = {
+function createMockImage(): MockImage {
+  return {
     crossOrigin: "",
     naturalHeight: 1,
     naturalWidth: 1,
+    onerror: null,
     onload: null,
     src: "",
   };
+}
+
+function setupImages() {
+  const images: MockImage[] = [];
+  vi.stubGlobal(
+    "Image",
+    vi.fn(() => {
+      const image = createMockImage();
+      images.push(image);
+      return image;
+    }),
+  );
+  return images;
+}
+
+function setupImage() {
+  const image = createMockImage();
   vi.stubGlobal(
     "Image",
     vi.fn(() => image),
@@ -326,6 +345,85 @@ describe("AsciiDither", () => {
     unmount();
     expect(frameDisconnect).toHaveBeenCalledOnce();
     frame.remove();
+  });
+
+  it("ignores image errors from a source replaced during rerender", () => {
+    setupMatchMedia();
+    const { context } = setupCanvas();
+    const images = setupImages();
+    const rendered = render(
+      <AsciiDither
+        color="red"
+        reveal={false}
+        src="/old-poster.png"
+        type="image"
+      />,
+    );
+    const oldImage = images[0];
+    if (!oldImage) throw new Error("Old mock image was not created");
+    const oldError = oldImage.onerror;
+    if (!oldError) throw new Error("Old mock image did not receive onerror");
+
+    const clearRect = context.clearRect as unknown as {
+      mock: { calls: unknown[][] };
+    };
+    const drawImage = context.drawImage as unknown as {
+      mock: { calls: unknown[][] };
+    };
+    const clearCallsBeforeError = clearRect.mock.calls.length;
+    const drawCallsBeforeError = drawImage.mock.calls.length;
+
+    act(() => {
+      rendered.rerender(
+        <AsciiDither
+          color="red"
+          reveal={false}
+          src="/new-poster.png"
+          type="image"
+        />,
+      );
+    });
+    expect(images).toHaveLength(2);
+
+    act(() => oldError());
+
+    expect(clearRect.mock.calls.length).toBe(clearCallsBeforeError);
+    expect(drawImage.mock.calls.length).toBe(drawCallsBeforeError);
+    expect(oldImage.onload).toBeNull();
+    expect(oldImage.onerror).toBeNull();
+    expect(oldImage.src).toBe("");
+    rendered.unmount();
+  });
+
+  it("cleans up image errors after unmount", () => {
+    setupMatchMedia();
+    const { context } = setupCanvas();
+    const images = setupImages();
+    const rendered = render(
+      <AsciiDither color="red" reveal={false} src="/poster.png" type="image" />,
+    );
+    const image = images[0];
+    if (!image) throw new Error("Mock image was not created");
+    const error = image.onerror;
+    if (!error) throw new Error("Mock image did not receive onerror");
+
+    const clearRect = context.clearRect as unknown as {
+      mock: { calls: unknown[][] };
+    };
+    const drawImage = context.drawImage as unknown as {
+      mock: { calls: unknown[][] };
+    };
+    const clearCallsBeforeUnmount = clearRect.mock.calls.length;
+    const drawCallsBeforeUnmount = drawImage.mock.calls.length;
+
+    act(() => rendered.unmount());
+    act(() => error());
+
+    expect(clearRect.mock.calls.length).toBe(clearCallsBeforeUnmount);
+    expect(drawImage.mock.calls.length).toBe(drawCallsBeforeUnmount);
+    expect(image.onload).toBeNull();
+    expect(image.onerror).toBeNull();
+    expect(image.src).toBe("");
   });
 
   it("does not loop a paused video when autoplay is disabled", () => {
