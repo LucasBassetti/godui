@@ -40,6 +40,7 @@ const ScrollProgress = React.forwardRef<HTMLDivElement, ScrollProgressProps>(
       showAfter = 0.05,
       position = "bottom-right",
       className,
+      style,
       ...props
     },
     ref,
@@ -84,7 +85,7 @@ const ScrollProgress = React.forwardRef<HTMLDivElement, ScrollProgressProps>(
         ref={ref}
         role="progressbar"
         aria-label="Scroll progress"
-        style={{ scaleX: progress, height }}
+        style={{ ...style, scaleX: progress, height }}
         className={`${pinned} inset-x-0 top-0 left-0 z-sticky origin-left bg-primary ${
           className ?? ""
         }`}

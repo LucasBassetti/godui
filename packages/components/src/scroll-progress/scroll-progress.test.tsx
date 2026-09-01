@@ -13,6 +13,20 @@ describe("ScrollProgress", () => {
     expect(screen.getByRole("progressbar")).toBeInTheDocument();
   });
 
+  it("preserves internal bar styles when custom styles are supplied", () => {
+    render(
+      <ScrollProgress
+        height={6}
+        style={{ backgroundColor: "red", height: 24 }}
+      />,
+    );
+
+    const progressbar = screen.getByRole("progressbar");
+    expect(progressbar.style.backgroundColor).toBe("red");
+    expect(progressbar.style.height).toBe("6px");
+    expect(progressbar.style.transform).toContain("scaleX");
+  });
+
   it("does not render the back-to-top button until scrolled (circle variant)", () => {
     render(<ScrollProgress variant="circle" />);
     expect(
