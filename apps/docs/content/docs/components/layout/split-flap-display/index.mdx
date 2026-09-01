@@ -107,12 +107,12 @@ const CLOCK = ["012", "0123456789", ":", "012345", "0123456789", ":", "012345", 
 | Prop       | Type                              | Default      | Description                                                              |
 | ---------- | --------------------------------- | ------------ | ------------------------------------------------------------------------ |
 | `value`    | `string`                          | —            | The text the board settles on. Uppercased against `charset`.             |
-| `length`   | `number`                          | value length | Fixed flap count — shorter values pad, longer ones truncate.             |
+| `length`   | `number`                          | value length | Fixed flap count — finite integers clamp to `0–100`; non-finite or fractional values fall back to the value length, also capped at 100. |
 | `align`    | `"left" \| "center" \| "right"`   | `"left"`     | How the value sits inside a wider `length`.                              |
 | `size`     | `"sm" \| "md" \| "lg"`            | `"md"`       | Flap size preset.                                                        |
 | `charset`  | `string \| string[]`              | A–Z 0–9 …    | Glyphs the flaps rotate through. An array gives each column its own reel by position. Leading space is the blank flap. |
 | `stagger`  | `number`                          | `0.06`       | Seconds each successive column waits before it starts — the wave.        |
-| `maxFlaps` | `number`                          | `12`         | Cap on how many flips one column spins before settling.                  |
+| `maxFlaps` | `number`                          | `12`         | Cap on how many flips one column spins; finite non-negative values round down, while negative or non-finite values use `12`. |
 
 `SplitFlapDisplay` forwards every standard `<div>` attribute and exposes the
 current `value` as an `aria-label`. Motion is compositor-only (`rotateX`) and
