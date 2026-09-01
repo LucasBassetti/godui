@@ -92,7 +92,7 @@ describe("SplitFlapDisplay", () => {
   it("settles every digit when animation ends with a negative maxFlaps", () => {
     vi.stubGlobal("IntersectionObserver", MockIntersectionObserver);
     const { container } = render(
-      <SplitFlapDisplay value="ABC" charset=" ABC" maxFlaps={-1} />,
+      <SplitFlapDisplay value="ABC" maxFlaps={-1} />,
     );
 
     act(() => {
