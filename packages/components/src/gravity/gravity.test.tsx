@@ -1,8 +1,14 @@
 import { render, waitFor } from "@testing-library/react";
 import { createRef } from "react";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
 
+import {
+  createOwnerRealmHarness,
+  resetOwnerRealmTestEnvironment,
+} from "../lib/owner-realm-test-utils";
 import { Gravity, MatterBody } from "./gravity";
+
+afterEach(resetOwnerRealmTestEnvironment);
 
 function getRoot(container: HTMLElement) {
   return container.querySelector<HTMLElement>(
@@ -11,6 +17,59 @@ function getRoot(container: HTMLElement) {
 }
 
 describe("Gravity", () => {
+  it("uses lifecycle APIs from the portaled document's realm", () => {
+    const harness = createOwnerRealmHarness();
+    const { container, unmount } = render(
+      <Gravity autoStart={false}>
+        <MatterBody>
+          <span>body</span>
+        </MatterBody>
+      </Gravity>,
+      { container: harness.frameDocument.body },
+    );
+    const root = getRoot(container);
+
+    expect(harness.frameMatchMedia).toHaveBeenCalledWith(
+      "(prefers-reduced-motion: reduce)",
+    );
+    expect(harness.parentMatchMedia).not.toHaveBeenCalled();
+    expect(harness.frameResizeConstructor).toHaveBeenCalledOnce();
+    expect(harness.frameResizeObserve).toHaveBeenCalledWith(root);
+    expect(harness.parentResizeObserver).not.toHaveBeenCalled();
+    expect(harness.frameIntersectionConstructor).toHaveBeenCalledOnce();
+    expect(harness.frameIntersectionObserve).toHaveBeenCalledWith(root);
+    expect(harness.parentIntersectionObserver).not.toHaveBeenCalled();
+    expect(harness.frameRaf).toHaveBeenCalled();
+    expect(harness.parentRaf).not.toHaveBeenCalled();
+    expect(harness.events.indexOf("intersection-observe")).toBeLessThan(
+      harness.events.indexOf("raf"),
+    );
+    expect(
+      harness.parentVisibilityAdd.mock.calls.filter(
+        ([type]) => type === "visibilitychange",
+      ),
+    ).toHaveLength(0);
+    expect(harness.frameVisibilityAdd).toHaveBeenCalledWith(
+      "visibilitychange",
+      expect.any(Function),
+    );
+
+    unmount();
+    expect(harness.frameResizeDisconnect).toHaveBeenCalledOnce();
+    expect(harness.frameIntersectionDisconnect).toHaveBeenCalledOnce();
+    expect(harness.frameCancel).toHaveBeenCalledOnce();
+    expect(harness.frameVisibilityRemove).toHaveBeenCalledWith(
+      "visibilitychange",
+      expect.any(Function),
+    );
+    expect(
+      harness.parentVisibilityRemove.mock.calls.filter(
+        ([type]) => type === "visibilitychange",
+      ),
+    ).toHaveLength(0);
+    harness.frame.remove();
+  });
+
   it("renders the canvas and its bodies", () => {
     const { container } = render(
       <Gravity>
