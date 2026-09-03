@@ -20,10 +20,9 @@ export type WarpStarfieldProps = React.HTMLAttributes<HTMLDivElement> & {
   parallax?: number;
 };
 
-function toRGB(input: string): string {
-  if (typeof document === "undefined") return "0, 0, 0";
+function toRGB(input: string, ownerDocument: Document): string {
   try {
-    const c = document.createElement("canvas");
+    const c = ownerDocument.createElement("canvas");
     c.width = 1;
     c.height = 1;
     const ctx = c.getContext("2d", { willReadFrequently: true });
@@ -71,22 +70,27 @@ const WarpStarfield = React.forwardRef<HTMLDivElement, WarpStarfieldProps>(
     React.useEffect(() => {
       const container = containerRef.current;
       if (!container) return;
+      const ownerDocument = container.ownerDocument;
+      const ownerWindow = ownerDocument.defaultView ?? window;
       const resolve = () => {
         if (color) {
-          colorRef.current = toRGB(color);
+          colorRef.current = toRGB(color, ownerDocument);
           return;
         }
-        const probe = document.createElement("span");
+        const probe = ownerDocument.createElement("span");
         probe.className = "text-foreground";
         probe.style.cssText = "position:absolute;width:0;height:0;opacity:0";
         container.appendChild(probe);
-        colorRef.current = toRGB(getComputedStyle(probe).color);
+        colorRef.current = toRGB(
+          ownerWindow.getComputedStyle(probe).color,
+          ownerDocument,
+        );
         probe.remove();
       };
       resolve();
       if (color) return;
-      const observer = new MutationObserver(resolve);
-      observer.observe(document.documentElement, {
+      const observer = new ownerWindow.MutationObserver(resolve);
+      observer.observe(ownerDocument.documentElement, {
         attributes: true,
         attributeFilter: ["class", "data-theme", "style"],
       });
@@ -97,6 +101,8 @@ const WarpStarfield = React.forwardRef<HTMLDivElement, WarpStarfieldProps>(
       const container = containerRef.current;
       const canvas = canvasRef.current;
       if (!container || !canvas) return;
+      const ownerDocument = container.ownerDocument;
+      const ownerWindow = ownerDocument.defaultView ?? window;
       const ctx = (() => {
         try {
           return canvas.getContext("2d");
@@ -106,7 +112,9 @@ const WarpStarfield = React.forwardRef<HTMLDivElement, WarpStarfieldProps>(
       })();
       if (!ctx) return;
 
-      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+      const reduced = ownerWindow.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      );
       const maxZ = depth;
       let w = 0;
       let h = 0;
@@ -126,7 +134,7 @@ const WarpStarfield = React.forwardRef<HTMLDivElement, WarpStarfieldProps>(
         w = container.clientWidth;
         h = container.clientHeight;
         focal = Math.max(w, h) * 0.6;
-        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const dpr = Math.min(ownerWindow.devicePixelRatio || 1, 2);
         canvas.width = Math.floor(w * dpr);
         canvas.height = Math.floor(h * dpr);
         canvas.style.width = `${w}px`;
@@ -184,20 +192,19 @@ const WarpStarfield = React.forwardRef<HTMLDivElement, WarpStarfieldProps>(
 
       const tick = () => {
         draw();
-        rafId = requestAnimationFrame(tick);
+        rafId = ownerWindow.requestAnimationFrame(tick);
       };
       const start = () => {
         if (rafId || reduced.matches) return;
-        rafId = requestAnimationFrame(tick);
+        rafId = ownerWindow.requestAnimationFrame(tick);
       };
       const stop = () => {
-        if (rafId) cancelAnimationFrame(rafId);
+        if (rafId) ownerWindow.cancelAnimationFrame(rafId);
         rafId = 0;
       };
 
       setup();
       draw();
-      if (!reduced.matches) start();
 
       const onMove = (e: PointerEvent) => {
         const rect = container.getBoundingClientRect();
@@ -211,27 +218,35 @@ const WarpStarfield = React.forwardRef<HTMLDivElement, WarpStarfieldProps>(
       container.addEventListener("pointermove", onMove);
       container.addEventListener("pointerleave", onLeave);
 
-      const resizeObserver = new ResizeObserver(() => {
-        setup();
-        draw();
-      });
-      resizeObserver.observe(container);
+      const resizeObserver =
+        typeof ownerWindow.ResizeObserver === "undefined"
+          ? undefined
+          : new ownerWindow.ResizeObserver(() => {
+              setup();
+              draw();
+            });
+      resizeObserver?.observe(container);
 
-      const intersectionObserver = new IntersectionObserver(
-        ([entry]) => {
-          visible = entry.isIntersecting;
-          if (visible) start();
-          else stop();
-        },
-        { threshold: 0 },
-      );
-      intersectionObserver.observe(container);
+      const intersectionObserver =
+        typeof ownerWindow.IntersectionObserver === "undefined"
+          ? undefined
+          : new ownerWindow.IntersectionObserver(
+              ([entry]) => {
+                visible = entry.isIntersecting;
+                if (visible) start();
+                else stop();
+              },
+              { threshold: 0 },
+            );
+      intersectionObserver?.observe(container);
 
       const onVisibility = () => {
-        if (document.hidden) stop();
+        if (ownerDocument.hidden) stop();
         else if (visible) start();
       };
-      document.addEventListener("visibilitychange", onVisibility);
+      ownerDocument.addEventListener("visibilitychange", onVisibility);
+
+      if (!reduced.matches && !ownerDocument.hidden) start();
 
       const onReducedChange = () => {
         if (reduced.matches) {
@@ -245,9 +260,9 @@ const WarpStarfield = React.forwardRef<HTMLDivElement, WarpStarfieldProps>(
         stop();
         container.removeEventListener("pointermove", onMove);
         container.removeEventListener("pointerleave", onLeave);
-        resizeObserver.disconnect();
-        intersectionObserver.disconnect();
-        document.removeEventListener("visibilitychange", onVisibility);
+        resizeObserver?.disconnect();
+        intersectionObserver?.disconnect();
+        ownerDocument.removeEventListener("visibilitychange", onVisibility);
         reduced.removeEventListener("change", onReducedChange);
       };
     }, [starCount, speed, depth, warp, parallax]);

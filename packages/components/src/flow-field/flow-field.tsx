@@ -21,10 +21,12 @@ export type FlowFieldProps = React.HTMLAttributes<HTMLDivElement> & {
   fade?: number;
 };
 
-function rgbTriple(input: string): [number, number, number] {
-  if (typeof document === "undefined") return [0, 0, 0];
+function rgbTriple(
+  input: string,
+  ownerDocument: Document,
+): [number, number, number] {
   try {
-    const c = document.createElement("canvas");
+    const c = ownerDocument.createElement("canvas");
     c.width = 1;
     c.height = 1;
     const ctx = c.getContext("2d", { willReadFrequently: true });
@@ -91,28 +93,36 @@ const FlowField = React.forwardRef<HTMLDivElement, FlowFieldProps>(
     React.useEffect(() => {
       const container = containerRef.current;
       if (!container) return;
+      const ownerDocument = container.ownerDocument;
+      const ownerWindow = ownerDocument.defaultView ?? window;
       const resolve = () => {
         fgRef.current = color
-          ? rgbTriple(color)
+          ? rgbTriple(color, ownerDocument)
           : (() => {
-              const p = document.createElement("span");
+              const p = ownerDocument.createElement("span");
               p.style.cssText =
                 "position:absolute;width:0;height:0;opacity:0;color:var(--primary)";
               container.appendChild(p);
-              const t = rgbTriple(getComputedStyle(p).color);
+              const t = rgbTriple(
+                ownerWindow.getComputedStyle(p).color,
+                ownerDocument,
+              );
               p.remove();
               return t;
             })();
-        const pb = document.createElement("span");
+        const pb = ownerDocument.createElement("span");
         pb.style.cssText =
           "position:absolute;width:0;height:0;opacity:0;background:var(--background)";
         container.appendChild(pb);
-        bgRef.current = rgbTriple(getComputedStyle(pb).backgroundColor);
+        bgRef.current = rgbTriple(
+          ownerWindow.getComputedStyle(pb).backgroundColor,
+          ownerDocument,
+        );
         pb.remove();
       };
       resolve();
-      const observer = new MutationObserver(resolve);
-      observer.observe(document.documentElement, {
+      const observer = new ownerWindow.MutationObserver(resolve);
+      observer.observe(ownerDocument.documentElement, {
         attributes: true,
         attributeFilter: ["class", "data-theme", "style"],
       });
@@ -123,6 +133,8 @@ const FlowField = React.forwardRef<HTMLDivElement, FlowFieldProps>(
       const container = containerRef.current;
       const canvas = canvasRef.current;
       if (!container || !canvas) return;
+      const ownerDocument = container.ownerDocument;
+      const ownerWindow = ownerDocument.defaultView ?? window;
       const ctx = (() => {
         try {
           return canvas.getContext("2d");
@@ -132,7 +144,9 @@ const FlowField = React.forwardRef<HTMLDivElement, FlowFieldProps>(
       })();
       if (!ctx) return;
 
-      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+      const reduced = ownerWindow.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      );
       let w = 0;
       let h = 0;
       let particles: Particle[] = [];
@@ -143,7 +157,7 @@ const FlowField = React.forwardRef<HTMLDivElement, FlowFieldProps>(
       const setup = () => {
         w = container.clientWidth;
         h = container.clientHeight;
-        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const dpr = Math.min(ownerWindow.devicePixelRatio || 1, 2);
         canvas.width = Math.floor(w * dpr);
         canvas.height = Math.floor(h * dpr);
         canvas.style.width = `${w}px`;
@@ -191,14 +205,14 @@ const FlowField = React.forwardRef<HTMLDivElement, FlowFieldProps>(
 
       const tick = () => {
         step();
-        rafId = requestAnimationFrame(tick);
+        rafId = ownerWindow.requestAnimationFrame(tick);
       };
       const start = () => {
         if (rafId || reduced.matches) return;
-        rafId = requestAnimationFrame(tick);
+        rafId = ownerWindow.requestAnimationFrame(tick);
       };
       const stop = () => {
-        if (rafId) cancelAnimationFrame(rafId);
+        if (rafId) ownerWindow.cancelAnimationFrame(rafId);
         rafId = 0;
       };
 
@@ -206,31 +220,37 @@ const FlowField = React.forwardRef<HTMLDivElement, FlowFieldProps>(
       if (reduced.matches) {
         // Render a frozen still by priming a few hundred steps.
         for (let i = 0; i < 240; i++) step();
-      } else {
-        start();
       }
 
-      const resizeObserver = new ResizeObserver(() => {
-        setup();
-        if (reduced.matches) for (let i = 0; i < 240; i++) step();
-      });
-      resizeObserver.observe(container);
+      const resizeObserver =
+        typeof ownerWindow.ResizeObserver === "undefined"
+          ? undefined
+          : new ownerWindow.ResizeObserver(() => {
+              setup();
+              if (reduced.matches) for (let i = 0; i < 240; i++) step();
+            });
+      resizeObserver?.observe(container);
 
-      const intersectionObserver = new IntersectionObserver(
-        ([entry]) => {
-          visible = entry.isIntersecting;
-          if (visible) start();
-          else stop();
-        },
-        { threshold: 0 },
-      );
-      intersectionObserver.observe(container);
+      const intersectionObserver =
+        typeof ownerWindow.IntersectionObserver === "undefined"
+          ? undefined
+          : new ownerWindow.IntersectionObserver(
+              ([entry]) => {
+                visible = entry.isIntersecting;
+                if (visible) start();
+                else stop();
+              },
+              { threshold: 0 },
+            );
+      intersectionObserver?.observe(container);
 
       const onVisibility = () => {
-        if (document.hidden) stop();
+        if (ownerDocument.hidden) stop();
         else if (visible) start();
       };
-      document.addEventListener("visibilitychange", onVisibility);
+      ownerDocument.addEventListener("visibilitychange", onVisibility);
+
+      if (!reduced.matches && !ownerDocument.hidden) start();
 
       const onReducedChange = () => {
         if (reduced.matches) {
@@ -243,9 +263,9 @@ const FlowField = React.forwardRef<HTMLDivElement, FlowFieldProps>(
 
       return () => {
         stop();
-        resizeObserver.disconnect();
-        intersectionObserver.disconnect();
-        document.removeEventListener("visibilitychange", onVisibility);
+        resizeObserver?.disconnect();
+        intersectionObserver?.disconnect();
+        ownerDocument.removeEventListener("visibilitychange", onVisibility);
         reduced.removeEventListener("change", onReducedChange);
       };
     }, [particleCount, noiseScale, speed, fade]);
