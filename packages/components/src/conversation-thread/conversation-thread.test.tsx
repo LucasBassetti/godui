@@ -1,5 +1,5 @@
 // biome-ignore-all lint/a11y/useValidAriaRole: "role" is a chat-message domain prop, not an ARIA role
-import { act, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import {
   ConversationMessage,
@@ -13,6 +13,30 @@ describe("ConversationThread", () => {
     render(<ConversationThread ref={ref} variant="document" />);
     expect(ref.current).toBeInstanceOf(HTMLDivElement);
     expect(ref.current?.getAttribute("data-variant")).toBe("document");
+  });
+
+  it("preserves pin bookkeeping when a consumer supplies onScroll", () => {
+    const onScroll = vi.fn();
+    render(
+      <ConversationThread onScroll={onScroll}>
+        <ConversationMessage role="assistant">Hello</ConversationMessage>
+      </ConversationThread>,
+    );
+    const thread = document.querySelector(
+      '[data-slot="conversation-thread"]',
+    ) as HTMLDivElement;
+    Object.defineProperties(thread, {
+      clientHeight: { configurable: true, value: 100 },
+      scrollHeight: { configurable: true, value: 200 },
+      scrollTop: { configurable: true, value: 0 },
+    });
+
+    fireEvent.scroll(thread);
+
+    expect(onScroll).toHaveBeenCalledOnce();
+    expect(
+      screen.getByRole("button", { name: /Jump to latest/ }),
+    ).toBeInTheDocument();
   });
 
   it("renders messages with their role attribute", () => {
@@ -51,6 +75,57 @@ describe("ConversationThread", () => {
       vi.advanceTimersByTime(30);
     });
     expect(onDone).toHaveBeenCalled();
+    vi.useRealTimers();
+  });
+
+  it.each([
+    0,
+    -1,
+    Number.NaN,
+    Number.NEGATIVE_INFINITY,
+  ])("StreamingText normalizes invalid chunk %s", (chunk) => {
+    vi.useFakeTimers();
+    const onDone = vi.fn();
+    const { container } = render(
+      <StreamingText text="abcd" chunk={chunk} speed={1} onDone={onDone} />,
+    );
+    act(() => {
+      vi.advanceTimersByTime(64);
+    });
+    expect(container.textContent).toBe("abcd");
+    expect(onDone).toHaveBeenCalledTimes(1);
+    vi.useRealTimers();
+  });
+
+  it.each([
+    0,
+    -1,
+    Number.NaN,
+    Number.POSITIVE_INFINITY,
+  ])("StreamingText normalizes invalid speed %s", (speed) => {
+    vi.useFakeTimers();
+    const setIntervalSpy = vi.spyOn(globalThis, "setInterval");
+    const onDone = vi.fn();
+    const { container } = render(
+      <StreamingText text="abcd" chunk={2} speed={speed} onDone={onDone} />,
+    );
+    expect(setIntervalSpy).toHaveBeenCalledWith(expect.any(Function), 1);
+    act(() => {
+      vi.advanceTimersByTime(32);
+    });
+    expect(container.textContent).toBe("abcd");
+    expect(onDone).toHaveBeenCalledTimes(1);
+    setIntervalSpy.mockRestore();
+    vi.useRealTimers();
+  });
+
+  it("StreamingText completes empty text without scheduling a timer", () => {
+    vi.useFakeTimers();
+    const onDone = vi.fn();
+    const { container } = render(<StreamingText text="" onDone={onDone} />);
+    expect(container.textContent).toBe("");
+    expect(onDone).toHaveBeenCalledTimes(1);
+    expect(vi.getTimerCount()).toBe(0);
     vi.useRealTimers();
   });
 });

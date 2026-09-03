@@ -1,4 +1,10 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { createRef } from "react";
 import { describe, expect, it, vi } from "vitest";
@@ -20,6 +26,20 @@ const items: MegaMenuItem[] = [
   { label: "Pricing", href: "/pricing" },
 ];
 
+const panelItems: MegaMenuItem[] = [
+  items[0],
+  {
+    label: "Solutions",
+    sections: [
+      {
+        heading: "Run",
+        links: [{ label: "Cloud", href: "/cloud" }],
+      },
+    ],
+  },
+  items[1],
+];
+
 describe("MegaMenu", () => {
   it("opens the panel on hover and shows links", async () => {
     render(<MegaMenu items={items} openDelay={0} />);
@@ -27,6 +47,38 @@ describe("MegaMenu", () => {
     await waitFor(() =>
       expect(screen.getByRole("link", { name: /Editor/ })).toBeInTheDocument(),
     );
+  });
+
+  it("only opens the most recently hovered panel", () => {
+    vi.useFakeTimers();
+    render(<MegaMenu items={panelItems} openDelay={100} />);
+
+    fireEvent.mouseEnter(screen.getByRole("button", { name: "Products" }));
+    act(() => vi.advanceTimersByTime(50));
+    fireEvent.mouseEnter(screen.getByRole("button", { name: "Solutions" }));
+
+    act(() => vi.advanceTimersByTime(50));
+    expect(
+      screen.queryByRole("link", { name: /Editor/ }),
+    ).not.toBeInTheDocument();
+
+    act(() => vi.advanceTimersByTime(50));
+    expect(screen.getByRole("link", { name: "Cloud" })).toBeInTheDocument();
+    vi.useRealTimers();
+  });
+
+  it("does not open a stale panel after hovering an item without sections", () => {
+    vi.useFakeTimers();
+    render(<MegaMenu items={items} openDelay={100} />);
+
+    fireEvent.mouseEnter(screen.getByRole("button", { name: "Products" }));
+    fireEvent.mouseEnter(screen.getByRole("link", { name: "Pricing" }));
+
+    act(() => vi.advanceTimersByTime(100));
+    expect(
+      screen.queryByRole("link", { name: /Editor/ }),
+    ).not.toBeInTheDocument();
+    vi.useRealTimers();
   });
 
   it("renders a plain link for items without sections", () => {
