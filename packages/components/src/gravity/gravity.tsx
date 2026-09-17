@@ -61,8 +61,8 @@ const Gravity = React.forwardRef<HTMLDivElement, GravityProps>(
     },
     forwardedRef,
   ) => {
-    const reduced = useReducedMotionSafe();
     const canvasRef = React.useRef<HTMLDivElement>(null);
+    const reduced = useReducedMotionSafe(canvasRef);
     React.useImperativeHandle(
       forwardedRef,
       () => canvasRef.current as HTMLDivElement,
@@ -86,6 +86,8 @@ const Gravity = React.forwardRef<HTMLDivElement, GravityProps>(
     React.useEffect(() => {
       const canvas = canvasRef.current;
       if (!canvas || reduced) return;
+      const ownerDocument = canvas.ownerDocument;
+      const ownerWindow = ownerDocument.defaultView ?? window;
 
       let width = canvas.getBoundingClientRect().width;
       let height = canvas.getBoundingClientRect().height;
@@ -152,7 +154,7 @@ const Gravity = React.forwardRef<HTMLDivElement, GravityProps>(
             body.position.y - h / 2
           }px) rotate(${body.angle}rad)`;
         }
-        syncFrame = requestAnimationFrame(sync);
+        syncFrame = ownerWindow.requestAnimationFrame(sync);
       };
 
       // Pause the physics engine AND the DOM-sync loop whenever the scene is off
@@ -164,7 +166,7 @@ const Gravity = React.forwardRef<HTMLDivElement, GravityProps>(
           Matter.Runner.run(runner, engine);
           runnerActive = true;
         }
-        if (!syncFrame) syncFrame = requestAnimationFrame(sync);
+        if (!syncFrame) syncFrame = ownerWindow.requestAnimationFrame(sync);
       };
       const pause = () => {
         if (runnerActive) {
@@ -172,42 +174,48 @@ const Gravity = React.forwardRef<HTMLDivElement, GravityProps>(
           runnerActive = false;
         }
         if (syncFrame) {
-          cancelAnimationFrame(syncFrame);
+          ownerWindow.cancelAnimationFrame(syncFrame);
           syncFrame = 0;
         }
       };
 
-      const ro = new ResizeObserver(() => {
-        const r = canvas.getBoundingClientRect();
-        width = r.width;
-        height = r.height;
-        buildWalls();
-      });
-      ro.observe(canvas);
+      const ro =
+        typeof ownerWindow.ResizeObserver === "undefined"
+          ? undefined
+          : new ownerWindow.ResizeObserver(() => {
+              const r = canvas.getBoundingClientRect();
+              width = r.width;
+              height = r.height;
+              buildWalls();
+            });
+      ro?.observe(canvas);
 
-      const io = new IntersectionObserver(
-        ([entry]) => {
-          visible = entry.isIntersecting;
-          if (visible && !document.hidden) resume();
-          else pause();
-        },
-        { threshold: 0 },
-      );
-      io.observe(canvas);
+      const io =
+        typeof ownerWindow.IntersectionObserver === "undefined"
+          ? undefined
+          : new ownerWindow.IntersectionObserver(
+              ([entry]) => {
+                visible = entry.isIntersecting;
+                if (visible && !ownerDocument.hidden) resume();
+                else pause();
+              },
+              { threshold: 0 },
+            );
+      io?.observe(canvas);
 
       const onVisibility = () => {
-        if (document.hidden) pause();
+        if (ownerDocument.hidden) pause();
         else if (visible) resume();
       };
-      document.addEventListener("visibilitychange", onVisibility);
+      ownerDocument.addEventListener("visibilitychange", onVisibility);
 
-      resume();
+      if (!ownerDocument.hidden) resume();
 
       return () => {
         pause();
-        io.disconnect();
-        document.removeEventListener("visibilitychange", onVisibility);
-        ro.disconnect();
+        io?.disconnect();
+        ownerDocument.removeEventListener("visibilitychange", onVisibility);
+        ro?.disconnect();
         Matter.Runner.stop(runner);
         Matter.World.remove(engine.world, mouseConstraint);
         Matter.World.remove(engine.world, wallsRef.current);
@@ -360,15 +368,16 @@ MatterBody.displayName = "MatterBody";
 
 // Local reduced-motion hook so the file stays copy-paste self-contained without
 // pulling framer-motion just for a media query.
-function useReducedMotionSafe() {
+function useReducedMotionSafe(elementRef: React.RefObject<HTMLElement | null>) {
   const [reduced, setReduced] = React.useState(false);
   React.useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const ownerWindow = elementRef.current?.ownerDocument.defaultView ?? window;
+    const mq = ownerWindow.matchMedia("(prefers-reduced-motion: reduce)");
     setReduced(mq.matches);
     const onChange = () => setReduced(mq.matches);
     mq.addEventListener("change", onChange);
     return () => mq.removeEventListener("change", onChange);
-  }, []);
+  }, [elementRef]);
   return reduced;
 }
 
