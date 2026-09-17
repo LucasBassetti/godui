@@ -75,6 +75,7 @@ const ScrollProgress = React.forwardRef<HTMLDivElement, ScrollProgressProps>(
           position={position}
           container={container}
           className={className}
+          style={style}
           {...props}
         />
       );

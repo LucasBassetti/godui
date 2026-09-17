@@ -46,6 +46,7 @@ describe("ScrollProgress", () => {
         showAfter={-1}
         data-testid="circle-progress"
         aria-describedby="progress-description"
+        style={{ opacity: 0.75 }}
         onClick={onClick}
       />,
     );
@@ -56,6 +57,7 @@ describe("ScrollProgress", () => {
     expect(root).toBe(ref.current);
     expect(root).toBeInstanceOf(HTMLDivElement);
     expect(root).toHaveAttribute("aria-describedby", "progress-description");
+    expect(root.style.opacity).toBe("0.75");
 
     fireEvent.click(button);
     expect(onClick).toHaveBeenCalledTimes(1);
