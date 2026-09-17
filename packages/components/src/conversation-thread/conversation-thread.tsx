@@ -25,7 +25,14 @@ const ConversationThread = React.forwardRef<
   ConversationThreadProps
 >(
   (
-    { variant = "bubbles", autoScroll = true, className, children, ...props },
+    {
+      variant = "bubbles",
+      autoScroll = true,
+      className,
+      children,
+      onScroll,
+      ...props
+    },
     forwardedRef,
   ) => {
     const ref = React.useRef<HTMLDivElement>(null);
@@ -89,6 +96,7 @@ const ConversationThread = React.forwardRef<
             const atBottom =
               el.scrollHeight - el.scrollTop - el.clientHeight < 48;
             setPinnedBoth(atBottom);
+            onScroll?.(e);
           }}
           {...props}
         >
