@@ -40,6 +40,7 @@ const ScrollProgress = React.forwardRef<HTMLDivElement, ScrollProgressProps>(
       showAfter = 0.05,
       position = "bottom-right",
       className,
+      style,
       ...props
     },
     ref,
@@ -72,6 +73,7 @@ const ScrollProgress = React.forwardRef<HTMLDivElement, ScrollProgressProps>(
           showAfter={showAfter}
           pinned={pinned}
           position={position}
+          container={container}
           className={className}
           {...props}
         />
@@ -83,7 +85,7 @@ const ScrollProgress = React.forwardRef<HTMLDivElement, ScrollProgressProps>(
         ref={ref}
         role="progressbar"
         aria-label="Scroll progress"
-        style={{ scaleX: progress, height }}
+        style={{ ...style, scaleX: progress, height }}
         className={`${pinned} inset-x-0 top-0 left-0 z-sticky origin-left bg-primary ${
           className ?? ""
         }`}
@@ -110,7 +112,9 @@ const CircleProgress = React.forwardRef<HTMLDivElement, CircleProps>(
       showAfter = 0.05,
       pinned,
       position = "bottom-right",
+      container,
       className,
+      ...props
     },
     ref,
   ) => {
@@ -132,16 +136,21 @@ const CircleProgress = React.forwardRef<HTMLDivElement, CircleProps>(
 
     const button = (
       <motion.button
-        ref={ref as React.Ref<HTMLButtonElement>}
         type="button"
         aria-label="Back to top"
         onClick={(e) => {
-          const scroller =
-            (e.currentTarget.closest(
-              "[data-scroll-container]",
-            ) as HTMLElement | null) ?? null;
+          const scroller = container?.current;
           if (scroller) {
             scroller.scrollTo({ top: 0, behavior: "smooth" });
+            return;
+          }
+          if (container) return;
+
+          const ancestor = e.currentTarget.closest(
+            "[data-scroll-container]",
+          ) as HTMLElement | null;
+          if (ancestor) {
+            ancestor.scrollTo({ top: 0, behavior: "smooth" });
           } else {
             window.scrollTo({ top: 0, behavior: "smooth" });
           }
@@ -202,17 +211,21 @@ const CircleProgress = React.forwardRef<HTMLDivElement, CircleProps>(
         {visible &&
           (pinned === "sticky" ? (
             <div
+              ref={ref}
               className={`pointer-events-none sticky bottom-6 z-sticky flex ${
                 left ? "justify-start pl-6" : "justify-end pr-6"
               } ${className ?? ""}`}
+              {...props}
             >
               {button}
             </div>
           ) : (
             <div
+              ref={ref}
               className={`pointer-events-none fixed bottom-6 z-sticky ${
                 left ? "left-6" : "right-6"
               } ${className ?? ""}`}
+              {...props}
             >
               {button}
             </div>
