@@ -78,6 +78,7 @@ const MegaMenu = React.forwardRef<HTMLElement, MegaMenuProps>(
       : ({ type: "spring", stiffness: 320, damping: 32, mass: 0.9 } as const);
 
     const scheduleOpen = (index: number) => {
+      clearTimeout(openTimer.current);
       clearTimeout(closeTimer.current);
       setHovered(index);
       if (!items[index]?.sections) {
