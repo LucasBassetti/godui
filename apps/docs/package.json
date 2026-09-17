@@ -7,6 +7,7 @@
     "dev": "next dev --turbopack",
     "test": "node --test scripts/free-dev-port.test.mjs",
     "build": "next build --turbopack && node scripts/aeo-postbuild.mjs",
+    "test": "pnpm build && node --test scripts/metadata.test.mjs",
     "start": "next start",
     "lint": "eslint",
     "postinstall": "fumadocs-mdx"
