@@ -1,6 +1,7 @@
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { dirname } from "node:path";
+import { writeFileAtomically } from "./atomic-write.js";
 import {
   getConfigPath,
   mergeMcpConfig,
@@ -83,7 +84,7 @@ function run(argv: string[]) {
 
   try {
     mkdirSync(dirname(configPath), { recursive: true });
-    writeFileSync(configPath, `${JSON.stringify(merged, null, 2)}\n`);
+    writeFileAtomically(configPath, `${JSON.stringify(merged, null, 2)}\n`);
   } catch (error) {
     fail(`Couldn't write ${configPath}: ${String(error)}`);
   }

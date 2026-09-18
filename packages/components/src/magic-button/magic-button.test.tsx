@@ -40,6 +40,63 @@ describe("MagicButton", () => {
     expect(button).not.toHaveAttribute("data-rainbow");
   });
 
+  it("creates its visibility observer in the portaled document's realm", () => {
+    const parentObserver = vi.fn();
+    class ParentIntersectionObserver {
+      constructor() {
+        parentObserver();
+      }
+
+      observe() {}
+      disconnect() {}
+    }
+    vi.stubGlobal("IntersectionObserver", ParentIntersectionObserver);
+
+    const frame = document.createElement("iframe");
+    document.body.appendChild(frame);
+    const frameDocument = frame.contentDocument;
+    const frameWindow = frame.contentWindow;
+    if (!frameDocument || !frameWindow) {
+      throw new Error("jsdom did not create an iframe document");
+    }
+
+    const frameObserve = vi.fn();
+    const frameDisconnect = vi.fn();
+    const frameObserver = vi.fn();
+    class FrameIntersectionObserver {
+      constructor() {
+        frameObserver();
+      }
+
+      observe(target: Element) {
+        frameObserve(target);
+      }
+
+      disconnect() {
+        frameDisconnect();
+      }
+    }
+    Object.defineProperty(frameWindow, "IntersectionObserver", {
+      configurable: true,
+      value: FrameIntersectionObserver,
+    });
+
+    const { container, unmount } = render(<MagicButton>Frame</MagicButton>, {
+      container: frameDocument.body,
+    });
+    const root = container.querySelector<HTMLButtonElement>("button");
+
+    expect(root).not.toBeNull();
+    expect(frameObserver).toHaveBeenCalledOnce();
+    expect(parentObserver).not.toHaveBeenCalled();
+    expect(frameObserve).toHaveBeenCalledOnce();
+    expect(frameObserve.mock.calls[0]?.[0]).toBe(root);
+
+    unmount();
+    expect(frameDisconnect).toHaveBeenCalledOnce();
+    frame.remove();
+  });
+
   it("maps size to the front face", () => {
     const { container } = render(<MagicButton size="lg">A</MagicButton>);
     expect(container.querySelector("[data-size='lg']")).not.toBeNull();

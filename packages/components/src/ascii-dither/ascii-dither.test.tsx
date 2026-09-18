@@ -6,6 +6,7 @@ type MockImage = {
   crossOrigin: string;
   naturalHeight: number;
   naturalWidth: number;
+  onerror: (() => void) | null;
   onload: (() => void) | null;
   src: string;
 };
@@ -39,14 +40,32 @@ function setupCanvas() {
   return { context };
 }
 
-function setupImage() {
-  const image: MockImage = {
+function createMockImage(): MockImage {
+  return {
     crossOrigin: "",
     naturalHeight: 1,
     naturalWidth: 1,
+    onerror: null,
     onload: null,
     src: "",
   };
+}
+
+function setupImages() {
+  const images: MockImage[] = [];
+  vi.stubGlobal(
+    "Image",
+    vi.fn(() => {
+      const image = createMockImage();
+      images.push(image);
+      return image;
+    }),
+  );
+  return images;
+}
+
+function setupImage() {
+  const image = createMockImage();
   vi.stubGlobal(
     "Image",
     vi.fn(() => image),
@@ -68,6 +87,69 @@ function setupMatchMedia() {
       removeListener: vi.fn(),
     })),
   });
+}
+
+function captureVideo() {
+  let video: HTMLVideoElement | null = null;
+  const createElement = document.createElement.bind(document);
+  vi.spyOn(document, "createElement").mockImplementation((tagName) => {
+    const element = createElement(tagName);
+    if (tagName === "video") video = element as HTMLVideoElement;
+    return element;
+  });
+  return () => {
+    if (!video) throw new Error("Video element was not created");
+    return video;
+  };
+}
+
+function setupAnimationFrame() {
+  let nextId = 0;
+  const request = vi.fn((_callback: FrameRequestCallback) => ++nextId);
+  const cancel = vi.fn((_id: number) => {});
+  vi.stubGlobal("requestAnimationFrame", request);
+  vi.stubGlobal("cancelAnimationFrame", cancel);
+  return { cancel, request };
+}
+
+function setupVideoState(video: HTMLVideoElement) {
+  let currentTime = 0;
+  let paused = true;
+  let ended = false;
+  Object.defineProperties(video, {
+    currentTime: {
+      configurable: true,
+      get: () => currentTime,
+      set: (value: number) => {
+        currentTime = value;
+      },
+    },
+    ended: { configurable: true, get: () => ended },
+    paused: { configurable: true, get: () => paused },
+    videoHeight: { configurable: true, value: 1 },
+    videoWidth: { configurable: true, value: 1 },
+  });
+  const play = vi.spyOn(video, "play").mockImplementation(() => {
+    paused = false;
+    return Promise.resolve();
+  });
+  vi.spyOn(video, "pause").mockImplementation(() => {
+    paused = true;
+  });
+  vi.spyOn(video, "load").mockImplementation(() => {});
+  return {
+    end() {
+      paused = true;
+      ended = true;
+    },
+    pause() {
+      paused = true;
+    },
+    play() {
+      paused = false;
+    },
+    playMethod: play,
+  };
 }
 
 class ImmediateImage {
@@ -263,6 +345,160 @@ describe("AsciiDither", () => {
     unmount();
     expect(frameDisconnect).toHaveBeenCalledOnce();
     frame.remove();
+  });
+
+  it("ignores image errors from a source replaced during rerender", () => {
+    setupMatchMedia();
+    const { context } = setupCanvas();
+    const images = setupImages();
+    const rendered = render(
+      <AsciiDither
+        color="red"
+        reveal={false}
+        src="/old-poster.png"
+        type="image"
+      />,
+    );
+    const oldImage = images[0];
+    if (!oldImage) throw new Error("Old mock image was not created");
+    const oldError = oldImage.onerror;
+    if (!oldError) throw new Error("Old mock image did not receive onerror");
+
+    const clearRect = context.clearRect as unknown as {
+      mock: { calls: unknown[][] };
+    };
+    const drawImage = context.drawImage as unknown as {
+      mock: { calls: unknown[][] };
+    };
+    const clearCallsBeforeError = clearRect.mock.calls.length;
+    const drawCallsBeforeError = drawImage.mock.calls.length;
+
+    act(() => {
+      rendered.rerender(
+        <AsciiDither
+          color="red"
+          reveal={false}
+          src="/new-poster.png"
+          type="image"
+        />,
+      );
+    });
+    expect(images).toHaveLength(2);
+
+    act(() => oldError());
+
+    expect(clearRect.mock.calls.length).toBe(clearCallsBeforeError);
+    expect(drawImage.mock.calls.length).toBe(drawCallsBeforeError);
+    expect(oldImage.onload).toBeNull();
+    expect(oldImage.onerror).toBeNull();
+    expect(oldImage.src).toBe("");
+    rendered.unmount();
+  });
+
+  it("cleans up image errors after unmount", () => {
+    setupMatchMedia();
+    const { context } = setupCanvas();
+    const images = setupImages();
+    const rendered = render(
+      <AsciiDither color="red" reveal={false} src="/poster.png" type="image" />,
+    );
+    const image = images[0];
+    if (!image) throw new Error("Mock image was not created");
+    const error = image.onerror;
+    if (!error) throw new Error("Mock image did not receive onerror");
+
+    const clearRect = context.clearRect as unknown as {
+      mock: { calls: unknown[][] };
+    };
+    const drawImage = context.drawImage as unknown as {
+      mock: { calls: unknown[][] };
+    };
+    const clearCallsBeforeUnmount = clearRect.mock.calls.length;
+    const drawCallsBeforeUnmount = drawImage.mock.calls.length;
+
+    act(() => rendered.unmount());
+    act(() => error());
+
+    expect(clearRect.mock.calls.length).toBe(clearCallsBeforeUnmount);
+    expect(drawImage.mock.calls.length).toBe(drawCallsBeforeUnmount);
+    expect(image.onload).toBeNull();
+    expect(image.onerror).toBeNull();
+    expect(image.src).toBe("");
+  });
+
+  it("does not loop a paused video when autoplay is disabled", () => {
+    setupMatchMedia();
+    setupCanvas();
+    const getVideo = captureVideo();
+    const { request } = setupAnimationFrame();
+    const rendered = render(
+      <AsciiDither
+        autoPlay={false}
+        color="red"
+        loop={false}
+        reveal={false}
+        src="/clip.mp4"
+        type="video"
+      />,
+    );
+    const video = getVideo();
+    const state = setupVideoState(video);
+
+    act(() => video.dispatchEvent(new Event("loadeddata")));
+
+    expect(state.playMethod).not.toHaveBeenCalled();
+    expect(request).not.toHaveBeenCalled();
+    rendered.unmount();
+  });
+
+  it("syncs the loop with video playback and paints the terminal frame", () => {
+    setupMatchMedia();
+    const { context } = setupCanvas();
+    const getVideo = captureVideo();
+    const { cancel, request } = setupAnimationFrame();
+    const rendered = render(
+      <AsciiDither
+        autoPlay={false}
+        color="red"
+        loop={false}
+        reveal={false}
+        src="/clip.mp4"
+        type="video"
+      />,
+    );
+    const video = getVideo();
+    const state = setupVideoState(video);
+
+    act(() => video.dispatchEvent(new Event("loadeddata")));
+    expect(request).not.toHaveBeenCalled();
+
+    state.play();
+    act(() => video.dispatchEvent(new Event("play")));
+    expect(request).toHaveBeenCalledTimes(1);
+
+    state.pause();
+    act(() => video.dispatchEvent(new Event("pause")));
+    expect(cancel).toHaveBeenLastCalledWith(1);
+
+    state.play();
+    act(() => video.dispatchEvent(new Event("play")));
+    expect(request).toHaveBeenCalledTimes(2);
+
+    const drawImage = context.drawImage as unknown as {
+      mock: { calls: unknown[][] };
+    };
+    const clearRect = context.clearRect as unknown as {
+      mock: { calls: unknown[][] };
+    };
+    const drawsBeforeEnded = drawImage.mock.calls.length;
+    const clearsBeforeEnded = clearRect.mock.calls.length;
+    state.end();
+    act(() => video.dispatchEvent(new Event("ended")));
+
+    expect(cancel).toHaveBeenLastCalledWith(2);
+    expect(drawImage.mock.calls.length).toBeGreaterThan(drawsBeforeEnded);
+    expect(clearRect.mock.calls.length).toBeGreaterThan(clearsBeforeEnded);
+    rendered.unmount();
   });
 
   describe.each([

@@ -1,7 +1,18 @@
-import { render } from "@testing-library/react";
+import { act, fireEvent, render } from "@testing-library/react";
 import { createRef } from "react";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { SplitFlapDisplay } from "./split-flap-display";
+
+let intersectionCallback: IntersectionObserverCallback | undefined;
+
+class MockIntersectionObserver {
+  constructor(callback: IntersectionObserverCallback) {
+    intersectionCallback = callback;
+  }
+
+  observe() {}
+  disconnect() {}
+}
 
 function getRoot(container: HTMLElement) {
   return container.querySelector<HTMLElement>(
@@ -12,6 +23,18 @@ function getRoot(container: HTMLElement) {
 function flaps(container: HTMLElement) {
   return getRoot(container).querySelectorAll(":scope > [aria-hidden]");
 }
+
+function risingHalves(container: HTMLElement) {
+  return Array.from(flaps(container)).flatMap((flap) => {
+    const rise = flap.querySelector<HTMLElement>(".animate-split-flap-rise");
+    return rise ? [rise] : [];
+  });
+}
+
+afterEach(() => {
+  intersectionCallback = undefined;
+  vi.unstubAllGlobals();
+});
 
 describe("SplitFlapDisplay", () => {
   it("renders one flap per character of the value", () => {
@@ -29,6 +52,154 @@ describe("SplitFlapDisplay", () => {
       <SplitFlapDisplay value="OVERFLOWING" length={4} />,
     );
     expect(flaps(clipped)).toHaveLength(4);
+  });
+
+  it("normalizes invalid and oversized lengths without throwing", () => {
+    const cases = [
+      { length: Infinity, expected: 2 },
+      { length: Number.MAX_SAFE_INTEGER, expected: 100 },
+      { length: Number.NaN, expected: 2 },
+      { length: 2.5, expected: 2 },
+      { length: -1, expected: 0 },
+      { length: 0, expected: 0 },
+      { length: 6, expected: 6 },
+    ];
+
+    for (const { length, expected } of cases) {
+      const { container } = render(
+        <SplitFlapDisplay value="HI" length={length} />,
+      );
+      expect(flaps(container)).toHaveLength(expected);
+    }
+  });
+
+  it("preserves alignment for valid lengths", () => {
+    const cases = [
+      { align: "left" as const, className: "justify-start" },
+      { align: "center" as const, className: "justify-center" },
+      { align: "right" as const, className: "justify-end" },
+    ];
+
+    for (const { align, className } of cases) {
+      const { container } = render(
+        <SplitFlapDisplay value="HI" length={6} align={align} />,
+      );
+      expect(getRoot(container)).toHaveClass(className);
+      expect(flaps(container)).toHaveLength(6);
+    }
+  });
+
+  it("settles every digit when animation ends with a negative maxFlaps", () => {
+    vi.stubGlobal("IntersectionObserver", MockIntersectionObserver);
+    const { container } = render(
+      <SplitFlapDisplay value="ABC" maxFlaps={-1} />,
+    );
+
+    act(() => {
+      intersectionCallback?.(
+        [{ isIntersecting: true } as IntersectionObserverEntry],
+        {} as IntersectionObserver,
+      );
+    });
+
+    expect(risingHalves(container)).toHaveLength(3);
+
+    for (let i = 0; i < 10; i++) {
+      const rises = risingHalves(container);
+      if (rises.length === 0) break;
+      act(() => {
+        for (const rise of rises) fireEvent.animationEnd(rise);
+      });
+    }
+
+    expect(risingHalves(container)).toHaveLength(0);
+    expect(
+      Array.from(flaps(container)).map((flap) => flap.textContent),
+    ).toEqual(["AA", "BB", "CC"]);
+  });
+
+  it("normalizes zero, fractional, and non-finite maxFlaps", () => {
+    vi.stubGlobal("IntersectionObserver", MockIntersectionObserver);
+    const cases = [
+      {
+        maxFlaps: 0,
+        value: "C",
+        charset: " ABC",
+        expectedRises: 0,
+        expectedFlips: 0,
+      },
+      {
+        maxFlaps: 1.9,
+        value: "C",
+        charset: " ABC",
+        expectedRises: 1,
+        expectedFlips: 1,
+      },
+      {
+        maxFlaps: Infinity,
+        value: "M",
+        charset: " ABCDEFGHIJKLM",
+        expectedRises: 1,
+        expectedFlips: 12,
+      },
+      {
+        maxFlaps: Number.NaN,
+        value: "M",
+        charset: " ABCDEFGHIJKLM",
+        expectedRises: 1,
+        expectedFlips: 12,
+      },
+    ];
+
+    for (const {
+      maxFlaps,
+      value,
+      charset,
+      expectedRises,
+      expectedFlips,
+    } of cases) {
+      const { container, unmount } = render(
+        <SplitFlapDisplay
+          value={value}
+          charset={charset}
+          maxFlaps={maxFlaps}
+        />,
+      );
+
+      act(() => {
+        intersectionCallback?.(
+          [{ isIntersecting: true } as IntersectionObserverEntry],
+          {} as IntersectionObserver,
+        );
+      });
+
+      expect(
+        risingHalves(container),
+        `initial rises for maxFlaps=${String(maxFlaps)}`,
+      ).toHaveLength(expectedRises);
+
+      let flips = 0;
+      for (let i = 0; i <= 12; i++) {
+        const rises = risingHalves(container);
+        if (rises.length === 0) break;
+        flips += rises.length;
+        act(() => {
+          for (const rise of rises) fireEvent.animationEnd(rise);
+        });
+      }
+
+      expect(flips, `flips for maxFlaps=${String(maxFlaps)}`).toBe(
+        expectedFlips,
+      );
+      expect(
+        risingHalves(container),
+        `remaining rises for maxFlaps=${String(maxFlaps)}`,
+      ).toHaveLength(0);
+      expect(
+        Array.from(flaps(container)).map((flap) => flap.textContent),
+      ).toEqual([value + value]);
+      unmount();
+    }
   });
 
   it("accepts a per-column charset array", () => {

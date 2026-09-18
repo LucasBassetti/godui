@@ -88,6 +88,8 @@ const FilterBar = React.forwardRef<HTMLDivElement, FilterBarProps>(
 
     React.useEffect(() => {
       if (!open) return;
+      const ownerDocument = rootRef.current?.ownerDocument;
+      if (!ownerDocument) return;
       const onDown = (e: MouseEvent) => {
         if (rootRef.current && !rootRef.current.contains(e.target as Node)) {
           setOpen(null);
@@ -96,11 +98,11 @@ const FilterBar = React.forwardRef<HTMLDivElement, FilterBarProps>(
       const onKey = (e: KeyboardEvent) => {
         if (e.key === "Escape") setOpen(null);
       };
-      document.addEventListener("mousedown", onDown);
-      document.addEventListener("keydown", onKey);
+      ownerDocument.addEventListener("mousedown", onDown);
+      ownerDocument.addEventListener("keydown", onKey);
       return () => {
-        document.removeEventListener("mousedown", onDown);
-        document.removeEventListener("keydown", onKey);
+        ownerDocument.removeEventListener("mousedown", onDown);
+        ownerDocument.removeEventListener("keydown", onKey);
       };
     }, [open]);
 
