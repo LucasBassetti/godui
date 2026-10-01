@@ -87,6 +87,11 @@ import { ConversationThreadAnatomy } from "@/components/learn/conversation-threa
 import { ConversationThreadResult } from "@/components/learn/conversation-thread-result";
 import { ConversationThreadScroll } from "@/components/learn/conversation-thread-scroll";
 import { ConversationThreadStream } from "@/components/learn/conversation-thread-stream";
+import { AutoPlayScene } from "@/components/learn/core/auto-play-scene";
+import { FlipScene } from "@/components/learn/core/flip-scene";
+import { KeyframeScene } from "@/components/learn/core/keyframe-scene";
+import { LiveResult } from "@/components/learn/core/live-result";
+import { SpringCurveScene } from "@/components/learn/core/spring-curve-scene";
 import { CoverFlowAnatomy } from "@/components/learn/cover-flow-anatomy";
 import { CoverFlowFan } from "@/components/learn/cover-flow-fan";
 import { CoverFlowResult } from "@/components/learn/cover-flow-result";
@@ -478,6 +483,11 @@ export function getMDXComponents(components?: MDXComponents) {
     MCPInstall,
     BackgroundShowcase,
     PreviewCard,
+    AutoPlayScene,
+    FlipScene,
+    KeyframeScene,
+    LiveResult,
+    SpringCurveScene,
     AgentFlowAnatomy,
     AgentFlowBorderTrace,
     AgentFlowPacket,

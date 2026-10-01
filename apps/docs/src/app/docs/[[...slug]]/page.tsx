@@ -36,27 +36,36 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
   const section =
     slug[0] === "components" || slug[0] === "extras" ? slug[0] : undefined;
   const inComponents = section != null;
-  // Component base = `components/<category>/<name>` (depth 3). The Learn page is
-  // that base + `learn` (depth 4). Badges + tabs hang off the base.
-  const base = inComponents && slug.length >= 3 ? slug.slice(0, 3) : undefined;
-  const isLearnPage = base != null && slug.length === 4 && slug[3] === "learn";
-  const isComponentDocsPage = base != null && slug.length === 3;
+  const isCore = section === "components";
+  // Component base: core = `components/<name>` (depth 2); Extras =
+  // `extras/<category>/<name>` (depth 3). The Learn page is that base +
+  // `learn`. Badges + tabs hang off the base.
+  const baseDepth = isCore ? 2 : 3;
+  const base =
+    inComponents && slug.length >= baseDepth
+      ? slug.slice(0, baseDepth)
+      : undefined;
+  const isLearnPage =
+    base != null &&
+    slug.length === baseDepth + 1 &&
+    slug[baseDepth] === "learn";
+  const isComponentDocsPage = base != null && slug.length === baseDepth;
 
   // The Learn tab only appears when a learn page actually exists for this
   // component. `source.getPage` returns null when it doesn't.
   const learnPage = base ? source.getPage([...base, "learn"]) : null;
   const hasLearn = learnPage != null;
 
-  const componentName = base ? base[2] : undefined;
-  const motionNote = componentName ? perfNote(componentName) : undefined;
-  const dependencyNote = componentName
-    ? DEPENDENCY_NOTES[componentName]
-    : undefined;
-  const isStatic = componentName ? STATIC_COMPONENTS.has(componentName) : false;
+  const componentName = base?.at(-1);
+  // Extras-only signals. Core components are CI-gated GPU-only, so they carry
+  // no perf note, grade or dependency note — just the GPU-only + shadcn badges.
+  const extrasName = isCore ? undefined : componentName;
+  const motionNote = extrasName ? perfNote(extrasName) : undefined;
+  const dependencyNote = extrasName ? DEPENDENCY_NOTES[extrasName] : undefined;
+  const isStatic = extrasName ? STATIC_COMPONENTS.has(extrasName) : false;
   // Static components (the `*-background` effects) never animate — no grade to show;
   // they keep only the green "Static" badge.
-  const score =
-    componentName && !isStatic ? motionScore(componentName) : undefined;
+  const score = extrasName && !isStatic ? motionScore(extrasName) : undefined;
 
   // On the Learn page, `page.data.title` is the article title — but the
   // breadcrumb should still read the component's name (pulled from the base
@@ -160,6 +169,17 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
         title: "Runs on the GPU compositor",
         detail:
           "Animates only transform, opacity and filter — no main-thread layout or paint, so it stays smooth even under load.",
+      });
+    }
+    if (isCore && componentName) {
+      badges.push({
+        tone: "neutral",
+        label: "shadcn/ui",
+        title: "Drop-in for shadcn/ui",
+        detail:
+          "Same file, exports, props and data-slots as shadcn/ui new-york-v4 — swap it in and existing call sites keep working.",
+        href: `https://ui.shadcn.com/docs/components/${componentName}`,
+        hrefLabel: "shadcn docs",
       });
     }
     if (section === "extras") {

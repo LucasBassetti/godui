@@ -94,8 +94,7 @@ export default function Home() {
               <AnimatedInstall />
             </div>
             <div className="relative z-10 flex flex-col items-center gap-4 sm:flex-row sm:gap-5">
-              {/* Points at Extras until wave 1 ships core shadcn components. */}
-              <Link href="/docs/extras" className="inline-block">
+              <Link href="/docs/components" className="inline-block">
                 <MagicButton size="lg" tabIndex={-1}>
                   Browse Components
                 </MagicButton>
