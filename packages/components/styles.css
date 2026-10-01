@@ -333,6 +333,21 @@
   }
 }
 
+/* ── accordion ───────────────────────────────────────────────────────────────
+ * Component keyframe (also in the accordion registry entry). It only keeps
+ * Radix Presence from hiding a closing panel until its clip edge (animated in
+ * JS, on translate) has swept up. 0.99, not 1: Chrome won't composite an
+ * animation with no visible change; the panel is hidden when it ends. */
+@theme inline {
+  --animate-godui-accordion-hold: godui-accordion-hold
+    var(--godui-duration-base) linear;
+}
+@keyframes godui-accordion-hold {
+  to {
+    opacity: 0.99;
+  }
+}
+
 /* ── input-otp ───────────────────────────────────────────────────────────────
  * Component keyframe (also in the input-otp registry entry). Opacity only. */
 @theme inline {

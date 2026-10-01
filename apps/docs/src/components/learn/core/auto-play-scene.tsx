@@ -1,6 +1,10 @@
 "use client";
 
 import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
   Button,
   Carousel,
   type CarouselApi,
@@ -485,7 +489,84 @@ function CarouselJump({ reduced }: { reduced: boolean }) {
   return <CarouselAdvance reduced={reduced} jump />;
 }
 
+const ACCORDION_ROWS = [
+  { value: "a", title: "w-28", body: ["w-52", "w-44", "w-48"] },
+  { value: "b", title: "w-36", body: ["w-48", "w-40"] },
+  { value: "c", title: "w-24", body: ["w-44", "w-52"] },
+];
+/** a opens → b takes over (one closes as the other opens) → all closed. */
+const ACCORDION_SEQUENCE = ["a", "b", ""];
+const ACCORDION_SLOW_MS = 1200;
+
+/**
+ * The real Accordion on a slowed clock. `outlined` outlines each panel's clip
+ * box, so you can see the box slide out from under its trigger while the bars
+ * inside hold still.
+ */
+function AccordionSweep({
+  reduced,
+  outlined = false,
+}: {
+  reduced: boolean;
+  outlined?: boolean;
+}) {
+  const [step, setStep] = useState(0);
+  useEffect(() => {
+    if (reduced) return;
+    const id = setInterval(
+      () => setStep((s) => (s + 1) % ACCORDION_SEQUENCE.length),
+      ACCORDION_SLOW_MS * 2,
+    );
+    return () => clearInterval(id);
+  }, [reduced]);
+  return (
+    <Accordion
+      type="single"
+      collapsible
+      value={ACCORDION_SEQUENCE[step]}
+      onValueChange={() => {}}
+      className="w-72 [--godui-duration-base:1200ms] [--godui-duration-fast:1200ms]"
+    >
+      {ACCORDION_ROWS.map((row) => (
+        <AccordionItem
+          key={row.value}
+          value={row.value}
+          // The outline is on the panel's clip box (the item's direct child),
+          // not on the content inside it.
+          className={
+            outlined
+              ? "[&>[data-slot=accordion-content]]:outline-1 [&>[data-slot=accordion-content]]:outline-[var(--foreground)]/40 [&>[data-slot=accordion-content]]:outline-dashed [&>[data-slot=accordion-content]]:-outline-offset-1"
+              : undefined
+          }
+        >
+          <AccordionTrigger tabIndex={-1} className="pointer-events-none">
+            <Bar className={`${row.title} mt-1 bg-[var(--foreground)]/45`} />
+          </AccordionTrigger>
+          <AccordionContent className="flex flex-col gap-2.5 pt-1">
+            {row.body.map((width) => (
+              <Bar
+                key={width}
+                className={`${width} bg-[var(--foreground)]/20`}
+              />
+            ))}
+          </AccordionContent>
+        </AccordionItem>
+      ))}
+    </Accordion>
+  );
+}
+
+function AccordionWindow({ reduced }: { reduced: boolean }) {
+  return <AccordionSweep reduced={reduced} outlined />;
+}
+
+function AccordionGlide({ reduced }: { reduced: boolean }) {
+  return <AccordionSweep reduced={reduced} />;
+}
+
 const DEMOS = {
+  accordion: AccordionGlide,
+  "accordion-window": AccordionWindow,
   button: ButtonPress,
   carousel: CarouselGlide,
   "carousel-jump": CarouselJump,

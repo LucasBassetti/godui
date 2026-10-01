@@ -1,12 +1,12 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "revision": "3e19352ab05b78779a340ef291e95666ae38bf34",
+  "revision": "e406e3853e21e4afaf255bed98da38e8cfab59a2",
   "components": [
     {
       "name": "accordion",
       "title": "Accordion",
-      "description": "A vertically stacked set of interactive headings that each reveal a section of content. Heights snap and the items below FLIP; no height animation. GPU-only.",
+      "description": "A vertically stacked set of interactive headings that each reveal a section of content. A height animation faked on the compositor: the panel's clip edge sweeps while its text holds still, and the rows below glide with the edge. GPU-only.",
       "category": "Components",
       "dependencies": ["radix-ui", "lucide-react"],
       "registryDependencies": ["utils", "@godui/godui-motion"],

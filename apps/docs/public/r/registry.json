@@ -412,7 +412,7 @@
       "name": "accordion",
       "type": "registry:ui",
       "title": "Accordion",
-      "description": "A vertically stacked set of interactive headings that each reveal a section of content. Heights snap and the items below FLIP; no height animation. GPU-only.",
+      "description": "A vertically stacked set of interactive headings that each reveal a section of content. A height animation faked on the compositor: the panel's clip edge sweeps while its text holds still, and the rows below glide with the edge. GPU-only.",
       "dependencies": ["radix-ui", "lucide-react"],
       "registryDependencies": ["utils", "@godui/godui-motion"],
       "files": [
@@ -420,7 +420,19 @@
           "path": "packages/components/src/ui/accordion.tsx",
           "type": "registry:ui"
         }
-      ]
+      ],
+      "cssVars": {
+        "theme": {
+          "animate-godui-accordion-hold": "godui-accordion-hold var(--godui-duration-base) linear"
+        }
+      },
+      "css": {
+        "@keyframes godui-accordion-hold": {
+          "to": {
+            "opacity": "0.99"
+          }
+        }
+      }
     },
     {
       "name": "switch",

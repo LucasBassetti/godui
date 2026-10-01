@@ -1,6 +1,6 @@
 ---
 title: Accordion
-description: A vertically stacked set of interactive headings that each reveal a section of content. Heights snap; the items below slide into place.
+description: "A vertically stacked set of interactive headings that each reveal a section of content. A height animation rebuilt on the GPU: the edge sweeps over still text and the rows ride it."
 workbench: true
 ---
 
@@ -14,11 +14,11 @@ import { AccordionDemo } from "@/components/demos/core/accordion-demo";
 
 <Workbench>
 
-The shadcn/ui accordion without height animation. A panel's height changes
-in one step, and the items below it slide from where they were to where they
-now are (FLIP), so the motion reads the same while only `translate` and
-`opacity` animate. Opening panels slide in; closing panels fade out first,
-then collapse.
+The shadcn/ui accordion with the look of a height animation and none of its
+cost. A panel's height changes in one step; its clip edge then sweeps over text
+that holds still, and the rows below ride that edge, all on `translate` and
+`opacity`. Closing doesn't wait: the edge sweeps up as the rows rise, and a
+click mid-way reverses from where everything is drawn.
 
 <Example label="Default" story="ui-accordion" code={`import {
   Accordion,
@@ -146,19 +146,22 @@ import {
 
 ## What's animated
 
-| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
+| Interaction | Mechanism | Properties | Easing | Duration |
 | --- | --- | --- | --- | --- |
-| Open | height snaps; items below FLIP; panel `godui-slide-in-from-top`, ~100ms later | `translate`, `opacity` | `ease-spring-snappy` | 260ms |
-| Close | panel `godui-slide-out-to-top`, then height snaps; items below FLIP up | `translate`, `opacity` | `ease-out-expo`; FLIP `ease-spring-snappy` | 150ms + 260ms |
-| Chevron | `transition` on `transform` | `rotate(180deg)` | `ease-spring-snappy` | 260ms |
+| Open | height snaps; the panel's box slides from under the trigger while its content counter-slides (a clip edge sweeping over still text); rows below FLIP with the edge | `translate` | `ease-spring-smooth` | 260ms |
+| Open, content | blocks fade in, a quarter of `--godui-duration-fast` apart (up to 4) | `opacity` | `ease-out-expo` | 260ms |
+| Close | the panel leaves the flow at once; its edge sweeps up as the rows rise; text fades out ahead of it | `translate`, `opacity` | `ease-spring-smooth` | 150ms |
+| Open one, close another | both edges and every row share one clock | `translate` | `ease-spring-smooth` | 260ms |
+| Chevron | `transition` on `transform` | `rotate(180deg)` | `ease-spring-smooth` | 260ms open, 150ms close |
 
-The dividers between items are drawn as each item's top border rather than the
-previous item's bottom border (same look), so a divider travels with the item
-that slides instead of jumping ahead of it. The FLIP covers the accordion's own
-items; content after the accordion moves with the height change in one step.
+The text inside a panel never moves: the box and its content travel the same
+distance in opposite directions, so only the clip edge does. The row below
+starts on that edge and stays on it every frame. Clicking again mid-sweep
+reverses from what's drawn. The dividers are each item's top border, so a line
+travels with its row. A nested accordion's change glides the outer rows too.
 
-Under `prefers-reduced-motion` the items below jump to their new position, the
-panel fades for 150ms, and the chevron turns instantly.
+Under `prefers-reduced-motion` nothing moves: heights and rows change in one
+step, the panel's content fades, and the chevron turns instantly.
 
 ## API
 
