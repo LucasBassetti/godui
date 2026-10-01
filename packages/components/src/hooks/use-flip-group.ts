@@ -41,6 +41,13 @@ function toMs(value: string | undefined): number {
   return /\ds\s*$/.test(value ?? "") ? n * 1000 : n;
 }
 
+/**
+ * Running FLIPs by element, shared by every group: an element moved by one
+ * group (e.g. a Collapsible) can be a candidate of another (its sibling
+ * Collapsible). Any group cancels and carries it; nobody baselines it mid-flight.
+ */
+const RUNNING = new WeakMap<Element, Animation>();
+
 /** Each matched child's position relative to the container. */
 function measure(container: HTMLElement, selector: string) {
   const origin = container.getBoundingClientRect();
@@ -67,7 +74,8 @@ function measure(container: HTMLElement, selector: string) {
  * interruption starts from where the element is drawn instead of jumping.
  * Layout changes that no trigger accounts for (content loading, reflow) are
  * picked up by a ResizeObserver and become the new baseline without
- * animating — after the running FLIP finishes, if one is running.
+ * animating — once no FLIP (from this group or another) is running on the
+ * candidates, so a baseline never includes an in-flight offset.
  */
 export function useFlipGroup(
   containerRef: React.RefObject<HTMLElement | null>,
@@ -79,18 +87,37 @@ export function useFlipGroup(
   }: FlipGroupOptions = {},
 ): void {
   const last = React.useRef(new Map<Element, Point>());
-  const running = React.useRef(new Map<Element, Animation>());
   const dirty = React.useRef(false);
   const resizes = React.useRef<ResizeObserver | null>(null);
+  const settle = React.useRef<() => void>(() => {});
 
-  // Re-baseline on resizes no trigger caused; defer while a FLIP is running.
+  // Re-baseline on resizes no trigger caused, once nothing is mid-FLIP.
   React.useEffect(() => {
     const container = containerRef.current;
     if (!container || typeof ResizeObserver === "undefined") return;
-    const observer = new ResizeObserver(() => {
-      if (running.current.size > 0) dirty.current = true;
-      else last.current = measure(container, selector);
-    });
+    settle.current = () => {
+      const busy: Array<[Element, Animation]> = [];
+      for (const el of container.querySelectorAll(selector)) {
+        const animation = RUNNING.get(el);
+        if (animation) busy.push([el, animation]);
+      }
+      if (busy.length === 0) {
+        dirty.current = false;
+        last.current = measure(container, selector);
+        return;
+      }
+      dirty.current = true;
+      for (const [el, animation] of busy) {
+        // `finished` can settle before `onfinish` runs; clear the entry here
+        // too, or settle() would keep re-waiting on a resolved promise.
+        const done = () => {
+          if (RUNNING.get(el) === animation) RUNNING.delete(el);
+          settle.current();
+        };
+        animation.finished?.then(done, done);
+      }
+    };
+    const observer = new ResizeObserver(() => settle.current());
     resizes.current = observer;
     observer.observe(container);
     for (const el of container.querySelectorAll(selector)) observer.observe(el);
@@ -120,10 +147,10 @@ export function useFlipGroup(
       resizes.current?.observe(el);
       let rect = el.getBoundingClientRect();
       let carry: Point = { x: 0, y: 0 };
-      const active = running.current.get(el);
+      const active = RUNNING.get(el);
       if (active) {
         active.cancel();
-        running.current.delete(el);
+        RUNNING.delete(el);
         const settled = el.getBoundingClientRect();
         carry = { x: rect.left - settled.left, y: rect.top - settled.top };
         rect = settled;
@@ -143,14 +170,10 @@ export function useFlipGroup(
         ],
         { duration: ms, easing },
       );
-      running.current.set(el, animation);
+      RUNNING.set(el, animation);
       animation.onfinish = () => {
-        if (running.current.get(el) !== animation) return;
-        running.current.delete(el);
-        if (running.current.size === 0 && dirty.current) {
-          dirty.current = false;
-          last.current = measure(container, selector);
-        }
+        if (RUNNING.get(el) === animation) RUNNING.delete(el);
+        if (dirty.current) settle.current();
       };
     }
     last.current = next;

@@ -204,3 +204,42 @@ describe("useFlipGroup baseline and tokens", () => {
     expect(animate.mock.calls[0][1]).toMatchObject({ duration: 400 });
   });
 });
+
+describe("useFlipGroup settling", () => {
+  it("re-baselines when `finished` resolves before onfinish runs (no re-wait loop)", async () => {
+    let fire = () => {};
+    const Original = globalThis.ResizeObserver;
+    globalThis.ResizeObserver = class {
+      constructor(cb: () => void) {
+        fire = cb;
+      }
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+    } as unknown as typeof ResizeObserver;
+    let resolve = () => {};
+    animate.mockImplementation(() => ({
+      cancel: () => {},
+      onfinish: null,
+      finished: new Promise<void>((r) => {
+        resolve = r;
+      }),
+    }));
+    try {
+      layout.set("a", { left: 0, top: 0 });
+      layout.set("b", { left: 0, top: 40 });
+      const { rerender } = render(<Group trigger={0} order={["a", "b"]} />);
+      layout.set("b", { left: 0, top: 100 });
+      rerender(<Group trigger={1} order={["a", "b"]} />);
+      expect(animate).toHaveBeenCalledTimes(1);
+      layout.set("b", { left: 0, top: 150 });
+      fire(); // mid-FLIP resize: deferred
+      resolve(); // `finished` settles; onfinish never runs in this mock
+      await new Promise((r) => setTimeout(r, 0));
+      rerender(<Group trigger={2} order={["a", "b"]} />);
+      expect(animate).toHaveBeenCalledTimes(1);
+    } finally {
+      globalThis.ResizeObserver = Original;
+    }
+  });
+});

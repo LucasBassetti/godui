@@ -122,14 +122,21 @@ function CommandList({
       )}
       {...props}
     >
-      {/* Hidden until measured, so the first paint keeps shadcn's styling. */}
-      <span
-        ref={indicatorRef}
-        data-slot="command-indicator"
-        aria-hidden="true"
-        className="pointer-events-none absolute top-0 left-0 hidden origin-top-left rounded-sm bg-accent ease-spring-snappy in-[[data-slot=command-list][data-indicator=ready]]:block"
-      />
-      {children}
+      {/* Hidden until measured, so the first paint keeps shadcn's styling.
+          Skipped with asChild: the Slot needs a single child. */}
+      {props.asChild ? (
+        children
+      ) : (
+        <>
+          <span
+            ref={indicatorRef}
+            data-slot="command-indicator"
+            aria-hidden="true"
+            className="pointer-events-none absolute top-0 left-0 hidden origin-top-left rounded-sm bg-accent ease-spring-snappy in-[[data-slot=command-list][data-indicator=ready]]:block"
+          />
+          {children}
+        </>
+      )}
     </CommandPrimitive.List>
   );
 }

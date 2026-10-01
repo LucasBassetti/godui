@@ -45,3 +45,23 @@ export const Default: Story = {
     </div>
   ),
 };
+
+/** Several collapsibles in one parent (FAQ / sidebar pattern). */
+export const Siblings: Story = {
+  render: () => (
+    <div className="flex w-[350px] flex-col gap-2 text-foreground">
+      {["A", "B", "C"].map((name) => (
+        <Collapsible key={name} className="flex flex-col gap-2">
+          <CollapsibleTrigger asChild>
+            <Button variant="outline">Section {name}</Button>
+          </CollapsibleTrigger>
+          <CollapsibleContent className="flex flex-col gap-2">
+            <div className={repo}>{name} — first</div>
+            <div className={repo}>{name} — second</div>
+          </CollapsibleContent>
+        </Collapsible>
+      ))}
+      <p className="px-4 text-sm text-muted-foreground">After all sections</p>
+    </div>
+  ),
+};

@@ -24,3 +24,13 @@ export const WithText: Story = {
     ),
   },
 };
+
+/** A customised call site: its own on-state colors must win. */
+export const CustomOn: Story = {
+  args: {
+    "aria-label": "Toggle bookmark",
+    defaultPressed: true,
+    className:
+      "data-[state=on]:bg-primary data-[state=on]:text-primary-foreground",
+  },
+};

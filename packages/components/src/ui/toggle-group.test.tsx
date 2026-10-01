@@ -121,6 +121,30 @@ describe("ToggleGroup", () => {
     expect(frames[1]).toMatchObject({ translate: "72px 0px", scale: "1 1" });
   });
 
+  it("first/last item styling ignores the injected indicator", () => {
+    render(<Single ui={Godui} />);
+    const cls = document.querySelector(
+      '[data-slot="toggle-group-item"]',
+    )?.className;
+    // shadcn's first:/last: would match the indicator span instead.
+    expect(cls).toContain(
+      "data-[spacing=0]:[&:nth-child(1_of_[data-slot=toggle-group-item])]:rounded-l-md",
+    );
+    expect(cls).toContain(
+      "data-[spacing=0]:[&:nth-last-child(1_of_[data-slot=toggle-group-item])]:rounded-r-md",
+    );
+    expect(cls).not.toMatch(/(^|\s)data-\[spacing=0\]:first:/);
+  });
+
+  it("items hand their on background to a ready indicator", () => {
+    render(<Single ui={Godui} />);
+    expect(
+      document.querySelector('[data-slot="toggle-group-item"]')?.className,
+    ).toContain(
+      "in-[[data-slot=toggle-group][data-indicator=ready]]:data-[state=on]:bg-transparent",
+    );
+  });
+
   it("multiple: no indicator, items keep their own on background", () => {
     render(<Multiple ui={Godui} />);
     expect(indicator()).toBeNull();

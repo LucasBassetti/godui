@@ -45,12 +45,8 @@ describe("Toggle", () => {
     expect(cls).not.toContain("transition-[color");
   });
 
-  it("standalone Toggle keeps its on background; only a ready group hides it", () => {
+  it("keeps shadcn's on background so call-site overrides merge as in shadcn", () => {
     render(<Usage ui={Godui} />);
-    const cls = italic().className;
-    expect(cls).toContain(
-      "not-in-[[data-slot=toggle-group][data-indicator=ready]]:data-[state=on]:bg-accent",
-    );
-    expect(cls).not.toMatch(/(^|\s)data-\[state=on\]:bg-accent/);
+    expect(italic().className).toMatch(/(^|\s)data-\[state=on\]:bg-accent/);
   });
 });

@@ -36,3 +36,21 @@ test("the indicator, not the item, paints the on background", async ({
   expect(indicatorBox?.x).toBeCloseTo(itemBox?.x ?? -1, 0);
   expect(indicatorBox?.width).toBeCloseTo(itemBox?.width ?? -1, 0);
 });
+
+test("the outline group keeps its outer corners and left border", async ({
+  page,
+}) => {
+  await page.goto("/iframe.html?id=ui-toggle-group--outline&viewMode=story");
+  await page.waitForLoadState("networkidle");
+  const items = page.locator('[data-slot="toggle-group-item"]');
+  const first = await items.first().evaluate((el) => {
+    const style = getComputedStyle(el);
+    return [style.borderLeftWidth, style.borderTopLeftRadius];
+  });
+  const last = await items
+    .last()
+    .evaluate((el) => getComputedStyle(el).borderTopRightRadius);
+  expect(first[0]).toBe("1px");
+  expect(first[1]).not.toBe("0px");
+  expect(last).not.toBe("0px");
+});

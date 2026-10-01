@@ -20,9 +20,9 @@ export interface TraceResult {
   /** Layout events after the interaction's own first layout has settled. */
   layoutCount: number;
   /**
-   * Distinct ~16.7ms frames containing those layout events. A layout
-   * *animation* lays out in every frame it runs (dozens); a discrete size snap
-   * touches one or two frames however many forced reads it triggers.
+   * Frames containing those layout events (events < 8ms apart merge). A
+   * layout *animation* lays out in every frame it runs (dozens); a discrete
+   * size snap touches one or two frames however many forced reads it triggers.
    */
   layoutFrames: number;
   /** Animations Chrome could not run on the compositor because of their properties. */
@@ -35,8 +35,13 @@ export interface TraceResult {
 
 /** Layout work allowed right after the interaction (the DOM mutation itself). */
 const SETTLE_MS = 50;
-/** One frame at 60Hz, in trace microseconds. */
-const FRAME_US = 1_000_000 / 60;
+/**
+ * Layout events closer than this belong to the same frame (forced reads inside
+ * one task land within a few ms; consecutive 60Hz frames are ~16.7ms apart).
+ * Clustering by gap, not fixed buckets, so two layouts 1ms apart can't
+ * straddle a bucket boundary and count twice.
+ */
+const SAME_FRAME_US = 8_000;
 
 /**
  * Record a Chrome trace around one interaction on a Storybook story and report
@@ -91,9 +96,9 @@ export async function traceInteraction(
   const first = layouts[0] ?? 0;
   const settled = layouts.filter((ts) => ts > first + SETTLE_MS * 1000);
   const layoutCount = settled.length;
-  const layoutFrames = new Set(
-    settled.map((ts) => Math.floor((ts - first) / FRAME_US)),
-  ).size;
+  const layoutFrames = settled.filter(
+    (ts, i) => i === 0 || ts - settled[i - 1] > SAME_FRAME_US,
+  ).length;
 
   const unsupported = events
     .filter(

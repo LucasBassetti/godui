@@ -27,23 +27,25 @@ background change instantly.
 
 <LearnChapter
   label="A background that can step aside"
-  scene={<AutoPlayScene label="A background that can step aside" demo="toggle" />}
-  code={`// shadcn
+  scene={<AutoPlayScene label="A background that can step aside" demo="toggle-group" />}
+  code={`// toggle.tsx: unchanged from shadcn, so call-site overrides merge as before
 "data-[state=on]:bg-accent"
 
-// GodUI
-"not-in-[[data-slot=toggle-group][data-indicator=ready]]:data-[state=on]:bg-accent"`}
+// toggle-group.tsx, on each item: once the group's indicator is measured
+"in-[[data-slot=toggle-group][data-indicator=ready]]:data-[state=on]:bg-transparent"`}
 >
 
-A single-select Toggle Group draws its selection with one sliding indicator,
-so the pressed item must not paint its own background on top of it. But a
-toggle used on its own has no indicator and must keep its background.
+A single-select [Toggle Group](/docs/components/toggle-group/learn) draws its
+selection with one sliding indicator, so its pressed item must not paint its
+own background on top. A standalone toggle has no indicator and must keep
+its background.
 
-So the on background is scoped with Tailwind's `not-in-*` variant. It applies
-unless the toggle sits inside a toggle group that reports
-`data-indicator="ready"`. A standalone toggle never matches that, and inside a
-group the background stays put until the indicator has been measured, so the
-first paint looks identical to shadcn's.
+So the toggle keeps shadcn's `data-[state=on]:bg-accent` exactly. A call site's
+own `data-[state=on]:bg-*` still replaces it through `cn()`, as with shadcn.
+The group item, not the toggle, adds the override: once the group reports
+`data-indicator="ready"`, its pressed item turns transparent and the indicator
+shows through. Before that, on the server and at first paint, the item looks
+exactly like shadcn's.
 
 </LearnChapter>
 

@@ -37,3 +37,21 @@ test("a standalone toggle keeps its on background", async ({ page }) => {
   });
   expect(on).toBe(accent);
 });
+
+test("a call site's own on background wins", async ({ page }) => {
+  await page.goto("/iframe.html?id=ui-toggle--custom-on&viewMode=story");
+  await page.waitForLoadState("networkidle");
+  const [on, primary] = await page.evaluate(() => {
+    const toggle = document.querySelector('[data-slot="toggle"]');
+    const probe = document.createElement("div");
+    probe.className = "bg-primary";
+    document.body.append(probe);
+    const colors = [
+      toggle ? getComputedStyle(toggle).backgroundColor : "",
+      getComputedStyle(probe).backgroundColor,
+    ];
+    probe.remove();
+    return colors;
+  });
+  expect(on).toBe(primary);
+});
