@@ -36,6 +36,13 @@ import { useCodePaneToggle, useDocsPaneToggle } from "@/lib/use-pane-toggle";
 import { useWorkbenchShortcuts } from "@/lib/use-workbench-shortcuts";
 
 const STORYBOOK_URL = "https://storybook.godui.design";
+/**
+ * Equal-width example tabs fit ~72 characters across the stage's widest strip
+ * (~570px at 13px): every column is as wide as the longest label, so
+ * `tabs × longest` past this budget makes labels overlap. Measured: 4 × 17
+ * fits, 4 × 22 doesn't.
+ */
+const EQUAL_TABS_CHAR_BUDGET = 72;
 
 /** URL-safe id for an example, used by `?ex=`. Falls back to the index. */
 function exampleSlug(example: ExampleProps | undefined, index: number): string {
@@ -336,11 +343,16 @@ function WorkbenchInner({
                 />
               </div>
               {/* Desktop: a segmented tab strip. Few short variants → equal-width
-                <Segmented>. 5+ tabs (or long labels) collide in equal columns, so
-                use a horizontally-scrollable, content-width strip instead.
+                <Segmented>. 5+ tabs (or long labels) collide in equal columns —
+                every column is as wide as the longest label, and they shrink
+                below it on a narrow stage — so use a horizontally-scrollable,
+                content-width strip instead.
                 Wrappers control visibility — Segmented's own `inline-grid`
                 would beat a `hidden` on the control itself. */}
-              {examples.length > 4 ? (
+              {examples.length > 4 ||
+              examples.length *
+                Math.max(...examples.map((ex) => ex.label?.length ?? 9)) >
+                EQUAL_TABS_CHAR_BUDGET ? (
                 <div className="hidden max-w-full sm:block">
                   <ScrollableSegmented
                     semantics="tabs"
