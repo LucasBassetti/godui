@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "revision": "c0fc39c534d418221afe31ef26308870cadaa8e0",
+  "revision": "b088218bea045dfa9cede10d84d069964e3fdf24",
   "components": [
     {
       "name": "accordion",
@@ -201,6 +201,16 @@
       "dependencies": ["radix-ui"],
       "registryDependencies": ["utils", "@godui/godui-motion"],
       "install": "npx shadcn@latest add @godui/collapsible",
+      "registry": "core"
+    },
+    {
+      "name": "command",
+      "title": "Command",
+      "description": "Fast, composable, unstyled command menu for React. One highlight slides to the selected item; GPU-only.",
+      "category": "Components",
+      "dependencies": ["cmdk", "lucide-react"],
+      "registryDependencies": ["utils", "@godui/godui-motion", "@godui/dialog"],
+      "install": "npx shadcn@latest add @godui/command",
       "registry": "core"
     },
     {

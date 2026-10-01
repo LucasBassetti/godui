@@ -3,6 +3,10 @@
 import {
   Button,
   Checkbox,
+  Command,
+  CommandGroup,
+  CommandItem,
+  CommandList,
   RadioGroup,
   RadioGroupItem,
   Switch,
@@ -74,6 +78,37 @@ function TogglePress({ reduced }: { reduced: boolean }) {
     >
       B
     </Toggle>
+  );
+}
+
+const COMMANDS = ["Calendar", "Search Emoji", "Calculator", "Settings"];
+
+/** Real Command; cmdk's controlled `value` moves the selection on the timer. */
+function CommandCycle({ reduced }: { reduced: boolean }) {
+  const [index, setIndex] = useState(0);
+  useEffect(() => {
+    if (reduced) return;
+    const id = setInterval(
+      () => setIndex((i) => (i + 1) % COMMANDS.length),
+      STEP_MS,
+    );
+    return () => clearInterval(id);
+  }, [reduced]);
+  return (
+    <Command
+      value={COMMANDS[index]}
+      className="w-72 rounded-lg border shadow-md"
+    >
+      <CommandList>
+        <CommandGroup heading="Suggestions">
+          {COMMANDS.map((item) => (
+            <CommandItem key={item} value={item}>
+              {item}
+            </CommandItem>
+          ))}
+        </CommandGroup>
+      </CommandList>
+    </Command>
   );
 }
 
@@ -168,6 +203,7 @@ function TabsCycle({ reduced }: { reduced: boolean }) {
 const DEMOS = {
   button: ButtonPress,
   checkbox: CheckboxToggle,
+  command: CommandCycle,
   radio: RadioCycle,
   toggle: TogglePress,
   "toggle-group": ToggleGroupCycle,

@@ -1,0 +1,171 @@
+---
+title: Command
+description: Fast, composable, unstyled command menu for React. One highlight slides to the selected item.
+workbench: true
+date: "2026-10-01"
+---
+
+import { CommandDemo } from "@/components/demos/core/command-demo";
+import { CommandDialogDemo } from "@/components/demos/core/command-dialog-demo";
+
+<Workbench>
+
+The shadcn/ui command menu, built on [cmdk](https://cmdk.paco.me). Instead of
+each item switching its background on and off, one highlight slides to the
+selected item as you press the arrow keys or move the pointer (a FLIP on
+`translate` and `scale`, shared with [Tabs](/docs/components/tabs)). While
+you type, the list re-filters and the highlight jumps straight to the first
+match. `CommandDialog` opens with the GodUI [Dialog](/docs/components/dialog)
+motion.
+
+<Example label="Default" story="ui-command" code={`import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+  CommandShortcut,
+} from "@/components/ui/command";
+import {
+  Calculator,
+  Calendar,
+  CreditCard,
+  Settings,
+  Smile,
+  User,
+} from "lucide-react";
+
+export function CommandDemo() {
+  return (
+    <Command className="rounded-lg border shadow-md md:min-w-[450px]">
+      <CommandInput placeholder="Type a command or search..." />
+      <CommandList>
+        <CommandEmpty>No results found.</CommandEmpty>
+        <CommandGroup heading="Suggestions">
+          <CommandItem>
+            <Calendar />
+            <span>Calendar</span>
+          </CommandItem>
+          <CommandItem>
+            <Smile />
+            <span>Search Emoji</span>
+          </CommandItem>
+          <CommandItem disabled>
+            <Calculator />
+            <span>Calculator</span>
+          </CommandItem>
+        </CommandGroup>
+        <CommandSeparator />
+        <CommandGroup heading="Settings">
+          <CommandItem>
+            <User />
+            <span>Profile</span>
+            <CommandShortcut>⌘P</CommandShortcut>
+          </CommandItem>
+          <CommandItem>
+            <CreditCard />
+            <span>Billing</span>
+            <CommandShortcut>⌘B</CommandShortcut>
+          </CommandItem>
+          <CommandItem>
+            <Settings />
+            <span>Settings</span>
+            <CommandShortcut>⌘S</CommandShortcut>
+          </CommandItem>
+        </CommandGroup>
+      </CommandList>
+    </Command>
+  );
+}`}>
+  <CommandDemo />
+</Example>
+
+<Example
+  label="Dialog"
+  code={`export function CommandDialogDemo() {
+  const [open, setOpen] = React.useState(false);
+  React.useEffect(() => {
+    const down = (event: KeyboardEvent) => {
+      if (event.key === "j" && (event.metaKey || event.ctrlKey)) {
+        event.preventDefault();
+        setOpen((value) => !value);
+      }
+    };
+    document.addEventListener("keydown", down);
+    return () => document.removeEventListener("keydown", down);
+  }, []);
+  return (
+    <CommandDialog open={open} onOpenChange={setOpen}>
+      <CommandInput placeholder="Type a command or search..." />
+      <CommandList>
+        <CommandEmpty>No results found.</CommandEmpty>
+        <CommandGroup heading="Suggestions">
+          <CommandItem>Calendar</CommandItem>
+          <CommandItem>Search Emoji</CommandItem>
+          <CommandItem>Calculator</CommandItem>
+        </CommandGroup>
+      </CommandList>
+    </CommandDialog>
+  );
+}`}
+>
+  <CommandDialogDemo />
+</Example>
+
+## Installation
+
+<ComponentInstall name="command" />
+
+## Replacing shadcn
+
+`npx shadcn add @godui/command` overwrites `components/ui/command.tsx` and
+installs the GodUI `dialog` it uses. Exports, props and `data-slot` attributes
+match shadcn/ui new-york-v4, so existing imports keep working. `CommandList`
+renders one extra element, an `aria-hidden` `<span data-slot="command-indicator">`.
+
+## Usage
+
+```tsx
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+```
+
+```tsx
+<Command>
+  <CommandInput placeholder="Type a command or search..." />
+  <CommandList>
+    <CommandEmpty>No results found.</CommandEmpty>
+    <CommandGroup heading="Suggestions">
+      <CommandItem>Calendar</CommandItem>
+      <CommandItem>Search Emoji</CommandItem>
+      <CommandItem>Calculator</CommandItem>
+    </CommandGroup>
+  </CommandList>
+</Command>
+```
+
+## What's animated
+
+| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
+| --- | --- | --- | --- | --- |
+| Arrow keys, pointer | FLIP (WAAPI) on the highlight | `translate`, `scale` | `ease-spring-snappy` | 260ms |
+| Typing (filter) | highlight snaps to the first match | — | — | — |
+| Dialog open / close | as [Dialog](/docs/components/dialog) | `opacity`, `scale` | snappy / expo | 260 / 150ms |
+
+Before JavaScript runs, the selected item paints its own background, exactly
+as in shadcn. Under `prefers-reduced-motion` the highlight jumps.
+
+## API
+
+Built on [cmdk](https://github.com/pacocoursey/cmdk). Props are identical to
+[shadcn/ui Command](https://ui.shadcn.com/docs/components/command).
+
+</Workbench>

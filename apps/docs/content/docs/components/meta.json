@@ -9,6 +9,7 @@
     "button",
     "checkbox",
     "collapsible",
+    "command",
     "context-menu",
     "dialog",
     "drawer",

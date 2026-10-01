@@ -636,6 +636,20 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "command",
+      "type": "registry:ui",
+      "title": "Command",
+      "description": "Fast, composable, unstyled command menu for React. One highlight slides to the selected item; GPU-only.",
+      "dependencies": ["cmdk", "lucide-react"],
+      "registryDependencies": ["utils", "@godui/godui-motion", "@godui/dialog"],
+      "files": [
+        {
+          "path": "packages/components/src/ui/command.tsx",
+          "type": "registry:ui"
+        }
+      ]
     }
   ]
 }
