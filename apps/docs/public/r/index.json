@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "revision": "0d7cfa85d37659fd7f38651aa9071071d3480b7a",
+  "revision": "d9a09238c514e0eed105694f1ceab6058335be74",
   "components": [
     {
       "name": "agent-flow",
@@ -142,6 +142,16 @@
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add \"https://godui.design/r/extras/breadcrumbs.json\"",
       "registry": "extras"
+    },
+    {
+      "name": "button",
+      "title": "Button",
+      "description": "Displays a button or a component that looks like a button. Presses with a spring scale; GPU-only.",
+      "category": "Components",
+      "dependencies": ["radix-ui", "class-variance-authority"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "install": "npx shadcn@latest add @godui/button",
+      "registry": "core"
     },
     {
       "name": "card-swap",

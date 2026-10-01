@@ -292,6 +292,20 @@
           }
         }
       }
+    },
+    {
+      "name": "button",
+      "type": "registry:ui",
+      "title": "Button",
+      "description": "Displays a button or a component that looks like a button. Presses with a spring scale; GPU-only.",
+      "dependencies": ["radix-ui", "class-variance-authority"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "files": [
+        {
+          "path": "packages/components/src/ui/button.tsx",
+          "type": "registry:ui"
+        }
+      ]
     }
   ]
 }
