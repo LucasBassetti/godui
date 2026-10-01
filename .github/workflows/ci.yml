@@ -60,7 +60,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Install Chromium
-        run: pnpm --filter godui-storybook exec playwright install --with-deps chromium
+        run: pnpm --filter storybook exec playwright install --with-deps chromium
 
       - name: Motion trace
-        run: pnpm --filter godui-storybook test:motion-trace
+        run: pnpm --filter storybook test:motion-trace
