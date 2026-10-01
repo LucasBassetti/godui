@@ -8,6 +8,7 @@ import {
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ComponentBadges } from "@/components/component-badges";
+import { ExtrasNotice } from "@/components/extras-notice";
 import { LearnPlayerProvider } from "@/components/learn/learn-player-context";
 import { getMDXComponents } from "@/components/mdx";
 import {
@@ -32,7 +33,9 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
   const MDX = page.data.body;
 
   const slug = params.slug ?? [];
-  const inComponents = slug[0] === "components";
+  const section =
+    slug[0] === "components" || slug[0] === "extras" ? slug[0] : undefined;
+  const inComponents = section != null;
   // Component base = `components/<category>/<name>` (depth 3). The Learn page is
   // that base + `learn` (depth 4). Badges + tabs hang off the base.
   const base = inComponents && slug.length >= 3 ? slug.slice(0, 3) : undefined;
@@ -70,8 +73,8 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
   if (inComponents) {
     const atComponentsRoot = slug.length === 1;
     crumbs.push({
-      name: "Components",
-      url: atComponentsRoot ? undefined : "/docs/components",
+      name: section === "extras" ? "Extras" : "Components",
+      url: atComponentsRoot ? undefined : `/docs/${section}`,
     });
     if (!atComponentsRoot) {
       // On the Learn page the component crumb links back to its docs page, and a
@@ -157,6 +160,17 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
         title: "Runs on the GPU compositor",
         detail:
           "Animates only transform, opacity and filter — no main-thread layout or paint, so it stays smooth even under load.",
+      });
+    }
+    if (section === "extras") {
+      badges.push({
+        tone: "neutral",
+        label: "Extras",
+        title: "GodUI Extras",
+        detail:
+          "A component from GodUI v1, maintained as-is. Animated shadcn/ui drop-ins live under Components.",
+        href: "/docs/extras",
+        hrefLabel: "All Extras",
       });
     }
     if (dependencyNote) {
@@ -275,6 +289,9 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
           <DocsDescription className="docs-lead">
             {page.data.description}
           </DocsDescription>
+          {section === "extras" && isComponentDocsPage ? (
+            <ExtrasNotice />
+          ) : null}
           <DocsBody>
             <MDX components={getMDXComponents()} />
           </DocsBody>

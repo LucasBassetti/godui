@@ -68,7 +68,7 @@ export default function Home() {
           <section className="relative flex min-h-[calc(100svh-3.5rem)] flex-col items-center justify-center gap-8 overflow-hidden px-4 text-center">
             <HeroGrid />
             <Link
-              href="/docs/components/effects/ascii-dither"
+              href="/docs/extras/effects/ascii-dither"
               className="group relative z-10 inline-flex items-center gap-2 rounded-full border bg-fd-card px-3 py-1 font-medium text-fd-muted-foreground text-xs transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground"
             >
               <span className="relative flex size-2">

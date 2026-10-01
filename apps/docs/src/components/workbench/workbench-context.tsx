@@ -3,7 +3,7 @@
 import { createContext, type ReactNode, useContext } from "react";
 import type { Crumb } from "@/app/docs/_components/breadcrumbs";
 
-export type BadgeTone = "sky" | "amber" | "emerald" | "violet";
+export type BadgeTone = "sky" | "amber" | "emerald" | "violet" | "neutral";
 /** One compact meta item shown in the title chip (dot + label + hover tooltip). */
 export type BadgeItem = {
   tone: BadgeTone;

@@ -47,7 +47,7 @@ for (const entry of meta.pages) {
     currentCategory = header[1].trim();
     continue;
   }
-  const match = /^components\/[^/]+\/(.+)$/.exec(entry);
+  const match = /^(?:components|extras)\/[^/]+\/(.+)$/.exec(entry);
   if (match && currentCategory) {
     categoryByName[match[1]] = currentCategory;
   }

@@ -1,5 +1,5 @@
 import Link from "fumadocs-core/link";
-import { ArrowUpRight, Component, Sparkles } from "lucide-react";
+import { ArrowUpRight, Component, Layers, Sparkles } from "lucide-react";
 import { ANIMATED_ICONS_URL } from "./docs-header";
 
 const itemClass =
@@ -19,6 +19,10 @@ export function MobileMenu() {
       <Link href="/docs/components" className={itemClass}>
         <Component />
         Components
+      </Link>
+      <Link href="/docs/extras" className={itemClass}>
+        <Layers />
+        Extras
       </Link>
       <a
         href={ANIMATED_ICONS_URL}
