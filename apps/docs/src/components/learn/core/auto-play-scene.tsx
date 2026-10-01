@@ -10,6 +10,7 @@ import {
   TabsContent,
   TabsList,
   TabsTrigger,
+  Toggle,
 } from "@godui/components";
 import { useEffect, useState } from "react";
 import { ScrollScene } from "../scroll-scene";
@@ -55,6 +56,22 @@ function CheckboxToggle({ reduced }: { reduced: boolean }) {
       <Checkbox checked={on} aria-label="Demo checkbox" className="scale-[2]" />
       <Checkbox checked={!on} aria-label="Demo checkbox, inverted" />
     </div>
+  );
+}
+
+/** Real Toggle; `pressed` flips on the timer. */
+function TogglePress({ reduced }: { reduced: boolean }) {
+  const on = useToggle(reduced);
+  return (
+    <Toggle
+      pressed={on}
+      variant="outline"
+      size="lg"
+      aria-label="Bold"
+      className="px-5 font-bold"
+    >
+      B
+    </Toggle>
   );
 }
 
@@ -126,6 +143,7 @@ const DEMOS = {
   button: ButtonPress,
   checkbox: CheckboxToggle,
   radio: RadioCycle,
+  toggle: TogglePress,
   switch: SwitchToggle,
   tabs: TabsCycle,
 } as const;

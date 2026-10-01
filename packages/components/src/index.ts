@@ -17,4 +17,5 @@ export * from "./ui/sonner";
 export * from "./ui/switch";
 export * from "./ui/tabs";
 export * from "./ui/textarea";
+export * from "./ui/toggle";
 export * from "./ui/tooltip";

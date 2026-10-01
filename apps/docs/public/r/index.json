@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "revision": "f1238f76049158a378940208ccf64a0779be8159",
+  "revision": "00f759adcc628d2874ce393460512644eb7482bf",
   "components": [
     {
       "name": "accordion",
@@ -1177,6 +1177,16 @@
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add \"https://godui.design/r/extras/tilt-card.json\"",
       "registry": "extras"
+    },
+    {
+      "name": "toggle",
+      "title": "Toggle",
+      "description": "A two-state button that can be either on or off. Presses on a spring; GPU-only.",
+      "category": "Components",
+      "dependencies": ["radix-ui", "class-variance-authority"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "install": "npx shadcn@latest add @godui/toggle",
+      "registry": "core"
     },
     {
       "name": "tooltip",

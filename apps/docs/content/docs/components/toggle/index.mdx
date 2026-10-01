@@ -1,0 +1,87 @@
+---
+title: Toggle
+description: A two-state button that can be either on or off. Presses on a spring.
+workbench: true
+date: "2026-10-01"
+---
+
+import { Toggle } from "@godui/components";
+import { ToggleDemo } from "@/components/demos/core/toggle-demo";
+
+<Workbench>
+
+The shadcn/ui toggle with the same spring press as
+[Button](/docs/components/button). Its on and off backgrounds change
+instantly. Inside a single-select [Toggle Group](/docs/components/toggle-group),
+a shared indicator slides to the pressed item instead.
+
+<Example label="Default" story="ui-toggle" code={`import { Toggle } from "@/components/ui/toggle";
+import { Bold, Italic, Underline } from "lucide-react";
+
+export function ToggleDemo() {
+  return (
+    <div className="flex flex-wrap items-center justify-center gap-2">
+      <Toggle aria-label="Toggle bold">
+        <Bold />
+      </Toggle>
+      <Toggle variant="outline" aria-label="Toggle italic">
+        <Italic />
+      </Toggle>
+      <Toggle aria-label="Toggle underline" defaultPressed>
+        <Underline /> Underline
+      </Toggle>
+    </div>
+  );
+}`}>
+  <ToggleDemo />
+</Example>
+
+<Example
+  label="Sizes"
+  code={`<Toggle size="sm" aria-label="Small">S</Toggle>
+<Toggle aria-label="Default">M</Toggle>
+<Toggle size="lg" aria-label="Large">L</Toggle>`}
+>
+  <div className="flex items-center gap-2">
+    <Toggle size="sm" aria-label="Small">S</Toggle>
+    <Toggle aria-label="Default">M</Toggle>
+    <Toggle size="lg" aria-label="Large">L</Toggle>
+  </div>
+</Example>
+
+## Installation
+
+<ComponentInstall name="toggle" />
+
+## Replacing shadcn
+
+`npx shadcn add @godui/toggle` overwrites `components/ui/toggle.tsx`. Exports
+(`Toggle`, `toggleVariants`), props and `data-slot` attributes match shadcn/ui
+new-york-v4, so existing imports keep working. It also installs `godui-motion`
+(easings, keyframes, the FLIP hook) into your project.
+
+## Usage
+
+```tsx
+import { Toggle } from "@/components/ui/toggle";
+```
+
+```tsx
+<Toggle>Toggle</Toggle>
+```
+
+## What's animated
+
+| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
+| --- | --- | --- | --- | --- |
+| Press | `transition` on `active:scale-[0.96]` | `scale` | `ease-spring-bouncy` | 260ms |
+| On / off, hover | snaps | — | — | — |
+
+Under `prefers-reduced-motion` the press is instant.
+
+## API
+
+Built on [Radix Toggle](https://www.radix-ui.com/primitives/docs/components/toggle).
+Props are identical to [shadcn/ui Toggle](https://ui.shadcn.com/docs/components/toggle).
+
+</Workbench>
