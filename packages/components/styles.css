@@ -349,3 +349,20 @@
     opacity: 0;
   }
 }
+
+/* ── progress ────────────────────────────────────────────────────────────────
+ * Component keyframe (also in the progress registry entry). Transform only:
+ * the indeterminate bar sweeps across the track. An animation beats the
+ * indicator's inline transform. */
+@theme inline {
+  --animate-godui-progress-indeterminate: godui-progress-indeterminate 1.4s
+    var(--ease-out-expo) infinite;
+}
+@keyframes godui-progress-indeterminate {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(250%);
+  }
+}

@@ -22,6 +22,7 @@ import CoreDropdownMenu from "./core/dropdown-menu";
 import CoreHoverCard from "./core/hover-card";
 import CoreInputOtp from "./core/input-otp";
 import CorePopover from "./core/popover";
+import CoreProgress from "./core/progress";
 import CoreRadioGroup from "./core/radio-group";
 import CoreSelect from "./core/select";
 import CoreSheet from "./core/sheet";
@@ -159,6 +160,7 @@ export const cardPreviews: Record<string, Preview> = {
   "hover-card": CoreHoverCard,
   "input-otp": CoreInputOtp,
   popover: CorePopover,
+  progress: CoreProgress,
   "radio-group": CoreRadioGroup,
   select: CoreSelect,
   sheet: CoreSheet,

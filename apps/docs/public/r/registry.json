@@ -698,6 +698,35 @@
           }
         }
       }
+    },
+    {
+      "name": "progress",
+      "type": "registry:ui",
+      "title": "Progress",
+      "description": "Displays an indicator showing the completion progress of a task, typically displayed as a progress bar. The fill glides on a spring; indeterminate bars sweep. GPU-only.",
+      "dependencies": ["radix-ui"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "files": [
+        {
+          "path": "packages/components/src/ui/progress.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "cssVars": {
+        "theme": {
+          "animate-godui-progress-indeterminate": "godui-progress-indeterminate 1.4s var(--ease-out-expo) infinite"
+        }
+      },
+      "css": {
+        "@keyframes godui-progress-indeterminate": {
+          "from": {
+            "transform": "translateX(-100%)"
+          },
+          "to": {
+            "transform": "translateX(250%)"
+          }
+        }
+      }
     }
   ]
 }

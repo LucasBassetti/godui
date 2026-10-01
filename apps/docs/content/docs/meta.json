@@ -24,6 +24,7 @@
     "components/hover-card",
     "components/input-otp",
     "components/popover",
+    "components/progress",
     "components/radio-group",
     "components/select",
     "components/sheet",

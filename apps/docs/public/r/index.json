@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "revision": "642e37c0cb03acc8b2a7252d2aab7b11ee414d1c",
+  "revision": "cd62914cd118cb8308222dee2a979438381e4012",
   "components": [
     {
       "name": "accordion",
@@ -882,6 +882,16 @@
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add \"https://godui.design/r/extras/presence-facepile.json\"",
       "registry": "extras"
+    },
+    {
+      "name": "progress",
+      "title": "Progress",
+      "description": "Displays an indicator showing the completion progress of a task, typically displayed as a progress bar. The fill glides on a spring; indeterminate bars sweep. GPU-only.",
+      "category": "Components",
+      "dependencies": ["radix-ui"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "install": "npx shadcn@latest add @godui/progress",
+      "registry": "core"
     },
     {
       "name": "progress-fold-button",

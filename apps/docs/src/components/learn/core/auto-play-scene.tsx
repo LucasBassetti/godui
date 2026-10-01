@@ -7,6 +7,7 @@ import {
   CommandGroup,
   CommandItem,
   CommandList,
+  Progress,
   RadioGroup,
   RadioGroupItem,
   Switch,
@@ -218,10 +219,50 @@ function TabsCycle({ reduced }: { reduced: boolean }) {
   );
 }
 
+const PROGRESS_STEPS = [13, 40, 66, 100];
+
+/** Real Progress; the value steps on the timer, so the fill glides. */
+function ProgressStep({ reduced }: { reduced: boolean }) {
+  const [index, setIndex] = useState(0);
+  useEffect(() => {
+    if (reduced) return;
+    const id = setInterval(
+      () => setIndex((i) => (i + 1) % PROGRESS_STEPS.length),
+      STEP_MS,
+    );
+    return () => clearInterval(id);
+  }, [reduced]);
+  return (
+    <div className="grid w-72 gap-3">
+      <div className="flex items-center justify-between">
+        <Bar className="w-24 bg-foreground/30" />
+        <Bar className="w-8 bg-foreground/20" />
+      </div>
+      <Progress
+        value={PROGRESS_STEPS[reduced ? 2 : index]}
+        aria-label="Demo progress"
+        className="h-3"
+      />
+    </div>
+  );
+}
+
+/** Real Progress with no value: the indeterminate sweep loops on its own. */
+function ProgressIndeterminate() {
+  return (
+    <div className="grid w-72 gap-3">
+      <Bar className="w-24 bg-foreground/30" />
+      <Progress aria-label="Demo loading" className="h-3" />
+    </div>
+  );
+}
+
 const DEMOS = {
   button: ButtonPress,
   checkbox: CheckboxToggle,
   command: CommandCycle,
+  progress: ProgressStep,
+  "progress-indeterminate": ProgressIndeterminate,
   radio: RadioCycle,
   toggle: TogglePress,
   "toggle-group": ToggleGroupCycle,

@@ -1,0 +1,117 @@
+---
+title: Progress
+description: Displays an indicator showing the completion progress of a task, typically displayed as a progress bar. The fill glides to each value on a spring.
+workbench: true
+---
+
+import { ProgressDemo } from "@/components/demos/core/progress-demo";
+import { ProgressIndeterminateDemo } from "@/components/demos/core/progress-indeterminate-demo";
+import { ProgressLabelledDemo } from "@/components/demos/core/progress-labelled-demo";
+
+<Workbench>
+
+The shadcn/ui progress bar. The fill is always full width and slides into
+place with `translateX`, so a new value glides there on a smooth spring and
+the bar never resizes. Leave `value` out and it turns indeterminate: a shorter
+bar sweeps across the track on a loop. Only `transform` animates.
+
+<Example label="Default" story="ui-progress" code={`"use client";
+
+import { Progress } from "@/components/ui/progress";
+import * as React from "react";
+
+export function ProgressDemo() {
+  const [progress, setProgress] = React.useState(13);
+
+  React.useEffect(() => {
+    const timer = setTimeout(() => setProgress(66), 500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <Progress value={progress} className="w-[60%]" aria-label="Progress" />
+  );
+}`}>
+  <ProgressDemo />
+</Example>
+
+<Example label="Indeterminate" code={`import { Progress } from "@/components/ui/progress";
+
+export function ProgressIndeterminateDemo() {
+  return <Progress className="w-[60%]" aria-label="Loading" />;
+}`}>
+  <ProgressIndeterminateDemo />
+</Example>
+
+<Example label="Labelled" code={`"use client";
+
+import { Progress } from "@/components/ui/progress";
+import * as React from "react";
+
+export function ProgressLabelledDemo() {
+  const [progress, setProgress] = React.useState(13);
+
+  React.useEffect(() => {
+    const timer = setTimeout(() => setProgress(66), 500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <div className="grid w-full max-w-sm gap-2">
+      <div className="flex items-center justify-between text-sm">
+        <span id="upload-label" className="font-medium">
+          Uploading 3 files
+        </span>
+        <span className="text-muted-foreground tabular-nums">{progress}%</span>
+      </div>
+      <Progress value={progress} aria-labelledby="upload-label" />
+    </div>
+  );
+}`}>
+  <ProgressLabelledDemo />
+</Example>
+
+## Installation
+
+<ComponentInstall name="progress" />
+
+## Replacing shadcn
+
+`npx shadcn add @godui/progress` overwrites `components/ui/progress.tsx`.
+Exports, props and `data-slot` attributes match shadcn/ui new-york-v4, so
+existing imports keep working. It also installs `godui-motion` (easings,
+keyframes, the FLIP hook) into your project, plus the
+`godui-progress-indeterminate` keyframe.
+
+One fix rides along: shadcn reads `value` but never hands it to Radix, so its
+bar has no `aria-valuenow` and always reports `data-state="indeterminate"`.
+GodUI passes `value` through, so screen readers hear the percentage and only a
+missing value counts as indeterminate.
+
+## Usage
+
+```tsx
+import { Progress } from "@/components/ui/progress";
+```
+
+```tsx
+<Progress value={33} />
+```
+
+## What's animated
+
+| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
+| --- | --- | --- | --- | --- |
+| Value change | `transition` | `transform` | `ease-spring-smooth` | 380ms |
+| Indeterminate | `godui-progress-indeterminate` | `transform` | `ease-out-expo` | 1.4s loop |
+
+Under `prefers-reduced-motion` a new value snaps into place, and an
+indeterminate bar fills the track and pulses its opacity instead of sweeping.
+
+## API
+
+Built on [Radix Progress](https://www.radix-ui.com/primitives/docs/components/progress).
+Props are identical to [shadcn/ui Progress](https://ui.shadcn.com/docs/components/progress);
+`value={null}` or no `value` makes the bar indeterminate.
+
+</Workbench>
