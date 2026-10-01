@@ -1,0 +1,81 @@
+---
+title: Anatomy of the GodUI Switch
+description: A thumb on a spring and a color change that never repaints — how a pseudo-element layer turns a background transition into an opacity one.
+learnPlayer: true
+---
+
+import { SwitchDemo } from "@/components/demos/core/switch-demo";
+
+<LearnPlayer>
+
+<LearnChapter
+  label="The thumb"
+  scene={<AutoPlayScene label="The thumb" demo="switch" />}
+  code={`<SwitchPrimitive.Thumb
+  data-slot="switch-thumb"
+  className={cn(
+    "pointer-events-none relative block rounded-full bg-background ring-0
+     transition-[translate] duration-(--godui-duration-base) ease-spring-snappy
+     motion-reduce:transition-none …
+     data-[state=checked]:translate-x-[calc(100%-2px)] data-[state=unchecked]:translate-x-0 …"
+  )}
+/>`}
+>
+
+The thumb's position comes from shadcn's own classes:
+`data-[state=checked]:translate-x-[calc(100%-2px)]`. Tailwind v4 compiles that
+to the individual `translate` property, so GodUI transitions exactly that
+property, for 260ms on `ease-spring-snappy`.
+
+The snappy spring barely overshoots. A bouncier curve would push the thumb
+past the end of the track before it settles.
+
+</LearnChapter>
+
+<LearnChapter
+  label="A color change without painting"
+  scene={<AutoPlayScene label="A color change without painting" demo="switch" />}
+  code={`// shadcn/ui
+"… transition-all … data-[state=checked]:bg-primary data-[state=unchecked]:bg-input"
+
+// GodUI
+"relative … bg-input",
+"before:pointer-events-none before:absolute before:-inset-px before:rounded-full
+ before:bg-primary before:opacity-0 before:transition-opacity
+ before:duration-(--godui-duration-fast) data-[state=checked]:before:opacity-100"`}
+>
+
+shadcn switches the track from `bg-input` to `bg-primary` with
+`transition-all`, so the browser repaints the track on every frame of the
+color change.
+
+GodUI keeps the track at `bg-input` and draws the checked color on a
+`::before` layer that covers it. Toggling only changes that layer's
+`opacity`, which the compositor can blend without repainting anything. The
+layer uses `-inset-px` so it also covers the track's transparent 1px border,
+and the thumb is `relative` so it paints above the layer.
+
+</LearnChapter>
+
+<LearnChapter
+  label="The result"
+  scene={<LiveResult hint="click or press Space"><SwitchDemo /></LiveResult>}
+  isResult
+>
+
+Click the switch or its label, or focus it and press Space.
+
+</LearnChapter>
+
+</LearnPlayer>
+
+## Why GPU-only
+
+The thumb animates `translate` and the color layer animates `opacity`. shadcn's
+`transition-all` animates `background-color` and the focus ring's
+`box-shadow`, which repaint every frame.
+
+## Reduced motion
+
+`motion-reduce:transition-none` on the thumb makes it move instantly. The color
+layer still fades for 150ms, since a fade isn't motion.

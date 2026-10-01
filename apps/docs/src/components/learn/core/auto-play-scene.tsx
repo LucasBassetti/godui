@@ -2,6 +2,7 @@
 
 import {
   Button,
+  Switch,
   Tabs,
   TabsContent,
   TabsList,
@@ -29,6 +30,17 @@ function ButtonPress({ reduced }: { reduced: boolean }) {
     <Button size="lg" className={pressed ? "scale-[0.97]" : undefined}>
       Continue
     </Button>
+  );
+}
+
+/** Real Switch; `checked` toggles on the timer. */
+function SwitchToggle({ reduced }: { reduced: boolean }) {
+  const on = useToggle(reduced);
+  return (
+    <div className="flex items-center gap-6">
+      <Switch checked={on} aria-label="Demo switch" className="scale-150" />
+      <Switch checked={!on} aria-label="Demo switch, inverted" />
+    </div>
   );
 }
 
@@ -67,7 +79,11 @@ function TabsCycle({ reduced }: { reduced: boolean }) {
   );
 }
 
-const DEMOS = { button: ButtonPress, tabs: TabsCycle } as const;
+const DEMOS = {
+  button: ButtonPress,
+  switch: SwitchToggle,
+  tabs: TabsCycle,
+} as const;
 
 export type AutoPlayDemo = keyof typeof DEMOS;
 

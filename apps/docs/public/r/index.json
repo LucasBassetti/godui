@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "revision": "f716e83a7b07a7af02b1d0b51ffe57ec35c4c48e",
+  "revision": "eb34e71669e0f5ca661e21d5b4439ed03656f5f6",
   "components": [
     {
       "name": "accordion",
@@ -1022,6 +1022,16 @@
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add \"https://godui.design/r/extras/swipe-deck.json\"",
       "registry": "extras"
+    },
+    {
+      "name": "switch",
+      "title": "Switch",
+      "description": "A control that allows the user to toggle between checked and not checked. The thumb slides on a spring; the track color crossfades. GPU-only.",
+      "category": "Components",
+      "dependencies": ["radix-ui"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "install": "npx shadcn@latest add @godui/switch",
+      "registry": "core"
     },
     {
       "name": "tab-bar",

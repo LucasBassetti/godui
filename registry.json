@@ -418,6 +418,20 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "switch",
+      "type": "registry:ui",
+      "title": "Switch",
+      "description": "A control that allows the user to toggle between checked and not checked. The thumb slides on a spring; the track color crossfades. GPU-only.",
+      "dependencies": ["radix-ui"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "files": [
+        {
+          "path": "packages/components/src/ui/switch.tsx",
+          "type": "registry:ui"
+        }
+      ]
     }
   ]
 }
