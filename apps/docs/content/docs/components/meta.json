@@ -18,6 +18,7 @@
     "switch",
     "tabs",
     "toggle",
+    "toggle-group",
     "tooltip"
   ]
 }

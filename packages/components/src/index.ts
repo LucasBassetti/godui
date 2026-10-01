@@ -18,4 +18,5 @@ export * from "./ui/switch";
 export * from "./ui/tabs";
 export * from "./ui/textarea";
 export * from "./ui/toggle";
+export * from "./ui/toggle-group";
 export * from "./ui/tooltip";

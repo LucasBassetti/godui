@@ -11,6 +11,8 @@ import {
   TabsList,
   TabsTrigger,
   Toggle,
+  ToggleGroup,
+  ToggleGroupItem,
 } from "@godui/components";
 import { useEffect, useState } from "react";
 import { ScrollScene } from "../scroll-scene";
@@ -72,6 +74,30 @@ function TogglePress({ reduced }: { reduced: boolean }) {
     >
       B
     </Toggle>
+  );
+}
+
+const RANGES = ["Day", "Week", "Month", "Year"];
+
+/** Real single-select ToggleGroup; the value cycles, so the indicator slides. */
+function ToggleGroupCycle({ reduced }: { reduced: boolean }) {
+  const [index, setIndex] = useState(1);
+  useEffect(() => {
+    if (reduced) return;
+    const id = setInterval(
+      () => setIndex((i) => (i + 1) % RANGES.length),
+      STEP_MS,
+    );
+    return () => clearInterval(id);
+  }, [reduced]);
+  return (
+    <ToggleGroup type="single" variant="outline" value={RANGES[index]}>
+      {RANGES.map((range) => (
+        <ToggleGroupItem key={range} value={range}>
+          {range}
+        </ToggleGroupItem>
+      ))}
+    </ToggleGroup>
   );
 }
 
@@ -144,6 +170,7 @@ const DEMOS = {
   checkbox: CheckboxToggle,
   radio: RadioCycle,
   toggle: TogglePress,
+  "toggle-group": ToggleGroupCycle,
   switch: SwitchToggle,
   tabs: TabsCycle,
 } as const;

@@ -1,0 +1,73 @@
+---
+title: Anatomy of the GodUI Toggle Group
+description: A single-select toggle group is a segmented control — so it gets the same sliding indicator as Tabs, from one shared hook.
+learnPlayer: true
+---
+
+import { ToggleGroupDemo } from "@/components/demos/core/toggle-group-demo";
+
+<LearnPlayer>
+
+<LearnChapter
+  label="A segmented control"
+  scene={<AutoPlayScene label="A segmented control" demo="toggle-group" />}
+  code={`const single = props.type === "single" && !props.asChild;
+useActiveIndicator(rootRef, indicatorRef, {
+  active: '[data-slot="toggle-group-item"][data-state="on"]',
+  items: '[data-slot="toggle-group-item"]',
+  enabled: single,
+});`}
+>
+
+When only one item can be on, the group reads as a single control with a
+moving selection, so GodUI gives it one indicator. It slides from the old
+item to the new one: its box snaps to the new item, then a FLIP animates
+`translate` and `scale` back from the old box.
+
+With `type="multiple"`, several items can be on at once and there's no
+single target, so the hook is disabled and each item paints its own on
+background.
+
+</LearnChapter>
+
+<LearnChapter
+  label="Shared with Tabs"
+  scene={<FlipScene label="Shared with Tabs" variant="tabs" />}
+  code={`// hooks/use-active-indicator.ts (ships in godui-motion)
+export function useActiveIndicator(
+  containerRef: React.RefObject<HTMLElement | null>,
+  indicatorRef: React.RefObject<HTMLElement | null>,
+  options: ActiveIndicatorOptions,
+): void`}
+>
+
+The indicator logic is the same hook that drives [Tabs](/docs/components/tabs/learn)
+and Command's selection. It watches the active item's attributes, so
+clicks, arrow keys and controlled `value` changes all move it. Inserted or
+resized items snap it into place. Until it has measured once, it leaves the
+container without `data-indicator="ready"`, and the pressed item keeps
+shadcn's own background.
+
+</LearnChapter>
+
+<LearnChapter
+  label="The result"
+  scene={<LiveResult hint="click an alignment"><ToggleGroupDemo /></LiveResult>}
+  isResult
+>
+
+Click between alignments, or focus the group and use the arrow keys plus
+Space.
+
+</LearnChapter>
+
+</LearnPlayer>
+
+## Why GPU-only
+
+The indicator animates `translate` and `scale`; presses animate `scale`.
+shadcn's items transition `color` and `box-shadow`; GodUI's don't.
+
+## Reduced motion
+
+The indicator jumps to the new item without sliding, and presses are instant.
