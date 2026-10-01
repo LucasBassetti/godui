@@ -49,3 +49,24 @@ export const Stepped: Story = {
     );
   },
 };
+
+const RESOLVE_STEPS = [null, 66, 100];
+
+/** Starts indeterminate; Advance resolves it to a value mid-sweep. */
+export const FromIndeterminate: Story = {
+  render: (args) => {
+    const [step, setStep] = useState(0);
+    return (
+      <div className="flex w-80 flex-col items-start gap-4">
+        <Progress {...args} value={RESOLVE_STEPS[step]} />
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={() => setStep((s) => (s + 1) % RESOLVE_STEPS.length)}
+        >
+          Advance
+        </Button>
+      </div>
+    );
+  },
+};

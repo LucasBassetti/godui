@@ -4,17 +4,18 @@ import { Button, Progress } from "@godui/components";
 import * as React from "react";
 
 export function ProgressStepsDemo() {
+  const labelId = React.useId();
   const [progress, setProgress] = React.useState(25);
 
   return (
     <div className="grid w-full max-w-sm gap-4">
       <div className="flex items-center justify-between text-sm">
-        <span id="setup-label" className="font-medium">
+        <span id={labelId} className="font-medium">
           Account setup
         </span>
         <span className="text-muted-foreground tabular-nums">{progress}%</span>
       </div>
-      <Progress value={progress} aria-labelledby="setup-label" />
+      <Progress value={progress} aria-labelledby={labelId} />
       <div className="flex justify-end gap-2">
         <Button
           variant="outline"

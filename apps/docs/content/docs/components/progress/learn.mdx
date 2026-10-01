@@ -46,7 +46,7 @@ instead of a linear crawl.
   from { transform: translateX(-100%); }
   to { transform: translateX(250%); }
 }
-/* 1.4s, ease-out-expo, infinite */`}
+/* 1.4s, cubic-bezier(0.65, 0, 0.35, 1), infinite */`}
 >
 
 When there's nothing to measure yet, leave out `value`. Radix then marks the
@@ -56,8 +56,11 @@ The indicator snaps to 40% of the track, once, when it becomes indeterminate.
 The keyframe then moves it from one full bar-width left of the track
 (`-100%`) to two and a half bar-widths right (`250%`, which is exactly the
 track's far edge, since 2.5 × 40% = 100%). A CSS animation outranks the inline
-`transform`, so the value-driven slide stays out of the way. `ease-out-expo`
-makes it shoot in fast and drift out slow, like a scanner.
+`transform`, so the value-driven slide stays out of the way. The easing is a
+symmetric ease-in-out, `cubic-bezier(0.65, 0, 0.35, 1)`: the bar eases in from
+off the left edge, is at full speed while it crosses the track, and eases out
+past the right edge. Some of the bar is on the track for almost 90% of each
+loop; it's empty for under 200ms between one sweep and the next.
 
 </LearnChapter>
 
