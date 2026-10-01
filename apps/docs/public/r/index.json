@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "revision": "3172c9036e657fa443c29f5c3b8e36fc2821df5e",
+  "revision": "f2eb235a2e51e0f6ed91b0a71950b28ff86ff9ab",
   "components": [
     {
       "name": "agent-flow",
@@ -1072,6 +1072,16 @@
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add \"https://godui.design/r/extras/tilt-card.json\"",
       "registry": "extras"
+    },
+    {
+      "name": "tooltip",
+      "title": "Tooltip",
+      "description": "A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it. Grows from its trigger on a spring; GPU-only.",
+      "category": "Components",
+      "dependencies": ["radix-ui"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "install": "npx shadcn@latest add @godui/tooltip",
+      "registry": "core"
     },
     {
       "name": "topographic-drift",

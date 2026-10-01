@@ -1,0 +1,83 @@
+---
+title: Anatomy of the GodUI Tooltip
+description: Radix has three open states, not one. GodUI animates each differently so a tooltip grows on first hover and stays calm when you hop across a toolbar.
+learnPlayer: true
+---
+
+import { TooltipToolbarDemo } from "@/components/demos/core/tooltip-toolbar-demo";
+
+<LearnPlayer>
+
+<LearnChapter
+  label="Delayed vs instant"
+  scene={
+    <KeyframeScene
+      label="Delayed vs instant"
+      motion="popover-bottom"
+      subject="tooltip"
+      tracks={[
+        { property: "opacity", from: "0", to: "1" },
+        { property: "scale", from: "0.96", to: "1" },
+        { property: "translate", from: "0 4px", to: "0 0" },
+      ]}
+    />
+  }
+  code={`"… data-[state=delayed-open]:animate-godui-popover-in
+   data-[state=instant-open]:animate-godui-fade-in
+   data-[state=closed]:animate-godui-popover-out"`}
+>
+
+A Radix tooltip doesn't just have `open` and `closed`. Its `data-state` is
+`delayed-open` when it opened after the hover delay, `instant-open` when it
+skipped the delay, or `closed`.
+
+It skips the delay in two cases: keyboard focus, and moving from one trigger
+to another within `skipDelayDuration` (300ms by default). In both, the user is
+already reading tooltips, so a full grow-and-drift on each one is noise.
+
+GodUI gives `delayed-open` the full `godui-popover-in` and `instant-open` a
+plain `godui-fade-in`.
+
+</LearnChapter>
+
+<LearnChapter
+  label="Side-aware drift"
+  scene={<SpringCurveScene label="Side-aware drift" easing="snappy" />}
+  code={`"origin-(--radix-tooltip-content-transform-origin)
+ data-[side=bottom]:[--godui-enter-y:-0.25rem]
+ data-[side=top]:[--godui-enter-y:0.25rem]
+ data-[side=left]:[--godui-enter-x:0.25rem]
+ data-[side=right]:[--godui-enter-x:-0.25rem]"`}
+>
+
+The delayed entrance is the same keyframe [Popover](/docs/components/popover/learn)
+uses. The scale grows from Radix's transform origin, the edge nearest the
+trigger, and the per-side variables make the tooltip drift 4px out of it.
+A tooltip above its trigger starts 4px low and rises into place.
+
+The arrow lives inside the content, so it moves with it.
+
+</LearnChapter>
+
+<LearnChapter
+  label="The result"
+  scene={<LiveResult hint="hover one icon, then slide across"><TooltipToolbarDemo /></LiveResult>}
+  isResult
+>
+
+Hover the first icon and wait for its tooltip to grow in. Then slide across
+the toolbar: each next tooltip fades in place while the previous one leaves.
+
+</LearnChapter>
+
+</LearnPlayer>
+
+## Why GPU-only
+
+Every state animates `opacity`, plus `scale` and `translate` for delayed opens.
+All of them are composited.
+
+## Reduced motion
+
+`--godui-motion: 0` removes the scale and drift, so every state only fades,
+in 150ms.
