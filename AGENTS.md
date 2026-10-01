@@ -27,11 +27,11 @@ Use **pnpm** — never npm or yarn.
 ## Component checklist (core shadcn drop-ins) — not done until all exist
 
 1. Source: `packages/components/src/ui/<name>.tsx`, mirroring shadcn new-york-v4 `components/ui/<name>.tsx` — same exports, props, `data-slot`s and Radix packages. Header comment names the shadcn version it mirrors. API changes are additive only.
-2. Export (component **+ prop types**) added to `packages/components/src/index.ts`
+2. `export * from "./ui/<name>";` added to `packages/components/src/index.ts`
 3. Entry in root `registry.json` (`registry:ui`, `registryDependencies` includes `@godui/godui-motion` + the shadcn deps upstream declares), then `pnpm build:registry`
-4. Storybook story `apps/storybook/src/stories/ui/<name>.stories.tsx` (title `UI/<Name>`, `tags: ["autodocs"]`) **and** a trace spec `apps/storybook/motion-trace/<name>.spec.ts` using `traceInteraction` + `expectGpuOnly`
-5. Vitest `packages/components/src/ui/<name>.test.tsx`: parity (shadcn's canonical usage renders with the same `data-slot` tree), behaviour (open/close, keyboard), reduced motion
-6. Docs page `apps/docs/content/docs/components/<name>/index.mdx` (no category folder) + `learn.mdx` beside it, and `<name>` in `apps/docs/content/docs/components/meta.json`
+4. Storybook story `apps/storybook/src/stories/ui/<name>.stories.tsx` (title `UI/<Name>` with spaces for multi-word names, e.g. `UI/Alert Dialog` → story id `ui-alert-dialog`, matching the docs slug; `tags: ["autodocs"]`) **and** a trace spec `apps/storybook/motion-trace/<name>.spec.ts` using `traceInteraction` + `expectGpuOnly`
+5. Vitest `packages/components/src/ui/<name>.test.tsx`: parity, behaviour (open/close, keyboard), reduced motion. Parity = vendor shadcn's source (`node packages/components/scripts/vendor-shadcn.mjs <name>` → `test/shadcn/<name>.tsx`, never edit it), render the same `Usage({ ui })` through both modules and `expectSlotParity(slotTree(), expected, [extraSlots])` (`test/parity.ts`); typing `ui: typeof Shadcn` and passing GodUI makes tsc prove props are a superset
+6. Docs page `apps/docs/content/docs/components/<name>/index.mdx` (no category folder) + `learn.mdx` beside it, `<name>` in `apps/docs/content/docs/components/meta.json`, and a `<Card>` in `components/index.mdx`
 
 ## Project gotchas (non-obvious — these bite repeatedly)
 
@@ -47,6 +47,12 @@ Use **pnpm** — never npm or yarn.
 - **Theme tokens: sRGB-clamped base chroma + `@media (color-gamut: p3)`** to restore richer chroma. `oklch-skill` governs all color tokens.
 - Use the **z-index scale** (`z-base`, `z-raised`, `z-overlay`, `z-sticky`, `z-popover`, `z-modal`, `z-toast`), never arbitrary z values.
 - Add `"use client"` **only** where shadcn has it or the component uses hooks / client APIs. Core components follow shadcn v4: React 19 function components with `ref` as a prop (no `forwardRef`). Extras keep their existing `forwardRef` style.
+
+- **Core source imports are install-shaped** (`@/lib/utils`, `@/components/ui/<x>`, `@/hooks/<x>`), never relative — the shadcn CLI rewrites `@/` on install. The aliases live in **4 places**: `packages/components/{tsconfig.json,vitest.config.ts}`, `apps/docs/tsconfig.json` (exact `@/lib/utils` only — docs owns other `@/lib/*`), `apps/storybook/{tsconfig.json,vite.config.ts}`.
+- **Third-party CSS injected unlayered (sonner, vaul) beats Tailwind's `@layer utilities` at any specificity** — overriding it needs `!` (`[transition-property:opacity]!`). Audit the library's stylesheet in a unit test so upgrades can't add paint transitions back.
+- **Chrome won't composite the individual `rotate`/`scale`/`translate` properties on an `<svg>`** (compositeFailed 1<<19). Rotate icons with `[transform:rotate(…)]` + `transition-[transform]`, or animate a wrapper.
+- **Trace specs:** `traceInteraction(page, { storyId, setup?, act, windowMs })` — `setup` runs before tracing (open a dialog to trace its close). `expectGpuOnly(result, { maxLayoutFrames })` counts 60Hz frames containing layout (default 1, the frame animations finish); raise it only for a documented discrete snap (accordion close = 3). A trace that passes must be shown to fail when the GPU fix is removed, or it proves nothing (e.g. same-height toasts never exercise height).
+- **Docs demos** live in `apps/docs/src/components/demos/core/<name>-demo.tsx` and import from `@godui/components`; the Example `code` string is the demo with imports rewritten to `@/components/ui/*`. Learn articles reuse the kit in `apps/docs/src/components/learn/core/` (`KeyframeScene`, `SpringCurveScene`, `FlipScene`, `AutoPlayScene`, `LiveResult`).
 
 ## Before claiming done / committing
 

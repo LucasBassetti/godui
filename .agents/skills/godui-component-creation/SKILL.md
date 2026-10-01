@@ -15,45 +15,46 @@ are frozen — don't add new components there.
 
 | Step | File |
 |------|------|
+| shadcn reference | `node packages/components/scripts/vendor-shadcn.mjs {name}` → `packages/components/test/shadcn/{name}.tsx` (verbatim, never edit) |
 | Component | `packages/components/src/ui/{name}.tsx` (mirrors shadcn `components/ui/{name}.tsx`) |
 | Export | `packages/components/src/index.ts` |
 | Tailwind scan | `packages/components/styles.css` → `@source "./src"` |
 | Shared motion | `godui-motion` — tokens/keyframes in `packages/components/styles.css`, hook `src/hooks/use-flip-group.ts`, registry item `godui-motion` |
 | Component-only keyframes | `styles.css` **and** the component's `registry.json` entry (`cssVars.theme` + `css`) |
 | GPU gate | `packages/components/src/motion-gate/` (runs in `pnpm --filter @godui/components test`) |
-| Storybook | `apps/storybook/src/stories/ui/{name}.stories.tsx` (title `UI/{Name}`) |
+| Storybook | `apps/storybook/src/stories/ui/{name}.stories.tsx` (title `UI/{Title Case}`, e.g. `UI/Alert Dialog` → id `ui-alert-dialog`) |
 | Runtime trace | `apps/storybook/motion-trace/{name}.spec.ts` (`traceInteraction` + `expectGpuOnly`) |
 | Docs | `apps/docs/content/docs/components/{name}/index.mdx` (no category folder) |
-| Learn tab (required) | `apps/docs/content/docs/components/{name}/learn.mdx` + scenes in `apps/docs/src/components/learn/` — **use the `godui-learn-article` skill** |
+| Docs demo | `apps/docs/src/components/demos/core/{name}-demo.tsx` (imports `@godui/components`) |
+| Learn tab (required) | `apps/docs/content/docs/components/{name}/learn.mdx` built from the core kit in `apps/docs/src/components/learn/core/` (`KeyframeScene`, `SpringCurveScene`, `FlipScene`, `AutoPlayScene`, `LiveResult`) — see the `godui-learn-article` skill for LearnPlayer rules |
 | Nav | `apps/docs/content/docs/components/meta.json` (`root: true` folder) |
-| Index card | `apps/docs/content/docs/components/index.mdx` → `<PreviewCard>` |
-| Placeholder preview | `apps/docs/src/components/card-previews/previews/{name}.tsx` + slug in `registry.tsx` |
+| Index card | `apps/docs/content/docs/components/index.mdx` → `<Card title href description>` (alphabetical) |
 
 ## 1. Create the component
 
-Start from shadcn's current new-york-v4 source for the same component and keep
-its public surface **identical**: file name, named exports, props, `data-slot`
-attributes, Radix package, `cn` from `@/lib/utils`. Add a header comment naming
-the shadcn version you mirrored. API changes are additive only (e.g. an optional
-`motion?: "default" | "subtle" | "none"`); never rename or remove a shadcn prop.
+Vendor shadcn's current new-york-v4 source first
+(`node packages/components/scripts/vendor-shadcn.mjs {name}`), then copy it to
+`src/ui/{name}.tsx` and change only classes and motion. Keep its public surface
+**identical**: file name, named exports, props, `data-slot` attributes, the
+`radix-ui` import, shadcn's own utility classes (including `z-50`, which wins
+over the z-index scale here — parity first). Add the header comment naming the
+snapshot. API changes are additive only; an extra DOM element needs its own
+`data-slot` and is listed as an `extraSlots` entry in the parity test.
 
-Follow shadcn v4 conventions: React 19 function components with `ref` as a prop
-(no `forwardRef`), `"use client"` where shadcn has it.
+Imports stay install-shaped — `@/lib/utils`, `@/components/ui/<x>`,
+`@/hooks/<x>` — never relative; the shadcn CLI rewrites `@/` on install.
 
 ```tsx
-// Mirrors shadcn/ui new-york-v4 popover (registry version: <date or commit>).
-"use client";
+"use client"
 
-import * as PopoverPrimitive from "@radix-ui/react-popover";
-import type * as React from "react";
-import { cn } from "@/lib/utils";
+// GodUI Popover — mirrors shadcn/ui new-york-v4 components/ui/popover.tsx (registry snapshot 2026-10-01).
+// Motion: scales from the trigger and drifts 4px out of it on a spring; fades. GPU-only.
 
-function PopoverContent({
-  className,
-  align = "center",
-  sideOffset = 4,
-  ...props
-}: React.ComponentProps<typeof PopoverPrimitive.Content>) {
+import { Popover as PopoverPrimitive } from "radix-ui"
+import type * as React from "react"
+import { cn } from "@/lib/utils"
+
+function PopoverContent({ className, align = "center", sideOffset = 4, ...props }: React.ComponentProps<typeof PopoverPrimitive.Content>) {
   return (
     <PopoverPrimitive.Portal>
       <PopoverPrimitive.Content
@@ -61,19 +62,33 @@ function PopoverContent({
         align={align}
         sideOffset={sideOffset}
         className={cn(
-          "z-popover w-72 rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-hidden",
-          "origin-(--radix-popover-content-transform-origin)",
-          "data-[state=open]:animate-godui-fade-scale-in data-[state=closed]:animate-godui-fade-scale-out",
-          className,
+          "z-50 w-72 origin-(--radix-popover-content-transform-origin) rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-hidden data-[side=bottom]:[--godui-enter-y:-0.25rem] data-[side=left]:[--godui-enter-x:0.25rem] data-[side=right]:[--godui-enter-x:-0.25rem] data-[side=top]:[--godui-enter-y:0.25rem] data-[state=open]:animate-godui-popover-in data-[state=closed]:animate-godui-popover-out",
+          className
         )}
         {...props}
       />
     </PopoverPrimitive.Portal>
-  );
+  )
 }
 ```
 
-Export the components **and their prop types** from `packages/components/src/index.ts`.
+Add `export * from "./ui/{name}";` to `packages/components/src/index.ts`.
+
+Parity test shape (`src/ui/{name}.test.tsx`):
+
+```tsx
+import * as Shadcn from "../../test/shadcn/popover";
+import { expectSlotParity, slotTree } from "../../test/parity";
+import * as Godui from "./popover";
+
+function Usage({ ui }: { ui: typeof Shadcn }) { /* shadcn's canonical demo, built from ui.* */ }
+
+const { unmount } = render(<Usage ui={Shadcn} />);
+const expected = slotTree();
+unmount();
+render(<Usage ui={Godui} />); // tsc: GodUI props must accept everything shadcn's do
+expectSlotParity(slotTree(), expected);
+```
 
 ## 2. Ensure Tailwind scans component files
 
@@ -354,17 +369,23 @@ Every component ships a **Learn tab** — a scroll-triggered, animated deep-dive
 beside the main page as `apps/docs/content/docs/components/{name}/learn.mdx`
 (same folder as `index.mdx`, which is why the page is a folder, not a flat `.mdx`).
 
-**Invoke the `godui-learn-article` skill to build it** — it owns the routing, the tab
-wiring, the `ScrollScene` primitive, scene patterns, and the gotchas. Don't hand-roll it.
+Core articles use the LearnPlayer layout (`learnPlayer: true`) and the shared
+core kit in `apps/docs/src/components/learn/core/` (registered in `mdx.tsx`):
 
-The article ends with a **Motion Score** section (a `## Motion Score` heading +
-`<MotionScorePanel name="{name}" />` before `## The result`) that grades the component's
-animated properties S→F — the learn skill's §6.5 covers the pattern (shared panel +
-registry entry in `motion-score-panels.ts`). Its grade comes from the component's
-`MOTION_NOTES` entry (`apps/docs/src/lib/motion-notes.ts`), the same signal behind the
-docs-page **Motion** badge — so add/verify that entry. **Static (`STATIC_COMPONENTS`)
-components get no Motion Score section and no Motion badge** — only the green "Static"
-badge.
+| Scene | Shows |
+| --- | --- |
+| `KeyframeScene motion subject tracks` | a mock surface looping the real `animate-godui-*` enter/exit classes |
+| `SpringCurveScene easing` | the shipped `linear()` / `cubic-bezier()` read back from the browser, plotted |
+| `FlipScene variant` | slowed-down FLIP (`accordion` uses the real `useFlipGroup`; `tabs` draws a ghost of the old box) |
+| `AutoPlayScene demo` | the real component driven on a timer (`button`, `switch`, `tabs`; add a demo there when you need one) |
+| `LiveResult hint` | the final interactive chapter (`isResult`) |
+
+Write 2–3 chapters plus the result, with `code` excerpts copied from the real
+source, then `## Why GPU-only` and `## Reduced motion` sections after
+`</LearnPlayer>`. Core pages have **no Motion Score** — core is CI-gated
+GPU-only, and the page shows the GPU-only + shadcn/ui badges instead. Use the
+`godui-learn-article` skill for LearnPlayer rules and gotchas when a component
+needs a bespoke scene.
 
 Non-negotiable when authoring the scenes (the learn skill covers this in full, repeated
 here because it's the most common review bounce): **use the black/white pattern and verify
@@ -375,12 +396,11 @@ other. Contrast a `--foreground` surface with `--background` overlays/icons (and
 and border same-colored plates with `border-[var(--foreground)]/20`. Toggle light↔dark and
 confirm nothing disappears before finishing.
 
-## 6. Component index placeholder preview (required)
+## 6. Component index card
 
-Every index card shows a uniform **skeleton placeholder** — muted gray blocks + a single
-accent highlight on a dotted background, animating on card hover. They are NOT live
-components; they all share one visual language so the grid reads consistently. Add one for
-each new component:
+The core index (`components/index.mdx`) lists components with Fumadocs
+`<Card title href description>` inside `<Cards>`, alphabetically. The skeleton
+card previews below are the Extras index's pattern; they're optional for core.
 
 **a. Create `apps/docs/src/components/card-previews/previews/{name}.tsx`** — a default-export
 built from the shared kit (`./_kit`): `Sk` (gray block `bg-[var(--muted-foreground)]/20`),
@@ -448,19 +468,20 @@ slug.
 
 ## 10. Checklist
 
-- [ ] `packages/components/src/ui/{name}.tsx` mirroring shadcn new-york-v4 (same exports/props/`data-slot`s/Radix), header comment with the mirrored version
-- [ ] Exported (components + prop types) from `index.ts`
+- [ ] shadcn reference vendored to `test/shadcn/{name}.tsx`; `packages/components/src/ui/{name}.tsx` mirrors it (same exports/props/`data-slot`s/`radix-ui`, install-shaped `@/` imports), header comment with the snapshot
+- [ ] `export * from "./ui/{name}";` in `index.ts`
 - [ ] Styles authored as inline Tailwind utilities — no CSS file / no `@layer components`
 - [ ] Motion: `animate-godui-*` on Radix `data-[state]`, `ease-spring-*` / `--godui-duration-*`; transform/opacity/filter only; sizes snap + `useFlipGroup`; gate green (`pnpm --filter @godui/components test`)
 - [ ] `registry.json` entry (`registry:ui`, `registryDependencies` incl. `@godui/godui-motion` + upstream shadcn deps), then `pnpm build:registry`
-- [ ] Vitest `src/ui/{name}.test.tsx`: shadcn's canonical usage renders with the same `data-slot` tree; open/close + keyboard; reduced motion
-- [ ] Storybook story `stories/ui/{name}.stories.tsx` (title `UI/{Name}`, `tags: ["autodocs"]`)
-- [ ] Runtime trace spec `motion-trace/{name}.spec.ts` passing (`pnpm --filter storybook test:motion-trace`)
+- [ ] Vitest `src/ui/{name}.test.tsx`: `Usage({ ui })` through `Shadcn` and `Godui` → `expectSlotParity`; exports ⊇ shadcn's; open/close + keyboard; reduced motion
+- [ ] Storybook story `stories/ui/{name}.stories.tsx` (title `UI/{Title Case}`, `tags: ["autodocs"]`)
+- [ ] Runtime trace spec `motion-trace/{name}.spec.ts` (open **and** close; `setup` for the close) passing (`pnpm --filter storybook test:motion-trace`), and shown to fail when the GPU fix is removed if it guards a library override
 - [ ] Docs `components/{name}/index.mdx` with Workbench + Example + ComponentInstall + "What's animated" table + "Replacing shadcn" note
-- [ ] Learn tab `components/{name}/learn.mdx` built via the `godui-learn-article` skill — scenes verified in **both** light and dark
+- [ ] Demo `demos/core/{name}-demo.tsx`; Example `code` = demo with `@/components/ui/*` imports
+- [ ] Learn tab `components/{name}/learn.mdx` (LearnPlayer + core kit scenes, code excerpts copied from the real source) — verified in **both** light and dark
 - [ ] `date: YYYY-MM-DD` (today) in the MDX frontmatter
 - [ ] Example children: text inline in its tag (no `<p>`-in-`<p>`)
-- [ ] Registered in `components/meta.json`; `<PreviewCard>` in `components/index.mdx`; placeholder preview + slug in `CURATED_SLUGS`
+- [ ] Registered in `components/meta.json` (alphabetical); `<Card>` in `components/index.mdx`
 - [ ] Static Tailwind classes only (no dynamic class construction)
 - [ ] Demo is fluid (≤360px safe); verified via the Workbench mobile toggle
 - [ ] Verified in Storybook and docs after dev server restart
