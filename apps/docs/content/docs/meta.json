@@ -24,6 +24,7 @@
     "components/hover-card",
     "components/input-otp",
     "components/menubar",
+    "components/navigation-menu",
     "components/popover",
     "components/progress",
     "components/radio-group",

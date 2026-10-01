@@ -743,6 +743,24 @@
       ]
     },
     {
+      "name": "navigation-menu",
+      "type": "registry:ui",
+      "title": "Navigation Menu",
+      "description": "A collection of links for navigating websites. Switching items slides the old content out and the new one in from the matching side; the viewport scales in and its size snaps. GPU-only.",
+      "dependencies": ["radix-ui", "lucide-react", "class-variance-authority"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "files": [
+        {
+          "path": "packages/components/src/ui/navigation-menu.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "packages/components/src/ui/navigation-menu-viewport-frame.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "skeleton",
       "type": "registry:ui",
       "title": "Skeleton",

@@ -17,6 +17,7 @@ export * from "./ui/input";
 export * from "./ui/input-group";
 export * from "./ui/input-otp";
 export * from "./ui/menubar";
+export * from "./ui/navigation-menu";
 export * from "./ui/popover";
 export * from "./ui/progress";
 export * from "./ui/radio-group";

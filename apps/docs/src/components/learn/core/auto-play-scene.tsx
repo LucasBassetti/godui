@@ -13,6 +13,11 @@ import {
   MenubarMenu,
   MenubarSeparator,
   MenubarTrigger,
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuList,
+  NavigationMenuTrigger,
   Progress,
   RadioGroup,
   RadioGroupItem,
@@ -353,11 +358,72 @@ function MenubarHop({ reduced }: { reduced: boolean }) {
   );
 }
 
+const NAV_ITEMS = [
+  {
+    value: "one",
+    trigger: "w-8",
+    panel: "w-64",
+    rows: ["w-40", "w-28", "w-48"],
+  },
+  { value: "two", trigger: "w-12", panel: "w-80", rows: ["w-56", "w-40"] },
+  {
+    value: "three",
+    trigger: "w-6",
+    panel: "w-56",
+    rows: ["w-32", "w-44", "w-24", "w-36"],
+  },
+];
+/** Out to the right and back, so both slide directions play. */
+const NAV_ORDER = [0, 1, 2, 1];
+
+/**
+ * Real NavigationMenu; the controlled `value` walks right and back, so each
+ * switch slides the old content out toward the new trigger and the new one in
+ * from the other side. Panels differ in size, so the viewport snaps.
+ */
+function NavigationMenuHop({ reduced }: { reduced: boolean }) {
+  const [step, setStep] = useState(0);
+  useEffect(() => {
+    if (reduced) return;
+    const id = setInterval(
+      () => setStep((i) => (i + 1) % NAV_ORDER.length),
+      STEP_MS,
+    );
+    return () => clearInterval(id);
+  }, [reduced]);
+  return (
+    <div className="flex h-60 items-start pt-2">
+      <NavigationMenu value={NAV_ITEMS[NAV_ORDER[step]].value}>
+        <NavigationMenuList>
+          {NAV_ITEMS.map((item) => (
+            <NavigationMenuItem key={item.value} value={item.value}>
+              <NavigationMenuTrigger aria-label={item.value}>
+                <Bar className={`${item.trigger} bg-foreground/40`} />
+              </NavigationMenuTrigger>
+              <NavigationMenuContent>
+                <div className={`grid gap-3 p-2 ${item.panel}`}>
+                  {item.rows.map((w) => (
+                    <div key={w} className="grid gap-1.5">
+                      <Bar className={`${w} bg-foreground/35`} />
+                      <Bar className="w-full bg-foreground/15" />
+                    </div>
+                  ))}
+                </div>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
+          ))}
+        </NavigationMenuList>
+      </NavigationMenu>
+    </div>
+  );
+}
+
 const DEMOS = {
   button: ButtonPress,
   checkbox: CheckboxToggle,
   command: CommandCycle,
   menubar: MenubarHop,
+  "navigation-menu": NavigationMenuHop,
   progress: ProgressStep,
   "progress-indeterminate": ProgressIndeterminate,
   radio: RadioCycle,

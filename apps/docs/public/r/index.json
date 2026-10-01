@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "revision": "322ae55e5f3aaf9f228f465275384c9901ac8f2d",
+  "revision": "c266c7e40b710b4b98f420c7792b0af432c516d6",
   "components": [
     {
       "name": "accordion",
@@ -802,6 +802,16 @@
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add \"https://godui.design/r/extras/multi-button.json\"",
       "registry": "extras"
+    },
+    {
+      "name": "navigation-menu",
+      "title": "Navigation Menu",
+      "description": "A collection of links for navigating websites. Switching items slides the old content out and the new one in from the matching side; the viewport scales in and its size snaps. GPU-only.",
+      "category": "Components",
+      "dependencies": ["radix-ui", "lucide-react", "class-variance-authority"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "install": "npx shadcn@latest add @godui/navigation-menu",
+      "registry": "core"
     },
     {
       "name": "notification-inbox",

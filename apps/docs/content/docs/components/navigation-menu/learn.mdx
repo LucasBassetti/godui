@@ -1,0 +1,100 @@
+---
+title: Anatomy of the GodUI Navigation Menu
+description: Content that slides in from the side you moved toward, a viewport that snaps to size instead of tweening it, and the exit Radix forgets to play.
+learnPlayer: true
+---
+
+import { NavigationMenuDemo } from "@/components/demos/core/navigation-menu-demo";
+
+<LearnPlayer>
+
+<LearnChapter
+  label="Direction-aware content"
+  scene={<AutoPlayScene label="Direction-aware content" demo="navigation-menu" />}
+  code={`<NavigationMenuPrimitive.Content
+  data-slot="navigation-menu-content"
+  className={cn(
+    "top-0 left-0 w-full p-2 pr-2.5 [--godui-enter-distance:3rem]
+     data-[motion=from-end]:animate-godui-slide-in-from-right
+     data-[motion=from-start]:animate-godui-slide-in-from-left
+     data-[motion=to-end]:animate-godui-slide-out-to-right
+     data-[motion=to-start]:animate-godui-slide-out-to-left
+     md:absolute md:w-auto …",
+    className,
+  )}
+/>`}
+>
+
+When you move from one trigger to another, Radix compares their positions and
+stamps both contents with a `data-motion` attribute. Moving right, the
+content you leave gets `to-start` and the new one `from-end`; moving left,
+`to-end` and `from-start`. Each value maps to one shared slide keyframe.
+
+The slide distance is local: `--godui-enter-distance: 3rem`. shadcn slides
+13rem, nearly the whole panel, which reads as a carousel; 3rem is enough to
+show direction while both contents stay mostly inside the viewport. The new
+content takes 380ms on the smooth spring, the old one leaves in 260ms on
+`ease-out-expo`, so the outgoing panel is gone before the incoming one
+settles.
+
+Radix currently forgets the outgoing half: it removes the old content at
+once. GodUI's viewport watches for that removal and puts an inert copy back
+for the length of its exit, so the slide-out still plays.
+
+</LearnChapter>
+
+<LearnChapter
+  label="Why the viewport snaps"
+  scene={<AutoPlayScene label="Why the viewport snaps" demo="navigation-menu" />}
+  code={`<NavigationMenuPrimitive.Viewport
+  data-slot="navigation-menu-viewport"
+  className={cn(
+    "relative mt-1.5 h-[var(--radix-navigation-menu-viewport-height)]
+     w-full origin-top overflow-hidden … [--godui-enter-scale:0.95]
+     data-[state=open]:animate-godui-fade-scale-in
+     data-[state=closed]:animate-godui-fade-scale-out
+     md:w-[var(--radix-navigation-menu-viewport-width)]",
+    className,
+  )}
+/>`}
+>
+
+The viewport is a box that Radix sizes to the active content through two CSS
+variables. Many navigation menus tween that `width` and `height`. Each frame
+of such a tween is a layout pass: the browser recomputes the box, repaints
+its border and shadow, and redraws the clipped content. On a busy page that
+is where frames drop.
+
+GodUI lets the size snap. The jump happens in the same frame the new content
+appears, and the eye follows the content's slide, not the box's edge. The
+only things that animate are the contents' `translate` and `opacity`, and the
+viewport's own `scale` and `opacity` when it opens or closes, all of which
+the compositor runs without layout.
+
+</LearnChapter>
+
+<LearnChapter
+  label="The result"
+  scene={<LiveResult hint="open an item, then move across the others"><NavigationMenuDemo /></LiveResult>}
+  isResult
+>
+
+Hover Home, then move to Components and back. Watch which side each content
+leaves from. The viewport jumps to each panel's size while the contents slide.
+
+</LearnChapter>
+
+</LearnPlayer>
+
+## Why GPU-only
+
+Contents and the viewport animate `opacity`, `scale` and `translate`; the
+chevron and the indicator transition `transform`. The viewport's size and the
+trigger highlights snap instead of animating layout or paint.
+
+## Reduced motion
+
+`--godui-motion: 0` removes every slide and scale from the shared keyframes,
+so switching items becomes a 150ms crossfade and the viewport fades in place.
+The chevron and indicator transitions are turned off with
+`motion-reduce:transition-none`, so they jump.
