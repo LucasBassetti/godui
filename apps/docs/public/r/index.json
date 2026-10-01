@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "revision": "fe4a1a7c5308e4938fa31fab59e9b96c481044d9",
+  "revision": "1f80d8c1a18edca017183206ffacb85a7a6c2a18",
   "components": [
     {
       "name": "agent-flow",
@@ -732,6 +732,16 @@
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add \"https://godui.design/r/extras/pixel-grid.json\"",
       "registry": "extras"
+    },
+    {
+      "name": "popover",
+      "title": "Popover",
+      "description": "Displays rich content in a portal, triggered by a button. Grows from its trigger on a spring; GPU-only.",
+      "category": "Components",
+      "dependencies": ["radix-ui"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "install": "npx shadcn@latest add @godui/popover",
+      "registry": "core"
     },
     {
       "name": "presence-facepile",
