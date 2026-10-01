@@ -1,0 +1,195 @@
+---
+title: Calendar
+description: A date field component that allows users to enter and edit date. Months slide a full width and a newly picked day pops.
+workbench: true
+---
+
+import { CalendarDemo } from "@/components/demos/core/calendar-demo";
+import { CalendarDropdownDemo } from "@/components/demos/core/calendar-dropdown-demo";
+import { CalendarPopoverDemo } from "@/components/demos/core/calendar-popover-demo";
+import { CalendarRangeDemo } from "@/components/demos/core/calendar-range-demo";
+
+<Workbench>
+
+The shadcn/ui calendar, built on [React DayPicker](https://daypicker.dev).
+Next and Previous slide the new month in a full width while the old one slides
+out the other way, both on one curve so the two months move as a single strip;
+the caption cross-fades. Picking a day pops it. The pop plays only when the
+selection changes, so a calendar that loads with a date selected, or a month
+you navigate back to, never animates. Only `translate`, `scale` and `opacity`
+animate.
+
+<Example label="Single" story="ui-calendar--single" code={`import { Calendar } from "@/components/ui/calendar";
+import * as React from "react";
+
+export function CalendarDemo() {
+  const [date, setDate] = React.useState<Date | undefined>(new Date());
+
+  return (
+    <Calendar
+      mode="single"
+      selected={date}
+      onSelect={setDate}
+      className="rounded-md border shadow-sm"
+    />
+  );
+}`}>
+  <CalendarDemo />
+</Example>
+
+<Example label="Range" story="ui-calendar--range-two-months" code={`import { Calendar } from "@/components/ui/calendar";
+import * as React from "react";
+import type { DateRange } from "react-day-picker";
+
+export function CalendarRangeDemo() {
+  const [range, setRange] = React.useState<DateRange | undefined>(() => {
+    const from = new Date();
+    const to = new Date(from);
+    to.setDate(from.getDate() + 9);
+    return { from, to };
+  });
+
+  return (
+    <Calendar
+      mode="range"
+      defaultMonth={range?.from}
+      selected={range}
+      onSelect={setRange}
+      numberOfMonths={2}
+      className="rounded-lg border shadow-sm"
+    />
+  );
+}`}>
+  <CalendarRangeDemo />
+</Example>
+
+<Example label="Month & year dropdowns" story="ui-calendar--dropdown-caption" code={`import { Calendar } from "@/components/ui/calendar";
+import * as React from "react";
+
+export function CalendarDropdownDemo() {
+  const [date, setDate] = React.useState<Date | undefined>(new Date());
+
+  return (
+    <Calendar
+      mode="single"
+      selected={date}
+      onSelect={setDate}
+      captionLayout="dropdown"
+      className="rounded-md border shadow-sm"
+    />
+  );
+}`}>
+  <CalendarDropdownDemo />
+</Example>
+
+<Example label="In a popover" code={`import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { ChevronDownIcon } from "lucide-react";
+import * as React from "react";
+
+export function CalendarPopoverDemo() {
+  const [open, setOpen] = React.useState(false);
+  const [date, setDate] = React.useState<Date | undefined>(undefined);
+
+  return (
+    <div className="flex flex-col gap-3">
+      <label htmlFor="date" className="px-1 font-medium text-sm">
+        Date of birth
+      </label>
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            id="date"
+            className="w-48 justify-between font-normal"
+          >
+            {date ? date.toLocaleDateString() : "Select date"}
+            <ChevronDownIcon />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-auto overflow-hidden p-0" align="start">
+          <Calendar
+            mode="single"
+            selected={date}
+            captionLayout="dropdown"
+            onSelect={(next) => {
+              setDate(next);
+              setOpen(false);
+            }}
+          />
+        </PopoverContent>
+      </Popover>
+    </div>
+  );
+}`}>
+  <CalendarPopoverDemo />
+</Example>
+
+## Installation
+
+<ComponentInstall name="calendar" />
+
+## Replacing shadcn
+
+`npx shadcn add @godui/calendar` overwrites `components/ui/calendar.tsx`.
+Exports, props and `data-slot` attributes match shadcn/ui new-york-v4, so
+existing imports keep working. It also installs `godui-motion` (easings,
+keyframes, the FLIP hook) into your project and the GodUI `button` the day
+cells and nav buttons are built on.
+
+Two additive changes: `animate` (React DayPicker's own prop) defaults to `true`,
+so pass `animate={false}` to turn the month slide off; and `Root`, `Chevron` and
+`WeekNumber` are declared once at module level instead of inline, so a
+controlled re-render doesn't remount the grid. Your own `classNames` and
+`components` still override GodUI's.
+
+## Usage
+
+```tsx
+import { Calendar } from "@/components/ui/calendar";
+```
+
+```tsx
+const [date, setDate] = React.useState<Date | undefined>(new Date());
+
+return (
+  <Calendar
+    mode="single"
+    selected={date}
+    onSelect={setDate}
+    className="rounded-lg border"
+  />
+);
+```
+
+## What's animated
+
+| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
+| --- | --- | --- | --- | --- |
+| Next / Previous (new month) | `godui-slide-in-from-right` / `-left`, a full month width | `translate`, `opacity` | `ease-spring-smooth` | 260ms |
+| Next / Previous (old month) | `godui-slide-out-to-left` / `-right` on React DayPicker's clone | `translate`, `opacity` | `ease-spring-smooth` | 260ms |
+| Caption | `godui-fade-in` / `godui-fade-out` | `opacity` | `ease-spring-snappy` / `ease-out-expo` | 260ms |
+| Pick a day | `godui-pop` | `scale` 1 → 0.88 → 1 | `ease-spring-bouncy` | 260ms |
+| Selection fill, range middle, month height | snap | — | — | — |
+
+React DayPicker removes the old month on its caption's `animationend`, so the
+caption's fade-out runs as long as the slide. A month with six weeks after one
+with five makes the calendar one row taller at once; nothing animates the
+height. A second Next while a slide is running changes the month without a
+second slide.
+
+Under `prefers-reduced-motion` the months cross-fade without sliding and the
+picked day fills without the dip.
+
+## API
+
+Built on [React DayPicker](https://daypicker.dev). Props are identical to
+[shadcn/ui Calendar](https://ui.shadcn.com/docs/components/calendar): every
+DayPicker prop, plus `buttonVariant` for the nav buttons.
+
+</Workbench>

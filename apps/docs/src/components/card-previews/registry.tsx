@@ -11,6 +11,7 @@ type Preview = ComponentType<CardPreviewProps>;
 import CoreAccordion from "./core/accordion";
 import CoreAlertDialog from "./core/alert-dialog";
 import CoreButton from "./core/button";
+import CoreCalendar from "./core/calendar";
 import CoreCarousel from "./core/carousel";
 import CoreCheckbox from "./core/checkbox";
 import CoreCollapsible from "./core/collapsible";
@@ -153,6 +154,7 @@ export const cardPreviews: Record<string, Preview> = {
   accordion: CoreAccordion,
   "alert-dialog": CoreAlertDialog,
   button: CoreButton,
+  calendar: CoreCalendar,
   carousel: CoreCarousel,
   checkbox: CoreCheckbox,
   collapsible: CoreCollapsible,

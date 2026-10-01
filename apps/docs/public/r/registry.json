@@ -810,6 +810,20 @@
           }
         }
       }
+    },
+    {
+      "name": "calendar",
+      "type": "registry:ui",
+      "title": "Calendar",
+      "description": "A date field component that allows users to enter and edit date. Months slide in a full width while the old one slides out; a newly selected day pops. GPU-only.",
+      "dependencies": ["react-day-picker@latest", "date-fns", "lucide-react"],
+      "registryDependencies": ["utils", "@godui/godui-motion", "@godui/button"],
+      "files": [
+        {
+          "path": "packages/components/src/ui/calendar.tsx",
+          "type": "registry:ui"
+        }
+      ]
     }
   ]
 }

@@ -1,0 +1,142 @@
+---
+title: Anatomy of the GodUI Calendar
+description: How two months slide as one strip on React DayPicker's own animation hooks, why the caption sets the clock, and why a selected day pops only when you pick it.
+learnPlayer: true
+---
+
+import { CalendarDemo } from "@/components/demos/core/calendar-demo";
+
+<LearnPlayer>
+
+<LearnChapter
+  label="The month slides"
+  scene={<AutoPlayScene label="The month slides" demo="calendar" note="slowed to 0.8s" />}
+  code={`const monthMotion = {
+  weeks_before_enter: "animate-godui-slide-in-from-left",
+  weeks_after_enter: "animate-godui-slide-in-from-right",
+  weeks_before_exit: "animate-godui-slide-out-to-left",
+  weeks_after_exit: "animate-godui-slide-out-to-right",
+  caption_before_enter: "animate-godui-fade-in",
+  caption_after_enter: "animate-godui-fade-in",
+  caption_before_exit: "animate-godui-fade-out",
+  caption_after_exit: "animate-godui-fade-out",
+};
+
+weeks: cn(
+  "[--ease-out-expo:var(--ease-spring-smooth)]
+   [--godui-duration-slow:var(--godui-duration-base)]
+   [--godui-enter-distance:100%] rtl:[--godui-enter-distance:-100%]",
+  defaultClassNames.weeks,
+),`}
+>
+
+React DayPicker already knows how to animate a month change, it just ships
+without a look. When the month changes it clones the old month, pins the clone
+over the new one with `position: absolute`, clips both with `overflow: hidden`
+and adds a class to each: an *exit* class on the clone's weeks and caption, an
+*enter* class on the new ones. GodUI fills those class names with the shared
+`godui-slide-*` and `godui-fade-*` keyframes.
+
+Going forward, the old weeks get `weeks_before_exit` (they slide out to the
+left) and the new ones `weeks_after_enter` (in from the right). The slide
+distance is a whole month, `--godui-enter-distance: 100%` of the weeks' own
+width, and RTL flips its sign.
+
+The two halves share one duration and one curve. The shared tokens give the
+enter a spring and the exit `ease-out-expo`, which leaves faster than the new
+month arrives and opens a gap between them. Redefining `--ease-out-expo` on the
+weeks puts both on the spring, so the old month's right edge and the new
+month's left edge stay together for the whole slide. Only `translate` and
+`opacity` change.
+
+</LearnChapter>
+
+<LearnChapter
+  label="The caption sets the clock"
+  scene={<AutoPlayScene label="The caption sets the clock" demo="calendar-clone" note="slowed to 0.8s · dashed: the old month's clone" />}
+  code={`// react-day-picker, useAnimation
+previousCaptionEl.addEventListener("animationend", cleanUp);
+
+// GodUI
+month_caption: cn(
+  "… [--godui-duration-fast:var(--godui-duration-base)]",
+  defaultClassNames.month_caption,
+),`}
+>
+
+React DayPicker removes the clone, and strips the enter classes from the new
+month, when the old *caption* fires `animationend`. Whatever the weeks are
+doing at that moment gets cut. The shared fade-out lasts 150ms and the slide
+260ms, so out of the box the old month would vanish mid-slide.
+
+GodUI stretches the caption's fade-out to the slide's duration, and shortens
+the new weeks' enter to the same 260ms, so all four animations end on the same
+frame and the cleanup removes a clone that's already gone.
+
+Two more details come from React DayPicker. It adds these classes with
+`classList.add`, which throws on a value containing a space, so every class
+name is a single class and the overrides live on the elements the classes land
+on. And a second click while the month is sliding changes the month without
+starting a second slide, so the clone never stacks.
+
+</LearnChapter>
+
+<LearnChapter
+  label="A pop only on change"
+  scene={<AutoPlayScene label="A pop only on change" demo="calendar-pop" />}
+  code={`const filled = Boolean(modifiers.selected && !modifiers.range_middle);
+const [lastFilled, setLastFilled] = React.useState(filled);
+const [animate, setAnimate] = React.useState(false);
+if (filled !== lastFilled) {
+  setLastFilled(filled);
+  setAnimate(filled);
+}
+
+<Button
+  data-animate={animate || undefined}
+  className="… active:scale-none [--godui-pop-scale:0.88]
+    not-in-[[data-animated-month][aria-hidden=true]]:data-[animate=true]:animate-godui-pop"
+/>`}
+>
+
+The day you pick dips to 88% and springs back on `ease-spring-bouncy`. The fill
+itself snaps.
+
+A day only pops when it *becomes* selected while it's on screen. Each day
+button remembers whether it was filled on its first render and compares during
+render, so a calendar that loads with a date selected doesn't pop, and neither
+does a selected day in a month you navigate back to, because React DayPicker
+mounts that month's days fresh. In a range only the two ends pop; the middle
+fills without moving.
+
+The month clone copies the attribute along with the rest of the DOM, so the
+pop is switched off inside it, or the clone would replay it as it slides away.
+And the button's own press scale is turned off on day cells: two animations on
+`scale` at once and Chrome composites neither.
+
+</LearnChapter>
+
+<LearnChapter
+  label="The result"
+  scene={<LiveResult hint="pick a day, then page through the months"><CalendarDemo /></LiveResult>}
+  isResult
+>
+
+Pick a day, then use Next and Previous. Click Next twice quickly: the second
+click lands without a second slide.
+
+</LearnChapter>
+
+</LearnPlayer>
+
+## Why GPU-only
+
+The weeks animate `translate` and `opacity`, the caption `opacity`, the picked
+day `scale`. React DayPicker writes `position` and `overflow` once when a slide
+starts and clears them once when it ends; nothing in between needs layout. A
+month with one more week makes the calendar a row taller at once.
+
+## Reduced motion
+
+`--godui-motion: 0` cancels the slide distance and the dip, so the months
+cross-fade in 150ms and the picked day fills without moving.

@@ -13,6 +13,7 @@
     "components/accordion",
     "components/alert-dialog",
     "components/button",
+    "components/calendar",
     "components/carousel",
     "components/checkbox",
     "components/collapsible",

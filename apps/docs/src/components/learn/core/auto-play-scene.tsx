@@ -6,6 +6,8 @@ import {
   AccordionItem,
   AccordionTrigger,
   Button,
+  Calendar,
+  CalendarDayButton,
   Carousel,
   type CarouselApi,
   CarouselContent,
@@ -42,7 +44,14 @@ import {
   ToggleGroupItem,
 } from "@godui/components";
 import { Bold, Circle } from "lucide-react";
-import { Fragment, useEffect, useRef, useState } from "react";
+import {
+  type ComponentProps,
+  Fragment,
+  type HTMLAttributes,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { ScrollScene } from "../scroll-scene";
 
 const STEP_MS = 1200;
@@ -489,6 +498,128 @@ function CarouselJump({ reduced }: { reduced: boolean }) {
   return <CarouselAdvance reduced={reduced} jump />;
 }
 
+/** Day cells as dots: the real day button, with a dot instead of the number. */
+function CalendarDotDay(props: ComponentProps<typeof CalendarDayButton>) {
+  return (
+    <CalendarDayButton {...props}>
+      <span className="size-2 rounded-full bg-current" />
+    </CalendarDayButton>
+  );
+}
+
+/** Weekday header as a short bar. */
+function CalendarBarWeekday(props: HTMLAttributes<HTMLTableCellElement>) {
+  return (
+    <th {...props}>
+      <Bar className="mx-auto w-3 bg-foreground/25" />
+    </th>
+  );
+}
+
+const CALENDAR_CAPTION_WIDTHS = ["w-20", "w-14", "w-24", "w-16"];
+
+/**
+ * Caption as a bar. `formatCaption` hands over the month index instead of a
+ * name, so each month's bar has its own width and the cross-fade shows.
+ */
+function CalendarBarCaption({
+  children,
+  ...props
+}: HTMLAttributes<HTMLSpanElement>) {
+  const width = CALENDAR_CAPTION_WIDTHS[Number(children) % 4];
+  return (
+    <span {...props}>
+      <Bar className={`${width} bg-foreground/45`} />
+    </span>
+  );
+}
+
+const CALENDAR_PARTS = {
+  CaptionLabel: CalendarBarCaption,
+  DayButton: CalendarDotDay,
+  Weekday: CalendarBarWeekday,
+};
+const CALENDAR_FORMATTERS = {
+  formatCaption: (month: Date) => String(month.getMonth()),
+};
+const CALENDAR_SLIDE_MS = 800;
+
+/**
+ * Real Calendar, wordless, on a slowed clock: the controlled `month`
+ * alternates Next and Previous, so the strip slides both ways. `outlined`
+ * dashes the old month's clone (React DayPicker marks it `aria-hidden`).
+ */
+function CalendarSlide({
+  reduced,
+  outlined = false,
+}: {
+  reduced: boolean;
+  outlined?: boolean;
+}) {
+  const [step, setStep] = useState(0);
+  useEffect(() => {
+    if (reduced) return;
+    const id = setInterval(() => setStep((s) => s + 1), CALENDAR_SLIDE_MS * 2);
+    return () => clearInterval(id);
+  }, [reduced]);
+  return (
+    <Calendar
+      // A mode makes the days buttons, so DayButton renders the dots.
+      mode="single"
+      month={new Date(2026, 9 + (step % 2), 1)}
+      onMonthChange={() => {}}
+      formatters={CALENDAR_FORMATTERS}
+      components={CALENDAR_PARTS}
+      className={`pointer-events-none rounded-lg border shadow-sm [--cell-size:--spacing(9)] [--godui-duration-base:800ms] ${
+        outlined
+          ? "[&_[data-animated-month][aria-hidden=true]_[data-animated-weeks]>tr]:outline-1 [&_[data-animated-month][aria-hidden=true]_[data-animated-weeks]>tr]:-outline-offset-1 [&_[data-animated-month][aria-hidden=true]_[data-animated-weeks]>tr]:outline-[var(--foreground)]/40 [&_[data-animated-month][aria-hidden=true]_[data-animated-weeks]>tr]:outline-dashed"
+          : ""
+      }`}
+    />
+  );
+}
+
+function CalendarClone({ reduced }: { reduced: boolean }) {
+  return <CalendarSlide reduced={reduced} outlined />;
+}
+
+/**
+ * Pick a day (pop), pick another (pop), go to the next month and back (the
+ * selected day comes back still), pick again (pop).
+ */
+const CALENDAR_POP_STEPS = [
+  { month: 9, day: 14 },
+  { month: 9, day: 21 },
+  { month: 10, day: 21 },
+  { month: 9, day: 21 },
+  { month: 9, day: 8 },
+];
+
+function CalendarPop({ reduced }: { reduced: boolean }) {
+  const [step, setStep] = useState(0);
+  useEffect(() => {
+    if (reduced) return;
+    const id = setInterval(
+      () => setStep((s) => (s + 1) % CALENDAR_POP_STEPS.length),
+      STEP_MS,
+    );
+    return () => clearInterval(id);
+  }, [reduced]);
+  const { month, day } = CALENDAR_POP_STEPS[step];
+  return (
+    <Calendar
+      mode="single"
+      month={new Date(2026, month, 1)}
+      onMonthChange={() => {}}
+      selected={new Date(2026, 9, day)}
+      onSelect={() => {}}
+      formatters={CALENDAR_FORMATTERS}
+      components={CALENDAR_PARTS}
+      className="pointer-events-none rounded-lg border shadow-sm [--cell-size:--spacing(9)]"
+    />
+  );
+}
+
 const ACCORDION_ROWS = [
   { value: "a", title: "w-28", body: ["w-52", "w-44", "w-48"] },
   { value: "b", title: "w-36", body: ["w-48", "w-40"] },
@@ -568,6 +699,9 @@ const DEMOS = {
   accordion: AccordionGlide,
   "accordion-window": AccordionWindow,
   button: ButtonPress,
+  calendar: CalendarSlide,
+  "calendar-clone": CalendarClone,
+  "calendar-pop": CalendarPop,
   carousel: CarouselGlide,
   "carousel-jump": CarouselJump,
   checkbox: CheckboxToggle,

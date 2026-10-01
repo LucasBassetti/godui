@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "revision": "e406e3853e21e4afaf255bed98da38e8cfab59a2",
+  "revision": "17ea39f3f1690da7b8fd4b156d4edcb501c0aeb8",
   "components": [
     {
       "name": "accordion",
@@ -171,6 +171,16 @@
       "dependencies": ["radix-ui", "class-variance-authority"],
       "registryDependencies": ["utils", "@godui/godui-motion"],
       "install": "npx shadcn@latest add @godui/button",
+      "registry": "core"
+    },
+    {
+      "name": "calendar",
+      "title": "Calendar",
+      "description": "A date field component that allows users to enter and edit date. Months slide in a full width while the old one slides out; a newly selected day pops. GPU-only.",
+      "category": "Components",
+      "dependencies": ["react-day-picker@latest", "date-fns", "lucide-react"],
+      "registryDependencies": ["utils", "@godui/godui-motion", "@godui/button"],
+      "install": "npx shadcn@latest add @godui/calendar",
       "registry": "core"
     },
     {

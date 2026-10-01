@@ -4,6 +4,7 @@ export { type FlipGroupOptions, useFlipGroup } from "./hooks/use-flip-group";
 export * from "./ui/accordion";
 export * from "./ui/alert-dialog";
 export * from "./ui/button";
+export * from "./ui/calendar";
 export * from "./ui/carousel";
 export * from "./ui/checkbox";
 export * from "./ui/collapsible";
