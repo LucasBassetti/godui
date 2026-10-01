@@ -12,9 +12,13 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  render: (args) => (
+  render: (args, { globals }) => (
     <div className="flex min-h-96 items-start justify-center">
-      <Toaster {...args} />
+      <Toaster
+        {...args}
+        // Follow the Storybook theme toggle (no next-themes provider here).
+        theme={globals.theme === "dark" ? "dark" : "light"}
+      />
       <Button
         variant="outline"
         onClick={() =>
@@ -31,9 +35,13 @@ export const Default: Story = {
 };
 
 export const Types: Story = {
-  render: (args) => (
+  render: (args, { globals }) => (
     <div className="flex min-h-96 flex-wrap items-start justify-center gap-2">
-      <Toaster {...args} />
+      <Toaster
+        {...args}
+        // Follow the Storybook theme toggle (no next-themes provider here).
+        theme={globals.theme === "dark" ? "dark" : "light"}
+      />
       <Button variant="outline" onClick={() => toast.success("Saved")}>
         Success
       </Button>
@@ -52,9 +60,13 @@ export const Types: Story = {
 
 /** Mixed heights, so expanding the stack changes toast heights. */
 export const Stack: Story = {
-  render: (args) => (
+  render: (args, { globals }) => (
     <div className="flex min-h-96 items-start justify-center gap-2">
-      <Toaster {...args} />
+      <Toaster
+        {...args}
+        // Follow the Storybook theme toggle (no next-themes provider here).
+        theme={globals.theme === "dark" ? "dark" : "light"}
+      />
       <Button
         variant="outline"
         onClick={() =>

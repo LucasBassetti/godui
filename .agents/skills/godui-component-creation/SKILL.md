@@ -19,7 +19,7 @@ are frozen — don't add new components there.
 | Component | `packages/components/src/ui/{name}.tsx` (mirrors shadcn `components/ui/{name}.tsx`) |
 | Export | `packages/components/src/index.ts` |
 | Tailwind scan | `packages/components/styles.css` → `@source "./src"` |
-| Shared motion | `godui-motion` — tokens/keyframes in `packages/components/styles.css`, hook `src/hooks/use-flip-group.ts`, registry item `godui-motion` |
+| Shared motion | `godui-motion` — tokens/keyframes in `packages/components/styles.css`, hooks `src/hooks/use-flip-group.ts` (snap + FLIP) and `src/hooks/use-active-indicator.ts` (sliding indicator), registry item `godui-motion` |
 | Component-only keyframes | `styles.css` **and** the component's `registry.json` entry (`cssVars.theme` + `css`) |
 | GPU gate | `packages/components/src/motion-gate/` (runs in `pnpm --filter @godui/components test`) |
 | Storybook | `apps/storybook/src/stories/ui/{name}.stories.tsx` (title `UI/{Title Case}`, e.g. `UI/Alert Dialog` → id `ui-alert-dialog`) |
@@ -374,10 +374,10 @@ core kit in `apps/docs/src/components/learn/core/` (registered in `mdx.tsx`):
 
 | Scene | Shows |
 | --- | --- |
-| `KeyframeScene motion subject tracks` | a mock surface looping the real `animate-godui-*` enter/exit classes |
+| `KeyframeScene motion subject tracks` | a mock surface looping the real `animate-godui-*` enter/exit classes (`subject`: dialog, sheet, menu, tooltip, drawer, toast, check, radio) |
 | `SpringCurveScene easing` | the shipped `linear()` / `cubic-bezier()` read back from the browser, plotted |
 | `FlipScene variant` | slowed-down FLIP (`accordion` uses the real `useFlipGroup`; `tabs` draws a ghost of the old box) |
-| `AutoPlayScene demo` | the real component driven on a timer (`button`, `switch`, `tabs`; add a demo there when you need one) |
+| `AutoPlayScene demo` | the real component driven on a timer (`button`, `checkbox`, `command`, `radio`, `switch`, `tabs`, `toggle`, `toggle-group`; add a demo there when you need one) |
 | `LiveResult hint` | the final interactive chapter (`isResult`) |
 
 Write 2–3 chapters plus the result, with `code` excerpts copied from the real
