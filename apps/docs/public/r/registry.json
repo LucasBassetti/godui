@@ -580,6 +580,20 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "collapsible",
+      "type": "registry:ui",
+      "title": "Collapsible",
+      "description": "An interactive component which expands/collapses a panel. The panel's height snaps and the content after it slides into place (FLIP); GPU-only.",
+      "dependencies": ["radix-ui"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "files": [
+        {
+          "path": "packages/components/src/ui/collapsible.tsx",
+          "type": "registry:ui"
+        }
+      ]
     }
   ]
 }

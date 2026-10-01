@@ -1,0 +1,82 @@
+---
+title: Anatomy of the GodUI Collapsible
+description: A component whose motion happens mostly outside itself — why the FLIP group is the Collapsible's parent.
+learnPlayer: true
+---
+
+import { CollapsibleDemo } from "@/components/demos/core/collapsible-demo";
+
+<LearnPlayer>
+
+<LearnChapter
+  label="Snap, then FLIP"
+  scene={<FlipScene label="Snap, then FLIP" variant="accordion" />}
+  code={`<CollapsiblePrimitive.CollapsibleContent
+  data-slot="collapsible-content"
+  className={cn(
+    "data-[state=open]:animate-godui-slide-in-from-top data-[state=closed]:animate-godui-fade-out",
+    className,
+  )}
+  {...props}
+>
+  <CollapsibleFlipSignal />
+  {children}
+</CollapsiblePrimitive.CollapsibleContent>`}
+>
+
+When a collapsible opens, its panel needs room. Animating `height` would
+lay out the page on every frame, so the height changes in one step. The
+panel slides in from slightly above, and everything that got pushed down
+plays a `translate` from its old position (FLIP).
+
+As in [Accordion](/docs/components/accordion/learn), a tiny signal component
+inside the panel bumps a counter when the panel mounts and when it unmounts,
+which is the exact commit where the height changes. On close, the panel fades
+out first, then collapses.
+
+</LearnChapter>
+
+<LearnChapter
+  label="Why the parent"
+  scene={<FlipScene label="Why the parent" variant="accordion" />}
+  code={`const parentRef = React.useRef<HTMLElement | null>(null);
+useIsoLayoutEffect(() => {
+  parentRef.current = rootRef.current?.parentElement ?? null;
+});
+const [version, bump] = React.useReducer((n: number) => n + 1, 0);
+useFlipGroup(parentRef, version, { selector: ":scope > *" });`}
+>
+
+An accordion's items are its own children, so it FLIPs inside itself. A
+collapsible usually stands alone, and the things that move when it opens are
+whatever comes after it: the next card, a paragraph, a footer. Those are
+siblings, not children.
+
+So the FLIP group is the Collapsible root's parent, and the candidates are
+that parent's direct children. Earlier siblings and the Collapsible itself
+don't move, so only the elements after it animate. Anything further up the
+tree moves in one step.
+
+</LearnChapter>
+
+<LearnChapter
+  label="The result"
+  scene={<LiveResult hint="toggle the list"><CollapsibleDemo /></LiveResult>}
+  isResult
+>
+
+Toggle the list and watch the paragraph below it slide down and back up.
+
+</LearnChapter>
+
+</LearnPlayer>
+
+## Why GPU-only
+
+The panel animates `opacity` and `translate`; the siblings animate `translate`.
+No `height` is ever animated.
+
+## Reduced motion
+
+`useFlipGroup` skips the slide, so siblings jump to their new position, and
+the panel fades for 150ms.

@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "revision": "d87981f20f40a9933d75ba437ddc1cc2bd7964ea",
+  "revision": "9d0c7a9a108771942c72e6e23bd79ed5728fcd0c",
   "components": [
     {
       "name": "accordion",
@@ -191,6 +191,16 @@
       "dependencies": ["radix-ui", "lucide-react"],
       "registryDependencies": ["utils", "@godui/godui-motion"],
       "install": "npx shadcn@latest add @godui/checkbox",
+      "registry": "core"
+    },
+    {
+      "name": "collapsible",
+      "title": "Collapsible",
+      "description": "An interactive component which expands/collapses a panel. The panel's height snaps and the content after it slides into place (FLIP); GPU-only.",
+      "category": "Components",
+      "dependencies": ["radix-ui"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "install": "npx shadcn@latest add @godui/collapsible",
       "registry": "core"
     },
     {
