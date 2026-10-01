@@ -1,0 +1,119 @@
+---
+title: Anatomy of the GodUI Tabs
+description: One indicator instead of N backgrounds, a FLIP that animates its box without animating width, and a first paint that looks exactly like shadcn.
+learnPlayer: true
+---
+
+import { TabsDemo } from "@/components/demos/core/tabs-demo";
+
+<LearnPlayer>
+
+<LearnChapter
+  label="One indicator"
+  scene={<AutoPlayScene label="One indicator" demo="tabs" />}
+  code={`<TabsPrimitive.List ref={setListRef} data-slot="tabs-list" …>
+  <span
+    ref={indicatorRef}
+    data-slot="tabs-indicator"
+    aria-hidden="true"
+    className="pointer-events-none absolute top-0 left-0 hidden origin-top-left
+      ease-spring-snappy group-data-[indicator=ready]/tabs-list:block
+      group-data-[variant=default]/tabs-list:bg-background … "
+  />
+  {children}
+</TabsPrimitive.List>`}
+>
+
+In shadcn's tabs every trigger owns its active background: switching tabs
+turns one off and another on, so the highlight jumps.
+
+GodUI adds one absolutely positioned `<span>` as the list's first child and
+gives it the active styling: background, border and shadow for the default
+variant, a 2px bar for `line`. Triggers come after it in the DOM and are
+`relative`, so they paint on top of it. Once the indicator is in place, the
+active trigger's own background turns transparent.
+
+</LearnChapter>
+
+<LearnChapter
+  label="FLIP, not width"
+  scene={<FlipScene label="FLIP, not width" variant="tabs" />}
+  code={`indicator.style.width = \`\${box.w}px\`;
+indicator.style.height = \`\${box.h}px\`;
+indicator.style.translate = \`\${box.x}px \${box.y}px\`;
+
+indicator.animate(
+  [
+    { translate: \`\${from.x}px \${from.y}px\`, scale: \`\${from.w / box.w} \${from.h / box.h}\` },
+    { translate: \`\${box.x}px \${box.y}px\`, scale: "1 1" },
+  ],
+  { duration, easing },
+);`}
+>
+
+Tabs have different widths, so the indicator has to change size. Animating
+`width` would run layout on every frame.
+
+Instead it's a FLIP. **First**, remember the old box. **Last**, set the new
+`width`, `height` and `translate` directly: one layout, no animation.
+**Invert**, start an animation where `scale` shrinks or stretches the new box
+back to the old one's size and `translate` puts it at the old position.
+**Play**, animate both to identity. Only `translate` and `scale` change while
+it moves, so it runs on the compositor.
+
+The easing is read back from the indicator's own `ease-spring-snappy` class,
+so the JavaScript animation uses the same `linear()` spring as the CSS
+tokens. If you click again mid-slide, the running animation is cancelled and
+the next one starts from the indicator's drawn box.
+
+</LearnChapter>
+
+<LearnChapter
+  label="First paint without JS"
+  scene={<AutoPlayScene label="First paint without JS" demo="tabs" />}
+  code={`// The trigger keeps shadcn's background until the list says the indicator is ready.
+"data-[state=active]:bg-background …
+ group-data-[indicator=ready]/tabs-list:data-[state=active]:bg-transparent
+ group-data-[indicator=ready]/tabs-list:data-[state=active]:shadow-none"
+
+// After the first measure:
+list.setAttribute("data-indicator", "ready");`}
+>
+
+The indicator needs a measurement, and there's nothing to measure on the
+server. So it starts `hidden`, and the active trigger keeps shadcn's own
+background.
+
+After the first layout effect measures the active tab, the list gets
+`data-indicator="ready"`. That one attribute shows the indicator and turns the
+trigger backgrounds transparent, in the same frame. Server HTML, the frame
+before hydration and the frame after all look the same.
+
+A `MutationObserver` on the triggers' `data-state` keeps the indicator in
+sync, so controlled `value` changes move it too, not only clicks.
+
+</LearnChapter>
+
+<LearnChapter
+  label="The result"
+  scene={<LiveResult hint="click or arrow between tabs"><TabsDemo /></LiveResult>}
+  isResult
+>
+
+Click between tabs, or focus the list and use the arrow keys. Click quickly
+to interrupt a slide: the next one starts from where the indicator is.
+
+</LearnChapter>
+
+</LearnPlayer>
+
+## Why GPU-only
+
+The indicator animates `translate` and `scale`; panels animate `opacity`.
+shadcn's triggers use `transition-all`, which animates background color,
+shadow and the focus ring. GodUI's triggers don't transition at all.
+
+## Reduced motion
+
+The indicator checks `prefers-reduced-motion` before animating and jumps
+straight to the new tab. Panels fade for 150ms.

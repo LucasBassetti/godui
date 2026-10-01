@@ -1,6 +1,12 @@
 "use client";
 
-import { Button } from "@godui/components";
+import {
+  Button,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@godui/components";
 import { useEffect, useState } from "react";
 import { ScrollScene } from "../scroll-scene";
 
@@ -26,7 +32,42 @@ function ButtonPress({ reduced }: { reduced: boolean }) {
   );
 }
 
-const DEMOS = { button: ButtonPress } as const;
+const TABS = ["Account", "Password", "Notifications"];
+
+/** Real Tabs; the controlled value cycles, so the indicator FLIPs on its own. */
+function TabsCycle({ reduced }: { reduced: boolean }) {
+  const [index, setIndex] = useState(0);
+  useEffect(() => {
+    if (reduced) return;
+    const id = setInterval(
+      () => setIndex((i) => (i + 1) % TABS.length),
+      STEP_MS,
+    );
+    return () => clearInterval(id);
+  }, [reduced]);
+  return (
+    <Tabs value={TABS[index]} className="w-80">
+      <TabsList>
+        {TABS.map((tab) => (
+          <TabsTrigger key={tab} value={tab}>
+            {tab}
+          </TabsTrigger>
+        ))}
+      </TabsList>
+      {TABS.map((tab) => (
+        <TabsContent
+          key={tab}
+          value={tab}
+          className="rounded-lg border p-4 text-sm"
+        >
+          {tab} settings
+        </TabsContent>
+      ))}
+    </Tabs>
+  );
+}
+
+const DEMOS = { button: ButtonPress, tabs: TabsCycle } as const;
 
 export type AutoPlayDemo = keyof typeof DEMOS;
 

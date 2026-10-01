@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "revision": "f2eb235a2e51e0f6ed91b0a71950b28ff86ff9ab",
+  "revision": "256be9703bc6a83c792f46c91e15e076e8e7f214",
   "components": [
     {
       "name": "agent-flow",
@@ -1022,6 +1022,16 @@
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add \"https://godui.design/r/extras/tab-bar.json\"",
       "registry": "extras"
+    },
+    {
+      "name": "tabs",
+      "title": "Tabs",
+      "description": "A set of layered sections of content — known as tab panels — that are displayed one at a time. One indicator slides between tabs with a FLIP; GPU-only.",
+      "category": "Components",
+      "dependencies": ["radix-ui", "class-variance-authority"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "install": "npx shadcn@latest add @godui/tabs",
+      "registry": "core"
     },
     {
       "name": "terminal",
