@@ -366,3 +366,17 @@
     transform: translateX(250%);
   }
 }
+
+/* ── skeleton ────────────────────────────────────────────────────────────────
+ * Component keyframe (also in the skeleton registry entry). Transform only:
+ * the ::after band starts fully outside the block on the left
+ * (-translate-x-full) and the animation moves it fully outside on the right. */
+@theme inline {
+  --animate-godui-shimmer: godui-shimmer 1.6s cubic-bezier(0.65, 0, 0.35, 1)
+    infinite;
+}
+@keyframes godui-shimmer {
+  to {
+    translate: 100% 0;
+  }
+}

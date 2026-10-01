@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "revision": "cd62914cd118cb8308222dee2a979438381e4012",
+  "revision": "1e50c8990ee97f2f26421b803d54063d64da82d1",
   "components": [
     {
       "name": "accordion",
@@ -1052,6 +1052,16 @@
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add \"https://godui.design/r/extras/shimmer-button.json\"",
       "registry": "extras"
+    },
+    {
+      "name": "skeleton",
+      "title": "Skeleton",
+      "description": "Use to show a placeholder while content is loading. A soft band sweeps across the block (GPU-only); reduced motion falls back to shadcn's pulse.",
+      "category": "Components",
+      "dependencies": [],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "install": "npx shadcn@latest add @godui/skeleton",
+      "registry": "core"
     },
     {
       "name": "slide-confirm-button",

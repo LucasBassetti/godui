@@ -26,6 +26,7 @@ import CoreProgress from "./core/progress";
 import CoreRadioGroup from "./core/radio-group";
 import CoreSelect from "./core/select";
 import CoreSheet from "./core/sheet";
+import CoreSkeleton from "./core/skeleton";
 import CoreSlider from "./core/slider";
 import CoreSonner from "./core/sonner";
 import CoreSwitch from "./core/switch";
@@ -164,6 +165,7 @@ export const cardPreviews: Record<string, Preview> = {
   "radio-group": CoreRadioGroup,
   select: CoreSelect,
   sheet: CoreSheet,
+  skeleton: CoreSkeleton,
   slider: CoreSlider,
   sonner: CoreSonner,
   switch: CoreSwitch,

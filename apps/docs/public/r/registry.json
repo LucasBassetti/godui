@@ -727,6 +727,31 @@
           }
         }
       }
+    },
+    {
+      "name": "skeleton",
+      "type": "registry:ui",
+      "title": "Skeleton",
+      "description": "Use to show a placeholder while content is loading. A soft band sweeps across the block (GPU-only); reduced motion falls back to shadcn's pulse.",
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "files": [
+        {
+          "path": "packages/components/src/ui/skeleton.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "cssVars": {
+        "theme": {
+          "animate-godui-shimmer": "godui-shimmer 1.6s cubic-bezier(0.65, 0, 0.35, 1) infinite"
+        }
+      },
+      "css": {
+        "@keyframes godui-shimmer": {
+          "to": {
+            "translate": "100% 0"
+          }
+        }
+      }
     }
   ]
 }

@@ -1,0 +1,84 @@
+---
+title: Anatomy of the GodUI Skeleton
+description: Why a sliding band replaces the pulse, how it moves with translate only, and what reduced motion gets instead.
+learnPlayer: true
+---
+
+import { SkeletonCardDemo } from "@/components/demos/core/skeleton-card-demo";
+import { SkeletonDemo } from "@/components/demos/core/skeleton-demo";
+
+<LearnPlayer>
+
+<LearnChapter
+  label="A band, not a gradient"
+  scene={<AutoPlayScene label="A band, not a gradient" demo="skeleton" />}
+  code={`"relative overflow-hidden rounded-md bg-accent
+  after:absolute after:inset-0 after:-translate-x-full
+  after:bg-linear-to-r after:from-transparent
+  after:via-foreground/[0.06] after:to-transparent
+  after:animate-godui-shimmer …"
+
+@keyframes godui-shimmer {
+  to { translate: 100% 0; }
+}
+/* 1.6s, cubic-bezier(0.65, 0, 0.35, 1), infinite */`}
+>
+
+The usual shimmer paints a wide gradient and animates `background-position`.
+That repaints the element every frame.
+
+GodUI paints the gradient once. It lives on an `::after` layer that covers the
+block, and the layer starts one full width to the left (`-translate-x-full`),
+fully outside it. The animation moves it to one full width to the right, so the
+band enters through the left edge and leaves through the right. The block is
+`overflow-hidden`, which clips whatever is outside it. Only `translate`
+changes, so the layer is promoted once and the compositor slides it.
+
+The band is `foreground` at 6% opacity on the `accent` fill, which keeps it
+readable in both themes without turning the placeholder into a flash. This
+scene slows the loop to 3s so you can follow it.
+
+</LearnChapter>
+
+<LearnChapter
+  label="Reduced motion falls back to pulse"
+  scene={<AutoPlayScene label="Reduced motion falls back to pulse" demo="skeleton-pulse" />}
+  code={`"… motion-reduce:animate-pulse
+   motion-reduce:after:hidden"`}
+>
+
+A sweeping band is still movement across the whole block. For
+`prefers-reduced-motion`, `motion-reduce:after:hidden` removes the band and
+`motion-reduce:animate-pulse` puts back shadcn's original fade: no travel,
+just an opacity change. The scene shows that pulse.
+
+</LearnChapter>
+
+<LearnChapter
+  label="The result"
+  scene={
+    <LiveResult hint="both placeholders shimmer on their own">
+      <SkeletonCardDemo />
+      <SkeletonDemo />
+    </LiveResult>
+  }
+  isResult
+>
+
+Each block carries its own band, all on the same loop, so a group of skeletons
+sweeps together.
+
+</LearnChapter>
+
+</LearnPlayer>
+
+## Why GPU-only
+
+The band is a single `::after` layer and the loop changes `translate`, nothing
+else. Layout and paint stay out of it, however many skeletons are on screen.
+
+## Reduced motion
+
+`motion-reduce:after:hidden` removes the band and `motion-reduce:animate-pulse`
+restores shadcn's opacity pulse, so the placeholder still reads as busy without
+a sweep.

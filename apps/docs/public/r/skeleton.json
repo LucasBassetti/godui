@@ -1,0 +1,27 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "skeleton",
+  "title": "Skeleton",
+  "description": "Use to show a placeholder while content is loading. A soft band sweeps across the block (GPU-only); reduced motion falls back to shadcn's pulse.",
+  "registryDependencies": ["utils", "@godui/godui-motion"],
+  "files": [
+    {
+      "path": "packages/components/src/ui/skeleton.tsx",
+      "content": "// GodUI Skeleton — mirrors shadcn/ui new-york-v4 components/ui/skeleton.tsx (registry snapshot 2026-10-01).\n// Motion: shadcn's animate-pulse (an opacity fade) becomes a soft band that\n// sweeps across the block — an ::after layer moved with `translate` only, so\n// it composites on the GPU. Reduced motion hides the band and brings the pulse\n// back. `relative` is overridable: a call site's `absolute`/`fixed` wins via cn.\nimport type * as React from \"react\";\nimport { cn } from \"@/lib/utils\";\n\nfunction Skeleton({ className, ...props }: React.ComponentProps<\"div\">) {\n  return (\n    <div\n      data-slot=\"skeleton\"\n      className={cn(\n        \"relative overflow-hidden rounded-md bg-accent after:pointer-events-none after:absolute after:inset-0 after:-translate-x-full after:bg-linear-to-r after:from-transparent after:via-foreground/[0.06] after:to-transparent after:animate-godui-shimmer motion-reduce:animate-pulse motion-reduce:after:hidden\",\n        className,\n      )}\n      {...props}\n    />\n  );\n}\n\nexport { Skeleton };\n",
+      "type": "registry:ui"
+    }
+  ],
+  "cssVars": {
+    "theme": {
+      "animate-godui-shimmer": "godui-shimmer 1.6s cubic-bezier(0.65, 0, 0.35, 1) infinite"
+    }
+  },
+  "css": {
+    "@keyframes godui-shimmer": {
+      "to": {
+        "translate": "100% 0"
+      }
+    }
+  },
+  "type": "registry:ui"
+}

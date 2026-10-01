@@ -28,6 +28,7 @@
     "components/radio-group",
     "components/select",
     "components/sheet",
+    "components/skeleton",
     "components/slider",
     "components/sonner",
     "components/switch",

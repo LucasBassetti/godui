@@ -10,6 +10,7 @@ import {
   Progress,
   RadioGroup,
   RadioGroupItem,
+  Skeleton,
   Switch,
   Tabs,
   TabsContent,
@@ -257,6 +258,31 @@ function ProgressIndeterminate() {
   );
 }
 
+/** A skeleton row (avatar + two bars) as skeleton bars; `className` reaches every block. */
+function SkeletonRow({ className }: { className?: string }) {
+  return (
+    <div className="flex w-72 items-center gap-4">
+      <Skeleton
+        className={`size-12 shrink-0 rounded-full ${className ?? ""}`}
+      />
+      <div className="grid flex-1 gap-2.5">
+        <Skeleton className={`h-4 w-full ${className ?? ""}`} />
+        <Skeleton className={`h-4 w-2/3 ${className ?? ""}`} />
+      </div>
+    </div>
+  );
+}
+
+/** Real Skeleton with the band slowed to 3s so the sweep is easy to follow. */
+function SkeletonShimmer() {
+  return <SkeletonRow className="after:[animation-duration:3s]" />;
+}
+
+/** The reduced-motion fallback: no band, shadcn's opacity pulse. */
+function SkeletonPulse() {
+  return <SkeletonRow className="animate-pulse after:hidden" />;
+}
+
 const DEMOS = {
   button: ButtonPress,
   checkbox: CheckboxToggle,
@@ -264,6 +290,8 @@ const DEMOS = {
   progress: ProgressStep,
   "progress-indeterminate": ProgressIndeterminate,
   radio: RadioCycle,
+  skeleton: SkeletonShimmer,
+  "skeleton-pulse": SkeletonPulse,
   toggle: TogglePress,
   "toggle-group": ToggleGroupCycle,
   switch: SwitchToggle,
