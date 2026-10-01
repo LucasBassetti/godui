@@ -1,0 +1,175 @@
+---
+title: Dialog
+description: A window overlaid on the primary window, rendering the content underneath inert. Scales in from 96% on a spring.
+workbench: true
+---
+
+import {
+  Button,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@godui/components";
+import { DialogDemo } from "@/components/demos/core/dialog-demo";
+
+<Workbench>
+
+The shadcn/ui dialog with a springier entrance. The content scales up from 96%
+and fades in on a spring curve; on close it shrinks back and fades out in
+150ms. The overlay only fades. Every frame animates `scale` or `opacity`,
+so it runs on the GPU compositor.
+
+<Example
+  label="Default"
+  story="ui-dialog"
+  code={`import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+
+export function DialogDemo() {
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="outline">Edit profile</Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Edit profile</DialogTitle>
+          <DialogDescription>
+            Make changes to your profile here. Click save when you&apos;re
+            done.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="grid gap-4">
+          <label className="grid gap-2 font-medium text-sm">
+            Name
+            <input
+              className="h-9 rounded-md border border-input bg-transparent px-3 font-normal"
+              defaultValue="Pedro Duarte"
+            />
+          </label>
+          <label className="grid gap-2 font-medium text-sm">
+            Username
+            <input
+              className="h-9 rounded-md border border-input bg-transparent px-3 font-normal"
+              defaultValue="@peduarte"
+            />
+          </label>
+        </div>
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button variant="outline">Cancel</Button>
+          </DialogClose>
+          <Button type="submit">Save changes</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}`}
+>
+  <DialogDemo />
+</Example>
+
+<Example
+  label="Footer close button"
+  code={`<Dialog>
+  <DialogTrigger asChild>
+    <Button variant="outline">Share link</Button>
+  </DialogTrigger>
+  <DialogContent className="sm:max-w-md">
+    <DialogHeader>
+      <DialogTitle>Share link</DialogTitle>
+      <DialogDescription>
+        Anyone who has this link will be able to view this.
+      </DialogDescription>
+    </DialogHeader>
+    <DialogFooter showCloseButton />
+  </DialogContent>
+</Dialog>`}
+>
+  <Dialog>
+    <DialogTrigger asChild>
+      <Button variant="outline">Share link</Button>
+    </DialogTrigger>
+    <DialogContent className="sm:max-w-md">
+      <DialogHeader>
+        <DialogTitle>Share link</DialogTitle>
+        <DialogDescription>
+          Anyone who has this link will be able to view this.
+        </DialogDescription>
+      </DialogHeader>
+      <DialogFooter showCloseButton />
+    </DialogContent>
+  </Dialog>
+</Example>
+
+## Installation
+
+<ComponentInstall name="dialog" />
+
+## Replacing shadcn
+
+`npx shadcn add @godui/dialog` overwrites `components/ui/dialog.tsx`. Exports,
+props and `data-slot` attributes match shadcn/ui new-york-v4, so existing
+imports keep working. It also installs `godui-motion` (easings, keyframes, the
+FLIP hook) and the GodUI `button` it uses for the footer close button.
+
+## Usage
+
+```tsx
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+```
+
+```tsx
+<Dialog>
+  <DialogTrigger>Open</DialogTrigger>
+  <DialogContent>
+    <DialogHeader>
+      <DialogTitle>Are you absolutely sure?</DialogTitle>
+      <DialogDescription>
+        This action cannot be undone. This will permanently delete your account
+        and remove your data from our servers.
+      </DialogDescription>
+    </DialogHeader>
+  </DialogContent>
+</Dialog>
+```
+
+## What's animated
+
+| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
+| --- | --- | --- | --- | --- |
+| Open | `godui-fade-scale-in` | `opacity`, `scale` 0.96 → 1 | `ease-spring-snappy` | 260ms |
+| Close | `godui-fade-scale-out` | `opacity`, `scale` 1 → 0.96 | `ease-out-expo` | 150ms |
+| Overlay | `godui-fade-in` / `godui-fade-out` | `opacity` | snappy / expo | 260 / 150ms |
+
+The content's centering `translate` is untouched: the keyframes animate the
+separate `scale` property, so they can't fight the `-50%` offset.
+
+Under `prefers-reduced-motion` the dialog only fades (150ms); it doesn't scale.
+
+## API
+
+Built on [Radix Dialog](https://www.radix-ui.com/primitives/docs/components/dialog).
+Props are identical to [shadcn/ui Dialog](https://ui.shadcn.com/docs/components/dialog).
+
+</Workbench>

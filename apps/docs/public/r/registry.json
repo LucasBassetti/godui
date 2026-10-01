@@ -306,6 +306,20 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "dialog",
+      "type": "registry:ui",
+      "title": "Dialog",
+      "description": "A window overlaid on the primary window, rendering the content underneath inert. Scales in on a spring; GPU-only.",
+      "dependencies": ["radix-ui", "lucide-react"],
+      "registryDependencies": ["utils", "@godui/godui-motion", "@godui/button"],
+      "files": [
+        {
+          "path": "packages/components/src/ui/dialog.tsx",
+          "type": "registry:ui"
+        }
+      ]
     }
   ]
 }

@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "revision": "d9a09238c514e0eed105694f1ceab6058335be74",
+  "revision": "1d7d9db5d1c80bbfcb28cfd62ba07de4f781862c",
   "components": [
     {
       "name": "agent-flow",
@@ -222,6 +222,16 @@
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add \"https://godui.design/r/extras/decorative-background.json\"",
       "registry": "extras"
+    },
+    {
+      "name": "dialog",
+      "title": "Dialog",
+      "description": "A window overlaid on the primary window, rendering the content underneath inert. Scales in on a spring; GPU-only.",
+      "category": "Components",
+      "dependencies": ["radix-ui", "lucide-react"],
+      "registryDependencies": ["utils", "@godui/godui-motion", "@godui/button"],
+      "install": "npx shadcn@latest add @godui/dialog",
+      "registry": "core"
     },
     {
       "name": "dock",
