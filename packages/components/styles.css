@@ -183,17 +183,17 @@
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 
   --animate-godui-fade-scale-in: godui-fade-scale-in var(--godui-duration-base)
-    var(--ease-spring-snappy) both;
+    var(--ease-spring-snappy) backwards;
   --animate-godui-fade-scale-out: godui-fade-scale-out
     var(--godui-duration-fast) var(--ease-out-expo) both;
   --animate-godui-slide-in-from-top: godui-slide-in-from-top
-    var(--godui-duration-base) var(--ease-spring-snappy) both;
+    var(--godui-duration-base) var(--ease-spring-snappy) backwards;
   --animate-godui-slide-in-from-right: godui-slide-in-from-right
-    var(--godui-duration-slow) var(--ease-spring-smooth) both;
+    var(--godui-duration-slow) var(--ease-spring-smooth) backwards;
   --animate-godui-slide-in-from-bottom: godui-slide-in-from-bottom
-    var(--godui-duration-base) var(--ease-spring-snappy) both;
+    var(--godui-duration-base) var(--ease-spring-snappy) backwards;
   --animate-godui-slide-in-from-left: godui-slide-in-from-left
-    var(--godui-duration-slow) var(--ease-spring-smooth) both;
+    var(--godui-duration-slow) var(--ease-spring-smooth) backwards;
   --animate-godui-slide-out-to-top: godui-slide-out-to-top
     var(--godui-duration-fast) var(--ease-out-expo) both;
   --animate-godui-slide-out-to-right: godui-slide-out-to-right
@@ -205,11 +205,11 @@
   --animate-godui-pop: godui-pop var(--godui-duration-base)
     var(--ease-spring-bouncy);
   --animate-godui-fade-in: godui-fade-in var(--godui-duration-base)
-    var(--ease-spring-snappy) both;
+    var(--ease-spring-snappy) backwards;
   --animate-godui-fade-out: godui-fade-out var(--godui-duration-fast)
     var(--ease-out-expo) both;
   --animate-godui-popover-in: godui-popover-in var(--godui-duration-base)
-    var(--ease-spring-snappy) both;
+    var(--ease-spring-snappy) backwards;
   --animate-godui-popover-out: godui-popover-out var(--godui-duration-fast)
     var(--ease-out-expo) both;
 }

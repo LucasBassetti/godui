@@ -65,6 +65,26 @@ describe("godui-motion tokens", () => {
     }
   });
 
+  it("enter animations fill backwards only, never forwards", () => {
+    // A transform animation still filling after it ends makes its element the
+    // containing block for position:fixed descendants — e.g. a dropdown's
+    // sub-menu then gets clipped by the parent menu's overflow.
+    const tokens = [
+      ...css.matchAll(
+        /--animate-(godui-[a-z-]+-in(?:-from-[a-z]+)?):([^;]+);/g,
+      ),
+    ];
+    expect(tokens.length).toBeGreaterThan(0);
+    for (const [, name, value] of tokens) {
+      expect(value, name).toMatch(/\bbackwards\b/);
+      expect(value, name).not.toMatch(/\bboth\b|\bforwards\b/);
+    }
+    for (const [name, value] of Object.entries(motion.cssVars.theme)) {
+      if (!/^animate-godui-[a-z-]+-in(-from-[a-z]+)?$/.test(name)) continue;
+      expect(String(value), name).toMatch(/\bbackwards\b/);
+    }
+  });
+
   it("collapses movement under prefers-reduced-motion", () => {
     const reduced = css.slice(
       css.indexOf("@media (prefers-reduced-motion: reduce)"),
