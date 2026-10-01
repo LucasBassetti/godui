@@ -4,6 +4,8 @@ type TraceEvent = {
   name: string;
   ph: string;
   ts: number;
+  id?: string;
+  id2?: { local?: string };
   args?: {
     data?: {
       compositeFailed?: number;
@@ -19,6 +21,10 @@ export interface TraceResult {
   layoutCount: number;
   /** Animations Chrome could not run on the compositor because of their properties. */
   unsupported: Array<{ name: string; properties: string[] }>;
+  /** Animations Chrome reported as not composited for any reason (bitmask). */
+  compositeFailed: Array<{ id: string; reason: number }>;
+  /** Distinct animations observed during the window. */
+  animationCount: number;
 }
 
 /** Layout work allowed right after the interaction (the DOM mutation itself). */
@@ -78,7 +84,17 @@ export async function traceInteraction(
       properties: e.args?.data?.unsupportedProperties ?? [],
     }));
 
-  return { layoutCount, unsupported };
+  const animations = events.filter((e) => e.name === "Animation");
+  const idOf = (e: TraceEvent) => e.id ?? e.id2?.local ?? "?";
+  const failed = new Map<string, number>();
+  for (const e of animations) {
+    const reason = e.args?.data?.compositeFailed ?? 0;
+    if (reason !== 0) failed.set(idOf(e), reason);
+  }
+  const compositeFailed = [...failed].map(([id, reason]) => ({ id, reason }));
+  const animationCount = new Set(animations.map(idOf)).size;
+
+  return { layoutCount, unsupported, compositeFailed, animationCount };
 }
 
 /** Assert an interaction animated on the compositor only. */
@@ -87,6 +103,9 @@ export function expectGpuOnly(result: TraceResult): void {
     result.unsupported,
     "animations on non-compositable properties",
   ).toEqual([]);
+  expect(result.compositeFailed, "animations Chrome did not composite").toEqual(
+    [],
+  );
   expect(result.layoutCount, "layout work while animating").toBeLessThanOrEqual(
     1,
   );

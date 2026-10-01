@@ -25,3 +25,37 @@ test("layout-thrash fixture is caught", async ({ page }) => {
   expect(() => expectGpuOnly(result)).toThrow();
   expect(result.layoutCount).toBeGreaterThan(5);
 });
+
+test("box-shadow keyframes are reported as non-compositable", async ({
+  page,
+}) => {
+  const result = await traceInteraction(page, {
+    storyId: "internal-motion-trace--box-shadow",
+    act: click,
+    windowMs: 700,
+  });
+  expect(result.unsupported.flatMap((u) => u.properties)).toContain(
+    "box-shadow",
+  );
+  expect(() => expectGpuOnly(result)).toThrow();
+});
+
+test("WAAPI composite:add is caught as not composited", async ({ page }) => {
+  const result = await traceInteraction(page, {
+    storyId: "internal-motion-trace--waapi-add",
+    act: click,
+    windowMs: 700,
+  });
+  expect(result.compositeFailed.length).toBeGreaterThan(0);
+  expect(() => expectGpuOnly(result)).toThrow();
+});
+
+test("useFlipGroup runs on the compositor", async ({ page }) => {
+  const result = await traceInteraction(page, {
+    storyId: "internal-motion-trace--flip",
+    act: click,
+    windowMs: 700,
+  });
+  expect(result.animationCount).toBeGreaterThan(0);
+  expectGpuOnly(result);
+});

@@ -16,11 +16,32 @@ const useIsoLayoutEffect =
 
 type Point = { x: number; y: number };
 
+/** The element's own `translate` as [x, y] CSS lengths ("0px" when unset). */
+function ownTranslate(el: HTMLElement): [string, string] {
+  const value =
+    el.ownerDocument.defaultView?.getComputedStyle(el).translate ||
+    el.style.translate ||
+    "none";
+  if (value === "none") return ["0px", "0px"];
+  const [x = "0px", y = "0px"] = value.trim().split(/\s+/);
+  return [x, y];
+}
+
+/** `length + offset px`, folded to a plain px value when possible. */
+function plus(length: string, offset: number): string {
+  const px = /^(-?[\d.]+)px$/.exec(length);
+  if (px) return `${Number(px[1]) + offset}px`;
+  return `calc(${length} + ${offset}px)`;
+}
+
 /**
  * FLIP for layout changes without animating layout: when `trigger` changes,
- * children (default `[data-flip]`) whose position moved play an inverse
- * `translate` back to rest via WAAPI (`composite: "add"`, so their own
- * transforms survive). Sizes snap; only transform animates.
+ * children (default `[data-flip]`) whose position moved play an inverse offset
+ * back to rest via WAAPI on the individual `translate` property, added to the
+ * element's own translate. Replace-composited `translate` runs on the
+ * compositor (Chrome won't composite `composite: "add"`) and sits outside the
+ * element's `scale`/`rotate`, so scaled children don't distort the distance.
+ * Sizes snap; only translate animates.
  *
  * Positions are relative to the container (scrolling between triggers is
  * ignored). If a previous FLIP is still running, its current visual offset is
@@ -67,12 +88,13 @@ export function useFlipGroup(
       const dx = prev.x - now.x + carry.x;
       const dy = prev.y - now.y + carry.y;
       if (dx === 0 && dy === 0) continue;
+      const [ownX, ownY] = ownTranslate(el);
       const animation = el.animate(
         [
-          { transform: `translate(${dx}px, ${dy}px)` },
-          { transform: "translate(0px, 0px)" },
+          { translate: `${plus(ownX, dx)} ${plus(ownY, dy)}` },
+          { translate: `${ownX} ${ownY}` },
         ],
-        { duration, easing, composite: "add" },
+        { duration, easing },
       );
       running.current.set(el, animation);
       animation.onfinish = () => {

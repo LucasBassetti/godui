@@ -71,14 +71,15 @@ describe("useFlipGroup", () => {
     layout.set("b", { left: 0, top: 100 });
     rerender(<Group trigger={1} order={["a", "b"]} />);
     expect(animate).toHaveBeenCalledTimes(1);
+    // The individual `translate` property, replace-composited: Chrome runs it
+    // on the compositor (composite:"add" falls back to the main thread), and it
+    // sits outside the element's own scale/rotate.
     expect(animate.mock.calls[0][0]).toEqual([
-      { transform: "translate(0px, -60px)" },
-      { transform: "translate(0px, 0px)" },
+      { translate: "0px -60px" },
+      { translate: "0px 0px" },
     ]);
-    expect(animate.mock.calls[0][1]).toMatchObject({
-      duration: 200,
-      composite: "add",
-    });
+    expect(animate.mock.calls[0][1]).toMatchObject({ duration: 200 });
+    expect(animate.mock.calls[0][1].composite ?? "replace").toBe("replace");
   });
 
   it("measures from the current visual position (interrupted FLIP)", () => {
@@ -92,9 +93,7 @@ describe("useFlipGroup", () => {
     layout.set("b", { left: 0, top: 40 });
     rerender(<Group trigger={2} order={["b"]} />);
     // Visual 70 → layout 40: start 30px below rest, not from the stale 100.
-    expect(animate.mock.calls[1][0][0]).toEqual({
-      transform: "translate(0px, 30px)",
-    });
+    expect(animate.mock.calls[1][0][0]).toEqual({ translate: "0px 30px" });
   });
 
   it("does nothing under prefers-reduced-motion", () => {
@@ -106,6 +105,20 @@ describe("useFlipGroup", () => {
     layout.set("a", { left: 0, top: 50 });
     rerender(<Group trigger={1} order={["a"]} />);
     expect(animate).not.toHaveBeenCalled();
+  });
+
+  it("adds the FLIP offset on top of the element's own translate", () => {
+    layout.set("c", { left: 0, top: 0 });
+    const { rerender, container } = render(<Group trigger={0} order={["c"]} />);
+    const el = container.querySelector<HTMLElement>('[data-id="c"]');
+    if (!el) throw new Error("missing");
+    el.style.translate = "4px 8px";
+    layout.set("c", { left: 0, top: 20 });
+    rerender(<Group trigger={1} order={["c"]} />);
+    expect(animate.mock.calls[0][0]).toEqual([
+      { translate: "4px -12px" },
+      { translate: "4px 8px" },
+    ]);
   });
 
   it("is a no-op when element.animate is unavailable", () => {
