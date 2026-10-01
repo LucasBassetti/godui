@@ -41,35 +41,39 @@ test("double-click Next: the second click is skipped mid-slide, still GPU-only",
   expectGpuOnly(result);
 });
 
-test("double-click Next: the old month leaves only after its exit, never mid-slide", async ({
-  page,
-}) => {
-  await page.goto("/iframe.html?id=ui-calendar--single&viewMode=story");
-  await page.waitForLoadState("networkidle");
-  const timeline = await page.evaluate(async () => {
-    const button = document.querySelector<HTMLElement>(".rdp-button_next");
-    if (!button) throw new Error("story markup changed");
-    const start = performance.now();
-    const old = () =>
-      document.querySelector('[data-animated-month][aria-hidden="true"]');
-    button.click();
-    await new Promise((r) => requestAnimationFrame(r));
-    button.click();
-    let removedAt = Number.NaN;
-    while (performance.now() - start < 1500) {
+// `custom-class-names` overrides classNames.weeks / month_caption: the timing
+// must survive that.
+for (const story of ["single", "custom-class-names"] as const) {
+  test(`${story}: double-click Next, the old month leaves only after its exit, never mid-slide`, async ({
+    page,
+  }) => {
+    await page.goto(`/iframe.html?id=ui-calendar--${story}&viewMode=story`);
+    await page.waitForLoadState("networkidle");
+    const timeline = await page.evaluate(async () => {
+      const button = document.querySelector<HTMLElement>(".rdp-button_next");
+      if (!button) throw new Error("story markup changed");
+      const start = performance.now();
+      const old = () =>
+        document.querySelector('[data-animated-month][aria-hidden="true"]');
+      button.click();
       await new Promise((r) => requestAnimationFrame(r));
-      if (!old()) {
-        removedAt = performance.now() - start;
-        break;
+      button.click();
+      let removedAt = Number.NaN;
+      while (performance.now() - start < 1500) {
+        await new Promise((r) => requestAnimationFrame(r));
+        if (!old()) {
+          removedAt = performance.now() - start;
+          break;
+        }
       }
-    }
-    return { removedAt };
+      return { removedAt };
+    });
+    // --godui-duration-base (260ms): the caption exit lasts as long as the
+    // weeks slide, so the clone outlives the whole slide.
+    expect(timeline.removedAt).toBeGreaterThanOrEqual(250);
+    expect(timeline.removedAt).toBeLessThan(600);
   });
-  // --godui-duration-base (260ms): the caption exit lasts as long as the
-  // weeks slide, so the clone outlives the whole slide.
-  expect(timeline.removedAt).toBeGreaterThanOrEqual(250);
-  expect(timeline.removedAt).toBeLessThan(600);
-});
+}
 
 test("selecting a day pops it on the compositor", async ({ page }) => {
   const result = await traceInteraction(page, {
@@ -83,7 +87,11 @@ test("selecting a day pops it on the compositor", async ({ page }) => {
   expectGpuOnly(result);
 });
 
-for (const story of ["single", "range-two-months"] as const) {
+for (const story of [
+  "single",
+  "range-two-months",
+  "custom-class-names",
+] as const) {
   test(`${story}: Next and Previous slide the months as one strip, height and nav fixed`, async ({
     page,
   }) => {

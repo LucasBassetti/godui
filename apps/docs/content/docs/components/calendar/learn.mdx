@@ -22,12 +22,11 @@ import { CalendarDemo } from "@/components/demos/core/calendar-demo";
   caption_after_exit: "animate-godui-fade-out",
 };
 
-weeks: cn(
-  "[--ease-out-expo:var(--ease-spring-smooth)]
-   [--godui-duration-slow:var(--godui-duration-base)]
-   [--godui-enter-distance:100%] rtl:[--godui-enter-distance:-100%]",
-  defaultClassNames.weeks,
-),`}
+// on the root, scoped to the elements rdp animates
+"**:data-animated-weeks:[--ease-out-expo:var(--ease-spring-smooth)]
+ **:data-animated-weeks:[--godui-duration-slow:var(--godui-duration-base)]
+ **:data-animated-weeks:[--godui-enter-distance:100%]
+ rtl:**:data-animated-weeks:[--godui-enter-distance:-100%]",`}
 >
 
 React DayPicker already knows how to animate a month change, it just ships
@@ -49,6 +48,11 @@ weeks puts both on the spring, so the old month's right edge and the new
 month's left edge stay together for the whole slide. Only `translate` and
 `opacity` change.
 
+These overrides sit on the calendar's root, aimed at the
+`data-animated-weeks` elements React DayPicker marks, not in `classNames.weeks`.
+A `classNames` key you pass replaces GodUI's string for that key, so timing
+kept there would vanish with your own `weeks` styles.
+
 </LearnChapter>
 
 <LearnChapter
@@ -57,11 +61,8 @@ month's left edge stay together for the whole slide. Only `translate` and
   code={`// react-day-picker, useAnimation
 previousCaptionEl.addEventListener("animationend", cleanUp);
 
-// GodUI
-month_caption: cn(
-  "… [--godui-duration-fast:var(--godui-duration-base)]",
-  defaultClassNames.month_caption,
-),`}
+// GodUI, on the root
+"**:data-animated-caption:[--godui-duration-fast:var(--godui-duration-base)]",`}
 >
 
 React DayPicker removes the clone, and strips the enter classes from the new
@@ -75,8 +76,7 @@ frame and the cleanup removes a clone that's already gone.
 
 Two more details come from React DayPicker. It adds these classes with
 `classList.add`, which throws on a value containing a space, so every class
-name is a single class and the overrides live on the elements the classes land
-on. And a second click while the month is sliding changes the month without
+name is a single class and the overrides are set separately, from the root. And a second click while the month is sliding changes the month without
 starting a second slide, so the clone never stacks.
 
 </LearnChapter>

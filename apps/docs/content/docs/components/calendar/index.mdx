@@ -146,7 +146,11 @@ Two additive changes: `animate` (React DayPicker's own prop) defaults to `true`,
 so pass `animate={false}` to turn the month slide off; and `Root`, `Chevron` and
 `WeekNumber` are declared once at module level instead of inline, so a
 controlled re-render doesn't remount the grid. Your own `classNames` and
-`components` still override GodUI's.
+`components` still override GodUI's, key by key: `weeks_after_enter` and the
+other enter/exit keys replace the animation itself. The slide's timing
+(distance, duration, shared curve) sits on the root `className`, scoped to the
+elements React DayPicker animates, so overriding `weeks` or `month_caption`
+restyles them without breaking the slide.
 
 ## Usage
 

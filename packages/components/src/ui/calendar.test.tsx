@@ -80,6 +80,36 @@ function tokenDuration(name: string): string {
   return match[1];
 }
 
+const root = () => {
+  const el = document.querySelector<HTMLElement>('[data-slot="calendar"]');
+  if (!el) throw new Error("no calendar root");
+  return el;
+};
+
+/**
+ * The custom properties the root sets on its `[data-animated-<part>]`
+ * descendants, read from its `**:data-animated-<part>:[--x:y]` classes
+ * (`rtl:` ones with `variant = "rtl:"`).
+ */
+function scopedVars(part: "weeks" | "caption", variant = "") {
+  const pattern = new RegExp(
+    `^${variant}\\*\\*:data-animated-${part}:\\[(--[\\w-]+):(.+)\\]$`,
+  );
+  const vars: Record<string, string> = {};
+  for (const name of root().classList) {
+    const match = name.match(pattern);
+    if (match?.[1] && match[2]) vars[match[1]] = match[2];
+  }
+  return vars;
+}
+
+/** `el` is one the root's `**:data-animated-<part>:` classes reach. */
+function expectScoped(el: Element | null | undefined, part: string) {
+  expect(el).not.toBeNull();
+  expect(el?.hasAttribute(`data-animated-${part}`)).toBe(true);
+  expect(el !== root() && root().contains(el ?? null)).toBe(true);
+}
+
 describe("Calendar", () => {
   it("matches shadcn's data-slot tree and exports (single, selected date)", () => {
     const { unmount } = render(<Single ui={Shadcn} />);
@@ -145,18 +175,16 @@ describe("Calendar", () => {
 
   it("slides a whole month width, mirrored in RTL", () => {
     render(<Godui.Calendar defaultMonth={OCT} />);
-    const cls = liveWeeks()?.className ?? "";
-    expect(cls).toContain("[--godui-enter-distance:100%]");
-    expect(cls).toContain("rtl:[--godui-enter-distance:-100%]");
+    expect(scopedVars("weeks")["--godui-enter-distance"]).toBe("100%");
+    expect(scopedVars("weeks", "rtl:")["--godui-enter-distance"]).toBe("-100%");
+    expectScoped(liveWeeks(), "weeks");
   });
 
   it("caption exit lasts as long as the weeks exit and enter (rdp drops the old month on its animationend)", async () => {
     const user = userEvent.setup();
     render(<Godui.Calendar defaultMonth={OCT} />);
     await user.click(screen.getByRole("button", { name: /next month/i }));
-    const exit =
-      oldMonth()?.querySelector("[data-animated-caption]")?.className ?? "";
-    const weeks = liveWeeks()?.className ?? "";
+    const oldCaption = oldMonth()?.querySelector("[data-animated-caption]");
     // The tokens: fade-out is fast, the slide out is base, the slide in slow.
     expect(tokenDuration("godui-fade-out")).toBe("var(--godui-duration-fast)");
     expect(tokenDuration("godui-slide-out-to-left")).toBe(
@@ -165,15 +193,17 @@ describe("Calendar", () => {
     expect(tokenDuration("godui-slide-in-from-right")).toBe(
       "var(--godui-duration-slow)",
     );
-    // The caption's fade-out is stretched to base...
-    expect(exit).toContain("animate-godui-fade-out");
-    expect(exit).toContain(
-      "[--godui-duration-fast:var(--godui-duration-base)]",
+    // The old caption's fade-out is stretched to base...
+    expect(oldCaption?.className).toContain("animate-godui-fade-out");
+    expectScoped(oldCaption, "caption");
+    expect(scopedVars("caption")["--godui-duration-fast"]).toBe(
+      "var(--godui-duration-base)",
     );
     // ...and the weeks' slide in shortened to base: the cleanup (which also
     // strips the enter class) never cuts a slide short.
-    expect(weeks).toContain(
-      "[--godui-duration-slow:var(--godui-duration-base)]",
+    expectScoped(liveWeeks(), "weeks");
+    expect(scopedVars("weeks")["--godui-duration-slow"]).toBe(
+      "var(--godui-duration-base)",
     );
   });
 
@@ -191,12 +221,44 @@ describe("Calendar", () => {
     );
     // Both weeks elements (live and rdp's clone) redefine the exit's curve as
     // the enter's, or a gap opens between the months mid-slide.
-    const oldWeeks = oldMonth()?.querySelector("[data-animated-weeks]");
-    for (const weeks of [liveWeeks(), oldWeeks]) {
-      expect(weeks?.className).toContain(
-        "[--ease-out-expo:var(--ease-spring-smooth)]",
-      );
-    }
+    expect(scopedVars("weeks")["--ease-out-expo"]).toBe(
+      "var(--ease-spring-smooth)",
+    );
+    expectScoped(liveWeeks(), "weeks");
+    expectScoped(oldMonth()?.querySelector("[data-animated-weeks]"), "weeks");
+  });
+
+  it("your own classNames.weeks / month_caption keep the slide's timing", async () => {
+    const user = userEvent.setup();
+    render(
+      <Godui.Calendar
+        defaultMonth={OCT}
+        className="rounded-md border"
+        classNames={{ weeks: "my-weeks", month_caption: "my-caption" }}
+      />,
+    );
+    await user.click(screen.getByRole("button", { name: /next month/i }));
+    // The overrides replaced GodUI's strings wholesale...
+    expect(liveWeeks()).toHaveClass("my-weeks");
+    expect(caption()).toHaveClass("my-caption");
+    // ...but the timing lives on the root, composed with your className.
+    expect(root()).toHaveClass("rounded-md", "border");
+    expect(scopedVars("weeks")).toEqual({
+      "--ease-out-expo": "var(--ease-spring-smooth)",
+      "--godui-duration-slow": "var(--godui-duration-base)",
+      "--godui-enter-distance": "100%",
+    });
+    expect(scopedVars("caption")).toEqual({
+      "--godui-duration-fast": "var(--godui-duration-base)",
+    });
+    // ...and still reaches the elements rdp animates, live and cloned.
+    const old = oldMonth();
+    expectScoped(liveWeeks(), "weeks");
+    expectScoped(old?.querySelector(".my-weeks"), "weeks");
+    expectScoped(old?.querySelector(".my-caption"), "caption");
+    expect(old?.querySelector(".my-caption")?.className).toContain(
+      "animate-godui-fade-out",
+    );
   });
 
   it("removes the old month only on the old caption's animationend", async () => {
@@ -298,11 +360,42 @@ describe("Calendar", () => {
     expect(end).toHaveAttribute("data-animate", "true");
   });
 
-  it("the exiting clone of a just-popped day does not replay the pop", () => {
+  it("the exiting clone of a just-popped day does not replay the pop", async () => {
+    const user = userEvent.setup();
     render(<Godui.Calendar mode="single" defaultMonth={OCT} />);
-    expect(dayButton(14).className).toContain(
-      "not-in-[[data-animated-month][aria-hidden=true]]:",
+    await user.click(dayButton(20));
+    expect(dayButton(20)).toHaveAttribute("data-animate", "true");
+    await user.click(screen.getByRole("button", { name: /next month/i }));
+    // rdp's clone copies the button with data-animate="true"...
+    const clone = oldMonth()?.querySelector<HTMLElement>(
+      'td[data-day="2026-10-20"] button',
     );
+    expect(clone).toHaveAttribute("data-animate", "true");
+    // ...inside the ancestor the gate excludes, so the pop is off there.
+    expect(
+      clone?.closest('[data-animated-month][aria-hidden="true"]'),
+    ).not.toBeNull();
+    expect(clone?.className).toContain(
+      "not-in-[[data-animated-month][aria-hidden=true]]:data-[animate=true]:animate-godui-pop",
+    );
+  });
+
+  it("range, two months: a selected day moving from the second month to the first doesn't pop", async () => {
+    const user = userEvent.setup();
+    render(<Range ui={Godui} />);
+    expect(dayButton(3, "November")).not.toHaveAttribute("data-animate");
+    await user.click(screen.getByRole("button", { name: /next month/i }));
+    // November is now the first month; its range end remounted there.
+    expect(caption()).toHaveTextContent("November 2026");
+    const end = dayButton(3, "November");
+    expect(end).toHaveAttribute("data-range-end", "true");
+    expect(end).not.toHaveAttribute("data-animate");
+    // And back: it returns to the second month, still still.
+    const oldCaption = oldMonth()?.querySelector("[data-animated-caption]");
+    if (oldCaption) fireEvent.animationEnd(oldCaption);
+    await user.click(screen.getByRole("button", { name: /previous month/i }));
+    expect(dayButton(3, "November")).not.toHaveAttribute("data-animate");
+    expect(dayButton(12)).not.toHaveAttribute("data-animate");
   });
 
   it("reduced motion: the month slide and the day pop scale by --godui-motion (0 under the preference)", () => {

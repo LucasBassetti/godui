@@ -79,3 +79,30 @@ export const DropdownCaption: Story = {
     );
   },
 };
+
+/**
+ * Your own `classNames.weeks` / `month_caption` replace GodUI's strings; the
+ * slide's timing lives on the root, so the month still slides as one strip.
+ */
+export const CustomClassNames: Story = {
+  name: "Custom classNames",
+  render: function Render(args) {
+    const [date, setDate] = React.useState<Date | undefined>(
+      new Date(2026, 9, 14),
+    );
+    return (
+      <Calendar
+        {...args}
+        mode="single"
+        defaultMonth={OCTOBER}
+        selected={date}
+        onSelect={setDate}
+        className="rounded-md border shadow-sm"
+        classNames={{
+          weeks: "text-foreground",
+          month_caption: "flex h-(--cell-size) items-center justify-center",
+        }}
+      />
+    );
+  },
+};

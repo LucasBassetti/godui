@@ -61,6 +61,21 @@ function Calendar({
         "group/calendar bg-background p-3 [--cell-size:--spacing(8)] [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent",
         String.raw`rtl:**:[.rdp-button\_next>svg]:rotate-180`,
         String.raw`rtl:**:[.rdp-button\_previous>svg]:rotate-180`,
+        // Month-slide timing, scoped to the elements rdp animates (it marks
+        // them with data-animated-* while `animate` is on). Kept on the root,
+        // which composes with your className, rather than in classNames, which
+        // your own `weeks` / `month_caption` would replace wholesale.
+        //
+        // rdp removes the old month, and strips the new weeks' enter class,
+        // on the old *caption's* animationend, so its fade-out lasts as long
+        // as the weeks slide (base), not the token's fast.
+        "**:data-animated-caption:[--godui-duration-fast:var(--godui-duration-base)]",
+        // A slide travels the full width; RTL mirrors it. The old and new
+        // weeks share one duration and one curve (the enter's spring), so they
+        // move as a single strip: no gap opens between the months, and the
+        // whole change ends in one frame. These redefine shared tokens, so
+        // everything inside the weeks (the day buttons) inherits them too.
+        "**:data-animated-weeks:[--ease-out-expo:var(--ease-spring-smooth)] **:data-animated-weeks:[--godui-duration-slow:var(--godui-duration-base)] **:data-animated-weeks:[--godui-enter-distance:100%] rtl:**:data-animated-weeks:[--godui-enter-distance:-100%]",
         className,
       )}
       captionLayout={captionLayout}
@@ -90,11 +105,8 @@ function Calendar({
           "size-(--cell-size) p-0 select-none aria-disabled:opacity-50",
           defaultClassNames.button_next,
         ),
-        // rdp removes the old month — and strips the new weeks' enter class —
-        // on the old *caption's* animationend, so its fade-out must last as
-        // long as the weeks slide (base), not the token's fast.
         month_caption: cn(
-          "flex h-(--cell-size) w-full items-center justify-center px-(--cell-size) [--godui-duration-fast:var(--godui-duration-base)]",
+          "flex h-(--cell-size) w-full items-center justify-center px-(--cell-size)",
           defaultClassNames.month_caption,
         ),
         dropdowns: cn(
@@ -121,14 +133,6 @@ function Calendar({
         weekday: cn(
           "flex-1 rounded-md text-[0.8rem] font-normal text-muted-foreground select-none",
           defaultClassNames.weekday,
-        ),
-        // A month slide travels the full width; RTL mirrors it. The old and
-        // new weeks share one duration and one curve (the enter's spring), so
-        // they move as a single strip — no gap opens between the months, and
-        // the whole change ends in one frame.
-        weeks: cn(
-          "[--ease-out-expo:var(--ease-spring-smooth)] [--godui-duration-slow:var(--godui-duration-base)] [--godui-enter-distance:100%] rtl:[--godui-enter-distance:-100%]",
-          defaultClassNames.weeks,
         ),
         week: cn("mt-2 flex w-full", defaultClassNames.week),
         week_number_header: cn(
