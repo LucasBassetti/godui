@@ -84,25 +84,11 @@ export default function Home() {
               </span>
             </Link>
             <h1 className="relative z-10 max-w-3xl text-balance font-semibold text-4xl text-fd-foreground tracking-tight sm:text-5xl md:text-6xl">
-              UI Collection for Modern Interfaces
+              shadcn/ui, animated.
             </h1>
             <p className="relative z-10 max-w-md text-balance text-fd-muted-foreground text-sm sm:text-base">
-              An open-source collection of beautifully crafted motion components
-              built with{" "}
-              <span className="font-semibold text-fd-foreground">React</span>,{" "}
-              <span className="font-semibold text-fd-foreground">
-                TypeScript
-              </span>
-              ,{" "}
-              <span className="font-semibold text-fd-foreground">
-                Tailwind CSS
-              </span>
-              , <span className="font-semibold text-fd-foreground">Motion</span>
-              , and{" "}
-              <span className="font-semibold text-fd-foreground">
-                shadcn/ui
-              </span>
-              .
+              Same files and API as shadcn/ui, with motion that runs entirely on
+              the GPU. Built on Radix, Tailwind CSS v4 and CSS springs.
             </p>
             <div className="relative z-10 flex w-full justify-center">
               <AnimatedInstall />

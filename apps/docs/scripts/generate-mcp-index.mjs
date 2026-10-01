@@ -1,7 +1,7 @@
 // Generates apps/docs/public/r/index.json — a lightweight catalog the GodUI MCP
 // server (@godui/mcp) fetches to power list/search. Static items come from the
 // root registry.json + registry-extras.json; dynamic background items come from the shared background
-// catalog. Categories come from the docs sidebar config (meta.json). Run via
+// catalog. Categories come from the Extras sidebar config (extras/meta.json). Run via
 // `pnpm build:registry`.
 
 import { createHash } from "node:crypto";
@@ -37,11 +37,14 @@ const backgroundCatalog = JSON.parse(
   ),
 );
 const meta = JSON.parse(
-  readFileSync(resolve(repoRoot, "apps/docs/content/docs/meta.json"), "utf8"),
+  readFileSync(
+    resolve(repoRoot, "apps/docs/content/docs/extras/meta.json"),
+    "utf8",
+  ),
 );
 
 // Build component-name -> category from the meta.json sidebar. Entries look like
-// "---Buttons---" (a group header) followed by "components/buttons/magic-button".
+// "---Buttons---" (a group header) followed by "buttons/magic-button".
 const categoryByName = {};
 let currentCategory = null;
 for (const entry of meta.pages) {
@@ -50,7 +53,7 @@ for (const entry of meta.pages) {
     currentCategory = header[1].trim();
     continue;
   }
-  const match = /^(?:components|extras)\/[^/]+\/(.+)$/.exec(entry);
+  const match = /^[^/]+\/(.+)$/.exec(entry);
   if (match && currentCategory) {
     categoryByName[match[1]] = currentCategory;
   }
