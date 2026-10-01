@@ -8,6 +8,7 @@ import { createHash } from "node:crypto";
 import { readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { assertNoCollisions } from "./registry-names.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(__dirname, "../../..");
@@ -71,6 +72,8 @@ const toCatalogItem = (
   registryDependencies: item.registryDependencies ?? [],
   install,
 });
+
+assertNoCollisions(registry.items, extrasRegistry.items);
 
 // Extras (pre-pivot components) build to public/r/extras and install by URL.
 const extrasInstall = (name) =>

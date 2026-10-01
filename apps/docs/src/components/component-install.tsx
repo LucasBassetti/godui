@@ -236,8 +236,11 @@ export function ComponentInstall({
         <div className="mt-4 space-y-4">
           {error ? (
             <p className="text-sm text-fd-muted-foreground">
-              Could not load the source for <code>@godui/{itemName}</code>. Use
-              the CLI tab, or browse{" "}
+              Could not load the source for{" "}
+              <code>
+                {registry === "extras" ? "@godui-extras" : "@godui"}/{itemName}
+              </code>
+              . Use the CLI tab, or browse{" "}
               <a
                 className="underline"
                 href={`${REGISTRY_BASE}${registryPath}/${itemName}.json`}

@@ -1,67 +1,79 @@
 ---
 name: godui-component-creation
-description: Create new components for the GodUI design system in @godui/components. Use when adding a component, fixing missing Tailwind styles on components, wiring Storybook stories, or writing docs pages (main page + required Learn tab) with Workbench/Example and ComponentInstall.
+description: Create new core components for GodUI (@godui/components) — animated, drop-in replacements for shadcn/ui with strict GPU-only motion. Use when adding a component, fixing missing Tailwind styles on components, wiring Storybook stories, or writing docs pages (main page + required Learn tab) with Workbench/Example and ComponentInstall.
 ---
 
 # GodUI Component Creation
 
-Follow this workflow when adding a component to `@godui/components`.
+GodUI core (`@godui/components`) is **shadcn/ui, animated**: every component is a
+drop-in replacement for its shadcn new-york-v4 counterpart (same file, exports,
+props, `data-slot`s, Radix primitives) with motion that runs only on the
+compositor. Pre-pivot components live in `@godui/extras` (`packages/extras`) and
+are frozen — don't add new components there.
 
 ## Quick reference
 
 | Step | File |
 |------|------|
-| Component | `packages/components/src/{name}.tsx` |
+| Component | `packages/components/src/ui/{name}.tsx` (mirrors shadcn `components/ui/{name}.tsx`) |
 | Export | `packages/components/src/index.ts` |
 | Tailwind scan | `packages/components/styles.css` → `@source "./src"` |
-| Keyframes (dev) | `packages/components/styles.css` → `@keyframes` (+ `--animate-*` in `@theme`) |
-| Keyframes (dist) | the component's own `registry.json` entry → `cssVars.theme` (token) + `css` (`@keyframes`) — **not** the shared `godui-theme` |
-| Storybook | `apps/storybook/src/stories/{name}.stories.tsx` |
-| Docs | `apps/docs/content/docs/components/{category}/{name}/index.mdx` |
-| Learn tab (required) | `apps/docs/content/docs/components/{category}/{name}/learn.mdx` + scenes in `apps/docs/src/components/learn/` — **use the `godui-learn-article` skill** |
+| Shared motion | `godui-motion` — tokens/keyframes in `packages/components/styles.css`, hook `src/hooks/use-flip-group.ts`, registry item `godui-motion` |
+| Component-only keyframes | `styles.css` **and** the component's `registry.json` entry (`cssVars.theme` + `css`) |
+| GPU gate | `packages/components/src/motion-gate/` (runs in `pnpm --filter @godui/components test`) |
+| Storybook | `apps/storybook/src/stories/ui/{name}.stories.tsx` (title `UI/{Name}`) |
+| Runtime trace | `apps/storybook/motion-trace/{name}.spec.ts` (`traceInteraction` + `expectGpuOnly`) |
+| Docs | `apps/docs/content/docs/components/{name}/index.mdx` (no category folder) |
+| Learn tab (required) | `apps/docs/content/docs/components/{name}/learn.mdx` + scenes in `apps/docs/src/components/learn/` — **use the `godui-learn-article` skill** |
+| Nav | `apps/docs/content/docs/components/meta.json` (`root: true` folder) |
 | Index card | `apps/docs/content/docs/components/index.mdx` → `<PreviewCard>` |
 | Placeholder preview | `apps/docs/src/components/card-previews/previews/{name}.tsx` + slug in `registry.tsx` |
-| Nav | `apps/docs/content/docs/components/meta.json` |
 
 ## 1. Create the component
 
-Use static Tailwind utility classes with design tokens. Map variants to static class strings:
+Start from shadcn's current new-york-v4 source for the same component and keep
+its public surface **identical**: file name, named exports, props, `data-slot`
+attributes, Radix package, `cn` from `@/lib/utils`. Add a header comment naming
+the shadcn version you mirrored. API changes are additive only (e.g. an optional
+`motion?: "default" | "subtle" | "none"`); never rename or remove a shadcn prop.
 
-```typescript
-import * as React from "react";
+Follow shadcn v4 conventions: React 19 function components with `ref` as a prop
+(no `forwardRef`), `"use client"` where shadcn has it.
 
-export type ButtonVariant = "primary" | "secondary" | "outline";
-export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: ButtonVariant;
-};
+```tsx
+// Mirrors shadcn/ui new-york-v4 popover (registry version: <date or commit>).
+"use client";
 
-const variantClasses: Record<ButtonVariant, string> = {
-  primary: "bg-primary text-primary-foreground shadow-sm hover:bg-primary/90",
-  secondary: "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
-  outline: "border border-border bg-background text-foreground hover:bg-accent hover:text-accent-foreground",
-};
+import * as PopoverPrimitive from "@radix-ui/react-popover";
+import type * as React from "react";
+import { cn } from "@/lib/utils";
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant = "primary", ...props }, ref) => (
-    <button
-      ref={ref}
-      className={`inline-flex items-center font-medium ${variantClasses[variant]} ${className ?? ""}`}
-      {...props}
-    />
-  ),
-);
-Button.displayName = "Button";
-
-export { Button };
+function PopoverContent({
+  className,
+  align = "center",
+  sideOffset = 4,
+  ...props
+}: React.ComponentProps<typeof PopoverPrimitive.Content>) {
+  return (
+    <PopoverPrimitive.Portal>
+      <PopoverPrimitive.Content
+        data-slot="popover-content"
+        align={align}
+        sideOffset={sideOffset}
+        className={cn(
+          "z-popover w-72 rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-hidden",
+          "origin-(--radix-popover-content-transform-origin)",
+          "data-[state=open]:animate-godui-fade-scale-in data-[state=closed]:animate-godui-fade-scale-out",
+          className,
+        )}
+        {...props}
+      />
+    </PopoverPrimitive.Portal>
+  );
+}
 ```
 
-Export the component **and its prop/variant types** from `packages/components/src/index.ts`:
-
-```typescript
-export { Button, type ButtonProps, type ButtonVariant } from "./button";
-```
-
-Only add `"use client"` when the component uses React hooks or client-only APIs.
+Export the components **and their prop types** from `packages/components/src/index.ts`.
 
 ## 2. Ensure Tailwind scans component files
 
@@ -79,8 +91,8 @@ Only add `"use client"` when the component uses React hooks or client-only APIs.
 
 Consuming apps also scan explicitly:
 
-- `apps/storybook/src/tailwind.css` → `@source "../node_modules/@godui/components/src"`
-- `apps/docs/src/app/globals.css` → `@source "../../../../packages/components/src"`
+- `apps/storybook/src/tailwind.css` → `@source "../node_modules/@godui/components/src"` (and `…/@godui/extras/src`)
+- `apps/docs/src/app/globals.css` → `@source "../../../../packages/components/src"` (and `…/packages/extras/src`)
 
 If utilities like `bg-primary` render unstyled, verify `@source "./src"` exists and restart the dev server. Both apps already depend on `@godui/components` via `workspace:*` and it is in the docs `transpilePackages` — no `pnpm install` needed for a new component in the shared package.
 
@@ -95,69 +107,72 @@ Express CSS-heavy designs (3D buttons, sprite masks, gradients, state machines) 
 - **`has-[…]:`, `placeholder:`, `motion-reduce:`, `focus-within:`** — replace `:has()`, `::placeholder`, `prefers-reduced-motion`, `:focus-within`.
 - **Arbitrary properties** `[background:linear-gradient(...)]`, `[mask-image:var(--mask)]`, `[perspective:800px]`, `[transform:rotateX(35deg)]` — for `color-mix` gradients, sprite masks, 3D. Asset URLs: `import` the asset and pass it through an inline `style={{ "--mask": \`url(\${asset})\` }}` CSS var.
 - **Size scales** stay token-driven: `px-[var(--button-px-md)] text-[length:var(--button-text-md)]` (the `--button-*` tokens live in `@theme`). Map size → static utility strings in a `Record`.
-- **Animations** use `animate-<name>` utilities backed by a `--animate-*` token (never a `${var}` nested in an arbitrary value — the scanner can't resolve it). A component's `@keyframes` + token live in **two** spots: `styles.css` (`@keyframes` + `@theme`, so Storybook/docs render) **and** the component's own `registry.json` entry (`cssVars.theme` token + `css` `@keyframes`). Keep them out of the shared `godui-theme` entry so installing one component pulls only its own animations; shared keyframes repeat per entry (the CLI dedupes on install).
-- **Never `transition: all`** — specify exact properties (`transition-transform`, `[transition:filter_600ms]`).
+- **Animations** use `animate-<name>` utilities backed by a `--animate-*` token (never a `${var}` nested in an arbitrary value — the scanner can't resolve it). Prefer the shared `animate-godui-*` keyframes from `godui-motion`. A component-only `@keyframes` + token live in **two** spots: `styles.css` (so Storybook/docs render) **and** the component's own `registry.json` entry (`cssVars.theme` token + `css` `@keyframes`). Keep them out of `godui-theme` and `godui-motion`.
+- **Transitions name compositor properties only** — `transition-opacity`, `transition-transform`, `transition-[translate,scale]`, `transition-[opacity,filter]`. Never bare `transition`, `transition-colors`, `transition-shadow` or `transition-all` (the gate fails them).
 
 Only `@keyframes` and the `@theme` token layer belong in CSS. Everything visual is a utility class on the element.
 
-## Motion — use the guideline tokens (required)
+## Motion — strict GPU-only (required, CI-gated)
 
-All animation must speak the GodUI **motion language**. Do not invent new spring,
-duration, or easing numbers — pick from the documented presets so the new
-component feels like the rest of the library.
+Core components animate **only** `transform` (translate / scale / rotate),
+`opacity` and `filter`. There is **no allowlist** — the gate in
+`packages/components/src/motion-gate/` scans every core source file,
+`styles.css` and every `registry.json` `css` block with `@godui/motion-lint`
+in strict mode and fails `pnpm test` on anything else. Cheap paint counts too:
+no `color`/`background-color`/`border-color` transitions, no bare Tailwind
+`transition`, no `transition-colors`.
 
-**Source of truth:** `packages/components/src/motion/tokens.ts` (re-exported from
-`@godui/components` and from the docs). Copy-paste components are self-contained,
-so **use these values _inline_** — don't import the module into a component.
-The docs/guidelines import it; components mirror the values. They must match.
+**CSS-first.** Enter/exit and state motion are CSS keyframes keyed on Radix
+`data-[state=open|closed]` (and `data-[side=…]`), using the `godui-motion` tokens:
 
-| Token | Values |
-|-------|--------|
-| `DURATION` | `fast 0.15`, `base 0.2`, `slow 0.3`, `slower 0.4` (seconds; larger-traversal/ambient) |
-| `EASE` (Motion tuple) | `standard [0.3,0.7,0.4,1]`, `out [0.22,1,0.36,1]`, `back [0.3,0.7,0.4,1.5]`, `inOut [0.65,0,0.35,1]` |
-| `EASE_CSS` (className) | `cubic-bezier(0.3,0.7,0.4,1)` standard · `…,1.5` back · `cubic-bezier(0.22,1,0.36,1)` out |
-| `SPRING` | `smooth {320,32,mass 0.9}` · `crisp {500,40}` · `snappy {520,32}` · `bouncy {170,12,mass 0.1}` |
-| `STAGGER` | `tight 0.03`, `base 0.05`, `loose 0.08` |
-| `ENTER` / `EXIT` | `{opacity:0,y:12}` / `{opacity:0,y:8}` |
+| Token | Use |
+|-------|-----|
+| `animate-godui-fade-scale-in` / `-out` | popovers, menus, dialogs, tooltips (pair with `origin-(--radix-…-transform-origin)`) |
+| `animate-godui-slide-in-from-{top,right,bottom,left}` / `slide-out-to-*` | sheets, toasts, side-aware popovers; widen with `[--godui-enter-distance:100%]` for full-panel slides |
+| `animate-godui-pop` | press feedback |
+| `ease-spring-snappy` / `ease-spring-smooth` / `ease-spring-bouncy` | CSS `linear()` springs for `transition-*` (`ease-spring-snappy` etc. utilities) |
+| `ease-out-expo` | exits |
+| `--godui-duration-fast|base|slow` | 150 / 260 / 380ms, e.g. `duration-(--godui-duration-base)` |
 
-Pick the spring by intent: **smooth** = surfaces/morph/shared-layout, **crisp** =
-height/collapse, **snappy** = menus/popovers/overlays pop, **bouncy** =
-magnify/overshoot/follow-through.
+**Sizes snap, positions FLIP.** Never animate `height`, `width`, `grid-template-rows`
+or `max-height`. Let the size change instantly; mark siblings that move with
+`data-flip` and call `useFlipGroup(containerRef, trigger)` so they glide with an
+inverse `translate`; fade/slide the revealed content in with a keyframe.
 
-Follow the principles ([/docs/guidelines/principles](/docs/guidelines/principles),
-recipes at [/docs/guidelines/patterns](/docs/guidelines/patterns)):
+**Hover/press feedback.** Color changes snap, or put the hover color on an
+overlay whose `opacity` transitions. Shadows: a static-shadow layer whose
+`opacity` animates. Focus rings: a pseudo-element ring animating `opacity` +
+`scale`, never `ring`/`box-shadow` transitions.
 
-- **Performance is enforced — animate `transform`, `opacity`, or `filter` only.**
-  These run on the compositor and hold 60fps. A CI test
-  (`src/motion/motion-lint.test.ts`, part of `pnpm test`) scans every component and
-  **fails the build** on any animation of a layout/paint-heavy prop —
-  `width`/`height`/`inset`/`margin`/`padding`/`flex`/`gap`, `box-shadow`,
-  `background-size`, `clip-path`, `border-radius`. `transition-all` and ambient
-  (looping) layout animation are **hard-banned**, no escape. It scans both CSS
-  transitions (`[transition:…]`) and framer objects (`animate`/`whileHover`/`exit`/…).
-  - **Fix, don't dodge:** a `box-shadow` transition → a static-shadow overlay whose
-    `opacity` animates; a growing `width` → `transform: scaleX`; a colour glow →
-    an opacity cross-fade. (`filter` is fine — browsers composite it.)
-  - **Genuinely intrinsic?** shared-layout morph, `height:auto` collapse, SVG beam
-    geometry — add an entry to `src/motion/motion-allowlist.ts` with a one-line
-    reason. That list is an audit trail; a growing list is a smell. Check locally:
-    `pnpm --filter @godui/components test:motion`.
-- **Always honor reduced motion.** Use `useReducedMotion()` and drop transforms
-  (keep a subtle opacity change or go static); for CSS transitions add
-  `motion-reduce:[transition:none]`. ~Every animated component does this already.
-- **Never `transition: all`** — name exact properties (see §3).
+**Reduced motion is built into the tokens** (`--godui-enter-scale: 1`,
+`--godui-enter-distance: 0px`, short durations; `useFlipGroup` skips). Don't add
+per-component `motion-reduce:` transforms unless a component has motion outside
+the tokens.
 
-```tsx
-import { motion, useReducedMotion } from "framer-motion";
+**Gestures only → `motion` (framer).** Drag-to-dismiss (drawer, toast swipe),
+carousel drag, slider thumb spring. `animate`/`initial`/`exit`/`while*` objects may
+contain only transform/opacity/filter keys — the gate scans them.
 
-const reduce = useReducedMotion();
-<motion.div
-  initial={reduce ? false : { opacity: 0, y: 12 }}   // ENTER
-  animate={{ opacity: 1, y: 0 }}
-  exit={reduce ? undefined : { opacity: 0, y: 8 }}     // EXIT
-  transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 520, damping: 32 }} // SPRING.snappy
-/>;
+**Prove it at runtime.** Add `apps/storybook/motion-trace/{name}.spec.ts`:
+
+```ts
+import { type Page, test } from "@playwright/test";
+import { expectGpuOnly, traceInteraction } from "./trace";
+
+test("{name} opens on the compositor", async ({ page }) => {
+  const result = await traceInteraction(page, {
+    storyId: "ui-{name}--default",
+    act: async (p: Page) => {
+      await p.getByRole("button", { name: "Open" }).click();
+    },
+    windowMs: 600,
+  });
+  expectGpuOnly(result);
+});
 ```
+
+Run with `pnpm --filter storybook test:motion-trace` (real time only — never
+`--virtual-time-budget`).
 
 ## 4. Storybook story
 
@@ -166,7 +181,7 @@ import { MyComponent, type MyComponentProps } from "@godui/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 const meta = {
-  title: "Components/MyComponent",
+  title: "UI/MyComponent",
   component: MyComponent,
   tags: ["autodocs"],
   parameters: { layout: "centered" },
@@ -184,10 +199,15 @@ Include stories for each variant, sizes, and disabled state.
 
 ## 5. Docs page
 
-Docs live under a **category subfolder** (e.g. `buttons/`, `text/`), and each component
-is its **own folder** so the Learn tab can sit beside it: create
-`apps/docs/content/docs/components/{category}/{name}/index.mdx` (the main page) — a Learn
-tab will be added as `learn.mdx` in the same folder (see §5.5).
+Core docs have **no category folder**. Each component is its own folder so the
+Learn tab can sit beside it: create
+`apps/docs/content/docs/components/{name}/index.mdx` (the main page) — the Learn
+tab is `learn.mdx` in the same folder (see §5.5).
+
+Besides the Workbench examples, every core page has a **What's animated** table
+(interaction, keyframe/token, properties, easing, duration) and a "Replacing
+shadcn" note: same file path, same API, install overwrites
+`components/ui/{name}.tsx`.
 
 Component pages are **Workbench-first**: stage examples as `<Example>` tabs, then
 Installation → Usage → Props in the Docs drawer.
@@ -209,8 +229,8 @@ One-sentence lead.
 
 <Example
   label="Default"
-  story="category-mycomponent"
-  code={`import { MyComponent } from "@/components/godui/my-component";
+  story="ui-mycomponent"
+  code={`import { MyComponent } from "@/components/ui/my-component";
 
 export function MyComponentDemo() {
   return <MyComponent variant="primary">Example</MyComponent>;
@@ -226,7 +246,7 @@ export function MyComponentDemo() {
 
 ## Usage
 \`\`\`tsx
-import { MyComponent } from "@/components/godui/my-component";
+import { MyComponent } from "@/components/ui/my-component";
 \`\`\`
 
 ## Props
@@ -300,9 +320,9 @@ hydration error. **Keep text inline on the same line as its tag:**
 This is render-only (the live children), so `eslint` / `biome` won't catch it — it only
 shows in `docs:dev`. Same trap applies to any block tag with multi-line bare text.
 
-**Parameterized installs (e.g. a background variant baked into the file).** A component
+**Parameterized installs (Extras backgrounds only).** A component
 whose install should bake a choice is served by the dynamic route
-`apps/docs/src/app/r/[item]/route.ts` (wrapping `@godui/components/registry`) via a
+`apps/docs/src/app/r/extras/[item]/route.ts` (wrapping `@godui/extras/registry`) via a
 `?variant=` query param — **not** by `shadcn build`. Such items are removed from
 `registry.json` so the route owns `/r/{name}.json`, the generated component carries its
 overridable defaults inside `// @default-props:start/end` markers (the route swaps that
@@ -310,32 +330,18 @@ block), and the install command is the full-URL form
 `shadcn add "https://godui.design/r/{name}.json?variant=…"`. The interactive picker lives in
 `apps/docs/src/components/background-showcase.tsx`.
 
-**Nav is driven by one root file: `apps/docs/content/docs/meta.json`** (not a per-folder
-`meta.json`, and there is **no** Fumadocs folder auto-nav here — a page absent from this
-file simply won't appear in the sidebar). Slugs are the full path from `docs/`, i.e.
-`components/{category}/{name}`. Category headers use the `---Label---` separator:
+**Nav:** `components` and `extras` are Fumadocs **root folders** (sidebar tabs).
+Register a core page in `apps/docs/content/docs/components/meta.json` (`pages`
+entries are paths relative to that folder, e.g. `"popover"`); a page absent from it
+won't appear in the Components tab.
 
-```json
-{
-  "title": "GodUI",
-  "pages": [
-    "---Buttons---",
-    "components/buttons/magic-button",
-    "components/buttons/my-component",
-    "---Text---",
-    "components/text/typography"
-  ]
-}
-```
-
-Also add a `<PreviewCard>` for the component to its category section in
-`apps/docs/content/docs/components/index.mdx` (the Components landing grid) — that page is
-hand-maintained too. `<PreviewCard>` (registered globally in `mdx.tsx`) takes the same
-`href` + `title` as the old fumadocs `<Card>`, with the description as children, and renders
-a live **placeholder preview** on top (see §6):
+Also add a `<PreviewCard>` for the component to
+`apps/docs/content/docs/components/index.mdx` (hand-maintained). `<PreviewCard>`
+(registered globally in `mdx.tsx`) takes `href` + `title` with the description as
+children, and renders a live **placeholder preview** on top (see §6):
 
 ```mdx
-<PreviewCard href="/docs/components/buttons/my-component" title="My Component">
+<PreviewCard href="/docs/components/my-component" title="My Component">
   One-line description of what it does.
 </PreviewCard>
 ```
@@ -343,7 +349,7 @@ a live **placeholder preview** on top (see §6):
 ## 5.5. Learn tab (required)
 
 Every component ships a **Learn tab** — a scroll-triggered, animated deep-dive that sits
-beside the main page as `apps/docs/content/docs/components/{category}/{name}/learn.mdx`
+beside the main page as `apps/docs/content/docs/components/{name}/learn.mdx`
 (same folder as `index.mdx`, which is why the page is a folder, not a flat `.mdx`).
 
 **Invoke the `godui-learn-article` skill to build it** — it owns the routing, the tab
@@ -389,14 +395,14 @@ export default function MyComponentPreview() {
   return (
     <div className="relative h-10 w-32">
       <Sk className="h-9 w-32 rounded-lg" />
-      <Ac className="absolute inset-y-0 left-0 w-1/3 rounded-lg transition-[width] duration-500 group-hover:w-full" />
+      <Ac className="absolute inset-0 origin-left scale-x-[0.33] rounded-lg transition-transform duration-500 group-hover:scale-x-100" />
     </div>
   );
 }
 ```
 
-Common motion patterns: `grid-rows-[0fr]↔group-hover:grid-rows-[1fr]` (expand/reveal),
-`group-hover:translate-*/scale-*/rotate-*`, staggered `style={{ transitionDelay }}` on plain
+Common motion patterns (GPU-only here too): `origin-* scale-y-0 group-hover:scale-y-100`
+(reveal), `group-hover:translate-*/scale-*/rotate-*`, staggered `style={{ transitionDelay }}` on plain
 divs, `[background:radial-gradient(...var(--primary)...)]` glows. Keep it minimal and
 abstract — one representative motif, ~`size-24` / a single pill / a small panel.
 
@@ -416,13 +422,13 @@ slug.
 - **NEVER** construct Tailwind class names dynamically (`grid-cols-${n}`) — map to static strings; the scanner can't see interpolated classes.
 - **NEVER** skip `@source "./src"` in `styles.css`.
 - **NEVER** create a CSS file or add `@layer components` rules for a component — use inline Tailwind utilities (see §3). Only `@keyframes` + the `@theme` token layer live in `styles.css`.
-- **NEVER** skip `React.forwardRef` — components must forward refs for composition.
+- **NEVER** diverge from shadcn's public API (names, props, `data-slot`s) — additive only. Core uses React 19 `ref`-as-prop like shadcn v4, not `forwardRef`.
 - **NEVER** add `"use client"` unless hooks/client APIs are used.
-- **NEVER** invent spring/duration/easing numbers — use the motion tokens (see "Motion"). Match the documented values inline.
-- **NEVER** ship an animation without a reduced-motion path, and **never** `transition: all`.
+- **NEVER** animate anything but transform/opacity/filter — no `height`, `width`, `box-shadow`, `color`, bare `transition`, `transition-colors`, `transition-all`. There is no allowlist (see "Motion").
+- **NEVER** invent spring/duration/easing numbers — use `godui-motion` tokens (`animate-godui-*`, `ease-spring-*`, `--godui-duration-*`).
 - **NEVER** use arbitrary z-index — use the scale: `z-base`, `z-raised`, `z-overlay`, `z-sticky`, `z-popover`, `z-modal`, `z-toast`.
 - **NEVER** put bare text on its own line inside a block tag in `Example` children — MDX wraps it in a `<p>`, causing `<p>`-in-`<p>` hydration errors. Keep text inline (see §5).
-- **NEVER** rely on folder auto-nav for docs — register the page in the root `apps/docs/content/docs/meta.json` (slug `components/{category}/{name}`) and add a `<PreviewCard>` in `components/index.mdx`, or it won't appear (see §5).
+- **NEVER** skip nav registration — add the page to `apps/docs/content/docs/components/meta.json` and a `<PreviewCard>` in `components/index.mdx`, or it won't appear (see §5).
 - **NEVER** ship a component without a Learn tab — every component needs `{name}/learn.mdx`, built via the `godui-learn-article` skill (see §5.5).
 - **NEVER** use fixed-luminance colors (`bg-black/*`, `bg-white/*`, `border-white/*`, `text-white`, hex) in a Learn scene — they only contrast in one theme. Use theme tokens and verify light **and** dark (see §5.5).
 - **NEVER** ship a `<PreviewCard>` without its placeholder preview — create `card-previews/previews/{name}.tsx` (filename = href slug) and add the slug to `CURATED_SLUGS`, or the card renders text-only and breaks the uniform grid (see §6).
@@ -440,20 +446,19 @@ slug.
 
 ## 10. Checklist
 
-- [ ] `packages/components/src/{name}.tsx` with `forwardRef`
-- [ ] Exported (component + prop/variant types) from `index.ts`
-- [ ] `@source "./src"` in `styles.css`
-- [ ] Styles authored as inline Tailwind utilities — no CSS file / no `@layer components` (only `@keyframes` + `@theme` may touch `styles.css`)
-- [ ] Motion uses the guideline tokens (DURATION/EASE/SPRING/STAGGER/ENTER/EXIT) inline — no invented numbers; transform/opacity only; reduced-motion handled (see "Motion")
-- [ ] Storybook story with `tags: ["autodocs"]`
-- [ ] Docs MDX under `components/{category}/{name}/index.mdx` with Workbench + Example + ComponentInstall
-- [ ] Learn tab `components/{category}/{name}/learn.mdx` built via the `godui-learn-article` skill — scenes use the black/white pattern and are verified in **both** light and dark theme (see §5.5)
-- [ ] Motion Score section in the Learn article (`## Motion Score` + `<MotionScorePanel name="{name}" />` before The result, plus a `MOTION_SCORE_PANELS` registry entry) — grade matches the docs Motion badge; **skip for static (`STATIC_COMPONENTS`) components** (see learn skill §6.5)
-- [ ] `date: YYYY-MM-DD` (today) in the MDX frontmatter — required; drives the "New" sidebar badge for one month
-- [ ] Example children: text inline in its tag (no `<p>`-in-`<p>` — see §5)
-- [ ] Registered in root `apps/docs/content/docs/meta.json` as `components/{category}/{name}`
-- [ ] `<PreviewCard>` added to its section in `components/index.mdx`
-- [ ] Placeholder preview `card-previews/previews/{name}.tsx` (kit skeleton, `group-hover` motion) + slug in `CURATED_SLUGS` (see §6)
+- [ ] `packages/components/src/ui/{name}.tsx` mirroring shadcn new-york-v4 (same exports/props/`data-slot`s/Radix), header comment with the mirrored version
+- [ ] Exported (components + prop types) from `index.ts`
+- [ ] Styles authored as inline Tailwind utilities — no CSS file / no `@layer components`
+- [ ] Motion: `animate-godui-*` on Radix `data-[state]`, `ease-spring-*` / `--godui-duration-*`; transform/opacity/filter only; sizes snap + `useFlipGroup`; gate green (`pnpm --filter @godui/components test`)
+- [ ] `registry.json` entry (`registry:ui`, `registryDependencies` incl. `@godui/godui-motion` + upstream shadcn deps), then `pnpm build:registry`
+- [ ] Vitest `src/ui/{name}.test.tsx`: shadcn's canonical usage renders with the same `data-slot` tree; open/close + keyboard; reduced motion
+- [ ] Storybook story `stories/ui/{name}.stories.tsx` (title `UI/{Name}`, `tags: ["autodocs"]`)
+- [ ] Runtime trace spec `motion-trace/{name}.spec.ts` passing (`pnpm --filter storybook test:motion-trace`)
+- [ ] Docs `components/{name}/index.mdx` with Workbench + Example + ComponentInstall + "What's animated" table + "Replacing shadcn" note
+- [ ] Learn tab `components/{name}/learn.mdx` built via the `godui-learn-article` skill — scenes verified in **both** light and dark
+- [ ] `date: YYYY-MM-DD` (today) in the MDX frontmatter
+- [ ] Example children: text inline in its tag (no `<p>`-in-`<p>`)
+- [ ] Registered in `components/meta.json`; `<PreviewCard>` in `components/index.mdx`; placeholder preview + slug in `CURATED_SLUGS`
 - [ ] Static Tailwind classes only (no dynamic class construction)
-- [ ] Demo is fluid — `w-full max-w-[...]`, no fixed width wider than 360px; verified via the Workbench mobile toggle (see §8); use demos/_kit layout primitives
-- [ ] Verified styles in Storybook and docs after dev server restart
+- [ ] Demo is fluid (≤360px safe); verified via the Workbench mobile toggle
+- [ ] Verified in Storybook and docs after dev server restart
