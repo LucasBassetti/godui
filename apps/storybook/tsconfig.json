@@ -15,6 +15,8 @@
     "src/**/*.ts",
     "src/**/*.tsx",
     ".storybook/**/*.ts",
-    ".storybook/**/*.tsx"
+    ".storybook/**/*.tsx",
+    "motion-trace/**/*.ts",
+    "playwright.config.ts"
   ]
 }

@@ -39,3 +39,28 @@ jobs:
 
       - name: Test
         run: pnpm test
+
+  motion-trace:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Chromium
+        run: pnpm --filter godui-storybook exec playwright install --with-deps chromium
+
+      - name: Motion trace
+        run: pnpm --filter godui-storybook test:motion-trace

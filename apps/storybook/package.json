@@ -7,7 +7,8 @@
     "dev": "storybook dev -p ${PORT:-6006} --no-open",
     "dev:portless": "portless",
     "build": "storybook build -o storybook-static && shx rm -rf ../docs/public/design-system && shx mkdir -p ../docs/public && shx cp -R storybook-static ../docs/public/design-system",
-    "lint": "tsc -p tsconfig.json --noEmit"
+    "lint": "tsc -p tsconfig.json --noEmit",
+    "test:motion-trace": "storybook build -o storybook-static --quiet && playwright test"
   },
   "portless": {
     "name": "godui-storybook"
@@ -22,6 +23,7 @@
     "tailwindcss": "^4.1.6"
   },
   "devDependencies": {
+    "@playwright/test": "^1.55.0",
     "@storybook/addon-docs": "^10.3.1",
     "@storybook/react": "^10.3.1",
     "@storybook/react-vite": "^10.3.1",
