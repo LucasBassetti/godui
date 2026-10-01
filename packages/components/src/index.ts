@@ -13,6 +13,7 @@ export * from "./ui/input-group";
 export * from "./ui/popover";
 export * from "./ui/radio-group";
 export * from "./ui/sheet";
+export * from "./ui/slider";
 export * from "./ui/sonner";
 export * from "./ui/switch";
 export * from "./ui/tabs";

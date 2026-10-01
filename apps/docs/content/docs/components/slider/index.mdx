@@ -1,0 +1,81 @@
+---
+title: Slider
+description: An input where the user selects a value from within a given range. The thumb grows on a spring while you hold it.
+workbench: true
+date: "2026-10-01"
+---
+
+import { Slider } from "@godui/components";
+import { SliderDemo } from "@/components/demos/core/slider-demo";
+
+<Workbench>
+
+The shadcn/ui slider. While you hold a thumb it grows to 115% on a bouncy
+spring and settles back when you let go. The thumb and range follow the
+pointer exactly; that's direct manipulation, not animation. Hover and focus
+rings change instantly.
+
+<Example label="Default" story="ui-slider" code={`import { Slider } from "@/components/ui/slider";
+
+export function SliderDemo() {
+  return (
+    <div className="flex w-full max-w-sm flex-col gap-10">
+      <Slider defaultValue={[50]} max={100} step={1} aria-label="Volume" />
+      <Slider defaultValue={[25, 75]} max={100} step={5} aria-label="Price range" />
+    </div>
+  );
+}`}>
+  <SliderDemo />
+</Example>
+
+<Example
+  label="Vertical"
+  code={`<Slider defaultValue={[50]} max={100} step={1} orientation="vertical" className="h-44" />`}
+>
+  <Slider
+    defaultValue={[50]}
+    max={100}
+    step={1}
+    orientation="vertical"
+    className="h-44"
+    aria-label="Vertical"
+  />
+</Example>
+
+## Installation
+
+<ComponentInstall name="slider" />
+
+## Replacing shadcn
+
+`npx shadcn add @godui/slider` overwrites `components/ui/slider.tsx`. Exports,
+props and `data-slot` attributes match shadcn/ui new-york-v4, so existing
+imports keep working. It also installs `godui-motion` (easings, keyframes, the
+FLIP hook) into your project.
+
+## Usage
+
+```tsx
+import { Slider } from "@/components/ui/slider";
+```
+
+```tsx
+<Slider defaultValue={[33]} max={100} step={1} />
+```
+
+## What's animated
+
+| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
+| --- | --- | --- | --- | --- |
+| Hold thumb | `transition` on `active:scale-[1.15]` | `scale` | `ease-spring-bouncy` | 260ms |
+| Drag, arrow keys | follows input directly | — | — | live |
+| Hover / focus ring | snaps | — | — | — |
+
+Under `prefers-reduced-motion` the thumb grows instantly.
+
+## API
+
+Built on [Radix Slider](https://www.radix-ui.com/primitives/docs/components/slider).
+Props are identical to [shadcn/ui Slider](https://ui.shadcn.com/docs/components/slider).
+
+</Workbench>

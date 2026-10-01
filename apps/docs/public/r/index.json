@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "revision": "7bcc8d85c05172888f257f3dbcddd72f43b886ee",
+  "revision": "d87981f20f40a9933d75ba437ddc1cc2bd7964ea",
   "components": [
     {
       "name": "accordion",
@@ -977,6 +977,16 @@
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add \"https://godui.design/r/extras/slide-confirm-button.json\"",
       "registry": "extras"
+    },
+    {
+      "name": "slider",
+      "title": "Slider",
+      "description": "An input where the user selects a value from within a given range. The held thumb grows on a spring; GPU-only.",
+      "category": "Components",
+      "dependencies": ["radix-ui"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "install": "npx shadcn@latest add @godui/slider",
+      "registry": "core"
     },
     {
       "name": "sonner",

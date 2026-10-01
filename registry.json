@@ -566,6 +566,20 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "slider",
+      "type": "registry:ui",
+      "title": "Slider",
+      "description": "An input where the user selects a value from within a given range. The held thumb grows on a spring; GPU-only.",
+      "dependencies": ["radix-ui"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "files": [
+        {
+          "path": "packages/components/src/ui/slider.tsx",
+          "type": "registry:ui"
+        }
+      ]
     }
   ]
 }

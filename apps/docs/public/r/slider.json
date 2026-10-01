@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "slider",
+  "title": "Slider",
+  "description": "An input where the user selects a value from within a given range. The held thumb grows on a spring; GPU-only.",
+  "dependencies": ["radix-ui"],
+  "registryDependencies": ["utils", "@godui/godui-motion"],
+  "files": [
+    {
+      "path": "packages/components/src/ui/slider.tsx",
+      "content": "\"use client\";\n\n// GodUI Slider — mirrors shadcn/ui new-york-v4 components/ui/slider.tsx (registry snapshot 2026-10-01).\n// Motion: the held thumb grows on a spring (scale); hover/focus rings snap; position follows the pointer 1:1 (direct manipulation, not animation). GPU-only.\n\nimport { Slider as SliderPrimitive } from \"radix-ui\";\nimport * as React from \"react\";\nimport { cn } from \"@/lib/utils\";\n\nfunction Slider({\n  className,\n  defaultValue,\n  value,\n  min = 0,\n  max = 100,\n  ...props\n}: React.ComponentProps<typeof SliderPrimitive.Root>) {\n  const _values = React.useMemo(\n    () =>\n      Array.isArray(value)\n        ? value\n        : Array.isArray(defaultValue)\n          ? defaultValue\n          : [min, max],\n    [value, defaultValue, min, max],\n  );\n\n  return (\n    <SliderPrimitive.Root\n      data-slot=\"slider\"\n      defaultValue={defaultValue}\n      value={value}\n      min={min}\n      max={max}\n      className={cn(\n        \"relative flex w-full touch-none items-center select-none data-[disabled]:opacity-50 data-[orientation=vertical]:h-full data-[orientation=vertical]:min-h-44 data-[orientation=vertical]:w-auto data-[orientation=vertical]:flex-col\",\n        className,\n      )}\n      {...props}\n    >\n      <SliderPrimitive.Track\n        data-slot=\"slider-track\"\n        className={cn(\n          \"relative grow overflow-hidden rounded-full bg-muted data-[orientation=horizontal]:h-1.5 data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-1.5\",\n        )}\n      >\n        <SliderPrimitive.Range\n          data-slot=\"slider-range\"\n          className={cn(\n            \"absolute bg-primary data-[orientation=horizontal]:h-full data-[orientation=vertical]:w-full\",\n          )}\n        />\n      </SliderPrimitive.Track>\n      {Array.from({ length: _values.length }, (_, index) => (\n        <SliderPrimitive.Thumb\n          data-slot=\"slider-thumb\"\n          // biome-ignore lint/suspicious/noArrayIndexKey: shadcn parity — thumbs are positional (one per value index)\n          key={index}\n          className=\"block size-4 shrink-0 rounded-full border border-primary bg-white shadow-sm ring-ring/50 transition-[scale] duration-(--godui-duration-base) ease-spring-bouncy active:scale-[1.15] motion-reduce:transition-none hover:ring-4 focus-visible:ring-4 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50\"\n        />\n      ))}\n    </SliderPrimitive.Root>\n  );\n}\n\nexport { Slider };\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}
