@@ -290,7 +290,10 @@ async function fetchJson<T>(
       );
     }
     if (!res.ok) {
-      throw new Error(`GodUI registry request failed (${res.status}): ${url}`);
+      throw Object.assign(
+        new Error(`GodUI registry request failed (${res.status}): ${url}`),
+        { status: res.status },
+      );
     }
 
     const contentType = res.headers
@@ -398,9 +401,24 @@ export function createRegistryClient(
       let pending = componentCache.get(key);
       if (!pending) {
         const url = `${baseUrl}/${slug}.json${query}`;
+        // Extras live under /extras. godui.design rewrites legacy root URLs,
+        // but static mirrors don't — so retry there when the root item 404s.
+        const extrasUrl = `${baseUrl}/extras/${slug}.json${query}`;
         const request = (expectedRevision ? getIndex() : Promise.resolve())
-          .then(() => get<RegistryItem>(url))
-          .then((item) => validateRegistryItem(item, url, expectedRevision));
+          .then(() =>
+            get<RegistryItem>(url)
+              .then((item) => ({ item, from: url }))
+              .catch((error: unknown) => {
+                if ((error as { status?: number })?.status !== 404) throw error;
+                return get<RegistryItem>(extrasUrl).then((item) => ({
+                  item,
+                  from: extrasUrl,
+                }));
+              }),
+          )
+          .then(({ item, from }) =>
+            validateRegistryItem(item, from, expectedRevision),
+          );
         pending = request.catch((error) => {
           if (componentCache.get(key) === pending) {
             componentCache.delete(key);

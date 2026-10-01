@@ -202,6 +202,41 @@ describe("registry client", () => {
     expect(fetchJsonImpl).toHaveBeenCalledTimes(2);
   });
 
+  it("falls back to the extras registry path when the root item 404s", async () => {
+    const requested: string[] = [];
+    const fetchImpl = vi.fn(async (input: RequestInfo | URL) => {
+      const url = String(input);
+      requested.push(url);
+      if (url === "http://mirror.test/r/extras/marquee.json") {
+        return jsonResponse(JSON.stringify({ name: "marquee" }));
+      }
+      return new Response("Not found", { status: 404 });
+    });
+    const client = createRegistryClient({
+      baseUrl: "http://mirror.test/r",
+      fetchImpl,
+    });
+
+    await expect(client.getComponent("@godui-extras/marquee")).resolves.toEqual(
+      { name: "marquee" },
+    );
+    expect(requested).toEqual([
+      "http://mirror.test/r/marquee.json",
+      "http://mirror.test/r/extras/marquee.json",
+    ]);
+  });
+
+  it("does not retry under extras for non-404 failures", async () => {
+    const fetchImpl = vi.fn(async () => new Response("boom", { status: 500 }));
+    const client = createRegistryClient({
+      baseUrl: "http://mirror.test/r",
+      fetchImpl,
+    });
+
+    await expect(client.getComponent("marquee")).rejects.toThrow("(500)");
+    expect(fetchImpl).toHaveBeenCalledTimes(1);
+  });
+
   it("appends a variant query for background components", async () => {
     const fetchJsonImpl = vi.fn().mockResolvedValue({ name: "gradient" });
     const client = createRegistryClient({
