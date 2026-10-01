@@ -1,6 +1,6 @@
 "use client";
 
-import { Dock, DockItem } from "@godui/components";
+import { Dock, DockItem } from "@godui/extras";
 import { Calendar, Folder, Home, Mail, Search, Settings } from "lucide-react";
 import type { ComponentType } from "react";
 import { useBareScene } from "@/components/learn/bare-scene-context";

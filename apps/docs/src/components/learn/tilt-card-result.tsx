@@ -1,6 +1,6 @@
 "use client";
 
-import { TiltCard } from "@godui/components";
+import { TiltCard } from "@godui/extras";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**

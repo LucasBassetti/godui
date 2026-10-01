@@ -1,4 +1,4 @@
-import { DropdownMenu, type DropdownMenuItem } from "@godui/components";
+import { DropdownMenu, type DropdownMenuItem } from "@godui/extras";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { hidden, select } from "../playground/argtypes";
 

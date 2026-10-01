@@ -1,6 +1,6 @@
 "use client";
 
-import { StickyScroll, type StickyScrollItem } from "@godui/components";
+import { StickyScroll, type StickyScrollItem } from "@godui/extras";
 import { DemoCenter } from "@/components/demos/_kit";
 
 const ITEMS: StickyScrollItem[] = [

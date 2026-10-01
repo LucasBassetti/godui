@@ -1,6 +1,6 @@
 "use client";
 
-import { ImageCompare } from "@godui/components";
+import { ImageCompare } from "@godui/extras";
 import { DemoMedia } from "@/components/demos/_kit";
 
 const SRC_A = "https://picsum.photos/id/1015/800/600";

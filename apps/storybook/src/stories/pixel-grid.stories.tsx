@@ -1,4 +1,4 @@
-import { PixelGrid, type PixelGridProps } from "@godui/components";
+import { PixelGrid, type PixelGridProps } from "@godui/extras";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { radio, toggle } from "../playground/argtypes";
 import {

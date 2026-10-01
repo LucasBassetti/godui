@@ -1,4 +1,4 @@
-import { SplitFlapDisplay } from "@godui/components";
+import { SplitFlapDisplay } from "@godui/extras";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { hidden, radio, range, select, text } from "../playground/argtypes";
 import { centered } from "../playground/stage";

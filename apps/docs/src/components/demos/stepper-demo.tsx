@@ -1,6 +1,6 @@
 "use client";
 
-import { Stepper } from "@godui/components";
+import { Stepper } from "@godui/extras";
 import * as React from "react";
 
 const steps = [

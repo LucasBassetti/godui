@@ -1,6 +1,6 @@
 "use client";
 
-import { VoiceOrb, type VoiceOrbState } from "@godui/components";
+import { VoiceOrb, type VoiceOrbState } from "@godui/extras";
 import * as React from "react";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 

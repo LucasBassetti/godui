@@ -1,4 +1,4 @@
-import { AuroraText } from "@godui/components";
+import { AuroraText } from "@godui/extras";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { hidden, range, text } from "../playground/argtypes";
 import { centered } from "../playground/stage";

@@ -1,7 +1,4 @@
-import {
-  TopographicDrift,
-  type TopographicDriftProps,
-} from "@godui/components";
+import { TopographicDrift, type TopographicDriftProps } from "@godui/extras";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
   type PresetMap,

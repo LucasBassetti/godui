@@ -1,6 +1,6 @@
 "use client";
 
-import { NumberTicker } from "@godui/components";
+import { NumberTicker } from "@godui/extras";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**

@@ -1,6 +1,6 @@
 "use client";
 
-import { Highlighter } from "@godui/components";
+import { Highlighter } from "@godui/extras";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**

@@ -4,7 +4,7 @@
  * property by design, so it can't run purely on the compositor.
  *
  * The machine-enforced source of truth is
- * `packages/components/src/motion/motion-allowlist.ts` (a CI test gates it). This
+ * `packages/extras/src/motion/motion-allowlist.ts` (a CI test gates it). This
  * map adds the human-facing "why", plus the ambient background-position/size
  * keyframe loops that the scanner doesn't yet see. Keyed by component name — the
  * last segment of a `/docs/components/<category>/<name>` slug. Surfaced as an

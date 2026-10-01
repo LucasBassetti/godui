@@ -1,6 +1,6 @@
 "use client";
 
-import { TabBar, type TabBarTab } from "@godui/components";
+import { TabBar, type TabBarTab } from "@godui/extras";
 import { Bell, Home, Search, User } from "lucide-react";
 import { useState } from "react";
 import { useBareScene } from "@/components/learn/bare-scene-context";

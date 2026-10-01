@@ -1,4 +1,4 @@
-import { Gravity, MatterBody } from "@godui/components";
+import { Gravity, MatterBody } from "@godui/extras";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { padded } from "../playground/stage";
 

@@ -1,4 +1,4 @@
-import { ContextMenu, type ContextMenuItem } from "@godui/components";
+import { ContextMenu, type ContextMenuItem } from "@godui/extras";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { hidden } from "../playground/argtypes";
 import { centered } from "../playground/stage";

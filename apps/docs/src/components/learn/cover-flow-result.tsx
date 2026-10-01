@@ -1,6 +1,6 @@
 "use client";
 
-import { CoverFlow } from "@godui/components";
+import { CoverFlow } from "@godui/extras";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**

@@ -1,6 +1,6 @@
 "use client";
 
-import { FlowField } from "@godui/components";
+import { FlowField } from "@godui/extras";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 export function FlowFieldResult() {

@@ -1,4 +1,4 @@
-import { SwipeDeck, type SwipeDeckProps } from "@godui/components";
+import { SwipeDeck, type SwipeDeckProps } from "@godui/extras";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { range, toggle } from "../playground/argtypes";
 

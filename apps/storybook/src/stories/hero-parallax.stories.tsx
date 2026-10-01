@@ -1,4 +1,4 @@
-import { HeroParallax } from "@godui/components";
+import { HeroParallax } from "@godui/extras";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 const PRODUCTS = [

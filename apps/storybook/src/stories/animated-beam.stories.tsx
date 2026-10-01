@@ -1,4 +1,4 @@
-import { AnimatedBeam, type AnimatedBeamProps } from "@godui/components";
+import { AnimatedBeam, type AnimatedBeamProps } from "@godui/extras";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import * as React from "react";
 import { color, range, toggle } from "../playground/argtypes";

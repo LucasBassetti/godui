@@ -1,4 +1,4 @@
-import { GooeyFab, type GooeyFabAction } from "@godui/components";
+import { GooeyFab, type GooeyFabAction } from "@godui/extras";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { select } from "../playground/argtypes";
 import { centered } from "../playground/stage";

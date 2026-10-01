@@ -1,4 +1,4 @@
-import { PromptSuggestions } from "@godui/components";
+import { PromptSuggestions } from "@godui/extras";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "storybook/test";
 import { action, hidden, range, select, toggle } from "../playground/argtypes";

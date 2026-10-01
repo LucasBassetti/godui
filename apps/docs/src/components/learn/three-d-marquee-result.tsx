@@ -1,6 +1,6 @@
 "use client";
 
-import { ThreeDMarquee } from "@godui/components";
+import { ThreeDMarquee } from "@godui/extras";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 const IMAGES = [

@@ -12,7 +12,7 @@ import { scanSource, type Violation } from "./motion-lint";
  * layout loops) can never be allowlisted. See motion-lint.ts for the policy.
  */
 
-const SRC = dirname(dirname(fileURLToPath(import.meta.url))); // packages/components/src
+const SRC = dirname(dirname(fileURLToPath(import.meta.url))); // packages/extras/src
 
 /** Every `<dir>/<file>.tsx` under src, excluding tests and stories. */
 function componentFiles(): string[] {

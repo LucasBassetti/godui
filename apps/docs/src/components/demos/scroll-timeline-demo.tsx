@@ -1,6 +1,6 @@
 "use client";
 
-import { ScrollTimeline } from "@godui/components";
+import { ScrollTimeline } from "@godui/extras";
 import { useRef } from "react";
 import { DemoScrollPort, DemoScrollRunway } from "@/components/demos/_kit";
 

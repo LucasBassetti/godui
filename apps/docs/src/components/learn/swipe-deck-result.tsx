@@ -1,6 +1,6 @@
 "use client";
 
-import { SwipeDeck } from "@godui/components";
+import { SwipeDeck } from "@godui/extras";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 const CARDS: { name: string; role: string; img: string }[] = [

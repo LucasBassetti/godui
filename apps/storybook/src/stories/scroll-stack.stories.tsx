@@ -1,4 +1,4 @@
-import { ScrollStack, type ScrollStackProps } from "@godui/components";
+import { ScrollStack, type ScrollStackProps } from "@godui/extras";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { range, toggle } from "../playground/argtypes";
 

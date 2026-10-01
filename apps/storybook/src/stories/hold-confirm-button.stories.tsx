@@ -1,4 +1,4 @@
-import { HoldConfirmButton } from "@godui/components";
+import { HoldConfirmButton } from "@godui/extras";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "storybook/test";
 import { action, range, select, text } from "../playground/argtypes";

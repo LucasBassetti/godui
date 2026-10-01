@@ -1,4 +1,4 @@
-import { PresenceFacepile } from "@godui/components";
+import { PresenceFacepile } from "@godui/extras";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { hidden, range, select, toggle } from "../playground/argtypes";
 import { centered } from "../playground/stage";

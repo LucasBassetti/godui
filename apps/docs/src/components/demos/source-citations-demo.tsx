@@ -1,6 +1,6 @@
 "use client";
 
-import { SourceCitation, SourceList } from "@godui/components";
+import { SourceCitation, SourceList } from "@godui/extras";
 
 const sources = [
   {

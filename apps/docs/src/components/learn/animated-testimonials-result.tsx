@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatedTestimonials } from "@godui/components";
+import { AnimatedTestimonials } from "@godui/extras";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**

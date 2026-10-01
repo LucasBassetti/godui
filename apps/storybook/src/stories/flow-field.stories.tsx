@@ -1,4 +1,4 @@
-import { FlowField, type FlowFieldProps } from "@godui/components";
+import { FlowField, type FlowFieldProps } from "@godui/extras";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
   type PresetMap,

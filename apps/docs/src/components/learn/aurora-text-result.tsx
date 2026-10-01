@@ -1,6 +1,6 @@
 "use client";
 
-import { AuroraText } from "@godui/components";
+import { AuroraText } from "@godui/extras";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**

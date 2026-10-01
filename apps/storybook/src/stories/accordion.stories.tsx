@@ -1,4 +1,4 @@
-import { Accordion } from "@godui/components";
+import { Accordion } from "@godui/extras";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { hidden, select, toggle } from "../playground/argtypes";
 import { padded } from "../playground/stage";

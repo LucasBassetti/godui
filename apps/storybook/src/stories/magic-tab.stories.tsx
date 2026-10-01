@@ -1,4 +1,4 @@
-import { MagicTab } from "@godui/components";
+import { MagicTab } from "@godui/extras";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "storybook/test";
 import { action, hidden, select, toggle } from "../playground/argtypes";

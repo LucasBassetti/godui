@@ -1,4 +1,4 @@
-import { LiveCursors, SimulatedCursors } from "@godui/components";
+import { LiveCursors, SimulatedCursors } from "@godui/extras";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { hidden, toggle } from "../playground/argtypes";
 

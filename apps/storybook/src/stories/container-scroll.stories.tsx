@@ -1,4 +1,4 @@
-import { ContainerScroll } from "@godui/components";
+import { ContainerScroll } from "@godui/extras";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 const meta = {

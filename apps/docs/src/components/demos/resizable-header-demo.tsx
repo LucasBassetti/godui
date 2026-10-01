@@ -1,6 +1,6 @@
 "use client";
 
-import { ResizableHeader } from "@godui/components";
+import { ResizableHeader } from "@godui/extras";
 import { useRef, useState } from "react";
 
 const LINKS = [

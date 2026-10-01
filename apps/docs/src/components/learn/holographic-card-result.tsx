@@ -1,6 +1,6 @@
 "use client";
 
-import { HolographicCard } from "@godui/components";
+import { HolographicCard } from "@godui/extras";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**

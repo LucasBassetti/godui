@@ -1,6 +1,6 @@
 "use client";
 
-import { BeamDraw } from "@godui/components";
+import { BeamDraw } from "@godui/extras";
 import { useRef } from "react";
 import { DemoScrollPort, DemoScrollRunway } from "@/components/demos/_kit";
 

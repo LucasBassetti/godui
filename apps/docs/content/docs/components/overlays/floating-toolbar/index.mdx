@@ -4,7 +4,7 @@ description: A context toolbar that springs into view with magnetic, morphing ac
 workbench: true
 ---
 
-import { FloatingToolbar } from "@godui/components";
+import { FloatingToolbar } from "@godui/extras";
 
 export const icon = (d) => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="size-[18px]" aria-hidden="true"><path d={d} /></svg>
@@ -52,7 +52,7 @@ export function FloatingToolbarDemo() {
 Drive `open` from a selection or hover state to spring the toolbar in and out.
 
 ```tsx
-import { FloatingToolbar } from "@godui/components";
+import { FloatingToolbar } from "@godui/extras";
 
 const [open, setOpen] = useState(false);
 

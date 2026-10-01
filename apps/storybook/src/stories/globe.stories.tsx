@@ -1,4 +1,4 @@
-import { Globe, type GlobeProps } from "@godui/components";
+import { Globe, type GlobeProps } from "@godui/extras";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
   type PresetMap,

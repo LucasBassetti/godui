@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  MOTION_TIER_META,
-  type MotionGrade,
-  propTier,
-} from "@godui/components";
+import { MOTION_TIER_META, type MotionGrade, propTier } from "@godui/extras";
 import type { ReactNode } from "react";
 import { motionScore } from "@/lib/motion-score";
 import {

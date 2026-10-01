@@ -1,6 +1,6 @@
 "use client";
 
-import { BeamDraw } from "@godui/components";
+import { BeamDraw } from "@godui/extras";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**

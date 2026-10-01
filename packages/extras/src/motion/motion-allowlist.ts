@@ -5,7 +5,7 @@
  * the effect is intrinsically layout- or paint-driven and has no compositor-only
  * equivalent (the same class as the guideline's sanctioned `height:auto`).
  *
- * Keys are `<dir>/<file>.tsx` relative to `packages/components/src`. Each entry
+ * Keys are `<dir>/<file>.tsx` relative to `packages/extras/src`. Each entry
  * lists the normalised prop (lowercase, hyphens stripped) and a one-line reason.
  *
  * RULES:

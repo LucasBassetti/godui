@@ -1,4 +1,4 @@
-import { BeamDraw } from "@godui/components";
+import { BeamDraw } from "@godui/extras";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 const meta = {

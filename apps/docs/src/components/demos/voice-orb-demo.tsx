@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  useAudioAmplitude,
-  VoiceOrb,
-  type VoiceOrbState,
-} from "@godui/components";
+import { useAudioAmplitude, VoiceOrb, type VoiceOrbState } from "@godui/extras";
 import * as React from "react";
 
 const STATES: VoiceOrbState[] = ["idle", "listening", "speaking"];

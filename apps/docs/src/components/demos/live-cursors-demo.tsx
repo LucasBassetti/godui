@@ -1,6 +1,6 @@
 "use client";
 
-import { SimulatedCursors } from "@godui/components";
+import { SimulatedCursors } from "@godui/extras";
 
 export function LiveCursorsDemo() {
   return (

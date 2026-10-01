@@ -1,4 +1,4 @@
-import { MorphGallery, type MorphGalleryProps } from "@godui/components";
+import { MorphGallery, type MorphGalleryProps } from "@godui/extras";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { range } from "../playground/argtypes";
 

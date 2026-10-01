@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatedBeam } from "@godui/components";
+import { AnimatedBeam } from "@godui/extras";
 import { Cloud, RefreshCw, Smartphone } from "lucide-react";
 import * as React from "react";
 

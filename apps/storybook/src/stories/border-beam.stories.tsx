@@ -1,4 +1,4 @@
-import { BorderBeam } from "@godui/components";
+import { BorderBeam } from "@godui/extras";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import type * as React from "react";
 import { color, range, toggle } from "../playground/argtypes";

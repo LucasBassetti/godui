@@ -1,4 +1,4 @@
-import { Drawer } from "@godui/components";
+import { Drawer } from "@godui/extras";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import * as React from "react";
 import { hidden, select, text } from "../playground/argtypes";

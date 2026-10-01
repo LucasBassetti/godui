@@ -1,4 +1,4 @@
-import { ScrollProgress, type ScrollProgressProps } from "@godui/components";
+import { ScrollProgress, type ScrollProgressProps } from "@godui/extras";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import * as React from "react";
 import { range, select } from "../playground/argtypes";

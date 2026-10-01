@@ -29,7 +29,7 @@ const registry = JSON.parse(
 );
 const backgroundCatalog = JSON.parse(
   readFileSync(
-    resolve(repoRoot, "packages/components/src/lib/background-catalog.json"),
+    resolve(repoRoot, "packages/extras/src/lib/background-catalog.json"),
     "utf8",
   ),
 );

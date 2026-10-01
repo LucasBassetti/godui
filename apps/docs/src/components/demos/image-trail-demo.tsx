@@ -1,6 +1,6 @@
 "use client";
 
-import { ImageTrail } from "@godui/components";
+import { ImageTrail } from "@godui/extras";
 
 const IMAGES = [
   "https://picsum.photos/id/1015/400/400",

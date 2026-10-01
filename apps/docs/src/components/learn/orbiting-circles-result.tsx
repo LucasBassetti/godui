@@ -1,6 +1,6 @@
 "use client";
 
-import { OrbitingCircles } from "@godui/components";
+import { OrbitingCircles } from "@godui/extras";
 import { Box, Cloud, Cpu, Hexagon, Layers, Zap } from "lucide-react";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 

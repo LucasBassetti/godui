@@ -1,4 +1,4 @@
-import { ProgressiveCardReveal } from "@godui/components";
+import { ProgressiveCardReveal } from "@godui/extras";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import * as React from "react";
 import { hidden, range } from "../playground/argtypes";

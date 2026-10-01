@@ -1,4 +1,4 @@
-import { MagicButton } from "@godui/components";
+import { MagicButton } from "@godui/extras";
 import { DocsLayout } from "fumadocs-ui/layouts/docs";
 import { ChevronDown } from "lucide-react";
 import Link from "next/link";

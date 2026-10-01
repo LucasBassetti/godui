@@ -1,6 +1,6 @@
 "use client";
 
-import { StoreBadge, StoreBadgeGroup } from "@godui/components";
+import { StoreBadge, StoreBadgeGroup } from "@godui/extras";
 
 export function StoreBadgeDemo() {
   return (

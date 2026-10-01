@@ -1,6 +1,6 @@
 "use client";
 
-import { DynamicIsland, type DynamicIslandSize } from "@godui/components";
+import { DynamicIsland, type DynamicIslandSize } from "@godui/extras";
 import { Music, Phone, Timer } from "lucide-react";
 import * as React from "react";
 

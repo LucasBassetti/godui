@@ -1,6 +1,6 @@
 "use client";
 
-import { SlideConfirmButton } from "@godui/components";
+import { SlideConfirmButton } from "@godui/extras";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**

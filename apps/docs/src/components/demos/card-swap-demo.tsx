@@ -1,6 +1,6 @@
 "use client";
 
-import { CardSwap } from "@godui/components";
+import { CardSwap } from "@godui/extras";
 import { Activity, Globe, ScrollText, Zap } from "lucide-react";
 
 const FEATURES = [

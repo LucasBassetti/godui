@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatedTooltip } from "@godui/components";
+import { AnimatedTooltip } from "@godui/extras";
 import { Bold, Code, Italic, Link, Underline } from "lucide-react";
 import type { ComponentType } from "react";
 

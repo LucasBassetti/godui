@@ -1,6 +1,6 @@
 "use client";
 
-import { Drawer } from "@godui/components";
+import { Drawer } from "@godui/extras";
 import { Check, Copy, Link2, Mail, MessageSquare, Send } from "lucide-react";
 import { type ComponentType, useState } from "react";
 

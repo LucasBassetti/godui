@@ -1,6 +1,6 @@
 "use client";
 
-import { type Comment, CommentPin } from "@godui/components";
+import { type Comment, CommentPin } from "@godui/extras";
 import { useState } from "react";
 
 type Pin = {

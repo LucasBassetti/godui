@@ -1,6 +1,6 @@
 "use client";
 
-import { MegaMenu, type MegaMenuItem } from "@godui/components";
+import { MegaMenu, type MegaMenuItem } from "@godui/extras";
 import {
   BarChart3,
   BookOpen,

@@ -1,4 +1,4 @@
-import { BentoCard, BentoGrid } from "@godui/components";
+import { BentoCard, BentoGrid } from "@godui/extras";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import type { ReactNode } from "react";
 import { select } from "../playground/argtypes";

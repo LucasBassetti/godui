@@ -1,6 +1,6 @@
 "use client";
 
-import { SplitFlapDisplay } from "@godui/components";
+import { SplitFlapDisplay } from "@godui/extras";
 import { useEffect, useState } from "react";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 

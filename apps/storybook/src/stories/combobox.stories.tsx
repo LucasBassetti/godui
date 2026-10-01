@@ -1,4 +1,4 @@
-import { Combobox, type ComboboxOption } from "@godui/components";
+import { Combobox, type ComboboxOption } from "@godui/extras";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import * as React from "react";
 import { fn } from "storybook/test";

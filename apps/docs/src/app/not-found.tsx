@@ -1,6 +1,6 @@
 "use client";
 
-import { MagicButton } from "@godui/components";
+import { MagicButton } from "@godui/extras";
 import { useRouter } from "next/navigation";
 
 export default function NotFound() {

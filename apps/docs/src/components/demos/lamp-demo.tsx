@@ -1,6 +1,6 @@
 "use client";
 
-import { Lamp } from "@godui/components";
+import { Lamp } from "@godui/extras";
 
 export function LampDemo() {
   return (

@@ -1,6 +1,6 @@
 "use client";
 
-import { LiquidImage } from "@godui/components";
+import { LiquidImage } from "@godui/extras";
 import { DemoMedia } from "@/components/demos/_kit";
 
 const IMAGES = [

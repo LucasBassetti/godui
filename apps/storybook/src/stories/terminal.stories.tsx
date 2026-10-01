@@ -1,8 +1,4 @@
-import {
-  Terminal,
-  type TerminalLine,
-  type TerminalProps,
-} from "@godui/components";
+import { Terminal, type TerminalLine, type TerminalProps } from "@godui/extras";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 const LINES: TerminalLine[] = [

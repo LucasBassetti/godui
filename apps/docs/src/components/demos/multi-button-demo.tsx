@@ -4,7 +4,7 @@ import {
   CompactMultiButton,
   MultiButton,
   type MultiButtonItem,
-} from "@godui/components";
+} from "@godui/extras";
 import {
   Archive,
   Bookmark,

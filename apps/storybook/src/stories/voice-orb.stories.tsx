@@ -1,4 +1,4 @@
-import { VoiceOrb } from "@godui/components";
+import { VoiceOrb } from "@godui/extras";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import * as React from "react";
 import { radio, range } from "../playground/argtypes";

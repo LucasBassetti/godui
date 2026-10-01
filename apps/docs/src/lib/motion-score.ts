@@ -1,8 +1,4 @@
-import {
-  MOTION_ALLOWLIST,
-  type MotionGrade,
-  motionTier,
-} from "@godui/components";
+import { MOTION_ALLOWLIST, type MotionGrade, motionTier } from "@godui/extras";
 import { MOTION_NOTES, STATIC_COMPONENTS } from "./motion-notes";
 
 /**

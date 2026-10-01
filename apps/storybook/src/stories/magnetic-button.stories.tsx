@@ -1,4 +1,4 @@
-import { MagneticButton } from "@godui/components";
+import { MagneticButton } from "@godui/extras";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "storybook/test";
 import { action, range, select, text, toggle } from "../playground/argtypes";

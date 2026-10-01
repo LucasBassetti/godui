@@ -1,4 +1,4 @@
-import { BlueprintGrid, type BlueprintGridProps } from "@godui/components";
+import { BlueprintGrid, type BlueprintGridProps } from "@godui/extras";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { color, range, select, toggle } from "../playground/argtypes";
 import { effectStage } from "../playground/stage";

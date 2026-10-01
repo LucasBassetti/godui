@@ -1,4 +1,4 @@
-import { GooeyStack, type GooeyStackProps } from "@godui/components";
+import { GooeyStack, type GooeyStackProps } from "@godui/extras";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { range, toggle } from "../playground/argtypes";
 

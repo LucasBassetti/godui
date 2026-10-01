@@ -4,7 +4,7 @@ import {
   type EffectBackgroundVariant,
   effectBackgroundPresets,
   effectBackgroundVariants,
-} from "@godui/components";
+} from "@godui/extras";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { select } from "../playground/argtypes";
 import { effectStage } from "../playground/stage";

@@ -4,7 +4,7 @@ description: A segmented one-time-code input with auto-advance, paste-to-fill, a
 workbench: true
 ---
 
-import { OTPInput } from "@godui/components";
+import { OTPInput } from "@godui/extras";
 
 <Workbench>
 
@@ -68,7 +68,7 @@ Set `mask` to render entered characters as dots — useful for sensitive codes.
 ## Usage
 
 ```tsx
-import { OTPInput } from "@godui/components";
+import { OTPInput } from "@godui/extras";
 
 <OTPInput length={6} onComplete={(code) => verify(code)} />;
 ```

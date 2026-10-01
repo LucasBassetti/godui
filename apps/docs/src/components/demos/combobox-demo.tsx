@@ -1,6 +1,6 @@
 "use client";
 
-import { Combobox, type ComboboxOption } from "@godui/components";
+import { Combobox, type ComboboxOption } from "@godui/extras";
 import { useState } from "react";
 
 const PEOPLE: ComboboxOption[] = [

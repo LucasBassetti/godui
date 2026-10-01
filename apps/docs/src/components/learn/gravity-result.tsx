@@ -1,6 +1,6 @@
 "use client";
 
-import { Gravity, MatterBody } from "@godui/components";
+import { Gravity, MatterBody } from "@godui/extras";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 const TAGS: { label: string; x: string; y: string; angle: number }[] = [

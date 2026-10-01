@@ -1,6 +1,6 @@
 "use client";
 
-import { ImageCompare } from "@godui/components";
+import { ImageCompare } from "@godui/extras";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**

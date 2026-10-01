@@ -1,4 +1,4 @@
-import { StoreBadge, StoreBadgeGroup } from "@godui/components";
+import { StoreBadge, StoreBadgeGroup } from "@godui/extras";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 const meta = {

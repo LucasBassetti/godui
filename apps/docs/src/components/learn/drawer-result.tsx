@@ -1,6 +1,6 @@
 "use client";
 
-import { Drawer } from "@godui/components";
+import { Drawer } from "@godui/extras";
 import { Link2, ShoppingBag } from "lucide-react";
 import { useState } from "react";
 import { useBareScene } from "@/components/learn/bare-scene-context";

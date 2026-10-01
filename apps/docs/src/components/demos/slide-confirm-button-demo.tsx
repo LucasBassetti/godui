@@ -1,6 +1,6 @@
 "use client";
 
-import { SlideConfirmButton } from "@godui/components";
+import { SlideConfirmButton } from "@godui/extras";
 
 /**
  * Async confirm: `onConfirm` returns a promise, so the thumb spins and the

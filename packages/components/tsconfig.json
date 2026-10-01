@@ -1,8 +1,5 @@
 {
   "extends": "../../tsconfig.json",
-  "compilerOptions": {
-    "outDir": "./dist",
-    "types": ["vitest/globals", "@testing-library/jest-dom"]
-  },
-  "include": ["src", "vitest.setup.ts", "vitest.config.ts"]
+  "compilerOptions": { "outDir": "./dist" },
+  "include": ["src", "fonts"]
 }

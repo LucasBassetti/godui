@@ -1,4 +1,4 @@
-import { AnimatedTestimonials } from "@godui/components";
+import { AnimatedTestimonials } from "@godui/extras";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { hidden, range, toggle } from "../playground/argtypes";
 import { centered } from "../playground/stage";

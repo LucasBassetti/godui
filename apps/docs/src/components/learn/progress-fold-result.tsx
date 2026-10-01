@@ -1,6 +1,6 @@
 "use client";
 
-import { ProgressFoldButton } from "@godui/components";
+import { ProgressFoldButton } from "@godui/extras";
 import * as React from "react";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 

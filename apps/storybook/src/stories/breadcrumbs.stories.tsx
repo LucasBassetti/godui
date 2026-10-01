@@ -1,4 +1,4 @@
-import { Breadcrumbs } from "@godui/components";
+import { Breadcrumbs } from "@godui/extras";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "storybook/test";
 import { action, hidden, range, toggle } from "../playground/argtypes";

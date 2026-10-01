@@ -6,7 +6,7 @@ import {
   ConversationThread,
   PromptComposer,
   StreamingText,
-} from "@godui/components";
+} from "@godui/extras";
 import { Copy, RotateCcw, ThumbsUp } from "lucide-react";
 import { useState } from "react";
 

@@ -1,4 +1,4 @@
-import { AgentStep, AgentTimeline } from "@godui/components";
+import { AgentStep, AgentTimeline } from "@godui/extras";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { centered } from "../playground/stage";
 

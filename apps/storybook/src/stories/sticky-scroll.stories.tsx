@@ -1,4 +1,4 @@
-import { StickyScroll, type StickyScrollItem } from "@godui/components";
+import { StickyScroll, type StickyScrollItem } from "@godui/extras";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 const ITEMS: StickyScrollItem[] = [

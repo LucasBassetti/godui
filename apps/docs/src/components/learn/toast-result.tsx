@@ -1,6 +1,6 @@
 "use client";
 
-import { ToastProvider, toast } from "@godui/components";
+import { ToastProvider, toast } from "@godui/extras";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**

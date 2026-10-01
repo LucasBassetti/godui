@@ -1,6 +1,6 @@
 "use client";
 
-import { ThreeDMarquee } from "@godui/components";
+import { ThreeDMarquee } from "@godui/extras";
 import { DemoMedia } from "@/components/demos/_kit";
 
 const IMAGES = [

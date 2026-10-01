@@ -1,7 +1,4 @@
-import {
-  ParticleDissolve,
-  type ParticleDissolveProps,
-} from "@godui/components";
+import { ParticleDissolve, type ParticleDissolveProps } from "@godui/extras";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { radio, range } from "../playground/argtypes";
 

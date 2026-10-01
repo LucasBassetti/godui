@@ -5,7 +5,7 @@ import {
   MorphingDialogClose,
   MorphingDialogContent,
   MorphingDialogTrigger,
-} from "@godui/components";
+} from "@godui/extras";
 
 export function MorphingDialogDemo() {
   return (

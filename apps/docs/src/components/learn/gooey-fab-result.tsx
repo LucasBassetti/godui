@@ -1,6 +1,6 @@
 "use client";
 
-import { GooeyFab } from "@godui/components";
+import { GooeyFab } from "@godui/extras";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 const Icon = ({ d }: { d: string }) => (

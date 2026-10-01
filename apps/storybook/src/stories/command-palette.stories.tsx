@@ -1,4 +1,4 @@
-import { type CommandGroup, CommandPalette } from "@godui/components";
+import { type CommandGroup, CommandPalette } from "@godui/extras";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import * as React from "react";
 import { hidden, text, toggle } from "../playground/argtypes";

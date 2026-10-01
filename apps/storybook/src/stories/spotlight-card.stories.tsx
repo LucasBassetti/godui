@@ -1,4 +1,4 @@
-import { SpotlightCard, type SpotlightCardProps } from "@godui/components";
+import { SpotlightCard, type SpotlightCardProps } from "@godui/extras";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { color, range, toggle } from "../playground/argtypes";
 

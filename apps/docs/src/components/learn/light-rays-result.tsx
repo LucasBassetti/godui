@@ -1,6 +1,6 @@
 "use client";
 
-import { LightRays } from "@godui/components";
+import { LightRays } from "@godui/extras";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**

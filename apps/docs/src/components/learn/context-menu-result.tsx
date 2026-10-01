@@ -1,6 +1,6 @@
 "use client";
 
-import { ContextMenu, type ContextMenuItem } from "@godui/components";
+import { ContextMenu, type ContextMenuItem } from "@godui/extras";
 import { Copy, Download, FileText, Pencil, Share2, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useBareScene } from "@/components/learn/bare-scene-context";

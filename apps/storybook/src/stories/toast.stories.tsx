@@ -1,4 +1,4 @@
-import { ToastProvider, toast } from "@godui/components";
+import { ToastProvider, toast } from "@godui/extras";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { range, select } from "../playground/argtypes";
 

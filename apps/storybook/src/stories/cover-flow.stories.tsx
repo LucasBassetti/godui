@@ -1,4 +1,4 @@
-import { CoverFlow, type CoverFlowProps } from "@godui/components";
+import { CoverFlow, type CoverFlowProps } from "@godui/extras";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { range, toggle } from "../playground/argtypes";
 

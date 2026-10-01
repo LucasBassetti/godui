@@ -1,6 +1,6 @@
 "use client";
 
-import { DropdownMenu, type DropdownMenuItem } from "@godui/components";
+import { DropdownMenu, type DropdownMenuItem } from "@godui/extras";
 import {
   ChevronDown,
   CreditCard,

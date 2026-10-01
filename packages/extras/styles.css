@@ -1,0 +1,268 @@
+/* GodUI Extras — per-component animation tokens + keyframes.
+ * Import AFTER @godui/components/styles.css. Tokens stay in `@theme inline`
+ * because they reference per-element vars (e.g. --speed). */
+
+@source "./src";
+
+@theme inline {
+  --animate-shimmer-slide: shimmer-slide var(--speed) ease-in-out infinite
+    alternate;
+  --animate-spin-around: spin-around calc(var(--speed) * 2) infinite linear;
+
+  --animate-aurora-text: aurora-text var(--aurora-text-speed, 10s) infinite
+    linear;
+
+  --animate-magic-rainbow: magic-rainbow var(--rainbow-speed, 2s) infinite
+    linear;
+  --animate-magic-input-indeterminate: magic-input-indeterminate 1.2s
+    ease-in-out infinite alternate;
+  --animate-magic-input-sweep: magic-input-sweep 220ms ease-out;
+  --animate-magic-input-spin: magic-input-spin 0.8s linear infinite;
+  --animate-progress-fold-indeterminate: progress-fold-indeterminate 1.2s
+    ease-in-out infinite;
+
+  /* Blueprint grid: a light band sweeps across the lattice */
+  --animate-blueprint-sweep: blueprint-sweep var(--blueprint-speed, 8s) linear
+    infinite;
+
+  /* Light rays: god-rays rotate and breathe */
+  --animate-light-rays-sweep: light-rays-sweep var(--rays-speed, 14s)
+    ease-in-out infinite alternate;
+
+  /* Marquee: seamless track scroll (duration driven by the `--duration` var) */
+  --animate-marquee: marquee var(--duration, 40s) linear infinite;
+  --animate-marquee-vertical: marquee-vertical var(--duration, 40s) linear
+    infinite;
+
+  /* App showcase: the phone screen auto-scrolls its screenshot on a loop */
+  --animate-app-showcase-scroll: app-showcase-scroll var(--as-loop, 24s) linear
+    infinite;
+
+  /* Mask flipbook — one token per sprite (step counts differ) */
+  --animate-mask-nature-in: mask-button-in 0.7s steps(22) forwards;
+  --animate-mask-nature-out: mask-button-out 0.7s steps(22) forwards;
+  --animate-mask-urban-in: mask-button-in 0.7s steps(29) forwards;
+  --animate-mask-urban-out: mask-button-out 0.7s steps(29) forwards;
+  --animate-mask-forest-in: mask-button-in 0.7s steps(70) forwards;
+  --animate-mask-forest-out: mask-button-out 0.7s steps(70) forwards;
+
+  /* Voice orb: corona rotation, idle breathing, and the listening ring pulse */
+  --animate-voice-orb-spin: voice-orb-spin 8s linear infinite;
+  --animate-voice-orb-breathe: voice-orb-breathe 4s ease-in-out infinite;
+  --animate-voice-orb-ring: voice-orb-ring 1.6s ease-out infinite;
+
+  /* Split-flap: the old top leaf falls away, then the new bottom leaf rises */
+  --animate-split-flap-fall: split-flap-fall 0.12s
+    cubic-bezier(0.3, 0.7, 0.4, 1) forwards;
+  --animate-split-flap-rise: split-flap-rise 0.12s
+    cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes voice-orb-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes voice-orb-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.04);
+  }
+}
+
+@keyframes voice-orb-ring {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
+
+/* Split-flap: top leaf hinges down and away (front carries the old glyph top) */
+@keyframes split-flap-fall {
+  from {
+    transform: rotateX(0deg);
+  }
+  to {
+    transform: rotateX(-90deg);
+  }
+}
+
+/* Split-flap: bottom leaf hinges up into place (front carries the new glyph bottom) */
+@keyframes split-flap-rise {
+  from {
+    transform: rotateX(90deg);
+  }
+  to {
+    transform: rotateX(0deg);
+  }
+}
+
+@keyframes shimmer-slide {
+  to {
+    transform: translate(calc(100cqw - 100%), 0);
+  }
+}
+
+@keyframes spin-around {
+  0% {
+    transform: translateZ(0) rotate(0);
+  }
+  15%,
+  35% {
+    transform: translateZ(0) rotate(90deg);
+  }
+  65%,
+  85% {
+    transform: translateZ(0) rotate(270deg);
+  }
+  100% {
+    transform: translateZ(0) rotate(360deg);
+  }
+}
+
+/* Aurora text: gradient drifts back and forth across the clipped text */
+@keyframes aurora-text {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes magic-rainbow {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+/* Magic input: indeterminate fill segment bouncing end to end (right→left) */
+@keyframes magic-input-indeterminate {
+  from {
+    background-position: 110% center;
+  }
+  to {
+    background-position: -10% center;
+  }
+}
+
+/* Magic input: success / error fill sweeping in from the left */
+@keyframes magic-input-sweep {
+  from {
+    background-size: 0% 100%;
+  }
+  to {
+    background-size: 100% 100%;
+  }
+}
+
+/* Magic input: spinner rotation */
+@keyframes magic-input-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Mask button: flipbook reveal driven by a sprite-sheet mask-position */
+@keyframes mask-button-in {
+  from {
+    -webkit-mask-position: 0 0;
+    mask-position: 0 0;
+  }
+  to {
+    -webkit-mask-position: 100% 0;
+    mask-position: 100% 0;
+  }
+}
+
+@keyframes mask-button-out {
+  from {
+    -webkit-mask-position: 100% 0;
+    mask-position: 100% 0;
+  }
+  to {
+    -webkit-mask-position: 0 0;
+    mask-position: 0 0;
+  }
+}
+
+/* Marquee: track scrolls one full copy (plus the gap) then loops seamlessly */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-100% - var(--gap)));
+  }
+}
+
+@keyframes marquee-vertical {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(calc(-100% - var(--gap)));
+  }
+}
+
+/* App showcase: track holds two stacked copies; scroll one full copy up */
+@keyframes app-showcase-scroll {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-50%);
+  }
+}
+
+/* Progress fold button: indeterminate segment sweeping left→right */
+@keyframes progress-fold-indeterminate {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(250%);
+  }
+}
+
+/* Blueprint grid: a diagonal light band travels across the lattice */
+@keyframes blueprint-sweep {
+  0% {
+    transform: translate(-50%, -50%) rotate(var(--blueprint-angle, 25deg));
+    opacity: 0;
+  }
+  15%,
+  85% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(150%, 150%) rotate(var(--blueprint-angle, 25deg));
+    opacity: 0;
+  }
+}
+
+/* Light rays: the ray fan slowly rotates and breathes in intensity */
+@keyframes light-rays-sweep {
+  0% {
+    transform: rotate(calc(var(--rays-angle, 0deg) - 6deg)) scale(1);
+    opacity: calc(var(--rays-intensity, 0.6) * 0.7);
+  }
+  100% {
+    transform: rotate(calc(var(--rays-angle, 0deg) + 6deg)) scale(1.08);
+    opacity: var(--rays-intensity, 0.6);
+  }
+}

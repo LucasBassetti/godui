@@ -1,6 +1,6 @@
 "use client";
 
-import { TopographicDrift } from "@godui/components";
+import { TopographicDrift } from "@godui/extras";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 const demo = (

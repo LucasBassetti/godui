@@ -1,6 +1,6 @@
 "use client";
 
-import { type Notification, NotificationInbox } from "@godui/components";
+import { type Notification, NotificationInbox } from "@godui/extras";
 import { GitPullRequest, MessageCircle, UserPlus } from "lucide-react";
 import { useState } from "react";
 

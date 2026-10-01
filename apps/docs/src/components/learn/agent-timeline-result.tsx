@@ -1,6 +1,6 @@
 "use client";
 
-import { AgentStep, AgentTimeline, type StepStatus } from "@godui/components";
+import { AgentStep, AgentTimeline, type StepStatus } from "@godui/extras";
 import * as React from "react";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 

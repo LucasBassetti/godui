@@ -153,7 +153,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/magic-button/magic-button.tsx",
+          "path": "packages/extras/src/magic-button/magic-button.tsx",
           "type": "registry:ui",
           "target": "components/godui/magic-button.tsx"
         }
@@ -182,7 +182,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/magic-tab/magic-tab.tsx",
+          "path": "packages/extras/src/magic-tab/magic-tab.tsx",
           "type": "registry:ui",
           "target": "components/godui/magic-tab.tsx"
         }
@@ -211,7 +211,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/magic-input/magic-input.tsx",
+          "path": "packages/extras/src/magic-input/magic-input.tsx",
           "type": "registry:ui",
           "target": "components/godui/magic-input.tsx"
         }
@@ -264,7 +264,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/shimmer-button/shimmer-button.tsx",
+          "path": "packages/extras/src/shimmer-button/shimmer-button.tsx",
           "type": "registry:ui",
           "target": "components/godui/shimmer-button.tsx"
         }
@@ -305,7 +305,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/progress-fold-button/progress-fold-button.tsx",
+          "path": "packages/extras/src/progress-fold-button/progress-fold-button.tsx",
           "type": "registry:ui",
           "target": "components/godui/progress-fold-button.tsx"
         }
@@ -334,7 +334,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/mask-button/mask-button.tsx",
+          "path": "packages/extras/src/mask-button/mask-button.tsx",
           "type": "registry:ui",
           "target": "components/godui/mask-button.tsx"
         }
@@ -381,7 +381,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/magnetic-button/magnetic-button.tsx",
+          "path": "packages/extras/src/magnetic-button/magnetic-button.tsx",
           "type": "registry:ui",
           "target": "components/godui/magnetic-button.tsx"
         }
@@ -396,7 +396,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/multi-button/multi-button.tsx",
+          "path": "packages/extras/src/multi-button/multi-button.tsx",
           "type": "registry:ui",
           "target": "components/godui/multi-button.tsx"
         }
@@ -411,7 +411,7 @@
       "dependencies": ["framer-motion"],
       "files": [
         {
-          "path": "packages/components/src/progressive-card-reveal/progressive-card-reveal.tsx",
+          "path": "packages/extras/src/progressive-card-reveal/progressive-card-reveal.tsx",
           "type": "registry:ui",
           "target": "components/godui/progressive-card-reveal.tsx"
         }
@@ -425,7 +425,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/aurora-text/aurora-text.tsx",
+          "path": "packages/extras/src/aurora-text/aurora-text.tsx",
           "type": "registry:ui",
           "target": "components/godui/aurora-text.tsx"
         }
@@ -458,12 +458,12 @@
       "dependencies": ["framer-motion"],
       "files": [
         {
-          "path": "packages/components/src/elastic-text/elastic-text.tsx",
+          "path": "packages/extras/src/elastic-text/elastic-text.tsx",
           "type": "registry:ui",
           "target": "components/godui/elastic-text.tsx"
         },
         {
-          "path": "packages/components/src/lib/text-utils.ts",
+          "path": "packages/extras/src/lib/text-utils.ts",
           "type": "registry:ui",
           "target": "components/godui/text-utils.ts"
         }
@@ -478,17 +478,17 @@
       "dependencies": ["framer-motion"],
       "files": [
         {
-          "path": "packages/components/src/text-animate/text-animate.tsx",
+          "path": "packages/extras/src/text-animate/text-animate.tsx",
           "type": "registry:ui",
           "target": "components/godui/text-animate.tsx"
         },
         {
-          "path": "packages/components/src/text-animate/text-animate-utils.ts",
+          "path": "packages/extras/src/text-animate/text-animate-utils.ts",
           "type": "registry:ui",
           "target": "components/godui/text-animate-utils.ts"
         },
         {
-          "path": "packages/components/src/lib/text-utils.ts",
+          "path": "packages/extras/src/lib/text-utils.ts",
           "type": "registry:ui",
           "target": "components/godui/text-utils.ts"
         }
@@ -503,7 +503,7 @@
       "dependencies": ["framer-motion", "rough-notation"],
       "files": [
         {
-          "path": "packages/components/src/highlighter/highlighter.tsx",
+          "path": "packages/extras/src/highlighter/highlighter.tsx",
           "type": "registry:ui",
           "target": "components/godui/highlighter.tsx"
         }
@@ -518,7 +518,7 @@
       "dependencies": ["framer-motion"],
       "files": [
         {
-          "path": "packages/components/src/number-ticker/number-ticker.tsx",
+          "path": "packages/extras/src/number-ticker/number-ticker.tsx",
           "type": "registry:ui",
           "target": "components/godui/number-ticker.tsx"
         }
@@ -532,7 +532,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/marquee/marquee.tsx",
+          "path": "packages/extras/src/marquee/marquee.tsx",
           "type": "registry:ui",
           "target": "components/godui/marquee.tsx"
         }
@@ -571,7 +571,7 @@
       "dependencies": ["framer-motion"],
       "files": [
         {
-          "path": "packages/components/src/command-palette/command-palette.tsx",
+          "path": "packages/extras/src/command-palette/command-palette.tsx",
           "type": "registry:ui",
           "target": "components/godui/command-palette.tsx"
         }
@@ -586,7 +586,7 @@
       "dependencies": ["framer-motion"],
       "files": [
         {
-          "path": "packages/components/src/toast/toast.tsx",
+          "path": "packages/extras/src/toast/toast.tsx",
           "type": "registry:ui",
           "target": "components/godui/toast.tsx"
         }
@@ -601,7 +601,7 @@
       "dependencies": ["framer-motion"],
       "files": [
         {
-          "path": "packages/components/src/drawer/drawer.tsx",
+          "path": "packages/extras/src/drawer/drawer.tsx",
           "type": "registry:ui",
           "target": "components/godui/drawer.tsx"
         }
@@ -616,7 +616,7 @@
       "dependencies": ["framer-motion"],
       "files": [
         {
-          "path": "packages/components/src/animated-testimonials/animated-testimonials.tsx",
+          "path": "packages/extras/src/animated-testimonials/animated-testimonials.tsx",
           "type": "registry:ui",
           "target": "components/godui/animated-testimonials.tsx"
         }
@@ -631,7 +631,7 @@
       "dependencies": ["framer-motion"],
       "files": [
         {
-          "path": "packages/components/src/dock/dock.tsx",
+          "path": "packages/extras/src/dock/dock.tsx",
           "type": "registry:ui",
           "target": "components/godui/dock.tsx"
         }
@@ -646,7 +646,7 @@
       "dependencies": ["framer-motion"],
       "files": [
         {
-          "path": "packages/components/src/animated-tooltip/animated-tooltip.tsx",
+          "path": "packages/extras/src/animated-tooltip/animated-tooltip.tsx",
           "type": "registry:ui",
           "target": "components/godui/animated-tooltip.tsx"
         }
@@ -660,7 +660,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/ascii-dither/ascii-dither.tsx",
+          "path": "packages/extras/src/ascii-dither/ascii-dither.tsx",
           "type": "registry:ui",
           "target": "components/godui/ascii-dither.tsx"
         }
@@ -675,7 +675,7 @@
       "dependencies": ["framer-motion"],
       "files": [
         {
-          "path": "packages/components/src/bento-grid/bento-grid.tsx",
+          "path": "packages/extras/src/bento-grid/bento-grid.tsx",
           "type": "registry:ui",
           "target": "components/godui/bento-grid.tsx"
         }
@@ -690,7 +690,7 @@
       "dependencies": ["framer-motion"],
       "files": [
         {
-          "path": "packages/components/src/scroll-reveal/scroll-reveal.tsx",
+          "path": "packages/extras/src/scroll-reveal/scroll-reveal.tsx",
           "type": "registry:ui",
           "target": "components/godui/scroll-reveal.tsx"
         }
@@ -705,7 +705,7 @@
       "dependencies": ["framer-motion"],
       "files": [
         {
-          "path": "packages/components/src/gooey-stack/gooey-stack.tsx",
+          "path": "packages/extras/src/gooey-stack/gooey-stack.tsx",
           "type": "registry:ui",
           "target": "components/godui/gooey-stack.tsx"
         }
@@ -720,7 +720,7 @@
       "dependencies": ["framer-motion"],
       "files": [
         {
-          "path": "packages/components/src/swipe-deck/swipe-deck.tsx",
+          "path": "packages/extras/src/swipe-deck/swipe-deck.tsx",
           "type": "registry:ui",
           "target": "components/godui/swipe-deck.tsx"
         }
@@ -734,7 +734,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/image-accordion/image-accordion.tsx",
+          "path": "packages/extras/src/image-accordion/image-accordion.tsx",
           "type": "registry:ui",
           "target": "components/godui/image-accordion.tsx"
         }
@@ -749,7 +749,7 @@
       "dependencies": ["framer-motion"],
       "files": [
         {
-          "path": "packages/components/src/card-swap/card-swap.tsx",
+          "path": "packages/extras/src/card-swap/card-swap.tsx",
           "type": "registry:ui",
           "target": "components/godui/card-swap.tsx"
         }
@@ -764,7 +764,7 @@
       "dependencies": ["framer-motion"],
       "files": [
         {
-          "path": "packages/components/src/scroll-stack/scroll-stack.tsx",
+          "path": "packages/extras/src/scroll-stack/scroll-stack.tsx",
           "type": "registry:ui",
           "target": "components/godui/scroll-stack.tsx"
         }
@@ -779,12 +779,12 @@
       "dependencies": ["framer-motion"],
       "files": [
         {
-          "path": "packages/components/src/scroll-text-reveal/scroll-text-reveal.tsx",
+          "path": "packages/extras/src/scroll-text-reveal/scroll-text-reveal.tsx",
           "type": "registry:ui",
           "target": "components/godui/scroll-text-reveal.tsx"
         },
         {
-          "path": "packages/components/src/lib/text-utils.ts",
+          "path": "packages/extras/src/lib/text-utils.ts",
           "type": "registry:ui",
           "target": "components/godui/text-utils.ts"
         }
@@ -799,7 +799,7 @@
       "dependencies": ["framer-motion"],
       "files": [
         {
-          "path": "packages/components/src/liquid-image/liquid-image.tsx",
+          "path": "packages/extras/src/liquid-image/liquid-image.tsx",
           "type": "registry:ui",
           "target": "components/godui/liquid-image.tsx"
         }
@@ -814,7 +814,7 @@
       "dependencies": ["framer-motion"],
       "files": [
         {
-          "path": "packages/components/src/text-scramble/text-scramble.tsx",
+          "path": "packages/extras/src/text-scramble/text-scramble.tsx",
           "type": "registry:ui",
           "target": "components/godui/text-scramble.tsx"
         }
@@ -829,7 +829,7 @@
       "dependencies": ["framer-motion"],
       "files": [
         {
-          "path": "packages/components/src/particle-dissolve/particle-dissolve.tsx",
+          "path": "packages/extras/src/particle-dissolve/particle-dissolve.tsx",
           "type": "registry:ui",
           "target": "components/godui/particle-dissolve.tsx"
         }
@@ -844,7 +844,7 @@
       "dependencies": ["framer-motion"],
       "files": [
         {
-          "path": "packages/components/src/spotlight-reveal/spotlight-reveal.tsx",
+          "path": "packages/extras/src/spotlight-reveal/spotlight-reveal.tsx",
           "type": "registry:ui",
           "target": "components/godui/spotlight-reveal.tsx"
         }
@@ -858,7 +858,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/image-trail/image-trail.tsx",
+          "path": "packages/extras/src/image-trail/image-trail.tsx",
           "type": "registry:ui",
           "target": "components/godui/image-trail.tsx"
         }
@@ -872,7 +872,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/spotlight-card/spotlight-card.tsx",
+          "path": "packages/extras/src/spotlight-card/spotlight-card.tsx",
           "type": "registry:ui",
           "target": "components/godui/spotlight-card.tsx"
         }
@@ -887,7 +887,7 @@
       "dependencies": ["framer-motion"],
       "files": [
         {
-          "path": "packages/components/src/border-beam/border-beam.tsx",
+          "path": "packages/extras/src/border-beam/border-beam.tsx",
           "type": "registry:ui",
           "target": "components/godui/border-beam.tsx"
         }
@@ -901,12 +901,12 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/liquid-glass/liquid-glass-card.tsx",
+          "path": "packages/extras/src/liquid-glass/liquid-glass-card.tsx",
           "type": "registry:ui",
           "target": "components/godui/liquid-glass-card.tsx"
         },
         {
-          "path": "packages/components/src/liquid-glass/liquid-glass-utils.tsx",
+          "path": "packages/extras/src/liquid-glass/liquid-glass-utils.tsx",
           "type": "registry:ui",
           "target": "components/godui/liquid-glass-utils.tsx"
         }
@@ -920,12 +920,12 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/liquid-glass/liquid-glass-lens.tsx",
+          "path": "packages/extras/src/liquid-glass/liquid-glass-lens.tsx",
           "type": "registry:ui",
           "target": "components/godui/liquid-glass-lens.tsx"
         },
         {
-          "path": "packages/components/src/liquid-glass/liquid-glass-utils.tsx",
+          "path": "packages/extras/src/liquid-glass/liquid-glass-utils.tsx",
           "type": "registry:ui",
           "target": "components/godui/liquid-glass-utils.tsx"
         }
@@ -939,7 +939,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/pixel-grid/pixel-grid.tsx",
+          "path": "packages/extras/src/pixel-grid/pixel-grid.tsx",
           "type": "registry:ui",
           "target": "components/godui/pixel-grid.tsx"
         }
@@ -954,7 +954,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/dynamic-island/dynamic-island.tsx",
+          "path": "packages/extras/src/dynamic-island/dynamic-island.tsx",
           "type": "registry:ui",
           "target": "components/godui/dynamic-island.tsx"
         }
@@ -969,7 +969,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/tilt-card/tilt-card.tsx",
+          "path": "packages/extras/src/tilt-card/tilt-card.tsx",
           "type": "registry:ui",
           "target": "components/godui/tilt-card.tsx"
         }
@@ -984,7 +984,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/holographic-card/holographic-card.tsx",
+          "path": "packages/extras/src/holographic-card/holographic-card.tsx",
           "type": "registry:ui",
           "target": "components/godui/holographic-card.tsx"
         }
@@ -999,7 +999,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/animated-beam/animated-beam.tsx",
+          "path": "packages/extras/src/animated-beam/animated-beam.tsx",
           "type": "registry:ui",
           "target": "components/godui/animated-beam.tsx"
         }
@@ -1014,7 +1014,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/globe/globe.tsx",
+          "path": "packages/extras/src/globe/globe.tsx",
           "type": "registry:ui",
           "target": "components/godui/globe.tsx"
         }
@@ -1029,7 +1029,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/orbiting-circles/orbiting-circles.tsx",
+          "path": "packages/extras/src/orbiting-circles/orbiting-circles.tsx",
           "type": "registry:ui",
           "target": "components/godui/orbiting-circles.tsx"
         }
@@ -1044,7 +1044,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/lamp/lamp.tsx",
+          "path": "packages/extras/src/lamp/lamp.tsx",
           "type": "registry:ui",
           "target": "components/godui/lamp.tsx"
         }
@@ -1059,7 +1059,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/confetti/confetti.tsx",
+          "path": "packages/extras/src/confetti/confetti.tsx",
           "type": "registry:ui",
           "target": "components/godui/confetti.tsx"
         }
@@ -1073,7 +1073,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/encrypted-card/encrypted-card.tsx",
+          "path": "packages/extras/src/encrypted-card/encrypted-card.tsx",
           "type": "registry:ui",
           "target": "components/godui/encrypted-card.tsx"
         }
@@ -1087,7 +1087,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/terminal/terminal.tsx",
+          "path": "packages/extras/src/terminal/terminal.tsx",
           "type": "registry:ui",
           "target": "components/godui/terminal.tsx"
         }
@@ -1101,7 +1101,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/spin-viewer/spin-viewer.tsx",
+          "path": "packages/extras/src/spin-viewer/spin-viewer.tsx",
           "type": "registry:ui",
           "target": "components/godui/spin-viewer.tsx"
         }
@@ -1116,7 +1116,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/otp-input/otp-input.tsx",
+          "path": "packages/extras/src/otp-input/otp-input.tsx",
           "type": "registry:ui",
           "target": "components/godui/otp-input.tsx"
         }
@@ -1131,7 +1131,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/avatar-group/avatar-group.tsx",
+          "path": "packages/extras/src/avatar-group/avatar-group.tsx",
           "type": "registry:ui",
           "target": "components/godui/avatar-group.tsx"
         }
@@ -1146,7 +1146,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/scroll-progress/scroll-progress.tsx",
+          "path": "packages/extras/src/scroll-progress/scroll-progress.tsx",
           "type": "registry:ui",
           "target": "components/godui/scroll-progress.tsx"
         }
@@ -1160,7 +1160,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/image-compare/image-compare.tsx",
+          "path": "packages/extras/src/image-compare/image-compare.tsx",
           "type": "registry:ui",
           "target": "components/godui/image-compare.tsx"
         }
@@ -1175,7 +1175,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/segmented-control/segmented-control.tsx",
+          "path": "packages/extras/src/segmented-control/segmented-control.tsx",
           "type": "registry:ui",
           "target": "components/godui/segmented-control.tsx"
         }
@@ -1190,7 +1190,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/accordion/accordion.tsx",
+          "path": "packages/extras/src/accordion/accordion.tsx",
           "type": "registry:ui",
           "target": "components/godui/accordion.tsx"
         }
@@ -1205,7 +1205,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/floating-toolbar/floating-toolbar.tsx",
+          "path": "packages/extras/src/floating-toolbar/floating-toolbar.tsx",
           "type": "registry:ui",
           "target": "components/godui/floating-toolbar.tsx"
         }
@@ -1220,7 +1220,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/split-flap-display/split-flap-display.tsx",
+          "path": "packages/extras/src/split-flap-display/split-flap-display.tsx",
           "type": "registry:ui",
           "target": "components/godui/split-flap-display.tsx"
         }
@@ -1259,7 +1259,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/stack-badge/stack-badge.tsx",
+          "path": "packages/extras/src/stack-badge/stack-badge.tsx",
           "type": "registry:ui",
           "target": "components/godui/stack-badge.tsx"
         }
@@ -1274,7 +1274,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/stepper/stepper.tsx",
+          "path": "packages/extras/src/stepper/stepper.tsx",
           "type": "registry:ui",
           "target": "components/godui/stepper.tsx"
         }
@@ -1289,7 +1289,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/resizable-header/resizable-header.tsx",
+          "path": "packages/extras/src/resizable-header/resizable-header.tsx",
           "type": "registry:ui",
           "target": "components/godui/resizable-header.tsx"
         }
@@ -1304,7 +1304,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/mega-menu/mega-menu.tsx",
+          "path": "packages/extras/src/mega-menu/mega-menu.tsx",
           "type": "registry:ui",
           "target": "components/godui/mega-menu.tsx"
         }
@@ -1319,7 +1319,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/breadcrumbs/breadcrumbs.tsx",
+          "path": "packages/extras/src/breadcrumbs/breadcrumbs.tsx",
           "type": "registry:ui",
           "target": "components/godui/breadcrumbs.tsx"
         }
@@ -1334,7 +1334,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/filter-bar/filter-bar.tsx",
+          "path": "packages/extras/src/filter-bar/filter-bar.tsx",
           "type": "registry:ui",
           "target": "components/godui/filter-bar.tsx"
         }
@@ -1349,7 +1349,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/dropdown-menu/dropdown-menu.tsx",
+          "path": "packages/extras/src/dropdown-menu/dropdown-menu.tsx",
           "type": "registry:ui",
           "target": "components/godui/dropdown-menu.tsx"
         }
@@ -1364,7 +1364,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/context-menu/context-menu.tsx",
+          "path": "packages/extras/src/context-menu/context-menu.tsx",
           "type": "registry:ui",
           "target": "components/godui/context-menu.tsx"
         }
@@ -1379,7 +1379,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/tab-bar/tab-bar.tsx",
+          "path": "packages/extras/src/tab-bar/tab-bar.tsx",
           "type": "registry:ui",
           "target": "components/godui/tab-bar.tsx"
         }
@@ -1394,7 +1394,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/combobox/combobox.tsx",
+          "path": "packages/extras/src/combobox/combobox.tsx",
           "type": "registry:ui",
           "target": "components/godui/combobox.tsx"
         }
@@ -1409,7 +1409,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/prompt-composer/prompt-composer.tsx",
+          "path": "packages/extras/src/prompt-composer/prompt-composer.tsx",
           "type": "registry:ui",
           "target": "components/godui/prompt-composer.tsx"
         }
@@ -1424,7 +1424,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/conversation-thread/conversation-thread.tsx",
+          "path": "packages/extras/src/conversation-thread/conversation-thread.tsx",
           "type": "registry:ui",
           "target": "components/godui/conversation-thread.tsx"
         }
@@ -1439,7 +1439,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/cover-flow/cover-flow.tsx",
+          "path": "packages/extras/src/cover-flow/cover-flow.tsx",
           "type": "registry:ui",
           "target": "components/godui/cover-flow.tsx"
         }
@@ -1454,7 +1454,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/inertia-gallery/inertia-gallery.tsx",
+          "path": "packages/extras/src/inertia-gallery/inertia-gallery.tsx",
           "type": "registry:ui",
           "target": "components/godui/inertia-gallery.tsx"
         }
@@ -1469,7 +1469,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/morph-gallery/morph-gallery.tsx",
+          "path": "packages/extras/src/morph-gallery/morph-gallery.tsx",
           "type": "registry:ui",
           "target": "components/godui/morph-gallery.tsx"
         }
@@ -1484,7 +1484,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/orbit-carousel/orbit-carousel.tsx",
+          "path": "packages/extras/src/orbit-carousel/orbit-carousel.tsx",
           "type": "registry:ui",
           "target": "components/godui/orbit-carousel.tsx"
         }
@@ -1499,7 +1499,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/agent-flow/agent-flow.tsx",
+          "path": "packages/extras/src/agent-flow/agent-flow.tsx",
           "type": "registry:ui",
           "target": "components/godui/agent-flow.tsx"
         }
@@ -1514,7 +1514,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/agent-timeline/agent-timeline.tsx",
+          "path": "packages/extras/src/agent-timeline/agent-timeline.tsx",
           "type": "registry:ui",
           "target": "components/godui/agent-timeline.tsx"
         }
@@ -1529,7 +1529,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/prompt-suggestions/prompt-suggestions.tsx",
+          "path": "packages/extras/src/prompt-suggestions/prompt-suggestions.tsx",
           "type": "registry:ui",
           "target": "components/godui/prompt-suggestions.tsx"
         }
@@ -1544,7 +1544,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/source-citations/source-citations.tsx",
+          "path": "packages/extras/src/source-citations/source-citations.tsx",
           "type": "registry:ui",
           "target": "components/godui/source-citations.tsx"
         }
@@ -1559,12 +1559,12 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/live-cursors/live-cursors.tsx",
+          "path": "packages/extras/src/live-cursors/live-cursors.tsx",
           "type": "registry:ui",
           "target": "components/godui/live-cursors.tsx"
         },
         {
-          "path": "packages/components/src/lib/presence.ts",
+          "path": "packages/extras/src/lib/presence.ts",
           "type": "registry:lib",
           "target": "components/godui/presence.ts"
         }
@@ -1579,12 +1579,12 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/presence-facepile/presence-facepile.tsx",
+          "path": "packages/extras/src/presence-facepile/presence-facepile.tsx",
           "type": "registry:ui",
           "target": "components/godui/presence-facepile.tsx"
         },
         {
-          "path": "packages/components/src/lib/presence.ts",
+          "path": "packages/extras/src/lib/presence.ts",
           "type": "registry:lib",
           "target": "components/godui/presence.ts"
         }
@@ -1599,12 +1599,12 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/comment-pin/comment-pin.tsx",
+          "path": "packages/extras/src/comment-pin/comment-pin.tsx",
           "type": "registry:ui",
           "target": "components/godui/comment-pin.tsx"
         },
         {
-          "path": "packages/components/src/lib/presence.ts",
+          "path": "packages/extras/src/lib/presence.ts",
           "type": "registry:lib",
           "target": "components/godui/presence.ts"
         }
@@ -1619,12 +1619,12 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/notification-inbox/notification-inbox.tsx",
+          "path": "packages/extras/src/notification-inbox/notification-inbox.tsx",
           "type": "registry:ui",
           "target": "components/godui/notification-inbox.tsx"
         },
         {
-          "path": "packages/components/src/lib/presence.ts",
+          "path": "packages/extras/src/lib/presence.ts",
           "type": "registry:lib",
           "target": "components/godui/presence.ts"
         }
@@ -1638,7 +1638,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/flow-field/flow-field.tsx",
+          "path": "packages/extras/src/flow-field/flow-field.tsx",
           "type": "registry:ui",
           "target": "components/godui/flow-field.tsx"
         }
@@ -1652,7 +1652,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/blueprint-grid/blueprint-grid.tsx",
+          "path": "packages/extras/src/blueprint-grid/blueprint-grid.tsx",
           "type": "registry:ui",
           "target": "components/godui/blueprint-grid.tsx"
         }
@@ -1684,7 +1684,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/topographic-drift/topographic-drift.tsx",
+          "path": "packages/extras/src/topographic-drift/topographic-drift.tsx",
           "type": "registry:ui",
           "target": "components/godui/topographic-drift.tsx"
         }
@@ -1698,7 +1698,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/liquid-metaballs/liquid-metaballs.tsx",
+          "path": "packages/extras/src/liquid-metaballs/liquid-metaballs.tsx",
           "type": "registry:ui",
           "target": "components/godui/liquid-metaballs.tsx"
         }
@@ -1712,7 +1712,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/light-rays/light-rays.tsx",
+          "path": "packages/extras/src/light-rays/light-rays.tsx",
           "type": "registry:ui",
           "target": "components/godui/light-rays.tsx"
         }
@@ -1743,7 +1743,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/warp-starfield/warp-starfield.tsx",
+          "path": "packages/extras/src/warp-starfield/warp-starfield.tsx",
           "type": "registry:ui",
           "target": "components/godui/warp-starfield.tsx"
         }
@@ -1758,7 +1758,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/hold-confirm-button/hold-confirm-button.tsx",
+          "path": "packages/extras/src/hold-confirm-button/hold-confirm-button.tsx",
           "type": "registry:ui",
           "target": "components/godui/hold-confirm-button.tsx"
         }
@@ -1773,7 +1773,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/slide-confirm-button/slide-confirm-button.tsx",
+          "path": "packages/extras/src/slide-confirm-button/slide-confirm-button.tsx",
           "type": "registry:ui",
           "target": "components/godui/slide-confirm-button.tsx"
         }
@@ -1787,7 +1787,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/jelly-button/jelly-button.tsx",
+          "path": "packages/extras/src/jelly-button/jelly-button.tsx",
           "type": "registry:ui",
           "target": "components/godui/jelly-button.tsx"
         }
@@ -1802,7 +1802,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/gooey-fab/gooey-fab.tsx",
+          "path": "packages/extras/src/gooey-fab/gooey-fab.tsx",
           "type": "registry:ui",
           "target": "components/godui/gooey-fab.tsx"
         }
@@ -1816,7 +1816,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/voice-orb/voice-orb.tsx",
+          "path": "packages/extras/src/voice-orb/voice-orb.tsx",
           "type": "registry:ui",
           "target": "components/godui/voice-orb.tsx"
         }
@@ -1851,7 +1851,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/morphing-dialog/morphing-dialog.tsx",
+          "path": "packages/extras/src/morphing-dialog/morphing-dialog.tsx",
           "type": "registry:ui",
           "target": "components/godui/morphing-dialog.tsx"
         }
@@ -1866,7 +1866,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/reorder-list/reorder-list.tsx",
+          "path": "packages/extras/src/reorder-list/reorder-list.tsx",
           "type": "registry:ui",
           "target": "components/godui/reorder-list.tsx"
         }
@@ -1880,7 +1880,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/fluid-cursor/fluid-cursor.tsx",
+          "path": "packages/extras/src/fluid-cursor/fluid-cursor.tsx",
           "type": "registry:ui",
           "target": "components/godui/fluid-cursor.tsx"
         }
@@ -1895,7 +1895,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/world-map/world-map.tsx",
+          "path": "packages/extras/src/world-map/world-map.tsx",
           "type": "registry:ui",
           "target": "components/godui/world-map.tsx"
         }
@@ -1911,7 +1911,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/gravity/gravity.tsx",
+          "path": "packages/extras/src/gravity/gravity.tsx",
           "type": "registry:ui",
           "target": "components/godui/gravity.tsx"
         }
@@ -1926,7 +1926,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/hero-parallax/hero-parallax.tsx",
+          "path": "packages/extras/src/hero-parallax/hero-parallax.tsx",
           "type": "registry:ui",
           "target": "components/godui/hero-parallax.tsx"
         }
@@ -1941,7 +1941,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/scroll-timeline/scroll-timeline.tsx",
+          "path": "packages/extras/src/scroll-timeline/scroll-timeline.tsx",
           "type": "registry:ui",
           "target": "components/godui/scroll-timeline.tsx"
         }
@@ -1956,7 +1956,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/container-scroll/container-scroll.tsx",
+          "path": "packages/extras/src/container-scroll/container-scroll.tsx",
           "type": "registry:ui",
           "target": "components/godui/container-scroll.tsx"
         }
@@ -1971,7 +1971,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/three-d-marquee/three-d-marquee.tsx",
+          "path": "packages/extras/src/three-d-marquee/three-d-marquee.tsx",
           "type": "registry:ui",
           "target": "components/godui/three-d-marquee.tsx"
         }
@@ -1986,7 +1986,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/sticky-scroll/sticky-scroll.tsx",
+          "path": "packages/extras/src/sticky-scroll/sticky-scroll.tsx",
           "type": "registry:ui",
           "target": "components/godui/sticky-scroll.tsx"
         }
@@ -2001,7 +2001,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/beam-draw/beam-draw.tsx",
+          "path": "packages/extras/src/beam-draw/beam-draw.tsx",
           "type": "registry:ui",
           "target": "components/godui/beam-draw.tsx"
         }
@@ -2016,7 +2016,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/app-showcase/app-showcase.tsx",
+          "path": "packages/extras/src/app-showcase/app-showcase.tsx",
           "type": "registry:ui",
           "target": "components/godui/app-showcase.tsx"
         }
@@ -2046,7 +2046,7 @@
       "registryDependencies": ["@godui/godui-theme"],
       "files": [
         {
-          "path": "packages/components/src/store-badge/store-badge.tsx",
+          "path": "packages/extras/src/store-badge/store-badge.tsx",
           "type": "registry:ui",
           "target": "components/godui/store-badge.tsx"
         }
