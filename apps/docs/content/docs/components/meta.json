@@ -8,6 +8,7 @@
     "alert-dialog",
     "button",
     "dialog",
+    "drawer",
     "dropdown-menu",
     "popover",
     "sheet",

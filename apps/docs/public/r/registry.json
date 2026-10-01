@@ -446,6 +446,20 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "drawer",
+      "type": "registry:ui",
+      "title": "Drawer",
+      "description": "A drawer component for React, built on vaul. Slides with transform; content rises in after the sheet. GPU-only.",
+      "dependencies": ["vaul"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "files": [
+        {
+          "path": "packages/components/src/ui/drawer.tsx",
+          "type": "registry:ui"
+        }
+      ]
     }
   ]
 }

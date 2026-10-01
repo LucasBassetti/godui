@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "revision": "3b432f5afd255a1c9839a9e105769cafc3ccb25e",
+  "revision": "87e76d11762e9508b387c3397c91c243847be70e",
   "components": [
     {
       "name": "accordion",
@@ -262,6 +262,16 @@
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add \"https://godui.design/r/extras/dock.json\"",
       "registry": "extras"
+    },
+    {
+      "name": "drawer",
+      "title": "Drawer",
+      "description": "A drawer component for React, built on vaul. Slides with transform; content rises in after the sheet. GPU-only.",
+      "category": "Components",
+      "dependencies": ["vaul"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "install": "npx shadcn@latest add @godui/drawer",
+      "registry": "core"
     },
     {
       "name": "dropdown-menu",
