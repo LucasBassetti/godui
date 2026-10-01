@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "revision": "87e76d11762e9508b387c3397c91c243847be70e",
+  "revision": "c891874f74c019224b2328f290e79a491180d195",
   "components": [
     {
       "name": "accordion",
@@ -512,6 +512,31 @@
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add \"https://godui.design/r/extras/inertia-gallery.json\"",
       "registry": "extras"
+    },
+    {
+      "name": "input",
+      "title": "Input",
+      "description": "Displays a form input field. GPU-only: no paint transitions (focus ring snaps).",
+      "category": "Components",
+      "dependencies": [],
+      "registryDependencies": ["utils"],
+      "install": "npx shadcn@latest add @godui/input",
+      "registry": "core"
+    },
+    {
+      "name": "input-group",
+      "title": "Input Group",
+      "description": "Add addons, buttons and helper content to inputs. GPU-only: no paint transitions.",
+      "category": "Components",
+      "dependencies": ["class-variance-authority"],
+      "registryDependencies": [
+        "utils",
+        "@godui/button",
+        "@godui/input",
+        "@godui/textarea"
+      ],
+      "install": "npx shadcn@latest add @godui/input-group",
+      "registry": "core"
     },
     {
       "name": "jelly-button",
@@ -1102,6 +1127,16 @@
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add \"https://godui.design/r/extras/text-scramble.json\"",
       "registry": "extras"
+    },
+    {
+      "name": "textarea",
+      "title": "Textarea",
+      "description": "Displays a form textarea. GPU-only: no paint transitions (focus ring snaps).",
+      "category": "Components",
+      "dependencies": [],
+      "registryDependencies": ["utils"],
+      "install": "npx shadcn@latest add @godui/textarea",
+      "registry": "core"
     },
     {
       "name": "three-d-marquee",

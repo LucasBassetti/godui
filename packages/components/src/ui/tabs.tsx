@@ -8,6 +8,10 @@
 import { cva, type VariantProps } from "class-variance-authority";
 import { Tabs as TabsPrimitive } from "radix-ui";
 import * as React from "react";
+import {
+  type IndicatorBox,
+  useActiveIndicator,
+} from "@/hooks/use-active-indicator";
 import { cn } from "@/lib/utils";
 
 function Tabs({
@@ -44,161 +48,20 @@ const tabsListVariants = cva(
   },
 );
 
-const useIsoLayoutEffect =
-  typeof window === "undefined" ? React.useEffect : React.useLayoutEffect;
-
-type Box = { x: number; y: number; w: number; h: number };
-
-/** A CSS time (`260ms`, `0.3s`) in milliseconds; 260 when unset or invalid. */
-function toMs(value: string | undefined): number {
-  const n = Number.parseFloat(value ?? "");
-  if (!Number.isFinite(n)) return 260;
-  return /\ds\s*$/.test(value ?? "") ? n * 1000 : n;
-}
-
-/** The active trigger's box inside the list (or shadcn's underline under it). */
-function activeBox(list: HTMLElement): Box | null {
-  const tab = list.querySelector<HTMLElement>(
-    '[role="tab"][data-state="active"]',
-  );
-  if (!tab) return null;
+/**
+ * The indicator's box: the active trigger's, or shadcn's line-variant
+ * underline. That's a 2px `after:` bar just outside the trigger's padding box
+ * (1px border): 5px below it, or 4px right of it when vertical.
+ */
+function indicatorBox(tab: HTMLElement, list: HTMLElement): IndicatorBox {
   const x = tab.offsetLeft;
   const y = tab.offsetTop;
   const w = tab.offsetWidth;
   const h = tab.offsetHeight;
   if (list.dataset.variant !== "line") return { x, y, w, h };
-  // shadcn's line variant draws a 2px `after:` bar just outside the trigger's
-  // padding box (1px border): 5px below it, or 4px right of it when vertical.
   return list.getAttribute("aria-orientation") === "vertical"
     ? { x: x + w + 1, y: y + 1, w: 2, h: h - 2 }
     : { x: x + 1, y: y + h + 2, w: w - 2, h: 2 };
-}
-
-/**
- * Keeps the indicator on the active trigger. Its box snaps (width, height and
- * translate are set directly), then a FLIP plays `translate` + `scale` from
- * the previous box to the new one on the compositor. Watches `data-state`
- * rather than clicks, so controlled value changes move it too, plus inserted or
- * removed triggers and trigger resizes. A slide in flight is cancelled and the
- * next one starts from where it is drawn; a resize during a slide is applied
- * when the slide finishes.
- */
-function useTabsIndicator(
-  listRef: React.RefObject<HTMLDivElement | null>,
-  indicatorRef: React.RefObject<HTMLSpanElement | null>,
-) {
-  useIsoLayoutEffect(() => {
-    const list = listRef.current;
-    const indicator = indicatorRef.current;
-    if (!list || !indicator) return;
-    const view = list.ownerDocument.defaultView;
-    let shown: Box | null = null;
-    let running: Animation | null = null;
-    // A resize arrived mid-slide; re-place once the slide ends.
-    let dirty = false;
-
-    const place = (animate: boolean) => {
-      const box = activeBox(list);
-      if (!box) {
-        list.removeAttribute("data-indicator");
-        shown = null;
-        return;
-      }
-      let from = shown;
-      if (running) {
-        const drawn = indicator.getBoundingClientRect();
-        const origin = list.getBoundingClientRect();
-        if (drawn.width > 0 && drawn.height > 0) {
-          // offset* (the target) is scroll-independent; the drawn rect isn't.
-          from = {
-            x: drawn.left - origin.left - list.clientLeft + list.scrollLeft,
-            y: drawn.top - origin.top - list.clientTop + list.scrollTop,
-            w: drawn.width,
-            h: drawn.height,
-          };
-        }
-        running.cancel();
-        running = null;
-      }
-      indicator.style.width = `${box.w}px`;
-      indicator.style.height = `${box.h}px`;
-      indicator.style.translate = `${box.x}px ${box.y}px`;
-      list.setAttribute("data-indicator", "ready");
-      shown = box;
-
-      const moved =
-        from != null &&
-        (from.x !== box.x ||
-          from.y !== box.y ||
-          from.w !== box.w ||
-          from.h !== box.h);
-      if (!animate || !from || !moved || box.w === 0 || box.h === 0) return;
-      if (typeof indicator.animate !== "function") return;
-      if (view?.matchMedia?.("(prefers-reduced-motion: reduce)").matches)
-        return;
-      const style = view?.getComputedStyle(indicator);
-      const duration = toMs(style?.getPropertyValue("--godui-duration-base"));
-      // The indicator carries `ease-spring-snappy`; reuse the curve it resolves to.
-      const easing = style?.transitionTimingFunction || "ease-out";
-      const animation = indicator.animate(
-        [
-          {
-            translate: `${from.x}px ${from.y}px`,
-            scale: `${from.w / box.w} ${from.h / box.h}`,
-          },
-          { translate: `${box.x}px ${box.y}px`, scale: "1 1" },
-        ],
-        { duration, easing },
-      );
-      running = animation;
-      animation.onfinish = () => {
-        if (running !== animation) return;
-        running = null;
-        if (dirty) {
-          dirty = false;
-          place(false);
-        }
-      };
-    };
-
-    const resizes =
-      typeof ResizeObserver === "undefined"
-        ? null
-        : new ResizeObserver(() => {
-            if (running) dirty = true;
-            else place(false);
-          });
-    // The list and every trigger: a trigger can change size (label, font
-    // load, flex-1 in a resized list) while the list's own box doesn't.
-    const observeTriggers = () => {
-      if (!resizes) return;
-      resizes.disconnect();
-      resizes.observe(list);
-      for (const tab of list.querySelectorAll('[role="tab"]')) {
-        resizes.observe(tab);
-      }
-    };
-
-    place(false);
-    observeTriggers();
-    const mutations = new MutationObserver((records) => {
-      if (records.some((record) => record.type === "childList")) {
-        observeTriggers();
-      }
-      place(true);
-    });
-    mutations.observe(list, {
-      subtree: true,
-      childList: true,
-      attributes: true,
-      attributeFilter: ["data-state", "data-variant", "aria-orientation"],
-    });
-    return () => {
-      mutations.disconnect();
-      resizes?.disconnect();
-      running?.cancel();
-    };
-  }, [listRef, indicatorRef]);
 }
 
 function TabsList({
@@ -219,7 +82,15 @@ function TabsList({
     },
     [ref],
   );
-  useTabsIndicator(listRef, indicatorRef);
+  // One indicator follows the active trigger: its box snaps, then a FLIP
+  // plays translate + scale from the old box. Controlled values, inserted
+  // triggers and resizes are covered (see useActiveIndicator).
+  useActiveIndicator(listRef, indicatorRef, {
+    active: '[role="tab"][data-state="active"]',
+    items: '[role="tab"]',
+    attributes: ["data-state", "data-variant", "aria-orientation"],
+    box: indicatorBox,
+  });
 
   return (
     <TabsPrimitive.List

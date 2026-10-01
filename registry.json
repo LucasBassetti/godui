@@ -154,6 +154,10 @@
         {
           "path": "packages/components/src/hooks/use-flip-group.ts",
           "type": "registry:hook"
+        },
+        {
+          "path": "packages/components/src/hooks/use-active-indicator.ts",
+          "type": "registry:hook"
         }
       ],
       "cssVars": {
@@ -456,6 +460,53 @@
       "files": [
         {
           "path": "packages/components/src/ui/drawer.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "input",
+      "type": "registry:ui",
+      "title": "Input",
+      "description": "Displays a form input field. GPU-only: no paint transitions (focus ring snaps).",
+      "dependencies": [],
+      "registryDependencies": ["utils"],
+      "files": [
+        {
+          "path": "packages/components/src/ui/input.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "textarea",
+      "type": "registry:ui",
+      "title": "Textarea",
+      "description": "Displays a form textarea. GPU-only: no paint transitions (focus ring snaps).",
+      "dependencies": [],
+      "registryDependencies": ["utils"],
+      "files": [
+        {
+          "path": "packages/components/src/ui/textarea.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "input-group",
+      "type": "registry:ui",
+      "title": "Input Group",
+      "description": "Add addons, buttons and helper content to inputs. GPU-only: no paint transitions.",
+      "dependencies": ["class-variance-authority"],
+      "registryDependencies": [
+        "utils",
+        "@godui/button",
+        "@godui/input",
+        "@godui/textarea"
+      ],
+      "files": [
+        {
+          "path": "packages/components/src/ui/input-group.tsx",
           "type": "registry:ui"
         }
       ]
