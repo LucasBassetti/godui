@@ -2,6 +2,12 @@
 
 import {
   Button,
+  Carousel,
+  type CarouselApi,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
   Checkbox,
   Command,
   CommandGroup,
@@ -418,8 +424,71 @@ function NavigationMenuHop({ reduced }: { reduced: boolean }) {
   );
 }
 
+const CAROUSEL_SLIDES = [
+  { id: "a", lines: ["w-24", "w-16"] },
+  { id: "b", lines: ["w-20", "w-28"] },
+  { id: "c", lines: ["w-28", "w-12"] },
+  { id: "d", lines: ["w-16", "w-24"] },
+];
+
+/**
+ * Real Carousel of bar-only slides; `scrollNext` fires on the timer (back to
+ * the first slide at the end). `jump` is Embla's argument: the same call lands
+ * on the slide without the scroll, as it does under reduced motion.
+ */
+function CarouselAdvance({
+  reduced,
+  jump,
+}: {
+  reduced: boolean;
+  jump: boolean;
+}) {
+  const [api, setApi] = useState<CarouselApi>();
+  useEffect(() => {
+    if (!api || (reduced && !jump)) return;
+    const id = setInterval(() => {
+      if (api.canScrollNext()) api.scrollNext(jump);
+      else api.scrollTo(0, jump);
+    }, STEP_MS + 400);
+    return () => clearInterval(id);
+  }, [api, reduced, jump]);
+  return (
+    <div className="w-full max-w-sm px-12">
+      <Carousel setApi={setApi} className="mx-auto w-full max-w-[13rem]">
+        <CarouselContent>
+          {CAROUSEL_SLIDES.map((slide) => (
+            <CarouselItem key={slide.id}>
+              <div className="flex aspect-[4/3] flex-col justify-end gap-2.5 rounded-xl border bg-card p-4">
+                <div className="mb-auto size-8 rounded-full bg-foreground/15" />
+                {slide.lines.map((w, i) => (
+                  <Bar
+                    key={w}
+                    className={`${w} ${i === 0 ? "bg-foreground/35" : "bg-foreground/20"}`}
+                  />
+                ))}
+              </div>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <CarouselPrevious />
+        <CarouselNext />
+      </Carousel>
+    </div>
+  );
+}
+
+function CarouselGlide({ reduced }: { reduced: boolean }) {
+  return <CarouselAdvance reduced={reduced} jump={false} />;
+}
+
+function CarouselJump({ reduced }: { reduced: boolean }) {
+  return <CarouselAdvance reduced={reduced} jump />;
+}
+
 const DEMOS = {
   button: ButtonPress,
+  carousel: CarouselGlide,
+  "carousel-jump": CarouselJump,
   checkbox: CheckboxToggle,
   command: CommandCycle,
   menubar: MenubarHop,

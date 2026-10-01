@@ -1,0 +1,96 @@
+---
+title: Anatomy of the GodUI Carousel
+description: Why Embla already scrolls on the compositor, what GodUI leaves alone, and how reduced motion jumps instead of scrolling.
+learnPlayer: true
+---
+
+import { CarouselDemo } from "@/components/demos/core/carousel-demo";
+
+<LearnPlayer>
+
+<LearnChapter
+  label="Embla already moves the GPU way"
+  scene={<AutoPlayScene label="Embla already moves the GPU way" demo="carousel" />}
+  code={`<div data-slot="carousel-content" ref={carouselRef}
+  className="overflow-hidden">
+  <div className="flex -ml-4">  {/* Embla moves this one */}
+    <div data-slot="carousel-item" …/>
+  </div>
+</div>
+
+/* each frame, from Embla: */
+transform: translate3d(-312px, 0px, 0px)`}
+>
+
+Carousels are usually where layout animation sneaks in: a track whose `left`
+or `margin` is tweened, so the browser lays out every slide on every frame.
+
+Embla doesn't do that. The slides sit in a flex row inside an
+`overflow-hidden` viewport, and one inner element carries the movement as
+`transform: translate3d(...)`, rewritten each animation frame. That's a
+compositor property, so scrolling runs without layout or paint. The same goes
+for dragging and for the settle after a flick, which is Embla's own spring
+physics rather than a CSS easing.
+
+So GodUI leaves it alone. The scene advances on a timer, using the same
+`scrollNext` the buttons call.
+
+</LearnChapter>
+
+<LearnChapter
+  label="Reduced motion jumps"
+  scene={<AutoPlayScene label="Reduced motion jumps" demo="carousel-jump" />}
+  code={`const reduce = usePrefersReducedMotion();
+
+const scrollPrev = React.useCallback(() => {
+  api?.scrollPrev(reduce);
+}, [api, reduce]);
+
+const scrollNext = React.useCallback(() => {
+  api?.scrollNext(reduce);
+}, [api, reduce]);`}
+>
+
+A slide that sweeps across the whole width is a lot of movement for someone
+who asked for less. Embla's `scrollPrev` and `scrollNext` take a `jump`
+argument: pass `true` and the carousel lands on the target slide in a single
+frame, with no scroll in between.
+
+`usePrefersReducedMotion` is a small `useSyncExternalStore` over
+`matchMedia("(prefers-reduced-motion: reduce)")`. It reads `false` on the
+server and on the first client render, then follows the setting live, so
+changing it while the page is open takes effect on the next press. The arrow
+keys use the same two callbacks as the buttons. The scene above always jumps.
+
+</LearnChapter>
+
+<LearnChapter
+  label="The result"
+  scene={
+    <LiveResult hint="use the arrows, the arrow keys, or drag">
+      <CarouselDemo />
+    </LiveResult>
+  }
+  isResult
+>
+
+Press the arrows, focus the carousel and use the arrow keys, or drag a slide.
+Switch on reduced motion in your system settings and the buttons and keys jump
+instead.
+
+</LearnChapter>
+
+</LearnPlayer>
+
+## Why GPU-only
+
+Embla's per-frame update is a `translate3d` on one element, so scrolling never
+triggers layout or paint. A motion trace of a Next press in Chrome confirms no
+layout beyond the first frame, for both the horizontal and the vertical
+carousel. GodUI adds no transition of its own to the track.
+
+## Reduced motion
+
+The previous/next buttons and the arrow keys pass `true` for Embla's `jump`
+argument, so the carousel lands on the slide without scrolling. Dragging is the
+user's own movement and stays as it is.

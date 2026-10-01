@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "revision": "c266c7e40b710b4b98f420c7792b0af432c516d6",
+  "revision": "3e19352ab05b78779a340ef291e95666ae38bf34",
   "components": [
     {
       "name": "accordion",
@@ -182,6 +182,16 @@
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add \"https://godui.design/r/extras/card-swap.json\"",
       "registry": "extras"
+    },
+    {
+      "name": "carousel",
+      "title": "Carousel",
+      "description": "A carousel with motion and swipe built using Embla. Embla already moves the track with a GPU translate; reduced motion jumps instead of scrolling.",
+      "category": "Components",
+      "dependencies": ["embla-carousel-react", "lucide-react"],
+      "registryDependencies": ["utils", "@godui/godui-motion", "@godui/button"],
+      "install": "npx shadcn@latest add @godui/carousel",
+      "registry": "core"
     },
     {
       "name": "checkbox",
