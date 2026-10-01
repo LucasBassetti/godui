@@ -1,8 +1,18 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "revision": "256be9703bc6a83c792f46c91e15e076e8e7f214",
+  "revision": "f716e83a7b07a7af02b1d0b51ffe57ec35c4c48e",
   "components": [
+    {
+      "name": "accordion",
+      "title": "Accordion",
+      "description": "A vertically stacked set of interactive headings that each reveal a section of content. Heights snap and the items below FLIP; no height animation. GPU-only.",
+      "category": "Components",
+      "dependencies": ["radix-ui", "lucide-react"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "install": "npx shadcn@latest add @godui/accordion",
+      "registry": "core"
+    },
     {
       "name": "agent-flow",
       "title": "Agent Flow",

@@ -24,6 +24,9 @@ test("layout-thrash fixture is caught", async ({ page }) => {
   });
   expect(() => expectGpuOnly(result)).toThrow();
   expect(result.layoutCount).toBeGreaterThan(5);
+  // Per-frame layout stays caught even with a discrete-snap allowance.
+  expect(() => expectGpuOnly(result, { maxLayoutFrames: 3 })).toThrow();
+  expect(result.layoutFrames).toBeGreaterThan(5);
 });
 
 test("box-shadow keyframes are reported as non-compositable", async ({

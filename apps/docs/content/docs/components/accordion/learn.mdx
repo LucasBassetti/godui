@@ -1,0 +1,109 @@
+---
+title: Anatomy of the GodUI Accordion
+description: Why animating height is the expensive way to open an accordion, and how snap-then-FLIP gets the same motion with only translate and opacity.
+learnPlayer: true
+---
+
+import { AccordionDemo } from "@/components/demos/core/accordion-demo";
+
+<LearnPlayer>
+
+<LearnChapter
+  label="Why not animate height"
+  scene={<FlipScene label="Why not animate height" variant="accordion" />}
+  code={`/* shadcn/ui */
+@keyframes accordion-down {
+  from { height: 0; }
+  to { height: var(--radix-accordion-content-height); }
+}`}
+>
+
+shadcn's accordion animates `height` from 0 to the panel's measured height.
+That looks right, but every frame changes the size of the panel, so the
+browser recomputes layout for it and everything after it, then repaints, on
+the main thread. On a busy page, those frames drop.
+
+GodUI never animates a size. The panel's height changes in one step, and what
+looked like growth is recreated with transforms. The scene runs it at 900ms
+so you can follow each item.
+
+</LearnChapter>
+
+<LearnChapter
+  label="Snap, then FLIP"
+  scene={<FlipScene label="Snap, then FLIP" variant="accordion" />}
+  code={`function Accordion({ ref, ...props }) {
+  const rootRef = React.useRef<HTMLDivElement>(null);
+  const [version, bump] = React.useReducer((n: number) => n + 1, 0);
+  useFlipGroup(rootRef, version, {
+    selector: ':scope > [data-slot="accordion-item"]',
+  });
+  // …
+}`}
+>
+
+FLIP stands for First, Last, Invert, Play. `useFlipGroup` remembers where
+every item was (**first**). When the panel's height snaps, it measures where
+they are now (**last**). Each item that moved gets a `translate` that puts it
+back at its old position (**invert**), then animates that translate to zero
+(**play**).
+
+The items appear to slide down to make room, but layout ran exactly once and
+only `translate` animated. If you toggle again mid-slide, the hook reads
+where each item is drawn and starts the next slide from there.
+
+</LearnChapter>
+
+<LearnChapter
+  label="Knowing when the height changed"
+  scene={<FlipScene label="Knowing when the height changed" variant="accordion" />}
+  code={`function AccordionFlipSignal() {
+  const bump = React.useContext(AccordionFlipContext);
+  useIsoLayoutEffect(() => {
+    bump?.();
+    return () => bump?.();
+  }, [bump]);
+  return null;
+}
+
+// inside AccordionContent
+<AccordionFlipSignal />
+<div className={cn("pt-0 pb-4", className)}>{children}</div>`}
+>
+
+The FLIP has to run on the exact commit where the height snaps, and that
+isn't when the value changes. On close, the panel first fades out for 150ms,
+and Radix keeps it mounted until that `animationend`.
+
+Radix renders a panel's children only while it's open or still animating out,
+so GodUI puts a tiny `AccordionFlipSignal` inside the panel. It bumps a
+counter on the root when it mounts and again when it unmounts. That counter is
+what `useFlipGroup` watches. Opening flips immediately; closing flips after
+the fade, when the panel actually collapses.
+
+</LearnChapter>
+
+<LearnChapter
+  label="The result"
+  scene={<LiveResult hint="open and close items"><AccordionDemo /></LiveResult>}
+  isResult
+>
+
+Open and close the items, and try toggling quickly to interrupt a slide.
+
+</LearnChapter>
+
+</LearnPlayer>
+
+## Why GPU-only
+
+The panel animates `opacity` and `translate`, the items below animate
+`translate`, and the chevron animates `transform`. The chevron uses
+`transform: rotate(180deg)` rather than Tailwind's `rotate-180` because
+Chrome won't composite the individual `rotate` property on an `<svg>`.
+
+## Reduced motion
+
+`useFlipGroup` checks `prefers-reduced-motion` and skips the slide: items move
+straight to their new position. The panel's entrance becomes a 150ms fade, and
+`motion-reduce:transition-none` stops the chevron's transition.

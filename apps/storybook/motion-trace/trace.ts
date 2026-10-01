@@ -19,6 +19,12 @@ type TraceEvent = {
 export interface TraceResult {
   /** Layout events after the interaction's own first layout has settled. */
   layoutCount: number;
+  /**
+   * Distinct ~16.7ms frames containing those layout events. A layout
+   * *animation* lays out in every frame it runs (dozens); a discrete size snap
+   * touches one or two frames however many forced reads it triggers.
+   */
+  layoutFrames: number;
   /** Animations Chrome could not run on the compositor because of their properties. */
   unsupported: Array<{ name: string; properties: string[] }>;
   /** Animations Chrome reported as not composited for any reason (bitmask). */
@@ -29,6 +35,8 @@ export interface TraceResult {
 
 /** Layout work allowed right after the interaction (the DOM mutation itself). */
 const SETTLE_MS = 50;
+/** One frame at 60Hz, in trace microseconds. */
+const FRAME_US = 1_000_000 / 60;
 
 /**
  * Record a Chrome trace around one interaction on a Storybook story and report
@@ -81,9 +89,11 @@ export async function traceInteraction(
     .map((e) => e.ts)
     .sort((a, b) => a - b);
   const first = layouts[0] ?? 0;
-  const layoutCount = layouts.filter(
-    (ts) => ts > first + SETTLE_MS * 1000,
-  ).length;
+  const settled = layouts.filter((ts) => ts > first + SETTLE_MS * 1000);
+  const layoutCount = settled.length;
+  const layoutFrames = new Set(
+    settled.map((ts) => Math.floor((ts - first) / FRAME_US)),
+  ).size;
 
   const unsupported = events
     .filter(
@@ -106,11 +116,24 @@ export async function traceInteraction(
   const compositeFailed = [...failed].map(([id, reason]) => ({ id, reason }));
   const animationCount = new Set(animations.map(idOf)).size;
 
-  return { layoutCount, unsupported, compositeFailed, animationCount };
+  return {
+    layoutCount,
+    layoutFrames,
+    unsupported,
+    compositeFailed,
+    animationCount,
+  };
 }
 
-/** Assert an interaction animated on the compositor only. */
-export function expectGpuOnly(result: TraceResult): void {
+/**
+ * Assert an interaction animated on the compositor only. `maxLayoutFrames`
+ * (default 1, e.g. the frame where animations finish) may be raised only for a
+ * documented discrete snap, e.g. an accordion panel collapsing after its fade.
+ */
+export function expectGpuOnly(
+  result: TraceResult,
+  { maxLayoutFrames = 1 }: { maxLayoutFrames?: number } = {},
+): void {
   expect(
     result.unsupported,
     "animations on non-compositable properties",
@@ -118,7 +141,8 @@ export function expectGpuOnly(result: TraceResult): void {
   expect(result.compositeFailed, "animations Chrome did not composite").toEqual(
     [],
   );
-  expect(result.layoutCount, "layout work while animating").toBeLessThanOrEqual(
-    1,
-  );
+  expect(
+    result.layoutFrames,
+    "frames with layout work while animating",
+  ).toBeLessThanOrEqual(maxLayoutFrames);
 }

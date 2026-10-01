@@ -1,0 +1,166 @@
+---
+title: Accordion
+description: A vertically stacked set of interactive headings that each reveal a section of content. Heights snap; the items below slide into place.
+workbench: true
+---
+
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@godui/components";
+import { AccordionDemo } from "@/components/demos/core/accordion-demo";
+
+<Workbench>
+
+The shadcn/ui accordion without height animation. A panel's height changes
+in one step, and the items below it slide from where they were to where they
+now are (FLIP), so the motion reads the same while only `translate` and
+`opacity` animate. Opening panels slide in; closing panels fade out first,
+then collapse.
+
+<Example label="Default" story="ui-accordion" code={`import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+
+export function AccordionDemo() {
+  return (
+    <Accordion
+      type="single"
+      collapsible
+      className="w-full max-w-md"
+      defaultValue="item-1"
+    >
+      <AccordionItem value="item-1">
+        <AccordionTrigger>Product Information</AccordionTrigger>
+        <AccordionContent className="flex flex-col gap-4 text-balance">
+          <p>
+            Our flagship product combines cutting-edge technology with sleek
+            design. Built with premium materials, it offers unparalleled
+            performance and reliability.
+          </p>
+          <p>
+            Key features include advanced processing capabilities and an
+            intuitive user interface designed for both beginners and experts.
+          </p>
+        </AccordionContent>
+      </AccordionItem>
+      <AccordionItem value="item-2">
+        <AccordionTrigger>Shipping Details</AccordionTrigger>
+        <AccordionContent className="flex flex-col gap-4 text-balance">
+          <p>
+            We offer worldwide shipping through trusted courier partners.
+            Standard delivery takes 3-5 business days, while express shipping
+            ensures delivery within 1-2 business days.
+          </p>
+        </AccordionContent>
+      </AccordionItem>
+      <AccordionItem value="item-3">
+        <AccordionTrigger>Return Policy</AccordionTrigger>
+        <AccordionContent className="flex flex-col gap-4 text-balance">
+          <p>
+            We stand behind our products with a comprehensive 30-day return
+            policy. If you&apos;re not completely satisfied, simply return the
+            item in its original condition.
+          </p>
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
+  );
+}`}>
+  <AccordionDemo />
+</Example>
+
+<Example
+  label="Multiple"
+  code={`<Accordion type="multiple" className="w-full max-w-md">
+  <AccordionItem value="a">
+    <AccordionTrigger>Is it accessible?</AccordionTrigger>
+    <AccordionContent>Yes. It adheres to the WAI-ARIA design pattern.</AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="b">
+    <AccordionTrigger>Is it styled?</AccordionTrigger>
+    <AccordionContent>Yes. It comes with default styles that match the other components.</AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="c">
+    <AccordionTrigger>Is it animated?</AccordionTrigger>
+    <AccordionContent>Yes, on the GPU only.</AccordionContent>
+  </AccordionItem>
+</Accordion>`}
+>
+  <Accordion type="multiple" className="w-full max-w-md">
+    <AccordionItem value="a">
+      <AccordionTrigger>Is it accessible?</AccordionTrigger>
+      <AccordionContent>Yes. It adheres to the WAI-ARIA design pattern.</AccordionContent>
+    </AccordionItem>
+    <AccordionItem value="b">
+      <AccordionTrigger>Is it styled?</AccordionTrigger>
+      <AccordionContent>Yes. It comes with default styles that match the other components.</AccordionContent>
+    </AccordionItem>
+    <AccordionItem value="c">
+      <AccordionTrigger>Is it animated?</AccordionTrigger>
+      <AccordionContent>Yes, on the GPU only.</AccordionContent>
+    </AccordionItem>
+  </Accordion>
+</Example>
+
+## Installation
+
+<ComponentInstall name="accordion" />
+
+## Replacing shadcn
+
+`npx shadcn add @godui/accordion` overwrites `components/ui/accordion.tsx`.
+Exports, props and `data-slot` attributes match shadcn/ui new-york-v4, so
+existing imports keep working. It also installs `godui-motion`, which
+includes the `useFlipGroup` hook the accordion uses.
+
+You can delete shadcn's `accordion-down` / `accordion-up` keyframes from your
+CSS; GodUI doesn't use them.
+
+## Usage
+
+```tsx
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+```
+
+```tsx
+<Accordion type="single" collapsible>
+  <AccordionItem value="item-1">
+    <AccordionTrigger>Is it accessible?</AccordionTrigger>
+    <AccordionContent>
+      Yes. It adheres to the WAI-ARIA design pattern.
+    </AccordionContent>
+  </AccordionItem>
+</Accordion>
+```
+
+## What's animated
+
+| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
+| --- | --- | --- | --- | --- |
+| Open | height snaps; panel `godui-slide-in-from-top`; items below FLIP | `opacity`, `translate` | `ease-spring-snappy`; FLIP `ease-out-expo` | 260ms |
+| Close | panel `godui-fade-out`, then height snaps; items below FLIP | `opacity`, `translate` | `ease-out-expo` | 150ms + 260ms |
+| Chevron | `transition` on `transform` | `rotate(180deg)` | `ease-spring-snappy` | 260ms |
+
+The FLIP covers the accordion's own items. Content after the accordion moves
+with the height change in one step.
+
+Under `prefers-reduced-motion` the items below jump to their new position, the
+panel fades for 150ms, and the chevron turns instantly.
+
+## API
+
+Built on [Radix Accordion](https://www.radix-ui.com/primitives/docs/components/accordion).
+Props are identical to [shadcn/ui Accordion](https://ui.shadcn.com/docs/components/accordion).
+
+</Workbench>
