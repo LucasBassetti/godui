@@ -348,12 +348,17 @@ function ListItem({
 match shadcn/ui new-york-v4, so existing imports keep working. It also
 installs `godui-motion` (easings, keyframes, the FLIP hook) into your project.
 
-Two differences ride along. Radix currently drops the exit of viewport
+One difference rides along. Radix currently drops the exit of viewport
 content: the content you leave is removed at once, so shadcn's slide-out
 never plays. GodUI's `NavigationMenuViewport` keeps an inert copy of that
 content (no ids, `aria-hidden`, no pointer events) in place until its exit
-animation ends, then removes it. And because of that, the file is a client
-component (`"use client"`).
+animation ends, then removes it. Once Radix keeps the content mounted through
+its exit, the copy is skipped, so the exit never plays twice.
+
+That work happens in a small client component, so the install also adds
+`components/ui/navigation-menu-viewport-frame.tsx`. `navigation-menu.tsx`
+itself stays server-safe like shadcn's (no `"use client"`), so you can still
+call `navigationMenuTriggerStyle()` from a Server Component.
 
 `NavigationMenuIndicator` slides with the `translateX` Radix sets inline.
 Radix measures the trigger's `offsetLeft`, which is 0 inside shadcn's

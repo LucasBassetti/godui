@@ -329,10 +329,6 @@ function MenubarHop({ reduced }: { reduced: boolean }) {
     return () => clearInterval(id);
   }, [reduced]);
   const noFocus = (event: Event) => event.preventDefault();
-  // Radix's MenubarContent type omits onOpenAutoFocus, but the prop reaches
-  // the menu's focus scope at runtime; without it every hop would pull focus
-  // (and the page's arrow-key scrolling) into the scene.
-  const noOpenFocus = { onOpenAutoFocus: noFocus } as Record<string, unknown>;
   return (
     <div ref={barRef} className="flex h-48 items-start pt-4">
       <Menubar value={shown ? MENUS[index].value : ""}>
@@ -341,7 +337,11 @@ function MenubarHop({ reduced }: { reduced: boolean }) {
             <MenubarTrigger aria-label={menu.value} className="h-7 px-3">
               <Bar className={`${menu.trigger} bg-foreground/40`} />
             </MenubarTrigger>
-            <MenubarContent {...noOpenFocus} onCloseAutoFocus={noFocus}>
+            <MenubarContent
+              // @ts-expect-error Radix omits onOpenAutoFocus from MenubarContent's type, but it reaches the menu's focus scope at runtime (keeps hops from stealing page focus).
+              onOpenAutoFocus={noFocus}
+              onCloseAutoFocus={noFocus}
+            >
               {menu.items.map((w, i) => (
                 <Fragment key={w}>
                   {i === menu.items.length - 1 && <MenubarSeparator />}

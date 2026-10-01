@@ -53,13 +53,14 @@ parent item.
   scene={<AutoPlayScene label="Hopping" demo="menubar" />}
   code={`<MenubarPrimitive.Content
   data-slot="menubar-content"
-  onFocusOutside={(event) => {
-    onFocusOutside?.(event);
-    // Hopping: the old menu stays mounted while it animates out, and
-    // focus landing in the next menu would count as "outside" and close
-    // the whole menubar. Focus moving between menus is not a dismissal.
-    const target = event.target as Element | null;
-    if (target?.closest?.('[data-slot="menubar-content"]')) {
+  ref={composedRef}
+  onInteractOutside={(event) => {
+    onInteractOutside?.(event);
+    // Hopping: this menu stays mounted while it animates out, so focus
+    // landing in (or a press on) the next menu would count as "outside"
+    // and close the whole menubar. A menu that is already closing never
+    // dismisses anything.
+    if (contentRef.current?.dataset.state === "closed") {
       event.preventDefault();
     }
   }}
@@ -74,9 +75,9 @@ plays `godui-popover-in` (260ms), so the swap reads as one motion.
 
 shadcn's menubar has no exit animation, so its old menu unmounts at once.
 Keeping it mounted for 150ms exposed a Radix interaction: the new menu takes
-focus, and the old menu, still listening for focus outside itself, dismisses
-the whole bar. `MenubarContent` now treats focus that lands in another menu
-of the bar as a hop and ignores it.
+focus, and the old menu, still listening for focus and presses outside
+itself, dismisses the whole bar. A closing `MenubarContent` now ignores
+outside interactions; only an open menu can dismiss.
 
 </LearnChapter>
 

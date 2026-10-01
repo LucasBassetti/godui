@@ -3,11 +3,11 @@
 // GodUI Menubar — mirrors shadcn/ui new-york-v4 components/ui/menubar.tsx (registry snapshot 2026-10-01).
 // Motion: each menu and sub-menu grows from its trigger and drifts out of it on a spring (godui-popover-*);
 // hopping between menus exits the old one while the new one enters. Check and radio indicators pop in from 50%. GPU-only.
-// Additive: MenubarContent ignores focus moving into another menu of the bar, so the exiting menu can't dismiss the next.
+// Additive: an exiting MenubarContent (data-state=closed) ignores outside focus/presses, so it can't dismiss the next menu.
 
 import { CheckIcon, ChevronRightIcon, CircleIcon } from "lucide-react";
 import { Menubar as MenubarPrimitive } from "radix-ui";
-import type * as React from "react";
+import * as React from "react";
 import { cn } from "@/lib/utils";
 
 function Menubar({
@@ -73,23 +73,34 @@ function MenubarContent({
   align = "start",
   alignOffset = -4,
   sideOffset = 8,
-  onFocusOutside,
+  ref,
+  onInteractOutside,
   ...props
 }: React.ComponentProps<typeof MenubarPrimitive.Content>) {
+  const contentRef = React.useRef<HTMLDivElement | null>(null);
+  const composedRef = React.useCallback(
+    (node: HTMLDivElement | null) => {
+      contentRef.current = node;
+      if (typeof ref === "function") ref(node);
+      else if (ref) ref.current = node;
+    },
+    [ref],
+  );
   return (
     <MenubarPortal>
       <MenubarPrimitive.Content
         data-slot="menubar-content"
+        ref={composedRef}
         align={align}
         alignOffset={alignOffset}
         sideOffset={sideOffset}
-        onFocusOutside={(event) => {
-          onFocusOutside?.(event);
-          // Hopping: the old menu stays mounted while it animates out, and
-          // focus landing in the next menu would count as "outside" and close
-          // the whole menubar. Focus moving between menus is not a dismissal.
-          const target = event.target as Element | null;
-          if (target?.closest?.('[data-slot="menubar-content"]')) {
+        onInteractOutside={(event) => {
+          onInteractOutside?.(event);
+          // Hopping: this menu stays mounted while it animates out, so focus
+          // landing in (or a press on) the next menu would count as "outside"
+          // and close the whole menubar. A menu that is already closing never
+          // dismisses anything.
+          if (contentRef.current?.dataset.state === "closed") {
             event.preventDefault();
           }
         }}

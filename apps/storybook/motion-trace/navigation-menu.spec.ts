@@ -87,4 +87,42 @@ test("the indicator slides on the compositor", async ({ page }) => {
   // Same two discrete frames as any hop (old content removed, new enter ends);
   // the indicator itself only transitions transform.
   expectGpuOnly(result, { maxLayoutFrames: 2 });
+  // And it really moved: under Components, not at the list's left edge.
+  const x = await page
+    .locator('[data-slot="navigation-menu-indicator"]')
+    .evaluate((el) => new DOMMatrix(getComputedStyle(el).transform).m41);
+  expect(x).toBeGreaterThan(0);
+});
+
+test("the indicator glides with a running transform transition", async ({
+  page,
+}) => {
+  await page.goto(
+    "/iframe.html?id=ui-navigation-menu--with-indicator&viewMode=story",
+  );
+  await page.waitForLoadState("networkidle");
+  await open(page);
+  await page.waitForTimeout(500);
+  const indicator = page.locator('[data-slot="navigation-menu-indicator"]');
+  const xOf = () =>
+    indicator.evaluate(
+      (el) => new DOMMatrix(getComputedStyle(el).transform).m41,
+    );
+  const start = await xOf();
+  await page.getByRole("button", { name: "Components" }).hover();
+  await page.waitForTimeout(60);
+  const mid = await indicator.evaluate((el) => ({
+    x: new DOMMatrix(getComputedStyle(el).transform).m41,
+    target: new DOMMatrix(el.style.transform).m41,
+    transitions: el
+      .getAnimations()
+      .map((a) => (a as CSSTransition).transitionProperty)
+      .filter(Boolean),
+  }));
+  expect(mid.transitions).toContain("transform");
+  // Mid-flight: past the start, short of where Radix put it.
+  expect(mid.x).toBeGreaterThan(start);
+  expect(mid.x).toBeLessThan(mid.target);
+  await page.waitForTimeout(600);
+  expect(await xOf()).toBeCloseTo(mid.target, 0);
 });

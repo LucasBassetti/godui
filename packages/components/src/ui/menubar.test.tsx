@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { expectSlotParity, slotTree } from "../../test/parity";
 import * as Shadcn from "../../test/shadcn/menubar";
@@ -104,6 +104,36 @@ function Usage({
 const content = () =>
   document.querySelector('[data-slot="menubar-content"]') as HTMLElement | null;
 
+/**
+ * jsdom has no CSS, so Radix Presence would unmount a closing menu at once.
+ * Report the real animation names so the closing menu stays mounted (its
+ * animationend never fires here), as it does in a browser mid-exit.
+ */
+function stubExitAnimations() {
+  const real = window.getComputedStyle.bind(window);
+  return vi
+    .spyOn(window, "getComputedStyle")
+    .mockImplementation((el, pseudo) => {
+      const style = real(el, pseudo);
+      if (!(el instanceof HTMLElement)) return style;
+      if (el.dataset.slot !== "menubar-content") return style;
+      return new Proxy(style, {
+        get(target, key) {
+          if (key === "animationName")
+            return el.dataset.state === "closed"
+              ? "godui-popover-out"
+              : "godui-popover-in";
+          const value = Reflect.get(target, key);
+          return typeof value === "function" ? value.bind(target) : value;
+        },
+      });
+    });
+}
+
+const contents = () => [
+  ...document.querySelectorAll<HTMLElement>('[data-slot="menubar-content"]'),
+];
+
 describe("Menubar", () => {
   it("matches shadcn's data-slot tree and exports", () => {
     for (const menu of ["file", "view", "profiles"]) {
@@ -135,37 +165,12 @@ describe("Menubar", () => {
   });
 
   it("a hop keeps the next menu open while the previous one animates out", async () => {
-    // jsdom has no CSS, so Radix Presence would unmount the old menu at once.
-    // Report the real animation names so the closing menu stays mounted (its
-    // animationend never fires here), as it does in a browser mid-exit.
-    const real = window.getComputedStyle.bind(window);
-    const spy = vi
-      .spyOn(window, "getComputedStyle")
-      .mockImplementation((el, pseudo) => {
-        const style = real(el, pseudo);
-        if (!(el instanceof HTMLElement)) return style;
-        if (el.dataset.slot !== "menubar-content") return style;
-        return new Proxy(style, {
-          get(target, key) {
-            if (key === "animationName")
-              return el.dataset.state === "closed"
-                ? "godui-popover-out"
-                : "godui-popover-in";
-            const value = Reflect.get(target, key);
-            return typeof value === "function" ? value.bind(target) : value;
-          },
-        });
-      });
+    const spy = stubExitAnimations();
     try {
       const user = userEvent.setup();
       render(<Usage ui={Godui} />);
       await user.click(screen.getByRole("menuitem", { name: "File" }));
       await user.keyboard("{ArrowRight}");
-      const contents = () => [
-        ...document.querySelectorAll<HTMLElement>(
-          '[data-slot="menubar-content"]',
-        ),
-      ];
       await waitFor(() => expect(contents()).toHaveLength(2));
       const [file, edit] = contents();
       expect(file).toHaveAttribute("data-state", "closed");
@@ -178,6 +183,71 @@ describe("Menubar", () => {
     } finally {
       spy.mockRestore();
     }
+  });
+
+  it("a press inside the next menu during the old one's exit keeps it open (pointer hop)", async () => {
+    const spy = stubExitAnimations();
+    try {
+      const user = userEvent.setup();
+      render(<Usage ui={Godui} />);
+      await user.click(screen.getByRole("menuitem", { name: "File" }));
+      await user.hover(screen.getByRole("menuitem", { name: "Edit" }));
+      await waitFor(() => expect(contents()).toHaveLength(2));
+      const [file, edit] = contents();
+      expect(file).toHaveAttribute("data-state", "closed");
+      // The exiting File menu's layer sees this press as "outside".
+      fireEvent.pointerDown(edit);
+      fireEvent.focus(edit);
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      expect(edit).toHaveAttribute("data-state", "open");
+      expect(screen.getByRole("menuitem", { name: "Edit" })).toHaveAttribute(
+        "data-state",
+        "open",
+      );
+    } finally {
+      spy.mockRestore();
+    }
+  });
+
+  it("an open menu still dismisses on outside focus and presses, and calls the user's handlers", async () => {
+    const onInteractOutside = vi.fn();
+    const onFocusOutside = vi.fn();
+    const onPointerDownOutside = vi.fn();
+    function Bar() {
+      return (
+        <>
+          <Godui.Menubar>
+            <Godui.MenubarMenu value="file">
+              <Godui.MenubarTrigger>File</Godui.MenubarTrigger>
+              <Godui.MenubarContent
+                onInteractOutside={onInteractOutside}
+                onFocusOutside={onFocusOutside}
+                onPointerDownOutside={onPointerDownOutside}
+              >
+                <Godui.MenubarItem>New Tab</Godui.MenubarItem>
+              </Godui.MenubarContent>
+            </Godui.MenubarMenu>
+          </Godui.Menubar>
+          <button type="button">Elsewhere</button>
+        </>
+      );
+    }
+    const user = userEvent.setup();
+    render(<Bar />);
+    await user.click(screen.getByRole("menuitem", { name: "File" }));
+    expect(content()).not.toBeNull();
+    await user.click(screen.getByRole("button", { name: "Elsewhere" }));
+    await waitFor(() => expect(content()).toBeNull());
+    expect(onPointerDownOutside).toHaveBeenCalled();
+    expect(onInteractOutside).toHaveBeenCalled();
+
+    onInteractOutside.mockClear();
+    await user.click(screen.getByRole("menuitem", { name: "File" }));
+    expect(content()).not.toBeNull();
+    screen.getByRole("button", { name: "Elsewhere" }).focus();
+    await waitFor(() => expect(content()).toBeNull());
+    expect(onFocusOutside).toHaveBeenCalled();
+    expect(onInteractOutside).toHaveBeenCalled();
   });
 
   it("content and sub-content grow from the trigger; checks pop in", async () => {

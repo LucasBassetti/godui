@@ -227,9 +227,11 @@ keyframes, the FLIP hook) into your project.
 
 shadcn's `MenubarContent` has no exit animation, so a menu vanishes the moment
 you leave it. GodUI adds one, which means the old menu is still mounted while
-the next one opens. `MenubarContent` therefore treats focus moving into another
-menu of the bar as a hop, not a click outside; without that, the exiting menu
-would close the whole menubar. Your own `onFocusOutside` still runs first.
+the next one opens. `MenubarContent` therefore ignores outside focus and presses
+while it is closing (`data-state="closed"`); without that, the exiting menu
+would treat the next menu as "outside" and close the whole menubar. An open
+menu dismisses as before, and your own `onInteractOutside`,
+`onFocusOutside` and `onPointerDownOutside` still run.
 
 ## Usage
 

@@ -39,7 +39,8 @@ settles.
 
 Radix currently forgets the outgoing half: it removes the old content at
 once. GodUI's viewport watches for that removal and puts an inert copy back
-for the length of its exit, so the slide-out still plays.
+for the length of its exit, so the slide-out still plays. A content whose
+exit already started is left alone, so a fixed Radix won't play it twice.
 
 </LearnChapter>
 

@@ -6,6 +6,7 @@ import userEvent from "@testing-library/user-event";
 import { expectSlotParity, slotTree } from "../../test/parity";
 import * as Shadcn from "../../test/shadcn/navigation-menu";
 import * as Godui from "./navigation-menu";
+import { NavigationMenuViewportFrame } from "./navigation-menu-viewport-frame";
 
 /** shadcn's navigation-menu-demo (next/link → <a>, viewport passed in). */
 function Usage({
@@ -356,5 +357,123 @@ describe("NavigationMenu", () => {
       "utf8",
     );
     expect(frame).toMatch(/^"use client";/);
+  });
+
+  describe("viewport frame (exit replay for Radix's dropped exit)", () => {
+    /** A frame with an open viewport; contents are added by hand, like Radix. */
+    function setup() {
+      const view = render(
+        <NavigationMenuViewportFrame>
+          <div data-slot="navigation-menu-viewport" data-state="open" />
+        </NavigationMenuViewportFrame>,
+      );
+      const viewport = slot("navigation-menu-viewport") as HTMLElement;
+      const content = (id: string, motion?: string) => {
+        const el = document.createElement("div");
+        el.dataset.slot = "navigation-menu-content";
+        if (motion) el.dataset.motion = motion;
+        el.id = id;
+        el.innerHTML = `<a id="${id}-link" href="#x">${id}</a>`;
+        viewport.append(el);
+        return el;
+      };
+      const flush = () => new Promise((resolve) => setTimeout(resolve, 0));
+      const ghosts = () => [
+        ...viewport.querySelectorAll<HTMLElement>("[data-exiting]"),
+      ];
+      return { view, viewport, content, flush, ghosts };
+    }
+
+    it("replays an exit Radix dropped (node removed before it animated)", async () => {
+      const spy = stubAnimations();
+      try {
+        const { content, flush, ghosts } = setup();
+        const a = content("a", "to-start");
+        await flush();
+        a.remove();
+        await flush();
+        expect(ghosts()).toHaveLength(1);
+        expect(ghosts()[0]).toHaveAttribute("data-ghost-of", "a");
+      } finally {
+        spy.mockRestore();
+      }
+    });
+
+    it("does not replay an exit that already played (Radix keeps the node through it)", async () => {
+      const spy = stubAnimations();
+      try {
+        const { content, flush, ghosts } = setup();
+        const a = content("a");
+        await flush();
+        // Radix switches away: data-motion flips, the slide-out starts on the
+        // still-mounted node, and Presence removes it after animationend.
+        a.dataset.motion = "to-start";
+        a.dispatchEvent(new Event("animationstart", { bubbles: true }));
+        a.dispatchEvent(new Event("animationend", { bubbles: true }));
+        a.remove();
+        await flush();
+        expect(ghosts()).toHaveLength(0);
+      } finally {
+        spy.mockRestore();
+      }
+    });
+
+    it("A → B → A: the copy of A goes as soon as A is back", async () => {
+      const spy = stubAnimations();
+      try {
+        const { content, flush, ghosts } = setup();
+        const a = content("a", "to-start");
+        await flush();
+        a.remove();
+        await flush();
+        expect(ghosts()).toHaveLength(1);
+        content("a", "from-start");
+        await flush();
+        expect(ghosts()).toHaveLength(0);
+      } finally {
+        spy.mockRestore();
+      }
+    });
+
+    it("the copy ignores animation events bubbling from its children", async () => {
+      const spy = stubAnimations();
+      try {
+        const { content, flush, ghosts } = setup();
+        const a = content("a", "to-start");
+        await flush();
+        a.remove();
+        await flush();
+        const [ghost] = ghosts();
+        ghost
+          .querySelector("a")
+          ?.dispatchEvent(new Event("animationend", { bubbles: true }));
+        expect(ghost.isConnected).toBe(true);
+        ghost.dispatchEvent(new Event("animationcancel"));
+        expect(ghost.isConnected).toBe(false);
+      } finally {
+        spy.mockRestore();
+      }
+    });
+
+    it("unmounting removes pending copies and their timers", async () => {
+      const spy = stubAnimations();
+      const clear = vi.spyOn(window, "clearTimeout");
+      try {
+        const { view, viewport, content, flush, ghosts } = setup();
+        const a = content("a", "to-start");
+        await flush();
+        a.remove();
+        await flush();
+        const [ghost] = ghosts();
+        expect(ghost).toBeDefined();
+        view.unmount();
+        expect(ghost.isConnected).toBe(false);
+        expect(viewport.isConnected).toBe(false);
+        expect(clear).toHaveBeenCalled();
+      } finally {
+        clear.mockRestore();
+        spy.mockRestore();
+      }
+    });
   });
 });
