@@ -26,7 +26,7 @@ const testimonials = [
 ];
 
 const meta = {
-  title: "Layout/AnimatedTestimonials",
+  title: "Extras/Layout/AnimatedTestimonials",
   component: AnimatedTestimonials,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

@@ -53,7 +53,7 @@ const suggestions = [
 ];
 
 const meta = {
-  title: "AI/PromptSuggestions",
+  title: "Extras/AI/PromptSuggestions",
   component: PromptSuggestions,
   tags: ["autodocs"],
   parameters: { layout: "padded" },

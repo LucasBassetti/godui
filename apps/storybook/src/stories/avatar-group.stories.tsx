@@ -13,7 +13,7 @@ const avatars = [
 ];
 
 const meta = {
-  title: "Layout/Avatar Group",
+  title: "Extras/Layout/Avatar Group",
   component: AvatarGroup,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

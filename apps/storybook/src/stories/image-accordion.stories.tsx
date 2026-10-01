@@ -31,7 +31,7 @@ const PANELS = [
 ];
 
 const meta = {
-  title: "Layout/ImageAccordion",
+  title: "Extras/Layout/ImageAccordion",
   component: ImageAccordion,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

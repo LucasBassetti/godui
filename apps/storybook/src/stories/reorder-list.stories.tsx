@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import * as React from "react";
 
 const meta = {
-  title: "Layout/Reorder List",
+  title: "Extras/Layout/Reorder List",
   component: ReorderList,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

@@ -9,7 +9,7 @@ const SCREENS = [
 ];
 
 const meta = {
-  title: "Layout/App Showcase",
+  title: "Extras/Layout/App Showcase",
   component: AppShowcase,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

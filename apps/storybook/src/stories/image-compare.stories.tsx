@@ -5,7 +5,7 @@ import { action, hidden, range, select, text } from "../playground/argtypes";
 import { box } from "../playground/stage";
 
 const meta = {
-  title: "Layout/Image Compare",
+  title: "Extras/Layout/Image Compare",
   component: ImageCompare,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

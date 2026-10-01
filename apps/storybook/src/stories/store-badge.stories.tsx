@@ -2,7 +2,7 @@ import { StoreBadge, StoreBadgeGroup } from "@godui/extras";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 const meta = {
-  title: "Layout/Store Badge",
+  title: "Extras/Layout/Store Badge",
   component: StoreBadge,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

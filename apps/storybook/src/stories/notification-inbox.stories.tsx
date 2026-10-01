@@ -51,7 +51,7 @@ const notifications: Notification[] = [
 ];
 
 const meta = {
-  title: "Collaboration/NotificationInbox",
+  title: "Extras/Collaboration/NotificationInbox",
   component: NotificationInbox,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

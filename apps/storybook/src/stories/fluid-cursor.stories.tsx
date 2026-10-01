@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import * as React from "react";
 
 const meta = {
-  title: "Effects/Fluid Cursor",
+  title: "Extras/Effects/Fluid Cursor",
   component: FluidCursor,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

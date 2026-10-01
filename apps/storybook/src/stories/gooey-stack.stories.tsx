@@ -79,7 +79,7 @@ function PromptCard() {
 }
 
 const meta = {
-  title: "Layout/GooeyStack",
+  title: "Extras/Layout/GooeyStack",
   component: GooeyStack,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

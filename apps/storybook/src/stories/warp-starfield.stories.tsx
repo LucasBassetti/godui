@@ -18,7 +18,7 @@ const presets = {
 type PlaygroundArgs = WarpStarfieldProps & { preset: keyof typeof presets };
 
 const meta: Meta<PlaygroundArgs> = {
-  title: "Backgrounds/Warp Starfield",
+  title: "Extras/Backgrounds/Warp Starfield",
   component: WarpStarfield,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

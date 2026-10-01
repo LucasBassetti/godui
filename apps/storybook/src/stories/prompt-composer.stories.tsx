@@ -12,7 +12,7 @@ import {
 import { padded } from "../playground/stage";
 
 const meta = {
-  title: "AI/PromptComposer",
+  title: "Extras/AI/PromptComposer",
   component: PromptComposer,
   tags: ["autodocs"],
   parameters: { layout: "padded" },

@@ -71,7 +71,7 @@ const disabledItems: MultiButtonItem[] = items.map((item) =>
 );
 
 const meta = {
-  title: "Buttons/Multi Button",
+  title: "Extras/Buttons/Multi Button",
   component: MultiButton,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

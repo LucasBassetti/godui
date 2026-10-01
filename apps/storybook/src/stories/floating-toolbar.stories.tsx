@@ -25,7 +25,7 @@ const actions = [
 ];
 
 const meta = {
-  title: "Overlays/Floating Toolbar",
+  title: "Extras/Overlays/Floating Toolbar",
   component: FloatingToolbar,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

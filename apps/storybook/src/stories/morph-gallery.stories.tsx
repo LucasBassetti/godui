@@ -21,7 +21,7 @@ const ITEMS = PHOTOS.map((p) => ({
 }));
 
 const meta = {
-  title: "Layout/MorphGallery",
+  title: "Extras/Layout/MorphGallery",
   component: MorphGallery,
   tags: ["autodocs"],
   parameters: { layout: "padded" },

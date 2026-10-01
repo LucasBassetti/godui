@@ -21,7 +21,7 @@ const IMAGES = [
 ].map((id) => `https://picsum.photos/id/${id}/400/400`);
 
 const meta = {
-  title: "Layout/Three D Marquee",
+  title: "Extras/Layout/Three D Marquee",
   component: ThreeDMarquee,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

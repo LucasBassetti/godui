@@ -5,7 +5,7 @@ import { action, select, text, toggle } from "../playground/argtypes";
 import { centered } from "../playground/stage";
 
 const meta = {
-  title: "Buttons/Shimmer Button",
+  title: "Extras/Buttons/Shimmer Button",
   component: ShimmerButton,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

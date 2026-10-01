@@ -19,7 +19,7 @@ const COLORS = [
 ];
 
 const meta = {
-  title: "Visualizations/Gravity",
+  title: "Extras/Visualizations/Gravity",
   component: Gravity,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

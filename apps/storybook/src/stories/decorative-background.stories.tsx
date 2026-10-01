@@ -14,7 +14,7 @@ type PlaygroundArgs = DecorativeBackgroundProps & {
 };
 
 const meta: Meta<PlaygroundArgs> = {
-  title: "Backgrounds/Decorative Background",
+  title: "Extras/Backgrounds/Decorative Background",
   component: DecorativeBackground,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

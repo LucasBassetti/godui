@@ -6,7 +6,7 @@ const COPY =
   "Great interfaces read like a sentence — one idea resolving into the next. As you scroll, each word settles into focus, pacing attention exactly where it belongs.";
 
 const meta = {
-  title: "Text/Scroll Text Reveal",
+  title: "Extras/Text/Scroll Text Reveal",
   component: ScrollTextReveal,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

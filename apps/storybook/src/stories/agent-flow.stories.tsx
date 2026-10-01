@@ -59,7 +59,7 @@ const EDGES: AgentFlowEdge[] = [
 ];
 
 const meta = {
-  title: "AI/AgentFlow",
+  title: "Extras/AI/AgentFlow",
   component: AgentFlow,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

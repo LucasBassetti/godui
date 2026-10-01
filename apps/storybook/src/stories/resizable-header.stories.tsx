@@ -20,7 +20,7 @@ const cta = (
 );
 
 const meta = {
-  title: "Navigation/Resizable Header",
+  title: "Extras/Navigation/Resizable Header",
   component: ResizableHeader,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

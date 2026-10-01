@@ -4,7 +4,7 @@ import { hidden, range, text } from "../playground/argtypes";
 import { centered } from "../playground/stage";
 
 const meta = {
-  title: "Text/AuroraText",
+  title: "Extras/Text/AuroraText",
   component: AuroraText,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

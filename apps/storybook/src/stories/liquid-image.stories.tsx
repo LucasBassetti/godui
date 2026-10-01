@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { radio, range } from "../playground/argtypes";
 
 const meta = {
-  title: "Effects/LiquidImage",
+  title: "Extras/Effects/LiquidImage",
   component: LiquidImage,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

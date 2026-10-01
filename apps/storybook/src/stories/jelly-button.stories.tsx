@@ -5,7 +5,7 @@ import { action, range, select, text, toggle } from "../playground/argtypes";
 import { centered } from "../playground/stage";
 
 const meta = {
-  title: "Buttons/Jelly Button",
+  title: "Extras/Buttons/Jelly Button",
   component: JellyButton,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

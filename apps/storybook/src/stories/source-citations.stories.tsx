@@ -27,7 +27,7 @@ const sources = [
 ];
 
 const meta = {
-  title: "AI/SourceCitations",
+  title: "Extras/AI/SourceCitations",
   component: SourceList,
   subcomponents: { SourceCitation },
   tags: ["autodocs"],

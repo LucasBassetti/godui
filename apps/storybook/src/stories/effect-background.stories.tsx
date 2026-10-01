@@ -14,7 +14,7 @@ type PlaygroundArgs = EffectBackgroundProps & {
 };
 
 const meta: Meta<PlaygroundArgs> = {
-  title: "Backgrounds/Effect Background",
+  title: "Extras/Backgrounds/Effect Background",
   component: EffectBackground,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

@@ -33,7 +33,7 @@ const ITEMS: StickyScrollItem[] = [
 ];
 
 const meta = {
-  title: "Layout/Sticky Scroll",
+  title: "Extras/Layout/Sticky Scroll",
   component: StickyScroll,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

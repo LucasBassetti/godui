@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { color, range } from "../playground/argtypes";
 
 const meta: Meta<LiquidGlassCardProps> = {
-  title: "Effects/Liquid Glass Card",
+  title: "Extras/Effects/Liquid Glass Card",
   component: LiquidGlassCard,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

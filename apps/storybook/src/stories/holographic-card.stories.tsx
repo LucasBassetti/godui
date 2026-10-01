@@ -4,7 +4,7 @@ import { range, select, toggle } from "../playground/argtypes";
 import { centered } from "../playground/stage";
 
 const meta = {
-  title: "Layout/Holographic Card",
+  title: "Extras/Layout/Holographic Card",
   component: HolographicCard,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

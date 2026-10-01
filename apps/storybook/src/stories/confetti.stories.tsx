@@ -15,7 +15,7 @@ type PlaygroundArgs = {
 };
 
 const meta: Meta<PlaygroundArgs> = {
-  title: "Effects/Confetti",
+  title: "Extras/Effects/Confetti",
   component: ConfettiButton,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

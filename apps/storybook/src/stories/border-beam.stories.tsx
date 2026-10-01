@@ -4,7 +4,7 @@ import type * as React from "react";
 import { color, range, toggle } from "../playground/argtypes";
 
 const meta = {
-  title: "Effects/Border Beam",
+  title: "Extras/Effects/Border Beam",
   component: BorderBeam,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

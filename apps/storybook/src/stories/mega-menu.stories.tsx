@@ -54,7 +54,7 @@ const items: MegaMenuItem[] = [
 ];
 
 const meta = {
-  title: "Navigation/Mega Menu",
+  title: "Extras/Navigation/Mega Menu",
   component: MegaMenu,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

@@ -39,7 +39,7 @@ const presets: PresetMap<GlobeProps> = {
 type PlaygroundArgs = GlobeProps & { preset: string };
 
 const meta: Meta<PlaygroundArgs> = {
-  title: "Effects/Globe",
+  title: "Extras/Effects/Globe",
   component: Globe,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

@@ -4,7 +4,7 @@ import { hidden, range, select, text, toggle } from "../playground/argtypes";
 import { centered } from "../playground/stage";
 
 const meta = {
-  title: "Text/TextAnimate",
+  title: "Extras/Text/TextAnimate",
   component: TextAnimate,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

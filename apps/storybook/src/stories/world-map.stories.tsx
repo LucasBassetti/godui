@@ -4,7 +4,7 @@ import { toggle } from "../playground/argtypes";
 import { centered } from "../playground/stage";
 
 const meta = {
-  title: "Visualizations/World Map",
+  title: "Extras/Visualizations/World Map",
   component: WorldMap,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

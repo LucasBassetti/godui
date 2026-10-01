@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { centered } from "../playground/stage";
 
 const meta = {
-  title: "AI/AgentTimeline",
+  title: "Extras/AI/AgentTimeline",
   component: AgentTimeline,
   subcomponents: { AgentStep },
   tags: ["autodocs"],

@@ -5,7 +5,7 @@ import { action, range, select, text } from "../playground/argtypes";
 import { centered } from "../playground/stage";
 
 const meta = {
-  title: "Buttons/Hold Confirm Button",
+  title: "Extras/Buttons/Hold Confirm Button",
   component: HoldConfirmButton,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

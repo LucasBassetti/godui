@@ -14,7 +14,7 @@ const users = [
 ];
 
 const meta = {
-  title: "Collaboration/PresenceFacepile",
+  title: "Extras/Collaboration/PresenceFacepile",
   component: PresenceFacepile,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

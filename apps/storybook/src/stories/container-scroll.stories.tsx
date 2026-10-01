@@ -2,7 +2,7 @@ import { ContainerScroll } from "@godui/extras";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 const meta = {
-  title: "Layout/Container Scroll",
+  title: "Extras/Layout/Container Scroll",
   component: ContainerScroll,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

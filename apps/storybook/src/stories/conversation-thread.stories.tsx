@@ -21,7 +21,7 @@ const copyAction = {
 };
 
 const meta = {
-  title: "AI/ConversationThread",
+  title: "Extras/AI/ConversationThread",
   component: ConversationThread,
   subcomponents: { ConversationMessage },
   tags: ["autodocs"],

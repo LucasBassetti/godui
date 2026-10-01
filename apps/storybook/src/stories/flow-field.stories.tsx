@@ -17,7 +17,7 @@ const presets = {
 type PlaygroundArgs = FlowFieldProps & { preset: keyof typeof presets };
 
 const meta: Meta<PlaygroundArgs> = {
-  title: "Backgrounds/Flow Field",
+  title: "Extras/Backgrounds/Flow Field",
   component: FlowField,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

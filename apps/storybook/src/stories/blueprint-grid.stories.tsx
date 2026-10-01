@@ -4,7 +4,7 @@ import { color, range, select, toggle } from "../playground/argtypes";
 import { effectStage } from "../playground/stage";
 
 const meta = {
-  title: "Backgrounds/Blueprint Grid",
+  title: "Extras/Backgrounds/Blueprint Grid",
   component: BlueprintGrid,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

@@ -35,7 +35,7 @@ const facets: Facet[] = [
 ];
 
 const meta = {
-  title: "Navigation/Filter Bar",
+  title: "Extras/Navigation/Filter Bar",
   component: FilterBar,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

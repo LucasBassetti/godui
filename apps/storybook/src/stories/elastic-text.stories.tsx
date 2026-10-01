@@ -4,7 +4,7 @@ import { hidden, radio, range, text, toggle } from "../playground/argtypes";
 import { centered } from "../playground/stage";
 
 const meta = {
-  title: "Text/ElasticText",
+  title: "Extras/Text/ElasticText",
   component: ElasticText,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

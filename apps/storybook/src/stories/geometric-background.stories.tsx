@@ -14,7 +14,7 @@ type PlaygroundArgs = GeometricBackgroundProps & {
 };
 
 const meta: Meta<PlaygroundArgs> = {
-  title: "Backgrounds/Geometric Background",
+  title: "Extras/Backgrounds/Geometric Background",
   component: GeometricBackground,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

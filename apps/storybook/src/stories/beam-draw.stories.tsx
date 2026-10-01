@@ -2,7 +2,7 @@ import { BeamDraw } from "@godui/extras";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 const meta = {
-  title: "Effects/Beam Draw",
+  title: "Extras/Effects/Beam Draw",
   component: BeamDraw,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

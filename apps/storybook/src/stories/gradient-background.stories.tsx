@@ -14,7 +14,7 @@ type PlaygroundArgs = GradientBackgroundProps & {
 };
 
 const meta: Meta<PlaygroundArgs> = {
-  title: "Backgrounds/Gradient Background",
+  title: "Extras/Backgrounds/Gradient Background",
   component: GradientBackground,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

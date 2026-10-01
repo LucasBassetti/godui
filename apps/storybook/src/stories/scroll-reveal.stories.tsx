@@ -15,7 +15,7 @@ const Filler = () => (
 );
 
 const meta = {
-  title: "Effects/ScrollReveal",
+  title: "Extras/Effects/ScrollReveal",
   component: ScrollReveal,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },
