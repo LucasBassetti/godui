@@ -26,26 +26,6 @@ export interface MotionScorePanelEntry {
 }
 
 export const MOTION_SCORE_PANELS: Record<string, MotionScorePanelEntry> = {
-  accordion: {
-    title: "Accordion",
-    properties: [
-      {
-        prop: "height",
-        label: "height",
-        note: "collapse to height:auto — sanctioned reveal pattern",
-      },
-      {
-        prop: "rotate",
-        label: "rotate",
-        note: "Rotation",
-      },
-      {
-        prop: "opacity",
-        label: "opacity",
-        note: "Fade / cross-fade",
-      },
-    ],
-  },
   "agent-flow": {
     title: "Agent Flow",
     properties: [
@@ -323,36 +303,6 @@ export const MOTION_SCORE_PANELS: Record<string, MotionScorePanelEntry> = {
       },
     ],
   },
-  combobox: {
-    title: "Combobox",
-    properties: [
-      {
-        prop: "translate",
-        label: "translate",
-        note: "Position / lift via translate",
-      },
-      {
-        prop: "opacity",
-        label: "opacity",
-        note: "Fade / cross-fade",
-      },
-    ],
-  },
-  "command-palette": {
-    title: "Command Palette",
-    properties: [
-      {
-        prop: "opacity",
-        label: "opacity",
-        note: "Fade / cross-fade",
-      },
-      {
-        prop: "filter",
-        label: "filter",
-        note: "Filter (blur / brightness)",
-      },
-    ],
-  },
   "comment-pin": {
     title: "Comment Pin",
     properties: [
@@ -386,16 +336,6 @@ export const MOTION_SCORE_PANELS: Record<string, MotionScorePanelEntry> = {
         prop: "rotate",
         label: "rotate",
         note: "Rotation",
-      },
-    ],
-  },
-  "context-menu": {
-    title: "Context Menu",
-    properties: [
-      {
-        prop: "opacity",
-        label: "opacity",
-        note: "Fade / cross-fade",
       },
     ],
   },
@@ -436,31 +376,6 @@ export const MOTION_SCORE_PANELS: Record<string, MotionScorePanelEntry> = {
   },
   dock: {
     title: "Dock",
-    properties: [
-      {
-        prop: "translate",
-        label: "translate",
-        note: "Position / lift via translate",
-      },
-      {
-        prop: "opacity",
-        label: "opacity",
-        note: "Fade / cross-fade",
-      },
-    ],
-  },
-  drawer: {
-    title: "Drawer",
-    properties: [
-      {
-        prop: "opacity",
-        label: "opacity",
-        note: "Fade / cross-fade",
-      },
-    ],
-  },
-  "dropdown-menu": {
-    title: "Dropdown Menu",
     properties: [
       {
         prop: "translate",
@@ -1719,21 +1634,6 @@ export const MOTION_SCORE_PANELS: Record<string, MotionScorePanelEntry> = {
         prop: "rotate",
         label: "rotate",
         note: "Rotation",
-      },
-      {
-        prop: "opacity",
-        label: "opacity",
-        note: "Fade / cross-fade",
-      },
-    ],
-  },
-  toast: {
-    title: "Toast",
-    properties: [
-      {
-        prop: "height",
-        label: "height",
-        note: "toast stack expand/collapse — height to measured px",
       },
       {
         prop: "opacity",

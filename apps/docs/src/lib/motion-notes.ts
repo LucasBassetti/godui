@@ -22,11 +22,6 @@ export interface MotionNote {
 
 export const MOTION_NOTES: Record<string, MotionNote> = {
   // ── Height / width / flex reveals & shared-layout morphs ──────────────────
-  accordion: {
-    kind: "layout",
-    reason:
-      "Panels expand by animating height to auto — the sanctioned collapse pattern, but a layout property, not GPU-composited.",
-  },
   "agent-timeline": {
     kind: "layout",
     reason: "Rows reveal by animating height to auto — a layout property.",
@@ -58,11 +53,6 @@ export const MOTION_NOTES: Record<string, MotionNote> = {
     kind: "layout",
     reason:
       "Panels morph their width and height on open — a shared-layout animation on the main thread.",
-  },
-  toast: {
-    kind: "layout",
-    reason:
-      "The stack expands and collapses by animating height — a layout property.",
   },
   "image-accordion": {
     kind: "layout",

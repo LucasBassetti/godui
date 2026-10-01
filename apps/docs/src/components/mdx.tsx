@@ -13,9 +13,6 @@ import { PreviewCard } from "@/components/card-previews/preview-card";
 import { ComponentInstall } from "@/components/component-install";
 import { ComponentPreview } from "@/components/component-preview";
 import { LangBadge } from "@/components/lang-badge";
-import { AccordionAnatomy } from "@/components/learn/accordion-anatomy";
-import { AccordionHeight } from "@/components/learn/accordion-height";
-import { AccordionResult } from "@/components/learn/accordion-result";
 import { AgentFlowAnatomy } from "@/components/learn/agent-flow-anatomy";
 import { AgentFlowBorderTrace } from "@/components/learn/agent-flow-border-trace";
 import { AgentFlowPacket } from "@/components/learn/agent-flow-packet";
@@ -75,15 +72,6 @@ import { CardSwapAnatomy } from "@/components/learn/card-swap-anatomy";
 import { CardSwapCycle } from "@/components/learn/card-swap-cycle";
 import { CardSwapResult } from "@/components/learn/card-swap-result";
 import { CardSwapTilt } from "@/components/learn/card-swap-tilt";
-import { ComboboxAnatomy } from "@/components/learn/combobox-anatomy";
-import { ComboboxHighlight } from "@/components/learn/combobox-highlight";
-import { ComboboxRace } from "@/components/learn/combobox-race";
-import { ComboboxResult } from "@/components/learn/combobox-result";
-import { ComboboxStagger } from "@/components/learn/combobox-stagger";
-import { CommandPaletteAnatomy } from "@/components/learn/command-palette-anatomy";
-import { CommandPaletteEnter } from "@/components/learn/command-palette-enter";
-import { CommandPaletteHighlight } from "@/components/learn/command-palette-highlight";
-import { CommandPaletteResult } from "@/components/learn/command-palette-result";
 import { CommentPinAnatomy } from "@/components/learn/comment-pin-anatomy";
 import { CommentPinResolved } from "@/components/learn/comment-pin-resolved";
 import { CommentPinResult } from "@/components/learn/comment-pin-result";
@@ -95,10 +83,6 @@ import { ConfettiResult } from "@/components/learn/confetti-result";
 import { ContainerScrollAnatomy } from "@/components/learn/container-scroll-anatomy";
 import { ContainerScrollResult } from "@/components/learn/container-scroll-result";
 import { ContainerScrollScrub } from "@/components/learn/container-scroll-scrub";
-import { ContextMenuAnatomy } from "@/components/learn/context-menu-anatomy";
-import { ContextMenuFlip } from "@/components/learn/context-menu-flip";
-import { ContextMenuResult } from "@/components/learn/context-menu-result";
-import { ContextMenuSpring } from "@/components/learn/context-menu-spring";
 import { ConversationThreadAnatomy } from "@/components/learn/conversation-thread-anatomy";
 import { ConversationThreadResult } from "@/components/learn/conversation-thread-result";
 import { ConversationThreadScroll } from "@/components/learn/conversation-thread-scroll";
@@ -109,14 +93,6 @@ import { CoverFlowResult } from "@/components/learn/cover-flow-result";
 import { DockAnatomy } from "@/components/learn/dock-anatomy";
 import { DockMagnify } from "@/components/learn/dock-magnify";
 import { DockResult } from "@/components/learn/dock-result";
-import { DrawerAnatomy } from "@/components/learn/drawer-anatomy";
-import { DrawerDismiss } from "@/components/learn/drawer-dismiss";
-import { DrawerResult } from "@/components/learn/drawer-result";
-import { DrawerSpring } from "@/components/learn/drawer-spring";
-import { DropdownMenuAnatomy } from "@/components/learn/dropdown-menu-anatomy";
-import { DropdownMenuResult } from "@/components/learn/dropdown-menu-result";
-import { DropdownMenuSpring } from "@/components/learn/dropdown-menu-spring";
-import { DropdownMenuSubmenu } from "@/components/learn/dropdown-menu-submenu";
 import { DynamicIslandAnatomy } from "@/components/learn/dynamic-island-anatomy";
 import { DynamicIslandCrossfade } from "@/components/learn/dynamic-island-crossfade";
 import { DynamicIslandResult } from "@/components/learn/dynamic-island-result";
@@ -400,10 +376,6 @@ import { ThreeDMarqueeResult } from "@/components/learn/three-d-marquee-result";
 import { TiltCardAnatomy } from "@/components/learn/tilt-card-anatomy";
 import { TiltCardResult } from "@/components/learn/tilt-card-result";
 import { TiltCardSpring } from "@/components/learn/tilt-card-spring";
-import { ToastAnatomy } from "@/components/learn/toast-anatomy";
-import { ToastExpand } from "@/components/learn/toast-expand";
-import { ToastResult } from "@/components/learn/toast-result";
-import { ToastSwipe } from "@/components/learn/toast-swipe";
 import { TopographicDriftAnatomy } from "@/components/learn/topographic-drift-anatomy";
 import { TopographicDriftDrift } from "@/components/learn/topographic-drift-drift";
 import { TopographicDriftMarch } from "@/components/learn/topographic-drift-march";
@@ -506,9 +478,6 @@ export function getMDXComponents(components?: MDXComponents) {
     MCPInstall,
     BackgroundShowcase,
     PreviewCard,
-    AccordionAnatomy,
-    AccordionHeight,
-    AccordionResult,
     AgentFlowAnatomy,
     AgentFlowBorderTrace,
     AgentFlowPacket,
@@ -568,15 +537,6 @@ export function getMDXComponents(components?: MDXComponents) {
     CardSwapCycle,
     CardSwapResult,
     CardSwapTilt,
-    ComboboxAnatomy,
-    ComboboxHighlight,
-    ComboboxRace,
-    ComboboxResult,
-    ComboboxStagger,
-    CommandPaletteAnatomy,
-    CommandPaletteEnter,
-    CommandPaletteHighlight,
-    CommandPaletteResult,
     CommentPinAnatomy,
     CommentPinResolved,
     CommentPinResult,
@@ -588,10 +548,6 @@ export function getMDXComponents(components?: MDXComponents) {
     ContainerScrollAnatomy,
     ContainerScrollResult,
     ContainerScrollScrub,
-    ContextMenuAnatomy,
-    ContextMenuFlip,
-    ContextMenuResult,
-    ContextMenuSpring,
     ConversationThreadAnatomy,
     ConversationThreadResult,
     ConversationThreadScroll,
@@ -602,14 +558,6 @@ export function getMDXComponents(components?: MDXComponents) {
     DockAnatomy,
     DockMagnify,
     DockResult,
-    DrawerAnatomy,
-    DrawerDismiss,
-    DrawerResult,
-    DrawerSpring,
-    DropdownMenuAnatomy,
-    DropdownMenuResult,
-    DropdownMenuSpring,
-    DropdownMenuSubmenu,
     DynamicIslandAnatomy,
     DynamicIslandCrossfade,
     DynamicIslandResult,
@@ -894,10 +842,6 @@ export function getMDXComponents(components?: MDXComponents) {
     TiltCardAnatomy,
     TiltCardResult,
     TiltCardSpring,
-    ToastAnatomy,
-    ToastExpand,
-    ToastResult,
-    ToastSwipe,
     TopographicDriftAnatomy,
     TopographicDriftDrift,
     TopographicDriftMarch,

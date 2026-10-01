@@ -22,18 +22,18 @@ const pages = [
     description: "Install GodUI components with the shadcn CLI.",
   },
   {
-    file: "docs/components/layout/accordion.html",
-    path: "/docs/components/layout/accordion",
-    title: "Accordion",
+    file: "docs/components/layout/tilt-card.html",
+    path: "/docs/components/layout/tilt-card",
+    title: "Tilt Card",
     description:
-      "A disclosure list with spring height animation, rotating chevrons, and single or multiple open modes.",
+      "A card that tilts in 3D toward the pointer with parallax depth and a specular glare.",
   },
   {
-    file: "docs/components/layout/accordion/learn.html",
-    path: "/docs/components/layout/accordion/learn",
-    title: "Anatomy of the Accordion",
+    file: "docs/components/layout/tilt-card/learn.html",
+    path: "/docs/components/layout/tilt-card/learn",
+    title: "Anatomy of Tilt Card",
     description:
-      "How a spring-driven height animation and a flat CSS rotate can share one click without ever touching each other's timing.",
+      "How one spring-smoothed pointer value drives a card's rotation, its floating content, and a glare that chases the cursor.",
   },
   {
     file: "index.html",

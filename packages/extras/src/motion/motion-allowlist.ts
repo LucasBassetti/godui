@@ -25,12 +25,6 @@ export interface MotionAllowEntry {
 
 export const MOTION_ALLOWLIST: Record<string, MotionAllowEntry[]> = {
   // ── Height/width/flex reveals & shared-layout morphs (layout IS the effect) ──
-  "accordion/accordion.tsx": [
-    {
-      prop: "height",
-      reason: "collapse to height:auto — sanctioned reveal pattern",
-    },
-  ],
   "agent-timeline/agent-timeline.tsx": [
     { prop: "height", reason: "timeline row collapse to height:auto" },
   ],
@@ -56,12 +50,6 @@ export const MOTION_ALLOWLIST: Record<string, MotionAllowEntry[]> = {
     {
       prop: "width",
       reason: "intrinsic action-label reveal while sibling icons stay fixed",
-    },
-  ],
-  "toast/toast.tsx": [
-    {
-      prop: "height",
-      reason: "toast stack expand/collapse — height to measured px",
     },
   ],
   "image-accordion/image-accordion.tsx": [
