@@ -19,6 +19,9 @@
       }
     ],
     "paths": {
+      "@/lib/utils": ["../../packages/components/src/lib/utils.ts"],
+      "@/hooks/*": ["../../packages/components/src/hooks/*"],
+      "@/components/ui/*": ["../../packages/components/src/ui/*"],
       "@/*": ["./src/*"],
       "@godui/*": ["../../packages/*/src/index.ts"],
       "collections/*": ["./.source/*"]

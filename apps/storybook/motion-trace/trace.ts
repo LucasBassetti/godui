@@ -39,12 +39,24 @@ export async function traceInteraction(
   page: Page,
   {
     storyId,
+    setup,
     act,
     windowMs,
-  }: { storyId: string; act: (page: Page) => Promise<void>; windowMs: number },
+  }: {
+    storyId: string;
+    /** Runs before tracing starts (e.g. open a dialog to trace its close). */
+    setup?: (page: Page) => Promise<void>;
+    act: (page: Page) => Promise<void>;
+    windowMs: number;
+  },
 ): Promise<TraceResult> {
   await page.goto(`/iframe.html?id=${storyId}&viewMode=story`);
   await page.waitForLoadState("networkidle");
+  if (setup) {
+    await setup(page);
+    // Let setup's own animations finish outside the traced window.
+    await page.waitForTimeout(400);
+  }
   const browser = page.context().browser();
   if (!browser) throw new Error("tracing needs a browser instance");
   await browser.startTracing(page, {

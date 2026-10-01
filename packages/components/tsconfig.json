@@ -2,7 +2,12 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "types": ["vitest/globals", "@testing-library/jest-dom"]
+    "types": ["vitest/globals", "@testing-library/jest-dom"],
+    "paths": {
+      "@/lib/*": ["./src/lib/*"],
+      "@/hooks/*": ["./src/hooks/*"],
+      "@/components/ui/*": ["./src/ui/*"]
+    }
   },
-  "include": ["src", "fonts", "vitest.setup.ts", "vitest.config.ts"]
+  "include": ["src", "test", "fonts", "vitest.setup.ts", "vitest.config.ts"]
 }
