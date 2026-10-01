@@ -19,6 +19,7 @@ export * from "./ui/input-otp";
 export * from "./ui/popover";
 export * from "./ui/radio-group";
 export * from "./ui/select";
+export * from "./ui/separator";
 export * from "./ui/sheet";
 export * from "./ui/slider";
 export * from "./ui/sonner";

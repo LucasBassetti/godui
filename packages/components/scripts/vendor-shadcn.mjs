@@ -23,7 +23,8 @@ for (const name of NAMES) {
   const file = item.files.find((f) => f.type === "registry:ui");
   const content = file.content
     .replace(/from "cn"/g, 'from "@/lib/utils"')
-    .replace(/@\/registry\/new-york-v4\/ui\//g, "./");
+    .replace(/@\/registry\/new-york-v4\/ui\//g, "./")
+    .replace(/@\/registry\/new-york-v4\/hooks\//g, "@/hooks/");
   writeFileSync(
     join(out, `${name}.tsx`),
     `// Vendored from https://ui.shadcn.com/r/styles/new-york-v4/${name}.json (2026-10-01).\n// Reference for parity tests only — do not edit; re-run scripts/vendor-shadcn.mjs.\n${content}`,

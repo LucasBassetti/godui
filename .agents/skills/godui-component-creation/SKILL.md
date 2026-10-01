@@ -27,7 +27,7 @@ are frozen — don't add new components there.
 | Docs | `apps/docs/content/docs/components/{name}/index.mdx` (no category folder) |
 | Docs demo | `apps/docs/src/components/demos/core/{name}-demo.tsx` (imports `@godui/components`) |
 | Learn tab (required) | `apps/docs/content/docs/components/{name}/learn.mdx` built from the core kit in `apps/docs/src/components/learn/core/` (`KeyframeScene`, `SpringCurveScene`, `FlipScene`, `AutoPlayScene`, `LiveResult`) — see the `godui-learn-article` skill for LearnPlayer rules |
-| Nav | `apps/docs/content/docs/components/meta.json` (`root: true` folder) |
+| Nav | `components/{name}` in the root `apps/docs/content/docs/meta.json` (components are listed in the main sidebar) and `{name}` in `apps/docs/content/docs/components/meta.json` |
 | Index card | `apps/docs/content/docs/components/index.mdx` → `<PreviewCard href title>` under its group, preview `apps/docs/src/components/card-previews/core/{name}.tsx` (skeleton `Sk`/`Ac`/`Panel`, GPU-only `group-hover` transitions) registered in `card-previews/registry.tsx` |
 | Sidebar | `components/{name}` in the root `apps/docs/content/docs/meta.json` (Components section) and `{name}` in `components/meta.json` |
 
@@ -234,7 +234,6 @@ Installation → Usage → Props in the Docs drawer.
 ---
 title: My Component
 description: Short description.
-date: "2026-07-10"
 workbench: true
 ---
 
@@ -275,10 +274,7 @@ import { MyComponent } from "@/components/ui/my-component";
 </Workbench>
 ```
 
-The `date` frontmatter is the component's **creation date** (`YYYY-MM-DD`) and is
-**required for new components**. For one month after that date the sidebar nav
-shows a "New" badge (wired via `date` → `frontmatterSchema` in `source.config.ts`
-→ `newBadgePlugin` in `src/lib/source.ts`). Use today's date.
+Core pages carry **no `date` frontmatter** (no "New" badges in the nav).
 
 `Workbench`, `Example`, and `ComponentInstall` are registered globally in
 `apps/docs/src/components/mdx.tsx`.
@@ -348,10 +344,12 @@ block), and the install command is the full-URL form
 `shadcn add "https://godui.design/r/{name}.json?variant=…"`. The interactive picker lives in
 `apps/docs/src/components/background-showcase.tsx`.
 
-**Nav:** `components` and `extras` are Fumadocs **root folders** (sidebar tabs).
-Register a core page in `apps/docs/content/docs/components/meta.json` (`pages`
-entries are paths relative to that folder, e.g. `"popover"`); a page absent from it
-won't appear in the Components tab.
+**Nav:** Components are listed in the **main sidebar** through the root
+`apps/docs/content/docs/meta.json` (add `components/{name}` to its Components
+section, alphabetical); Extras is header-only. Also add `{name}` to
+`apps/docs/content/docs/components/meta.json` (`pages` entries are paths relative to
+that folder, e.g. `"popover"`) — the index preview-count test reads its length. A page
+absent from either file won't appear.
 
 Also add a `<PreviewCard>` for the component to
 `apps/docs/content/docs/components/index.mdx` (hand-maintained). `<PreviewCard>`
@@ -399,20 +397,21 @@ confirm nothing disappears before finishing.
 
 ## 6. Component index card
 
-The core index (`components/index.mdx`) lists components with Fumadocs
-`<Card title href description>` inside `<Cards>`, alphabetically. The skeleton
-card previews below are the Extras index's pattern; they're optional for core.
+The core index (`components/index.mdx`) lists components as `<PreviewCard href title>`
+(description as children) under their group heading, alphabetical within the group. Every
+card needs a skeleton preview, or it renders text-only and breaks the uniform grid.
 
-**a. Create `apps/docs/src/components/card-previews/previews/{name}.tsx`** — a default-export
-built from the shared kit (`./_kit`): `Sk` (gray block `bg-[var(--muted-foreground)]/20`),
+**a. Create `apps/docs/src/components/card-previews/core/{name}.tsx`** — a default-export
+built from the shared kit (`../previews/_kit`): `Sk` (gray block `bg-[var(--muted-foreground)]/20`),
 `Ac` (the single accent, `bg-primary`), `Panel` (framed surface). Set shape/size via
 `className`. Drive motion with CSS `group-hover` only (the card root is `group`) — no `play`
-prop, no JS/framer, no remote images.
+prop, no JS/framer, no remote images. Transition only GPU properties
+(`transition-[translate,scale,opacity]` / `transition-transform`), never color/size/shadow.
 
 ```tsx
 "use client";
 
-import { Ac, Sk } from "./_kit";
+import { Ac, Sk } from "../previews/_kit";
 
 export default function MyComponentPreview() {
   return (
@@ -429,10 +428,12 @@ Common motion patterns (GPU-only here too): `origin-* scale-y-0 group-hover:scal
 divs, `[background:radial-gradient(...var(--primary)...)]` glows. Keep it minimal and
 abstract — one representative motif, ~`size-24` / a single pill / a small panel.
 
-**b. Register the slug** in `apps/docs/src/components/card-previews/registry.tsx` — add
-`"{name}"` to the `CURATED_SLUGS` array (under its category). The registry lazy-imports
-`./previews/{slug}` by the card href's last segment, so the filename **must** equal that
-slug.
+**b. Register it** in `apps/docs/src/components/card-previews/registry.tsx` — add
+`import Core<Pascal> from "./core/{name}";` (alphabetical among the `Core*` imports) and
+`"{name}": Core<Pascal>,` (or bare `{name}:` when the slug is a plain identifier) in the
+`cardPreviews` record under the `// Core` block. The record is keyed by the card href's
+last segment, so the key **must** equal the docs slug. Previews are statically imported
+(no lazy chunk), so keep them light.
 
 ## 7. Naming rules
 
@@ -454,7 +455,7 @@ slug.
 - **NEVER** skip nav registration — add the page to `apps/docs/content/docs/components/meta.json` and a `<PreviewCard>` in `components/index.mdx`, or it won't appear (see §5).
 - **NEVER** ship a component without a Learn tab — every component needs `{name}/learn.mdx`, built via the `godui-learn-article` skill (see §5.5).
 - **NEVER** use fixed-luminance colors (`bg-black/*`, `bg-white/*`, `border-white/*`, `text-white`, hex) in a Learn scene — they only contrast in one theme. Use theme tokens and verify light **and** dark (see §5.5).
-- **NEVER** ship a `<PreviewCard>` without its placeholder preview — create `card-previews/previews/{name}.tsx` (filename = href slug) and add the slug to `CURATED_SLUGS`, or the card renders text-only and breaks the uniform grid (see §6).
+- **NEVER** ship a `<PreviewCard>` without its placeholder preview — create `card-previews/core/{name}.tsx` and register it as `Core<Pascal>` in `card-previews/registry.tsx` (key = href slug), or the card renders text-only and breaks the uniform grid (see §6).
 - **NEVER** give a demo (or the component itself) a fixed width wider than the mobile preview — the Workbench stage has a mobile toggle that renders the demo in a **360px** iframe, so a hard `w-[26rem]`/`w-96`/`min-w-[...]` overflows and clips. Use fluid widths: `w-full max-w-[26rem]` (shrinks on mobile, still 26rem on desktop). Gate any extra edge padding/margin to mobile with `max-sm:` so **desktop stays unchanged** — never add flat `px-4`/`mx-4` that also alters desktop (see §5).
 
 ## 9. Theme tokens

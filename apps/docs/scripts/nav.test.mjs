@@ -70,7 +70,13 @@ test("a component page keeps the same main sidebar", () => {
 test("the components index shows a preview for every component", () => {
   const html = readFileSync(page("docs/components.html"), "utf8");
   const previews = html.match(/class="preview-zone /g) ?? [];
-  assert.equal(previews.length, 24);
+  const { pages } = JSON.parse(
+    readFileSync(
+      new URL("../content/docs/components/meta.json", import.meta.url),
+      "utf8",
+    ),
+  );
+  assert.equal(previews.length, pages.length);
 });
 
 test("core components carry no New badge", () => {
