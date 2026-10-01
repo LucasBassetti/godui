@@ -38,6 +38,29 @@ describe("godui-motion tokens", () => {
     }
   });
 
+  it("scales every keyframe movement by --godui-motion, which only :root sets", () => {
+    // Components may override --godui-enter-distance locally (full-panel
+    // slides); multiplying by a root-only factor keeps reduced motion in charge.
+    const reduced = css.slice(
+      css.indexOf("@media (prefers-reduced-motion: reduce)"),
+    );
+    expect(reduced).toMatch(/--godui-motion:\s*0;/);
+    for (const k of KEYFRAMES) {
+      const start = css.indexOf(`@keyframes ${k} `);
+      const block = css.slice(start, css.indexOf("\n}", start));
+      if (/translate:|scale:/.test(block)) {
+        expect(block, k).toContain("var(--godui-motion)");
+      }
+    }
+    for (const [name, frames] of Object.entries(motion.css)) {
+      if (!name.startsWith("@keyframes")) continue;
+      const text = JSON.stringify(frames);
+      if (/"(translate|scale)"/.test(text)) {
+        expect(text, name).toContain("var(--godui-motion)");
+      }
+    }
+  });
+
   it("collapses movement under prefers-reduced-motion", () => {
     const reduced = css.slice(
       css.indexOf("@media (prefers-reduced-motion: reduce)"),

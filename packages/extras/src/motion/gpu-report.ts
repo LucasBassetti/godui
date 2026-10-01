@@ -47,7 +47,9 @@ export function buildGpuReport(srcDir: string, stylesCss: string): GpuReport {
   for (const dir of dirs) {
     const props: string[] = [];
     for (const file of readdirSync(join(srcDir, dir))) {
-      if (!/\.tsx$/.test(file) || /\.(test|stories)\.tsx$/.test(file)) continue;
+      if (!/\.tsx?$/.test(file) || /\.(test|stories)\.tsx?$/.test(file)) {
+        continue;
+      }
       const source = readFileSync(join(srcDir, dir, file), "utf8");
       props.push(...scanSource(source, { strict: true }).map((v) => v.prop));
       for (const m of source.matchAll(/\banimate-([\w-]+)/g)) {

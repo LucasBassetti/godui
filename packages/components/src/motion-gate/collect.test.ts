@@ -31,11 +31,16 @@ describe("collectCoreViolations", () => {
         ],
       }),
     });
-    expect(collect(root).map((v) => `${v.file}:${v.prop}`)).toEqual([
-      "ui/bad.tsx:transitioncolors",
-      "styles.css:height",
-      "registry.json#x:color",
-    ]);
+    const found = collect(root).map((v) => `${v.file}:${v.prop}`);
+    expect(found).toEqual(
+      expect.arrayContaining([
+        "ui/bad.tsx:color",
+        "ui/bad.tsx:backgroundcolor",
+        "styles.css:height",
+        "registry.json#x:color",
+      ]),
+    );
+    expect(found.some((f) => f.startsWith("ui/bad.test.tsx"))).toBe(false);
   });
 
   it("returns nothing for GPU-only sources", () => {

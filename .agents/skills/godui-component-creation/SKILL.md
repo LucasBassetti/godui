@@ -144,10 +144,12 @@ overlay whose `opacity` transitions. Shadows: a static-shadow layer whose
 `opacity` animates. Focus rings: a pseudo-element ring animating `opacity` +
 `scale`, never `ring`/`box-shadow` transitions.
 
-**Reduced motion is built into the tokens** (`--godui-enter-scale: 1`,
-`--godui-enter-distance: 0px`, short durations; `useFlipGroup` skips). Don't add
-per-component `motion-reduce:` transforms unless a component has motion outside
-the tokens.
+**Reduced motion is built into the shared keyframes**: every `godui-*`
+keyframe multiplies its movement by `--godui-motion`, which only `:root` sets
+(0 under `prefers-reduced-motion`), so a local `[--godui-enter-distance:100%]`
+still collapses to a fade; durations shorten and `useFlipGroup` skips. Your own
+**transform transitions** (switch thumb, tab indicator, hover lift) are not
+covered — add `motion-reduce:transition-none` / `motion-reduce:translate-none` etc.
 
 **Gestures only → `motion` (framer).** Drag-to-dismiss (drawer, toast swipe),
 carousel drag, slider thumb spring. `animate`/`initial`/`exit`/`while*` objects may

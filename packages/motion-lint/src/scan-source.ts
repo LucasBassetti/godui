@@ -238,7 +238,7 @@ export function classifyProp(prop: string): "free" | "gated" {
 }
 
 /** Split a CSS list on top-level commas, ignoring commas inside `fn(...)`. */
-function splitTopLevel(value: string): string[] {
+export function splitTopLevel(value: string): string[] {
   const out: string[] = [];
   let depth = 0;
   let start = 0;
@@ -327,10 +327,73 @@ const FRAMER_MOTION_PROPS = [
  * Scan a single source file for motion-performance violations.
  * Pure string analysis — no AST, no filesystem.
  */
+// Non-compositor members of Tailwind v4's `transition` / `transition-colors`
+// property lists (normalised).
+const TW_COLOR_PROPS = [
+  "color",
+  "backgroundcolor",
+  "bordercolor",
+  "outlinecolor",
+  "textdecorationcolor",
+  "fill",
+  "stroke",
+];
+const TW_DEFAULT_PROPS = [...TW_COLOR_PROPS, "boxshadow"];
+
+/**
+ * Blank out `//` and `/* *\/` comments (same length, newlines kept) so prose
+ * like "resets via CSS transition" can't trip the scanner. `//` preceded by
+ * `:` (URLs) is left alone.
+ */
+function stripComments(source: string): string {
+  const blank = (m: string) => m.replace(/[^\n]/g, " ");
+  return source
+    .replace(/\/\*[\s\S]*?\*\//g, blank)
+    .replace(
+      /(^|[^:"'`\\])\/\/[^\n]*/g,
+      (m, lead: string) => lead + blank(m.slice(lead.length)),
+    );
+}
+
+/** Top-level `key: value` pairs of an object body (value text untrimmed). */
+function topLevelEntries(body: string): Array<[string, string]> {
+  const out: Array<[string, string]> = [];
+  let depth = 0;
+  let start = 0;
+  const segments: string[] = [];
+  for (let i = 0; i < body.length; i++) {
+    const c = body[i];
+    if (c === "{" || c === "[" || c === "(") depth++;
+    else if (c === "}" || c === "]" || c === ")") depth--;
+    else if (c === "," && depth === 0) {
+      segments.push(body.slice(start, i));
+      start = i + 1;
+    }
+  }
+  segments.push(body.slice(start));
+  for (const seg of segments) {
+    const m = /^\s*["']?([A-Za-z_$][\w-]*)["']?\s*:([\s\S]*)$/.exec(seg);
+    if (m) out.push([m[1], m[2]]);
+  }
+  return out;
+}
+
+/** Inner text of the balanced `[ ... ]` starting at `open`. */
+function matchArray(source: string, open: number): string | null {
+  let depth = 0;
+  for (let i = open; i < source.length; i++) {
+    if (source[i] === "[") depth++;
+    else if (source[i] === "]" && --depth === 0)
+      return source.slice(open + 1, i);
+  }
+  return null;
+}
+
 export function scanSource(
-  source: string,
+  rawSource: string,
   { strict = false }: { strict?: boolean } = {},
 ): Violation[] {
+  const source = stripComments(rawSource);
   const found: Violation[] = [];
   const push = (
     index: number,
@@ -350,12 +413,23 @@ export function scanSource(
   }
 
   if (strict) {
-    // Bare `transition` animates Tailwind's default list (colors, shadow, …).
-    for (const m of source.matchAll(/(?<=["'`\s])transition(?=["'`\s])/g)) {
-      push(m.index, "transition", "gated", "transition");
+    // Bare `transition` (any variant prefix) animates Tailwind's default list:
+    // colors and box-shadow, besides the compositor properties.
+    for (const m of source.matchAll(/(?<=["'`\s:!])transition(?=["'`\s])/g)) {
+      for (const prop of TW_DEFAULT_PROPS)
+        push(m.index, prop, "gated", "transition");
     }
     for (const m of source.matchAll(/\btransition-colors\b/g)) {
-      push(m.index, "transitioncolors", "gated", "transition-colors");
+      for (const prop of TW_COLOR_PROPS)
+        push(m.index, prop, "gated", "transition-colors");
+    }
+    // `duration-*` with no `transition-*` class in the same string: Tailwind
+    // only sets transition-duration, and transition-property defaults to `all`.
+    for (const m of source.matchAll(/(["'`])([^"'`\n]*)\1/g)) {
+      const text = m[2];
+      if (!/(?:^|[\s:!])duration-[\w[(]/.test(text)) continue;
+      if (/(?:^|[\s:!])transition(?:$|[\s-])/.test(text)) continue;
+      push(m.index, "all", "banned", "duration-* without transition-*");
     }
   }
 
@@ -411,6 +485,71 @@ export function scanSource(
         if (!isViolation(n, strict)) continue;
         push(m.index, n, ambient ? "banned" : "gated", `${prop}={{…${key}…}}`);
       }
+    }
+  }
+
+  // 6. Framer `variants` objects: each variant's keys are animated values.
+  for (const m of source.matchAll(
+    /\bvariants\s*=\s*\{|:\s*Variants\s*=\s*\{/g,
+  )) {
+    const obj = matchObject(source, m.index + m[0].length - 1);
+    if (!obj) continue;
+    let body = obj.body.trim();
+    if (body.startsWith("{") && body.endsWith("}")) body = body.slice(1, -1);
+    for (const [, value] of topLevelEntries(body)) {
+      const inner = value.trim();
+      if (!inner.startsWith("{")) continue;
+      for (const [key] of topLevelEntries(inner.slice(1, -1))) {
+        const n = normalizeProp(key);
+        if (isViolation(n, strict))
+          push(m.index, n, "gated", `variants={…${key}…}`);
+      }
+    }
+  }
+
+  // 7. `style={{ key: motionValue }}` — keys driven by framer motion values.
+  const motionValues = new Set(
+    [
+      ...source.matchAll(
+        /\bconst\s+(\w+)\s*=\s*use(?:Spring|MotionValue|Transform|MotionTemplate|Velocity)\b/g,
+      ),
+    ].map((m) => m[1]),
+  );
+  if (motionValues.size > 0) {
+    for (const m of source.matchAll(/\bstyle\s*=\s*\{/g)) {
+      const obj = matchObject(source, m.index + m[0].length - 1);
+      if (!obj) continue;
+      let body = obj.body.trim();
+      if (body.startsWith("{") && body.endsWith("}")) body = body.slice(1, -1);
+      for (const [key, value] of topLevelEntries(body)) {
+        if (!motionValues.has(value.trim())) continue;
+        const n = normalizeProp(key);
+        if (isViolation(n, strict))
+          push(m.index, n, "gated", `style={{ ${key}: ${value.trim()} }}`);
+      }
+    }
+  }
+
+  // 8. WAAPI `el.animate([{…}, …])` keyframes and framer `animate(el, {…})`.
+  for (const m of source.matchAll(/\.animate\(\s*\[/g)) {
+    const arr = matchArray(source, m.index + m[0].length - 1);
+    if (!arr) continue;
+    for (const frame of arr.matchAll(/\{([^{}]*)\}/g)) {
+      for (const [key] of topLevelEntries(frame[1])) {
+        const n = normalizeProp(key);
+        if (n === "offset" || n === "easing" || n === "composite") continue;
+        if (isViolation(n, strict))
+          push(m.index, n, "gated", `.animate([…${key}…])`);
+      }
+    }
+  }
+  for (const m of source.matchAll(/(?<![.\w])animate\(\s*[\w.$]+\s*,\s*\{/g)) {
+    const obj = matchObject(source, m.index + m[0].length - 1);
+    if (!obj) continue;
+    for (const [key] of topLevelEntries(obj.body)) {
+      const n = normalizeProp(key);
+      if (isViolation(n, strict))
+        push(m.index, n, "gated", `animate(…, {…${key}…})`);
     }
   }
 

@@ -10,8 +10,17 @@
     "gated": ["boxshadow"]
   },
   "agent-timeline": {
-    "nonCompositor": ["height", "transitioncolors"],
-    "gated": ["height", "transitioncolors"]
+    "nonCompositor": [
+      "backgroundcolor",
+      "bordercolor",
+      "color",
+      "fill",
+      "height",
+      "outlinecolor",
+      "stroke",
+      "textdecorationcolor"
+    ],
+    "gated": ["height"]
   },
   "animated-beam": {
     "nonCompositor": ["x1", "x2", "y1", "y2"],
@@ -38,8 +47,8 @@
     "gated": []
   },
   "avatar-group": {
-    "nonCompositor": [],
-    "gated": []
+    "nonCompositor": ["marginleft"],
+    "gated": ["marginleft"]
   },
   "beam-draw": {
     "nonCompositor": [],
@@ -78,8 +87,16 @@
     "gated": []
   },
   "conversation-thread": {
-    "nonCompositor": ["transitioncolors"],
-    "gated": ["transitioncolors"]
+    "nonCompositor": [
+      "backgroundcolor",
+      "bordercolor",
+      "color",
+      "fill",
+      "outlinecolor",
+      "stroke",
+      "textdecorationcolor"
+    ],
+    "gated": []
   },
   "cover-flow": {
     "nonCompositor": ["background"],
@@ -90,8 +107,8 @@
     "gated": []
   },
   "dock": {
-    "nonCompositor": [],
-    "gated": []
+    "nonCompositor": ["height", "width"],
+    "gated": ["height", "width"]
   },
   "dynamic-island": {
     "nonCompositor": ["borderradius", "height", "width"],
@@ -138,8 +155,17 @@
     "gated": []
   },
   "gooey-stack": {
-    "nonCompositor": ["transition"],
-    "gated": []
+    "nonCompositor": [
+      "backgroundcolor",
+      "bordercolor",
+      "boxshadow",
+      "color",
+      "fill",
+      "outlinecolor",
+      "stroke",
+      "textdecorationcolor"
+    ],
+    "gated": ["boxshadow"]
   },
   "gradient-background": {
     "nonCompositor": [],
@@ -170,8 +196,18 @@
     "gated": ["flexgrow"]
   },
   "image-compare": {
-    "nonCompositor": ["clippath", "transition"],
-    "gated": ["clippath"]
+    "nonCompositor": [
+      "backgroundcolor",
+      "bordercolor",
+      "boxshadow",
+      "clippath",
+      "color",
+      "fill",
+      "outlinecolor",
+      "stroke",
+      "textdecorationcolor"
+    ],
+    "gated": ["boxshadow", "clippath"]
   },
   "image-trail": {
     "nonCompositor": [],
@@ -217,8 +253,7 @@
     "nonCompositor": [
       "backgroundposition",
       "backgroundsize",
-      "strokedashoffset",
-      "transition"
+      "strokedashoffset"
     ],
     "gated": ["backgroundsize"]
   },
@@ -255,8 +290,17 @@
     "gated": ["width"]
   },
   "notification-inbox": {
-    "nonCompositor": ["height", "transitioncolors"],
-    "gated": ["height", "transitioncolors"]
+    "nonCompositor": [
+      "backgroundcolor",
+      "bordercolor",
+      "color",
+      "fill",
+      "height",
+      "outlinecolor",
+      "stroke",
+      "textdecorationcolor"
+    ],
+    "gated": ["height"]
   },
   "number-ticker": {
     "nonCompositor": [],
@@ -283,11 +327,19 @@
     "gated": []
   },
   "presence-facepile": {
-    "nonCompositor": ["transitioncolors"],
-    "gated": ["transitioncolors"]
+    "nonCompositor": [
+      "backgroundcolor",
+      "bordercolor",
+      "color",
+      "fill",
+      "outlinecolor",
+      "stroke",
+      "textdecorationcolor"
+    ],
+    "gated": []
   },
   "progress-fold-button": {
-    "nonCompositor": ["transition"],
+    "nonCompositor": [],
     "gated": []
   },
   "progressive-card-reveal": {
@@ -299,22 +351,30 @@
       "backgroundcolor",
       "bordercolor",
       "boxshadow",
+      "color",
+      "fill",
       "height",
-      "transitioncolors"
+      "outlinecolor",
+      "stroke",
+      "textdecorationcolor"
     ],
-    "gated": ["boxshadow", "height", "transitioncolors"]
+    "gated": ["boxshadow", "height"]
   },
   "prompt-suggestions": {
     "nonCompositor": [
       "backgroundcolor",
       "bordercolor",
       "boxshadow",
-      "transitioncolors"
+      "color",
+      "fill",
+      "outlinecolor",
+      "stroke",
+      "textdecorationcolor"
     ],
-    "gated": ["boxshadow", "transitioncolors"]
+    "gated": ["boxshadow"]
   },
   "reorder-list": {
-    "nonCompositor": ["transition"],
+    "nonCompositor": [],
     "gated": []
   },
   "resizable-header": {
@@ -322,7 +382,7 @@
     "gated": []
   },
   "scroll-progress": {
-    "nonCompositor": [],
+    "nonCompositor": ["strokedashoffset"],
     "gated": []
   },
   "scroll-reveal": {
@@ -350,12 +410,20 @@
     "gated": []
   },
   "slide-confirm-button": {
-    "nonCompositor": ["pathlength"],
-    "gated": []
+    "nonCompositor": ["pathlength", "width"],
+    "gated": ["width"]
   },
   "source-citations": {
-    "nonCompositor": ["transitioncolors"],
-    "gated": ["transitioncolors"]
+    "nonCompositor": [
+      "backgroundcolor",
+      "bordercolor",
+      "color",
+      "fill",
+      "outlinecolor",
+      "stroke",
+      "textdecorationcolor"
+    ],
+    "gated": []
   },
   "spin-viewer": {
     "nonCompositor": [],

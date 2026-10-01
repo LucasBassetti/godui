@@ -1,4 +1,5 @@
-import { readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildGpuReport } from "./gpu-report";
@@ -15,6 +16,29 @@ describe("buildGpuReport", () => {
     expect(report["magic-button"].nonCompositor).toContain(
       "backgroundposition",
     );
+  });
+
+  it("sees layout driven by framer motion values (dock magnifies width)", () => {
+    const report = buildGpuReport(SRC, styles());
+    expect(report.dock.nonCompositor).toEqual(
+      expect.arrayContaining(["height", "width"]),
+    );
+  });
+
+  it("does not count the word transition in comments", () => {
+    const report = buildGpuReport(SRC, styles());
+    expect(report["reorder-list"].nonCompositor).not.toContain("boxshadow");
+  });
+
+  it("scans .ts helpers next to the component", () => {
+    const root = mkdtempSync(join(tmpdir(), "gpu-report-"));
+    mkdirSync(join(root, "widget"));
+    writeFileSync(join(root, "widget", "widget.tsx"), "export const W = 1;");
+    writeFileSync(
+      join(root, "widget", "widget-utils.ts"),
+      'export const cls = "transition-colors";',
+    );
+    expect(buildGpuReport(root, "").widget.nonCompositor).toContain("color");
   });
 
   it("lists a component with only compositor motion as clean", () => {

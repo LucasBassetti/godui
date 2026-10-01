@@ -213,6 +213,9 @@
   --godui-enter-scale: 0.96;
   --godui-enter-distance: 0.5rem;
   --godui-pop-scale: 0.96;
+  /* Movement multiplier: 1 normally, 0 under reduced motion. Set only here, so
+   * a component's local --godui-enter-distance can't outrank reduced motion. */
+  --godui-motion: 1;
 }
 
 /* Reduced motion: nothing moves or scales; animations become short fades. */
@@ -221,6 +224,7 @@
     --godui-enter-scale: 1;
     --godui-enter-distance: 0px;
     --godui-pop-scale: 1;
+    --godui-motion: 0;
     --godui-duration-base: 150ms;
     --godui-duration-slow: 150ms;
   }
@@ -229,65 +233,65 @@
 @keyframes godui-fade-scale-in {
   from {
     opacity: 0;
-    scale: var(--godui-enter-scale);
+    scale: calc(1 - (1 - var(--godui-enter-scale)) * var(--godui-motion));
   }
 }
 @keyframes godui-fade-scale-out {
   to {
     opacity: 0;
-    scale: var(--godui-enter-scale);
+    scale: calc(1 - (1 - var(--godui-enter-scale)) * var(--godui-motion));
   }
 }
 @keyframes godui-slide-in-from-top {
   from {
     opacity: 0;
-    translate: 0 calc(var(--godui-enter-distance) * -1);
+    translate: 0 calc(var(--godui-enter-distance) * -1 * var(--godui-motion));
   }
 }
 @keyframes godui-slide-in-from-right {
   from {
     opacity: 0;
-    translate: var(--godui-enter-distance) 0;
+    translate: calc(var(--godui-enter-distance) * var(--godui-motion)) 0;
   }
 }
 @keyframes godui-slide-in-from-bottom {
   from {
     opacity: 0;
-    translate: 0 var(--godui-enter-distance);
+    translate: 0 calc(var(--godui-enter-distance) * var(--godui-motion));
   }
 }
 @keyframes godui-slide-in-from-left {
   from {
     opacity: 0;
-    translate: calc(var(--godui-enter-distance) * -1) 0;
+    translate: calc(var(--godui-enter-distance) * -1 * var(--godui-motion)) 0;
   }
 }
 @keyframes godui-slide-out-to-top {
   to {
     opacity: 0;
-    translate: 0 calc(var(--godui-enter-distance) * -1);
+    translate: 0 calc(var(--godui-enter-distance) * -1 * var(--godui-motion));
   }
 }
 @keyframes godui-slide-out-to-right {
   to {
     opacity: 0;
-    translate: var(--godui-enter-distance) 0;
+    translate: calc(var(--godui-enter-distance) * var(--godui-motion)) 0;
   }
 }
 @keyframes godui-slide-out-to-bottom {
   to {
     opacity: 0;
-    translate: 0 var(--godui-enter-distance);
+    translate: 0 calc(var(--godui-enter-distance) * var(--godui-motion));
   }
 }
 @keyframes godui-slide-out-to-left {
   to {
     opacity: 0;
-    translate: calc(var(--godui-enter-distance) * -1) 0;
+    translate: calc(var(--godui-enter-distance) * -1 * var(--godui-motion)) 0;
   }
 }
 @keyframes godui-pop {
   40% {
-    scale: var(--godui-pop-scale);
+    scale: calc(1 - (1 - var(--godui-pop-scale)) * var(--godui-motion));
   }
 }

@@ -22,3 +22,9 @@ test("a paint-animating Extra does not claim GPU-only", () => {
 test("a compositor-only Extra keeps the GPU-only badge", () => {
   assert.ok(labels("layout/tilt-card").includes("GPU-only"));
 });
+
+test("dock (width/height from motion values) is not GPU-only", () => {
+  const found = labels("navigation/dock");
+  assert.ok(!found.includes("GPU-only"), `labels: ${found.join(", ")}`);
+  assert.ok(found.includes("Layout"), `labels: ${found.join(", ")}`);
+});

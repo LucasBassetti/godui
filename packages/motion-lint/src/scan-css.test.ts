@@ -36,6 +36,35 @@ describe("scanCss", () => {
   });
 });
 
+describe("scanCss transition lists", () => {
+  it("does not split inside easing functions", () => {
+    const css = `.x { transition: transform 200ms cubic-bezier(0.2, 0, 0, 1), opacity 200ms linear(0, 0.5, 1); }`;
+    expect(scanCss(css, { strict: true })).toEqual([]);
+  });
+  it("finds the property in any position", () => {
+    expect(
+      scanCss(`.x { transition: 200ms ease color; }`, { strict: true }).map(
+        (v) => v.prop,
+      ),
+    ).toEqual(["color"]);
+  });
+  it("treats a shorthand without a property as all", () => {
+    expect(
+      scanCss(`.x { transition: 200ms ease; }`, { strict: true }).map(
+        (v) => v.prop,
+      ),
+    ).toEqual(["all"]);
+  });
+  it("allows animation-timing-function inside keyframes", () => {
+    const css = `@keyframes k { 50% { scale: 1.1; animation-timing-function: ease-in; } }`;
+    expect(scanCss(css, { strict: true })).toEqual([]);
+  });
+  it("lenient mode gates layout and allows paint", () => {
+    const css = `@keyframes a { to { color: red; height: 0; } }`;
+    expect(scanCss(css).map((v) => v.prop)).toEqual(["height"]);
+  });
+});
+
 describe("cssObjectToString", () => {
   it("serializes registry css JSON", () => {
     expect(

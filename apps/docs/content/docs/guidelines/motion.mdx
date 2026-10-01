@@ -74,8 +74,9 @@ to Radix state, e.g.
 
 With `prefers-reduced-motion: reduce`:
 
-- `--godui-enter-scale` becomes `1` and `--godui-enter-distance` becomes
-  `0px`, so enter and exit animations only fade.
+- `--godui-motion` becomes `0`. Every shared keyframe multiplies its
+  movement by it, so enter and exit animations only fade, even when a
+  component sets its own `--godui-enter-distance`.
 - Base and slow durations drop to 150ms.
 - `useFlipGroup` doesn't animate; elements move straight to their new
   position.
