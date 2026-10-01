@@ -1,0 +1,118 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "godui-motion",
+  "title": "GodUI Motion",
+  "description": "GPU-only motion foundation for GodUI components: spring easings as CSS linear(), shared enter/exit keyframes, reduced-motion fallbacks and a FLIP hook.",
+  "files": [
+    {
+      "path": "packages/components/src/hooks/use-flip-group.ts",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\n\nexport interface FlipGroupOptions {\n  /** Children to animate, matched inside the container. */\n  selector?: string;\n  /** Milliseconds. */\n  duration?: number;\n  /** Any CSS easing, incl. linear() springs. */\n  easing?: string;\n}\n\nconst useIsoLayoutEffect =\n  typeof window === \"undefined\" ? React.useEffect : React.useLayoutEffect;\n\ntype Point = { x: number; y: number };\n\n/**\n * FLIP for layout changes without animating layout: when `trigger` changes,\n * children (default `[data-flip]`) whose position moved play an inverse\n * `translate` back to rest via WAAPI (`composite: \"add\"`, so their own\n * transforms survive). Sizes snap; only transform animates.\n *\n * Positions are relative to the container (scrolling between triggers is\n * ignored). If a previous FLIP is still running, its current visual offset is\n * read before cancelling it and carried into the new animation, so an\n * interruption starts from where the element is drawn instead of jumping.\n */\nexport function useFlipGroup(\n  containerRef: React.RefObject<HTMLElement | null>,\n  trigger: unknown,\n  {\n    selector = \"[data-flip]\",\n    duration = 260,\n    easing = \"cubic-bezier(0.16, 1, 0.3, 1)\",\n  }: FlipGroupOptions = {},\n): void {\n  const last = React.useRef(new Map<Element, Point>());\n  const running = React.useRef(new Map<Element, Animation>());\n\n  // biome-ignore lint/correctness/useExhaustiveDependencies: `trigger` is the signal to re-measure.\n  useIsoLayoutEffect(() => {\n    const container = containerRef.current;\n    if (!container) return;\n    const origin = container.getBoundingClientRect();\n    const reduce =\n      container.ownerDocument.defaultView?.matchMedia?.(\n        \"(prefers-reduced-motion: reduce)\",\n      ).matches ?? false;\n    const next = new Map<Element, Point>();\n    for (const el of container.querySelectorAll<HTMLElement>(selector)) {\n      let rect = el.getBoundingClientRect();\n      let carry: Point = { x: 0, y: 0 };\n      const active = running.current.get(el);\n      if (active) {\n        active.cancel();\n        running.current.delete(el);\n        const settled = el.getBoundingClientRect();\n        carry = { x: rect.left - settled.left, y: rect.top - settled.top };\n        rect = settled;\n      }\n      const now = { x: rect.left - origin.left, y: rect.top - origin.top };\n      next.set(el, now);\n      const prev = last.current.get(el);\n      if (!prev || reduce || typeof el.animate !== \"function\") continue;\n      const dx = prev.x - now.x + carry.x;\n      const dy = prev.y - now.y + carry.y;\n      if (dx === 0 && dy === 0) continue;\n      const animation = el.animate(\n        [\n          { transform: `translate(${dx}px, ${dy}px)` },\n          { transform: \"translate(0px, 0px)\" },\n        ],\n        { duration, easing, composite: \"add\" },\n      );\n      running.current.set(el, animation);\n      animation.onfinish = () => {\n        if (running.current.get(el) === animation) running.current.delete(el);\n      };\n    }\n    last.current = next;\n  }, [trigger, selector, duration, easing]);\n}\n",
+      "type": "registry:hook",
+      "target": "hooks/use-flip-group.ts"
+    }
+  ],
+  "cssVars": {
+    "theme": {
+      "ease-spring-snappy": "linear(0, 0.0536, 0.1667, 0.3015, 0.436, 0.5582, 0.663, 0.7491, 0.8194, 0.8719, 0.9113, 0.9403, 0.9612, 0.9758, 0.9857, 0.9923, 0.9967, 0.9992, 1.0006, 1.0013, 1.0016, 1.0016, 1.0014, 1.0012, 1)",
+      "ease-spring-smooth": "linear(0, 0.0575, 0.1789, 0.3182, 0.4518, 0.5693, 0.6676, 0.747, 0.8095, 0.8579, 0.8949, 0.9227, 0.9431, 0.9586, 0.9701, 0.9784, 0.9845, 0.9889, 0.9921, 0.9943, 0.996, 0.9972, 0.998, 0.9986, 1)",
+      "ease-spring-bouncy": "linear(0, 0.1642, 0.4963, 0.8272, 1.0624, 1.1772, 1.1892, 1.1415, 1.0741, 1.0143, 0.9772, 0.963, 0.9656, 0.9772, 0.9902, 1.0003, 1.0058, 1.0073, 1.006, 1.0035, 1.0011, 0.9995, 0.9987, 0.9986, 1)",
+      "ease-out-expo": "cubic-bezier(0.16, 1, 0.3, 1)",
+      "animate-godui-fade-scale-in": "godui-fade-scale-in var(--godui-duration-base) var(--ease-spring-snappy) both",
+      "animate-godui-fade-scale-out": "godui-fade-scale-out var(--godui-duration-fast) var(--ease-out-expo) both",
+      "animate-godui-slide-in-from-top": "godui-slide-in-from-top var(--godui-duration-base) var(--ease-spring-snappy) both",
+      "animate-godui-slide-in-from-right": "godui-slide-in-from-right var(--godui-duration-slow) var(--ease-spring-smooth) both",
+      "animate-godui-slide-in-from-bottom": "godui-slide-in-from-bottom var(--godui-duration-base) var(--ease-spring-snappy) both",
+      "animate-godui-slide-in-from-left": "godui-slide-in-from-left var(--godui-duration-slow) var(--ease-spring-smooth) both",
+      "animate-godui-slide-out-to-top": "godui-slide-out-to-top var(--godui-duration-fast) var(--ease-out-expo) both",
+      "animate-godui-slide-out-to-right": "godui-slide-out-to-right var(--godui-duration-base) var(--ease-out-expo) both",
+      "animate-godui-slide-out-to-bottom": "godui-slide-out-to-bottom var(--godui-duration-fast) var(--ease-out-expo) both",
+      "animate-godui-slide-out-to-left": "godui-slide-out-to-left var(--godui-duration-base) var(--ease-out-expo) both",
+      "animate-godui-pop": "godui-pop var(--godui-duration-base) var(--ease-spring-bouncy)"
+    }
+  },
+  "css": {
+    ":root": {
+      "--godui-duration-fast": "150ms",
+      "--godui-duration-base": "260ms",
+      "--godui-duration-slow": "380ms",
+      "--godui-enter-scale": "0.96",
+      "--godui-enter-distance": "0.5rem",
+      "--godui-pop-scale": "0.96"
+    },
+    "@media (prefers-reduced-motion: reduce)": {
+      ":root": {
+        "--godui-enter-scale": "1",
+        "--godui-enter-distance": "0px",
+        "--godui-pop-scale": "1",
+        "--godui-duration-base": "150ms",
+        "--godui-duration-slow": "150ms"
+      }
+    },
+    "@keyframes godui-fade-scale-in": {
+      "from": {
+        "opacity": "0",
+        "scale": "var(--godui-enter-scale)"
+      }
+    },
+    "@keyframes godui-fade-scale-out": {
+      "to": {
+        "opacity": "0",
+        "scale": "var(--godui-enter-scale)"
+      }
+    },
+    "@keyframes godui-slide-in-from-top": {
+      "from": {
+        "opacity": "0",
+        "translate": "0 calc(var(--godui-enter-distance) * -1)"
+      }
+    },
+    "@keyframes godui-slide-in-from-right": {
+      "from": {
+        "opacity": "0",
+        "translate": "var(--godui-enter-distance) 0"
+      }
+    },
+    "@keyframes godui-slide-in-from-bottom": {
+      "from": {
+        "opacity": "0",
+        "translate": "0 var(--godui-enter-distance)"
+      }
+    },
+    "@keyframes godui-slide-in-from-left": {
+      "from": {
+        "opacity": "0",
+        "translate": "calc(var(--godui-enter-distance) * -1) 0"
+      }
+    },
+    "@keyframes godui-slide-out-to-top": {
+      "to": {
+        "opacity": "0",
+        "translate": "0 calc(var(--godui-enter-distance) * -1)"
+      }
+    },
+    "@keyframes godui-slide-out-to-right": {
+      "to": {
+        "opacity": "0",
+        "translate": "var(--godui-enter-distance) 0"
+      }
+    },
+    "@keyframes godui-slide-out-to-bottom": {
+      "to": {
+        "opacity": "0",
+        "translate": "0 var(--godui-enter-distance)"
+      }
+    },
+    "@keyframes godui-slide-out-to-left": {
+      "to": {
+        "opacity": "0",
+        "translate": "calc(var(--godui-enter-distance) * -1) 0"
+      }
+    },
+    "@keyframes godui-pop": {
+      "40%": {
+        "scale": "var(--godui-pop-scale)"
+      }
+    }
+  },
+  "type": "registry:item"
+}

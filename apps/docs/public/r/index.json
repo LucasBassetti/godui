@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "revision": "4977db10dc66a7aa1d169db6faa82c099f621712",
+  "revision": "0d7cfa85d37659fd7f38651aa9071071d3480b7a",
   "components": [
     {
       "name": "agent-flow",
@@ -322,6 +322,16 @@
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add \"https://godui.design/r/extras/globe.json\"",
       "registry": "extras"
+    },
+    {
+      "name": "godui-motion",
+      "title": "GodUI Motion",
+      "description": "GPU-only motion foundation for GodUI components: spring easings as CSS linear(), shared enter/exit keyframes, reduced-motion fallbacks and a FLIP hook.",
+      "category": "Components",
+      "dependencies": [],
+      "registryDependencies": [],
+      "install": "npx shadcn@latest add @godui/godui-motion",
+      "registry": "core"
     },
     {
       "name": "gooey-fab",

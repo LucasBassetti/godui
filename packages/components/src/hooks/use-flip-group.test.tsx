@@ -1,0 +1,118 @@
+import { render } from "@testing-library/react";
+import * as React from "react";
+import { vi } from "vitest";
+import { useFlipGroup } from "./use-flip-group";
+
+type Pt = { left: number; top: number };
+const layout = new Map<string, Pt>();
+const offset = new Map<string, Pt>();
+
+function Group({ trigger, order }: { trigger: number; order: string[] }) {
+  const ref = React.useRef<HTMLDivElement>(null);
+  useFlipGroup(ref, trigger, { duration: 200 });
+  return (
+    <div ref={ref}>
+      {order.map((id) => (
+        <div key={id} data-flip data-id={id} />
+      ))}
+    </div>
+  );
+}
+
+let animate: ReturnType<typeof vi.fn>;
+beforeEach(() => {
+  layout.clear();
+  offset.clear();
+  vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockImplementation(
+    function (this: HTMLElement) {
+      const id = this.dataset.id;
+      const base = (id && layout.get(id)) || { left: 0, top: 0 };
+      const off = (id && offset.get(id)) || { left: 0, top: 0 };
+      const left = base.left + off.left;
+      const top = base.top + off.top;
+      return {
+        left,
+        top,
+        x: left,
+        y: top,
+        width: 10,
+        height: 10,
+        right: left + 10,
+        bottom: top + 10,
+        toJSON() {},
+      } as DOMRect;
+    },
+  );
+  animate = vi.fn(function (this: HTMLElement) {
+    const id = this.dataset.id as string;
+    return { cancel: () => offset.delete(id) };
+  });
+  (HTMLElement.prototype as unknown as { animate: unknown }).animate = animate;
+  window.matchMedia = vi
+    .fn()
+    .mockReturnValue({ matches: false }) as unknown as typeof window.matchMedia;
+});
+afterEach(() => {
+  vi.restoreAllMocks();
+  delete (HTMLElement.prototype as unknown as { animate?: unknown }).animate;
+});
+
+describe("useFlipGroup", () => {
+  it("does not animate on first mount", () => {
+    layout.set("a", { left: 0, top: 0 });
+    render(<Group trigger={0} order={["a"]} />);
+    expect(animate).not.toHaveBeenCalled();
+  });
+
+  it("plays the inverse translate for children that moved when the trigger changes", () => {
+    layout.set("a", { left: 0, top: 0 });
+    layout.set("b", { left: 0, top: 40 });
+    const { rerender } = render(<Group trigger={0} order={["a", "b"]} />);
+    layout.set("b", { left: 0, top: 100 });
+    rerender(<Group trigger={1} order={["a", "b"]} />);
+    expect(animate).toHaveBeenCalledTimes(1);
+    expect(animate.mock.calls[0][0]).toEqual([
+      { transform: "translate(0px, -60px)" },
+      { transform: "translate(0px, 0px)" },
+    ]);
+    expect(animate.mock.calls[0][1]).toMatchObject({
+      duration: 200,
+      composite: "add",
+    });
+  });
+
+  it("measures from the current visual position (interrupted FLIP)", () => {
+    layout.set("b", { left: 0, top: 40 });
+    const { rerender } = render(<Group trigger={0} order={["b"]} />);
+    layout.set("b", { left: 0, top: 100 });
+    rerender(<Group trigger={1} order={["b"]} />);
+    // Halfway through: the running FLIP draws b 30px above its slot (visually at 70).
+    offset.set("b", { left: 0, top: -30 });
+    // Layout jumps back to 40 before the animation finishes.
+    layout.set("b", { left: 0, top: 40 });
+    rerender(<Group trigger={2} order={["b"]} />);
+    // Visual 70 → layout 40: start 30px below rest, not from the stale 100.
+    expect(animate.mock.calls[1][0][0]).toEqual({
+      transform: "translate(0px, 30px)",
+    });
+  });
+
+  it("does nothing under prefers-reduced-motion", () => {
+    window.matchMedia = vi.fn().mockReturnValue({
+      matches: true,
+    }) as unknown as typeof window.matchMedia;
+    layout.set("a", { left: 0, top: 0 });
+    const { rerender } = render(<Group trigger={0} order={["a"]} />);
+    layout.set("a", { left: 0, top: 50 });
+    rerender(<Group trigger={1} order={["a"]} />);
+    expect(animate).not.toHaveBeenCalled();
+  });
+
+  it("is a no-op when element.animate is unavailable", () => {
+    delete (HTMLElement.prototype as unknown as { animate?: unknown }).animate;
+    layout.set("a", { left: 0, top: 0 });
+    const { rerender } = render(<Group trigger={0} order={["a"]} />);
+    layout.set("a", { left: 0, top: 50 });
+    expect(() => rerender(<Group trigger={1} order={["a"]} />)).not.toThrow();
+  });
+});
