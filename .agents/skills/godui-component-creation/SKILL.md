@@ -28,7 +28,8 @@ are frozen — don't add new components there.
 | Docs demo | `apps/docs/src/components/demos/core/{name}-demo.tsx` (imports `@godui/components`) |
 | Learn tab (required) | `apps/docs/content/docs/components/{name}/learn.mdx` built from the core kit in `apps/docs/src/components/learn/core/` (`KeyframeScene`, `SpringCurveScene`, `FlipScene`, `AutoPlayScene`, `LiveResult`) — see the `godui-learn-article` skill for LearnPlayer rules |
 | Nav | `apps/docs/content/docs/components/meta.json` (`root: true` folder) |
-| Index card | `apps/docs/content/docs/components/index.mdx` → `<Card title href description>` (alphabetical) |
+| Index card | `apps/docs/content/docs/components/index.mdx` → `<PreviewCard href title>` under its group, preview `apps/docs/src/components/card-previews/core/{name}.tsx` (skeleton `Sk`/`Ac`/`Panel`, GPU-only `group-hover` transitions) registered in `card-previews/registry.tsx` |
+| Sidebar | `components/{name}` in the root `apps/docs/content/docs/meta.json` (Components section) and `{name}` in `components/meta.json` |
 
 ## 1. Create the component
 
@@ -479,9 +480,8 @@ slug.
 - [ ] Docs `components/{name}/index.mdx` with Workbench + Example + ComponentInstall + "What's animated" table + "Replacing shadcn" note
 - [ ] Demo `demos/core/{name}-demo.tsx`; Example `code` = demo with `@/components/ui/*` imports
 - [ ] Learn tab `components/{name}/learn.mdx` (LearnPlayer + core kit scenes, code excerpts copied from the real source) — verified in **both** light and dark
-- [ ] `date: YYYY-MM-DD` (today) in the MDX frontmatter
 - [ ] Example children: text inline in its tag (no `<p>`-in-`<p>`)
-- [ ] Registered in `components/meta.json` (alphabetical); `<Card>` in `components/index.mdx`
+- [ ] Registered in `components/meta.json` and the root `meta.json` (alphabetical); `<PreviewCard>` + core preview in the index; no `date` frontmatter
 - [ ] Static Tailwind classes only (no dynamic class construction)
 - [ ] Demo is fluid (≤360px safe); verified via the Workbench mobile toggle
 - [ ] Verified in Storybook and docs after dev server restart
