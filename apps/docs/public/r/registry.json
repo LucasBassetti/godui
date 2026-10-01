@@ -729,6 +729,20 @@
       }
     },
     {
+      "name": "menubar",
+      "type": "registry:ui",
+      "title": "Menubar",
+      "description": "A visually persistent menu common in desktop applications that provides quick access to a consistent set of commands. Each menu grows from its trigger on a spring; hopping exits one and enters the next. GPU-only.",
+      "dependencies": ["radix-ui", "lucide-react"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "files": [
+        {
+          "path": "packages/components/src/ui/menubar.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "skeleton",
       "type": "registry:ui",
       "title": "Skeleton",

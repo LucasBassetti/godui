@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "revision": "1e50c8990ee97f2f26421b803d54063d64da82d1",
+  "revision": "322ae55e5f3aaf9f228f465275384c9901ac8f2d",
   "components": [
     {
       "name": "accordion",
@@ -762,6 +762,16 @@
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add \"https://godui.design/r/extras/mega-menu.json\"",
       "registry": "extras"
+    },
+    {
+      "name": "menubar",
+      "title": "Menubar",
+      "description": "A visually persistent menu common in desktop applications that provides quick access to a consistent set of commands. Each menu grows from its trigger on a spring; hopping exits one and enters the next. GPU-only.",
+      "category": "Components",
+      "dependencies": ["radix-ui", "lucide-react"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "install": "npx shadcn@latest add @godui/menubar",
+      "registry": "core"
     },
     {
       "name": "morph-gallery",

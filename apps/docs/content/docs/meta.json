@@ -23,6 +23,7 @@
     "components/dropdown-menu",
     "components/hover-card",
     "components/input-otp",
+    "components/menubar",
     "components/popover",
     "components/progress",
     "components/radio-group",

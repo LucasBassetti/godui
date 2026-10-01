@@ -106,7 +106,7 @@ function Surface({
           <div
             className={cn(card, "flex w-40 flex-col gap-1 p-1.5", motionClass)}
           >
-            {["w-20", "w-24", "w-16", "w-20"].map((w) => (
+            {["w-20", "w-24", "w-16", "w-[5rem]"].map((w) => (
               <span key={w} className="flex h-7 items-center rounded-md px-2">
                 <span
                   className={cn(

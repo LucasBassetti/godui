@@ -1,0 +1,105 @@
+---
+title: Anatomy of the GodUI Menubar
+description: A row of dropdown menus that grow out of their triggers, and what it takes to let one menu exit while the next one enters.
+learnPlayer: true
+---
+
+import { MenubarSubDemo } from "@/components/demos/core/menubar-sub-demo";
+
+<LearnPlayer>
+
+<LearnChapter
+  label="A row of dropdowns"
+  scene={
+    <KeyframeScene
+      label="A row of dropdowns"
+      motion="popover-bottom"
+      subject="menu"
+      tracks={[
+        { property: "opacity", from: "0", to: "1" },
+        { property: "scale", from: "0.96", to: "1" },
+        { property: "translate", from: "0 -4px", to: "0 0" },
+      ]}
+    />
+  }
+  code={`<MenubarPrimitive.Content
+  data-slot="menubar-content"
+  align={align}
+  alignOffset={alignOffset}
+  sideOffset={sideOffset}
+  className={cn(
+    "z-50 min-w-[12rem] origin-(--radix-menubar-content-transform-origin) …
+     data-[side=bottom]:[--godui-enter-y:-0.25rem] …
+     data-[state=open]:animate-godui-popover-in
+     data-[state=closed]:animate-godui-popover-out",
+    className,
+  )}
+/>`}
+>
+
+Each menu in the bar is a dropdown menu, and it moves like
+[Dropdown Menu](/docs/components/dropdown-menu/learn). Radix publishes the
+point nearest the trigger as `--radix-menubar-content-transform-origin`, so
+the `godui-popover-in` scale grows from there, and the per-side
+`--godui-enter-x/y` variables make the menu drift 4px out of the bar.
+
+`MenubarSubContent` carries the same classes, so a sub-menu grows out of its
+parent item.
+
+</LearnChapter>
+
+<LearnChapter
+  label="Hopping"
+  scene={<AutoPlayScene label="Hopping" demo="menubar" />}
+  code={`<MenubarPrimitive.Content
+  data-slot="menubar-content"
+  onFocusOutside={(event) => {
+    onFocusOutside?.(event);
+    // Hopping: the old menu stays mounted while it animates out, and
+    // focus landing in the next menu would count as "outside" and close
+    // the whole menubar. Focus moving between menus is not a dismissal.
+    const target = event.target as Element | null;
+    if (target?.closest?.('[data-slot="menubar-content"]')) {
+      event.preventDefault();
+    }
+  }}
+  …
+/>`}
+>
+
+With one menu open, moving the pointer to the next trigger or pressing an
+arrow key opens that menu instead. The old menu gets
+`data-state="closed"` and plays `godui-popover-out` (150ms) while the new one
+plays `godui-popover-in` (260ms), so the swap reads as one motion.
+
+shadcn's menubar has no exit animation, so its old menu unmounts at once.
+Keeping it mounted for 150ms exposed a Radix interaction: the new menu takes
+focus, and the old menu, still listening for focus outside itself, dismisses
+the whole bar. `MenubarContent` now treats focus that lands in another menu
+of the bar as a hop and ignores it.
+
+</LearnChapter>
+
+<LearnChapter
+  label="The result"
+  scene={<LiveResult hint="open a menu, then move to the next one"><MenubarSubDemo /></LiveResult>}
+  isResult
+>
+
+Open File, then slide the pointer to Edit or press the right arrow key. Hover
+Share or Find to open a sub-menu.
+
+</LearnChapter>
+
+</LearnPlayer>
+
+## Why GPU-only
+
+Menus, sub-menus and indicators animate `opacity`, `scale` and `translate`.
+Trigger and item highlights are background changes, so GodUI lets them snap
+instead of animating paint.
+
+## Reduced motion
+
+`--godui-motion: 0` removes the scale and drift from both keyframes. Menus
+and their indicators fade, in 150ms, and a hop is a crossfade.

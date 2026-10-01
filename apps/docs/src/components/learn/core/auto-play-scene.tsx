@@ -7,6 +7,12 @@ import {
   CommandGroup,
   CommandItem,
   CommandList,
+  Menubar,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarSeparator,
+  MenubarTrigger,
   Progress,
   RadioGroup,
   RadioGroupItem,
@@ -21,7 +27,7 @@ import {
   ToggleGroupItem,
 } from "@godui/components";
 import { Bold, Circle } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { ScrollScene } from "../scroll-scene";
 
 const STEP_MS = 1200;
@@ -283,10 +289,75 @@ function SkeletonPulse() {
   return <SkeletonRow className="animate-pulse after:hidden" />;
 }
 
+const MENUS = [
+  { value: "file", trigger: "w-6", items: ["w-24", "w-20", "w-28"] },
+  { value: "edit", trigger: "w-7", items: ["w-16", "w-24", "w-20", "w-14"] },
+  { value: "view", trigger: "w-8", items: ["w-28", "w-20"] },
+];
+
+/**
+ * Real Menubar; the controlled `value` hops right on the timer, so one menu
+ * exits while the next enters. Auto-focus is off so the scene never steals
+ * focus from the page. The menus portal to <body>, so they only open while
+ * the bar itself is laid out: the Learn player also mounts a hidden copy of
+ * every scene, whose menus would otherwise float at the page's top-left.
+ */
+function MenubarHop({ reduced }: { reduced: boolean }) {
+  const [index, setIndex] = useState(0);
+  const [shown, setShown] = useState(false);
+  const barRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const bar = barRef.current;
+    if (!bar) return;
+    const observer = new ResizeObserver(([entry]) =>
+      setShown(entry.contentRect.width > 0),
+    );
+    observer.observe(bar);
+    return () => observer.disconnect();
+  }, []);
+  useEffect(() => {
+    if (reduced) return;
+    const id = setInterval(
+      () => setIndex((i) => (i + 1) % MENUS.length),
+      STEP_MS,
+    );
+    return () => clearInterval(id);
+  }, [reduced]);
+  const noFocus = (event: Event) => event.preventDefault();
+  // Radix's MenubarContent type omits onOpenAutoFocus, but the prop reaches
+  // the menu's focus scope at runtime; without it every hop would pull focus
+  // (and the page's arrow-key scrolling) into the scene.
+  const noOpenFocus = { onOpenAutoFocus: noFocus } as Record<string, unknown>;
+  return (
+    <div ref={barRef} className="flex h-48 items-start pt-4">
+      <Menubar value={shown ? MENUS[index].value : ""}>
+        {MENUS.map((menu) => (
+          <MenubarMenu key={menu.value} value={menu.value}>
+            <MenubarTrigger aria-label={menu.value} className="h-7 px-3">
+              <Bar className={`${menu.trigger} bg-foreground/40`} />
+            </MenubarTrigger>
+            <MenubarContent {...noOpenFocus} onCloseAutoFocus={noFocus}>
+              {menu.items.map((w, i) => (
+                <Fragment key={w}>
+                  {i === menu.items.length - 1 && <MenubarSeparator />}
+                  <MenubarItem className="h-8">
+                    <Bar className={`${w} bg-foreground/25`} />
+                  </MenubarItem>
+                </Fragment>
+              ))}
+            </MenubarContent>
+          </MenubarMenu>
+        ))}
+      </Menubar>
+    </div>
+  );
+}
+
 const DEMOS = {
   button: ButtonPress,
   checkbox: CheckboxToggle,
   command: CommandCycle,
+  menubar: MenubarHop,
   progress: ProgressStep,
   "progress-indeterminate": ProgressIndeterminate,
   radio: RadioCycle,
