@@ -64,11 +64,16 @@ to your stylesheet.
 Springs are CSS `linear()` curves, so they run as plain CSS animations
 with no JavaScript per frame.
 
-Shared keyframes (use them as `animate-godui-<name>`): `fade-scale-in`,
-`fade-scale-out`, `slide-in-from-{top,right,bottom,left}`,
+Shared keyframes (use them as `animate-godui-<name>`): `fade-in`,
+`fade-out`, `fade-scale-in`, `fade-scale-out`, `popover-in`, `popover-out`,
+`slide-in-from-{top,right,bottom,left}`,
 `slide-out-to-{top,right,bottom,left}` and `pop`. Components attach them
 to Radix state, e.g.
 `data-[state=open]:animate-godui-fade-scale-in data-[state=closed]:animate-godui-fade-scale-out`.
+
+The popover keyframes also drift a few pixels out of the trigger. They read
+`--godui-enter-x` and `--godui-enter-y`, which components set per Radix side,
+e.g. `data-[side=bottom]:[--godui-enter-y:-0.25rem]`.
 
 ## Reduced motion
 

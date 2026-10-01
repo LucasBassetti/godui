@@ -22,6 +22,10 @@ const KEYFRAMES = [
   "godui-slide-out-to-bottom",
   "godui-slide-out-to-left",
   "godui-pop",
+  "godui-fade-in",
+  "godui-fade-out",
+  "godui-popover-in",
+  "godui-popover-out",
 ];
 
 describe("godui-motion tokens", () => {

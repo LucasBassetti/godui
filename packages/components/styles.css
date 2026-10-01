@@ -204,6 +204,14 @@
     var(--godui-duration-base) var(--ease-out-expo) both;
   --animate-godui-pop: godui-pop var(--godui-duration-base)
     var(--ease-spring-bouncy);
+  --animate-godui-fade-in: godui-fade-in var(--godui-duration-base)
+    var(--ease-spring-snappy) both;
+  --animate-godui-fade-out: godui-fade-out var(--godui-duration-fast)
+    var(--ease-out-expo) both;
+  --animate-godui-popover-in: godui-popover-in var(--godui-duration-base)
+    var(--ease-spring-snappy) both;
+  --animate-godui-popover-out: godui-popover-out var(--godui-duration-fast)
+    var(--ease-out-expo) both;
 }
 
 :root {
@@ -213,6 +221,9 @@
   --godui-enter-scale: 0.96;
   --godui-enter-distance: 0.5rem;
   --godui-pop-scale: 0.96;
+  /* Popover drift toward the trigger; components set these per Radix side. */
+  --godui-enter-x: 0px;
+  --godui-enter-y: 0px;
   /* Movement multiplier: 1 normally, 0 under reduced motion. Set only here, so
    * a component's local --godui-enter-distance can't outrank reduced motion. */
   --godui-motion: 1;
@@ -293,5 +304,31 @@
 @keyframes godui-pop {
   40% {
     scale: calc(1 - (1 - var(--godui-pop-scale)) * var(--godui-motion));
+  }
+}
+@keyframes godui-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes godui-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes godui-popover-in {
+  from {
+    opacity: 0;
+    scale: calc(1 - (1 - var(--godui-enter-scale)) * var(--godui-motion));
+    translate: calc(var(--godui-enter-x) * var(--godui-motion))
+      calc(var(--godui-enter-y) * var(--godui-motion));
+  }
+}
+@keyframes godui-popover-out {
+  to {
+    opacity: 0;
+    scale: calc(1 - (1 - var(--godui-enter-scale)) * var(--godui-motion));
+    translate: calc(var(--godui-enter-x) * var(--godui-motion))
+      calc(var(--godui-enter-y) * var(--godui-motion));
   }
 }
