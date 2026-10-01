@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "revision": "eb34e71669e0f5ca661e21d5b4439ed03656f5f6",
+  "revision": "3b432f5afd255a1c9839a9e105769cafc3ccb25e",
   "components": [
     {
       "name": "accordion",
@@ -922,6 +922,16 @@
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add \"https://godui.design/r/extras/slide-confirm-button.json\"",
       "registry": "extras"
+    },
+    {
+      "name": "sonner",
+      "title": "Sonner",
+      "description": "An opinionated toast component for React. Transform/opacity transitions on a spring; heights snap. GPU-only.",
+      "category": "Components",
+      "dependencies": ["sonner", "next-themes", "lucide-react"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "install": "npx shadcn@latest add @godui/sonner",
+      "registry": "core"
     },
     {
       "name": "source-citations",

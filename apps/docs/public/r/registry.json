@@ -432,6 +432,20 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "sonner",
+      "type": "registry:ui",
+      "title": "Sonner",
+      "description": "An opinionated toast component for React. Transform/opacity transitions on a spring; heights snap. GPU-only.",
+      "dependencies": ["sonner", "next-themes", "lucide-react"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "files": [
+        {
+          "path": "packages/components/src/ui/sonner.tsx",
+          "type": "registry:ui"
+        }
+      ]
     }
   ]
 }

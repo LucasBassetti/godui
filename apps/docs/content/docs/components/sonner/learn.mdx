@@ -1,0 +1,104 @@
+---
+title: Anatomy of the GodUI Sonner
+description: Sonner already moves toasts with transforms — except when it animates height. How GodUI narrows a library's transitions without forking it, and why it needs !important to do so.
+learnPlayer: true
+---
+
+import { SonnerDemo } from "@/components/demos/core/sonner-demo";
+
+<LearnPlayer>
+
+<LearnChapter
+  label="What sonner animates"
+  scene={
+    <KeyframeScene
+      label="What sonner animates"
+      motion="slide-bottom"
+      subject="toast"
+      tracks={[
+        { property: "transform", from: "translateY(100%)", to: "none" },
+        { property: "opacity", from: "0", to: "1" },
+        { property: "height", from: "front toast", to: "own (snaps)" },
+      ]}
+    />
+  }
+  code={`/* sonner/dist/styles.css */
+[data-sonner-toast] {
+  transition: transform 400ms, opacity 400ms, height 400ms, box-shadow 200ms;
+}
+
+[data-sonner-toast][data-expanded='false'][data-front='false'] {
+  height: var(--front-toast-height);
+}`}
+>
+
+Sonner is mostly compositor-friendly: toasts enter with `translateY`, stack
+with `scale`, and leave with `opacity`. Two properties aren't. Collapsed
+toasts behind the front one take its height, and when you hover the stack
+they grow back to their own height, transitioned over 400ms. `box-shadow` is
+on the list too.
+
+A height transition means layout on every frame for every toast in the
+stack.
+
+</LearnChapter>
+
+<LearnChapter
+  label="Overriding without forking"
+  scene={<SpringCurveScene label="Overriding without forking" easing="snappy" />}
+  code={`const GODUI_TOAST =
+  "[transition-property:transform,opacity]! ease-spring-snappy!";
+const GODUI_BUTTON = "[transition-property:opacity]!";
+
+<Sonner
+  toastOptions={{
+    ...toastOptions,
+    classNames: {
+      ...toastOptions?.classNames,
+      toast: cn(GODUI_TOAST, toastOptions?.classNames?.toast),
+      actionButton: cn(GODUI_BUTTON, toastOptions?.classNames?.actionButton),
+      // cancelButton, closeButton: same
+    },
+  }}
+  {...props}
+/>`}
+>
+
+GodUI doesn't fork sonner. It passes classes through `toastOptions.classNames`
+that change only `transition-property` (to `transform, opacity`) and the
+easing (to `ease-spring-snappy`). Durations stay sonner's. Heights now change
+in one step while the transforms still glide.
+
+The `!` matters. Sonner injects its CSS without a cascade layer, and Tailwind
+puts utilities in `@layer utilities`. Unlayered rules beat layered ones no
+matter how specific the layered selector is, so only `!important` wins.
+
+Forcing only the property list also keeps swiping right. During a drag,
+sonner sets `transition: none`, which zeroes the duration, so the toast still
+tracks your finger 1:1.
+
+</LearnChapter>
+
+<LearnChapter
+  label="The result"
+  scene={<LiveResult hint="show a few toasts, then hover the stack"><SonnerDemo /></LiveResult>}
+  isResult
+>
+
+Show three or four toasts, then hover the stack to expand it. The toasts
+spread out on a spring and their heights change in one step.
+
+</LearnChapter>
+
+</LearnPlayer>
+
+## Why GPU-only
+
+Every toast transition is `transform` or `opacity`, and the buttons only fade.
+A Playwright test expands a stack of mixed-height toasts and fails if Chrome
+reports a `height` animation, and it does fail without GodUI's overrides.
+
+## Reduced motion
+
+Sonner's own `prefers-reduced-motion` styles still apply: they turn off its
+transitions and animations, and GodUI doesn't override that.
