@@ -136,6 +136,22 @@ describe("ToggleGroup", () => {
     expect(cls).not.toMatch(/(^|\s)data-\[spacing=0\]:first:/);
   });
 
+  it("joined cells: a square indicator clipped by the group's shape, so only the ends round", () => {
+    render(<Single ui={Godui} />);
+    const el = indicator() as HTMLElement;
+    // shadcn's joined items are square cells; the group's corners round the
+    // ends. The indicator matches: square, inside a clip with the group's radius.
+    expect(el.className).toContain(
+      "group-data-[spacing=0]/toggle-group:rounded-none",
+    );
+    const clip = el.parentElement as HTMLElement;
+    expect(clip.parentElement).toBe(group());
+    expect(clip.className).toContain("overflow-hidden");
+    expect(clip.className).toContain("rounded-[inherit]");
+    expect(clip.className).toContain("inset-0");
+    expect(clip).toHaveAttribute("aria-hidden", "true");
+  });
+
   it("items hand their on background to a ready indicator", () => {
     render(<Single ui={Godui} />);
     expect(

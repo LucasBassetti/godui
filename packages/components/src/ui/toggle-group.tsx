@@ -4,7 +4,8 @@
 // Motion: items press on a spring (from Toggle). With type="single", one
 // indicator slides to the pressed item (FLIP via useActiveIndicator); with
 // type="multiple", each item keeps its own on background. Adds a
-// `toggle-group-indicator` span for single groups. GPU-only.
+// `toggle-group-indicator` span (inside a static clip shaped like the group,
+// so joined cells stay square and the ends round) for single groups. GPU-only.
 
 import type { VariantProps } from "class-variance-authority";
 import { ToggleGroup as ToggleGroupPrimitive } from "radix-ui";
@@ -71,13 +72,21 @@ function ToggleGroup({
     >
       <ToggleGroupContext.Provider value={{ variant, size, spacing }}>
         {single ? (
-          // Hidden until measured, so the first paint keeps shadcn's styling.
+          // A static clip shaped like the group. Joined items (spacing 0) are
+          // square cells whose ends are rounded only by the group's corners,
+          // so the indicator is square too and this clip rounds it at the
+          // ends — even mid-slide. Spaced items keep their own rounded pill.
           <span
-            ref={indicatorRef}
-            data-slot="toggle-group-indicator"
             aria-hidden="true"
-            className="pointer-events-none absolute top-0 left-0 hidden origin-top-left rounded-md bg-accent ease-spring-snappy group-data-[indicator=ready]/toggle-group:block"
-          />
+            className="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]"
+          >
+            {/* Hidden until measured, so the first paint keeps shadcn's styling. */}
+            <span
+              ref={indicatorRef}
+              data-slot="toggle-group-indicator"
+              className="absolute top-0 left-0 hidden origin-top-left rounded-md bg-accent ease-spring-snappy group-data-[indicator=ready]/toggle-group:block group-data-[spacing=0]/toggle-group:rounded-none"
+            />
+          </span>
         ) : null}
         {children}
       </ToggleGroupContext.Provider>
