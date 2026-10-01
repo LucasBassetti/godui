@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "revision": "e60cade8856601bd1c6929ce211fd3b3e941da99",
+  "revision": "f1238f76049158a378940208ccf64a0779be8159",
   "components": [
     {
       "name": "accordion",
@@ -857,6 +857,16 @@
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add \"https://godui.design/r/extras/prompt-suggestions.json\"",
       "registry": "extras"
+    },
+    {
+      "name": "radio-group",
+      "title": "Radio Group",
+      "description": "A set of checkable buttons — known as radio buttons — where no more than one of the buttons can be checked at a time. The dot grows in; items press on a spring. GPU-only.",
+      "category": "Components",
+      "dependencies": ["radix-ui", "lucide-react"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "install": "npx shadcn@latest add @godui/radio-group",
+      "registry": "core"
     },
     {
       "name": "reorder-list",
