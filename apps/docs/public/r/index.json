@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "revision": "211b00d2abd4825e7c80c4b3c030812c69ca2dbf",
+  "revision": "f7e4015f7144aa0bc156313587d438369846fc14",
   "components": [
     {
       "name": "accordion",
@@ -232,6 +232,16 @@
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add \"https://godui.design/r/extras/container-scroll.json\"",
       "registry": "extras"
+    },
+    {
+      "name": "context-menu",
+      "title": "Context Menu",
+      "description": "Displays a menu to the user — such as a set of actions or functions — triggered by a right click. Grows from the pointer on a spring; checks pop in. GPU-only.",
+      "category": "Components",
+      "dependencies": ["radix-ui", "lucide-react"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "install": "npx shadcn@latest add @godui/context-menu",
+      "registry": "core"
     },
     {
       "name": "conversation-thread",

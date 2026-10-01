@@ -1,0 +1,93 @@
+---
+title: Anatomy of the GodUI Context Menu
+description: A menu that grows out of the exact point you clicked — the same keyframe as every GodUI popover, anchored to the pointer instead of a button.
+learnPlayer: true
+---
+
+import { ContextMenuDemo } from "@/components/demos/core/context-menu-demo";
+
+<LearnPlayer>
+
+<LearnChapter
+  label="From the pointer"
+  scene={
+    <KeyframeScene
+      label="From the pointer"
+      motion="popover-bottom"
+      subject="menu"
+      tracks={[
+        { property: "opacity", from: "0", to: "1" },
+        { property: "scale", from: "0.96", to: "1" },
+        { property: "translate", from: "0 -4px", to: "0 0" },
+      ]}
+    />
+  }
+  code={`<ContextMenuPrimitive.Content
+  data-slot="context-menu-content"
+  className={cn(
+    "z-50 … origin-(--radix-context-menu-content-transform-origin) …
+     data-[side=bottom]:[--godui-enter-y:-0.25rem] …
+     data-[state=open]:animate-godui-popover-in
+     data-[state=closed]:animate-godui-popover-out",
+    className,
+  )}
+/>`}
+>
+
+A context menu has no trigger button to grow out of. Radix anchors it to the
+point where you right-clicked, and publishes the corner nearest that point as
+`--radix-context-menu-content-transform-origin`.
+
+The menu uses the same `godui-popover-in` keyframe as Popover and Dropdown
+Menu, so with that origin it grows out from under your cursor. If there's no
+room below, Radix flips the menu up; `data-side` changes, and so do the drift
+direction and the origin.
+
+</LearnChapter>
+
+<LearnChapter
+  label="Checks pop"
+  scene={
+    <KeyframeScene
+      label="Checks pop"
+      motion="pop-half"
+      subject="check"
+      tracks={[
+        { property: "scale", from: "0.5", to: "1" },
+        { property: "opacity", from: "0", to: "1" },
+      ]}
+    />
+  }
+  code={`<ContextMenuPrimitive.ItemIndicator className="[--godui-enter-scale:0.5] animate-godui-fade-scale-in">
+  <CheckIcon className="size-4" />
+</ContextMenuPrimitive.ItemIndicator>`}
+>
+
+Checkbox and radio items show their indicator only while checked, so the
+check pops in from 50% when you pick it, the same as in
+[Dropdown Menu](/docs/components/dropdown-menu/learn).
+
+</LearnChapter>
+
+<LearnChapter
+  label="The result"
+  scene={<LiveResult hint="right click the area"><ContextMenuDemo /></LiveResult>}
+  isResult
+>
+
+Right click the dashed area, or long-press on touch. Open "More Tools" to see
+a sub-menu grow from its item.
+
+</LearnChapter>
+
+</LearnPlayer>
+
+## Why GPU-only
+
+Menus and indicators animate `opacity`, `scale` and `translate`. Item
+highlights snap instead of animating background paint.
+
+## Reduced motion
+
+`--godui-motion: 0` removes the scale and drift; the menu and indicators fade
+for 150ms.
