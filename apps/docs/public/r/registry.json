@@ -362,6 +362,20 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "dropdown-menu",
+      "type": "registry:ui",
+      "title": "Dropdown Menu",
+      "description": "Displays a menu to the user — such as a set of actions or functions — triggered by a button. Grows from its trigger on a spring; checks pop in. GPU-only.",
+      "dependencies": ["radix-ui", "lucide-react"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "files": [
+        {
+          "path": "packages/components/src/ui/dropdown-menu.tsx",
+          "type": "registry:ui"
+        }
+      ]
     }
   ]
 }

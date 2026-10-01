@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "revision": "1f80d8c1a18edca017183206ffacb85a7a6c2a18",
+  "revision": "3172c9036e657fa443c29f5c3b8e36fc2821df5e",
   "components": [
     {
       "name": "agent-flow",
@@ -252,6 +252,16 @@
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add \"https://godui.design/r/extras/dock.json\"",
       "registry": "extras"
+    },
+    {
+      "name": "dropdown-menu",
+      "title": "Dropdown Menu",
+      "description": "Displays a menu to the user — such as a set of actions or functions — triggered by a button. Grows from its trigger on a spring; checks pop in. GPU-only.",
+      "category": "Components",
+      "dependencies": ["radix-ui", "lucide-react"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "install": "npx shadcn@latest add @godui/dropdown-menu",
+      "registry": "core"
     },
     {
       "name": "dynamic-island",

@@ -2,5 +2,13 @@
   "title": "Components",
   "description": "Animated shadcn/ui drop-ins",
   "root": true,
-  "pages": ["index", "alert-dialog", "button", "dialog", "popover", "sheet"]
+  "pages": [
+    "index",
+    "alert-dialog",
+    "button",
+    "dialog",
+    "dropdown-menu",
+    "popover",
+    "sheet"
+  ]
 }
