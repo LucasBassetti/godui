@@ -227,6 +227,9 @@ importers:
         specifier: ^0.1.3
         version: 0.1.3
     devDependencies:
+      '@godui/motion-lint':
+        specifier: workspace:*
+        version: link:../motion-lint
       '@tailwindcss/postcss':
         specifier: ^4.1.6
         version: 4.3.1
@@ -306,6 +309,15 @@ importers:
       vitest:
         specifier: ^3.0.0
         version: 3.2.6(@types/debug@4.1.13)(@types/node@22.20.0)(jiti@2.7.0)(jsdom@25.0.1)(lightningcss@1.32.0)(msw@2.14.6(@types/node@22.20.0)(typescript@5.9.3))
+
+  packages/motion-lint:
+    devDependencies:
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: ^3.0.0
+        version: 3.2.6(@types/debug@4.1.13)(@types/node@25.9.3)(jiti@2.7.0)(jsdom@25.0.1)(lightningcss@1.32.0)(msw@2.14.6(@types/node@25.9.3)(typescript@5.9.3))
 
 packages:
 

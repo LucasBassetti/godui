@@ -1,5 +1,5 @@
 /**
- * Sanctioned exceptions to the Motion Performance guideline (see motion-lint.ts).
+ * Sanctioned exceptions to the Motion Performance guideline (see @godui/motion-lint).
  *
  * Every entry is an animation that intentionally touches a GATED property because
  * the effect is intrinsically layout- or paint-driven and has no compositor-only
@@ -24,6 +24,11 @@ export interface MotionAllowEntry {
 }
 
 export const MOTION_ALLOWLIST: Record<string, MotionAllowEntry[]> = {
+  // Surfaced when the scanner learned Tailwind's `transition-[…]` form. Extras
+  // become report-only (and this file is deleted) in the foundation's Task 3.
+  "prompt-suggestions/prompt-suggestions.tsx": [
+    { prop: "boxshadow", reason: "hover lift shadow (pre-pivot extra)" },
+  ],
   // ── Height/width/flex reveals & shared-layout morphs (layout IS the effect) ──
   "agent-timeline/agent-timeline.tsx": [
     { prop: "height", reason: "timeline row collapse to height:auto" },
@@ -33,6 +38,7 @@ export const MOTION_ALLOWLIST: Record<string, MotionAllowEntry[]> = {
   ],
   "prompt-composer/prompt-composer.tsx": [
     { prop: "height", reason: "textarea auto-grow to height:auto" },
+    { prop: "boxshadow", reason: "focus ring shadow (pre-pivot extra)" },
   ],
   "tab-bar/tab-bar.tsx": [
     { prop: "width", reason: "active-tab label reveal to width:auto" },

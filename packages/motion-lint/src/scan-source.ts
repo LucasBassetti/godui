@@ -15,8 +15,12 @@
  *    layout) and any GATED prop animated in an infinite loop (ambient layout
  *    thrash). Never allowed, no allowlist escape.
  *
- * Consumed by motion-lint.test.ts (the CI gate); run standalone with
- * `pnpm --filter @godui/components test:motion`. Not shipped in any component.
+ * Strict mode (GodUI core) is narrower: only compositor properties
+ * (transform family, opacity, filter) may animate — cheap paint such as
+ * `color` and Tailwind's bare `transition` / `transition-colors` are violations.
+ *
+ * Consumed by the core GPU gate and the Extras GPU report; test with
+ * `pnpm --filter @godui/motion-lint test`. Not shipped in any component.
  */
 
 export type ViolationKind = "banned" | "gated";
@@ -166,6 +170,63 @@ const GATED = new Set([
   "wordspacing",
 ]);
 
+// Strict (GodUI core) allow-set: compositor-only properties. Everything else
+// that animates is a violation — including cheap paint like color.
+const COMPOSITOR = new Set([
+  "transform",
+  "translate",
+  "translatex",
+  "translatey",
+  "translatez",
+  "translate3d",
+  "scale",
+  "scalex",
+  "scaley",
+  "scalez",
+  "scale3d",
+  "rotate",
+  "rotatex",
+  "rotatey",
+  "rotatez",
+  "rotate3d",
+  "skew",
+  "skewx",
+  "skewy",
+  "perspective",
+  "transformperspective",
+  "transformorigin",
+  "opacity",
+  "filter",
+  "x",
+  "y",
+  "z",
+]);
+
+// Non-animated framer config / discrete keys that may sit in animated objects.
+const NON_ANIMATED = new Set([
+  "transition",
+  "transitionend",
+  "zindex",
+  "cursor",
+  "pointerevents",
+  "visibility",
+  "none",
+  "initial",
+  "inherit",
+  "unset",
+  "",
+]);
+
+/** True for properties the compositor animates without layout or paint. */
+export function isCompositorProp(prop: string): boolean {
+  return COMPOSITOR.has(prop);
+}
+
+function isViolation(prop: string, strict: boolean): boolean {
+  if (!strict) return classifyProp(prop) === "gated";
+  return !COMPOSITOR.has(prop) && !NON_ANIMATED.has(prop);
+}
+
 /** Classify a normalised property into a policy tier. Unknown props are gated. */
 export function classifyProp(prop: string): "free" | "gated" {
   if (FREE.has(prop)) return "free";
@@ -266,7 +327,10 @@ const FRAMER_MOTION_PROPS = [
  * Scan a single source file for motion-performance violations.
  * Pure string analysis — no AST, no filesystem.
  */
-export function scanSource(source: string): Violation[] {
+export function scanSource(
+  source: string,
+  { strict = false }: { strict?: boolean } = {},
+): Violation[] {
   const found: Violation[] = [];
   const push = (
     index: number,
@@ -285,6 +349,25 @@ export function scanSource(source: string): Violation[] {
     push(m.index, "boxshadow", "gated", "transition-shadow");
   }
 
+  if (strict) {
+    // Bare `transition` animates Tailwind's default list (colors, shadow, …).
+    for (const m of source.matchAll(/(?<=["'`\s])transition(?=["'`\s])/g)) {
+      push(m.index, "transition", "gated", "transition");
+    }
+    for (const m of source.matchAll(/\btransition-colors\b/g)) {
+      push(m.index, "transitioncolors", "gated", "transition-colors");
+    }
+  }
+
+  // 2b. Tailwind arbitrary list `transition-[a,b]`.
+  for (const m of source.matchAll(/\btransition-\[([^\]]+)\]/g)) {
+    for (const seg of splitTopLevel(m[1])) {
+      const prop = transitionPropOf(seg);
+      if (prop === "all") push(m.index, "all", "banned", m[0]);
+      else if (isViolation(prop, strict)) push(m.index, prop, "gated", m[0]);
+    }
+  }
+
   // 3. Arbitrary `[transition:...]` / `[transition-property:...]` class values.
   for (const m of source.matchAll(/\[transition(?:-property)?:([^\]]+)\]/g)) {
     for (const seg of splitTopLevel(m[1])) {
@@ -293,7 +376,7 @@ export function scanSource(source: string): Violation[] {
         push(m.index, "all", "banned", m[0]);
         continue;
       }
-      if (classifyProp(prop) === "gated") push(m.index, prop, "gated", m[0]);
+      if (isViolation(prop, strict)) push(m.index, prop, "gated", m[0]);
     }
   }
 
@@ -307,7 +390,7 @@ export function scanSource(source: string): Violation[] {
         push(m.index, "all", "banned", m[0]);
         continue;
       }
-      if (classifyProp(prop) === "gated") push(m.index, prop, "gated", m[0]);
+      if (isViolation(prop, strict)) push(m.index, prop, "gated", m[0]);
     }
   }
 
@@ -325,7 +408,7 @@ export function scanSource(source: string): Violation[] {
       const ambient = /\brepeat\s*:\s*(Infinity|\d)/.test(body);
       for (const key of topLevelKeys(body)) {
         const n = normalizeProp(key);
-        if (classifyProp(n) !== "gated") continue;
+        if (!isViolation(n, strict)) continue;
         push(m.index, n, ambient ? "banned" : "gated", `${prop}={{…${key}…}}`);
       }
     }

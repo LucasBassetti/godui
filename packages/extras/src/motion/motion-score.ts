@@ -12,7 +12,7 @@
  * from signals the repo already curates — the render-cost `kind` a component is
  * tagged with (docs `MOTION_NOTES`, mirrored from {@link ./motion-allowlist})
  * and the exact GATED properties it's sanctioned to animate — rather than a raw
- * source scan, because the scanner ({@link ./motion-lint}) can't see keyframe
+ * source scan, because the scanner (`@godui/motion-lint`) can't see keyframe
  * loops (e.g. a `background-position` rainbow) that dominate the real cost.
  *
  * This module holds only the pure tier logic + tier copy; callers feed it the

@@ -1,15 +1,15 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { scanSource, type Violation } from "@godui/motion-lint";
 import { describe, expect, it } from "vitest";
 import { MOTION_ALLOWLIST } from "./motion-allowlist";
-import { scanSource, type Violation } from "./motion-lint";
 
 /**
  * Motion Performance CI gate. Scans every component source file and asserts that
  * no animation touches a GATED (layout / paint-heavy) property unless it is
  * sanctioned in MOTION_ALLOWLIST. Banned patterns (`transition-all`, ambient
- * layout loops) can never be allowlisted. See motion-lint.ts for the policy.
+ * layout loops) can never be allowlisted. See @godui/motion-lint for the policy.
  */
 
 const SRC = dirname(dirname(fileURLToPath(import.meta.url))); // packages/extras/src
