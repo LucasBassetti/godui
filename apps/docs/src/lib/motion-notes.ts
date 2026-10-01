@@ -1,15 +1,17 @@
+import { GPU_REPORT } from "@godui/extras";
+
 /**
  * Components that don't 100% follow the Motion Performance guideline (animate
  * transform / opacity / filter only). Each one animates a layout- or paint-heavy
  * property by design, so it can't run purely on the compositor.
  *
- * The machine-enforced source of truth is
- * `packages/extras/src/motion/motion-allowlist.ts` (a CI test gates it). This
- * map adds the human-facing "why", plus the ambient background-position/size
- * keyframe loops that the scanner doesn't yet see. Keyed by component name — the
- * last segment of a `/docs/components/<category>/<name>` slug. Surfaced as an
- * amber badge + tooltip below the page description via <ComponentBadges>;
- * components absent from this map get the green "GPU-only" badge instead.
+ * The machine source of truth is the generated strict scan, `GPU_REPORT`
+ * (`packages/extras/src/motion/gpu-report.json`). This map adds the
+ * human-facing "why", plus effects the scanner can't see (canvas/WebGL
+ * compute). Keyed by component name — the last segment of a
+ * `/docs/extras/<category>/<name>` slug. Read through {@link perfNote}, which
+ * falls back to a note derived from the report; only components with neither
+ * get the green "GPU-only" badge.
  */
 
 export type MotionNoteKind = "layout" | "paint" | "compute";
@@ -207,3 +209,25 @@ export const STATIC_COMPONENTS = new Set<string>([
   "geometric-background",
   "gradient-background",
 ]);
+
+const LAYOUT_PROP =
+  /^(width|height|min|max|top|left|right|bottom|inset|margin|padding|flex|gap|grid|fontsize|lineheight|letterspacing|wordspacing|all$)/;
+
+/**
+ * The perf note the docs badge shows: the curated `MOTION_NOTES` entry when one
+ * exists, otherwise one derived from the generated GPU report. `undefined`
+ * means the strict scan found nothing — the only case that earns "GPU-only".
+ */
+export function perfNote(name: string): MotionNote | undefined {
+  const curated = MOTION_NOTES[name];
+  if (curated) return curated;
+  const props = GPU_REPORT[name]?.nonCompositor ?? [];
+  if (props.length === 0) return undefined;
+  const kind: MotionNoteKind = props.some((p) => LAYOUT_PROP.test(p))
+    ? "layout"
+    : "paint";
+  return {
+    kind,
+    reason: `Animates ${props.join(", ")} — ${kind} work on the main thread, not compositor-only.`,
+  };
+}

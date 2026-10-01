@@ -25,7 +25,8 @@
     "lint": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:motion": "vitest run src/motion"
+    "test:motion": "vitest run src/motion",
+    "motion:report": "GODUI_WRITE_REPORT=1 vitest run src/motion/gpu-report.test.ts"
   },
   "peerDependencies": {
     "framer-motion": ">=11.0.0",

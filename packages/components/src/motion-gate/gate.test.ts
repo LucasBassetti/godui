@@ -24,7 +24,10 @@ describe("core GPU-only gate", () => {
   });
 
   it("has no motion allowlist anywhere", () => {
-    for (const path of [join(SRC, "motion", "motion-allowlist.ts")]) {
+    for (const path of [
+      join(SRC, "motion", "motion-allowlist.ts"),
+      join(ROOT, "packages", "extras", "src", "motion", "motion-allowlist.ts"),
+    ]) {
       expect(existsSync(path), path).toBe(false);
     }
   });

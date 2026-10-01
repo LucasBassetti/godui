@@ -1,14 +1,14 @@
-import { MOTION_ALLOWLIST, type MotionGrade, motionTier } from "@godui/extras";
-import { MOTION_NOTES, STATIC_COMPONENTS } from "./motion-notes";
+import { GPU_REPORT, type MotionGrade, motionTier } from "@godui/extras";
+import { perfNote, STATIC_COMPONENTS } from "./motion-notes";
 
 /**
  * Per-component MotionScore for the docs badge. Grades a component by the worst
  * tier of anything it animates (see the official tiers in
  * `@godui/components`'s `motion-score.ts`), reading the render-cost signals the
- * repo already curates — the `MOTION_NOTES` kind/reason, whether it's a
- * `STATIC_COMPONENTS` member, and the GATED props it's sanctioned to animate in
- * `MOTION_ALLOWLIST`. Keyed by the same component name used by `MOTION_NOTES`
- * (the last segment of a `/docs/components/<category>/<name>` slug).
+ * repo already has — the `MOTION_NOTES` kind/reason, whether it's a
+ * `STATIC_COMPONENTS` member, and the layout/paint-heavy props found by the
+ * generated `GPU_REPORT`. Keyed by the same component name used by
+ * `MOTION_NOTES` (the last segment of a `/docs/extras/<category>/<name>` slug).
  */
 
 export interface ComponentMotionScore {
@@ -23,12 +23,10 @@ const STATIC =
   "Renders with plain CSS and never animates — nothing for the browser to keep composing or repainting.";
 
 export function motionScore(componentName: string): ComponentMotionScore {
-  const note = MOTION_NOTES[componentName];
+  const note = perfNote(componentName);
   const isStatic = STATIC_COMPONENTS.has(componentName);
-  // Allowlist keys are `<name>/<name>.tsx` (dir === file for every component).
-  const allowlistProps = (
-    MOTION_ALLOWLIST[`${componentName}/${componentName}.tsx`] ?? []
-  ).map((entry) => entry.prop);
+  // Layout/paint-heavy props from the generated strict scan of Extras.
+  const allowlistProps = GPU_REPORT[componentName]?.gated ?? [];
 
   const grade = motionTier({ kind: note?.kind, isStatic, allowlistProps });
   const reason = note?.reason ?? (isStatic ? STATIC : GPU_ONLY);

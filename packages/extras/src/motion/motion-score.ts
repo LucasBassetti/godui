@@ -10,7 +10,7 @@
  * Motion doesn't publish the numeric weighting behind its grades, so this is a
  * faithful re-implementation of the *tiers*, not their private formula. We tier
  * from signals the repo already curates — the render-cost `kind` a component is
- * tagged with (docs `MOTION_NOTES`, mirrored from {@link ./motion-allowlist})
+ * tagged with (docs `MOTION_NOTES`, mirrored from the generated GPU report)
  * and the exact GATED properties it's sanctioned to animate — rather than a raw
  * source scan, because the scanner (`@godui/motion-lint`) can't see keyframe
  * loops (e.g. a `background-position` rainbow) that dominate the real cost.
@@ -151,8 +151,8 @@ export interface MotionTierInput {
   /** True when the component never animates at all — trivially compositor-safe. */
   isStatic?: boolean;
   /**
-   * Normalised GATED properties the component is sanctioned to animate in
-   * {@link ./motion-allowlist}. Each is tiered and the worst is taken.
+   * Normalised GATED properties the component animates, from the generated
+   * `GPU_REPORT` (`gated`). Each is tiered and the worst is taken.
    */
   allowlistProps?: string[];
 }

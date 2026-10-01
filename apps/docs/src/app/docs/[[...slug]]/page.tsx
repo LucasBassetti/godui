@@ -16,7 +16,7 @@ import {
   WorkbenchProvider,
 } from "@/components/workbench/workbench-context";
 import { DEPENDENCY_NOTES } from "@/lib/dependency-notes";
-import { MOTION_NOTES, STATIC_COMPONENTS } from "@/lib/motion-notes";
+import { perfNote, STATIC_COMPONENTS } from "@/lib/motion-notes";
 import { motionScore } from "@/lib/motion-score";
 import { source } from "@/lib/source";
 import { Breadcrumbs, type Crumb } from "../_components/breadcrumbs";
@@ -48,7 +48,7 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
   const hasLearn = learnPage != null;
 
   const componentName = base ? base[2] : undefined;
-  const motionNote = componentName ? MOTION_NOTES[componentName] : undefined;
+  const motionNote = componentName ? perfNote(componentName) : undefined;
   const dependencyNote = componentName
     ? DEPENDENCY_NOTES[componentName]
     : undefined;

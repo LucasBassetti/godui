@@ -1,7 +1,9 @@
-export {
-  MOTION_ALLOWLIST,
-  type MotionAllowEntry,
-} from "./motion-allowlist";
+import gpuReport from "./gpu-report.json";
+import type { GpuReport } from "./gpu-report-types";
+
+/** Generated strict GPU-only scan of every Extras component (report-only). */
+export const GPU_REPORT: GpuReport = gpuReport;
+export type { GpuReport } from "./gpu-report-types";
 export {
   MOTION_TIER_META,
   type MotionCostKind,
