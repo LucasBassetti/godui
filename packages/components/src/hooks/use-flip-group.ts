@@ -7,7 +7,11 @@ export interface FlipGroupOptions {
   selector?: string;
   /** Milliseconds. Defaults to the `--godui-duration-base` token (260ms). */
   duration?: number;
-  /** Any CSS easing, incl. linear() springs. */
+  /**
+   * Any CSS easing, incl. linear() springs. Defaults to the container's own
+   * `transition-timing-function` (give it an `ease-spring-*` class), else an
+   * ease-out-expo curve.
+   */
   easing?: string;
 }
 
@@ -80,11 +84,7 @@ function measure(container: HTMLElement, selector: string) {
 export function useFlipGroup(
   containerRef: React.RefObject<HTMLElement | null>,
   trigger: unknown,
-  {
-    selector = "[data-flip]",
-    duration,
-    easing = "cubic-bezier(0.16, 1, 0.3, 1)",
-  }: FlipGroupOptions = {},
+  { selector = "[data-flip]", duration, easing }: FlipGroupOptions = {},
 ): void {
   const last = React.useRef(new Map<Element, Point>());
   const dirty = React.useRef(false);
@@ -135,6 +135,13 @@ export function useFlipGroup(
     const origin = container.getBoundingClientRect();
     const reduce =
       view?.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
+    const containerEase =
+      view?.getComputedStyle(container).transitionTimingFunction;
+    const ease =
+      easing ??
+      (containerEase && containerEase !== "ease"
+        ? containerEase
+        : "cubic-bezier(0.16, 1, 0.3, 1)");
     const ms =
       duration ??
       toMs(
@@ -168,7 +175,7 @@ export function useFlipGroup(
           { translate: `${plus(ownX, dx)} ${plus(ownY, dy)}` },
           { translate: `${ownX} ${ownY}` },
         ],
-        { duration: ms, easing },
+        { duration: ms, easing: ease },
       );
       RUNNING.set(el, animation);
       animation.onfinish = () => {

@@ -2,7 +2,6 @@
 title: Accordion
 description: A vertically stacked set of interactive headings that each reveal a section of content. Heights snap; the items below slide into place.
 workbench: true
-date: "2026-10-01"
 ---
 
 import {
@@ -149,12 +148,14 @@ import {
 
 | Interaction | Keyframe / mechanism | Properties | Easing | Duration |
 | --- | --- | --- | --- | --- |
-| Open | height snaps; panel `godui-slide-in-from-top`; items below FLIP | `opacity`, `translate` | `ease-spring-snappy`; FLIP `ease-out-expo` | 260ms |
-| Close | panel `godui-fade-out`, then height snaps; items below FLIP | `opacity`, `translate` | `ease-out-expo` | 150ms + 260ms |
+| Open | height snaps; items below FLIP; panel `godui-slide-in-from-top`, ~100ms later | `translate`, `opacity` | `ease-spring-snappy` | 260ms |
+| Close | panel `godui-slide-out-to-top`, then height snaps; items below FLIP up | `translate`, `opacity` | `ease-out-expo`; FLIP `ease-spring-snappy` | 150ms + 260ms |
 | Chevron | `transition` on `transform` | `rotate(180deg)` | `ease-spring-snappy` | 260ms |
 
-The FLIP covers the accordion's own items. Content after the accordion moves
-with the height change in one step.
+The dividers between items are drawn as each item's top border rather than the
+previous item's bottom border (same look), so a divider travels with the item
+that slides instead of jumping ahead of it. The FLIP covers the accordion's own
+items; content after the accordion moves with the height change in one step.
 
 Under `prefers-reduced-motion` the items below jump to their new position, the
 panel fades for 150ms, and the chevron turns instantly.

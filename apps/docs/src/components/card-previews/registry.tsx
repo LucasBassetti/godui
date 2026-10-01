@@ -8,6 +8,30 @@ export type CardPreviewProps = { play?: boolean };
 
 type Preview = ComponentType<CardPreviewProps>;
 
+import CoreAccordion from "./core/accordion";
+import CoreAlertDialog from "./core/alert-dialog";
+import CoreButton from "./core/button";
+import CoreCheckbox from "./core/checkbox";
+import CoreCollapsible from "./core/collapsible";
+import CoreCombobox from "./core/combobox";
+import CoreCommand from "./core/command";
+import CoreContextMenu from "./core/context-menu";
+import CoreDialog from "./core/dialog";
+import CoreDrawer from "./core/drawer";
+import CoreDropdownMenu from "./core/dropdown-menu";
+import CoreHoverCard from "./core/hover-card";
+import CoreInputOtp from "./core/input-otp";
+import CorePopover from "./core/popover";
+import CoreRadioGroup from "./core/radio-group";
+import CoreSelect from "./core/select";
+import CoreSheet from "./core/sheet";
+import CoreSlider from "./core/slider";
+import CoreSonner from "./core/sonner";
+import CoreSwitch from "./core/switch";
+import CoreTabs from "./core/tabs";
+import CoreToggle from "./core/toggle";
+import CoreToggleGroup from "./core/toggle-group";
+import CoreTooltip from "./core/tooltip";
 import AgentFlow from "./previews/agent-flow";
 import AgentTimeline from "./previews/agent-timeline";
 import AnimatedBeam from "./previews/animated-beam";
@@ -120,6 +144,31 @@ import WorldMap from "./previews/world-map";
  * empty preview zone.
  */
 export const cardPreviews: Record<string, Preview> = {
+  // Core (animated shadcn/ui drop-ins)
+  accordion: CoreAccordion,
+  "alert-dialog": CoreAlertDialog,
+  button: CoreButton,
+  checkbox: CoreCheckbox,
+  collapsible: CoreCollapsible,
+  combobox: CoreCombobox,
+  command: CoreCommand,
+  "context-menu": CoreContextMenu,
+  dialog: CoreDialog,
+  drawer: CoreDrawer,
+  "dropdown-menu": CoreDropdownMenu,
+  "hover-card": CoreHoverCard,
+  "input-otp": CoreInputOtp,
+  popover: CorePopover,
+  "radio-group": CoreRadioGroup,
+  select: CoreSelect,
+  sheet: CoreSheet,
+  slider: CoreSlider,
+  sonner: CoreSonner,
+  switch: CoreSwitch,
+  tabs: CoreTabs,
+  toggle: CoreToggle,
+  "toggle-group": CoreToggleGroup,
+  tooltip: CoreTooltip,
   "gooey-fab": GooeyFab,
   "gooey-stack": GooeyStack,
   "hold-confirm-button": HoldConfirmButton,

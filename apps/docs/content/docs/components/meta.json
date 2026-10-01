@@ -1,9 +1,7 @@
 {
   "title": "Components",
   "description": "Animated shadcn/ui drop-ins",
-  "root": true,
   "pages": [
-    "index",
     "accordion",
     "alert-dialog",
     "button",

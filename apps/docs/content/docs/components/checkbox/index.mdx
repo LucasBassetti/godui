@@ -1,18 +1,17 @@
 ---
 title: Checkbox
-description: A control that allows the user to toggle between checked and not checked. The check pops in from half size; the box presses on a spring.
+description: A control that allows the user to toggle between checked and not checked. The box pops and the check is drawn in.
 workbench: true
-date: "2026-10-01"
 ---
 
 import { CheckboxDemo } from "@/components/demos/core/checkbox-demo";
 
 <Workbench>
 
-The shadcn/ui checkbox with two motions. The check mark pops in from 50% scale
-when the box is checked, and the box itself presses down on a spring while
-the pointer is on it. The fill and border change instantly. Only `scale` and
-`opacity` animate.
+The shadcn/ui checkbox. When you check it, the box dips and springs back, and
+the check mark is drawn in from left to right. Both run only when the state
+changes, so a form that loads with boxes already checked doesn't animate.
+Only `scale`, `translate` and `opacity` animate.
 
 <Example label="Default" story="ui-checkbox" code={`import { Checkbox } from "@/components/ui/checkbox";
 
@@ -73,15 +72,15 @@ import { Checkbox } from "@/components/ui/checkbox";
 
 | Interaction | Keyframe / mechanism | Properties | Easing | Duration |
 | --- | --- | --- | --- | --- |
-| Check | `godui-fade-scale-in` from 50% | `scale`, `opacity` | `ease-spring-snappy` | 260ms |
-| Press | `transition` on `active:scale-[0.92]` | `scale` | `ease-spring-bouncy` | 260ms |
-| Fill, border | snaps | — | — | — |
+| Check (box) | `godui-pop` | `scale` 1 → 0.85 → 1 | `ease-spring-bouncy` | 260ms |
+| Check (mark) | `godui-slide-in-from-left` inside a clipped indicator | `translate`, `opacity` | `ease-spring-smooth` | 260ms |
+| Uncheck, fill, border | snap | — | — | — |
 
-Unchecking has no exit animation: the fill clears immediately, and a white
-check shrinking on an empty box would be invisible.
+Animations run only after the checked state changes, by a click, the keyboard
+or a controlled `checked` prop, never on the first render.
 
-Under `prefers-reduced-motion` the check fades in without scaling and the box
-presses instantly.
+Under `prefers-reduced-motion` the box doesn't dip and the check fades in
+without sliding.
 
 ## API
 

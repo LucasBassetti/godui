@@ -24,9 +24,9 @@ const features: Feature[] = [
   },
   {
     icon: Terminal,
-    title: "shadcn registry",
+    title: "Drop-in for shadcn/ui",
     description:
-      "Add any component with a single shadcn CLI command. Wired to your existing registry workflow.",
+      "Same files, exports and props as shadcn/ui. Install over a component you already use and every call site keeps working.",
   },
   {
     icon: Bot,
@@ -36,9 +36,9 @@ const features: Feature[] = [
   },
   {
     icon: Sparkles,
-    title: "Motion, done right",
+    title: "GPU-only motion",
     description:
-      "Built on Motion with a strict transform/opacity performance budget, so every animation stays at 60fps.",
+      "Every animation moves only transform, opacity or filter. CI fails the build otherwise, so motion stays smooth under load.",
   },
   {
     icon: Braces,

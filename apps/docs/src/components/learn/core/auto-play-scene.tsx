@@ -18,10 +18,19 @@ import {
   ToggleGroup,
   ToggleGroupItem,
 } from "@godui/components";
+import { Bold, Circle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ScrollScene } from "../scroll-scene";
 
 const STEP_MS = 1200;
+
+/**
+ * Skeleton label — scenes show the real components, but with placeholder bars
+ * instead of words, like every other Learn scene.
+ */
+function Bar({ className }: { className: string }) {
+  return <span className={`block h-2 rounded-full ${className}`} />;
+}
 
 function useToggle(reduced: boolean) {
   const [on, setOn] = useState(false);
@@ -38,7 +47,7 @@ function ButtonPress({ reduced }: { reduced: boolean }) {
   const pressed = useToggle(reduced);
   return (
     <Button size="lg" className={pressed ? "scale-[0.97]" : undefined}>
-      Continue
+      <Bar className="w-16 bg-primary-foreground/60" />
     </Button>
   );
 }
@@ -76,12 +85,13 @@ function TogglePress({ reduced }: { reduced: boolean }) {
       aria-label="Bold"
       className="px-5 font-bold"
     >
-      B
+      <Bold />
     </Toggle>
   );
 }
 
 const COMMANDS = ["Calendar", "Search Emoji", "Calculator", "Settings"];
+const BAR_WIDTHS = ["w-24", "w-32", "w-20", "w-28"];
 
 /** Real Command; cmdk's controlled `value` moves the selection on the timer. */
 function CommandCycle({ reduced }: { reduced: boolean }) {
@@ -100,10 +110,13 @@ function CommandCycle({ reduced }: { reduced: boolean }) {
       className="w-72 rounded-lg border shadow-md"
     >
       <CommandList>
-        <CommandGroup heading="Suggestions">
-          {COMMANDS.map((item) => (
+        <CommandGroup>
+          {COMMANDS.map((item, i) => (
             <CommandItem key={item} value={item}>
-              {item}
+              <Circle />
+              <Bar
+                className={`${BAR_WIDTHS[i % BAR_WIDTHS.length]} bg-foreground/25`}
+              />
             </CommandItem>
           ))}
         </CommandGroup>
@@ -128,8 +141,8 @@ function ToggleGroupCycle({ reduced }: { reduced: boolean }) {
   return (
     <ToggleGroup type="single" variant="outline" value={RANGES[index]}>
       {RANGES.map((range) => (
-        <ToggleGroupItem key={range} value={range}>
-          {range}
+        <ToggleGroupItem key={range} value={range} aria-label={range}>
+          <Bar className="w-6 bg-foreground/30" />
         </ToggleGroupItem>
       ))}
     </ToggleGroup>
@@ -151,14 +164,16 @@ function RadioCycle({ reduced }: { reduced: boolean }) {
   }, [reduced]);
   return (
     <RadioGroup value={RADIOS[index]} className="gap-4">
-      {RADIOS.map((label) => (
-        <div key={label} className="flex items-center gap-3 text-sm">
+      {RADIOS.map((label, i) => (
+        <div key={label} className="flex items-center gap-3">
           <RadioGroupItem
             value={label}
             aria-label={label}
             className="scale-150"
           />
-          {label}
+          <Bar
+            className={`${BAR_WIDTHS[i % BAR_WIDTHS.length]} bg-foreground/25`}
+          />
         </div>
       ))}
     </RadioGroup>
@@ -182,8 +197,8 @@ function TabsCycle({ reduced }: { reduced: boolean }) {
     <Tabs value={TABS[index]} className="w-80">
       <TabsList>
         {TABS.map((tab) => (
-          <TabsTrigger key={tab} value={tab}>
-            {tab}
+          <TabsTrigger key={tab} value={tab} aria-label={tab} className="px-4">
+            <Bar className="w-10 bg-foreground/30" />
           </TabsTrigger>
         ))}
       </TabsList>
@@ -193,7 +208,10 @@ function TabsCycle({ reduced }: { reduced: boolean }) {
           value={tab}
           className="rounded-lg border p-4 text-sm"
         >
-          {tab} settings
+          <div className="flex flex-col gap-2">
+            <Bar className="w-40 bg-foreground/20" />
+            <Bar className="w-28 bg-foreground/15" />
+          </div>
         </TabsContent>
       ))}
     </Tabs>

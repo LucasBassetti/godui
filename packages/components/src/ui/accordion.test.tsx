@@ -120,7 +120,7 @@ describe("Accordion", () => {
     const style = document.createElement("style");
     style.dataset.testAnim = "";
     style.textContent =
-      '[data-slot="accordion-content"][data-state="closed"] { animation-name: godui-fade-out; }';
+      '[data-slot="accordion-content"][data-state="closed"] { animation-name: godui-slide-out-to-top; }';
     document.head.append(style);
     const user = userEvent.setup();
     render(<Usage ui={Godui} defaultValue="item-1" />);
@@ -134,7 +134,7 @@ describe("Accordion", () => {
     const content = document.querySelector('[data-slot="accordion-content"]');
     // jsdom has no AnimationEvent; Radix only reads `animationName`.
     const end = Object.assign(new Event("animationend", { bubbles: true }), {
-      animationName: "godui-fade-out",
+      animationName: "godui-slide-out-to-top",
     });
     act(() => {
       content?.dispatchEvent(end);
@@ -170,6 +170,16 @@ describe("Accordion", () => {
     expect(screen.getByText("Body")).toBeInTheDocument();
   });
 
+  it("draws dividers on the following item, so they glide with it", () => {
+    render(<Usage ui={Godui} />);
+    const item = items()[1] as HTMLElement;
+    // Same look as shadcn's border-b last:border-b-0, but the line belongs to
+    // the item that FLIPs instead of the one whose height snaps.
+    expect(item.className).toContain("border-t");
+    expect(item.className).toContain("first:border-t-0");
+    expect(item.className).not.toContain("border-b");
+  });
+
   it("moves between triggers with arrows and toggles with Enter", async () => {
     const user = userEvent.setup();
     render(<Usage ui={Godui} />);
@@ -201,16 +211,24 @@ describe("Accordion", () => {
     }
   });
 
-  it("animates no height: panel slides in, fades out; chevron rotates", () => {
+  it("animates no height: panel rises in after the items make room, lifts away on close", () => {
     render(<Usage ui={Godui} defaultValue="item-1" />);
     const content = document.querySelector('[data-slot="accordion-content"]');
     expect(content?.className).toContain(
       "data-[state=open]:animate-godui-slide-in-from-top",
     );
+    // Revealed into the space the FLIP is opening, not on top of moving items.
     expect(content?.className).toContain(
-      "data-[state=closed]:animate-godui-fade-out",
+      "data-[state=open]:[animation-delay:calc(var(--godui-duration-fast)*0.66)]",
+    );
+    expect(content?.className).toContain(
+      "data-[state=closed]:animate-godui-slide-out-to-top",
     );
     expect(content?.className).not.toContain("accordion-down");
+    // The items below glide on a spring.
+    expect(
+      document.querySelector('[data-slot="accordion"]')?.className,
+    ).toContain("ease-spring-snappy");
     const trigger = screen.getByRole("button", { name: "Product Information" });
     expect(trigger.className).not.toContain("transition-all");
     // Chrome won't composite the individual `rotate` property on an <svg>;

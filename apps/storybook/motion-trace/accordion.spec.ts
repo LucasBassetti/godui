@@ -14,7 +14,9 @@ test("accordion opens with a snap + FLIP on the compositor", async ({
     windowMs: 800,
   });
   expect(result.animationCount).toBeGreaterThan(0);
-  expectGpuOnly(result);
+  // Two discrete "animation finished" frames: the FLIP ends, then the panel's
+  // delayed rise ends ~100ms later. Neither repeats per frame.
+  expectGpuOnly(result, { maxLayoutFrames: 2 });
 });
 
 test("accordion closes with a fade, then snap + FLIP, on the compositor", async ({

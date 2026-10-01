@@ -32,5 +32,7 @@ test("hopping across a toolbar stays on the compositor", async ({ page }) => {
     windowMs: 700,
   });
   expect(result.animationCount).toBeGreaterThan(0);
-  expectGpuOnly(result);
+  // Two discrete frames: the previous tooltip unmounts when its exit ends, and
+  // the next tooltip's fade finishes. Neither repeats per frame.
+  expectGpuOnly(result, { maxLayoutFrames: 2 });
 });

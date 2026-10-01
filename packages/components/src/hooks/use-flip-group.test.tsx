@@ -243,3 +243,27 @@ describe("useFlipGroup settling", () => {
     }
   });
 });
+
+describe("useFlipGroup easing", () => {
+  it("defaults to the container's own transition-timing-function (e.g. an ease-spring-* class)", () => {
+    function Eased({ trigger }: { trigger: number }) {
+      const ref = React.useRef<HTMLDivElement>(null);
+      useFlipGroup(ref, trigger);
+      return (
+        <div
+          ref={ref}
+          style={{ transitionTimingFunction: "linear(0, 0.6, 1)" }}
+        >
+          <div data-flip data-id="b" />
+        </div>
+      );
+    }
+    layout.set("b", { left: 0, top: 40 });
+    const { rerender } = render(<Eased trigger={0} />);
+    layout.set("b", { left: 0, top: 100 });
+    rerender(<Eased trigger={1} />);
+    expect(animate.mock.calls[0][1]).toMatchObject({
+      easing: "linear(0, 0.6, 1)",
+    });
+  });
+});

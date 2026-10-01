@@ -1,6 +1,6 @@
 ---
 title: Anatomy of the GodUI Checkbox
-description: A check that pops because Radix mounts it, a press on a spring, and why the fill is allowed to snap.
+description: A check mark drawn with a translate inside a clip, a box that dips on a spring, and why neither plays when the page loads.
 learnPlayer: true
 ---
 
@@ -9,55 +9,89 @@ import { CheckboxDemo } from "@/components/demos/core/checkbox-demo";
 <LearnPlayer>
 
 <LearnChapter
-  label="The check pops"
+  label="The check is drawn"
   scene={
     <KeyframeScene
-      label="The check pops"
-      motion="pop-half"
+      label="The check is drawn"
+      motion="wipe"
       subject="check"
       tracks={[
-        { property: "scale", from: "0.5", to: "1" },
+        { property: "translate", from: "-100% 0", to: "0 0" },
         { property: "opacity", from: "0", to: "1" },
       ]}
     />
   }
   code={`<CheckboxPrimitive.Indicator
   data-slot="checkbox-indicator"
-  className="grid place-content-center text-current [--godui-enter-scale:0.5] animate-godui-fade-scale-in"
+  className="grid place-content-center overflow-hidden text-current"
 >
-  <CheckIcon className="size-3.5" />
+  <span className="flex [--godui-duration-slow:var(--godui-duration-base)]
+    group-data-[animate=true]/checkbox:[--godui-enter-distance:100%]
+    group-data-[animate=true]/checkbox:animate-godui-slide-in-from-left">
+    <CheckIcon className="size-3.5" />
+  </span>
 </CheckboxPrimitive.Indicator>`}
 >
 
-Radix renders `CheckboxPrimitive.Indicator` only while the box is checked. A
-keyframe on it therefore plays at exactly the moment the check appears, with
-no state to track.
+Drawing a check stroke by stroke would mean animating `stroke-dashoffset`,
+which repaints the SVG on every frame. GodUI fakes it with a clip instead.
 
-The indicator reuses the shared `godui-fade-scale-in` and sets
-`--godui-enter-scale: 0.5` locally, so the check grows from half size on a
-snappy spring. The animation sits on the indicator `<span>`, not on the
-`<svg>` inside it: Chrome won't composite the individual `scale` property on
-an SVG element.
+The indicator is `overflow-hidden`, and the check inside it starts one full
+width to the left (`--godui-enter-distance: 100%`) and slides into place.
+Because the indicator clips it, you see the mark revealed left to right, the
+direction a check is drawn, while only `translate` moves. The keyframe sits on
+a `<span>` around the icon, because Chrome won't composite `translate` on an
+`<svg>` itself.
 
 </LearnChapter>
 
 <LearnChapter
-  label="The press"
-  scene={<AutoPlayScene label="The press" demo="checkbox" />}
-  code={`"peer size-4 shrink-0 rounded-[4px] border border-input shadow-xs outline-none
- transition-[scale] duration-(--godui-duration-base) ease-spring-bouncy
- active:scale-[0.92] motion-reduce:transition-none …
- data-[state=checked]:border-primary data-[state=checked]:bg-primary …"`}
+  label="The box pops"
+  scene={<AutoPlayScene label="The box pops" demo="checkbox" />}
+  code={`"… [--godui-pop-scale:0.85] data-[animate=true]:data-[state=checked]:animate-godui-pop …"
+
+@keyframes godui-pop {
+  40% { scale: calc(1 - (1 - var(--godui-pop-scale)) * var(--godui-motion)); }
+}`}
 >
 
-While the pointer is down, the box scales to 92% on the bouncy spring, the
-same press as [Button](/docs/components/button/learn), a bit deeper because
-the target is small.
+At the same moment, the box itself dips to 85% and springs back on
+`ease-spring-bouncy`. The shared `godui-pop` keyframe has a single 40% frame,
+so the box squashes and returns past its size with the spring's overshoot.
 
-shadcn's checkbox had `transition-shadow`, which animated the focus ring's
-`box-shadow`. GodUI drops it: the ring and the checked fill change instantly.
-Recoloring a 16px box doesn't need a tween; the pop already tells you the
-state changed.
+The fill and border change instantly. On a 16px box, the dip and the drawn
+check already say "checked"; a color tween would only add paint work.
+
+</LearnChapter>
+
+<LearnChapter
+  label="Never on page load"
+  scene={<AutoPlayScene label="Never on page load" demo="checkbox" />}
+  code={`const [animate, setAnimate] = React.useState(false);
+const [lastChecked, setLastChecked] = React.useState(checked);
+if (checked !== lastChecked) {
+  setLastChecked(checked);
+  setAnimate(true);
+}
+
+<CheckboxPrimitive.Root
+  data-animate={animate || undefined}
+  onCheckedChange={(value) => {
+    setAnimate(true);
+    onCheckedChange?.(value);
+  }}
+/>`}
+>
+
+A settings page that loads with ten boxes already checked shouldn't pop ten
+times. So the checkbox only animates after its state actually changes.
+
+It starts with `data-animate` unset, which turns both keyframes off. The first
+change sets it: a click or Space through `onCheckedChange`, or a controlled
+`checked` prop compared against the last value during render. From then on,
+every check pops and draws. The comparison runs during render rather than in
+an effect, so the class is already there when the indicator mounts, and the
+check never flashes in place before animating.
 
 </LearnChapter>
 
@@ -67,7 +101,8 @@ state changed.
   isResult
 >
 
-Click the boxes or their labels, or Tab to one and press Space.
+Click the boxes or their labels, or Tab to one and press Space. The box that
+loads checked stays still until you change it.
 
 </LearnChapter>
 
@@ -75,10 +110,10 @@ Click the boxes or their labels, or Tab to one and press Space.
 
 ## Why GPU-only
 
-The check animates `scale` and `opacity` on its wrapper, and the press animates
-`scale`. Nothing repaints while it moves.
+The box animates `scale`; the check animates `translate` and `opacity` inside a
+clip. shadcn's checkbox transitions the focus ring's `box-shadow`; GodUI's
+doesn't.
 
 ## Reduced motion
 
-`--godui-motion: 0` turns the pop into a 150ms fade, and
-`motion-reduce:transition-none` makes the press instant.
+`--godui-motion: 0` cancels the dip and the slide, so the check only fades in.

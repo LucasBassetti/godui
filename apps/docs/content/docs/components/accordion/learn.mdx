@@ -49,8 +49,12 @@ back at its old position (**invert**), then animates that translate to zero
 (**play**).
 
 The items appear to slide down to make room, but layout ran exactly once and
-only `translate` animated. If you toggle again mid-slide, the hook reads
-where each item is drawn and starts the next slide from there.
+only `translate` animated, on the same snappy spring as the rest of GodUI. The
+panel waits ~100ms before rising in, so its text appears in the space the items
+have opened instead of over them. And the dividers are each item's top border,
+so the line slides with the item rather than snapping ahead of it. If you
+toggle again mid-slide, the hook reads where each item is drawn and starts the
+next slide from there.
 
 </LearnChapter>
 
@@ -72,7 +76,7 @@ where each item is drawn and starts the next slide from there.
 >
 
 The FLIP has to run on the exact commit where the height snaps, and that
-isn't when the value changes. On close, the panel first fades out for 150ms,
+isn't when the value changes. On close, the panel first lifts away for 150ms,
 and Radix keeps it mounted until that `animationend`.
 
 Radix renders a panel's children only while it's open or still animating out,

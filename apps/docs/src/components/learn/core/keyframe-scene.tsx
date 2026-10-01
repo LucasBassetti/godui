@@ -23,6 +23,10 @@ const MOTION = {
     "[--godui-enter-scale:0.5] animate-godui-fade-scale-in",
     "animate-godui-fade-out",
   ],
+  wipe: [
+    "[--godui-enter-distance:100%] animate-godui-slide-in-from-left",
+    "animate-godui-fade-out",
+  ],
   "pop-dot": [
     "[--godui-enter-scale:0.3] animate-godui-fade-scale-in",
     "animate-godui-fade-out",
@@ -46,8 +50,8 @@ export type KeyframeSubject =
   | "radio";
 export type KeyframeTrack = { property: string; from: string; to: string };
 
-const OPEN_MS = 1400;
-const CLOSED_MS = 900;
+const OPEN_MS = 1600;
+const CLOSED_MS = 600;
 
 function Lines({ widths }: { widths: string[] }) {
   return (
@@ -144,22 +148,24 @@ function Surface({
       return (
         <span className="flex size-16 items-center justify-center rounded-xl bg-[var(--foreground)]">
           {/* The keyframe sits on a wrapper: Chrome won't composite `scale` on an <svg>. */}
-          <span className={cn("flex", motionClass)}>
-            <svg
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-              className="size-9 text-[var(--background)]"
-            >
-              <title>Check</title>
-              <path
-                d="M20 6 9 17l-5-5"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={3}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
+          <span className="flex overflow-hidden">
+            <span className={cn("flex", motionClass)}>
+              <svg
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+                className="size-9 text-[var(--background)]"
+              >
+                <title>Check</title>
+                <path
+                  d="M20 6 9 17l-5-5"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={3}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </span>
           </span>
         </span>
       );
@@ -252,11 +258,12 @@ export function KeyframeScene({
           </div>
           <dl className="grid w-full grid-cols-[repeat(auto-fit,minmax(7rem,1fr))] gap-4 border-fd-border border-t pt-5">
             {tracks.map((t) => (
-              <div key={t.property} className="flex flex-col gap-1">
-                <dt className="font-mono text-[12px] text-fd-foreground">
+              <div key={t.property} className="flex flex-col gap-1.5">
+                <span className="h-3 w-7 rounded-lg bg-[var(--foreground)]/80 ring-1 ring-fd-border ring-inset" />
+                <dt className="font-medium text-[13px] text-fd-foreground">
                   {t.property}
                 </dt>
-                <dd className="font-mono text-[12px] text-fd-muted-foreground">
+                <dd className="text-[12px] text-fd-muted-foreground">
                   {t.from} → {t.to}
                 </dd>
               </div>

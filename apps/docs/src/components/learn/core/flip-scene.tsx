@@ -101,14 +101,17 @@ function TabsFlip({ reduced }: { reduced: boolean }) {
         <span
           key={label}
           data-tab
-          className={cn(
-            "relative px-3 py-1.5 font-medium text-[13px]",
-            i === active
-              ? "text-[var(--foreground)]"
-              : "text-[var(--muted-foreground)]",
-          )}
+          className="relative flex items-center px-4 py-2.5"
         >
-          {label}
+          <span
+            className={cn(
+              "block h-2 rounded-full",
+              ["w-10", "w-14", "w-12"][i],
+              i === active
+                ? "bg-[var(--foreground)]/60"
+                : "bg-[var(--foreground)]/25",
+            )}
+          />
         </span>
       ))}
     </div>

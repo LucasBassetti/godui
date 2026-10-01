@@ -1,9 +1,10 @@
 "use client";
 
 // GodUI Accordion — mirrors shadcn/ui new-york-v4 components/ui/accordion.tsx (registry snapshot 2026-10-01).
-// Motion: no height animation. A panel's height snaps; the items below FLIP
-// (translate) from where they were; the panel slides in, and fades out before
-// it collapses. Chevron rotates on a spring — via `transform`, because Chrome
+// Motion: no height animation. A panel's height snaps; the items below glide
+// from where they were on a spring (FLIP, translate), and the panel rises in a
+// beat later into the space they open. On close the panel lifts away, then the
+// items glide up. Chevron rotates on a spring — via `transform`, because Chrome
 // won't composite the individual `rotate` property on an <svg>. GPU-only.
 
 import { ChevronDownIcon } from "lucide-react";
@@ -20,6 +21,7 @@ const AccordionFlipContext = React.createContext<(() => void) | null>(null);
 
 function Accordion({
   ref,
+  className,
   ...props
 }: React.ComponentProps<typeof AccordionPrimitive.Root>) {
   const rootRef = React.useRef<HTMLDivElement>(null);
@@ -42,6 +44,8 @@ function Accordion({
       <AccordionPrimitive.Root
         ref={setRootRef}
         data-slot="accordion"
+        // The items below a panel glide on this spring (useFlipGroup reads it).
+        className={cn("ease-spring-snappy", className)}
         {...props}
       />
     </AccordionFlipContext.Provider>
@@ -69,7 +73,9 @@ function AccordionItem({
   return (
     <AccordionPrimitive.Item
       data-slot="accordion-item"
-      className={cn("border-b last:border-b-0", className)}
+      // shadcn draws dividers as border-b last:border-b-0; the same line as the
+      // next item's border-t moves with that item while it FLIPs.
+      className={cn("border-t first:border-t-0", className)}
       {...props}
     />
   );
@@ -105,7 +111,7 @@ function AccordionContent({
   return (
     <AccordionPrimitive.Content
       data-slot="accordion-content"
-      className="overflow-hidden text-sm data-[state=open]:animate-godui-slide-in-from-top data-[state=closed]:animate-godui-fade-out"
+      className="overflow-hidden text-sm data-[state=open]:animate-godui-slide-in-from-top data-[state=open]:[animation-delay:calc(var(--godui-duration-fast)*0.66)] data-[state=closed]:animate-godui-slide-out-to-top"
       {...props}
     >
       {/* Inside the wrapper, so Content keeps a single child (asChild-safe). */}

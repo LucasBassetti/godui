@@ -38,21 +38,44 @@ describe("Checkbox", () => {
     expect(box()).toHaveAttribute("data-state", "unchecked");
   });
 
-  it("presses on a spring and drops the shadow transition", () => {
+  it("drops the shadow transition", () => {
     render(<Usage ui={Godui} />);
-    const cls = box().className;
-    expect(cls).toContain("active:scale-[0.92]");
-    expect(cls).toContain("transition-[scale]");
-    expect(cls).toContain("motion-reduce:transition-none");
-    expect(cls).not.toContain("transition-shadow");
+    expect(box().className).not.toContain("transition-shadow");
   });
 
-  it("pops the check in from half size", () => {
-    render(<Usage ui={Godui} />);
-    const indicator = document.querySelector(
-      '[data-slot="checkbox-indicator"]',
+  it("pops the box and wipes the check in — only after a change, never on first paint", async () => {
+    const user = userEvent.setup();
+    const onCheckedChange = vi.fn();
+    render(
+      <Godui.Checkbox
+        aria-label="Notify me"
+        defaultChecked
+        onCheckedChange={onCheckedChange}
+      />,
     );
-    expect(indicator?.className).toContain("animate-godui-fade-scale-in");
-    expect(indicator?.className).toContain("[--godui-enter-scale:0.5]");
+    const el = screen.getByRole("checkbox", { name: "Notify me" });
+    // Pre-checked: nothing animates on load.
+    expect(el).not.toHaveAttribute("data-animate");
+    await user.click(el); // uncheck
+    await user.click(el); // check again
+    expect(onCheckedChange).toHaveBeenLastCalledWith(true);
+    expect(el).toHaveAttribute("data-animate", "true");
+    expect(el.className).toContain(
+      "data-[animate=true]:data-[state=checked]:animate-godui-pop",
+    );
+    const wipe = el.querySelector('[data-slot="checkbox-indicator"] > span');
+    expect(wipe?.className).toContain(
+      "group-data-[animate=true]/checkbox:animate-godui-slide-in-from-left",
+    );
+  });
+
+  it("controlled changes animate too", () => {
+    const { rerender } = render(
+      <Godui.Checkbox aria-label="Controlled" checked={false} />,
+    );
+    const el = screen.getByRole("checkbox", { name: "Controlled" });
+    expect(el).not.toHaveAttribute("data-animate");
+    rerender(<Godui.Checkbox aria-label="Controlled" checked />);
+    expect(el).toHaveAttribute("data-animate", "true");
   });
 });

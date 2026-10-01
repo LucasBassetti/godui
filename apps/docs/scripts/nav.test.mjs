@@ -36,3 +36,46 @@ test("core component pages get the GPU-only badge and a Learn tab", () => {
   assert.match(html, /href="\/docs\/components\/button\/learn"/);
   assert.ok(existsSync(page("docs/components/button/learn.html")));
 });
+
+const sidebarOf = (html) => {
+  const start = html.indexOf('id="nd-sidebar"');
+  assert.ok(start > -1, "no sidebar found");
+  return html.slice(start, html.indexOf("</aside>", start));
+};
+
+// Page-tree links only (they carry data-active); the drawer's mobile-only
+// header mirror (Components / Extras / Animated Icons) is not the nav.
+const treeLinks = (sidebar) =>
+  [...sidebar.matchAll(/<a data-active="[^"]*"[^>]*href="([^"]+)"/g)].map(
+    (m) => m[1],
+  );
+
+test("components are listed in the main sidebar; Extras isn't", () => {
+  const links = treeLinks(
+    sidebarOf(readFileSync(page("docs/installation.html"), "utf8")),
+  );
+  assert.ok(links.includes("/docs/components/accordion"), links.join(" "));
+  assert.ok(links.includes("/docs/components/tooltip"), links.join(" "));
+  assert.ok(!links.some((href) => href.startsWith("/docs/extras")));
+});
+
+test("a component page keeps the same main sidebar", () => {
+  const sidebar = sidebarOf(
+    readFileSync(page("docs/components/dialog.html"), "utf8"),
+  );
+  assert.match(sidebar, /href="\/docs\/installation"/);
+  assert.match(sidebar, /href="\/docs\/components\/accordion"/);
+});
+
+test("the components index shows a preview for every component", () => {
+  const html = readFileSync(page("docs/components.html"), "utf8");
+  const previews = html.match(/class="preview-zone /g) ?? [];
+  assert.equal(previews.length, 24);
+});
+
+test("core components carry no New badge", () => {
+  const sidebar = sidebarOf(
+    readFileSync(page("docs/installation.html"), "utf8"),
+  );
+  assert.doesNotMatch(sidebar, />New<\/span>/);
+});

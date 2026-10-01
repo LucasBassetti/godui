@@ -1,133 +1,103 @@
 ---
 title: Components
-description: Animated, drop-in replacements for shadcn/ui components.
+description: Animated, drop-in replacements for shadcn/ui components. Same files and API, with motion that runs entirely on the GPU.
 ---
 
-Animated drop-ins for shadcn/ui. Same files, same API, GPU-only motion.
-Install one over your existing `components/ui/<name>.tsx` and every call site
-keeps working.
+import { Cards } from "fumadocs-ui/components/card";
+
+Install any of these over your existing `components/ui/<name>.tsx`: exports,
+props and `data-slot`s match shadcn/ui new-york-v4, so every call site keeps
+working. Looking for the original GodUI effects and layouts? They live in
+[Extras](/docs/extras).
+
+## Overlays
 
 <Cards>
-  <Card
-    title="Accordion"
-    href="/docs/components/accordion"
-    description="Heights snap; the items below slide into place."
-  />
-  <Card
-    title="Alert Dialog"
-    href="/docs/components/alert-dialog"
-    description="Interrupts with a spring-scaled modal; actions press."
-  />
-  <Card
-    title="Button"
-    href="/docs/components/button"
-    description="Presses down on a spring."
-  />
-  <Card
-    title="Checkbox"
-    href="/docs/components/checkbox"
-    description="The check pops in; the box presses on a spring."
-  />
-  <Card
-    title="Collapsible"
-    href="/docs/components/collapsible"
-    description="Heights snap; the content after slides into place."
-  />
-  <Card
-    title="Combobox"
-    href="/docs/components/combobox"
-    description="The popup grows; chips pop in and make room."
-  />
-  <Card
-    title="Command"
-    href="/docs/components/command"
-    description="One highlight slides to the selected item."
-  />
-  <Card
-    title="Context Menu"
-    href="/docs/components/context-menu"
-    description="Grows out of the pointer; checks pop in."
-  />
-  <Card
-    title="Dialog"
-    href="/docs/components/dialog"
-    description="Scales in from 96% on a spring."
-  />
-  <Card
-    title="Drawer"
-    href="/docs/components/drawer"
-    description="Slides on vaul; content rises in after it."
-  />
-  <Card
-    title="Dropdown Menu"
-    href="/docs/components/dropdown-menu"
-    description="Grows out of its trigger; checks pop in."
-  />
-  <Card
-    title="Hover Card"
-    href="/docs/components/hover-card"
-    description="Grows out of the link on a spring."
-  />
-  <Card
-    title="Input OTP"
-    href="/docs/components/input-otp"
-    description="Digits rise in; the caret blinks with opacity."
-  />
-  <Card
-    title="Popover"
-    href="/docs/components/popover"
-    description="Grows out of its trigger on a spring."
-  />
-  <Card
-    title="Radio Group"
-    href="/docs/components/radio-group"
-    description="The dot grows in; items press on a spring."
-  />
-  <Card
-    title="Select"
-    href="/docs/components/select"
-    description="Grows on a spring; the check pops in."
-  />
-  <Card
-    title="Sheet"
-    href="/docs/components/sheet"
-    description="Slides its full width in on a spring."
-  />
-  <Card
-    title="Slider"
-    href="/docs/components/slider"
-    description="The thumb grows on a spring while held."
-  />
-  <Card
-    title="Sonner"
-    href="/docs/components/sonner"
-    description="Toasts on a spring; heights snap."
-  />
-  <Card
-    title="Switch"
-    href="/docs/components/switch"
-    description="The thumb springs; the track color crossfades."
-  />
-  <Card
-    title="Tabs"
-    href="/docs/components/tabs"
-    description="One indicator slides between tabs."
-  />
-  <Card
-    title="Toggle"
-    href="/docs/components/toggle"
-    description="Presses on a spring."
-  />
-  <Card
-    title="Toggle Group"
-    href="/docs/components/toggle-group"
-    description="Single-select groups slide one indicator."
-  />
-  <Card
-    title="Tooltip"
-    href="/docs/components/tooltip"
-    description="Grows out of its trigger; hops without re-animating."
-  />
+  <PreviewCard href="/docs/components/alert-dialog" title="Alert Dialog">
+    A modal dialog that interrupts the user with important content and expects a response. Scales in on a spring.
+  </PreviewCard>
+  <PreviewCard href="/docs/components/dialog" title="Dialog">
+    A window overlaid on the primary window, rendering the content underneath inert. Scales in from 96% on a spring.
+  </PreviewCard>
+  <PreviewCard href="/docs/components/drawer" title="Drawer">
+    A drawer component for React, built on vaul. Slides with transforms; its content rises in just after the sheet.
+  </PreviewCard>
+  <PreviewCard href="/docs/components/hover-card" title="Hover Card">
+    For sighted users to preview content available behind a link. Grows out of the link on a spring.
+  </PreviewCard>
+  <PreviewCard href="/docs/components/popover" title="Popover">
+    Displays rich content in a portal, triggered by a button. Grows out of its trigger on a spring.
+  </PreviewCard>
+  <PreviewCard href="/docs/components/sheet" title="Sheet">
+    Extends the Dialog component to display content that complements the main content of the screen. Slides its full width in on a spring.
+  </PreviewCard>
+  <PreviewCard href="/docs/components/sonner" title="Sonner">
+    An opinionated toast component for React. Toasts move on a spring with transform and opacity only; heights snap.
+  </PreviewCard>
+  <PreviewCard href="/docs/components/tooltip" title="Tooltip">
+    A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it. Grows out of its trigger after the delay; hops between triggers without re-animating.
+  </PreviewCard>
 </Cards>
 
-Looking for the original GodUI effects and layouts? They live in [Extras](/docs/extras).
+## Menus & Selection
+
+<Cards>
+  <PreviewCard href="/docs/components/combobox" title="Combobox">
+    Autocomplete input and command palette with a list of suggestions. The popup grows on a spring; chips pop in and make room smoothly.
+  </PreviewCard>
+  <PreviewCard href="/docs/components/command" title="Command">
+    Fast, composable, unstyled command menu for React. One highlight slides to the selected item.
+  </PreviewCard>
+  <PreviewCard href="/docs/components/context-menu" title="Context Menu">
+    Displays a menu to the user — such as a set of actions or functions — triggered by a right click. Grows out of the pointer; checks pop in.
+  </PreviewCard>
+  <PreviewCard href="/docs/components/dropdown-menu" title="Dropdown Menu">
+    Displays a menu to the user — such as a set of actions or functions — triggered by a button. Grows out of its trigger; checks pop in.
+  </PreviewCard>
+  <PreviewCard href="/docs/components/select" title="Select">
+    Displays a list of options for the user to pick from — triggered by a button. Grows on a spring; the selected check pops in.
+  </PreviewCard>
+</Cards>
+
+## Forms
+
+<Cards>
+  <PreviewCard href="/docs/components/button" title="Button">
+    Displays a button or a component that looks like a button. Presses down on a spring.
+  </PreviewCard>
+  <PreviewCard href="/docs/components/checkbox" title="Checkbox">
+    A control that allows the user to toggle between checked and not checked. The check pops in from half size; the box presses on a spring.
+  </PreviewCard>
+  <PreviewCard href="/docs/components/input-otp" title="Input OTP">
+    Accessible one-time password component with copy paste functionality. Each digit rises into its slot; the caret blinks with opacity only.
+  </PreviewCard>
+  <PreviewCard href="/docs/components/radio-group" title="Radio Group">
+    A set of checkable buttons — known as radio buttons — where no more than one of the buttons can be checked at a time. The dot grows in; items press on a spring.
+  </PreviewCard>
+  <PreviewCard href="/docs/components/slider" title="Slider">
+    An input where the user selects a value from within a given range. The thumb grows on a spring while you hold it.
+  </PreviewCard>
+  <PreviewCard href="/docs/components/switch" title="Switch">
+    A control that allows the user to toggle between checked and not checked. The thumb slides on a spring; the track color crossfades.
+  </PreviewCard>
+  <PreviewCard href="/docs/components/toggle" title="Toggle">
+    A two-state button that can be either on or off. Presses on a spring.
+  </PreviewCard>
+  <PreviewCard href="/docs/components/toggle-group" title="Toggle Group">
+    A set of two-state buttons that can be toggled on or off. Single-select groups slide one indicator to the pressed item.
+  </PreviewCard>
+</Cards>
+
+## Disclosure & Navigation
+
+<Cards>
+  <PreviewCard href="/docs/components/accordion" title="Accordion">
+    A vertically stacked set of interactive headings that each reveal a section of content. Heights snap; the items below slide into place.
+  </PreviewCard>
+  <PreviewCard href="/docs/components/collapsible" title="Collapsible">
+    An interactive component which expands/collapses a panel. The panel's height snaps and the content after it slides into place.
+  </PreviewCard>
+  <PreviewCard href="/docs/components/tabs" title="Tabs">
+    A set of layered sections of content — known as tab panels — that are displayed one at a time. One indicator slides between tabs.
+  </PreviewCard>
+</Cards>
