@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "revision": "50150a47adb5fe172bfe57f205c343b21aa25357",
+  "revision": "fe4a1a7c5308e4938fa31fab59e9b96c481044d9",
   "components": [
     {
       "name": "agent-flow",
@@ -862,6 +862,16 @@
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add \"https://godui.design/r/extras/segmented-control.json\"",
       "registry": "extras"
+    },
+    {
+      "name": "sheet",
+      "title": "Sheet",
+      "description": "Extends the Dialog component to display content that complements the main content of the screen. Slides its full size in on a spring; GPU-only.",
+      "category": "Components",
+      "dependencies": ["radix-ui", "lucide-react"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "install": "npx shadcn@latest add @godui/sheet",
+      "registry": "core"
     },
     {
       "name": "shimmer-button",

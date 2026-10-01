@@ -1,0 +1,96 @@
+---
+title: Anatomy of the GodUI Sheet
+description: How one shared slide keyframe travels a whole panel, and why overriding its distance can't break reduced motion.
+learnPlayer: true
+---
+
+import { SheetDemo } from "@/components/demos/core/sheet-demo";
+
+<LearnPlayer>
+
+<LearnChapter
+  label="Full-distance slides"
+  scene={
+    <KeyframeScene
+      label="Full-distance slides"
+      motion="slide-right"
+      subject="sheet"
+      tracks={[
+        { property: "translate", from: "100% 0", to: "0 0" },
+        { property: "opacity", from: "0", to: "1" },
+      ]}
+    />
+  }
+  code={`<SheetPrimitive.Content
+  data-slot="sheet-content"
+  className={cn(
+    "fixed z-50 flex flex-col gap-4 bg-background shadow-lg [--godui-enter-distance:100%]",
+    side === "right" &&
+      "inset-y-0 right-0 h-full w-3/4 border-l
+       data-[state=open]:animate-godui-slide-in-from-right
+       data-[state=closed]:animate-godui-slide-out-to-right sm:max-w-sm",
+    // left, top, bottom: same pattern
+    className,
+  )}
+/>`}
+>
+
+The shared `godui-slide-in-from-*` keyframes move an element by
+`--godui-enter-distance`, which defaults to `0.5rem`: a nudge, right for
+menus and toasts. A sheet needs to travel its whole width.
+
+So the sheet sets `--godui-enter-distance: 100%` on itself. A percentage in
+`translate` resolves against the element's own size, so the panel starts
+exactly one width off-screen whatever its width is, then springs in.
+
+</LearnChapter>
+
+<LearnChapter
+  label="Reduced motion still wins"
+  scene={<SpringCurveScene label="Reduced motion still wins" easing="smooth" />}
+  code={`@keyframes godui-slide-in-from-right {
+  from {
+    opacity: 0;
+    translate: calc(var(--godui-enter-distance) * var(--godui-motion)) 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --godui-motion: 0; }
+}`}
+>
+
+Overriding a token locally usually means the component also escapes the
+reduced-motion setting. Not here. The keyframe multiplies the distance by
+`--godui-motion`, which only `:root` sets, and sets it to `0` under
+`prefers-reduced-motion`. The sheet can say "100%", and the multiplier still
+turns that into zero.
+
+Left and right sheets enter on `ease-spring-smooth` over 380ms: a softer,
+longer spring, because a large surface moving fast feels abrupt.
+
+</LearnChapter>
+
+<LearnChapter
+  label="The result"
+  scene={<LiveResult hint="open the sheet"><SheetDemo /></LiveResult>}
+  isResult
+>
+
+Open the sheet, then close it with Escape or the Close button. The exit uses
+`ease-out-expo`: it leaves faster than it arrived.
+
+</LearnChapter>
+
+</LearnPlayer>
+
+## Why GPU-only
+
+The panel animates `translate` and `opacity`; the overlay animates `opacity`.
+shadcn's sheet also carries a bare `transition` class, which would animate
+color, border and shadow paint if they changed. GodUI removes it.
+
+## Reduced motion
+
+`--godui-motion: 0` zeroes the slide distance, so the panel fades in place for
+150ms.
