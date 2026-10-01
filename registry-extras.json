@@ -1,0 +1,1809 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "godui-extras",
+  "homepage": "https://godui.design",
+  "items": [
+    {
+      "name": "magic-button",
+      "type": "registry:ui",
+      "title": "Magic Button",
+      "description": "A tactile 3D push button with an animated rainbow edge and shadow.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/magic-button/magic-button.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/magic-button.tsx"
+        }
+      ],
+      "cssVars": {
+        "theme": {
+          "animate-magic-rainbow": "magic-rainbow var(--rainbow-speed, 2s) infinite linear"
+        }
+      },
+      "css": {
+        "@keyframes magic-rainbow": {
+          "0%": {
+            "background-position": "0% 50%"
+          },
+          "100%": {
+            "background-position": "200% 50%"
+          }
+        }
+      }
+    },
+    {
+      "name": "magic-tab",
+      "type": "registry:ui",
+      "title": "Magic Tab",
+      "description": "A segmented tab bar where the selected option lifts into a 3D button with an optional rainbow edge.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/magic-tab/magic-tab.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/magic-tab.tsx"
+        }
+      ],
+      "cssVars": {
+        "theme": {
+          "animate-magic-rainbow": "magic-rainbow var(--rainbow-speed, 2s) infinite linear"
+        }
+      },
+      "css": {
+        "@keyframes magic-rainbow": {
+          "0%": {
+            "background-position": "0% 50%"
+          },
+          "100%": {
+            "background-position": "200% 50%"
+          }
+        }
+      }
+    },
+    {
+      "name": "magic-input",
+      "type": "registry:ui",
+      "title": "Magic Input",
+      "description": "A 3D layered text input that lifts on focus with an optional rainbow edge animation.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/magic-input/magic-input.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/magic-input.tsx"
+        }
+      ],
+      "cssVars": {
+        "theme": {
+          "animate-magic-rainbow": "magic-rainbow var(--rainbow-speed, 2s) infinite linear",
+          "animate-magic-input-indeterminate": "magic-input-indeterminate 1.2s ease-in-out infinite alternate",
+          "animate-magic-input-sweep": "magic-input-sweep 220ms ease-out",
+          "animate-magic-input-spin": "magic-input-spin 0.8s linear infinite"
+        }
+      },
+      "css": {
+        "@keyframes magic-rainbow": {
+          "0%": {
+            "background-position": "0% 50%"
+          },
+          "100%": {
+            "background-position": "200% 50%"
+          }
+        },
+        "@keyframes magic-input-indeterminate": {
+          "from": {
+            "background-position": "110% center"
+          },
+          "to": {
+            "background-position": "-10% center"
+          }
+        },
+        "@keyframes magic-input-sweep": {
+          "from": {
+            "background-size": "0% 100%"
+          },
+          "to": {
+            "background-size": "100% 100%"
+          }
+        },
+        "@keyframes magic-input-spin": {
+          "to": {
+            "transform": "rotate(360deg)"
+          }
+        }
+      }
+    },
+    {
+      "name": "shimmer-button",
+      "type": "registry:ui",
+      "title": "Shimmer Button",
+      "description": "A button with an animated shimmering border light that speeds up on hover.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/shimmer-button/shimmer-button.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/shimmer-button.tsx"
+        }
+      ],
+      "cssVars": {
+        "theme": {
+          "animate-shimmer-slide": "shimmer-slide var(--speed) ease-in-out infinite alternate",
+          "animate-spin-around": "spin-around calc(var(--speed) * 2) infinite linear"
+        }
+      },
+      "css": {
+        "@keyframes shimmer-slide": {
+          "to": {
+            "transform": "translate(calc(100cqw - 100%), 0)"
+          }
+        },
+        "@keyframes spin-around": {
+          "0%": {
+            "transform": "translateZ(0) rotate(0)"
+          },
+          "15%, 35%": {
+            "transform": "translateZ(0) rotate(90deg)"
+          },
+          "65%, 85%": {
+            "transform": "translateZ(0) rotate(270deg)"
+          },
+          "100%": {
+            "transform": "translateZ(0) rotate(360deg)"
+          }
+        }
+      }
+    },
+    {
+      "name": "progress-fold-button",
+      "type": "registry:ui",
+      "title": "Progress Fold Button",
+      "description": "A button whose front face folds back to reveal a controlled progress bar while loading.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/progress-fold-button/progress-fold-button.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/progress-fold-button.tsx"
+        }
+      ],
+      "cssVars": {
+        "theme": {
+          "animate-progress-fold-indeterminate": "progress-fold-indeterminate 1.2s ease-in-out infinite"
+        }
+      },
+      "css": {
+        "@keyframes progress-fold-indeterminate": {
+          "0%": {
+            "transform": "translateX(-100%)"
+          },
+          "100%": {
+            "transform": "translateX(250%)"
+          }
+        }
+      }
+    },
+    {
+      "name": "mask-button",
+      "type": "registry:ui",
+      "title": "Mask Button",
+      "description": "A button whose face wipes away on hover via an animated CSS sprite-sheet mask, revealing the label behind it.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/mask-button/mask-button.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/mask-button.tsx"
+        }
+      ],
+      "cssVars": {
+        "theme": {
+          "animate-mask-nature-in": "mask-button-in 0.7s steps(22) forwards",
+          "animate-mask-nature-out": "mask-button-out 0.7s steps(22) forwards",
+          "animate-mask-urban-in": "mask-button-in 0.7s steps(29) forwards",
+          "animate-mask-urban-out": "mask-button-out 0.7s steps(29) forwards",
+          "animate-mask-forest-in": "mask-button-in 0.7s steps(70) forwards",
+          "animate-mask-forest-out": "mask-button-out 0.7s steps(70) forwards"
+        }
+      },
+      "css": {
+        "@keyframes mask-button-in": {
+          "from": {
+            "-webkit-mask-position": "0 0",
+            "mask-position": "0 0"
+          },
+          "to": {
+            "-webkit-mask-position": "100% 0",
+            "mask-position": "100% 0"
+          }
+        },
+        "@keyframes mask-button-out": {
+          "from": {
+            "-webkit-mask-position": "100% 0",
+            "mask-position": "100% 0"
+          },
+          "to": {
+            "-webkit-mask-position": "0 0",
+            "mask-position": "0 0"
+          }
+        }
+      }
+    },
+    {
+      "name": "magnetic-button",
+      "type": "registry:ui",
+      "title": "Magnetic Button",
+      "description": "A button whose content is magnetically pulled toward the cursor within a sensor range, springing back on exit.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/magnetic-button/magnetic-button.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/magnetic-button.tsx"
+        }
+      ]
+    },
+    {
+      "name": "multi-button",
+      "type": "registry:ui",
+      "title": "Multi Button",
+      "description": "A responsive action rail where Standard reserves width, Compact collapses, Original pairs ease-out redistribution with spring labels, and Gooey adds elastic metaballs.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/multi-button/multi-button.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/multi-button.tsx"
+        }
+      ]
+    },
+    {
+      "name": "progressive-card-reveal",
+      "type": "registry:ui",
+      "title": "Progressive Card Reveal",
+      "description": "A vertical stack of cards where one card expands to its full view while the rest collapse to compact pills, animating the morph between them.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "dependencies": ["framer-motion"],
+      "files": [
+        {
+          "path": "packages/extras/src/progressive-card-reveal/progressive-card-reveal.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/progressive-card-reveal.tsx"
+        }
+      ]
+    },
+    {
+      "name": "aurora-text",
+      "type": "registry:ui",
+      "title": "Aurora Text",
+      "description": "Gradient text with a rainbow aurora that drifts across the letters.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/aurora-text/aurora-text.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/aurora-text.tsx"
+        }
+      ],
+      "cssVars": {
+        "theme": {
+          "animate-aurora-text": "aurora-text var(--aurora-text-speed, 10s) infinite linear"
+        }
+      },
+      "css": {
+        "@keyframes aurora-text": {
+          "0%": {
+            "background-position": "0% 50%"
+          },
+          "50%": {
+            "background-position": "100% 50%"
+          },
+          "100%": {
+            "background-position": "0% 50%"
+          }
+        }
+      }
+    },
+    {
+      "name": "elastic-text",
+      "type": "registry:ui",
+      "title": "Elastic Text",
+      "description": "Variable-font text whose weight springs up under an automatic spotlight or the pointer.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "dependencies": ["framer-motion"],
+      "files": [
+        {
+          "path": "packages/extras/src/elastic-text/elastic-text.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/elastic-text.tsx"
+        },
+        {
+          "path": "packages/extras/src/lib/text-utils.ts",
+          "type": "registry:ui",
+          "target": "components/godui/text-utils.ts"
+        }
+      ]
+    },
+    {
+      "name": "text-animate",
+      "type": "registry:ui",
+      "title": "Text Animate",
+      "description": "Staggered text entrance animations (fade, blur, slide) by character, word, or line.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "dependencies": ["framer-motion"],
+      "files": [
+        {
+          "path": "packages/extras/src/text-animate/text-animate.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/text-animate.tsx"
+        },
+        {
+          "path": "packages/extras/src/text-animate/text-animate-utils.ts",
+          "type": "registry:ui",
+          "target": "components/godui/text-animate-utils.ts"
+        },
+        {
+          "path": "packages/extras/src/lib/text-utils.ts",
+          "type": "registry:ui",
+          "target": "components/godui/text-utils.ts"
+        }
+      ]
+    },
+    {
+      "name": "highlighter",
+      "type": "registry:ui",
+      "title": "Highlighter",
+      "description": "Hand-drawn rough-notation annotations (highlight, underline, box, circle) over text.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "dependencies": ["framer-motion", "rough-notation"],
+      "files": [
+        {
+          "path": "packages/extras/src/highlighter/highlighter.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/highlighter.tsx"
+        }
+      ]
+    },
+    {
+      "name": "number-ticker",
+      "type": "registry:ui",
+      "title": "Number Ticker",
+      "description": "Animates a number to its target value with spring physics when scrolled into view.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "dependencies": ["framer-motion"],
+      "files": [
+        {
+          "path": "packages/extras/src/number-ticker/number-ticker.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/number-ticker.tsx"
+        }
+      ]
+    },
+    {
+      "name": "marquee",
+      "type": "registry:ui",
+      "title": "Marquee",
+      "description": "An infinite, seamless scrolling row or column of content that pauses on hover.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/marquee/marquee.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/marquee.tsx"
+        }
+      ],
+      "cssVars": {
+        "theme": {
+          "animate-marquee": "marquee var(--duration, 40s) linear infinite",
+          "animate-marquee-vertical": "marquee-vertical var(--duration, 40s) linear infinite"
+        }
+      },
+      "css": {
+        "@keyframes marquee": {
+          "from": {
+            "transform": "translateX(0)"
+          },
+          "to": {
+            "transform": "translateX(calc(-100% - var(--gap)))"
+          }
+        },
+        "@keyframes marquee-vertical": {
+          "from": {
+            "transform": "translateY(0)"
+          },
+          "to": {
+            "transform": "translateY(calc(-100% - var(--gap)))"
+          }
+        }
+      }
+    },
+    {
+      "name": "animated-testimonials",
+      "type": "registry:ui",
+      "title": "Animated Testimonials",
+      "description": "A testimonial carousel with a shuffling image stack, word-by-word quote reveal, and autoplay.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "dependencies": ["framer-motion"],
+      "files": [
+        {
+          "path": "packages/extras/src/animated-testimonials/animated-testimonials.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/animated-testimonials.tsx"
+        }
+      ]
+    },
+    {
+      "name": "dock",
+      "type": "registry:ui",
+      "title": "Dock",
+      "description": "A macOS-style dock whose items magnify with spring physics as the pointer moves across them.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "dependencies": ["framer-motion"],
+      "files": [
+        {
+          "path": "packages/extras/src/dock/dock.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/dock.tsx"
+        }
+      ]
+    },
+    {
+      "name": "animated-tooltip",
+      "type": "registry:ui",
+      "title": "Animated Tooltip",
+      "description": "A tooltip that springs in and tilts in 3D as the pointer moves across its trigger.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "dependencies": ["framer-motion"],
+      "files": [
+        {
+          "path": "packages/extras/src/animated-tooltip/animated-tooltip.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/animated-tooltip.tsx"
+        }
+      ]
+    },
+    {
+      "name": "ascii-dither",
+      "type": "registry:ui",
+      "title": "ASCII Dither",
+      "description": "Renders an image or video as a live field of ASCII characters or halftone dither dots, inked by theme or source color.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/ascii-dither/ascii-dither.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/ascii-dither.tsx"
+        }
+      ]
+    },
+    {
+      "name": "bento-grid",
+      "type": "registry:ui",
+      "title": "Bento Grid",
+      "description": "A modular bento layout of mixed-size cards that stagger in on scroll and lift with a spotlight on hover.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "dependencies": ["framer-motion"],
+      "files": [
+        {
+          "path": "packages/extras/src/bento-grid/bento-grid.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/bento-grid.tsx"
+        }
+      ]
+    },
+    {
+      "name": "scroll-reveal",
+      "type": "registry:ui",
+      "title": "Scroll Reveal",
+      "description": "Reveals its children with a spring as they scroll into view, with optional scroll-velocity skew.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "dependencies": ["framer-motion"],
+      "files": [
+        {
+          "path": "packages/extras/src/scroll-reveal/scroll-reveal.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/scroll-reveal.tsx"
+        }
+      ]
+    },
+    {
+      "name": "gooey-stack",
+      "type": "registry:ui",
+      "title": "Gooey Stack",
+      "description": "A stack of cards that fuse with a liquid metaball bridge and collapse behind an anchor with a spring.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "dependencies": ["framer-motion"],
+      "files": [
+        {
+          "path": "packages/extras/src/gooey-stack/gooey-stack.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/gooey-stack.tsx"
+        }
+      ]
+    },
+    {
+      "name": "swipe-deck",
+      "type": "registry:ui",
+      "title": "Swipe Deck",
+      "description": "A physics, Tinder-style swipeable card deck with throw-to-dismiss, directional intent, and keyboard controls.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "dependencies": ["framer-motion"],
+      "files": [
+        {
+          "path": "packages/extras/src/swipe-deck/swipe-deck.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/swipe-deck.tsx"
+        }
+      ]
+    },
+    {
+      "name": "image-accordion",
+      "type": "registry:ui",
+      "title": "Image Accordion",
+      "description": "Horizontal image panels that expand on hover to reveal their caption — an elegant, space-efficient gallery.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/image-accordion/image-accordion.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/image-accordion.tsx"
+        }
+      ]
+    },
+    {
+      "name": "card-swap",
+      "type": "registry:ui",
+      "title": "Card Swap",
+      "description": "A 3D stack of cards that cycles through a showcase loop, with pointer parallax and spring re-flow.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "dependencies": ["framer-motion"],
+      "files": [
+        {
+          "path": "packages/extras/src/card-swap/card-swap.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/card-swap.tsx"
+        }
+      ]
+    },
+    {
+      "name": "scroll-stack",
+      "type": "registry:ui",
+      "title": "Scroll Stack",
+      "description": "Pinned cards that scale, recede, and stack as the page scrolls — the premium feature-reveal section.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "dependencies": ["framer-motion"],
+      "files": [
+        {
+          "path": "packages/extras/src/scroll-stack/scroll-stack.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/scroll-stack.tsx"
+        }
+      ]
+    },
+    {
+      "name": "scroll-text-reveal",
+      "type": "registry:ui",
+      "title": "Scroll Text Reveal",
+      "description": "Kinetic typography that scrubs each word from dim to sharp as the paragraph scrolls through view — reverses cleanly on scroll-up.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "dependencies": ["framer-motion"],
+      "files": [
+        {
+          "path": "packages/extras/src/scroll-text-reveal/scroll-text-reveal.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/scroll-text-reveal.tsx"
+        },
+        {
+          "path": "packages/extras/src/lib/text-utils.ts",
+          "type": "registry:ui",
+          "target": "components/godui/text-utils.ts"
+        }
+      ]
+    },
+    {
+      "name": "liquid-image",
+      "type": "registry:ui",
+      "title": "Liquid Image",
+      "description": "A premium hover effect that ripples and distorts an image like liquid, intensifying with cursor speed.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "dependencies": ["framer-motion"],
+      "files": [
+        {
+          "path": "packages/extras/src/liquid-image/liquid-image.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/liquid-image.tsx"
+        }
+      ]
+    },
+    {
+      "name": "text-scramble",
+      "type": "registry:ui",
+      "title": "Text Scramble",
+      "description": "Characters cycle through random glyphs and resolve into the target text — a decrypt / matrix reveal.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "dependencies": ["framer-motion"],
+      "files": [
+        {
+          "path": "packages/extras/src/text-scramble/text-scramble.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/text-scramble.tsx"
+        }
+      ]
+    },
+    {
+      "name": "particle-dissolve",
+      "type": "registry:ui",
+      "title": "Particle Dissolve",
+      "description": "Text or an image is sampled into particles that scatter and reform — a dramatic entrance or transition.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "dependencies": ["framer-motion"],
+      "files": [
+        {
+          "path": "packages/extras/src/particle-dissolve/particle-dissolve.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/particle-dissolve.tsx"
+        }
+      ]
+    },
+    {
+      "name": "spotlight-reveal",
+      "type": "registry:ui",
+      "title": "Spotlight Reveal",
+      "description": "A cursor-following flashlight that cuts through the top layer to expose a hidden layer beneath.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "dependencies": ["framer-motion"],
+      "files": [
+        {
+          "path": "packages/extras/src/spotlight-reveal/spotlight-reveal.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/spotlight-reveal.tsx"
+        }
+      ]
+    },
+    {
+      "name": "image-trail",
+      "type": "registry:ui",
+      "title": "Image Trail",
+      "description": "Images spawn along the pointer's path, pop in, and drift away — the signature portfolio hover effect.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/image-trail/image-trail.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/image-trail.tsx"
+        }
+      ]
+    },
+    {
+      "name": "spotlight-card",
+      "type": "registry:ui",
+      "title": "Spotlight Card",
+      "description": "A card with a radial spotlight glow that follows the pointer, optionally lighting the border.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/spotlight-card/spotlight-card.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/spotlight-card.tsx"
+        }
+      ]
+    },
+    {
+      "name": "border-beam",
+      "type": "registry:ui",
+      "title": "Border Beam",
+      "description": "An animated beam of light that travels around the border of its container.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "dependencies": ["framer-motion"],
+      "files": [
+        {
+          "path": "packages/extras/src/border-beam/border-beam.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/border-beam.tsx"
+        }
+      ]
+    },
+    {
+      "name": "liquid-glass-card",
+      "type": "registry:ui",
+      "title": "Liquid Glass Card",
+      "description": "A glass panel that refracts the content behind it with a mouse-tracked specular highlight.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/liquid-glass/liquid-glass-card.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/liquid-glass-card.tsx"
+        },
+        {
+          "path": "packages/extras/src/liquid-glass/liquid-glass-utils.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/liquid-glass-utils.tsx"
+        }
+      ]
+    },
+    {
+      "name": "liquid-glass-lens",
+      "type": "registry:ui",
+      "title": "Liquid Glass Lens",
+      "description": "A circular glass lens that floats over your content and follows the cursor, refracting everything beneath it.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/liquid-glass/liquid-glass-lens.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/liquid-glass-lens.tsx"
+        },
+        {
+          "path": "packages/extras/src/liquid-glass/liquid-glass-utils.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/liquid-glass-utils.tsx"
+        }
+      ]
+    },
+    {
+      "name": "pixel-grid",
+      "type": "registry:ui",
+      "title": "Pixel Grid",
+      "description": "A grid of flickering squares with an optional cursor spotlight that lights up nearby pixels.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/pixel-grid/pixel-grid.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/pixel-grid.tsx"
+        }
+      ]
+    },
+    {
+      "name": "dynamic-island",
+      "type": "registry:ui",
+      "title": "Dynamic Island",
+      "description": "An Apple-inspired pill that springs between size presets while its content cross-fades.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/dynamic-island/dynamic-island.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/dynamic-island.tsx"
+        }
+      ]
+    },
+    {
+      "name": "tilt-card",
+      "type": "registry:ui",
+      "title": "Tilt Card",
+      "description": "A card that tilts in 3D toward the pointer with parallax depth and a specular glare.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/tilt-card/tilt-card.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/tilt-card.tsx"
+        }
+      ]
+    },
+    {
+      "name": "holographic-card",
+      "type": "registry:ui",
+      "title": "Holographic Card",
+      "description": "A trading-card holo effect — iridescent foil, specular glare, and glitter that tilt and shift with the pointer or device gyroscope.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/holographic-card/holographic-card.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/holographic-card.tsx"
+        }
+      ]
+    },
+    {
+      "name": "animated-beam",
+      "type": "registry:ui",
+      "title": "Animated Beam",
+      "description": "An animated gradient beam that travels along a path connecting two separate nodes.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/animated-beam/animated-beam.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/animated-beam.tsx"
+        }
+      ]
+    },
+    {
+      "name": "globe",
+      "type": "registry:ui",
+      "title": "Globe",
+      "description": "A draggable, auto-rotating WebGL globe with glowing location markers.",
+      "dependencies": ["cobe"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/globe/globe.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/globe.tsx"
+        }
+      ]
+    },
+    {
+      "name": "orbiting-circles",
+      "type": "registry:ui",
+      "title": "Orbiting Circles",
+      "description": "Icons that orbit a center point on a configurable ring, staying upright as they travel.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/orbiting-circles/orbiting-circles.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/orbiting-circles.tsx"
+        }
+      ]
+    },
+    {
+      "name": "lamp",
+      "type": "registry:ui",
+      "title": "Lamp",
+      "description": "A conic-gradient lamp that ignites and reveals a headline as it scrolls into view.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/lamp/lamp.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/lamp.tsx"
+        }
+      ]
+    },
+    {
+      "name": "confetti",
+      "type": "registry:ui",
+      "title": "Confetti",
+      "description": "A physics-based confetti burst with an imperative fire API for celebratory moments.",
+      "dependencies": ["canvas-confetti"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/confetti/confetti.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/confetti.tsx"
+        }
+      ]
+    },
+    {
+      "name": "encrypted-card",
+      "type": "registry:ui",
+      "title": "Encrypted Card",
+      "description": "A card whose surface hides a live stream of scrambling ciphertext, revealed only through a soft spotlight that follows the pointer.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/encrypted-card/encrypted-card.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/encrypted-card.tsx"
+        }
+      ]
+    },
+    {
+      "name": "terminal",
+      "type": "registry:ui",
+      "title": "Terminal",
+      "description": "An animated terminal window that types out a scripted sequence of commands and output, with window chrome and a blinking caret.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/terminal/terminal.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/terminal.tsx"
+        }
+      ]
+    },
+    {
+      "name": "spin-viewer",
+      "type": "registry:ui",
+      "title": "Spin Viewer",
+      "description": "A 360-degree product viewer — drag to spin an object through a sequence of frames, with optional idle auto-rotate and a touch-friendly hint.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/spin-viewer/spin-viewer.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/spin-viewer.tsx"
+        }
+      ]
+    },
+    {
+      "name": "otp-input",
+      "type": "registry:ui",
+      "title": "OTP Input",
+      "description": "A segmented one-time-code input with auto-advance, paste-to-fill, a traveling caret, and error shake.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/otp-input/otp-input.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/otp-input.tsx"
+        }
+      ]
+    },
+    {
+      "name": "avatar-group",
+      "type": "registry:ui",
+      "title": "Avatar Group",
+      "description": "Overlapping avatars that fan apart on hover, with a +N overflow chip.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/avatar-group/avatar-group.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/avatar-group.tsx"
+        }
+      ]
+    },
+    {
+      "name": "scroll-progress",
+      "type": "registry:ui",
+      "title": "Scroll Progress",
+      "description": "A spring-smoothed reading indicator — a pinned top bar or a fading back-to-top ring.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/scroll-progress/scroll-progress.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/scroll-progress.tsx"
+        }
+      ]
+    },
+    {
+      "name": "image-compare",
+      "type": "registry:ui",
+      "title": "Image Compare",
+      "description": "A draggable before/after slider with clip-path reveal, keyboard support, and a pulsing handle hint.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/image-compare/image-compare.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/image-compare.tsx"
+        }
+      ]
+    },
+    {
+      "name": "segmented-control",
+      "type": "registry:ui",
+      "title": "Segmented Control",
+      "description": "An iOS-style selector with a sliding pill that springs between options.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/segmented-control/segmented-control.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/segmented-control.tsx"
+        }
+      ]
+    },
+    {
+      "name": "floating-toolbar",
+      "type": "registry:ui",
+      "title": "Floating Toolbar",
+      "description": "A context toolbar that springs into view with magnetic, morphing action buttons.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/floating-toolbar/floating-toolbar.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/floating-toolbar.tsx"
+        }
+      ]
+    },
+    {
+      "name": "split-flap-display",
+      "type": "registry:ui",
+      "title": "Split-Flap Display",
+      "description": "A Solari departure-board display: each character spins through the charset on stacked flip leaves — the old top hinges away, the new bottom rises into place — settling on the value with a staggered column wave. View-only, compositor-only motion, reveals on scroll.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/split-flap-display/split-flap-display.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/split-flap-display.tsx"
+        }
+      ],
+      "cssVars": {
+        "theme": {
+          "animate-split-flap-fall": "split-flap-fall 0.12s cubic-bezier(0.3, 0.7, 0.4, 1) forwards",
+          "animate-split-flap-rise": "split-flap-rise 0.12s cubic-bezier(0.22, 1, 0.36, 1) both"
+        }
+      },
+      "css": {
+        "@keyframes split-flap-fall": {
+          "from": {
+            "transform": "rotateX(0deg)"
+          },
+          "to": {
+            "transform": "rotateX(-90deg)"
+          }
+        },
+        "@keyframes split-flap-rise": {
+          "from": {
+            "transform": "rotateX(90deg)"
+          },
+          "to": {
+            "transform": "rotateX(0deg)"
+          }
+        }
+      }
+    },
+    {
+      "name": "stack-badge",
+      "type": "registry:ui",
+      "title": "Stack Badge",
+      "description": "A tech-stack wall of monochrome logo chips that stagger in on scroll and lift into their full brand color with a soft glow on hover; ships 20 built-in tech logos plus custom items.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/stack-badge/stack-badge.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/stack-badge.tsx"
+        }
+      ]
+    },
+    {
+      "name": "stepper",
+      "type": "registry:ui",
+      "title": "Stepper",
+      "description": "A step indicator with a spring-filled progress line and a number-to-checkmark morph.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/stepper/stepper.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/stepper.tsx"
+        }
+      ]
+    },
+    {
+      "name": "resizable-header",
+      "type": "registry:ui",
+      "title": "Resizable Header",
+      "description": "A sticky navbar that springs into a compact, blurred floating pill as you scroll, with a shared-element active indicator.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/resizable-header/resizable-header.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/resizable-header.tsx"
+        }
+      ]
+    },
+    {
+      "name": "mega-menu",
+      "type": "registry:ui",
+      "title": "Mega Menu",
+      "description": "A Vercel-style navigation menu with a direction-aware highlight and a panel that springs and height-morphs between triggers.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/mega-menu/mega-menu.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/mega-menu.tsx"
+        }
+      ]
+    },
+    {
+      "name": "breadcrumbs",
+      "type": "registry:ui",
+      "title": "Breadcrumbs",
+      "description": "A breadcrumb trail with hover-fill pills, animated path changes, and an overflow that collapses into an expandable popover.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/breadcrumbs/breadcrumbs.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/breadcrumbs.tsx"
+        }
+      ]
+    },
+    {
+      "name": "filter-bar",
+      "type": "registry:ui",
+      "title": "Filter Bar",
+      "description": "A faceted filter bar with searchable multi-select popovers, count badges, and active filters that spring in and out as chips.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/filter-bar/filter-bar.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/filter-bar.tsx"
+        }
+      ]
+    },
+    {
+      "name": "tab-bar",
+      "type": "registry:ui",
+      "title": "Tab Bar",
+      "description": "A mobile bottom navigation where a shared-element blob slides under the active tab and the icon gives a haptic-style pop.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/tab-bar/tab-bar.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/tab-bar.tsx"
+        }
+      ]
+    },
+    {
+      "name": "prompt-composer",
+      "type": "registry:ui",
+      "title": "Prompt Composer",
+      "description": "An AI input box with an auto-growing textarea, attachment chips, an inline model picker, and a send button that morphs into a stop control while streaming.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/prompt-composer/prompt-composer.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/prompt-composer.tsx"
+        }
+      ]
+    },
+    {
+      "name": "conversation-thread",
+      "type": "registry:ui",
+      "title": "Conversation Thread",
+      "description": "A streaming AI chat surface where messages spring in, tokens reveal with a blinking caret, hover actions fade in, and the view auto-sticks to the latest message.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/conversation-thread/conversation-thread.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/conversation-thread.tsx"
+        }
+      ]
+    },
+    {
+      "name": "cover-flow",
+      "type": "registry:ui",
+      "title": "Cover Flow",
+      "description": "A physics 3D cover flow — the centered slide faces front while neighbours rotate away in perspective, with momentum drag and snap.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/cover-flow/cover-flow.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/cover-flow.tsx"
+        }
+      ]
+    },
+    {
+      "name": "inertia-gallery",
+      "type": "registry:ui",
+      "title": "Inertia Gallery",
+      "description": "A horizontal gallery you throw with the pointer — momentum carries it, it rubber-bands at the ends, and slides scale, blur, and fade with distance from center.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/inertia-gallery/inertia-gallery.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/inertia-gallery.tsx"
+        }
+      ]
+    },
+    {
+      "name": "morph-gallery",
+      "type": "registry:ui",
+      "title": "Morph Gallery",
+      "description": "A thumbnail grid where a tile morphs into a fullscreen detail view via a shared-element transition, with swipe and keyboard navigation.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/morph-gallery/morph-gallery.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/morph-gallery.tsx"
+        }
+      ]
+    },
+    {
+      "name": "orbit-carousel",
+      "type": "registry:ui",
+      "title": "Orbit Carousel",
+      "description": "Slides ride an arc and rotate around a pivot, tilting and receding with angular distance from the front, with momentum drag and snap.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/orbit-carousel/orbit-carousel.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/orbit-carousel.tsx"
+        }
+      ]
+    },
+    {
+      "name": "agent-flow",
+      "type": "registry:ui",
+      "title": "Agent Flow",
+      "description": "A draggable, pannable node-graph that visualizes an agent workflow — labelled nodes with live run status and data packets that flow along the edges between them.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/agent-flow/agent-flow.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/agent-flow.tsx"
+        }
+      ]
+    },
+    {
+      "name": "agent-timeline",
+      "type": "registry:ui",
+      "title": "Agent Timeline",
+      "description": "A vertical timeline of agent steps with live status, a spring-filled connector, and collapsible reasoning or tool-output bodies that morph open.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/agent-timeline/agent-timeline.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/agent-timeline.tsx"
+        }
+      ]
+    },
+    {
+      "name": "prompt-suggestions",
+      "type": "registry:ui",
+      "title": "Prompt Suggestions",
+      "description": "Animated starter prompts for AI empty states that stagger in, lift on hover, and feed straight into the composer when chosen.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/prompt-suggestions/prompt-suggestions.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/prompt-suggestions.tsx"
+        }
+      ]
+    },
+    {
+      "name": "source-citations",
+      "type": "registry:ui",
+      "title": "Source Citations",
+      "description": "Inline numbered citation pills that spring out a rich preview card on hover, plus a collapsible source list for AI answers.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/source-citations/source-citations.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/source-citations.tsx"
+        }
+      ]
+    },
+    {
+      "name": "live-cursors",
+      "type": "registry:ui",
+      "title": "Live Cursors",
+      "description": "Smoothly interpolated multiplayer cursors with trailing name flags and optional cursor-chat, plus a self-driving simulated-peer mode.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/live-cursors/live-cursors.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/live-cursors.tsx"
+        },
+        {
+          "path": "packages/extras/src/lib/presence.ts",
+          "type": "registry:lib",
+          "target": "components/godui/presence.ts"
+        }
+      ]
+    },
+    {
+      "name": "presence-facepile",
+      "type": "registry:ui",
+      "title": "Presence Facepile",
+      "description": "Live avatars with animated status rings, spring join/leave, and a +N overflow that expands into a presence list.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/presence-facepile/presence-facepile.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/presence-facepile.tsx"
+        },
+        {
+          "path": "packages/extras/src/lib/presence.ts",
+          "type": "registry:lib",
+          "target": "components/godui/presence.ts"
+        }
+      ]
+    },
+    {
+      "name": "comment-pin",
+      "type": "registry:ui",
+      "title": "Comment Pin",
+      "description": "Figma-style annotation pins that spring in over any surface and expand into a threaded comment popover with a reply field.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/comment-pin/comment-pin.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/comment-pin.tsx"
+        },
+        {
+          "path": "packages/extras/src/lib/presence.ts",
+          "type": "registry:lib",
+          "target": "components/godui/presence.ts"
+        }
+      ]
+    },
+    {
+      "name": "notification-inbox",
+      "type": "registry:ui",
+      "title": "Notification Inbox",
+      "description": "A Linear-style notification center with time-bucketed groups, unread accent rails, swipe-to-archive, mark-all-read, and a polished empty state.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/notification-inbox/notification-inbox.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/notification-inbox.tsx"
+        },
+        {
+          "path": "packages/extras/src/lib/presence.ts",
+          "type": "registry:lib",
+          "target": "components/godui/presence.ts"
+        }
+      ]
+    },
+    {
+      "name": "flow-field",
+      "type": "registry:ui",
+      "title": "Flow Field",
+      "description": "Particles streaming along an evolving noise vector field, leaving silky fading trails. Paints its own themed background.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/flow-field/flow-field.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/flow-field.tsx"
+        }
+      ]
+    },
+    {
+      "name": "blueprint-grid",
+      "type": "registry:ui",
+      "title": "Blueprint Grid",
+      "description": "A technical blueprint lattice — ruled lines, a dot matrix, or a perspective floor — with a diagonal light sweep and a cursor spotlight. Pure CSS.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/blueprint-grid/blueprint-grid.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/blueprint-grid.tsx"
+        }
+      ],
+      "cssVars": {
+        "theme": {
+          "animate-blueprint-sweep": "blueprint-sweep var(--blueprint-speed, 8s) linear infinite"
+        }
+      },
+      "css": {
+        "@keyframes blueprint-sweep": {
+          "0%": {
+            "transform": "translate(-50%, -50%) rotate(var(--blueprint-angle, 25deg))",
+            "opacity": "0"
+          },
+          "15%, 85%": { "opacity": "1" },
+          "100%": {
+            "transform": "translate(150%, 150%) rotate(var(--blueprint-angle, 25deg))",
+            "opacity": "0"
+          }
+        }
+      }
+    },
+    {
+      "name": "topographic-drift",
+      "type": "registry:ui",
+      "title": "Topographic Drift",
+      "description": "Slowly drifting topographic contour lines — a living elevation map drawn with marching squares on a Canvas.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/topographic-drift/topographic-drift.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/topographic-drift.tsx"
+        }
+      ]
+    },
+    {
+      "name": "liquid-metaballs",
+      "type": "registry:ui",
+      "title": "Liquid Metaballs",
+      "description": "Gooey blobs that drift, collide, and merge under an SVG goo filter, with an optional cursor blob. Per-instance filter id.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/liquid-metaballs/liquid-metaballs.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/liquid-metaballs.tsx"
+        }
+      ]
+    },
+    {
+      "name": "light-rays",
+      "type": "registry:ui",
+      "title": "Light Rays",
+      "description": "Volumetric god-rays that slowly sweep and breathe, with optional film grain. Pure CSS.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/light-rays/light-rays.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/light-rays.tsx"
+        }
+      ],
+      "cssVars": {
+        "theme": {
+          "animate-light-rays-sweep": "light-rays-sweep var(--rays-speed, 14s) ease-in-out infinite alternate"
+        }
+      },
+      "css": {
+        "@keyframes light-rays-sweep": {
+          "0%": {
+            "transform": "rotate(calc(var(--rays-angle, 0deg) - 6deg)) scale(1)",
+            "opacity": "calc(var(--rays-intensity, 0.6) * 0.7)"
+          },
+          "100%": {
+            "transform": "rotate(calc(var(--rays-angle, 0deg) + 6deg)) scale(1.08)",
+            "opacity": "var(--rays-intensity, 0.6)"
+          }
+        }
+      }
+    },
+    {
+      "name": "warp-starfield",
+      "type": "registry:ui",
+      "title": "Warp Starfield",
+      "description": "A depth starfield you fly through — stars stream toward the viewer with cursor parallax and an optional hyperspace warp.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/warp-starfield/warp-starfield.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/warp-starfield.tsx"
+        }
+      ]
+    },
+    {
+      "name": "hold-confirm-button",
+      "type": "registry:ui",
+      "title": "Hold Confirm Button",
+      "description": "Press and hold to confirm a destructive action; a radial fill commits at 100% and releasing early cancels.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/hold-confirm-button/hold-confirm-button.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/hold-confirm-button.tsx"
+        }
+      ]
+    },
+    {
+      "name": "slide-confirm-button",
+      "type": "registry:ui",
+      "title": "Slide Confirm Button",
+      "description": "A drag-to-confirm thumb for high-stakes actions that snaps past a threshold and springs back otherwise.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/slide-confirm-button/slide-confirm-button.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/slide-confirm-button.tsx"
+        }
+      ]
+    },
+    {
+      "name": "jelly-button",
+      "type": "registry:ui",
+      "title": "Jelly Button",
+      "description": "A squishy button that deforms on press and springs back with a jelly wobble, running entirely on the compositor.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/jelly-button/jelly-button.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/jelly-button.tsx"
+        }
+      ]
+    },
+    {
+      "name": "gooey-fab",
+      "type": "registry:ui",
+      "title": "Gooey FAB",
+      "description": "A floating action button that gooey-morphs to extrude its satellite actions like liquid metaballs.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/gooey-fab/gooey-fab.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/gooey-fab.tsx"
+        }
+      ]
+    },
+    {
+      "name": "voice-orb",
+      "type": "registry:ui",
+      "title": "Voice Orb",
+      "description": "A Siri-style audio-reactive orb that breathes when idle, pulses while listening, and swells with the voice as it speaks.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/voice-orb/voice-orb.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/voice-orb.tsx"
+        }
+      ],
+      "cssVars": {
+        "theme": {
+          "animate-voice-orb-spin": "voice-orb-spin 8s linear infinite",
+          "animate-voice-orb-breathe": "voice-orb-breathe 4s ease-in-out infinite",
+          "animate-voice-orb-ring": "voice-orb-ring 1.6s ease-out infinite"
+        }
+      },
+      "css": {
+        "@keyframes voice-orb-spin": {
+          "to": { "transform": "rotate(360deg)" }
+        },
+        "@keyframes voice-orb-breathe": {
+          "0%, 100%": { "transform": "scale(1)" },
+          "50%": { "transform": "scale(1.04)" }
+        },
+        "@keyframes voice-orb-ring": {
+          "0%": { "transform": "scale(0.85)", "opacity": "0.6" },
+          "100%": { "transform": "scale(1.4)", "opacity": "0" }
+        }
+      }
+    },
+    {
+      "name": "morphing-dialog",
+      "type": "registry:ui",
+      "title": "Morphing Dialog",
+      "description": "A card that physically morphs into a modal through a shared layout, then springs back on close.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/morphing-dialog/morphing-dialog.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/morphing-dialog.tsx"
+        }
+      ]
+    },
+    {
+      "name": "reorder-list",
+      "type": "registry:ui",
+      "title": "Reorder List",
+      "description": "A drag-to-reorder list where items lift on grab, spring to place, and neighbours flow around them.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/reorder-list/reorder-list.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/reorder-list.tsx"
+        }
+      ]
+    },
+    {
+      "name": "fluid-cursor",
+      "type": "registry:ui",
+      "title": "Fluid Cursor",
+      "description": "A spring-lagged blend-mode cursor that trails the pointer and swells over interactive elements.",
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/fluid-cursor/fluid-cursor.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/fluid-cursor.tsx"
+        }
+      ]
+    },
+    {
+      "name": "world-map",
+      "type": "registry:ui",
+      "title": "World Map",
+      "description": "A dotted world map that draws animated arcs between locations, with pulsing endpoint pins.",
+      "dependencies": ["dotted-map", "framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/world-map/world-map.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/world-map.tsx"
+        }
+      ]
+    },
+    {
+      "name": "gravity",
+      "type": "registry:ui",
+      "title": "Gravity",
+      "description": "A physics playground where elements fall, pile, collide, and can be dragged and flung.",
+      "dependencies": ["matter-js"],
+      "devDependencies": ["@types/matter-js"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/gravity/gravity.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/gravity.tsx"
+        }
+      ]
+    },
+    {
+      "name": "hero-parallax",
+      "type": "registry:ui",
+      "title": "Hero Parallax",
+      "description": "A scroll-driven grid of cards that drift in alternating directions on a tilted perspective plane.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/hero-parallax/hero-parallax.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/hero-parallax.tsx"
+        }
+      ]
+    },
+    {
+      "name": "scroll-timeline",
+      "type": "registry:ui",
+      "title": "Scroll Timeline",
+      "description": "A scrollytelling timeline whose progress line grows as you scroll, revealing entries with sticky labels.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/scroll-timeline/scroll-timeline.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/scroll-timeline.tsx"
+        }
+      ]
+    },
+    {
+      "name": "container-scroll",
+      "type": "registry:ui",
+      "title": "Container Scroll",
+      "description": "A device frame that un-tilts from a 3D perspective and scales to rest as you scroll — the classic product hero.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/container-scroll/container-scroll.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/container-scroll.tsx"
+        }
+      ]
+    },
+    {
+      "name": "three-d-marquee",
+      "type": "registry:ui",
+      "title": "3D Marquee",
+      "description": "A perspective grid of images whose columns drift in alternating directions on a tilted plane.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/three-d-marquee/three-d-marquee.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/three-d-marquee.tsx"
+        }
+      ]
+    },
+    {
+      "name": "sticky-scroll",
+      "type": "registry:ui",
+      "title": "Sticky Scroll",
+      "description": "A pinned two-column reveal where scrolling the text steps a synced visual panel through each item.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/sticky-scroll/sticky-scroll.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/sticky-scroll.tsx"
+        }
+      ]
+    },
+    {
+      "name": "beam-draw",
+      "type": "registry:ui",
+      "title": "Beam Draw",
+      "description": "SVG beams that draw themselves along scroll progress with a soft glow.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/beam-draw/beam-draw.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/beam-draw.tsx"
+        }
+      ]
+    },
+    {
+      "name": "app-showcase",
+      "type": "registry:ui",
+      "title": "App Showcase",
+      "description": "A realistic iPhone or Android device frame that shows your app on screen, with scroll, loop, carousel, and cluster interactions.",
+      "dependencies": ["framer-motion"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/app-showcase/app-showcase.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/app-showcase.tsx"
+        }
+      ],
+      "cssVars": {
+        "theme": {
+          "animate-app-showcase-scroll": "app-showcase-scroll var(--as-loop, 24s) linear infinite"
+        }
+      },
+      "css": {
+        "@keyframes app-showcase-scroll": {
+          "from": {
+            "transform": "translateY(0)"
+          },
+          "to": {
+            "transform": "translateY(-50%)"
+          }
+        }
+      }
+    },
+    {
+      "name": "store-badge",
+      "type": "registry:ui",
+      "title": "Store Badge",
+      "description": "App Store and Google Play download badges with light/dark finishes, a hover sheen, and an optional scan-to-download QR popover.",
+      "dependencies": ["framer-motion", "uqr"],
+      "registryDependencies": ["@godui/godui-theme"],
+      "files": [
+        {
+          "path": "packages/extras/src/store-badge/store-badge.tsx",
+          "type": "registry:ui",
+          "target": "components/godui/store-badge.tsx"
+        }
+      ]
+    }
+  ]
+}

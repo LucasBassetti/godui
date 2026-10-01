@@ -17,7 +17,7 @@ const SLUGS = [
   "text-scramble",
 ];
 
-const PREFIX = 'npx shadcn@latest add "https://godui.design/r/';
+const PREFIX = 'npx shadcn@latest add "https://godui.design/r/extras/';
 const SUFFIX = '.json"';
 const INTERVAL_MS = 2200;
 

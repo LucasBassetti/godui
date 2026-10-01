@@ -42,8 +42,17 @@ const nextConfig: NextConfig = {
     ];
   },
   async rewrites() {
+    // Pre-split install URLs (README, @godui/mcp@0.1.0) keep working. These run
+    // after public/ files, so core items and index.json are served directly;
+    // anything else falls through to the extras registry (static file or the
+    // dynamic background route). `:item` is one segment, so /r/extras/* is
+    // never rewritten.
+    const registryCompat = [
+      { source: "/r/:item", destination: "/r/extras/:item" },
+    ];
     if (process.env.NODE_ENV === "development") {
       return [
+        ...registryCompat,
         {
           source: "/design-system",
           destination: `${storybookDevOrigin}/design-system/`,
@@ -58,7 +67,7 @@ const nextConfig: NextConfig = {
         },
       ];
     }
-    return [];
+    return registryCompat;
   },
 };
 

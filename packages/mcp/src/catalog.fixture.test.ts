@@ -16,18 +16,43 @@ const dynamicBackgrounds = [
 ];
 
 describe("generated MCP catalog fixture", () => {
-  it("includes every dynamic background with a URL install target", () => {
-    const components = new Map(
-      catalog.components.map((component: { name: string }) => [
-        component.name,
-        component,
-      ]),
-    );
+  const components = new Map(
+    catalog.components.map((component: { name: string }) => [
+      component.name,
+      component,
+    ]),
+  );
 
+  it("installs dynamic backgrounds from the extras registry URL", () => {
     for (const name of dynamicBackgrounds) {
       expect(components.get(name)).toMatchObject({
-        install: `npx shadcn@latest add "https://godui.design/r/${name}.json"`,
+        install: `npx shadcn@latest add "https://godui.design/r/extras/${name}.json"`,
       });
+    }
+  });
+
+  it("installs static extras from the extras registry URL", () => {
+    expect(components.get("marquee")).toMatchObject({
+      install:
+        'npx shadcn@latest add "https://godui.design/r/extras/marquee.json"',
+    });
+  });
+
+  it("tags extras items with their registry", () => {
+    expect(components.get("marquee")).toMatchObject({ registry: "extras" });
+  });
+
+  it("does not list superseded components", () => {
+    for (const name of [
+      "accordion",
+      "dropdown-menu",
+      "toast",
+      "drawer",
+      "context-menu",
+      "combobox",
+      "command-palette",
+    ]) {
+      expect(components.has(name)).toBe(false);
     }
   });
 });

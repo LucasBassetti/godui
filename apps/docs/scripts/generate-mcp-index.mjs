@@ -1,6 +1,6 @@
 // Generates apps/docs/public/r/index.json — a lightweight catalog the GodUI MCP
 // server (@godui/mcp) fetches to power list/search. Static items come from the
-// root registry.json; dynamic background items come from the shared background
+// root registry.json + registry-extras.json; dynamic background items come from the shared background
 // catalog. Categories come from the docs sidebar config (meta.json). Run via
 // `pnpm build:registry`.
 
@@ -26,6 +26,9 @@ function computeRevision(payload) {
 
 const registry = JSON.parse(
   readFileSync(resolve(repoRoot, "registry.json"), "utf8"),
+);
+const extrasRegistry = JSON.parse(
+  readFileSync(resolve(repoRoot, "registry-extras.json"), "utf8"),
 );
 const backgroundCatalog = JSON.parse(
   readFileSync(
@@ -66,16 +69,27 @@ const toCatalogItem = (
   install,
 });
 
-const staticComponents = registry.items
-  .filter((item) => item.type !== "registry:theme")
-  .map((item) => toCatalogItem(item));
+// Extras (pre-pivot components) build to public/r/extras and install by URL.
+const extrasInstall = (name) =>
+  `npx shadcn@latest add "https://godui.design/r/extras/${name}.json"`;
+
+const staticComponents = [
+  ...registry.items
+    .filter((item) => item.type !== "registry:theme")
+    .map((item) => ({ ...toCatalogItem(item), registry: "core" })),
+  ...extrasRegistry.items
+    .filter((item) => item.type !== "registry:theme")
+    .map((item) => ({
+      ...toCatalogItem(item, extrasInstall(item.name)),
+      registry: "extras",
+    })),
+];
 
 const dynamicBackgroundComponents = Object.entries(backgroundCatalog).map(
-  ([name, item]) =>
-    toCatalogItem(
-      { name, ...item },
-      `npx shadcn@latest add "https://godui.design/r/${name}.json"`,
-    ),
+  ([name, item]) => ({
+    ...toCatalogItem({ name, ...item }, extrasInstall(name)),
+    registry: "extras",
+  }),
 );
 
 // Keep one entry per name if a dynamic item is later promoted into the static

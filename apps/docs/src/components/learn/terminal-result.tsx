@@ -4,7 +4,7 @@ import { Terminal, type TerminalLine } from "@godui/extras";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 const LINES: TerminalLine[] = [
-  { text: "npx shadcn@latest add @godui/terminal", type: "command" },
+  { text: "npx shadcn@latest add @godui-extras/terminal", type: "command" },
   { text: "✔ Installing dependencies.", type: "output", delay: 450 },
   { text: "✔ Created 1 file.", type: "output", delay: 280 },
   { text: "", type: "output", delay: 80 },

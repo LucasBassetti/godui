@@ -31,8 +31,13 @@ type DownloadAsset = {
 };
 
 type ComponentInstallProps = {
-  /** Registry item name, e.g. "magic-button" — resolved as @godui/<name>. */
+  /** Registry item name, e.g. "magic-button". */
   name?: string;
+  /**
+   * Which GodUI registry serves the item: core shadcn drop-ins (`/r`) or
+   * pre-pivot Extras (`/r/extras`).
+   */
+  registry?: "core" | "extras";
   /** PascalCase component name; converted to a kebab-case registry item. */
   componentName?: string;
   /**
@@ -77,7 +82,7 @@ function toKebabCase(value: string) {
 
 const packageManagers: PackageManager[] = ["pnpm", "npm", "yarn", "bun"];
 
-const REGISTRY_BASE = "https://godui.design/r";
+const REGISTRY_BASE = "https://godui.design";
 
 function getExecPrefix(manager: PackageManager) {
   switch (manager) {
@@ -131,12 +136,14 @@ function langFromPath(path: string) {
 export function ComponentInstall({
   name,
   componentName,
+  registry = "core",
   variant,
   assets,
   assetsTarget,
 }: ComponentInstallProps) {
   const itemName =
     name ?? (componentName ? toKebabCase(componentName) : "magic-button");
+  const registryPath = registry === "extras" ? "/r/extras" : "/r";
   const query = variant ? `?variant=${variant}` : "";
   const [tab, setTab] = useState("cli");
   const [manager, setManager] = useState<PackageManager>("pnpm");
@@ -146,7 +153,7 @@ export function ComponentInstall({
   // Reset the loaded source when the target item (name + variant) changes.
   // Doing this during render (rather than in the effect) avoids a
   // cascading-render setState.
-  const loadKey = `${itemName}${query}`;
+  const loadKey = `${registryPath}/${itemName}${query}`;
   const [loadedFor, setLoadedFor] = useState(loadKey);
   if (loadedFor !== loadKey) {
     setLoadedFor(loadKey);
@@ -156,14 +163,14 @@ export function ComponentInstall({
 
   const cliCommand = useMemo(
     () =>
-      `${getExecPrefix(manager)} shadcn@latest add "${REGISTRY_BASE}/${itemName}.json${query}"`,
-    [manager, itemName, query],
+      `${getExecPrefix(manager)} shadcn@latest add "${REGISTRY_BASE}${registryPath}/${itemName}.json${query}"`,
+    [manager, registryPath, itemName, query],
   );
 
   // Pull the built registry item so the Manual tab can show the source directly.
   useEffect(() => {
     let active = true;
-    fetch(`/r/${itemName}.json${query}`)
+    fetch(`${registryPath}/${itemName}.json${query}`)
       .then((res) => {
         if (!res.ok) throw new Error(`status ${res.status}`);
         return res.json();
@@ -177,7 +184,7 @@ export function ComponentInstall({
     return () => {
       active = false;
     };
-  }, [itemName, query]);
+  }, [registryPath, itemName, query]);
 
   const dependencies = item?.dependencies ?? [];
   const depsCommand =
@@ -233,7 +240,7 @@ export function ComponentInstall({
               the CLI tab, or browse{" "}
               <a
                 className="underline"
-                href={`${REGISTRY_BASE}/${itemName}.json`}
+                href={`${REGISTRY_BASE}${registryPath}/${itemName}.json`}
               >
                 the registry item
               </a>

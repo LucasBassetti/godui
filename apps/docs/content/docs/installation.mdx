@@ -21,11 +21,26 @@ pnpm dlx shadcn@latest init
 
 ## 2. Add components
 
-Add any GodUI component with its registry URL — no configuration required:
+Add any GodUI component with its registry URL — no configuration required.
+Components from [Extras](/docs/extras) are served from `/r/extras`:
 
 ```bash
-pnpm dlx shadcn@latest add https://godui.design/r/magic-button.json
+pnpm dlx shadcn@latest add https://godui.design/r/extras/magic-button.json
 ```
+
+Prefer names over URLs? Add both GodUI registries to the `registries` field of
+your `components.json`:
+
+```json title="components.json"
+{
+  "registries": {
+    "@godui": "https://godui.design/r/{name}.json",
+    "@godui-extras": "https://godui.design/r/extras/{name}.json"
+  }
+}
+```
+
+Then install by name, e.g. `pnpm dlx shadcn@latest add @godui-extras/magic-button`.
 
 This copies the component into `components/godui/` and merges the GodUI theme
 tokens and component styles into your global stylesheet automatically.

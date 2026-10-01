@@ -63,13 +63,15 @@ your project — you own the source.
 pnpm dlx shadcn@latest init
 ```
 
-**2. Add the `@godui` registry** to the `registries` field of your
-`components.json` (one-time setup):
+**2. Add the GodUI registries** to the `registries` field of your
+`components.json` (one-time setup). `@godui` serves the animated shadcn/ui
+drop-ins; `@godui-extras` serves the original GodUI components:
 
 ```json
 {
   "registries": {
-    "@godui": "https://godui.design/r/{name}.json"
+    "@godui": "https://godui.design/r/{name}.json",
+    "@godui-extras": "https://godui.design/r/extras/{name}.json"
   }
 }
 ```
@@ -77,14 +79,14 @@ pnpm dlx shadcn@latest init
 **3. Add any component by name:**
 
 ```bash
-pnpm dlx shadcn@latest add @godui/magic-button
+pnpm dlx shadcn@latest add @godui-extras/magic-button
 ```
 
 This copies the component into `components/godui/` and merges the GodUI theme
 tokens and component styles into your global stylesheet automatically.
 
 > Prefer zero configuration? Skip step 2 and install with the full registry URL:
-> `pnpm dlx shadcn@latest add https://godui.design/r/magic-button.json`
+> `pnpm dlx shadcn@latest add https://godui.design/r/extras/magic-button.json`
 
 See the full [installation guide](https://godui.design/docs/installation) for
 typography and dark-mode setup.

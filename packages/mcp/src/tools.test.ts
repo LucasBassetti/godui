@@ -143,6 +143,18 @@ describe("getComponent", () => {
     expect(received).toBe("magic-button");
   });
 
+  it("strips the @godui-extras/ prefix from the name", async () => {
+    let received = "";
+    const client = fakeClient({
+      getComponent: async (name) => {
+        received = name;
+        return magicButtonItem;
+      },
+    });
+    await getComponent(client, "@godui-extras/marquee");
+    expect(received).toBe("marquee");
+  });
+
   it("uses a variant URL install command when a variant is given", async () => {
     const out = await getComponent(
       fakeClient(),
@@ -150,7 +162,7 @@ describe("getComponent", () => {
       "aurora-glow",
     );
     expect(out).toContain(
-      'add "https://godui.design/r/gradient-background.json?variant=aurora-glow"',
+      'add "https://godui.design/r/extras/gradient-background.json?variant=aurora-glow"',
     );
   });
 
@@ -179,7 +191,7 @@ describe("getComponent", () => {
     );
 
     expect(out).toContain(
-      'add "https://godui.design/r/gradient-background.json?variant=aurora%20glow%2Fsunset%3Fcontrast%3Dhigh%26mode%3Dsoft"',
+      'add "https://godui.design/r/extras/gradient-background.json?variant=aurora%20glow%2Fsunset%3Fcontrast%3Dhigh%26mode%3Dsoft"',
     );
   });
 

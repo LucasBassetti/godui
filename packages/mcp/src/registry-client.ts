@@ -392,7 +392,7 @@ export function createRegistryClient(
   return {
     getIndex,
     getComponent(name, variant) {
-      const slug = name.trim().replace(/^@godui\//, "");
+      const slug = name.trim().replace(/^@godui(-extras)?\//, "");
       const query = variant ? `?variant=${encodeURIComponent(variant)}` : "";
       const key = `${slug}${query}`;
       let pending = componentCache.get(key);

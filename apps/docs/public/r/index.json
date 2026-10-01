@@ -1,17 +1,8 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "revision": "26391f1ae2bc4c7e7e5082762e2663199de84d21",
+  "revision": "4977db10dc66a7aa1d169db6faa82c099f621712",
   "components": [
-    {
-      "name": "accordion",
-      "title": "Accordion",
-      "description": "A disclosure list with spring height animation, rotating chevrons, and single or multiple open modes.",
-      "category": "Layout",
-      "dependencies": ["framer-motion"],
-      "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/accordion"
-    },
     {
       "name": "agent-flow",
       "title": "Agent Flow",
@@ -19,7 +10,8 @@
       "category": "AI",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/agent-flow"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/agent-flow.json\"",
+      "registry": "extras"
     },
     {
       "name": "agent-timeline",
@@ -28,7 +20,8 @@
       "category": "AI",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/agent-timeline"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/agent-timeline.json\"",
+      "registry": "extras"
     },
     {
       "name": "animated-beam",
@@ -37,7 +30,8 @@
       "category": "Visualizations",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/animated-beam"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/animated-beam.json\"",
+      "registry": "extras"
     },
     {
       "name": "animated-testimonials",
@@ -46,7 +40,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/animated-testimonials"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/animated-testimonials.json\"",
+      "registry": "extras"
     },
     {
       "name": "animated-tooltip",
@@ -55,7 +50,8 @@
       "category": "Overlays",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/animated-tooltip"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/animated-tooltip.json\"",
+      "registry": "extras"
     },
     {
       "name": "app-showcase",
@@ -64,7 +60,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/app-showcase"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/app-showcase.json\"",
+      "registry": "extras"
     },
     {
       "name": "ascii-dither",
@@ -73,7 +70,8 @@
       "category": "Effects",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/ascii-dither"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/ascii-dither.json\"",
+      "registry": "extras"
     },
     {
       "name": "aurora-text",
@@ -82,7 +80,8 @@
       "category": "Text",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/aurora-text"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/aurora-text.json\"",
+      "registry": "extras"
     },
     {
       "name": "avatar-group",
@@ -91,7 +90,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/avatar-group"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/avatar-group.json\"",
+      "registry": "extras"
     },
     {
       "name": "beam-draw",
@@ -100,7 +100,8 @@
       "category": "Effects",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/beam-draw"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/beam-draw.json\"",
+      "registry": "extras"
     },
     {
       "name": "bento-grid",
@@ -109,7 +110,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/bento-grid"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/bento-grid.json\"",
+      "registry": "extras"
     },
     {
       "name": "blueprint-grid",
@@ -118,7 +120,8 @@
       "category": "Backgrounds",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/blueprint-grid"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/blueprint-grid.json\"",
+      "registry": "extras"
     },
     {
       "name": "border-beam",
@@ -127,7 +130,8 @@
       "category": "Effects",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/border-beam"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/border-beam.json\"",
+      "registry": "extras"
     },
     {
       "name": "breadcrumbs",
@@ -136,7 +140,8 @@
       "category": "Navigation",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/breadcrumbs"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/breadcrumbs.json\"",
+      "registry": "extras"
     },
     {
       "name": "card-swap",
@@ -145,25 +150,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/card-swap"
-    },
-    {
-      "name": "combobox",
-      "title": "Combobox",
-      "description": "A type-ahead autocomplete with staggered result reveal, highlighted matches, keyboard navigation, and an async loading state.",
-      "category": "Navigation",
-      "dependencies": ["framer-motion"],
-      "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/combobox"
-    },
-    {
-      "name": "command-palette",
-      "title": "Command Palette",
-      "description": "A ⌘K command menu with fuzzy filtering, keyboard navigation, and a spring-tracked active highlight.",
-      "category": "Overlays",
-      "dependencies": ["framer-motion"],
-      "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/command-palette"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/card-swap.json\"",
+      "registry": "extras"
     },
     {
       "name": "comment-pin",
@@ -172,7 +160,8 @@
       "category": "Collaboration",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/comment-pin"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/comment-pin.json\"",
+      "registry": "extras"
     },
     {
       "name": "confetti",
@@ -181,7 +170,8 @@
       "category": "Effects",
       "dependencies": ["canvas-confetti"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/confetti"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/confetti.json\"",
+      "registry": "extras"
     },
     {
       "name": "container-scroll",
@@ -190,16 +180,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/container-scroll"
-    },
-    {
-      "name": "context-menu",
-      "title": "Context Menu",
-      "description": "A right-click menu that springs from the cursor point and flips to stay in the viewport, with shortcuts and destructive actions.",
-      "category": "Navigation",
-      "dependencies": ["framer-motion"],
-      "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/context-menu"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/container-scroll.json\"",
+      "registry": "extras"
     },
     {
       "name": "conversation-thread",
@@ -208,7 +190,8 @@
       "category": "AI",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/conversation-thread"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/conversation-thread.json\"",
+      "registry": "extras"
     },
     {
       "name": "cover-flow",
@@ -217,7 +200,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/cover-flow"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/cover-flow.json\"",
+      "registry": "extras"
     },
     {
       "name": "decorative-background",
@@ -226,7 +210,8 @@
       "category": "Static Effects",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/decorative-background.json\""
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/decorative-background.json\"",
+      "registry": "extras"
     },
     {
       "name": "dock",
@@ -235,25 +220,8 @@
       "category": "Navigation",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/dock"
-    },
-    {
-      "name": "drawer",
-      "title": "Drawer",
-      "description": "A draggable bottom or side sheet with rubber-band physics, flick-to-dismiss, scrim, and scroll lock.",
-      "category": "Overlays",
-      "dependencies": ["framer-motion"],
-      "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/drawer"
-    },
-    {
-      "name": "dropdown-menu",
-      "title": "Dropdown Menu",
-      "description": "An accessible dropdown that springs open from its trigger edge, with submenus, shortcuts, separators, and keyboard navigation.",
-      "category": "Navigation",
-      "dependencies": ["framer-motion"],
-      "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/dropdown-menu"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/dock.json\"",
+      "registry": "extras"
     },
     {
       "name": "dynamic-island",
@@ -262,7 +230,8 @@
       "category": "Overlays",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/dynamic-island"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/dynamic-island.json\"",
+      "registry": "extras"
     },
     {
       "name": "effect-background",
@@ -271,7 +240,8 @@
       "category": "Static Effects",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/effect-background.json\""
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/effect-background.json\"",
+      "registry": "extras"
     },
     {
       "name": "elastic-text",
@@ -280,7 +250,8 @@
       "category": "Text",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/elastic-text"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/elastic-text.json\"",
+      "registry": "extras"
     },
     {
       "name": "encrypted-card",
@@ -289,7 +260,8 @@
       "category": "Effects",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/encrypted-card"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/encrypted-card.json\"",
+      "registry": "extras"
     },
     {
       "name": "filter-bar",
@@ -298,7 +270,8 @@
       "category": "Navigation",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/filter-bar"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/filter-bar.json\"",
+      "registry": "extras"
     },
     {
       "name": "floating-toolbar",
@@ -307,7 +280,8 @@
       "category": "Overlays",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/floating-toolbar"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/floating-toolbar.json\"",
+      "registry": "extras"
     },
     {
       "name": "flow-field",
@@ -316,7 +290,8 @@
       "category": "Backgrounds",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/flow-field"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/flow-field.json\"",
+      "registry": "extras"
     },
     {
       "name": "fluid-cursor",
@@ -325,7 +300,8 @@
       "category": "Effects",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/fluid-cursor"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/fluid-cursor.json\"",
+      "registry": "extras"
     },
     {
       "name": "geometric-background",
@@ -334,7 +310,8 @@
       "category": "Static Effects",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/geometric-background.json\""
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/geometric-background.json\"",
+      "registry": "extras"
     },
     {
       "name": "globe",
@@ -343,7 +320,8 @@
       "category": "Visualizations",
       "dependencies": ["cobe"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/globe"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/globe.json\"",
+      "registry": "extras"
     },
     {
       "name": "gooey-fab",
@@ -352,7 +330,8 @@
       "category": "Buttons",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/gooey-fab"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/gooey-fab.json\"",
+      "registry": "extras"
     },
     {
       "name": "gooey-stack",
@@ -361,7 +340,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/gooey-stack"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/gooey-stack.json\"",
+      "registry": "extras"
     },
     {
       "name": "gradient-background",
@@ -370,7 +350,8 @@
       "category": "Static Effects",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/gradient-background.json\""
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/gradient-background.json\"",
+      "registry": "extras"
     },
     {
       "name": "gravity",
@@ -379,7 +360,8 @@
       "category": "Visualizations",
       "dependencies": ["matter-js"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/gravity"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/gravity.json\"",
+      "registry": "extras"
     },
     {
       "name": "hero-parallax",
@@ -388,7 +370,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/hero-parallax"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/hero-parallax.json\"",
+      "registry": "extras"
     },
     {
       "name": "highlighter",
@@ -397,7 +380,8 @@
       "category": "Text",
       "dependencies": ["framer-motion", "rough-notation"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/highlighter"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/highlighter.json\"",
+      "registry": "extras"
     },
     {
       "name": "hold-confirm-button",
@@ -406,7 +390,8 @@
       "category": "Buttons",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/hold-confirm-button"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/hold-confirm-button.json\"",
+      "registry": "extras"
     },
     {
       "name": "holographic-card",
@@ -415,7 +400,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/holographic-card"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/holographic-card.json\"",
+      "registry": "extras"
     },
     {
       "name": "image-accordion",
@@ -424,7 +410,8 @@
       "category": "Layout",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/image-accordion"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/image-accordion.json\"",
+      "registry": "extras"
     },
     {
       "name": "image-compare",
@@ -433,7 +420,8 @@
       "category": "Layout",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/image-compare"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/image-compare.json\"",
+      "registry": "extras"
     },
     {
       "name": "image-trail",
@@ -442,7 +430,8 @@
       "category": "Effects",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/image-trail"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/image-trail.json\"",
+      "registry": "extras"
     },
     {
       "name": "inertia-gallery",
@@ -451,7 +440,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/inertia-gallery"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/inertia-gallery.json\"",
+      "registry": "extras"
     },
     {
       "name": "jelly-button",
@@ -460,7 +450,8 @@
       "category": "Buttons",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/jelly-button"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/jelly-button.json\"",
+      "registry": "extras"
     },
     {
       "name": "lamp",
@@ -469,7 +460,8 @@
       "category": "Effects",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/lamp"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/lamp.json\"",
+      "registry": "extras"
     },
     {
       "name": "light-rays",
@@ -478,7 +470,8 @@
       "category": "Backgrounds",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/light-rays"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/light-rays.json\"",
+      "registry": "extras"
     },
     {
       "name": "liquid-glass-card",
@@ -487,7 +480,8 @@
       "category": "Glass",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/liquid-glass-card"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/liquid-glass-card.json\"",
+      "registry": "extras"
     },
     {
       "name": "liquid-glass-lens",
@@ -496,7 +490,8 @@
       "category": "Glass",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/liquid-glass-lens"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/liquid-glass-lens.json\"",
+      "registry": "extras"
     },
     {
       "name": "liquid-image",
@@ -505,7 +500,8 @@
       "category": "Effects",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/liquid-image"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/liquid-image.json\"",
+      "registry": "extras"
     },
     {
       "name": "liquid-metaballs",
@@ -514,7 +510,8 @@
       "category": "Backgrounds",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/liquid-metaballs"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/liquid-metaballs.json\"",
+      "registry": "extras"
     },
     {
       "name": "live-cursors",
@@ -523,7 +520,8 @@
       "category": "Collaboration",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/live-cursors"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/live-cursors.json\"",
+      "registry": "extras"
     },
     {
       "name": "magic-button",
@@ -532,7 +530,8 @@
       "category": "Buttons",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/magic-button"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/magic-button.json\"",
+      "registry": "extras"
     },
     {
       "name": "magic-input",
@@ -541,7 +540,8 @@
       "category": "Inputs",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/magic-input"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/magic-input.json\"",
+      "registry": "extras"
     },
     {
       "name": "magic-tab",
@@ -550,7 +550,8 @@
       "category": "Navigation",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/magic-tab"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/magic-tab.json\"",
+      "registry": "extras"
     },
     {
       "name": "magnetic-button",
@@ -559,7 +560,8 @@
       "category": "Buttons",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/magnetic-button"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/magnetic-button.json\"",
+      "registry": "extras"
     },
     {
       "name": "marquee",
@@ -568,7 +570,8 @@
       "category": "Effects",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/marquee"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/marquee.json\"",
+      "registry": "extras"
     },
     {
       "name": "mask-button",
@@ -577,7 +580,8 @@
       "category": "Buttons",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/mask-button"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/mask-button.json\"",
+      "registry": "extras"
     },
     {
       "name": "mega-menu",
@@ -586,7 +590,8 @@
       "category": "Navigation",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/mega-menu"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/mega-menu.json\"",
+      "registry": "extras"
     },
     {
       "name": "morph-gallery",
@@ -595,7 +600,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/morph-gallery"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/morph-gallery.json\"",
+      "registry": "extras"
     },
     {
       "name": "morphing-dialog",
@@ -604,7 +610,8 @@
       "category": "Overlays",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/morphing-dialog"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/morphing-dialog.json\"",
+      "registry": "extras"
     },
     {
       "name": "multi-button",
@@ -613,7 +620,8 @@
       "category": "Buttons",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/multi-button"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/multi-button.json\"",
+      "registry": "extras"
     },
     {
       "name": "notification-inbox",
@@ -622,7 +630,8 @@
       "category": "Collaboration",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/notification-inbox"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/notification-inbox.json\"",
+      "registry": "extras"
     },
     {
       "name": "number-ticker",
@@ -631,7 +640,8 @@
       "category": "Text",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/number-ticker"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/number-ticker.json\"",
+      "registry": "extras"
     },
     {
       "name": "orbit-carousel",
@@ -640,7 +650,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/orbit-carousel"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/orbit-carousel.json\"",
+      "registry": "extras"
     },
     {
       "name": "orbiting-circles",
@@ -649,7 +660,8 @@
       "category": "Visualizations",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/orbiting-circles"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/orbiting-circles.json\"",
+      "registry": "extras"
     },
     {
       "name": "otp-input",
@@ -658,7 +670,8 @@
       "category": "Inputs",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/otp-input"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/otp-input.json\"",
+      "registry": "extras"
     },
     {
       "name": "particle-dissolve",
@@ -667,7 +680,8 @@
       "category": "Effects",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/particle-dissolve"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/particle-dissolve.json\"",
+      "registry": "extras"
     },
     {
       "name": "pixel-grid",
@@ -676,7 +690,8 @@
       "category": "Backgrounds",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/pixel-grid"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/pixel-grid.json\"",
+      "registry": "extras"
     },
     {
       "name": "presence-facepile",
@@ -685,7 +700,8 @@
       "category": "Collaboration",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/presence-facepile"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/presence-facepile.json\"",
+      "registry": "extras"
     },
     {
       "name": "progress-fold-button",
@@ -694,7 +710,8 @@
       "category": "Buttons",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/progress-fold-button"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/progress-fold-button.json\"",
+      "registry": "extras"
     },
     {
       "name": "progressive-card-reveal",
@@ -703,7 +720,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/progressive-card-reveal"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/progressive-card-reveal.json\"",
+      "registry": "extras"
     },
     {
       "name": "prompt-composer",
@@ -712,7 +730,8 @@
       "category": "AI",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/prompt-composer"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/prompt-composer.json\"",
+      "registry": "extras"
     },
     {
       "name": "prompt-suggestions",
@@ -721,7 +740,8 @@
       "category": "AI",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/prompt-suggestions"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/prompt-suggestions.json\"",
+      "registry": "extras"
     },
     {
       "name": "reorder-list",
@@ -730,7 +750,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/reorder-list"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/reorder-list.json\"",
+      "registry": "extras"
     },
     {
       "name": "resizable-header",
@@ -739,7 +760,8 @@
       "category": "Navigation",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/resizable-header"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/resizable-header.json\"",
+      "registry": "extras"
     },
     {
       "name": "scroll-progress",
@@ -748,7 +770,8 @@
       "category": "Effects",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/scroll-progress"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/scroll-progress.json\"",
+      "registry": "extras"
     },
     {
       "name": "scroll-reveal",
@@ -757,7 +780,8 @@
       "category": "Effects",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/scroll-reveal"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/scroll-reveal.json\"",
+      "registry": "extras"
     },
     {
       "name": "scroll-stack",
@@ -766,7 +790,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/scroll-stack"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/scroll-stack.json\"",
+      "registry": "extras"
     },
     {
       "name": "scroll-text-reveal",
@@ -775,7 +800,8 @@
       "category": "Text",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/scroll-text-reveal"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/scroll-text-reveal.json\"",
+      "registry": "extras"
     },
     {
       "name": "scroll-timeline",
@@ -784,7 +810,8 @@
       "category": "Visualizations",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/scroll-timeline"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/scroll-timeline.json\"",
+      "registry": "extras"
     },
     {
       "name": "segmented-control",
@@ -793,7 +820,8 @@
       "category": "Navigation",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/segmented-control"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/segmented-control.json\"",
+      "registry": "extras"
     },
     {
       "name": "shimmer-button",
@@ -802,7 +830,8 @@
       "category": "Buttons",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/shimmer-button"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/shimmer-button.json\"",
+      "registry": "extras"
     },
     {
       "name": "slide-confirm-button",
@@ -811,7 +840,8 @@
       "category": "Buttons",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/slide-confirm-button"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/slide-confirm-button.json\"",
+      "registry": "extras"
     },
     {
       "name": "source-citations",
@@ -820,7 +850,8 @@
       "category": "AI",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/source-citations"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/source-citations.json\"",
+      "registry": "extras"
     },
     {
       "name": "spin-viewer",
@@ -829,7 +860,8 @@
       "category": "Layout",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/spin-viewer"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/spin-viewer.json\"",
+      "registry": "extras"
     },
     {
       "name": "split-flap-display",
@@ -838,7 +870,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/split-flap-display"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/split-flap-display.json\"",
+      "registry": "extras"
     },
     {
       "name": "spotlight-card",
@@ -847,7 +880,8 @@
       "category": "Effects",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/spotlight-card"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/spotlight-card.json\"",
+      "registry": "extras"
     },
     {
       "name": "spotlight-reveal",
@@ -856,7 +890,8 @@
       "category": "Effects",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/spotlight-reveal"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/spotlight-reveal.json\"",
+      "registry": "extras"
     },
     {
       "name": "stack-badge",
@@ -865,7 +900,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/stack-badge"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/stack-badge.json\"",
+      "registry": "extras"
     },
     {
       "name": "stepper",
@@ -874,7 +910,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/stepper"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/stepper.json\"",
+      "registry": "extras"
     },
     {
       "name": "sticky-scroll",
@@ -883,7 +920,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/sticky-scroll"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/sticky-scroll.json\"",
+      "registry": "extras"
     },
     {
       "name": "store-badge",
@@ -892,7 +930,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion", "uqr"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/store-badge"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/store-badge.json\"",
+      "registry": "extras"
     },
     {
       "name": "swipe-deck",
@@ -901,7 +940,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/swipe-deck"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/swipe-deck.json\"",
+      "registry": "extras"
     },
     {
       "name": "tab-bar",
@@ -910,7 +950,8 @@
       "category": "Navigation",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/tab-bar"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/tab-bar.json\"",
+      "registry": "extras"
     },
     {
       "name": "terminal",
@@ -919,7 +960,8 @@
       "category": "Effects",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/terminal"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/terminal.json\"",
+      "registry": "extras"
     },
     {
       "name": "text-animate",
@@ -928,7 +970,8 @@
       "category": "Text",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/text-animate"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/text-animate.json\"",
+      "registry": "extras"
     },
     {
       "name": "text-scramble",
@@ -937,7 +980,8 @@
       "category": "Text",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/text-scramble"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/text-scramble.json\"",
+      "registry": "extras"
     },
     {
       "name": "three-d-marquee",
@@ -946,7 +990,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/three-d-marquee"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/three-d-marquee.json\"",
+      "registry": "extras"
     },
     {
       "name": "tilt-card",
@@ -955,16 +1000,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/tilt-card"
-    },
-    {
-      "name": "toast",
-      "title": "Toast",
-      "description": "Stacked, swipe-dismissible toasts with an imperative toast() API and auto-dismiss.",
-      "category": "Overlays",
-      "dependencies": ["framer-motion"],
-      "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/toast"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/tilt-card.json\"",
+      "registry": "extras"
     },
     {
       "name": "topographic-drift",
@@ -973,7 +1010,8 @@
       "category": "Backgrounds",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/topographic-drift"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/topographic-drift.json\"",
+      "registry": "extras"
     },
     {
       "name": "voice-orb",
@@ -982,7 +1020,8 @@
       "category": "AI",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/voice-orb"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/voice-orb.json\"",
+      "registry": "extras"
     },
     {
       "name": "warp-starfield",
@@ -991,7 +1030,8 @@
       "category": "Backgrounds",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/warp-starfield"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/warp-starfield.json\"",
+      "registry": "extras"
     },
     {
       "name": "world-map",
@@ -1000,7 +1040,8 @@
       "category": "Visualizations",
       "dependencies": ["dotted-map", "framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/world-map"
+      "install": "npx shadcn@latest add \"https://godui.design/r/extras/world-map.json\"",
+      "registry": "extras"
     }
   ]
 }
