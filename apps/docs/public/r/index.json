@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "revision": "b088218bea045dfa9cede10d84d069964e3fdf24",
+  "revision": "e4446801cf89419ad824539bf84cce97f70dd37d",
   "components": [
     {
       "name": "accordion",
@@ -201,6 +201,21 @@
       "dependencies": ["radix-ui"],
       "registryDependencies": ["utils", "@godui/godui-motion"],
       "install": "npx shadcn@latest add @godui/collapsible",
+      "registry": "core"
+    },
+    {
+      "name": "combobox",
+      "title": "Combobox",
+      "description": "Autocomplete input and command palette with a list of suggestions. Popup grows on a spring; chips pop in and FLIP on removal. GPU-only.",
+      "category": "Components",
+      "dependencies": ["@base-ui/react", "lucide-react"],
+      "registryDependencies": [
+        "utils",
+        "@godui/godui-motion",
+        "@godui/button",
+        "@godui/input-group"
+      ],
+      "install": "npx shadcn@latest add @godui/combobox",
       "registry": "core"
     },
     {

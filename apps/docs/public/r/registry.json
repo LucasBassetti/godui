@@ -650,6 +650,25 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "combobox",
+      "type": "registry:ui",
+      "title": "Combobox",
+      "description": "Autocomplete input and command palette with a list of suggestions. Popup grows on a spring; chips pop in and FLIP on removal. GPU-only.",
+      "dependencies": ["@base-ui/react", "lucide-react"],
+      "registryDependencies": [
+        "utils",
+        "@godui/godui-motion",
+        "@godui/button",
+        "@godui/input-group"
+      ],
+      "files": [
+        {
+          "path": "packages/components/src/ui/combobox.tsx",
+          "type": "registry:ui"
+        }
+      ]
     }
   ]
 }

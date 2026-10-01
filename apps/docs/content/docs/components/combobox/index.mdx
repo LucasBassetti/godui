@@ -1,0 +1,144 @@
+---
+title: Combobox
+description: Autocomplete input and command palette with a list of suggestions. The popup grows on a spring; chips pop in and make room smoothly.
+workbench: true
+date: "2026-10-01"
+---
+
+import { ComboboxDemo } from "@/components/demos/core/combobox-demo";
+import { ComboboxMultipleDemo } from "@/components/demos/core/combobox-multiple-demo";
+
+<Workbench>
+
+The shadcn/ui combobox, built on Base UI like shadcn's own. The popup grows
+from the input and drifts out of it on a spring, and the selected item's
+check pops in. In multiple mode, each new chip pops in, and when you remove
+one, the chips after it slide over instead of jumping (FLIP). Only `scale`,
+`translate` and `opacity` animate.
+
+<Example label="Default" story="ui-combobox" code={`"use client";
+
+import {
+  Combobox,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+} from "@/components/ui/combobox";
+
+const frameworks = ["Next.js", "SvelteKit", "Nuxt.js", "Remix", "Astro"];
+
+export function ComboboxDemo() {
+  return (
+    <Combobox items={frameworks}>
+      <ComboboxInput placeholder="Select a framework" />
+      <ComboboxContent>
+        <ComboboxEmpty>No items found.</ComboboxEmpty>
+        <ComboboxList>
+          {(item: string) => (
+            <ComboboxItem key={item} value={item}>
+              {item}
+            </ComboboxItem>
+          )}
+        </ComboboxList>
+      </ComboboxContent>
+    </Combobox>
+  );
+}`}>
+  <ComboboxDemo />
+</Example>
+
+<Example
+  label="Multiple"
+  code={`export function ComboboxMultipleDemo() {
+  const anchor = useComboboxAnchor();
+  return (
+    <Combobox multiple autoHighlight items={frameworks} defaultValue={["Next.js", "Remix", "Astro"]}>
+      <ComboboxChips ref={anchor} className="w-full max-w-xs">
+        <ComboboxValue>
+          {(values: string[]) => (
+            <React.Fragment>
+              {values.map((value) => (
+                <ComboboxChip key={value}>{value}</ComboboxChip>
+              ))}
+              <ComboboxChipsInput />
+            </React.Fragment>
+          )}
+        </ComboboxValue>
+      </ComboboxChips>
+      <ComboboxContent anchor={anchor}>
+        <ComboboxEmpty>No items found.</ComboboxEmpty>
+        <ComboboxList>
+          {(item: string) => (
+            <ComboboxItem key={item} value={item}>{item}</ComboboxItem>
+          )}
+        </ComboboxList>
+      </ComboboxContent>
+    </Combobox>
+  );
+}`}
+>
+  <ComboboxMultipleDemo />
+</Example>
+
+## Installation
+
+<ComponentInstall name="combobox" />
+
+## Replacing shadcn
+
+`npx shadcn add @godui/combobox` overwrites `components/ui/combobox.tsx` and
+installs the GodUI `button` and `input-group` it uses. Exports, props and
+`data-slot` attributes match shadcn/ui new-york-v4, so existing imports keep
+working.
+
+## Usage
+
+```tsx
+import {
+  Combobox,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+} from "@/components/ui/combobox";
+```
+
+```tsx
+<Combobox items={frameworks}>
+  <ComboboxInput placeholder="Select a framework" />
+  <ComboboxContent>
+    <ComboboxEmpty>No items found.</ComboboxEmpty>
+    <ComboboxList>
+      {(item) => (
+        <ComboboxItem key={item} value={item}>
+          {item}
+        </ComboboxItem>
+      )}
+    </ComboboxList>
+  </ComboboxContent>
+</Combobox>
+```
+
+## What's animated
+
+| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
+| --- | --- | --- | --- | --- |
+| Open | `godui-popover-in` | `opacity`, `scale` 0.96 → 1 from the anchor, `translate` 4px → 0 | `ease-spring-snappy` | 260ms |
+| Close | `godui-popover-out` | the same, reversed | `ease-out-expo` | 150ms |
+| Selected check | `godui-fade-scale-in` from 50% | `scale`, `opacity` | `ease-spring-snappy` | 260ms |
+| Chip added | `godui-fade-scale-in` | `scale`, `opacity` | `ease-spring-snappy` | 260ms |
+| Chip removed | the chips after it FLIP | `translate` | `ease-out-expo` | 260ms |
+| Item highlight | snaps | — | — | — |
+
+Under `prefers-reduced-motion` the popup, check and chips only fade, and
+chips move into place in one step.
+
+## API
+
+Built on [Base UI Combobox](https://base-ui.com/react/components/combobox).
+Props are identical to [shadcn/ui Combobox](https://ui.shadcn.com/docs/components/combobox).
+
+</Workbench>
