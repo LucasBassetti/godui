@@ -1,0 +1,97 @@
+---
+title: Anatomy of the GodUI Alert Dialog
+description: Why an alert dialog moves exactly like a dialog, and how its buttons inherit the press without a line of extra code.
+learnPlayer: true
+---
+
+import { AlertDialogDemo } from "@/components/demos/core/alert-dialog-demo";
+
+<LearnPlayer>
+
+<LearnChapter
+  label="Same motion, on purpose"
+  scene={
+    <KeyframeScene
+      label="Same motion, on purpose"
+      motion="fade-scale"
+      subject="dialog"
+      tracks={[
+        { property: "opacity", from: "0", to: "1" },
+        { property: "scale", from: "0.96", to: "1" },
+      ]}
+    />
+  }
+  code={`<AlertDialogPrimitive.Content
+  data-slot="alert-dialog-content"
+  data-size={size}
+  className={cn(
+    "group/alert-dialog-content fixed top-[50%] left-[50%] … shadow-lg
+     data-[size=sm]:max-w-xs
+     data-[state=open]:animate-godui-fade-scale-in
+     data-[state=closed]:animate-godui-fade-scale-out …",
+    className,
+  )}
+/>`}
+>
+
+An alert dialog is a dialog that refuses to be dismissed by accident: no
+outside click, and focus starts on Cancel. Its motion shouldn't say anything
+different, so it uses the same two keyframes as
+[Dialog](/docs/components/dialog/learn).
+
+Both components read their curves from `godui-motion`. Tune
+`--godui-duration-base` or `--godui-enter-scale` once and every overlay
+changes together.
+
+</LearnChapter>
+
+<LearnChapter
+  label="Buttons that press"
+  scene={<AutoPlayScene label="Buttons that press" demo="button" />}
+  code={`function AlertDialogAction({ className, variant = "default", size = "default", ...props }) {
+  return (
+    <Button variant={variant} size={size} asChild>
+      <AlertDialogPrimitive.Action
+        data-slot="alert-dialog-action"
+        className={cn(className)}
+        {...props}
+      />
+    </Button>
+  );
+}`}
+>
+
+`AlertDialogAction` and `AlertDialogCancel` render `Button asChild` around the
+Radix primitive. `asChild` merges Button's classes onto the primitive, so the
+action gets the spring press (`active:scale-[0.97]` on `ease-spring-bouncy`)
+and keeps its own `data-slot`.
+
+When you install the alert dialog, its registry entry depends on
+`@godui/button`, so the GodUI button comes along.
+
+</LearnChapter>
+
+<LearnChapter
+  label="The result"
+  scene={<LiveResult hint="open, then cancel"><AlertDialogDemo /></LiveResult>}
+  isResult
+>
+
+Open the dialog and try clicking the overlay: nothing happens. Cancel or
+Continue closes it with the 150ms exit.
+
+</LearnChapter>
+
+</LearnPlayer>
+
+## Why GPU-only
+
+Content and overlay animate `scale` and `opacity`; the buttons animate
+`scale`. shadcn's buttons inside the dialog use `transition-all`, which also
+animates background and ring paint. GodUI's don't.
+
+## Reduced motion
+
+`--godui-motion: 0` removes the scale from the keyframes, so the dialog only
+fades, and the buttons' `motion-reduce:transition-none` makes the press
+instant.

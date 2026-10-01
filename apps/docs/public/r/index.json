@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "revision": "1d7d9db5d1c80bbfcb28cfd62ba07de4f781862c",
+  "revision": "50150a47adb5fe172bfe57f205c343b21aa25357",
   "components": [
     {
       "name": "agent-flow",
@@ -22,6 +22,16 @@
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add \"https://godui.design/r/extras/agent-timeline.json\"",
       "registry": "extras"
+    },
+    {
+      "name": "alert-dialog",
+      "title": "Alert Dialog",
+      "description": "A modal dialog that interrupts the user with important content and expects a response. Scales in on a spring; GPU-only.",
+      "category": "Components",
+      "dependencies": ["radix-ui"],
+      "registryDependencies": ["utils", "@godui/godui-motion", "@godui/button"],
+      "install": "npx shadcn@latest add @godui/alert-dialog",
+      "registry": "core"
     },
     {
       "name": "animated-beam",
