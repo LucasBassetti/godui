@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "revision": "f7e4015f7144aa0bc156313587d438369846fc14",
+  "revision": "c0fc39c534d418221afe31ef26308870cadaa8e0",
   "components": [
     {
       "name": "accordion",
@@ -977,6 +977,16 @@
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add \"https://godui.design/r/extras/segmented-control.json\"",
       "registry": "extras"
+    },
+    {
+      "name": "select",
+      "title": "Select",
+      "description": "Displays a list of options for the user to pick from — triggered by a button. Grows on a spring; the check pops in. GPU-only.",
+      "category": "Components",
+      "dependencies": ["radix-ui", "lucide-react"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "install": "npx shadcn@latest add @godui/select",
+      "registry": "core"
     },
     {
       "name": "sheet",
