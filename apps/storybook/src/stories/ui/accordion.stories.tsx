@@ -58,3 +58,19 @@ export const Multiple: Story = {
     </Accordion>
   ),
 };
+
+/** In a stage that centers it vertically, like a docs preview or a dialog. */
+export const Centered: Story = {
+  render: () => (
+    <div className="flex h-[32rem] w-[28rem] items-center justify-center">
+      <Accordion type="single" collapsible className="w-96 text-foreground">
+        {ITEMS.map((item) => (
+          <AccordionItem key={item.value} value={item.value}>
+            <AccordionTrigger>{item.title}</AccordionTrigger>
+            <AccordionContent>{item.body}</AccordionContent>
+          </AccordionItem>
+        ))}
+      </Accordion>
+    </div>
+  ),
+};

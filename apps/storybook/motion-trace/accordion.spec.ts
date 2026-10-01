@@ -87,3 +87,32 @@ for (const direction of ["opening", "closing"] as const) {
     expect(Math.max(...edges) - Math.min(...edges)).toBeGreaterThan(20);
   });
 }
+
+test("in a stage that centers it, no row jumps when a panel opens or closes", async ({
+  page,
+}) => {
+  await page.goto("/iframe.html?id=ui-accordion--centered&viewMode=story");
+  await page.waitForLoadState("networkidle");
+  /** Largest one-frame move of the first row (it sits above every panel). */
+  const biggestStep = () =>
+    page.evaluate(async () => {
+      const row = document.querySelector('[data-slot="accordion-item"]');
+      if (!row) throw new Error("no accordion row");
+      let prev = row.getBoundingClientRect().top;
+      let biggest = 0;
+      row.querySelector("button")?.click();
+      for (let i = 0; i < 30; i++) {
+        await new Promise(requestAnimationFrame);
+        const top = row.getBoundingClientRect().top;
+        biggest = Math.max(biggest, Math.abs(top - prev));
+        prev = top;
+      }
+      return biggest;
+    });
+  // The panel is ~60px, so the centering parent shifts the row ~30px. In one
+  // step that's a jump; gliding on the 260ms spring, no frame moves it half.
+  expect(await biggestStep()).toBeLessThan(15);
+  await page.waitForTimeout(400);
+  // Closing runs on the quicker clock; still no single-frame jump.
+  expect(await biggestStep()).toBeLessThan(20);
+});

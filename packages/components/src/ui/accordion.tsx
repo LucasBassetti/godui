@@ -8,8 +8,10 @@
 // same spring and clock, so edge and next row never part. On close the panel
 // leaves the flow at once (absolute) and the edge sweeps back up while the
 // rows rise. Every piece starts from where it's drawn, so reversing mid-way
-// never jumps. Chevron rotates via `transform` (Chrome won't composite the
-// individual `rotate` property on an <svg>). GPU-only.
+// never jumps. If a parent centers the accordion, its own box glides to its
+// new spot too, so nothing above the panel jumps. Chevron rotates via
+// `transform` (Chrome won't composite the individual `rotate` property on an
+// <svg>). GPU-only.
 
 import { ChevronDownIcon } from "lucide-react";
 import { Accordion as AccordionPrimitive } from "radix-ui";
@@ -45,6 +47,46 @@ function blocksOf(content: HTMLElement): HTMLElement[] {
   );
   const children = [...content.children] as HTMLElement[];
   return loose || children.length === 0 ? [content] : children;
+}
+
+/** Running slides of an accordion root that moved in its parent's layout. */
+const ROOT_SLIDES = new WeakMap<Element, Animation>();
+
+/** `length + offset px`, folded to a plain px value when possible. */
+function plus(length: string, offset: number): string {
+  const px = /^(-?[\d.]+)px$/.exec(length);
+  if (px) return `${Number(px[1]) + offset}px`;
+  return `calc(${length} + ${offset}px)`;
+}
+
+/**
+ * The accordion's own box can move when it grows: a parent that centers it
+ * (a flex/grid stage, a dialog) shifts it by half the new height in one step.
+ * Glide it from where it was drawn at the click (`from`) back to rest, on the
+ * panels' clock, so the rows above the panel don't jump either.
+ */
+function glideRoot(root: HTMLElement, from: DOMRect, t: PanelTiming) {
+  ROOT_SLIDES.get(root)?.cancel();
+  ROOT_SLIDES.delete(root);
+  if (t.reduce || typeof root.animate !== "function") return;
+  const now = root.getBoundingClientRect();
+  const dx = from.left - now.left;
+  const dy = from.top - now.top;
+  if (Math.abs(dx) < 0.5 && Math.abs(dy) < 0.5) return;
+  const own = root.ownerDocument.defaultView?.getComputedStyle(root).translate;
+  const [x = "0px", y = "0px"] =
+    own && own !== "none" ? own.trim().split(/\s+/) : [];
+  const animation = root.animate(
+    [
+      { translate: `${plus(x, dx)} ${plus(y, dy)}` },
+      { translate: `${x} ${y}` },
+    ],
+    { duration: t.ms, easing: t.ease },
+  );
+  ROOT_SLIDES.set(root, animation);
+  animation.onfinish = () => {
+    if (ROOT_SLIDES.get(root) === animation) ROOT_SLIDES.delete(root);
+  };
 }
 
 interface PanelTiming {
@@ -131,6 +173,16 @@ function useAccordionMotion(
     const root = rootRef.current;
     const view = root?.ownerDocument.defaultView;
     if (!root || !view || typeof MutationObserver === "undefined") return;
+    // Where the root is drawn just before a click toggles an item (capture
+    // runs before Radix's handler); a click that toggles nothing forgets it.
+    let before: DOMRect | null = null;
+    const remember = () => {
+      before = root.getBoundingClientRect();
+      view.setTimeout(() => {
+        before = null;
+      });
+    };
+    root.addEventListener("click", remember, true);
     const observer = new MutationObserver((records) => {
       const changed = new Map<HTMLElement, boolean>();
       for (const record of records) {
@@ -161,6 +213,8 @@ function useAccordionMotion(
           view.matchMedia?.("(prefers-reduced-motion: reduce)").matches ??
           false,
       };
+      if (before) glideRoot(root, before, timing);
+      before = null;
       for (const [item, open] of changed) {
         if (item.parentElement !== root) continue;
         const panel = item.querySelector<HTMLElement>(
@@ -175,7 +229,10 @@ function useAccordionMotion(
       attributeFilter: ["data-state"],
       attributeOldValue: true,
     });
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      root.removeEventListener("click", remember, true);
+    };
   }, [rootRef, flip]);
 }
 

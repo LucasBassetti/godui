@@ -26,11 +26,19 @@ function heightOf(item: Element): number {
   const panel = panelOf(item);
   return ROW + (isOpenPanel(panel) && panel ? panelHeight(panel) : 0);
 }
+// When set, the top-level accordion sits in a parent that centers it
+// vertically: it moves up by half of any height it gains.
+let centered = false;
 function topOf(el: Element): number {
   const slot = el.getAttribute("data-slot");
   if (slot === "accordion") {
     const panel = el.parentElement?.closest('[data-slot="accordion-content"]');
-    return panel ? topOf(panel) : 0;
+    if (panel) return topOf(panel);
+    if (!centered) return 0;
+    const rows = [...el.children].filter(
+      (c) => c.getAttribute("data-slot") === "accordion-item",
+    );
+    return -rows.reduce((sum, r) => sum + heightOf(r), 0) / 2;
   }
   if (slot === "accordion-content") {
     const item = el.parentElement;
@@ -86,6 +94,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+  centered = false;
   Element.prototype.getBoundingClientRect = originalRect;
   if (originalOffsetHeight) {
     Object.defineProperty(
@@ -367,6 +376,49 @@ describe("Accordion", () => {
       expect(f.frames).toEqual([{ opacity: 0 }, { opacity: 1 }]);
       expect(f.options.fill).toBe("backwards");
     }
+  });
+
+  it("in a parent that centers it, the accordion's own box glides instead of jumping", async () => {
+    centered = true;
+    const user = userEvent.setup();
+    render(<Usage ui={Godui} />);
+    await click(user, "Product Information");
+    const root = document.querySelector('[data-slot="accordion"]');
+    const glide = moves().find((m) => m.el === root);
+    // 3 rows (120px) grow to 160px: the parent moves it up 20px in one step;
+    // it starts back where it was drawn and glides there on the panels' clock.
+    expect(glide?.frames).toEqual([
+      { translate: "0px 20px" },
+      { translate: "0px 0px" },
+    ]);
+    const edge = moves().find((m) => m.el === panel());
+    expect(glide?.options.duration).toBe(edge?.options.duration);
+    expect(glide?.options.easing).toBe(edge?.options.easing);
+  });
+
+  it("a programmatic change with no click doesn't guess where the box was", async () => {
+    centered = true;
+    const { Accordion, AccordionContent, AccordionItem, AccordionTrigger } =
+      Godui;
+    const { rerender } = render(
+      <Accordion type="single" value="">
+        <AccordionItem value="a">
+          <AccordionTrigger>A</AccordionTrigger>
+          <AccordionContent>Body</AccordionContent>
+        </AccordionItem>
+      </Accordion>,
+    );
+    rerender(
+      <Accordion type="single" value="a">
+        <AccordionItem value="a">
+          <AccordionTrigger>A</AccordionTrigger>
+          <AccordionContent>Body</AccordionContent>
+        </AccordionItem>
+      </Accordion>,
+    );
+    await settle();
+    const root = document.querySelector('[data-slot="accordion"]');
+    expect(moves().some((m) => m.el === root)).toBe(false);
   });
 
   it("reduced motion: nothing moves; the body only fades", async () => {

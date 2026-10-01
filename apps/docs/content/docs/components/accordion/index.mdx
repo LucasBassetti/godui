@@ -159,6 +159,9 @@ distance in opposite directions, so only the clip edge does. The row below
 starts on that edge and stays on it every frame. Clicking again mid-sweep
 reverses from what's drawn. The dividers are each item's top border, so a line
 travels with its row. A nested accordion's change glides the outer rows too.
+In a parent that centers it (a preview stage, a dialog), the accordion moves
+when it grows; its own box glides to the new spot on the same clock instead of
+jumping.
 
 Under `prefers-reduced-motion` nothing moves: heights and rows change in one
 step, the panel's content fades, and the chevron turns instantly.

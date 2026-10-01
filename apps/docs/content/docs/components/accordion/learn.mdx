@@ -78,7 +78,10 @@ gaps or overlaps.
 
 A `MutationObserver` on the items' `data-state` fires in the same task as the
 click. `flushSync` runs the FLIP right there, before the browser paints the
-snapped layout, so you never see a frame of the jump.
+snapped layout, so you never see a frame of the jump. The accordion's own box
+gets the same treatment: in a parent that centers it, growing moves it up by
+half the new height, so it records where it was drawn on the click and glides
+from there too.
 
 </LearnChapter>
 
