@@ -108,8 +108,11 @@ function AccordionContent({
       className="overflow-hidden text-sm data-[state=open]:animate-godui-slide-in-from-top data-[state=closed]:animate-godui-fade-out"
       {...props}
     >
-      <AccordionFlipSignal />
-      <div className={cn("pt-0 pb-4", className)}>{children}</div>
+      {/* Inside the wrapper, so Content keeps a single child (asChild-safe). */}
+      <div className={cn("pt-0 pb-4", className)}>
+        <AccordionFlipSignal />
+        {children}
+      </div>
     </AccordionPrimitive.Content>
   );
 }

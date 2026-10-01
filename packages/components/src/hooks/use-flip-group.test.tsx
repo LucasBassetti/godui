@@ -129,3 +129,78 @@ describe("useFlipGroup", () => {
     expect(() => rerender(<Group trigger={1} order={["a"]} />)).not.toThrow();
   });
 });
+
+describe("useFlipGroup baseline and tokens", () => {
+  // ResizeObserver stand-in; tests fire it to simulate a layout change that
+  // no trigger accounts for (an image loading in an open panel, a reflow).
+  let fire: () => void;
+  const Original = globalThis.ResizeObserver;
+  beforeEach(() => {
+    const callbacks: Array<() => void> = [];
+    fire = () => {
+      for (const cb of callbacks) cb();
+    };
+    globalThis.ResizeObserver = class {
+      constructor(cb: () => void) {
+        callbacks.push(cb);
+      }
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+    } as unknown as typeof ResizeObserver;
+  });
+  afterEach(() => {
+    globalThis.ResizeObserver = Original;
+  });
+
+  it("re-baselines without animating when layout changes between triggers", () => {
+    layout.set("a", { left: 0, top: 0 });
+    layout.set("b", { left: 0, top: 40 });
+    const { rerender } = render(<Group trigger={0} order={["a", "b"]} />);
+    layout.set("b", { left: 0, top: 240 });
+    fire();
+    expect(animate).not.toHaveBeenCalled();
+    rerender(<Group trigger={1} order={["a", "b"]} />);
+    expect(animate).not.toHaveBeenCalled();
+  });
+
+  it("applies a resize that lands mid-FLIP once the FLIP finishes", () => {
+    const handles: Array<{ onfinish: (() => void) | null }> = [];
+    animate.mockImplementation(() => {
+      const handle = { cancel: () => {}, onfinish: null };
+      handles.push(handle);
+      return handle;
+    });
+    layout.set("a", { left: 0, top: 0 });
+    layout.set("b", { left: 0, top: 40 });
+    const { rerender } = render(<Group trigger={0} order={["a", "b"]} />);
+    layout.set("b", { left: 0, top: 100 });
+    rerender(<Group trigger={1} order={["a", "b"]} />);
+    expect(animate).toHaveBeenCalledTimes(1);
+    layout.set("b", { left: 0, top: 150 });
+    fire();
+    handles[0].onfinish?.();
+    rerender(<Group trigger={2} order={["a", "b"]} />);
+    expect(animate).toHaveBeenCalledTimes(1);
+  });
+
+  it("defaults the duration to --godui-duration-base (ms or s)", () => {
+    function Tokened({ trigger }: { trigger: number }) {
+      const ref = React.useRef<HTMLDivElement>(null);
+      useFlipGroup(ref, trigger);
+      return (
+        <div
+          ref={ref}
+          style={{ "--godui-duration-base": "0.4s" } as React.CSSProperties}
+        >
+          <div data-flip data-id="b" />
+        </div>
+      );
+    }
+    layout.set("b", { left: 0, top: 40 });
+    const { rerender } = render(<Tokened trigger={0} />);
+    layout.set("b", { left: 0, top: 100 });
+    rerender(<Tokened trigger={1} />);
+    expect(animate.mock.calls[0][1]).toMatchObject({ duration: 400 });
+  });
+});

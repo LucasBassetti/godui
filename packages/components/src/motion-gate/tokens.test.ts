@@ -79,9 +79,13 @@ describe("godui-motion tokens", () => {
       expect(motion.css).toHaveProperty([`@keyframes ${k}`]);
       expect(motion.cssVars.theme).toHaveProperty([`animate-${k}`]);
     }
-    expect(motion.files.map((f: { target: string }) => f.target)).toContain(
-      "hooks/use-flip-group.ts",
+    // No fixed `target`: the CLI places the hook under the project's own
+    // `aliases.hooks`, which is also where component imports are rewritten to.
+    const hook = motion.files.find((f: { path: string }) =>
+      f.path.endsWith("hooks/use-flip-group.ts"),
     );
+    expect(hook).toMatchObject({ type: "registry:hook" });
+    expect(hook).not.toHaveProperty("target");
   });
 
   it("does not alias --color-muted to the foreground color", () => {

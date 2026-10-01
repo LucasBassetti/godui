@@ -153,8 +153,7 @@
       "files": [
         {
           "path": "packages/components/src/hooks/use-flip-group.ts",
-          "type": "registry:hook",
-          "target": "hooks/use-flip-group.ts"
+          "type": "registry:hook"
         }
       ],
       "cssVars": {

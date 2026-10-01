@@ -154,6 +154,22 @@ describe("Accordion", () => {
     expect(animate.mock.calls.length).toBeGreaterThan(2);
   });
 
+  it("AccordionContent asChild works like shadcn's", () => {
+    const { Accordion, AccordionContent, AccordionItem, AccordionTrigger } =
+      Godui;
+    render(
+      <Accordion type="single" defaultValue="a">
+        <AccordionItem value="a">
+          <AccordionTrigger>Title</AccordionTrigger>
+          <AccordionContent asChild>
+            <section>Body</section>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>,
+    );
+    expect(screen.getByText("Body")).toBeInTheDocument();
+  });
+
   it("moves between triggers with arrows and toggles with Enter", async () => {
     const user = userEvent.setup();
     render(<Usage ui={Godui} />);

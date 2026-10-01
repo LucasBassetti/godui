@@ -49,6 +49,13 @@ const useIsoLayoutEffect =
 
 type Box = { x: number; y: number; w: number; h: number };
 
+/** A CSS time (`260ms`, `0.3s`) in milliseconds; 260 when unset or invalid. */
+function toMs(value: string | undefined): number {
+  const n = Number.parseFloat(value ?? "");
+  if (!Number.isFinite(n)) return 260;
+  return /\ds\s*$/.test(value ?? "") ? n * 1000 : n;
+}
+
 /** The active trigger's box inside the list (or shadcn's underline under it). */
 function activeBox(list: HTMLElement): Box | null {
   const tab = list.querySelector<HTMLElement>(
@@ -71,8 +78,10 @@ function activeBox(list: HTMLElement): Box | null {
  * Keeps the indicator on the active trigger. Its box snaps (width, height and
  * translate are set directly), then a FLIP plays `translate` + `scale` from
  * the previous box to the new one on the compositor. Watches `data-state`
- * rather than clicks, so controlled value changes move it too. A slide in
- * flight is cancelled and the next one starts from where it is drawn.
+ * rather than clicks, so controlled value changes move it too, plus inserted or
+ * removed triggers and trigger resizes. A slide in flight is cancelled and the
+ * next one starts from where it is drawn; a resize during a slide is applied
+ * when the slide finishes.
  */
 function useTabsIndicator(
   listRef: React.RefObject<HTMLDivElement | null>,
@@ -85,6 +94,8 @@ function useTabsIndicator(
     const view = list.ownerDocument.defaultView;
     let shown: Box | null = null;
     let running: Animation | null = null;
+    // A resize arrived mid-slide; re-place once the slide ends.
+    let dirty = false;
 
     const place = (animate: boolean) => {
       const box = activeBox(list);
@@ -98,9 +109,10 @@ function useTabsIndicator(
         const drawn = indicator.getBoundingClientRect();
         const origin = list.getBoundingClientRect();
         if (drawn.width > 0 && drawn.height > 0) {
+          // offset* (the target) is scroll-independent; the drawn rect isn't.
           from = {
-            x: drawn.left - origin.left - list.clientLeft,
-            y: drawn.top - origin.top - list.clientTop,
+            x: drawn.left - origin.left - list.clientLeft + list.scrollLeft,
+            y: drawn.top - origin.top - list.clientTop + list.scrollTop,
             w: drawn.width,
             h: drawn.height,
           };
@@ -125,10 +137,7 @@ function useTabsIndicator(
       if (view?.matchMedia?.("(prefers-reduced-motion: reduce)").matches)
         return;
       const style = view?.getComputedStyle(indicator);
-      const duration =
-        Number.parseFloat(
-          style?.getPropertyValue("--godui-duration-base") ?? "",
-        ) || 260;
+      const duration = toMs(style?.getPropertyValue("--godui-duration-base"));
       // The indicator carries `ease-spring-snappy`; reuse the curve it resolves to.
       const easing = style?.transitionTimingFunction || "ease-out";
       const animation = indicator.animate(
@@ -143,24 +152,47 @@ function useTabsIndicator(
       );
       running = animation;
       animation.onfinish = () => {
-        if (running === animation) running = null;
+        if (running !== animation) return;
+        running = null;
+        if (dirty) {
+          dirty = false;
+          place(false);
+        }
       };
     };
 
-    place(false);
-    const mutations = new MutationObserver(() => place(true));
-    mutations.observe(list, {
-      subtree: true,
-      attributes: true,
-      attributeFilter: ["data-state", "data-variant", "aria-orientation"],
-    });
     const resizes =
       typeof ResizeObserver === "undefined"
         ? null
         : new ResizeObserver(() => {
-            if (!running) place(false);
+            if (running) dirty = true;
+            else place(false);
           });
-    resizes?.observe(list);
+    // The list and every trigger: a trigger can change size (label, font
+    // load, flex-1 in a resized list) while the list's own box doesn't.
+    const observeTriggers = () => {
+      if (!resizes) return;
+      resizes.disconnect();
+      resizes.observe(list);
+      for (const tab of list.querySelectorAll('[role="tab"]')) {
+        resizes.observe(tab);
+      }
+    };
+
+    place(false);
+    observeTriggers();
+    const mutations = new MutationObserver((records) => {
+      if (records.some((record) => record.type === "childList")) {
+        observeTriggers();
+      }
+      place(true);
+    });
+    mutations.observe(list, {
+      subtree: true,
+      childList: true,
+      attributes: true,
+      attributeFilter: ["data-state", "data-variant", "aria-orientation"],
+    });
     return () => {
       mutations.disconnect();
       resizes?.disconnect();
@@ -197,14 +229,21 @@ function TabsList({
       className={cn(tabsListVariants({ variant }), className)}
       {...props}
     >
-      {/* Hidden until measured, so server/first paint keeps shadcn's styling. */}
-      <span
-        ref={indicatorRef}
-        data-slot="tabs-indicator"
-        aria-hidden="true"
-        className="pointer-events-none absolute top-0 left-0 hidden origin-top-left ease-spring-snappy group-data-[indicator=ready]/tabs-list:block group-data-[variant=default]/tabs-list:rounded-md group-data-[variant=default]/tabs-list:border group-data-[variant=default]/tabs-list:border-transparent group-data-[variant=default]/tabs-list:bg-background group-data-[variant=default]/tabs-list:shadow-sm group-data-[variant=line]/tabs-list:bg-foreground dark:group-data-[variant=default]/tabs-list:border-input dark:group-data-[variant=default]/tabs-list:bg-input/30"
-      />
-      {children}
+      {/* Hidden until measured, so server/first paint keeps shadcn's styling.
+          Skipped with asChild: Slot needs a single child (shadcn styling stays). */}
+      {props.asChild ? (
+        children
+      ) : (
+        <>
+          <span
+            ref={indicatorRef}
+            data-slot="tabs-indicator"
+            aria-hidden="true"
+            className="pointer-events-none absolute top-0 left-0 hidden origin-top-left ease-spring-snappy group-data-[indicator=ready]/tabs-list:block group-data-[variant=default]/tabs-list:rounded-md group-data-[variant=default]/tabs-list:border group-data-[variant=default]/tabs-list:border-transparent group-data-[variant=default]/tabs-list:bg-background group-data-[variant=default]/tabs-list:shadow-sm group-data-[variant=line]/tabs-list:bg-foreground dark:group-data-[variant=default]/tabs-list:border-input dark:group-data-[variant=default]/tabs-list:bg-input/30"
+          />
+          {children}
+        </>
+      )}
     </TabsPrimitive.List>
   );
 }
@@ -217,10 +256,13 @@ function TabsTrigger({
     <TabsPrimitive.Trigger
       data-slot="tabs-trigger"
       className={cn(
-        "relative inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap text-foreground/60 group-data-[orientation=vertical]/tabs:w-full group-data-[orientation=vertical]/tabs:justify-start hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 focus-visible:outline-ring disabled:pointer-events-none disabled:opacity-50 group-data-[variant=default]/tabs-list:data-[state=active]:shadow-sm group-data-[variant=line]/tabs-list:data-[state=active]:shadow-none dark:text-muted-foreground dark:hover:text-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        "relative inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap text-foreground/60 group-data-[orientation=vertical]/tabs:w-full group-data-[orientation=vertical]/tabs:justify-start hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 focus-visible:outline-ring disabled:pointer-events-none disabled:opacity-50 group-data-[variant=default]/tabs-list:group-not-data-[indicator=ready]/tabs-list:data-[state=active]:shadow-sm group-data-[variant=line]/tabs-list:data-[state=active]:shadow-none dark:text-muted-foreground dark:hover:text-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         "group-data-[variant=line]/tabs-list:bg-transparent group-data-[variant=line]/tabs-list:data-[state=active]:bg-transparent dark:group-data-[variant=line]/tabs-list:data-[state=active]:border-transparent dark:group-data-[variant=line]/tabs-list:data-[state=active]:bg-transparent",
-        "data-[state=active]:bg-background data-[state=active]:text-foreground dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 dark:data-[state=active]:text-foreground",
-        "group-data-[indicator=ready]/tabs-list:data-[state=active]:bg-transparent group-data-[indicator=ready]/tabs-list:data-[state=active]:shadow-none group-data-[indicator=ready]/tabs-list:after:hidden dark:group-data-[indicator=ready]/tabs-list:data-[state=active]:border-transparent dark:group-data-[indicator=ready]/tabs-list:data-[state=active]:bg-transparent",
+        // shadcn's active chrome, kept only until the indicator is measured
+        // (server render / first paint). Afterwards the indicator draws it;
+        // a call site's own data-[state=active]:bg-* still applies on top.
+        "group-data-[variant=default]/tabs-list:group-not-data-[indicator=ready]/tabs-list:data-[state=active]:bg-background data-[state=active]:text-foreground dark:group-data-[variant=default]/tabs-list:group-not-data-[indicator=ready]/tabs-list:data-[state=active]:border-input dark:group-data-[variant=default]/tabs-list:group-not-data-[indicator=ready]/tabs-list:data-[state=active]:bg-input/30 dark:data-[state=active]:text-foreground",
+        "group-data-[indicator=ready]/tabs-list:after:hidden",
         "after:absolute after:bg-foreground after:opacity-0 after:transition-opacity group-data-[orientation=horizontal]/tabs:after:inset-x-0 group-data-[orientation=horizontal]/tabs:after:bottom-[-5px] group-data-[orientation=horizontal]/tabs:after:h-0.5 group-data-[orientation=vertical]/tabs:after:inset-y-0 group-data-[orientation=vertical]/tabs:after:-right-1 group-data-[orientation=vertical]/tabs:after:w-0.5 group-data-[variant=line]/tabs-list:data-[state=active]:after:opacity-100",
         className,
       )}

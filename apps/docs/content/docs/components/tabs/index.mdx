@@ -124,6 +124,10 @@ or a controlled `value` set from outside. Before JavaScript runs (server
 render, first paint) the active trigger keeps shadcn's own background, so
 nothing flashes.
 
+If a call site styles the active trigger itself (for example
+`data-[state=active]:bg-primary`), that styling still wins: it paints over the
+indicator, so the tab looks exactly as before and switches without the slide.
+
 Under `prefers-reduced-motion` the indicator jumps to the new tab and panels
 fade for 150ms.
 

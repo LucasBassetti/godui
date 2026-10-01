@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { renderToString } from "react-dom/server";
 import { expectSlotParity, slotTree } from "../../test/parity";
@@ -19,7 +19,13 @@ const saved = GEOMETRY.map(([prop]) => [
 
 type AnimateCall = [Keyframe[], KeyframeAnimationOptions];
 let animate: ReturnType<typeof vi.fn>;
-let handles: Array<{ cancel: ReturnType<typeof vi.fn>; onfinish: null }>;
+let handles: Array<{
+  cancel: ReturnType<typeof vi.fn>;
+  onfinish: (() => void) | null;
+}>;
+// ResizeObserver stand-in: records what's observed; tests fire it by hand.
+let resizeObservers: Array<{ callback: () => void; targets: Element[] }>;
+const OriginalResizeObserver = globalThis.ResizeObserver;
 
 beforeEach(() => {
   for (const [prop, attr] of GEOMETRY) {
@@ -37,7 +43,26 @@ beforeEach(() => {
     return handle;
   });
   Element.prototype.animate = animate as unknown as Element["animate"];
+  resizeObservers = [];
+  globalThis.ResizeObserver = class {
+    entry: { callback: () => void; targets: Element[] };
+    constructor(callback: () => void) {
+      this.entry = { callback, targets: [] };
+      resizeObservers.push(this.entry);
+    }
+    observe(target: Element) {
+      this.entry.targets.push(target);
+    }
+    unobserve() {}
+    disconnect() {
+      this.entry.targets = [];
+    }
+  } as unknown as typeof ResizeObserver;
 });
+const fireResize = () =>
+  act(() => {
+    for (const ro of resizeObservers) ro.callback();
+  });
 
 afterEach(() => {
   for (const [prop, descriptor] of saved) {
@@ -45,6 +70,7 @@ afterEach(() => {
       Object.defineProperty(HTMLElement.prototype, prop as string, descriptor);
   }
   delete (Element.prototype as Partial<Element>).animate;
+  globalThis.ResizeObserver = OriginalResizeObserver;
 });
 
 function Usage({
@@ -140,6 +166,96 @@ describe("Tabs", () => {
     expect(indicator().style.translate).toBe("1px 32px");
     expect(indicator().style.width).toBe("78px");
     expect(indicator().style.height).toBe("2px");
+  });
+
+  it("follows the active tab when a trigger is inserted before it", async () => {
+    function Dynamic({ extra }: { extra: boolean }) {
+      const { Tabs, TabsList, TabsTrigger } = Godui;
+      return (
+        <Tabs defaultValue="b">
+          <TabsList>
+            {extra ? (
+              <TabsTrigger value="new" data-x="0" data-w="50" data-h="30">
+                New
+              </TabsTrigger>
+            ) : null}
+            <TabsTrigger
+              value="b"
+              data-x={extra ? "54" : "0"}
+              data-w="100"
+              data-h="30"
+            >
+              Password
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+      );
+    }
+    const { rerender } = render(<Dynamic extra={false} />);
+    expect(indicator().style.translate).toBe("0px 0px");
+    rerender(<Dynamic extra />);
+    await waitFor(() => expect(indicator().style.translate).toBe("54px 0px"));
+  });
+
+  it("re-measures when a trigger resizes", () => {
+    render(<Usage ui={Godui} />);
+    const active = screen.getByRole("tab", { name: "Account" });
+    const observed = resizeObservers.flatMap((ro) => ro.targets);
+    expect(observed).toContain(active);
+    active.setAttribute("data-w", "96");
+    fireResize();
+    expect(indicator().style.width).toBe("96px");
+  });
+
+  it("applies a resize that lands mid-slide once the slide finishes", async () => {
+    const user = userEvent.setup();
+    render(<Usage ui={Godui} />);
+    await user.click(screen.getByRole("tab", { name: "Password" }));
+    await waitFor(() => expect(animate).toHaveBeenCalledTimes(1));
+    screen.getByRole("tab", { name: "Password" }).setAttribute("data-w", "120");
+    fireResize();
+    expect(indicator().style.width).toBe("100px");
+    act(() => handles[0].onfinish?.());
+    expect(indicator().style.width).toBe("120px");
+  });
+
+  it("starts an interrupted slide from the drawn box, scroll included", async () => {
+    const user = userEvent.setup();
+    render(<Usage ui={Godui} />);
+    await user.click(screen.getByRole("tab", { name: "Password" }));
+    await waitFor(() => expect(animate).toHaveBeenCalledTimes(1));
+    Object.defineProperty(list(), "scrollLeft", { value: 40 });
+    list().getBoundingClientRect = () =>
+      ({ left: 100, top: 0, width: 300, height: 36 }) as DOMRect;
+    indicator().getBoundingClientRect = () =>
+      ({ left: 150, top: 0, width: 90, height: 30 }) as DOMRect;
+    await user.click(screen.getByRole("tab", { name: "Team" }));
+    await waitFor(() => expect(animate).toHaveBeenCalledTimes(2));
+    expect(calls()[1][0][0]).toMatchObject({ translate: "90px 0px" });
+  });
+
+  it("reads --godui-duration-base in seconds or milliseconds", async () => {
+    const user = userEvent.setup();
+    render(<Usage ui={Godui} />);
+    indicator().style.setProperty("--godui-duration-base", "0.3s");
+    await user.click(screen.getByRole("tab", { name: "Password" }));
+    await waitFor(() => expect(animate).toHaveBeenCalledTimes(1));
+    expect(calls()[0][1]).toMatchObject({ duration: 300 });
+  });
+
+  it("TabsList asChild renders like shadcn (no injected indicator)", () => {
+    const { Tabs, TabsList, TabsTrigger } = Godui;
+    render(
+      <Tabs defaultValue="a">
+        <TabsList asChild>
+          <nav>
+            <TabsTrigger value="a">Account</TabsTrigger>
+          </nav>
+        </TabsList>
+      </Tabs>,
+    );
+    expect(list().tagName).toBe("NAV");
+    expect(indicator()).toBeNull();
   });
 
   it("snaps under reduced motion", async () => {

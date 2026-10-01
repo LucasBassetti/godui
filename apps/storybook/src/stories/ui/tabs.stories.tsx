@@ -58,3 +58,22 @@ export const Line: Story = { render: () => <Demo variant="line" /> };
 export const Vertical: Story = {
   render: () => <Demo orientation="vertical" />,
 };
+
+/** A customised shadcn call site: the active trigger's own colors must survive. */
+export const CustomActive: Story = {
+  render: () => (
+    <Tabs defaultValue="account" className="w-96 text-foreground">
+      <TabsList>
+        {TABS.map((tab) => (
+          <TabsTrigger
+            key={tab.value}
+            value={tab.value}
+            className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+          >
+            {tab.label}
+          </TabsTrigger>
+        ))}
+      </TabsList>
+    </Tabs>
+  ),
+};

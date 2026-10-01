@@ -85,10 +85,10 @@ describe("Drawer", () => {
       "group-data-[state=open]/drawer-content:animate-godui-slide-in-from-bottom",
     );
     expect(header).toContain(
-      "group-data-[state=open]/drawer-content:[animation-delay:60ms]",
+      "group-data-[state=open]/drawer-content:[animation-delay:calc(var(--godui-duration-fast)*0.4)]",
     );
     expect(footer).toContain(
-      "group-data-[state=open]/drawer-content:[animation-delay:120ms]",
+      "group-data-[state=open]/drawer-content:[animation-delay:calc(var(--godui-duration-fast)*0.8)]",
     );
   });
 

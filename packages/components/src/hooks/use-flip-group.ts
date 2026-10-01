@@ -5,7 +5,7 @@ import * as React from "react";
 export interface FlipGroupOptions {
   /** Children to animate, matched inside the container. */
   selector?: string;
-  /** Milliseconds. */
+  /** Milliseconds. Defaults to the `--godui-duration-base` token (260ms). */
   duration?: number;
   /** Any CSS easing, incl. linear() springs. */
   easing?: string;
@@ -34,6 +34,24 @@ function plus(length: string, offset: number): string {
   return `calc(${length} + ${offset}px)`;
 }
 
+/** A CSS time (`260ms`, `0.3s`) in milliseconds; 260 when unset or invalid. */
+function toMs(value: string | undefined): number {
+  const n = Number.parseFloat(value ?? "");
+  if (!Number.isFinite(n)) return 260;
+  return /\ds\s*$/.test(value ?? "") ? n * 1000 : n;
+}
+
+/** Each matched child's position relative to the container. */
+function measure(container: HTMLElement, selector: string) {
+  const origin = container.getBoundingClientRect();
+  const positions = new Map<Element, Point>();
+  for (const el of container.querySelectorAll<HTMLElement>(selector)) {
+    const rect = el.getBoundingClientRect();
+    positions.set(el, { x: rect.left - origin.left, y: rect.top - origin.top });
+  }
+  return positions;
+}
+
 /**
  * FLIP for layout changes without animating layout: when `trigger` changes,
  * children (default `[data-flip]`) whose position moved play an inverse offset
@@ -47,30 +65,59 @@ function plus(length: string, offset: number): string {
  * ignored). If a previous FLIP is still running, its current visual offset is
  * read before cancelling it and carried into the new animation, so an
  * interruption starts from where the element is drawn instead of jumping.
+ * Layout changes that no trigger accounts for (content loading, reflow) are
+ * picked up by a ResizeObserver and become the new baseline without
+ * animating — after the running FLIP finishes, if one is running.
  */
 export function useFlipGroup(
   containerRef: React.RefObject<HTMLElement | null>,
   trigger: unknown,
   {
     selector = "[data-flip]",
-    duration = 260,
+    duration,
     easing = "cubic-bezier(0.16, 1, 0.3, 1)",
   }: FlipGroupOptions = {},
 ): void {
   const last = React.useRef(new Map<Element, Point>());
   const running = React.useRef(new Map<Element, Animation>());
+  const dirty = React.useRef(false);
+  const resizes = React.useRef<ResizeObserver | null>(null);
+
+  // Re-baseline on resizes no trigger caused; defer while a FLIP is running.
+  React.useEffect(() => {
+    const container = containerRef.current;
+    if (!container || typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(() => {
+      if (running.current.size > 0) dirty.current = true;
+      else last.current = measure(container, selector);
+    });
+    resizes.current = observer;
+    observer.observe(container);
+    for (const el of container.querySelectorAll(selector)) observer.observe(el);
+    return () => {
+      observer.disconnect();
+      resizes.current = null;
+    };
+  }, [containerRef, selector]);
 
   // `trigger` is in the deps purely as the signal to re-measure.
   useIsoLayoutEffect(() => {
     const container = containerRef.current;
     if (!container) return;
+    const view = container.ownerDocument.defaultView;
     const origin = container.getBoundingClientRect();
     const reduce =
-      container.ownerDocument.defaultView?.matchMedia?.(
-        "(prefers-reduced-motion: reduce)",
-      ).matches ?? false;
+      view?.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
+    const ms =
+      duration ??
+      toMs(
+        view
+          ?.getComputedStyle(container)
+          .getPropertyValue("--godui-duration-base"),
+      );
     const next = new Map<Element, Point>();
     for (const el of container.querySelectorAll<HTMLElement>(selector)) {
+      resizes.current?.observe(el);
       let rect = el.getBoundingClientRect();
       let carry: Point = { x: 0, y: 0 };
       const active = running.current.get(el);
@@ -94,11 +141,16 @@ export function useFlipGroup(
           { translate: `${plus(ownX, dx)} ${plus(ownY, dy)}` },
           { translate: `${ownX} ${ownY}` },
         ],
-        { duration, easing },
+        { duration: ms, easing },
       );
       running.current.set(el, animation);
       animation.onfinish = () => {
-        if (running.current.get(el) === animation) running.current.delete(el);
+        if (running.current.get(el) !== animation) return;
+        running.current.delete(el);
+        if (running.current.size === 0 && dirty.current) {
+          dirty.current = false;
+          last.current = measure(container, selector);
+        }
       };
     }
     last.current = next;

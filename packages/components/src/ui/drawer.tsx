@@ -1,7 +1,7 @@
 "use client";
 
 // GodUI Drawer — mirrors shadcn/ui new-york-v4 components/ui/drawer.tsx (registry snapshot 2026-10-01).
-// Motion: vaul slides the sheet and fades the overlay with transform/opacity (verified); header and footer rise in after it (godui-slide-in-from-bottom, 60/120ms delay). GPU-only.
+// Motion: vaul slides the sheet and fades the overlay with transform/opacity (verified); header and footer rise in after it (godui-slide-in-from-bottom, delayed 0.4× / 0.8× --godui-duration-fast). GPU-only.
 
 import type * as React from "react";
 import { Drawer as DrawerPrimitive } from "vaul";
@@ -76,7 +76,7 @@ function DrawerHeader({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="drawer-header"
       className={cn(
-        "flex flex-col gap-0.5 p-4 group-data-[state=open]/drawer-content:animate-godui-slide-in-from-bottom group-data-[state=open]/drawer-content:[animation-delay:60ms] group-data-[vaul-drawer-direction=bottom]/drawer-content:text-center group-data-[vaul-drawer-direction=top]/drawer-content:text-center md:gap-1.5 md:text-left",
+        "flex flex-col gap-0.5 p-4 group-data-[state=open]/drawer-content:animate-godui-slide-in-from-bottom group-data-[state=open]/drawer-content:[animation-delay:calc(var(--godui-duration-fast)*0.4)] group-data-[vaul-drawer-direction=bottom]/drawer-content:text-center group-data-[vaul-drawer-direction=top]/drawer-content:text-center md:gap-1.5 md:text-left",
         className,
       )}
       {...props}
@@ -89,7 +89,7 @@ function DrawerFooter({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="drawer-footer"
       className={cn(
-        "mt-auto flex flex-col gap-2 p-4 group-data-[state=open]/drawer-content:animate-godui-slide-in-from-bottom group-data-[state=open]/drawer-content:[animation-delay:120ms]",
+        "mt-auto flex flex-col gap-2 p-4 group-data-[state=open]/drawer-content:animate-godui-slide-in-from-bottom group-data-[state=open]/drawer-content:[animation-delay:calc(var(--godui-duration-fast)*0.8)]",
         className,
       )}
       {...props}
