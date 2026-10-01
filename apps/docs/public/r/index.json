@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "revision": "e4446801cf89419ad824539bf84cce97f70dd37d",
+  "revision": "642e37c0cb03acc8b2a7252d2aab7b11ee414d1c",
   "components": [
     {
       "name": "accordion",
@@ -601,6 +601,16 @@
         "@godui/textarea"
       ],
       "install": "npx shadcn@latest add @godui/input-group",
+      "registry": "core"
+    },
+    {
+      "name": "input-otp",
+      "title": "Input OTP",
+      "description": "Accessible one-time password component with copy paste functionality. Digits rise in; the caret blinks with opacity only. GPU-only.",
+      "category": "Components",
+      "dependencies": ["input-otp", "lucide-react"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "install": "npx shadcn@latest add @godui/input-otp",
       "registry": "core"
     },
     {

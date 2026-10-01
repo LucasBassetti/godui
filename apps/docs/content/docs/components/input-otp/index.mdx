@@ -1,0 +1,120 @@
+---
+title: Input OTP
+description: Accessible one-time password component with copy paste functionality. Each digit rises into its slot; the caret blinks with opacity only.
+workbench: true
+date: "2026-10-01"
+---
+
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "@godui/components";
+import { InputOTPDemo } from "@/components/demos/core/input-otp-demo";
+
+<Workbench>
+
+The shadcn/ui one-time password input, built on
+[input-otp](https://input-otp.rodz.dev). Each digit you type rises a few
+pixels into its slot and fades in, and the fake caret blinks with `opacity`
+only. The active slot's ring changes instantly.
+
+<Example label="Default" story="ui-input-otp" code={`import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
+
+export function InputOTPDemo() {
+  return (
+    <InputOTP maxLength={6} aria-label="One-time password">
+      <InputOTPGroup>
+        <InputOTPSlot index={0} />
+        <InputOTPSlot index={1} />
+        <InputOTPSlot index={2} />
+      </InputOTPGroup>
+      <InputOTPSeparator />
+      <InputOTPGroup>
+        <InputOTPSlot index={3} />
+        <InputOTPSlot index={4} />
+        <InputOTPSlot index={5} />
+      </InputOTPGroup>
+    </InputOTP>
+  );
+}`}>
+  <InputOTPDemo />
+</Example>
+
+<Example
+  label="Digits only"
+  code={`<InputOTP maxLength={4} pattern="^[0-9]+$">
+  <InputOTPGroup>
+    <InputOTPSlot index={0} />
+    <InputOTPSlot index={1} />
+    <InputOTPSlot index={2} />
+    <InputOTPSlot index={3} />
+  </InputOTPGroup>
+</InputOTP>`}
+>
+  <InputOTP maxLength={4} pattern="^[0-9]+$" aria-label="PIN">
+    <InputOTPGroup>
+      <InputOTPSlot index={0} />
+      <InputOTPSlot index={1} />
+      <InputOTPSlot index={2} />
+      <InputOTPSlot index={3} />
+    </InputOTPGroup>
+  </InputOTP>
+</Example>
+
+## Installation
+
+<ComponentInstall name="input-otp" />
+
+## Replacing shadcn
+
+`npx shadcn add @godui/input-otp` overwrites `components/ui/input-otp.tsx`.
+Exports, props and `data-slot` attributes match shadcn/ui new-york-v4, so
+existing imports keep working. It adds a `godui-caret-blink` keyframe to your
+CSS; shadcn's `caret-blink` keyframe is no longer used.
+
+## Usage
+
+```tsx
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
+```
+
+```tsx
+<InputOTP maxLength={6}>
+  <InputOTPGroup>
+    <InputOTPSlot index={0} />
+    <InputOTPSlot index={1} />
+    <InputOTPSlot index={2} />
+  </InputOTPGroup>
+  <InputOTPSeparator />
+  <InputOTPGroup>
+    <InputOTPSlot index={3} />
+    <InputOTPSlot index={4} />
+    <InputOTPSlot index={5} />
+  </InputOTPGroup>
+</InputOTP>
+```
+
+## What's animated
+
+| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
+| --- | --- | --- | --- | --- |
+| Type a digit | `godui-slide-in-from-bottom` | `translate` 0.5rem → 0, `opacity` | `ease-spring-snappy` | 260ms |
+| Caret | `godui-caret-blink` | `opacity` | `ease-out`, infinite | 1.25s |
+| Active slot ring | snaps | — | — | — |
+
+Under `prefers-reduced-motion` digits fade in without rising. The caret still
+blinks, as a native text caret does.
+
+## API
+
+Built on [input-otp](https://github.com/guilhermerodz/input-otp). Props are
+identical to [shadcn/ui Input OTP](https://ui.shadcn.com/docs/components/input-otp).
+
+</Workbench>

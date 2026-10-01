@@ -669,6 +669,35 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "input-otp",
+      "type": "registry:ui",
+      "title": "Input OTP",
+      "description": "Accessible one-time password component with copy paste functionality. Digits rise in; the caret blinks with opacity only. GPU-only.",
+      "dependencies": ["input-otp", "lucide-react"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "files": [
+        {
+          "path": "packages/components/src/ui/input-otp.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "cssVars": {
+        "theme": {
+          "animate-godui-caret-blink": "godui-caret-blink 1.25s ease-out infinite"
+        }
+      },
+      "css": {
+        "@keyframes godui-caret-blink": {
+          "0%, 70%, 100%": {
+            "opacity": "1"
+          },
+          "20%, 50%": {
+            "opacity": "0"
+          }
+        }
+      }
     }
   ]
 }

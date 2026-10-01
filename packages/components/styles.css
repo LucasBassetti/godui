@@ -332,3 +332,20 @@
       calc(var(--godui-enter-y) * var(--godui-motion));
   }
 }
+
+/* ── input-otp ───────────────────────────────────────────────────────────────
+ * Component keyframe (also in the input-otp registry entry). Opacity only. */
+@theme inline {
+  --animate-godui-caret-blink: godui-caret-blink 1.25s ease-out infinite;
+}
+@keyframes godui-caret-blink {
+  0%,
+  70%,
+  100% {
+    opacity: 1;
+  }
+  20%,
+  50% {
+    opacity: 0;
+  }
+}
