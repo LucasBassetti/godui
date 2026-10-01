@@ -19,6 +19,14 @@ const MOTION = {
     "[--godui-enter-distance:100%] animate-godui-slide-in-from-right",
     "[--godui-enter-distance:100%] animate-godui-slide-out-to-right",
   ],
+  "pop-half": [
+    "[--godui-enter-scale:0.5] animate-godui-fade-scale-in",
+    "animate-godui-fade-out",
+  ],
+  "pop-dot": [
+    "[--godui-enter-scale:0.3] animate-godui-fade-scale-in",
+    "animate-godui-fade-out",
+  ],
   "slide-bottom": [
     "animate-godui-slide-in-from-bottom",
     "animate-godui-slide-out-to-bottom",
@@ -33,7 +41,9 @@ export type KeyframeSubject =
   | "menu"
   | "tooltip"
   | "drawer"
-  | "toast";
+  | "toast"
+  | "check"
+  | "radio";
 export type KeyframeTrack = { property: string; from: string; to: string };
 
 const OPEN_MS = 1400;
@@ -129,6 +139,40 @@ function Surface({
             </div>
           </div>
         </div>
+      );
+    case "check":
+      return (
+        <span className="flex size-16 items-center justify-center rounded-xl bg-[var(--foreground)]">
+          {/* The keyframe sits on a wrapper: Chrome won't composite `scale` on an <svg>. */}
+          <span className={cn("flex", motionClass)}>
+            <svg
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+              className="size-9 text-[var(--background)]"
+            >
+              <title>Check</title>
+              <path
+                d="M20 6 9 17l-5-5"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={3}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </span>
+        </span>
+      );
+    case "radio":
+      return (
+        <span className="flex size-16 items-center justify-center rounded-full border-2 border-[var(--foreground)]">
+          <span
+            className={cn(
+              "size-7 rounded-full bg-[var(--foreground)]",
+              motionClass,
+            )}
+          />
+        </span>
       );
     case "toast":
       return (

@@ -510,6 +510,20 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "checkbox",
+      "type": "registry:ui",
+      "title": "Checkbox",
+      "description": "A control that allows the user to toggle between checked and not checked. The check pops in; the box presses on a spring. GPU-only.",
+      "dependencies": ["radix-ui", "lucide-react"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "files": [
+        {
+          "path": "packages/components/src/ui/checkbox.tsx",
+          "type": "registry:ui"
+        }
+      ]
     }
   ]
 }

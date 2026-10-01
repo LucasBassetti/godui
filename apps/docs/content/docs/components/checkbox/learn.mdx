@@ -1,0 +1,84 @@
+---
+title: Anatomy of the GodUI Checkbox
+description: A check that pops because Radix mounts it, a press on a spring, and why the fill is allowed to snap.
+learnPlayer: true
+---
+
+import { CheckboxDemo } from "@/components/demos/core/checkbox-demo";
+
+<LearnPlayer>
+
+<LearnChapter
+  label="The check pops"
+  scene={
+    <KeyframeScene
+      label="The check pops"
+      motion="pop-half"
+      subject="check"
+      tracks={[
+        { property: "scale", from: "0.5", to: "1" },
+        { property: "opacity", from: "0", to: "1" },
+      ]}
+    />
+  }
+  code={`<CheckboxPrimitive.Indicator
+  data-slot="checkbox-indicator"
+  className="grid place-content-center text-current [--godui-enter-scale:0.5] animate-godui-fade-scale-in"
+>
+  <CheckIcon className="size-3.5" />
+</CheckboxPrimitive.Indicator>`}
+>
+
+Radix renders `CheckboxPrimitive.Indicator` only while the box is checked. A
+keyframe on it therefore plays at exactly the moment the check appears, with
+no state to track.
+
+The indicator reuses the shared `godui-fade-scale-in` and sets
+`--godui-enter-scale: 0.5` locally, so the check grows from half size on a
+snappy spring. The animation sits on the indicator `<span>`, not on the
+`<svg>` inside it: Chrome won't composite the individual `scale` property on
+an SVG element.
+
+</LearnChapter>
+
+<LearnChapter
+  label="The press"
+  scene={<AutoPlayScene label="The press" demo="checkbox" />}
+  code={`"peer size-4 shrink-0 rounded-[4px] border border-input shadow-xs outline-none
+ transition-[scale] duration-(--godui-duration-base) ease-spring-bouncy
+ active:scale-[0.92] motion-reduce:transition-none …
+ data-[state=checked]:border-primary data-[state=checked]:bg-primary …"`}
+>
+
+While the pointer is down, the box scales to 92% on the bouncy spring, the
+same press as [Button](/docs/components/button/learn), a bit deeper because
+the target is small.
+
+shadcn's checkbox had `transition-shadow`, which animated the focus ring's
+`box-shadow`. GodUI drops it: the ring and the checked fill change instantly.
+Recoloring a 16px box doesn't need a tween; the pop already tells you the
+state changed.
+
+</LearnChapter>
+
+<LearnChapter
+  label="The result"
+  scene={<LiveResult hint="click the boxes or their labels"><CheckboxDemo /></LiveResult>}
+  isResult
+>
+
+Click the boxes or their labels, or Tab to one and press Space.
+
+</LearnChapter>
+
+</LearnPlayer>
+
+## Why GPU-only
+
+The check animates `scale` and `opacity` on its wrapper, and the press animates
+`scale`. Nothing repaints while it moves.
+
+## Reduced motion
+
+`--godui-motion: 0` turns the pop into a 150ms fade, and
+`motion-reduce:transition-none` makes the press instant.

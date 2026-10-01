@@ -2,6 +2,7 @@
 
 import {
   Button,
+  Checkbox,
   Switch,
   Tabs,
   TabsContent,
@@ -44,6 +45,17 @@ function SwitchToggle({ reduced }: { reduced: boolean }) {
   );
 }
 
+/** Real Checkbox; toggles on the timer, with a forced press while checking. */
+function CheckboxToggle({ reduced }: { reduced: boolean }) {
+  const on = useToggle(reduced);
+  return (
+    <div className="flex items-center gap-6">
+      <Checkbox checked={on} aria-label="Demo checkbox" className="scale-[2]" />
+      <Checkbox checked={!on} aria-label="Demo checkbox, inverted" />
+    </div>
+  );
+}
+
 const TABS = ["Account", "Password", "Notifications"];
 
 /** Real Tabs; the controlled value cycles, so the indicator FLIPs on its own. */
@@ -81,6 +93,7 @@ function TabsCycle({ reduced }: { reduced: boolean }) {
 
 const DEMOS = {
   button: ButtonPress,
+  checkbox: CheckboxToggle,
   switch: SwitchToggle,
   tabs: TabsCycle,
 } as const;

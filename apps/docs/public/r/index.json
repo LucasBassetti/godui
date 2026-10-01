@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "revision": "c891874f74c019224b2328f290e79a491180d195",
+  "revision": "e60cade8856601bd1c6929ce211fd3b3e941da99",
   "components": [
     {
       "name": "accordion",
@@ -182,6 +182,16 @@
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add \"https://godui.design/r/extras/card-swap.json\"",
       "registry": "extras"
+    },
+    {
+      "name": "checkbox",
+      "title": "Checkbox",
+      "description": "A control that allows the user to toggle between checked and not checked. The check pops in; the box presses on a spring. GPU-only.",
+      "category": "Components",
+      "dependencies": ["radix-ui", "lucide-react"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "install": "npx shadcn@latest add @godui/checkbox",
+      "registry": "core"
     },
     {
       "name": "comment-pin",
