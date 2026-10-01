@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "revision": "9d0c7a9a108771942c72e6e23bd79ed5728fcd0c",
+  "revision": "211b00d2abd4825e7c80c4b3c030812c69ca2dbf",
   "components": [
     {
       "name": "accordion",
@@ -492,6 +492,16 @@
       "registryDependencies": ["@godui/godui-theme"],
       "install": "npx shadcn@latest add \"https://godui.design/r/extras/holographic-card.json\"",
       "registry": "extras"
+    },
+    {
+      "name": "hover-card",
+      "title": "Hover Card",
+      "description": "For sighted users to preview content available behind a link. Grows from the link on a spring; GPU-only.",
+      "category": "Components",
+      "dependencies": ["radix-ui"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "install": "npx shadcn@latest add @godui/hover-card",
+      "registry": "core"
     },
     {
       "name": "image-accordion",

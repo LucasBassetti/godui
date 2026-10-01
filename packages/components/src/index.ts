@@ -9,6 +9,7 @@ export * from "./ui/collapsible";
 export * from "./ui/dialog";
 export * from "./ui/drawer";
 export * from "./ui/dropdown-menu";
+export * from "./ui/hover-card";
 export * from "./ui/input";
 export * from "./ui/input-group";
 export * from "./ui/popover";

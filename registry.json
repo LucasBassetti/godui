@@ -594,6 +594,20 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "hover-card",
+      "type": "registry:ui",
+      "title": "Hover Card",
+      "description": "For sighted users to preview content available behind a link. Grows from the link on a spring; GPU-only.",
+      "dependencies": ["radix-ui"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "files": [
+        {
+          "path": "packages/components/src/ui/hover-card.tsx",
+          "type": "registry:ui"
+        }
+      ]
     }
   ]
 }
