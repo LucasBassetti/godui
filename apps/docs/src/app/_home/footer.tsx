@@ -12,6 +12,7 @@ const columns: { heading: string; links: FooterLink[] }[] = [
     heading: "Product",
     links: [
       { label: "Components", href: "/docs/components" },
+      { label: "Extras", href: "/docs/extras" },
       { label: "Installation", href: "/docs/installation" },
       { label: "Animated Icons", href: ANIMATED_ICONS_URL, external: true },
     ],
