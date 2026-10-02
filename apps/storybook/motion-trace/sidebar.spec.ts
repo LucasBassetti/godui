@@ -831,3 +831,71 @@ test("icon: Ctrl/⌘+B spam stays continuous and lands at rest", async ({
   // (Closed Collapsibles unmount their sub-menus: the open one is left.)
   expect(rest).toEqual({ moving: false, held: 0, subs: [""] });
 });
+
+test("bare-text labels (`<Icon /> Name`) are clipped by the rail at once, never wiped at full strength", async ({
+  page,
+}) => {
+  for (const factor of [1, 5]) {
+    await openScaled(page, "bare-labels", factor);
+    const frames = await page.evaluate(
+      async (count) => {
+        const q = (s: string) => document.querySelector(s) as HTMLElement;
+        const container = q('[data-slot="sidebar-container"]');
+        const surface = q('[data-slot="sidebar-surface"]');
+        // Each menu button's own text nodes (not its elements').
+        const texts = [
+          ...document.querySelectorAll<HTMLElement>(
+            '[data-sidebar="menu-button"]',
+          ),
+        ].flatMap((button) =>
+          [...button.childNodes].filter(
+            (n): n is Text => n.nodeType === 3 && !!n.textContent?.trim(),
+          ),
+        );
+        const read = () => {
+          const edge = surface.getBoundingClientRect().right;
+          return texts.map((text) => {
+            const range = document.createRange();
+            range.selectNodeContents(text);
+            const t = range.getBoundingClientRect();
+            let l = t.left;
+            let r = Math.min(t.right, edge);
+            let o = 1;
+            for (
+              let n: HTMLElement | null = text.parentElement;
+              n && n !== container.parentElement;
+              n = n.parentElement
+            ) {
+              const s = getComputedStyle(n);
+              o *= Number(s.opacity);
+              if (s.overflowX !== "visible") {
+                const box = n.getBoundingClientRect();
+                l = Math.max(l, box.left);
+                r = Math.min(r, box.right);
+              }
+            }
+            const f = t.width > 0 ? Math.max(0, r - l) / t.width : 0;
+            return { name: text.textContent?.trim() ?? "", o, f };
+          });
+        };
+        const out = [read()];
+        (q('[data-slot="sidebar-trigger"]') as HTMLElement).click();
+        for (let i = 0; i < count; i++) {
+          await new Promise(requestAnimationFrame);
+          out.push(read());
+        }
+        return out;
+      },
+      factor === 1 ? 30 : 100,
+    );
+    expect(frames[0].length).toBe(3);
+    const wiped = frames.flatMap((labels, i) =>
+      labels
+        .filter((l) => l.f > 0.02 && l.f < 0.98 && l.o >= 0.9)
+        .map((l) => `frame ${i}: ${l.name} (${l.f.toFixed(2)} drawn)`),
+    );
+    expect(wiped).toEqual([]);
+    // Gone from the first frame after the click, as in shadcn.
+    for (const l of frames[1]) expect(l.f).toBeLessThanOrEqual(0.02);
+  }
+});

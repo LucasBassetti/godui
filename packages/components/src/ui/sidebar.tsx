@@ -22,7 +22,9 @@
 //   fast as the panel collapses, tucking toward their icons, while the
 //   content keeps its full width until the move ends (so the edge wipes past
 //   faded labels; no box snaps and cuts them). Expanding, they fade in top
-//   first as the edge uncovers them. Sub-menus open and shut with the
+//   first as the edge uncovers them. (A label that's a bare text node, not
+//   an element, can't fade: its button snaps to the rail as in shadcn, so
+//   wrap labels in an element.) Sub-menus open and shut with the
 //   Accordion's clip window: the box's edge rides the row below, the items
 //   hold still with their own row. All of it starts from what's drawn.
 // Mobile is GodUI's Sheet. Reduced motion: everything snaps.
@@ -376,13 +378,41 @@ function rejoinFlow(sub: HTMLElement) {
     if (saved[i]) sub.style.setProperty(p, saved[i]);
     else sub.style.removeProperty(p);
   });
+  endSweep(sub);
+}
+
+/** A sub-menu's sweep is over: its own line is back, its items' go. */
+function endSweep(sub: HTMLElement) {
+  sub.removeAttribute("data-sweeping");
+  sub.style.removeProperty("--sidebar-sub-line");
+  sub.style.removeProperty("--sidebar-sub-line-x");
+}
+
+/**
+ * A menu button whose label is a bare text node (`<Icon /> Home`) has no
+ * element to fade (opacity can't spare the icon, and a text node takes no
+ * GPU property): collapsing, it isn't held at full width, so its label is
+ * clipped by the rail on the click as in shadcn instead of being wiped at
+ * full strength. Wrap the label in an element (`<span>`) to have it fade.
+ */
+function markBareLabels(inner: HTMLElement) {
+  for (const button of inner.querySelectorAll<HTMLElement>(
+    '[data-sidebar="menu-button"]',
+  )) {
+    const bare = [...button.childNodes].some(
+      (node) => node.nodeType === 3 && node.textContent?.trim(),
+    );
+    if (bare) button.setAttribute("data-bare-label", "");
+    else button.removeAttribute("data-bare-label");
+  }
 }
 
 /**
  * Icon mode hides the sub-menus. Collapsing, each one that's drawn leaves the
  * flow before the rows are measured (so the rows below rise at once, riding
- * its clip edge); expanding, they're back in the flow before that. Runs ahead
- * of the rows' FLIP.
+ * its clip edge), and buttons with a bare-text label are marked (they snap to
+ * the rail); expanding, sub-menus are back in the flow before that. Runs
+ * ahead of the rows' FLIP.
  */
 function useSubMenuFlow(
   innerRef: React.RefObject<HTMLElement | null>,
@@ -400,6 +430,7 @@ function useSubMenuFlow(
       for (const sub of subs) rejoinFlow(sub);
       return;
     }
+    markBareLabels(inner);
     for (const sub of subs) leaveFlow(sub);
   }, [innerRef, state, active]);
 }
@@ -437,7 +468,7 @@ function useIconMove(
       for (const el of [...labels, ...subs]) stop(el);
       for (const sub of subs) {
         for (const item of sub.children) stop(item);
-        sub.removeAttribute("data-sweeping");
+        endSweep(sub);
       }
       return;
     }
@@ -613,7 +644,7 @@ function useIconMove(
       track(sub, animations, collapsing);
       if (!collapsing) {
         Promise.allSettled(animations.map((a) => a.finished)).then(() => {
-          if (!MOVES.has(sub)) sub.removeAttribute("data-sweeping");
+          if (!MOVES.has(sub)) endSweep(sub);
         });
       }
     }
@@ -627,7 +658,7 @@ function useIconMove(
     for (const sub of inner.querySelectorAll<HTMLElement>(SUBS_SELECTOR)) {
       stop(sub);
       for (const item of sub.children) stop(item);
-      sub.removeAttribute("data-sweeping");
+      endSweep(sub);
       rejoinFlow(sub);
     }
   }, [innerRef, moving, state, active]);
@@ -1086,10 +1117,12 @@ function Sidebar({
             // badges, actions and sub-menus stay drawn to fade and sweep.
             // Rows still take their icon-layout heights (and glide there);
             // a large button's two lines aren't clipped by its new height.
+            // A button whose label is a bare text node snaps (see
+            // markBareLabels): wrap the label in an element to fade it.
             // The snap lands in the commit that ends the move, when all of
             // it is faded out.
             collapsible === "icon" &&
-              "motion-safe:in-data-[moving=collapsing]:shrink-0 motion-safe:[[data-moving=collapsing]_&_[data-sidebar=menu-button]]:w-full! motion-safe:[[data-moving=collapsing]_&_[data-sidebar=menu-button]]:overflow-visible motion-safe:[[data-moving=collapsing]_&_[data-sidebar=menu-badge]]:flex! motion-safe:[[data-moving=collapsing]_&_[data-sidebar=menu-action]]:flex! motion-safe:[[data-moving=collapsing]_&_[data-sidebar=group-action]]:flex! motion-safe:[[data-moving=collapsing]_&_[data-sidebar=menu-sub]]:flex! motion-safe:[[data-moving=collapsing]_&_[data-sidebar=menu-sub-button]]:flex!",
+              "motion-safe:in-data-[moving=collapsing]:shrink-0 motion-safe:[[data-moving=collapsing]_&_[data-sidebar=menu-button]:not([data-bare-label])]:w-full! motion-safe:[[data-moving=collapsing]_&_[data-sidebar=menu-button]:not([data-bare-label])]:overflow-visible motion-safe:[[data-moving=collapsing]_&_[data-sidebar=menu-badge]]:flex! motion-safe:[[data-moving=collapsing]_&_[data-sidebar=menu-action]]:flex! motion-safe:[[data-moving=collapsing]_&_[data-sidebar=group-action]]:flex! motion-safe:[[data-moving=collapsing]_&_[data-sidebar=menu-sub]]:flex! motion-safe:[[data-moving=collapsing]_&_[data-sidebar=menu-sub-button]]:flex!",
             collapsible === "icon" &&
               (variant === "floating" || variant === "inset"
                 ? "motion-safe:in-data-[moving=collapsing]:w-[calc(var(--sidebar-width)-(--spacing(4))-var(--sidebar-bl,0px)-var(--sidebar-br,0px))]"

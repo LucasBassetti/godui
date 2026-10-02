@@ -1277,6 +1277,7 @@ function SidebarMove({
   }, [reduced]);
   const dashed =
     "outline-1 -outline-offset-1 outline-dashed outline-[var(--foreground)]/50";
+  // --godui-duration-fast: 520ms is 150 × 900/260, scaled with the 900ms base.
   return (
     <SidebarProvider
       open={open}

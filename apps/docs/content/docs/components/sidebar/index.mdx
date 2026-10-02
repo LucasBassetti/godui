@@ -787,9 +787,16 @@ A few things differ, all on desktop:
   icon-layout heights at once. Code that measures the panel's content in that
   ~260ms sees the full width; the icon layout's widths apply when the move
   ends (at once under reduced motion).
+- While collapsing to icons (about 260ms), badges, actions, group actions
+  and sub-menus are forced to `display: flex` so they can fade and sweep. A
+  call-site `className="hidden"` on one of them flashes visible during the
+  collapse; hide it with a conditional render instead.
 - A menu button's label is everything after its first child (its icon):
-  that's what fades. A button whose first child is text keeps it, clipped
-  by the rail, as in shadcn.
+  that's what fades. Wrap the label in an element (`<span>Home</span>`, as
+  shadcn's examples do). A bare text label (`<Home /> Home`) can't be faded
+  on the compositor, so that button skips the full-width hold and its label
+  is clipped by the rail on the click, as in shadcn. A button whose first
+  child is text keeps it, clipped by the rail, as in shadcn.
 - While the content glides (about 260ms), `position: fixed` descendants of
   `SidebarInset` move with it (the FLIP's `translate` makes it their
   containing block), and the lift keeps their `z-index` inside it.

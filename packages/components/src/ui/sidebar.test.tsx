@@ -524,9 +524,10 @@ describe("Sidebar", () => {
       expect.arrayContaining([
         "motion-safe:in-data-[moving=collapsing]:w-[calc(var(--sidebar-width)-var(--sidebar-bl,0px)-var(--sidebar-br,0px))]",
         "motion-safe:in-data-[moving=collapsing]:shrink-0",
-        // Out-specifies the icon layout's size-8! (0,2,0) with (0,3,0).
-        "motion-safe:[[data-moving=collapsing]_&_[data-sidebar=menu-button]]:w-full!",
-        "motion-safe:[[data-moving=collapsing]_&_[data-sidebar=menu-button]]:overflow-visible",
+        // Out-specifies the icon layout's size-8! (0,2,0) with (0,4,0); a
+        // button whose label is a bare text node isn't held (it can't fade).
+        "motion-safe:[[data-moving=collapsing]_&_[data-sidebar=menu-button]:not([data-bare-label])]:w-full!",
+        "motion-safe:[[data-moving=collapsing]_&_[data-sidebar=menu-button]:not([data-bare-label])]:overflow-visible",
         // Kept drawn to fade and sweep instead of vanishing on the click.
         "motion-safe:[[data-moving=collapsing]_&_[data-sidebar=menu-badge]]:flex!",
         "motion-safe:[[data-moving=collapsing]_&_[data-sidebar=menu-action]]:flex!",
@@ -1149,6 +1150,80 @@ describe("Sidebar FLIP", () => {
         expect(fadesOf(item)[0].frames[0].opacity).toBe(0.3);
       }
     } finally {
+      for (const spy of spies) spy.mockRestore();
+    }
+  });
+
+  it("a bare-text label can't fade: its button is marked so it snaps to the rail instead of being held and wiped", async () => {
+    const user = userEvent.setup();
+    const S = Godui;
+    render(
+      <S.SidebarProvider>
+        <S.Sidebar collapsible="icon">
+          <S.SidebarContent>
+            <S.SidebarMenu>
+              <S.SidebarMenuItem>
+                <S.SidebarMenuButton data-testid="bare">
+                  <PanelLeftIcon /> Home
+                </S.SidebarMenuButton>
+              </S.SidebarMenuItem>
+              <S.SidebarMenuItem>
+                <S.SidebarMenuButton data-testid="wrapped">
+                  <PanelLeftIcon />
+                  <span>Inbox</span>
+                </S.SidebarMenuButton>
+              </S.SidebarMenuItem>
+            </S.SidebarMenu>
+          </S.SidebarContent>
+        </S.Sidebar>
+        <S.SidebarInset>
+          <S.SidebarTrigger />
+        </S.SidebarInset>
+      </S.SidebarProvider>,
+    );
+    const bare = document.querySelector('[data-testid="bare"]') as Element;
+    const wrapped = document.querySelector(
+      '[data-testid="wrapped"]',
+    ) as Element;
+    await user.click(trigger());
+    // Marked in the commit that starts the collapse (before it's painted).
+    expect(bare).toHaveAttribute("data-bare-label");
+    expect(wrapped).not.toHaveAttribute("data-bare-label");
+    // Its text node takes no animation; the wrapped label fades.
+    expect(fadesOf(wrapped.children[1])).toHaveLength(1);
+    expect(
+      calls.filter((c) => c.el === bare && "opacity" in c.frames[0]),
+    ).toEqual([]);
+  });
+
+  it("a sub-menu's sweep leaves nothing behind: its line variables go with the sweep", async () => {
+    const spies = layoutSubMenu();
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    try {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+      render(<IconUsage />);
+      const sub = slot("sidebar-menu-sub");
+      await user.click(trigger());
+      expect(sub.style.getPropertyValue("--sidebar-sub-line-x")).not.toBe("");
+      await act(async () => {
+        vi.advanceTimersByTime(400);
+      });
+      // Collapsed: back in the flow, its own line back.
+      for (const name of ["--sidebar-sub-line", "--sidebar-sub-line-x"]) {
+        expect(sub.style.getPropertyValue(name)).toBe("");
+      }
+      expect(sub).not.toHaveAttribute("data-sweeping");
+      calls = [];
+      await user.click(trigger());
+      expect(sub).toHaveAttribute("data-sweeping");
+      // Expanded: once its sweep ends.
+      await act(async () => {
+        for (const call of calls) call.finish();
+      });
+      expect(sub).not.toHaveAttribute("data-sweeping");
+      expect(sub.style.getPropertyValue("--sidebar-sub-line-x")).toBe("");
+    } finally {
+      vi.useRealTimers();
       for (const spy of spies) spy.mockRestore();
     }
   });

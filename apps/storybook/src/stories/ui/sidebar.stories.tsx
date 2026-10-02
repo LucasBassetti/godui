@@ -70,7 +70,10 @@ const projects = [
   { name: "Travel", icon: MapIcon },
 ];
 
-function AppSidebar(props: ComponentProps<typeof Sidebar>) {
+function AppSidebar({
+  bareLabels = false,
+  ...props
+}: ComponentProps<typeof Sidebar> & { bareLabels?: boolean }) {
   return (
     <Sidebar {...props}>
       <SidebarHeader>
@@ -134,7 +137,7 @@ function AppSidebar(props: ComponentProps<typeof Sidebar>) {
               <SidebarMenuItem key={project.name}>
                 <SidebarMenuButton tooltip={project.name}>
                   <project.icon />
-                  <span>{project.name}</span>
+                  {bareLabels ? project.name : <span>{project.name}</span>}
                 </SidebarMenuButton>
                 {project.badge ? (
                   <SidebarMenuBadge>{project.badge}</SidebarMenuBadge>
@@ -236,6 +239,20 @@ export const Right: Story = {
     <SidebarProvider>
       <Page />
       <AppSidebar side="right" collapsible="icon" />
+    </SidebarProvider>
+  ),
+};
+
+/**
+ * Project rows label with a bare text node (`<Icon /> Name`): nothing to fade
+ * on the compositor, so those buttons snap to the rail on the click (their
+ * label clipped), as in shadcn, instead of being held and wiped.
+ */
+export const BareLabels: Story = {
+  render: () => (
+    <SidebarProvider>
+      <AppSidebar collapsible="icon" bareLabels />
+      <Page />
     </SidebarProvider>
   ),
 };
