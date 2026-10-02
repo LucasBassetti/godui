@@ -761,7 +761,9 @@ A few things differ, all on desktop:
 - The container has one extra child, `data-slot="sidebar-surface"`, which
   draws the panel's background and border (and the floating card's rounded
   border and shadow). `sidebar-inner` is transparent, so put background
-  overrides on the surface, not the inner.
+  overrides on the surface, not the inner. The border is still the
+  container's (the surface inherits its width, style and color), so border
+  classes passed to `Sidebar` apply as they do in shadcn.
 - While the sidebar moves, the wrapper clips horizontal overflow
   (`overflow-x-clip`): for a moment the gliding content is drawn past the
   right edge, and that shouldn't flash a scrollbar. At rest nothing is

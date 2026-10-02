@@ -7,7 +7,8 @@
 // spring and --godui-duration-base), so a reversal mid-way restarts every piece
 // from where it's drawn and nothing parts:
 // - offcanvas: the whole panel slides out/in;
-// - icon: a `sidebar-surface` layer (the panel's background and border) slides
+// - icon: a `sidebar-surface` layer (the panel's background, and the border it
+//   inherits from the box, call-site overrides included) slides
 //   its edge to the icon rail while the box behind it has already snapped. The
 //   floating card is cut in three (left cap, a middle that scales on x, right
 //   cap that slides) so its corners, border and shadow never stretch;
@@ -398,7 +399,9 @@ function SidebarSurface({
           // stacking context.
           "pointer-events-none absolute inset-y-0 -z-10 w-(--sidebar-width) bg-sidebar group-data-[side=left]:left-0 group-data-[side=right]:right-0",
           "group-data-[collapsible=icon]:group-data-[side=left]:-translate-x-[calc(var(--sidebar-width)-var(--sidebar-width-icon))] group-data-[collapsible=icon]:group-data-[side=right]:translate-x-[calc(var(--sidebar-width)-var(--sidebar-width-icon))]",
-          "group-data-[variant=sidebar]:group-data-[side=left]:border-r group-data-[variant=sidebar]:group-data-[side=right]:border-l",
+          // The container's own border (shadcn's, plus any call-site
+          // override such as border-r-0 or a color), painted here instead.
+          "[border-width:inherit] [border-style:inherit] [border-color:inherit]",
         )}
       />
     );
@@ -562,8 +565,14 @@ function Sidebar({
           // Adjust the padding for floating and inset variants.
           variant === "floating" || variant === "inset"
             ? "p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]"
-            : // The border is drawn by the surface; a clear one keeps shadcn's box.
-              "border-transparent group-data-[collapsible=icon]:w-(--sidebar-width-icon) group-data-[side=left]:border-r group-data-[side=right]:border-l",
+            : "group-data-[collapsible=icon]:w-(--sidebar-width-icon) group-data-[side=left]:border-r group-data-[side=right]:border-l",
+          // shadcn's border stays on the box (so a call site's border classes
+          // apply as they do there) but isn't painted: the surface inherits
+          // and draws it, sliding with the edge. A transparent border-image
+          // hides it without changing the inherited color. (The floating
+          // card draws its own border, so its box keeps painting one.)
+          variant !== "floating" &&
+            "[border-image:linear-gradient(transparent,transparent)_1]",
           className,
         )}
         {...props}

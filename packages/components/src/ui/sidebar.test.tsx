@@ -16,11 +16,13 @@ function Usage({
   collapsible = "icon",
   variant,
   side,
+  className,
 }: {
   ui: typeof Shadcn;
   collapsible?: Collapsible;
   variant?: "sidebar" | "floating" | "inset";
   side?: "left" | "right";
+  className?: string;
 }) {
   const {
     Sidebar,
@@ -49,7 +51,12 @@ function Usage({
   } = ui;
   return (
     <SidebarProvider>
-      <Sidebar collapsible={collapsible} variant={variant} side={side}>
+      <Sidebar
+        collapsible={collapsible}
+        variant={variant}
+        side={side}
+        className={className}
+      >
         <SidebarHeader>
           <SidebarMenu>
             <SidebarMenuItem>
@@ -189,12 +196,52 @@ describe("Sidebar", () => {
     );
     expect(surface.className).not.toMatch(/transition-\[/);
     expect(surface.className).toContain("bg-sidebar");
-    expect(surface.className).toContain(
-      "group-data-[variant=sidebar]:group-data-[side=left]:border-r",
-    );
     expect(surface.className).toContain("pointer-events-none");
     // The inner is see-through on desktop: the surface is the background.
     expect(slot("sidebar-inner").className).not.toContain("bg-sidebar");
+  });
+
+  it("the surface draws the container's own border, so a call site's border classes carry over", () => {
+    // shadcn's sidebar-10/-15 pass className="border-r-0" to Sidebar; it lands
+    // on the container. The container's border classes must match shadcn's
+    // exactly (same computed border), and the surface — what's painted —
+    // inherits that border instead of drawing its own.
+    const borders = (el: HTMLElement) =>
+      el.className.split(/\s+/).filter((c) => /(^|:)!?border(-|$)/.test(c));
+    for (const side of ["left", "right"] as const) {
+      for (const className of [undefined, "border-r-0", "border-red-500"]) {
+        const { unmount } = render(
+          <Usage ui={Shadcn} side={side} className={className} />,
+        );
+        const expected = borders(slot("sidebar-container"));
+        unmount();
+        const godui = render(
+          <Usage ui={Godui} side={side} className={className} />,
+        );
+        const container = slot("sidebar-container");
+        expect(borders(container), `${side} ${className}`).toEqual(expected);
+        // Its own paint is hidden (the box keeps shadcn's border width); the
+        // surface paints that border as it slides.
+        expect(container.className).toContain(
+          "[border-image:linear-gradient(transparent,transparent)_1]",
+        );
+        const surface = slot("sidebar-surface").className.split(/\s+/);
+        expect(surface).toEqual(
+          expect.arrayContaining([
+            "[border-width:inherit]",
+            "[border-style:inherit]",
+            "[border-color:inherit]",
+          ]),
+        );
+        expect(surface.filter((c) => /(^|:)border-[lrxy]?$/.test(c))).toEqual(
+          [],
+        );
+        godui.unmount();
+      }
+    }
+    // The floating card draws its own border; its box paints a call site's.
+    render(<Usage ui={Godui} variant="floating" className="border" />);
+    expect(slot("sidebar-container").className).not.toContain("border-image");
   });
 
   it("the floating card is a fixed cap, a middle that scales and a cap that slides", () => {

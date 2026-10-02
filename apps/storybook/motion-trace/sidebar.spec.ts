@@ -310,3 +310,166 @@ test("at rest nothing is clipped: wide content still scrolls the page", async ({
   await page.waitForTimeout(600);
   expect(await overflow()).toBeGreaterThan(1000);
 });
+
+/** The surface's and the container's computed right border. */
+async function borders(page: Page) {
+  return page.evaluate(() => {
+    const read = (slot: string) => {
+      const s = getComputedStyle(
+        document.querySelector(`[data-slot="${slot}"]`) as Element,
+      );
+      return {
+        width: s.borderRightWidth,
+        style: s.borderRightStyle,
+        color: s.borderRightColor,
+        image: s.borderImageSource,
+      };
+    };
+    return {
+      container: read("sidebar-container"),
+      surface: read("sidebar-surface"),
+    };
+  });
+}
+
+/**
+ * RGB of a 1px-tall strip of the screen, `from`..`to` (viewport x) at the
+ * middle of the viewport's height, from a real screenshot.
+ */
+async function strip(page: Page, from: number, to: number) {
+  const y = Math.round((page.viewportSize()?.height ?? 720) / 2);
+  const png = (
+    await page.screenshot({
+      clip: { x: from, y, width: to - from, height: 1 },
+      animations: "allow",
+    })
+  ).toString("base64");
+  return page.evaluate(async (png) => {
+    const img = new Image();
+    img.src = `data:image/png;base64,${png}`;
+    await img.decode();
+    const canvas = document.createElement("canvas");
+    canvas.width = img.width;
+    canvas.height = img.height;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) throw new Error("no canvas");
+    ctx.drawImage(img, 0, 0);
+    const out: number[][] = [];
+    for (let x = 0; x < img.width; x++) {
+      out.push([...ctx.getImageData(x, 0, 1, 1).data.slice(0, 3)]);
+    }
+    return out;
+  }, png);
+}
+
+/** Hold every animation where it's drawn (so a screenshot sees that frame). */
+const freeze = (page: Page, frozen: boolean) =>
+  page.evaluate((frozen) => {
+    for (const a of document.getAnimations()) frozen ? a.pause() : a.play();
+  }, frozen);
+
+const surfaceRight = (page: Page) =>
+  page.evaluate(
+    () =>
+      (
+        document.querySelector('[data-slot="sidebar-surface"]') as Element
+      ).getBoundingClientRect().right,
+  );
+
+/**
+ * Across the panel's edge (a composited layer snaps to whole pixels, so a
+ * line may sit a pixel either side), every pixel is the panel's background,
+ * the page's, or a blend of the two: no line in another color.
+ */
+async function expectNoLine(page: Page, label: string) {
+  const edge = Math.round(await surfaceRight(page));
+  const px = await strip(page, edge - 8, edge + 5);
+  const [panel, page_] = [px[0], px[px.length - 1]];
+  for (const [i, p] of px.entries()) {
+    const off = p.some(
+      (c, k) =>
+        c < Math.min(panel[k], page_[k]) - 6 ||
+        c > Math.max(panel[k], page_[k]) + 6,
+    );
+    expect(
+      off,
+      `${label}: x=${edge - 8 + i} rgb(${p}), panel rgb(${panel}), page rgb(${page_})`,
+    ).toBe(false);
+  }
+}
+
+test("className=\"border-r-0\" (shadcn's sidebar-10): the surface paints the container's border, as shadcn does", async ({
+  page,
+}) => {
+  await open(page, "border-override");
+  const { container, surface } = await borders(page);
+  // shadcn's variant border-r out-specifies border-r-0: shadcn keeps the line.
+  expect(container.width).toBe("1px");
+  expect(surface).toMatchObject({
+    width: container.width,
+    style: container.style,
+    color: container.color,
+  });
+  // The box keeps its border but never paints it (no stray line when it
+  // snaps ahead of the sliding surface).
+  expect(container.image).toContain("linear-gradient");
+  expect(surface.image).toBe("none");
+});
+
+test("an override that wins (border-r-0!) removes the line at rest and while the edge slides", async ({
+  page,
+}) => {
+  await open(page, "no-border", 3000);
+  const { container, surface } = await borders(page);
+  expect(container.width).toBe("0px");
+  expect(surface.width).toBe("0px");
+  await expectNoLine(page, "at rest");
+  for (const direction of ["collapsing", "expanding"]) {
+    await toggle(page);
+    await page.waitForTimeout(800);
+    await freeze(page, true);
+    await expectNoLine(page, direction);
+    await freeze(page, false);
+    await page.waitForTimeout(3200);
+  }
+});
+
+test("a call site's border color reaches the painted edge; the snapped box paints none", async ({
+  page,
+}) => {
+  await open(page, "icon", 3000);
+  await page.addStyleTag({
+    content:
+      '[data-slot="sidebar-container"]{border-right-color:rgb(255,0,0)!important}',
+  });
+  const { surface } = await borders(page);
+  expect(surface.color).toBe("rgb(255, 0, 0)");
+  // Red, or red blended over the panel (a 1px line at a fractional x).
+  const red = (px: number[]) => px[0] - px[1] > 80 && px[0] - px[2] > 80;
+  // Collapse, then expand: mid-way the box has snapped to full width while
+  // the surface is still sliding out to it.
+  await toggle(page);
+  await page.waitForTimeout(3500);
+  await toggle(page);
+  await page.waitForTimeout(800);
+  await freeze(page, true);
+  const box = await page.evaluate(
+    () =>
+      (
+        document.querySelector('[data-slot="sidebar-container"]') as Element
+      ).getBoundingClientRect().right,
+  );
+  const edge = await surfaceRight(page);
+  expect(box - edge).toBeGreaterThan(20);
+  const [boxEdge] = await strip(page, Math.round(box) - 1, Math.round(box));
+  expect(red(boxEdge), `box edge rgb(${boxEdge})`).toBe(false);
+  // A composited layer snaps to whole pixels: allow a pixel or two either way.
+  const atSurface = await strip(
+    page,
+    Math.round(edge) - 3,
+    Math.round(edge) + 3,
+  );
+  expect(atSurface.some(red), `surface edge ${JSON.stringify(atSurface)}`).toBe(
+    true,
+  );
+});

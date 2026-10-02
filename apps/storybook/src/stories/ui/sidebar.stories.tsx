@@ -239,3 +239,28 @@ export const Right: Story = {
     </SidebarProvider>
   ),
 };
+
+/**
+ * shadcn's sidebar-10 / sidebar-15 pass `className="border-r-0"`. It lands on
+ * the container, as in shadcn, where the variant's `group-data-[side=left]:border-r`
+ * out-specifies it — so the line stays, exactly as it does in shadcn. The
+ * surface paints the container's border, whatever it computes to.
+ */
+export const BorderOverride: Story = {
+  render: () => (
+    <SidebarProvider>
+      <AppSidebar collapsible="icon" className="border-r-0" />
+      <Page />
+    </SidebarProvider>
+  ),
+};
+
+/** An override that wins (`!`): no line, at rest or while the edge slides. */
+export const NoBorder: Story = {
+  render: () => (
+    <SidebarProvider>
+      <AppSidebar collapsible="icon" className="border-r-0!" />
+      <Page />
+    </SidebarProvider>
+  ),
+};
