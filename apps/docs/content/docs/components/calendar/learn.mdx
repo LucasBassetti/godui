@@ -1,6 +1,6 @@
 ---
 title: Anatomy of the GodUI Calendar
-description: How the months drift past each other on React DayPicker's own animation hooks, why the caption sets the clock, how a picked day's fill carries its own number, and how a range sweeps in the same time at any length.
+description: How the months drift past each other on React DayPicker's own animation hooks, why the caption sets the clock, how a picked day's fill carries its own number, how a range sweeps in the same time at any length, and how a hover preview of the range is committed without redrawing it.
 learnPlayer: true
 ---
 
@@ -174,13 +174,59 @@ so a strip that faded out could never sweep back in on the GPU.
 </LearnChapter>
 
 <LearnChapter
+  label="A preview under the pointer"
+  scene={<AutoPlayScene label="A preview under the pointer" demo="calendar-preview" note="slowed 3x" />}
+  code={`// What a click on the hovered day would select, by React DayPicker's rules
+const next = addToRange(target.date, range, min, max, required);
+if (excludeDisabled && rangeContainsModifiers(next, disabled)) return null;
+// ...plus the ghost end's outer half (the cap)
+return { ...spanOf(next), cap: next.to === target ? "to" : "from" };
+
+@keyframes godui-calendar-ghost-glide {
+  from {
+    translate: calc(var(--godui-calendar-ghost-from) * 100%
+      * var(--godui-calendar-dir) * var(--godui-motion)) 0;
+  }
+}
+/* --godui-calendar-preview-sweep (160ms), ease-out cubic: the front's */`}
+>
+
+Once a range's first day is picked, the day under the pointer (or the focus)
+draws the range a click there would make. It asks React DayPicker's own range
+rules, so with `min`, `max` or `excludeDisabled` a day that would start the
+range over previews nothing. It's drawn with the same track halves and the
+same sweep as a picked range, in a lighter tint and on a quicker clock: as the
+pointer moves on, only the halves newly covered sweep out from the part
+already drawn, and the ones it leaves fade.
+
+The end is a ghost pill. It pops in when the preview starts; along a row it
+glides from the previous end with the same duration and ease-out curve as the
+track's front, and the track runs on under the ghost's outer half, so the
+pill's leading edge rides the front. Across rows, and across the first day, it
+jumps: a slide over other weeks would read as a zip.
+
+Clicking commits what's already drawn. The halves keep their classes and
+timing, so nothing sweeps again; the range's accent, a pseudo-element hidden
+under the preview's tint, fades in over it while the end pops. Leaving the
+grid folds the preview back. The hovered day lives in a small store outside
+React DayPicker, and every day carries its layers from the start, so a pointer
+crossing the grid re-renders the days and changes attributes, never the DOM.
+Chrome traces caught two layouts that came back: an `absolute` pseudo-element
+inside a sweeping half lays out every frame, and an opacity reaching 1 drops
+a paint layer, so the accent is an in-flow block with `isolation: isolate`.
+
+</LearnChapter>
+
+<LearnChapter
   label="The result"
-  scene={<LiveResult hint="pick a range, then page through the months"><CalendarRangeDemo /></LiveResult>}
+  scene={<LiveResult hint="hover a day to preview the range, click to commit"><CalendarRangeDemo /></LiveResult>}
   isResult
 >
 
-Pick a start and an end, move the end, page through the months. Arrow keys
-move the focus ring from day to day without a fade.
+The first day is picked. Move over the others to preview the range, click to
+commit it, then click its start to pick a new one. Page through the months;
+arrow keys preview from the focused day and move the focus ring without a
+fade.
 
 </LearnChapter>
 
@@ -194,11 +240,13 @@ pseudo-elements. React DayPicker writes `position` and `overflow` once when a
 month change starts and clears them when it ends; nothing in between needs
 layout or paint. There's no blur because a `filter` that moves pixels doesn't
 composite. A month with one more week makes the calendar a row taller at once;
-pass `fixedWeeks` to keep six rows.
+pass `fixedWeeks` to keep six rows. A range preview moving from day to day
+lays out nothing at all.
 
 ## Reduced motion
 
 Every distance, scale and delay is multiplied by `--godui-motion`, which is 0
 under `prefers-reduced-motion`. The months cross-fade in 150ms without
 travelling, a picked day's fill fades in at full size, the range's track fades
-in all at once, and the focus ring fades without growing.
+in all at once, a range preview fades in and out with its ghost end jumping
+from day to day, and the focus ring fades without growing.

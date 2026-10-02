@@ -176,7 +176,7 @@
     {
       "name": "calendar",
       "title": "Calendar",
-      "description": "A date field component that allows users to enter and edit date. The old month drifts out as the new one drifts in a beat later, the caption on its own layer; a picked day pops, a range sweeps in, hover and focus fade. GPU-only.",
+      "description": "A date field component that allows users to enter and edit date. The old month drifts out as the new one drifts in a beat later, the caption on its own layer; a picked day pops, a range sweeps in, and hovering after the first day previews the range with a ghost end; hover and focus fade. GPU-only.",
       "category": "Components",
       "dependencies": ["react-day-picker@latest", "date-fns", "lucide-react"],
       "registryDependencies": ["utils", "@godui/godui-motion", "@godui/button"],

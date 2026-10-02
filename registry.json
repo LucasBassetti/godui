@@ -846,7 +846,7 @@
       "name": "calendar",
       "type": "registry:ui",
       "title": "Calendar",
-      "description": "A date field component that allows users to enter and edit date. The old month drifts out as the new one drifts in a beat later, the caption on its own layer; a picked day pops, a range sweeps in, hover and focus fade. GPU-only.",
+      "description": "A date field component that allows users to enter and edit date. The old month drifts out as the new one drifts in a beat later, the caption on its own layer; a picked day pops, a range sweeps in, and hovering after the first day previews the range with a ghost end; hover and focus fade. GPU-only.",
       "dependencies": ["react-day-picker@latest", "date-fns", "lucide-react"],
       "registryDependencies": ["utils", "@godui/godui-motion", "@godui/button"],
       "files": [
@@ -869,7 +869,8 @@
           "animate-godui-calendar-fill-in": "godui-calendar-fill-in var(--godui-duration-base) var(--ease-spring-bouncy) backwards",
           "animate-godui-calendar-fade-out": "godui-calendar-fade-out var(--godui-duration-fast) var(--ease-out-expo) both",
           "animate-godui-calendar-fill-shrink": "godui-calendar-fill-shrink var(--godui-duration-fast) var(--ease-out-expo) both",
-          "animate-godui-calendar-track-in": "godui-calendar-track-in calc(var(--godui-calendar-track-span, 1) * var(--godui-calendar-sweep) * var(--godui-motion) + var(--godui-duration-fast) * (1 - var(--godui-motion))) linear calc(var(--godui-calendar-track-at, 0) * var(--godui-calendar-sweep) * var(--godui-motion)) backwards"
+          "animate-godui-calendar-track-in": "godui-calendar-track-in calc(var(--godui-calendar-track-span, 1) * var(--godui-calendar-sweep) * var(--godui-motion) + var(--godui-duration-fast) * (1 - var(--godui-motion))) linear calc(var(--godui-calendar-track-at, 0) * var(--godui-calendar-sweep) * var(--godui-motion)) backwards",
+          "animate-godui-calendar-ghost-glide": "godui-calendar-ghost-glide calc(var(--godui-calendar-preview-sweep) * var(--godui-motion)) cubic-bezier(0.33, 1, 0.68, 1) backwards"
         }
       },
       "css": {
@@ -953,6 +954,11 @@
           "from": {
             "opacity": "var(--godui-motion)",
             "scale": "calc(1 - var(--godui-motion)) 1"
+          }
+        },
+        "@keyframes godui-calendar-ghost-glide": {
+          "from": {
+            "translate": "calc(var(--godui-calendar-ghost-from, 0) * 100% * var(--godui-calendar-dir) * var(--godui-motion)) 0"
           }
         }
       }

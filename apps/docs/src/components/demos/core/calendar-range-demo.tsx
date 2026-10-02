@@ -7,11 +7,11 @@ import * as React from "react";
 type DateRange = { from: Date | undefined; to?: Date | undefined };
 
 export function CalendarRangeDemo() {
+  // The first day picked: hover another to preview the range, click to
+  // commit it.
   const [range, setRange] = React.useState<DateRange | undefined>(() => {
-    const from = new Date();
-    const to = new Date(from);
-    to.setDate(from.getDate() + 9);
-    return { from, to };
+    const today = new Date();
+    return { from: today, to: today };
   });
 
   return (

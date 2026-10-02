@@ -437,6 +437,9 @@
       var(--godui-motion)
     )
     backwards;
+  --animate-godui-calendar-ghost-glide: godui-calendar-ghost-glide
+    calc(var(--godui-calendar-preview-sweep) * var(--godui-motion))
+    cubic-bezier(0.33, 1, 0.68, 1) backwards;
 }
 @keyframes godui-calendar-in-from-end {
   from {
@@ -591,6 +594,22 @@
   from {
     opacity: var(--godui-motion);
     scale: calc(1 - var(--godui-motion)) 1;
+  }
+}
+/* A range preview's ghost end moving along a row slides in from the previous
+ * end (--godui-calendar-ghost-from days away; a column is the pill's own
+ * width) on the ease-out cubic the track's front follows, over the same
+ * --godui-calendar-preview-sweep: the pill rides the front. Under reduced
+ * motion it takes no time: it snaps. */
+@keyframes godui-calendar-ghost-glide {
+  from {
+    translate: calc(
+        var(--godui-calendar-ghost-from, 0) *
+        100% *
+        var(--godui-calendar-dir) *
+        var(--godui-motion)
+      )
+      0;
   }
 }
 

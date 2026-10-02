@@ -69,6 +69,7 @@ import {
   Circle,
   FrameIcon,
   GalleryVerticalEndIcon,
+  MousePointer2Icon,
   SearchIcon,
   SquareTerminalIcon,
 } from "lucide-react";
@@ -713,6 +714,123 @@ function CalendarRangeSweep({ reduced }: { reduced: boolean }) {
   );
 }
 
+/**
+ * The range preview, with a scripted pointer: Oct 5 picked, the pointer
+ * enters the grid and runs along a row (the ghost end rides the sweep's
+ * front), back, down a row (it snaps), before the anchor (the track starts
+ * over the other way), clicks (the preview is committed in place: the tint
+ * deepens, the end pops) and leaves. Real mouseover/mouseout events with
+ * their relatedTarget, as a browser sends them. Slowed 3x.
+ */
+const CALENDAR_PREVIEW_PATH: Array<number | "click" | "leave" | "reset"> = [
+  9,
+  10,
+  11,
+  12,
+  13,
+  14,
+  12,
+  10,
+  16,
+  23,
+  22,
+  2,
+  1,
+  "leave",
+  15,
+  16,
+  17,
+  "click",
+  "leave",
+  "reset",
+];
+const CALENDAR_PREVIEW_STEP_MS = 420;
+
+function CalendarHoverPreview({ reduced }: { reduced: boolean }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [end, setEnd] = useState<number | null>(null);
+  const [cursor, setCursor] = useState<{ x: number; y: number } | null>(null);
+  useEffect(() => {
+    const host = ref.current;
+    if (!host) return;
+    const button = (d: number) =>
+      host.querySelector<HTMLElement>(
+        `td[data-day="2026-10-${String(d).padStart(2, "0")}"] button`,
+      );
+    let at: Element | null = null;
+    const move = (to: Element) => {
+      if (at)
+        at.dispatchEvent(
+          new MouseEvent("mouseout", { bubbles: true, relatedTarget: to }),
+        );
+      to.dispatchEvent(
+        new MouseEvent("mouseover", { bubbles: true, relatedTarget: at }),
+      );
+      at = to;
+    };
+    const place = (el: Element | null) => {
+      if (!el) return setCursor(null);
+      const a = el.getBoundingClientRect();
+      const b = host.getBoundingClientRect();
+      setCursor({
+        x: a.left - b.left + a.width / 2,
+        y: a.top - b.top + a.height / 2,
+      });
+    };
+    if (reduced) {
+      const el = button(12);
+      if (el) move(el);
+      place(el);
+      return;
+    }
+    let step = 0;
+    const id = setInterval(() => {
+      const next = CALENDAR_PREVIEW_PATH[step % CALENDAR_PREVIEW_PATH.length];
+      step += 1;
+      if (next === "click") {
+        setEnd(Number(at?.closest("td")?.getAttribute("data-day")?.slice(-2)));
+      } else if (next === "reset") {
+        // A new round starts from the one picked day.
+        setEnd(null);
+      } else if (next === "leave") {
+        move(host);
+        place(null);
+      } else {
+        const el = button(next);
+        if (el) {
+          move(el);
+          place(el);
+        }
+      }
+    }, CALENDAR_PREVIEW_STEP_MS);
+    return () => clearInterval(id);
+  }, [reduced]);
+  return (
+    <div ref={ref} className="relative">
+      <Calendar
+        mode="range"
+        month={new Date(2026, 9, 1)}
+        onMonthChange={() => {}}
+        selected={{
+          from: new Date(2026, 9, 5),
+          to: new Date(2026, 9, end ?? 5),
+        }}
+        onSelect={() => {}}
+        formatters={CALENDAR_FORMATTERS}
+        components={CALENDAR_PARTS}
+        className="pointer-events-none rounded-lg border shadow-sm [--cell-size:--spacing(9)] [--godui-calendar-preview-sweep:480ms] [--godui-duration-base:780ms] [--godui-duration-fast:450ms]"
+      />
+      {cursor ? (
+        <MousePointer2Icon
+          aria-hidden="true"
+          className="pointer-events-none absolute top-0 left-0 size-4 fill-foreground text-background transition-[translate] duration-300 ease-out"
+          style={{ translate: `${cursor.x + 2}px ${cursor.y + 4}px` }}
+        />
+      ) : null}
+    </div>
+  );
+}
+
 const ACCORDION_ROWS = [
   { value: "a", title: "w-28", body: ["w-52", "w-44", "w-48"] },
   { value: "b", title: "w-36", body: ["w-48", "w-40"] },
@@ -1180,6 +1298,7 @@ const DEMOS = {
   "calendar-clone": CalendarClone,
   "calendar-pop": CalendarPop,
   "calendar-range": CalendarRangeSweep,
+  "calendar-preview": CalendarHoverPreview,
   carousel: CarouselGlide,
   "carousel-jump": CarouselJump,
   checkbox: CheckboxToggle,

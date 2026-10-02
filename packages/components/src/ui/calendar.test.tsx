@@ -180,6 +180,7 @@ const NEW_KEYFRAMES = [
   "godui-calendar-fade-out",
   "godui-calendar-fill-shrink",
   "godui-calendar-track-in",
+  "godui-calendar-ghost-glide",
 ];
 const GATE = "not-in-[[data-animated-month][aria-hidden=true]]:data-animate:";
 
@@ -326,6 +327,7 @@ describe("Calendar", () => {
         delay: "20ms",
         dir: "1",
         "ease-out": "cubic-bezier(0.25,0.46,0.45,0.94)",
+        "preview-sweep": "160ms",
         sweep: "240ms",
       });
       expect(tuning("rtl:")).toEqual({ dir: "-1" });
@@ -762,7 +764,9 @@ describe("Calendar", () => {
       const start = dayButton(12);
       expect(startHalf(start)).toHaveAttribute("data-state", "off");
       expect(endHalf(start)).toHaveAttribute("data-state", "on");
-      expect(endHalf(start)?.className).not.toContain("[inherit]");
+      expect(endHalf(start)?.className).not.toMatch(
+        /rounded-(ss|es|se|ee)-\[inherit\]/,
+      );
       const middle = dayButton(20);
       expect(startHalf(middle)).toHaveAttribute("data-state", "on");
       expect(endHalf(middle)).toHaveAttribute("data-state", "on");
@@ -776,7 +780,13 @@ describe("Calendar", () => {
       // Logical halves, so RTL draws them on the right side.
       expect(startHalf(middle)).toHaveClass("start-0", "end-1/2");
       expect(endHalf(middle)).toHaveClass("start-1/2", "end-0");
-      expect(startHalf(middle)).toHaveClass("bg-accent", "-z-10");
+      // The range's accent is the half's ::after (a preview shows the half's
+      // own lighter tint under it).
+      expect(startHalf(middle)).toHaveClass("after:bg-accent", "-z-10");
+      expect(startHalf(middle)).toHaveAttribute("data-tint", "range");
+      expect(startHalf(middle)).toHaveClass(
+        "data-[tint=range]:after:opacity-100",
+      );
       // Nothing sweeps on first paint.
       expect(
         document.querySelector("[data-calendar-layer][data-animate]"),
@@ -845,8 +855,10 @@ describe("Calendar", () => {
       await user.click(dayButton(28));
       await user.click(dayButton(28));
       expect(endHalf(dayButton(28))).toHaveAttribute("data-state", "off");
-      // ...the next click makes a new range from it: Oct 28 → Nov 2.
-      await user.click(dayButton(2, 10));
+      // ...the next click makes a new range from it: Oct 28 → Nov 2. (A
+      // click with no hover first: a pointer would have drawn it as a
+      // preview already, see "range preview".)
+      fireEvent.click(dayButton(2, 10));
       const halves = [
         endHalf(dayButton(28)),
         startHalf(dayButton(29)),
@@ -873,14 +885,13 @@ describe("Calendar", () => {
     });
 
     it("picking the new start before the anchor sweeps backward from the anchor", async () => {
-      const user = userEvent.setup();
       render(
         <Range
           ui={Godui}
           initial={{ from: new Date(2026, 9, 20), to: new Date(2026, 9, 20) }}
         />,
       );
-      await user.click(dayButton(17));
+      fireEvent.click(dayButton(17)); // no hover first (no preview)
       expect(endHalf(dayButton(19))).toHaveAttribute("data-sweep", "backward");
       expectSlice(startHalf(dayButton(20)), 0, 6);
       expectSlice(endHalf(dayButton(17)), 5, 6);
@@ -950,6 +961,593 @@ describe("Calendar", () => {
       );
       expect(keyframes("godui-calendar-track-in")).toContain(
         "scale: calc(1 - var(--godui-motion)) 1",
+      );
+    });
+  });
+
+  describe("range preview", () => {
+    const ANCHOR = new Date(2026, 9, 8);
+
+    function Pending({
+      initial = { from: ANCHOR, to: ANCHOR },
+      ...rest
+    }: Omit<
+      Extract<React.ComponentProps<typeof Godui.Calendar>, { mode: "range" }>,
+      "mode" | "selected" | "onSelect"
+    > & { initial?: DateRange | undefined }) {
+      const [range, setRange] = React.useState<DateRange | undefined>(initial);
+      return (
+        <Godui.Calendar
+          defaultMonth={OCT}
+          numberOfMonths={2}
+          {...rest}
+          mode="range"
+          selected={range}
+          onSelect={setRange}
+        />
+      );
+    }
+
+    const ghost = (button: HTMLElement) => layer(button, "ghost");
+    /**
+     * Move the pointer onto `to`, as a browser does: mouseout/mouseover
+     * carrying each other as relatedTarget. (user-event's hover sends
+     * mouseout with no relatedTarget, which reads as leaving the window.)
+     */
+    let pointer: Element | null = null;
+    beforeEach(() => {
+      pointer = null;
+    });
+    function hover(to: Element) {
+      const from = pointer;
+      if (from) fireEvent.mouseOut(from, { relatedTarget: to });
+      fireEvent.mouseOver(to, { relatedTarget: from });
+      pointer = to;
+    }
+    /**
+     * October's track halves from day `a` to day `b`, in sweep order: `a`'s
+     * inner half first, `b`'s outer half (the preview's cap) last.
+     */
+    function halves(a: number, b: number) {
+      const out: Array<HTMLElement | null> = [];
+      const step = b > a ? 1 : -1;
+      const [inner, outer] =
+        step > 0 ? [endHalf, startHalf] : [startHalf, endHalf];
+      out.push(inner(dayButton(a)));
+      for (let d = a + step; d !== b + step; d += step) {
+        out.push(outer(dayButton(d)), inner(dayButton(d)));
+      }
+      return out;
+    }
+    const previewing = () =>
+      document.querySelectorAll(
+        "[data-calendar-layer^=track][data-state=on][data-tint=preview]",
+      ).length;
+    /** Each day's text is its number once (the layers carry none). */
+    function expectNumbersOnce() {
+      for (const td of document.querySelectorAll<HTMLElement>(
+        "td[data-day]:not([data-hidden])",
+      )) {
+        const day = Number(td.dataset.day?.slice(-2));
+        expect(td.querySelector("button")?.textContent).toBe(String(day));
+      }
+    }
+
+    it("nothing previews on first paint, before the first pick, once a range is complete, or outside range mode", async () => {
+      const { unmount } = render(<Pending />);
+      expect(previewing()).toBe(0);
+      expect(document.querySelector("[data-preview]")).toBeNull();
+      expect(
+        document.querySelector("[data-calendar-layer][data-animate]"),
+      ).toBeNull();
+      // Every day carries its (hidden) ghost, so moving the preview changes
+      // attributes only.
+      expect(ghost(dayButton(20))).toHaveAttribute("data-state", "off");
+      expect(ghost(dayButton(20))).toHaveAttribute("aria-hidden", "true");
+      unmount();
+      for (const initial of [
+        { from: undefined },
+        { from: new Date(2026, 9, 12), to: new Date(2026, 10, 3) },
+      ]) {
+        const view = render(<Pending initial={initial} />);
+        hover(dayButton(20));
+        expect(previewing()).toBe(0);
+        expect(document.querySelector("[data-preview]")).toBeNull();
+        view.unmount();
+      }
+      render(<Single ui={Godui} />);
+      hover(dayButton(20));
+      expect(ghost(dayButton(20))).toBeNull();
+      expect(document.querySelector("[data-preview]")).toBeNull();
+    });
+
+    it("after the first pick, hovering a day draws the range a click would make: a lighter track sweeping out from the anchor to a ghost end", async () => {
+      render(<Pending />);
+      hover(dayButton(14));
+      const order = halves(8, 14);
+      expect(order).toHaveLength(13);
+      order.forEach((half, i) => {
+        expect(half).toHaveAttribute("data-state", "on");
+        expect(half).toHaveAttribute("data-animate", "true");
+        expect(half).toHaveAttribute("data-sweep", "forward");
+        // The preview's own tint: the range's accent (::after) hidden.
+        expect(half).toHaveAttribute("data-tint", "preview");
+        expect(half).toHaveClass(
+          "bg-accent/50",
+          "after:opacity-0",
+          "data-[tint=range]:after:opacity-100",
+        );
+        expectSlice(half, i, order.length);
+        // On the preview's quicker clock.
+        expect(half?.style.getPropertyValue("--godui-calendar-sweep")).toBe(
+          "var(--godui-calendar-preview-sweep)",
+        );
+      });
+      // The cap is the ghost end's outer half, rounded like the pill.
+      expect(endHalf(dayButton(14))).toHaveClass(
+        "rounded-se-[inherit]",
+        "rounded-ee-[inherit]",
+      );
+      expect(startHalf(dayButton(14))?.className).not.toMatch(
+        /rounded-(ss|es|se|ee)-\[inherit\]/,
+      );
+      // The ghost end pops in; days in between square off like a range's.
+      expect(ghost(dayButton(14))).toHaveAttribute("data-state", "on");
+      expect(ghost(dayButton(14))).toHaveAttribute("data-animate", "pop");
+      expect(ghost(dayButton(14))).toHaveClass(
+        "not-in-[[data-animated-month][aria-hidden=true]]:data-[animate=pop]:animate-godui-calendar-fill-in",
+      );
+      expect(dayButton(14)).toHaveAttribute("data-preview", "end");
+      for (const d of [9, 10, 11, 12, 13]) {
+        expect(dayButton(d)).toHaveAttribute("data-preview", "middle");
+      }
+      expect(dayButton(9)).toHaveClass(
+        "data-[preview=middle]:rounded-none",
+        "[td:last-child>&]:data-[preview=middle]:rounded-r-md",
+        "[td:first-child>&]:data-[preview=middle]:rounded-l-md",
+      );
+      // The ghost replaces the hover overlay on its day.
+      expect(dayButton(14)).toHaveClass("data-[preview=end]:after:opacity-0!");
+      // Purely visual: React DayPicker's selection is untouched.
+      for (const d of [9, 14]) {
+        const td = dayButton(d).closest("td");
+        expect(td).not.toHaveAttribute("aria-selected");
+        expect(td).not.toHaveAttribute("data-selected");
+        expect(dayButton(d)).not.toHaveAttribute("data-range-middle", "true");
+      }
+      expect(dayButton(8)).toHaveAttribute("data-fill", "settled");
+      expect(fill(dayButton(14))).toBeNull();
+      expectNumbersOnce();
+    });
+
+    it("moving the pointer sweeps only the newly covered halves, from the drawn part; halves it leaves fade", async () => {
+      render(<Pending />);
+      hover(dayButton(14));
+      /** What decides whether (and how) a half's animation runs. */
+      const timing = (el: HTMLElement | null) => ({
+        animate: el?.dataset.animate,
+        style: el?.getAttribute("style"),
+        classes: [...(el?.classList ?? [])].filter((c) =>
+          /animate-|origin-/.test(c),
+        ),
+      });
+      const drawn = halves(8, 14).map((el) => ({ el, was: timing(el) }));
+      hover(dayButton(16));
+      const fresh = [
+        startHalf(dayButton(15)),
+        endHalf(dayButton(15)),
+        startHalf(dayButton(16)),
+        endHalf(dayButton(16)),
+      ];
+      fresh.forEach((half, i) => {
+        expect(half).toHaveAttribute("data-sweep", "forward");
+        expectSlice(half, i, fresh.length);
+      });
+      // Already drawn: nothing about their animation changes, so it doesn't
+      // replay (the 14th's corners square off: it's a middle day now).
+      for (const { el, was } of drawn) expect(timing(el)).toEqual(was);
+      // Back to the 12th: what it leaves fades out where it is.
+      hover(dayButton(12));
+      for (const half of [
+        startHalf(dayButton(13)),
+        endHalf(dayButton(13)),
+        startHalf(dayButton(16)),
+        endHalf(dayButton(16)),
+      ]) {
+        expect(half).toHaveAttribute("data-state", "off");
+        expect(half).toHaveAttribute("data-animate", "true");
+        expect(half).toHaveClass(
+          "opacity-0",
+          `${GATE}animate-godui-calendar-fade-out`,
+        );
+        // Leaving, it keeps the preview's tint.
+        expect(half).toHaveAttribute("data-tint", "preview");
+      }
+      expect(endHalf(dayButton(12))).toHaveAttribute("data-state", "on");
+      expect(
+        document.querySelector(
+          "[data-calendar-layer^=track][data-state=on][data-animate][data-sweep]:not([style*='--godui-calendar-track-at'])",
+        ),
+      ).toBeNull();
+    });
+
+    it("the ghost glides along a row with the front, from the previous end; it snaps across rows and across the anchor", async () => {
+      render(<Pending />);
+      hover(dayButton(14));
+      hover(dayButton(16));
+      const glide = ghost(dayButton(16));
+      expect(glide).toHaveAttribute("data-animate", "glide");
+      expect(glide?.style.getPropertyValue("--godui-calendar-ghost-from")).toBe(
+        "-2",
+      );
+      expect(glide).toHaveClass(
+        "not-in-[[data-animated-month][aria-hidden=true]]:data-[animate=glide]:animate-godui-calendar-ghost-glide",
+      );
+      // The old end goes at once (no fade: the ghost moved on).
+      expect(ghost(dayButton(14))).toHaveAttribute("data-state", "off");
+      expect(ghost(dayButton(14))).not.toHaveAttribute("data-animate");
+      hover(dayButton(12));
+      expect(
+        ghost(dayButton(12))?.style.getPropertyValue(
+          "--godui-calendar-ghost-from",
+        ),
+      ).toBe("4");
+      // Next row: snaps.
+      hover(dayButton(19));
+      expect(ghost(dayButton(19))).toHaveAttribute("data-state", "on");
+      expect(ghost(dayButton(19))).not.toHaveAttribute("data-animate");
+      // The glide's distance is in days, a column being the pill's own width,
+      // signed by the reading direction and scaled by --godui-motion.
+      expect(keyframes("godui-calendar-ghost-glide")).toMatch(
+        /var\(--godui-calendar-ghost-from, 0\) \*\s*100% \*\s*var\(--godui-calendar-dir\) \*\s*var\(--godui-motion\)/,
+      );
+      // Same duration and ease-out cubic as the preview's sweep front.
+      expect(token("godui-calendar-ghost-glide")).toBe(
+        "godui-calendar-ghost-glide calc(var(--godui-calendar-preview-sweep) * var(--godui-motion)) cubic-bezier(0.33, 1, 0.68, 1) backwards",
+      );
+    });
+
+    it("a day before the anchor sweeps back from it; crossing the anchor starts over from it", async () => {
+      render(<Pending />);
+      hover(dayButton(5));
+      const back = halves(8, 5);
+      back.forEach((half, i) => {
+        expect(half).toHaveAttribute("data-sweep", "backward");
+        expect(half).toHaveClass("origin-right", "rtl:origin-left");
+        expectSlice(half, i, back.length);
+      });
+      expect(startHalf(dayButton(5))).toHaveClass("rounded-ss-[inherit]");
+      hover(dayButton(10));
+      const forth = halves(8, 10);
+      forth.forEach((half, i) => {
+        expect(half).toHaveAttribute("data-sweep", "forward");
+        expectSlice(half, i, forth.length);
+      });
+      expect(startHalf(dayButton(6))).toHaveAttribute("data-state", "off");
+      // Across the anchor the ghost doesn't travel over it: it snaps.
+      expect(ghost(dayButton(10))).toHaveAttribute("data-state", "on");
+      expect(ghost(dayButton(10))).not.toHaveAttribute("data-animate");
+      // Hovering the anchor itself previews nothing.
+      hover(dayButton(8));
+      expect(previewing()).toBe(0);
+    });
+
+    it("across the month boundary the preview's front is one continuous sweep", async () => {
+      render(
+        <Pending
+          initial={{ from: new Date(2026, 9, 29), to: new Date(2026, 9, 29) }}
+        />,
+      );
+      hover(dayButton(2, 10));
+      const order = [
+        endHalf(dayButton(29)),
+        startHalf(dayButton(30)),
+        endHalf(dayButton(30)),
+        startHalf(dayButton(31)),
+        endHalf(dayButton(31)),
+        startHalf(dayButton(1, 10)),
+        endHalf(dayButton(1, 10)),
+        startHalf(dayButton(2, 10)),
+        endHalf(dayButton(2, 10)),
+      ];
+      let edge = 0;
+      order.forEach((half, i) => {
+        expectSlice(half, i, order.length);
+        const { at, span } = trackVars(half);
+        expect(at).toBeCloseTo(edge, 6);
+        edge = at + span;
+      });
+      expect(edge).toBeCloseTo(1, 6);
+      expect(ghost(dayButton(2, 10))).toHaveAttribute("data-animate", "pop");
+    });
+
+    it("clicking commits the preview in place: nothing re-sweeps, the range's tint fades in over the preview's, the end pops", async () => {
+      render(<Pending />);
+      hover(dayButton(14));
+      const drawn = halves(8, 14).slice(0, -1); // all but the cap
+      const before = drawn.map((el) => ({
+        className: el?.className,
+        style: el?.getAttribute("style"),
+      }));
+      fireEvent.click(dayButton(14));
+      // Committed (React DayPicker's selection), so the preview ends...
+      expect(dayButton(14).closest("td")).toHaveAttribute(
+        "aria-selected",
+        "true",
+      );
+      expect(document.querySelector("button[data-preview]")).toBeNull();
+      drawn.forEach((half, i) => {
+        // ...but the track it drew stays as it was: same classes, same
+        // slices, so its animation isn't restarted...
+        expect(half).toHaveAttribute("data-state", "on");
+        expect(half?.className).toBe(before[i]?.className);
+        expect(half?.getAttribute("style")).toBe(before[i]?.style);
+        // ...it only changes tint: the accent fades in over it.
+        expect(half).toHaveAttribute("data-tint", "range");
+        expect(half).toHaveAttribute("data-commit", "true");
+        expect(half).toHaveClass(
+          "data-commit:after:transition-[opacity]",
+          "data-commit:after:duration-(--godui-duration-fast)",
+        );
+      });
+      // The cap gives way to the pill: it fades, as does the ghost...
+      expect(endHalf(dayButton(14))).toHaveAttribute("data-state", "off");
+      expect(endHalf(dayButton(14))).toHaveClass(
+        `${GATE}animate-godui-calendar-fade-out`,
+      );
+      expect(ghost(dayButton(14))).toHaveAttribute("data-state", "off");
+      expect(ghost(dayButton(14))).toHaveAttribute("data-animate", "fade");
+      expect(ghost(dayButton(14))).toHaveClass(
+        "opacity-0",
+        "not-in-[[data-animated-month][aria-hidden=true]]:data-[animate=fade]:animate-godui-calendar-fade-out",
+      );
+      // ...and the end pops.
+      expect(fill(dayButton(14))).toHaveAttribute("data-animate", "true");
+      expect(dayButton(14)).toHaveAttribute("data-range-end", "true");
+      // The commit's tint fade is the only transition, on the ::after: the
+      // half's own keyframes are untouched by it.
+      expect(keyframes("godui-calendar-track-in")).not.toContain("transition");
+    });
+
+    it("a programmatic (controlled) change still sweeps as before", async () => {
+      const onSelect = () => {};
+      const view = (selected: DateRange) => (
+        <Godui.Calendar
+          mode="range"
+          defaultMonth={OCT}
+          selected={selected}
+          onSelect={onSelect}
+        />
+      );
+      const { rerender } = render(view({ from: ANCHOR, to: ANCHOR }));
+      rerender(view({ from: ANCHOR, to: new Date(2026, 9, 12) }));
+      const order = halves(8, 12).slice(0, -1);
+      order.forEach((half, i) => {
+        expect(half).toHaveAttribute("data-tint", "range");
+        expect(half).not.toHaveAttribute("data-commit");
+        expectSlice(half, i, order.length);
+        expect(half?.style.getPropertyValue("--godui-calendar-sweep")).toBe("");
+      });
+    });
+
+    describe("ends when", () => {
+      it("the pointer leaves the grid: the track folds back (fades), the ghost fades", async () => {
+        render(<Pending />);
+        hover(dayButton(14));
+        hover(document.body);
+        expect(previewing()).toBe(0);
+        for (const half of halves(8, 14)) {
+          expect(half).toHaveAttribute("data-state", "off");
+          expect(half).toHaveClass(`${GATE}animate-godui-calendar-fade-out`);
+        }
+        expect(ghost(dayButton(14))).toHaveAttribute("data-animate", "fade");
+        // The anchor stays as it was.
+        expect(dayButton(8)).toHaveAttribute("data-fill", "settled");
+      });
+
+      it("the pointer crossing a row gap or straight into the other month's grid keeps it; the space between the months, only for a moment", () => {
+        vi.useFakeTimers();
+        try {
+          render(<Pending />);
+          fireEvent.mouseEnter(dayButton(14));
+          expect(previewing()).toBeGreaterThan(0);
+          const october = dayButton(14).closest("table") as HTMLElement;
+          const november = dayButton(3, 10).closest("table") as HTMLElement;
+          // Straight into November's grid (a fast pointer).
+          fireEvent.mouseLeave(october, { relatedTarget: dayButton(3, 10) });
+          expect(previewing()).toBeGreaterThan(0);
+          // Into the space between the months: held for the grace...
+          const between = october.closest("[data-animated-month]")
+            ?.parentElement as HTMLElement;
+          fireEvent.mouseLeave(november, { relatedTarget: between });
+          act(() => {
+            vi.advanceTimersByTime(60);
+          });
+          expect(previewing()).toBeGreaterThan(0);
+          // ...a day entered in time keeps it going...
+          fireEvent.mouseEnter(dayButton(3, 10));
+          act(() => {
+            vi.advanceTimersByTime(200);
+          });
+          expect(previewing()).toBeGreaterThan(0);
+          expect(ghost(dayButton(3, 10))).toHaveAttribute("data-state", "on");
+          // ...else it ends.
+          fireEvent.mouseLeave(november, { relatedTarget: between });
+          act(() => {
+            vi.advanceTimersByTime(80);
+          });
+          expect(previewing()).toBe(0);
+        } finally {
+          vi.useRealTimers();
+        }
+      });
+
+      it("the pointer crosses a disabled day (its button is disabled, so it gets no mouseenter)", () => {
+        render(<Pending disabled={[new Date(2026, 9, 15)]} />);
+        fireEvent.mouseEnter(dayButton(14));
+        expect(previewing()).toBeGreaterThan(0);
+        fireEvent.mouseOver(dayButton(15).closest("td") as HTMLElement);
+        expect(previewing()).toBe(0);
+      });
+
+      it("Escape, or focus leaving the grid", async () => {
+        const user = userEvent.setup();
+        render(<Pending />);
+        act(() => dayButton(8).focus());
+        await user.keyboard("{ArrowRight}{ArrowRight}");
+        expect(ghost(dayButton(10))).toHaveAttribute("data-state", "on");
+        await user.keyboard("{Escape}");
+        expect(previewing()).toBe(0);
+        await user.keyboard("{ArrowRight}");
+        expect(ghost(dayButton(11))).toHaveAttribute("data-state", "on");
+        act(() => screen.getByRole("button", { name: /next month/i }).focus());
+        expect(previewing()).toBe(0);
+      });
+    });
+
+    it("keyboard focus previews like hover: arrow keys move the ghost, the track grows", async () => {
+      const user = userEvent.setup();
+      render(<Pending />);
+      act(() => dayButton(8).focus());
+      expect(previewing()).toBe(0);
+      await user.keyboard("{ArrowRight}");
+      expect(ghost(dayButton(9))).toHaveAttribute("data-animate", "pop");
+      await user.keyboard("{ArrowRight}");
+      // Focus moving day to day doesn't fold the preview in between.
+      expect(startHalf(dayButton(9))).toHaveAttribute("data-state", "on");
+      expect(startHalf(dayButton(9))?.className).not.toContain("fade-out");
+      expect(ghost(dayButton(10))).toHaveAttribute("data-animate", "glide");
+      await user.keyboard("{ArrowDown}");
+      expect(ghost(dayButton(17))).toHaveAttribute("data-state", "on");
+      // Enter commits it, like a click.
+      await user.keyboard("{Enter}");
+      expect(dayButton(17).closest("td")).toHaveAttribute(
+        "aria-selected",
+        "true",
+      );
+      expect(startHalf(dayButton(12))).toHaveAttribute("data-commit", "true");
+    });
+
+    describe("follows React DayPicker's rules: no preview where a click would start over", () => {
+      it("min / max", async () => {
+        render(<Pending max={5} />);
+        hover(dayButton(14)); // 6 days
+        expect(previewing()).toBe(0);
+        hover(dayButton(13)); // 5
+        expect(previewing()).toBeGreaterThan(0);
+      });
+
+      it("min, with the first pick's `to` unset", async () => {
+        render(<Pending min={3} initial={{ from: ANCHOR, to: undefined }} />);
+        hover(dayButton(10)); // 2 days
+        expect(previewing()).toBe(0);
+        hover(dayButton(11)); // 3
+        expect(ghost(dayButton(11))).toHaveAttribute("data-state", "on");
+      });
+
+      it("excludeDisabled: not across a disabled day", async () => {
+        render(<Pending excludeDisabled disabled={[new Date(2026, 9, 12)]} />);
+        hover(dayButton(11));
+        expect(previewing()).toBeGreaterThan(0);
+        hover(dayButton(14));
+        expect(previewing()).toBe(0);
+      });
+
+      it("resetOnSelect: a one-day range starts over", async () => {
+        render(<Pending resetOnSelect />);
+        hover(dayButton(14));
+        expect(previewing()).toBe(0);
+      });
+    });
+
+    it("your handlers still run and your modifiers still apply", async () => {
+      const user = userEvent.setup();
+      const handlers = {
+        onDayMouseEnter: vi.fn(),
+        onDayMouseLeave: vi.fn(),
+        onDayFocus: vi.fn(),
+        onDayBlur: vi.fn(),
+        onDayKeyDown: vi.fn(),
+      };
+      render(
+        <Pending
+          {...handlers}
+          modifiers={{ booked: [new Date(2026, 9, 12)] }}
+          modifiersClassNames={{ booked: "my-booked" }}
+        />,
+      );
+      hover(dayButton(14));
+      hover(dayButton(15));
+      expect(handlers.onDayMouseEnter).toHaveBeenCalledTimes(2);
+      expect(handlers.onDayMouseLeave).toHaveBeenCalled();
+      act(() => dayButton(8).focus());
+      await user.keyboard("{ArrowRight}{Escape}");
+      expect(handlers.onDayFocus).toHaveBeenCalled();
+      expect(handlers.onDayBlur).toHaveBeenCalled();
+      expect(handlers.onDayKeyDown).toHaveBeenCalledTimes(2);
+      hover(dayButton(14));
+      expect(dayButton(12).closest("td")).toHaveClass("my-booked");
+      expect(dayButton(12)).toHaveAttribute("data-preview", "middle");
+    });
+
+    it("RTL: the preview's sweep and ghost mirror (dir=rtl flips the origins and the glide's sign)", async () => {
+      render(<Pending dir="rtl" />);
+      hover(dayButton(10));
+      expect(startHalf(dayButton(10))).toHaveClass(
+        "origin-left",
+        "rtl:origin-right",
+      );
+      hover(dayButton(9));
+      hover(dayButton(10));
+      expect(
+        ghost(dayButton(10))?.style.getPropertyValue(
+          "--godui-calendar-ghost-from",
+        ),
+      ).toBe("-1");
+      expect(tuning("rtl:").dir).toBe("-1");
+    });
+
+    it("week numbers: the first day column is the row's start", () => {
+      render(<Pending showWeekNumber />);
+      expect(dayButton(9)).toHaveClass(
+        "[td:nth-child(2)>&]:data-[preview=middle]:rounded-l-md",
+      );
+    });
+
+    it("a month change mid-preview: the new month's days mount with it drawn at rest; the old month's clone animates nothing", () => {
+      render(<Pending />);
+      hover(dayButton(3, 10));
+      fireEvent.click(screen.getByRole("button", { name: /next month/i }));
+      expect(caption()).toHaveTextContent("November 2026");
+      // React DayPicker clones the old months as it last rendered them; any
+      // layer animation in the clone stays behind the gate.
+      for (const el of oldMonth()?.querySelectorAll("[data-calendar-layer]") ??
+        []) {
+        for (const c of el.classList) {
+          if (c.includes("animate-"))
+            expect(c).toMatch(/^not-in-\[\[data-animated-month\]/);
+        }
+      }
+      // November remounted (first month now): the preview is there, at rest.
+      const nov2 = dayButton(2, 10);
+      expect(startHalf(nov2)).toHaveAttribute("data-state", "on");
+      expect(startHalf(nov2)).toHaveAttribute("data-tint", "preview");
+      expect(startHalf(nov2)).not.toHaveAttribute("data-animate");
+      expect(ghost(dayButton(3, 10))).toHaveAttribute("data-state", "on");
+      expect(ghost(dayButton(3, 10))).not.toHaveAttribute("data-animate");
+      finishMonthChange();
+    });
+
+    it("reduced motion: the preview only fades (the sweep and pop already do), the ghost snaps", () => {
+      // Duration × --godui-motion: 0s, a snap.
+      expect(token("godui-calendar-ghost-glide")).toContain(
+        "calc(var(--godui-calendar-preview-sweep) * var(--godui-motion))",
+      );
+      expect(keyframes("godui-calendar-track-in")).toContain(
+        "opacity: var(--godui-motion)",
+      );
+      expect(keyframes("godui-calendar-fill-in")).toContain(
+        "scale: calc(1 - 0.4 * var(--godui-motion))",
       );
     });
   });

@@ -477,3 +477,278 @@ test("RTL: a forward sweep grows from the right, a backward one from the left", 
   const backward = await origin("2026-10-03", "end");
   expect(backward.x).toBeCloseTo(0, 0);
 });
+
+// ── Range preview ────────────────────────────────────────────────────────────
+// `range-preview`: Oct 8 picked (a one-day range), two months.
+
+const PREVIEW = "ui-calendar--range-preview";
+
+/** The center of a day's button. */
+async function dayCenter(page: Page, iso: string) {
+  const box = await day(page, iso).boundingBox();
+  if (!box) throw new Error(`no day ${iso}`);
+  return { x: box.x + box.width / 2, y: box.y + box.height / 2 };
+}
+
+/** Move the mouse onto `iso`'s center in `steps` moves (one per frame). */
+async function pointAt(page: Page, iso: string, steps = 1) {
+  const { x, y } = await dayCenter(page, iso);
+  await page.mouse.move(x, y, { steps });
+}
+
+test("the first hover pops the ghost end and sweeps the preview's track on the compositor", async ({
+  page,
+}) => {
+  const result = await traceInteraction(page, {
+    storyId: PREVIEW,
+    setup: async (p) => {
+      await p.mouse.move(2, 2);
+    },
+    act: async (p) => {
+      await pointAt(p, "2026-10-14");
+    },
+    windowMs: 500,
+  });
+  // Oct 8 → 14: 13 track halves sweep, the ghost pops.
+  expect(result.animationCount).toBeGreaterThanOrEqual(14);
+  expectGpuOnly(result);
+});
+
+test("moving along a row extends the preview and glides the ghost on the compositor, with no layout per day", async ({
+  page,
+}) => {
+  const result = await traceInteraction(page, {
+    storyId: PREVIEW,
+    setup: async (p) => {
+      await p.mouse.move(2, 2);
+      await pointAt(p, "2026-10-12");
+    },
+    act: async (p) => {
+      // Mouse speed: a day every ~3 frames, across the row and back.
+      for (const iso of [
+        "2026-10-13",
+        "2026-10-14",
+        "2026-10-15",
+        "2026-10-16",
+        "2026-10-17",
+        "2026-10-16",
+        "2026-10-15",
+      ]) {
+        await pointAt(p, iso, 3);
+      }
+    },
+    windowMs: 400,
+  });
+  // Each step sweeps (or fades) two halves and glides the ghost: 21. The
+  // trace undercounts them (Chrome reuses a finished animation's trace id),
+  // so this only proves the window saw animations; the ghost sampler below
+  // checks each step moves it.
+  expect(result.animationCount).toBeGreaterThanOrEqual(5);
+  // Moving the preview changes attributes on layers every day already
+  // carries: no DOM insertion, so no layout at all after the first frame.
+  expectGpuOnly(result);
+});
+
+test("clicking commits the preview on the compositor: the tint fades in, the end pops", async ({
+  page,
+}) => {
+  const result = await traceInteraction(page, {
+    storyId: PREVIEW,
+    setup: async (p) => {
+      await p.mouse.move(2, 2);
+      await pointAt(p, "2026-10-14");
+    },
+    act: async (p) => {
+      await p.mouse.down();
+      await p.mouse.up();
+    },
+    windowMs: 600,
+  });
+  expect(result.animationCount).toBeGreaterThanOrEqual(3);
+  expectGpuOnly(result, FILL_SETTLES);
+});
+
+/**
+ * Every frame for `ms` after `act`: each drawn (on) track half's computed
+ * scale and whether it runs a sweep.
+ */
+async function sampleTrack(page: Page, ms: number) {
+  return page.evaluate(async (ms) => {
+    const frames: Array<{ scale: string; sweeping: boolean }[]> = [];
+    const start = performance.now();
+    while (performance.now() - start < ms) {
+      await new Promise(requestAnimationFrame);
+      frames.push(
+        [
+          ...document.querySelectorAll<HTMLElement>(
+            "[data-calendar-layer^=track][data-state=on]",
+          ),
+        ].map((el) => ({
+          scale: getComputedStyle(el).scale,
+          sweeping: el
+            .getAnimations()
+            .some(
+              (a) =>
+                (a as CSSAnimation).animationName ===
+                  "godui-calendar-track-in" && a.playState === "running",
+            ),
+        })),
+      );
+    }
+    return frames;
+  }, ms);
+}
+
+test("committing doesn't re-sweep: every drawn half stays at full width while the end pops", async ({
+  page,
+}) => {
+  await page.goto(`/iframe.html?id=${PREVIEW}&viewMode=story`);
+  await page.waitForLoadState("networkidle");
+  await page.mouse.move(2, 2);
+  await pointAt(page, "2026-10-21");
+  await page.waitForTimeout(500);
+  const drawn = await page
+    .locator("[data-calendar-layer^=track][data-state=on]")
+    .count();
+  expect(drawn).toBe(27); // Oct 8 → 21, with the cap
+  await page.mouse.down();
+  await page.mouse.up();
+  const frames = await sampleTrack(page, 300);
+  expect(frames.length).toBeGreaterThan(10);
+  for (const [i, frame] of frames.entries()) {
+    expect(frame.length, `frame ${i}`).toBe(26); // the cap gave way
+    for (const half of frame) {
+      expect(half.sweeping, `frame ${i}`).toBe(false);
+      expect(["1", "none"], `frame ${i}`).toContain(half.scale);
+    }
+  }
+});
+
+/** The ghost end on screen: its visible box's center x (null if none). */
+async function sampleGhost(page: Page, ms: number, act: () => Promise<void>) {
+  await page.evaluate((ms) => {
+    const w = window as unknown as { __ghost: Array<number | null> };
+    w.__ghost = [];
+    const start = performance.now();
+    const tick = () => {
+      const on = [
+        ...document.querySelectorAll<HTMLElement>(
+          "[data-calendar-layer=ghost][data-state=on]",
+        ),
+      ].filter(
+        (el) => !el.closest('[aria-hidden="true"][data-animated-month]'),
+      );
+      const box = on[0]?.getBoundingClientRect();
+      w.__ghost.push(box ? box.x + box.width / 2 : null);
+      if (performance.now() - start < ms) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }, ms);
+  await act();
+  await page.waitForTimeout(ms + 50);
+  return page.evaluate(
+    () => (window as unknown as { __ghost: Array<number | null> }).__ghost,
+  );
+}
+
+for (const dir of ["ltr", "rtl"] as const) {
+  test(`${dir}: at mouse speed the ghost moves only toward the pointer, along the row, never back`, async ({
+    page,
+  }) => {
+    if (dir === "ltr") {
+      await page.goto(`/iframe.html?id=${PREVIEW}&viewMode=story`);
+    } else {
+      // The RTL story's range is Oct 7 – 16: clicking its end makes it a
+      // one-day range there.
+      await page.goto("/iframe.html?id=ui-calendar--rtl&viewMode=story");
+    }
+    await page.waitForLoadState("networkidle");
+    await page.mouse.move(2, 2);
+    if (dir === "rtl") {
+      await day(page, "2026-10-16").click();
+      await page.mouse.move(2, 2);
+      await page.waitForTimeout(400);
+    }
+    const [first, ...rest] =
+      dir === "ltr"
+        ? [
+            "2026-10-11",
+            "2026-10-12",
+            "2026-10-13",
+            "2026-10-14",
+            "2026-10-15",
+            "2026-10-16",
+            "2026-10-17",
+          ]
+        : [
+            "2026-10-18",
+            "2026-10-19",
+            "2026-10-20",
+            "2026-10-21",
+            "2026-10-22",
+            "2026-10-23",
+            "2026-10-24",
+          ];
+    await pointAt(page, first as string);
+    await page.waitForTimeout(400);
+    const xs = await sampleGhost(page, 450, async () => {
+      for (const iso of rest) await pointAt(page, iso, 2);
+    });
+    const seen = xs.filter((x): x is number => x !== null);
+    expect(seen.length).toBeGreaterThan(15);
+    // Later days are to the right in LTR, to the left in RTL.
+    const sign = dir === "ltr" ? 1 : -1;
+    for (let i = 1; i < seen.length; i++) {
+      expect(
+        sign * ((seen[i] as number) - (seen[i - 1] as number)),
+        `frame ${i}: ${seen.slice(Math.max(0, i - 3), i + 2).map((x) => x.toFixed(1))}`,
+      ).toBeGreaterThanOrEqual(-0.5);
+    }
+    // It ends on the last day hovered.
+    const last = await dayCenter(page, rest.at(-1) as string);
+    expect(seen.at(-1)).toBeCloseTo(last.x, 0);
+  });
+}
+
+/** A pixel inside `iso`'s button, away from its number (its lower-left corner area). */
+async function trackPixel(page: Page, iso: string) {
+  const [px] = await samplePixels(page, day(page, iso), [[0.08, 0.85]]);
+  return px as number[];
+}
+
+for (const theme of ["light", "dark"] as const) {
+  test(`${theme}: a preview's track is a lighter tint than the committed range's`, async ({
+    page,
+  }) => {
+    await page.goto(
+      `/iframe.html?id=${PREVIEW}&viewMode=story&globals=theme:${theme}`,
+    );
+    await page.waitForLoadState("networkidle");
+    await page.mouse.move(2, 2);
+    const [accent, background] = [
+      await tokenRgb(page, "--accent"),
+      await tokenRgb(page, "--background"),
+    ];
+    await pointAt(page, "2026-10-14");
+    await page.waitForTimeout(500);
+    const preview = await trackPixel(page, "2026-10-11");
+    // Half the accent over the background.
+    expectColor(
+      preview,
+      accent.map((c, i) => Math.round((c + (background[i] as number)) / 2)),
+      "preview",
+    );
+    await page.mouse.down();
+    await page.mouse.up();
+    await page.waitForTimeout(500);
+    const committed = await trackPixel(page, "2026-10-11");
+    expectColor(committed, accent, "committed");
+    // Distinct: the lighter one is the preview (closer to the background).
+    const distance = (a: number[], b: number[]) =>
+      a.reduce((sum, c, i) => sum + Math.abs(c - (b[i] as number)), 0);
+    expect(distance(preview, committed)).toBeGreaterThanOrEqual(6);
+    expect(distance(preview, background)).toBeLessThan(
+      distance(committed, background),
+    );
+  });
+}

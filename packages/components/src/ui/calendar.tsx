@@ -8,9 +8,14 @@
 // one hides at once. Picking a day pops a fill layer that carries its own copy
 // of the number while it animates; the deselected day's fill shrinks away. A
 // range's track sweeps out from the day picked first, cell by cell, in the
-// same total time however long it is. Hover fades an overlay; the focus ring
-// fades in on entering the grid and jumps between days on keys. Nothing
-// animates on first paint or month navigation. GPU-only (transform, opacity).
+// same total time however long it is. Once a range's first day is picked,
+// hovering (or focusing) a day previews the range it would make: a lighter
+// track sweeps out to a ghost end pill that glides along the row with the
+// sweep's front; clicking commits it in place (the tint deepens, the end
+// pops, nothing re-sweeps), leaving the grid folds it away. Hover fades an
+// overlay; the focus ring fades in on entering the grid and jumps between
+// days on keys. Nothing animates on first paint or month navigation.
+// GPU-only (transform, opacity).
 
 import {
   ChevronDownIcon,
@@ -19,11 +24,14 @@ import {
 } from "lucide-react";
 import * as React from "react";
 import {
+  addToRange,
   type CustomComponents,
   type DateRange,
   type DayButton,
   DayPicker,
   getDefaultClassNames,
+  type Matcher,
+  rangeContainsModifiers,
   useDayPicker,
 } from "react-day-picker";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -70,8 +78,11 @@ function Calendar({
   buttonVariant?: React.ComponentProps<typeof Button>["variant"];
 }) {
   const defaultClassNames = getDefaultClassNames();
+  // The range preview's hovered day, shared by the days (see CalendarDayButton).
+  const [preview] = React.useState(createPreviewStore);
+  React.useEffect(() => preview.dispose, [preview]);
 
-  return (
+  const calendar = (
     <DayPicker
       showOutsideDays={showOutsideDays}
       animate={animate}
@@ -87,10 +98,12 @@ function Calendar({
         // drift-out: how far the old ones leave; caption-drift: the caption's
         // shorter trip (it exits half of it); delay: the new month's beat after
         // the old one starts leaving; sweep: how long a range's track takes
-        // to draw, however many days it spans; caption-lag: how much later
-        // than the weeks the new caption starts (it ends with them);
-        // ease-out: the old month's and caption's exit curve.
-        "[--godui-calendar-caption-drift:14px] [--godui-calendar-caption-lag:40ms] [--godui-calendar-delay:20ms] [--godui-calendar-ease-out:cubic-bezier(0.25,0.46,0.45,0.94)] [--godui-calendar-dir:1] [--godui-calendar-drift-out:12%] [--godui-calendar-drift:25%] [--godui-calendar-sweep:240ms] rtl:[--godui-calendar-dir:-1]",
+        // to draw, however many days it spans; preview-sweep: the same for
+        // a hover preview (and the ghost end's glide), quicker so it keeps
+        // up with the pointer; caption-lag: how much later than the weeks
+        // the new caption starts (it ends with them); ease-out: the old
+        // month's and caption's exit curve.
+        "[--godui-calendar-caption-drift:14px] [--godui-calendar-caption-lag:40ms] [--godui-calendar-delay:20ms] [--godui-calendar-ease-out:cubic-bezier(0.25,0.46,0.45,0.94)] [--godui-calendar-dir:1] [--godui-calendar-drift-out:12%] [--godui-calendar-drift:25%] [--godui-calendar-preview-sweep:160ms] [--godui-calendar-sweep:240ms] rtl:[--godui-calendar-dir:-1]",
         className,
       )}
       captionLayout={captionLayout}
@@ -190,11 +203,18 @@ function Calendar({
         Root: CalendarRoot,
         Chevron: CalendarChevron,
         DayButton: CalendarDayButton,
+        MonthGrid: CalendarMonthGrid,
         WeekNumber: CalendarWeekNumber,
         ...components,
       }}
       {...props}
     />
+  );
+
+  return (
+    <CalendarPreviewContext.Provider value={preview}>
+      {calendar}
+    </CalendarPreviewContext.Provider>
   );
 }
 
@@ -254,8 +274,20 @@ function dayIndex(date: Date) {
   );
 }
 
-/** A selected range as day indices, `from <= to`; a lone `from` is one day. */
-type Span = { from: number; to: number } | null;
+/**
+ * A selected range as day indices, `from <= to`; a lone `from` is one day.
+ * A hover preview's track also covers its ghost end's outer half (`cap`), so
+ * the ghost lies on one tint and its leading edge rides the sweep's front.
+ */
+type Span = { from: number; to: number; cap?: "from" | "to" } | null;
+
+function spanOf(range: DateRange | undefined): Span {
+  const from = range?.from ? dayIndex(range.from) : null;
+  const to = range?.to ? dayIndex(range.to) : from;
+  return from === null || to === null
+    ? null
+    : { from: Math.min(from, to), to: Math.max(from, to) };
+}
 
 /**
  * The half-cells a range's track covers, in half-day units: day `d`'s start
@@ -264,7 +296,10 @@ type Span = { from: number; to: number } | null;
  */
 function trackUnits(span: Span): [number, number] | null {
   if (!span || span.from >= span.to) return null;
-  return [2 * span.from + 1, 2 * span.to];
+  return [
+    2 * span.from + (span.cap === "from" ? 0 : 1),
+    2 * span.to + (span.cap === "to" ? 1 : 0),
+  ];
 }
 
 function covers(units: [number, number] | null, unit: number) {
@@ -276,9 +311,11 @@ function covers(units: [number, number] | null, unit: number) {
  * shares of the sweep's duration) and grows `forward` (toward later days) or
  * back. The halves run back to back, each linear, so the sweep's front is one
  * continuous edge; their slices follow an ease-out cubic, so the front starts
- * fast and settles into the day you picked.
+ * fast and settles into the day you picked. A hover preview's sweep is
+ * `quick` (--godui-calendar-preview-sweep), and keeps that timing if it's
+ * committed mid-sweep.
  */
-type Wave = { at: number; span: number; forward: boolean };
+type Wave = { at: number; span: number; forward: boolean; quick?: boolean };
 
 /** When an ease-out-cubic front reaches `x` (a share of the way): its inverse. */
 const reachedAt = (x: number) => 1 - (1 - x) ** (1 / 3);
@@ -298,10 +335,16 @@ function sweep(
 /**
  * Where a newly covered half sits in the sweep that draws it. Only the new
  * part of a range sweeps, outward from the part already drawn; a new range
- * sweeps away from the day picked first. Slices are spread over the new
- * part, so every sweep takes the same total time.
+ * sweeps away from the day picked first (`anchor`, for a preview; else the
+ * one-day range it grew from). Slices are spread over the new part, so every
+ * sweep takes the same total time.
  */
-function waveFor(unit: number, previous: Span, next: Span): Wave {
+function waveFor(
+  unit: number,
+  previous: Span,
+  next: Span,
+  anchor: number | null,
+): Wave {
   const [first, last] = trackUnits(next) ?? [unit, unit];
   const drawn = trackUnits(previous);
   if (drawn && drawn[1] >= first && drawn[0] <= last) {
@@ -310,28 +353,257 @@ function waveFor(unit: number, previous: Span, next: Span): Wave {
       : sweep(unit, first, drawn[0] - 1, false);
   }
   const fromEnd =
-    previous !== null &&
-    next !== null &&
-    previous.from === previous.to &&
-    previous.from === next.to;
+    anchor !== null
+      ? next?.to === anchor
+      : previous !== null &&
+        next !== null &&
+        previous.from === previous.to &&
+        previous.from === next.to;
   return sweep(unit, first, last, !fromEnd);
 }
+
+// ── Range preview ────────────────────────────────────────────────────────────
+
+/**
+ * How long the preview holds after the pointer leaves a month's grid for the
+ * space between two months: long enough to cross to the other one.
+ */
+const PREVIEW_GRACE_MS = 80;
+
+/** The day a range preview runs to: the hovered or focused day. */
+type PreviewTarget = {
+  date: Date;
+  index: number;
+  /** Its week row: the ghost end glides only along a row. */
+  row: Element | null;
+};
+
+/** The range props that decide what a click would select (React DayPicker's rules). */
+type RangeRules = {
+  disabled?: Matcher | Matcher[];
+  excludeDisabled?: boolean;
+  max?: number;
+  min?: number;
+  required?: boolean;
+  resetOnSelect?: boolean;
+};
+
+/**
+ * The range a click on `target` would make, if a range is pending (its first
+ * day picked: a one-day range, or no `to` yet) and the click would extend it
+ * — the same rules React DayPicker applies (`min`, `max`, `required`,
+ * `excludeDisabled`, `resetOnSelect`). Anything else would start over: no
+ * preview.
+ */
+function predictSpan(
+  target: PreviewTarget | null,
+  range: DateRange | undefined,
+  rules: RangeRules,
+): Span {
+  if (!target || !range?.from) return null;
+  if (range.to && dayIndex(range.to) !== dayIndex(range.from)) return null;
+  if (range.to && rules.resetOnSelect) return null;
+  const next = addToRange(
+    target.date,
+    range,
+    rules.min,
+    rules.max,
+    Boolean(rules.required),
+  );
+  if (!next?.from || !next.to) return null;
+  if (
+    rules.excludeDisabled &&
+    rules.disabled &&
+    rangeContainsModifiers({ from: next.from, to: next.to }, rules.disabled)
+  ) {
+    return null;
+  }
+  const span = spanOf(next);
+  if (!span || span.from === span.to) return null;
+  return { ...span, cap: span.to === target.index ? "to" : "from" };
+}
+
+/**
+ * The hovered (or focused) day, shared by the days of one Calendar outside
+ * React DayPicker's render: entering a day re-renders the days, not the
+ * picker, and only on a day change (never per pointer move).
+ */
+function createPreviewStore() {
+  let target: PreviewTarget | null = null;
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  let cache: { key: unknown[]; span: Span } | null = null;
+  const listeners = new Set<() => void>();
+  const set = (next: PreviewTarget | null) => {
+    clearTimeout(timer);
+    if (
+      next === target ||
+      (next && target && next.index === target.index && next.row === target.row)
+    ) {
+      return;
+    }
+    target = next;
+    for (const listener of listeners) listener();
+  };
+  return {
+    get: () => target,
+    subscribe(listener: () => void) {
+      listeners.add(listener);
+      return () => {
+        listeners.delete(listener);
+      };
+    },
+    set,
+    /** Clear, unless a day is entered first. */
+    clearSoon() {
+      clearTimeout(timer);
+      timer = setTimeout(() => set(null), PREVIEW_GRACE_MS);
+    },
+    dispose() {
+      clearTimeout(timer);
+    },
+    /** `predictSpan`, worked out once per change for all the days. */
+    preview(
+      at: PreviewTarget | null,
+      range: DateRange | undefined,
+      rules: RangeRules,
+    ): Span {
+      const key = [
+        at,
+        range,
+        rules.min,
+        rules.max,
+        rules.required,
+        rules.resetOnSelect,
+        rules.excludeDisabled,
+        rules.disabled,
+      ];
+      if (!cache || key.some((value, i) => value !== cache?.key[i])) {
+        cache = { key, span: predictSpan(at, range, rules) };
+      }
+      return cache.span;
+    },
+  };
+}
+
+type PreviewStore = ReturnType<typeof createPreviewStore>;
+
+const CalendarPreviewContext = React.createContext<PreviewStore | null>(null);
+
+const noTarget = () => null;
+const noSubscribe = () => () => {};
+
+/** `target` as an Element, if it is one (from any window: iframes). */
+function asElement(target: EventTarget | null): Element | null {
+  return target && typeof (target as Element).closest === "function"
+    ? (target as Element)
+    : null;
+}
+
+/** The Calendar an element belongs to (`null` for a custom Root without `data-slot`). */
+const calendarOf = (el: Element) => el.closest("[data-slot=calendar]");
+
+/**
+ * shadcn's grid table. It also ends a range preview when the pointer leaves
+ * the grid — after a short grace if it went into the space between two
+ * months — or crosses a disabled day (a disabled button gets no mouseenter).
+ */
+function CalendarMonthGrid({
+  onMouseLeave,
+  onMouseOver,
+  ...props
+}: React.ComponentProps<NonNullable<CustomComponents["MonthGrid"]>>) {
+  const preview = React.useContext(CalendarPreviewContext);
+  return (
+    // biome-ignore lint/a11y/useKeyWithMouseEvents: the keyboard side is the day buttons' focus/blur (focus moves the preview, Escape or leaving the grid ends it)
+    <table
+      {...props}
+      onMouseOver={(event) => {
+        onMouseOver?.(event);
+        const cell = asElement(event.target)?.closest("td");
+        if (cell?.hasAttribute("data-disabled")) preview?.set(null);
+      }}
+      onMouseLeave={(event) => {
+        onMouseLeave?.(event);
+        if (!preview) return;
+        const grid = event.currentTarget;
+        const to = asElement(event.relatedTarget);
+        const otherGrid = to?.closest("table");
+        // Straight into the other month's grid (a fast pointer): that grid
+        // takes over, and its own leave ends the preview.
+        if (
+          otherGrid &&
+          otherGrid !== grid &&
+          calendarOf(otherGrid) === calendarOf(grid)
+        ) {
+          return;
+        }
+        // Into the space between two months: the pointer may be crossing.
+        if (to?.contains(grid) && to.querySelectorAll("table").length > 1) {
+          preview.clearSoon();
+          return;
+        }
+        preview.set(null);
+      }}
+    />
+  );
+}
+
+// ── Day ──────────────────────────────────────────────────────────────────────
+
+/** One track half's state (see `trackUnits`). */
+type Half = {
+  on: boolean;
+  /**
+   * Its last change (in or out) happened while the day was on screen: never
+   * on mount.
+   */
+  animate: boolean;
+  /** Its slice of the sweep that drew it. */
+  wave: Wave | null;
+  /**
+   * Whose tint it shows: a hover preview's (lighter) or the range's; kept
+   * while it leaves. `none` until first drawn.
+   */
+  tint: "none" | "preview" | "range";
+  /** Committed while drawn: the range's tint fades in over the preview's. */
+  commit: boolean;
+  /** The preview's cap (its ghost end's outer half): rounded like the pill. */
+  cap: boolean;
+};
+
+const restingHalf = (on: boolean, preview: boolean, cap: boolean): Half => ({
+  on,
+  animate: false,
+  wave: null,
+  tint: !on ? "none" : preview ? "preview" : "range",
+  commit: false,
+  cap: on && cap,
+});
+
+/**
+ * The preview's ghost end pill: it `pop`s in when a preview starts, `glide`s
+ * in from the previous end along a row (`from`: that end, in days from
+ * here), snaps across rows, and `fade`s when the preview folds or commits.
+ */
+type Ghost = {
+  on: boolean;
+  animate: "pop" | "glide" | "fade" | null;
+  from: number;
+};
 
 type DayMotion = {
   filled: boolean;
   span: Span;
-  start: boolean;
-  end: boolean;
+  /** The preview's target, while a preview shows. */
+  tip: PreviewTarget | null;
+  start: Half;
+  end: Half;
+  ghost: Ghost;
   /**
-   * Each layer animates its last change (in or out) only if that change
+   * The fill layer animates its last change (in or out) only if that change
    * happened while the day was on screen: never on mount.
    */
   fillAnimate: boolean;
-  startAnimate: boolean;
-  endAnimate: boolean;
-  /** Each track half's slice of the sweep that drew it. */
-  startWave: Wave | null;
-  endWave: Wave | null;
   /**
    * The fill layer is animating (in or out). Only then does it rise above
    * the button's number and carry its own copy; at rest it lies under the
@@ -343,14 +615,20 @@ type DayMotion = {
 };
 
 const sameSpan = (a: Span, b: Span) =>
-  a === b || (a !== null && b !== null && a.from === b.from && a.to === b.to);
+  a === b ||
+  (a !== null &&
+    b !== null &&
+    a.from === b.from &&
+    a.to === b.to &&
+    a.cap === b.cap);
 
 const TRACK_HALF = {
   start: "start-0 end-1/2",
   end: "start-1/2 end-0",
 };
 // A range-middle cell's track takes the button's corners (rounded at a row's
-// edge); an end's inner half is square, like shadcn's accent cell.
+// edge); an end's inner half is square, like shadcn's accent cell; a
+// preview's cap takes the pill's.
 const TRACK_CORNERS = {
   start: "rounded-ss-[inherit] rounded-es-[inherit]",
   end: "rounded-se-[inherit] rounded-ee-[inherit]",
@@ -358,36 +636,45 @@ const TRACK_CORNERS = {
 
 function CalendarTrackHalf({
   half,
-  on,
-  animate,
+  state,
   middle,
-  wave,
 }: {
   half: "start" | "end";
-  on: boolean;
-  animate: boolean;
+  state: Half;
   middle: boolean;
-  wave: Wave | null;
 }) {
+  const { on, wave } = state;
   return (
     <span
       aria-hidden="true"
       data-calendar-layer={`track-${half}`}
       data-state={on ? "on" : "off"}
-      data-animate={animate || undefined}
+      data-animate={state.animate || undefined}
       data-sweep={wave ? (wave.forward ? "forward" : "backward") : undefined}
+      data-tint={state.tint === "none" ? undefined : state.tint}
+      data-commit={state.commit || undefined}
       style={
         wave
           ? ({
               "--godui-calendar-track-at": wave.at,
               "--godui-calendar-track-span": wave.span,
+              ...(wave.quick && {
+                "--godui-calendar-sweep": "var(--godui-calendar-preview-sweep)",
+              }),
             } as React.CSSProperties)
           : undefined
       }
       className={cn(
-        "pointer-events-none absolute inset-y-0 -z-10 bg-accent",
+        // The range's accent is the ::after; under it, the span's own
+        // lighter tint is what a preview shows. On commit the accent fades
+        // in over it. Layout-free, as Chrome traces showed: the ::after is
+        // an in-flow block (an `absolute` child of a sweeping half lays out
+        // every frame), `isolate` (else its opacity reaching or leaving 1
+        // adds or drops a paint layer: a layout), and hidden until a range
+        // draws the half, so a moving preview never changes it.
+        "pointer-events-none absolute inset-y-0 -z-10 bg-accent/50 after:block after:size-full after:rounded-[inherit] after:bg-accent after:opacity-0 after:isolate data-commit:after:transition-[opacity] data-commit:after:duration-(--godui-duration-fast) data-commit:after:ease-out data-[tint=range]:after:opacity-100",
         TRACK_HALF[half],
-        middle && TRACK_CORNERS[half],
+        (middle || state.cap) && TRACK_CORNERS[half],
         // Each half grows from the side the sweep comes from.
         wave?.forward === false
           ? "origin-right rtl:origin-left"
@@ -410,6 +697,10 @@ function CalendarDayButton({
   day,
   modifiers,
   children,
+  onMouseEnter,
+  onFocus,
+  onBlur,
+  onKeyDown,
   ...props
 }: React.ComponentProps<typeof DayButton>) {
   const defaultClassNames = getDefaultClassNames();
@@ -432,20 +723,40 @@ function CalendarDayButton({
   }, [modifiers.focused]);
 
   const { selected, dayPickerProps } = useDayPicker();
-  const range =
-    dayPickerProps.mode === "range"
-      ? (selected as DateRange | undefined)
-      : undefined;
-  const from = range?.from ? dayIndex(range.from) : null;
-  const to = range?.to ? dayIndex(range.to) : from;
-  const span: Span =
-    from === null || to === null
-      ? null
-      : { from: Math.min(from, to), to: Math.max(from, to) };
+  const isRange = dayPickerProps.mode === "range";
+  const range = isRange ? (selected as DateRange | undefined) : undefined;
+
+  // Range preview: the hovered/focused day, if it would end the pending
+  // range, draws the range a click would make. Purely visual: rdp's
+  // modifiers, aria-selected and your handlers are untouched.
+  const context = React.useContext(CalendarPreviewContext);
+  const store = isRange ? context : null;
+  const target = React.useSyncExternalStore(
+    store?.subscribe ?? noSubscribe,
+    store?.get ?? noTarget,
+    noTarget,
+  );
+  const preview = store
+    ? store.preview(target, range, dayPickerProps as RangeRules)
+    : null;
+  const tip = preview ? target : null;
+  const anchor = preview && range?.from ? dayIndex(range.from) : null;
+
+  const span = preview ?? spanOf(range);
   const date = dayIndex(day.date);
   const units = trackUnits(span);
   const start = covers(units, 2 * date);
   const end = covers(units, 2 * date + 1);
+  const previewMiddle =
+    preview !== null && date > preview.from && date < preview.to;
+  const tipHere = tip !== null && tip.index === date;
+  // The tip's outer half: toward later days, or earlier ones for a preview
+  // that runs back from the anchor.
+  const capHalf = !tipHere ? null : preview?.cap === "from" ? "start" : "end";
+  const point = (el: HTMLElement): PreviewTarget | null =>
+    modifiers.disabled
+      ? null
+      : { date: day.date, index: date, row: el.closest("tr") };
 
   const fillRef = React.useRef<HTMLSpanElement>(null);
   const settleFill = (event: React.AnimationEvent<HTMLSpanElement>) => {
@@ -463,40 +774,78 @@ function CalendarDayButton({
   // Animate only changes that happen while this day is on screen — not first
   // paint, and not month navigation (rdp remounts every day of a newly shown
   // month). The filled day (a single date or a range end) pops; a range's
-  // newly covered halves sweep.
+  // newly covered halves sweep; a preview's ghost end pops, glides or snaps.
+  // A preview that's committed is already drawn: the halves only change
+  // tint.
   const filled = Boolean(modifiers.selected && !modifiers.range_middle);
   const [motion, setMotion] = React.useState<DayMotion>(() => ({
     filled,
     span,
-    start,
-    end,
+    tip,
+    start: restingHalf(start, preview !== null, capHalf === "start"),
+    end: restingHalf(end, preview !== null, capHalf === "end"),
+    ghost: { on: tipHere, animate: null, from: 0 },
     fillAnimate: false,
-    startAnimate: false,
-    endAnimate: false,
-    startWave: null,
-    endWave: null,
     fillMoving: false,
-    hasTrack: start || end,
+    hasTrack: isRange || start || end,
   }));
-  if (motion.filled !== filled || !sameSpan(motion.span, span)) {
+  if (
+    motion.filled !== filled ||
+    !sameSpan(motion.span, span) ||
+    motion.tip !== tip
+  ) {
+    const previewing = preview !== null;
+    const half = (was: Half, on: boolean, unit: number, cap: boolean): Half => {
+      if (on !== was.on) {
+        return on
+          ? {
+              on,
+              animate: true,
+              wave: {
+                ...waveFor(unit, motion.span, span, anchor),
+                quick: previewing,
+              },
+              tint: previewing ? "preview" : "range",
+              commit: false,
+              cap,
+            }
+          : // Leaving, it keeps its tint and corners.
+            { ...was, on, animate: true, wave: null, commit: false };
+      }
+      if (!on) return was;
+      let next = was;
+      const tint = previewing ? "preview" : "range";
+      if (was.tint !== tint) {
+        next = { ...next, tint, commit: was.tint === "preview" };
+      }
+      if (was.cap !== cap) next = { ...next, cap };
+      return next;
+    };
+    // The ghost glides from the previous end along a row, on the same side
+    // of the anchor (never across it: the track starts over there); it
+    // snaps across rows.
+    const was = motion.tip;
+    const ghost: Ghost =
+      tipHere === motion.ghost.on
+        ? motion.ghost
+        : tipHere
+          ? was === null
+            ? { on: true, animate: "pop", from: 0 }
+            : was.row !== null &&
+                was.row === tip?.row &&
+                anchor !== null &&
+                (was.index - anchor) * (date - anchor) > 0
+              ? { on: true, animate: "glide", from: was.index - date }
+              : { on: true, animate: null, from: 0 }
+          : { on: false, animate: tip === null ? "fade" : null, from: 0 };
     setMotion({
       filled,
       span,
-      start,
-      end,
+      tip,
+      start: half(motion.start, start, 2 * date, capHalf === "start"),
+      end: half(motion.end, end, 2 * date + 1, capHalf === "end"),
+      ghost,
       fillAnimate: filled === motion.filled ? motion.fillAnimate : true,
-      startAnimate: start === motion.start ? motion.startAnimate : true,
-      endAnimate: end === motion.end ? motion.endAnimate : true,
-      startWave: !start
-        ? null
-        : motion.start
-          ? motion.startWave
-          : waveFor(2 * date, motion.span, span),
-      endWave: !end
-        ? null
-        : motion.end
-          ? motion.endWave
-          : waveFor(2 * date + 1, motion.span, span),
       fillMoving: filled === motion.filled ? motion.fillMoving : true,
       hasTrack: motion.hasTrack || start || end,
     });
@@ -520,6 +869,7 @@ function CalendarDayButton({
 
   const fillLayer = filled || motion.fillMoving;
   const settled = filled && !motion.fillMoving;
+  const middle = Boolean(modifiers.range_middle) || previewMiddle;
 
   return (
     <Button
@@ -537,6 +887,7 @@ function CalendarDayButton({
       data-range-end={modifiers.range_end}
       data-range-middle={modifiers.range_middle}
       data-fill={filled ? (settled ? "settled" : "moving") : undefined}
+      data-preview={previewMiddle ? "middle" : tipHere ? "end" : undefined}
       className={cn(
         // shadcn's fills (bg-primary on a selected day or range end, bg-accent
         // on the range middle) and its box-shadow focus ring move to layers;
@@ -551,6 +902,12 @@ function CalendarDayButton({
         settled &&
           "text-primary-foreground after:hidden hover:text-primary-foreground dark:hover:text-primary-foreground",
         "hover:bg-transparent dark:hover:bg-transparent after:pointer-events-none after:absolute after:inset-0 after:-z-10 after:rounded-[inherit] after:bg-accent after:opacity-0 after:transition-[opacity] after:duration-100 after:ease-out hover:after:opacity-100 dark:after:bg-accent/50",
+        // A preview's end shows its ghost instead of the hover overlay; its
+        // middle days square off like a range's (rounded at a row's ends).
+        "data-[preview=end]:after:opacity-0! data-[preview=middle]:rounded-none [td:last-child>&]:data-[preview=middle]:rounded-r-md",
+        dayPickerProps.showWeekNumber
+          ? "[td:nth-child(2)>&]:data-[preview=middle]:rounded-l-md"
+          : "[td:first-child>&]:data-[preview=middle]:rounded-l-md",
         // Focus ring: a ::before layer (opacity + scale from 98%) instead of
         // shadcn's ring box-shadow (the Button's own one is off); it fades in
         // only when not moved by keys.
@@ -558,6 +915,31 @@ function CalendarDayButton({
         defaultClassNames.day,
         className,
       )}
+      onMouseEnter={(event) => {
+        onMouseEnter?.(event);
+        store?.set(point(event.currentTarget));
+      }}
+      onFocus={(event) => {
+        onFocus?.(event);
+        store?.set(point(event.currentTarget));
+      }}
+      onBlur={(event) => {
+        onBlur?.(event);
+        // Focus moving to another day (arrow keys) moves the preview there
+        // (its focus event); anywhere else ends it.
+        const next = asElement(event.relatedTarget);
+        if (
+          next?.closest("td[data-day]") &&
+          calendarOf(next) === calendarOf(event.currentTarget)
+        ) {
+          return;
+        }
+        store?.set(null);
+      }}
+      onKeyDown={(event) => {
+        onKeyDown?.(event);
+        if (event.key === "Escape") store?.set(null);
+      }}
       {...props}
     >
       {children}
@@ -565,19 +947,35 @@ function CalendarDayButton({
         <>
           <CalendarTrackHalf
             half="start"
-            on={start}
-            animate={motion.startAnimate}
-            middle={Boolean(modifiers.range_middle)}
-            wave={motion.startWave}
+            state={motion.start}
+            middle={middle}
           />
-          <CalendarTrackHalf
-            half="end"
-            on={end}
-            animate={motion.endAnimate}
-            middle={Boolean(modifiers.range_middle)}
-            wave={motion.endWave}
-          />
+          <CalendarTrackHalf half="end" state={motion.end} middle={middle} />
         </>
+      ) : null}
+      {store ? (
+        // The preview's end: a lighter pill (a tint and a ring), over the
+        // track, under a fill. Rendered on every day of a range calendar,
+        // so moving the preview changes attributes only, no DOM.
+        <span
+          aria-hidden="true"
+          data-calendar-layer="ghost"
+          data-state={motion.ghost.on ? "on" : "off"}
+          data-animate={motion.ghost.animate ?? undefined}
+          style={
+            motion.ghost.animate === "glide"
+              ? ({
+                  "--godui-calendar-ghost-from": motion.ghost.from,
+                } as React.CSSProperties)
+              : undefined
+          }
+          className={cn(
+            "pointer-events-none absolute inset-0 -z-10 rounded-[inherit] bg-primary/10 ring-1 ring-primary/35 ring-inset",
+            motion.ghost.on
+              ? "not-in-[[data-animated-month][aria-hidden=true]]:data-[animate=glide]:animate-godui-calendar-ghost-glide not-in-[[data-animated-month][aria-hidden=true]]:data-[animate=pop]:animate-godui-calendar-fill-in"
+              : "opacity-0 not-in-[[data-animated-month][aria-hidden=true]]:data-[animate=fade]:animate-godui-calendar-fade-out",
+          )}
+        />
       ) : null}
       {fillLayer ? (
         // The fill (its ::before) above the range track. While it animates,

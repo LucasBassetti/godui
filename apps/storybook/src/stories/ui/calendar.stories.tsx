@@ -66,6 +66,33 @@ export const RangeTwoMonths: Story = {
 };
 
 /**
+ * A range with its first day picked (Oct 8). Hover a day, or move the focus
+ * with the arrow keys: a lighter track sweeps out to a ghost end that glides
+ * along the row; click to commit it in place (the tint deepens, the end
+ * pops); leave the grid and it folds back.
+ */
+export const RangePreview: Story = {
+  name: "Range preview",
+  render: function Render(args) {
+    const [range, setRange] = React.useState<DateRange | undefined>({
+      from: new Date(2026, 9, 8),
+      to: new Date(2026, 9, 8),
+    });
+    return (
+      <Calendar
+        {...args}
+        mode="range"
+        defaultMonth={OCTOBER}
+        selected={range}
+        onSelect={setRange}
+        numberOfMonths={2}
+        className="rounded-lg border shadow-sm"
+      />
+    );
+  },
+};
+
+/**
  * Month and year dropdowns in the caption. The weeks still drift; the
  * dropdowns don't move or fade, they show the new month at once.
  */
