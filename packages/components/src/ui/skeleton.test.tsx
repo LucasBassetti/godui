@@ -1,3 +1,6 @@
+import { readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { render, screen } from "@testing-library/react";
 import { expectSlotParity, slotTree } from "../../test/parity";
 import * as Shadcn from "../../test/shadcn/skeleton";
@@ -50,6 +53,26 @@ describe("Skeleton", () => {
     expect(cls).not.toContain("transition");
     // shadcn's pulse only returns under reduced motion.
     expect(cls.split(/\s+/)).not.toContain("animate-pulse");
+  });
+
+  it("RTL: the band sweeps right to left (the same loop, played in reverse)", () => {
+    render(<Godui.Skeleton data-testid="skeleton" />);
+    expect(skeleton().className.split(/\s+/)).toContain(
+      "rtl:after:[animation-direction:reverse]",
+    );
+    // Reversed, the loop starts off the right edge (the keyframe's 100%) and
+    // ends off the left (the -100% resting translate). The curve is
+    // symmetric, so the reversed sweep eases exactly like the forward one.
+    const css = readFileSync(
+      join(dirname(fileURLToPath(import.meta.url)), "../../styles.css"),
+      "utf8",
+    );
+    const curve = css.match(
+      /--animate-godui-shimmer:[^;]*cubic-bezier\(([^)]*)\)/,
+    )?.[1];
+    const [x1, y1, x2, y2] = (curve ?? "").split(",").map(Number);
+    expect(x1 + x2).toBeCloseTo(1);
+    expect(y1 + y2).toBeCloseTo(1);
   });
 
   it("reduced motion: the band is hidden and the block pulses instead", () => {

@@ -30,7 +30,9 @@ That repaints the element every frame.
 GodUI paints the gradient once. It lives on an `::after` layer that covers the
 block, and the layer starts one full width to the left (`-translate-x-full`),
 fully outside it. The animation moves it to one full width to the right, so the
-band enters through the left edge and leaves through the right. The block is
+band enters through the left edge and leaves through the right (under
+`dir="rtl"` the loop plays in reverse, right to left; the curve is symmetric,
+so it eases the same way). The block is
 `overflow-hidden`, which clips whatever is outside it. Only `translate`
 changes, so the layer is promoted once and the compositor slides it.
 
@@ -65,8 +67,9 @@ just an opacity change. The scene shows that pulse.
   isResult
 >
 
-Each block carries its own band, all on the same loop, so a group of skeletons
-sweeps together.
+Each block carries its own band and runs the same 1.6s loop from the moment it
+mounts. Blocks that mount together stay in step; one that mounts later runs
+the same loop, offset by when it arrived.
 
 </LearnChapter>
 
