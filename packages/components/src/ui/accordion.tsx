@@ -9,38 +9,23 @@
 // leaves the flow at once (absolute) and the edge sweeps back up while the
 // rows rise. Every piece starts from where it's drawn, so reversing mid-way
 // never jumps. If a parent centers the accordion, its own box glides to its
-// new spot too, so nothing above the panel jumps. Chevron rotates via
+// new spot too, so nothing above the panel jumps (a nested one only by how
+// far it moved relative to the outer one). The engine is `useReveal`, shared
+// with Collapsible. Chevron rotates via
 // `transform` (Chrome won't composite the individual `rotate` property on an
 // <svg>). GPU-only.
 
 import { ChevronDownIcon } from "lucide-react";
 import { Accordion as AccordionPrimitive } from "radix-ui";
 import * as React from "react";
-import { flushSync } from "react-dom";
 import { useFlipGroup } from "@/hooks/use-flip-group";
 import { useMergedRef } from "@/hooks/use-merged-ref";
+import { type RevealTiming, sweepPanel, useReveal } from "@/hooks/use-reveal";
 import { cn } from "@/lib/utils";
 
-/** Running panel animations (edge, content, fades), cancelled together. */
-const SLIDES = new WeakMap<Element, Animation[]>();
-
-/** The element's current vertical `translate` in px (0 when unset). */
-function drawnY(el: Element): number {
-  const value = el.ownerDocument.defaultView?.getComputedStyle(el).translate;
-  if (!value || value === "none") return 0;
-  return Number.parseFloat(value.trim().split(/\s+/)[1] ?? "0") || 0;
-}
-
-/** A CSS time (`260ms`, `0.3s`) in milliseconds; `fallback` when unset. */
-function toMs(value: string | undefined, fallback: number): number {
-  const n = Number.parseFloat(value ?? "");
-  if (!Number.isFinite(n)) return fallback;
-  return /\ds\s*$/.test(value ?? "") ? n * 1000 : n;
-}
-
 /**
- * The panel's content blocks: its element children when it has no loose text
- * (capped at 4 — later ones share the 4th's beat), else the content itself.
+ * The panel's content blocks: its element children when it has no loose text,
+ * else the content itself.
  */
 function blocksOf(content: HTMLElement): HTMLElement[] {
   const loose = [...content.childNodes].some(
@@ -50,195 +35,34 @@ function blocksOf(content: HTMLElement): HTMLElement[] {
   return loose || children.length === 0 ? [content] : children;
 }
 
-/** Running slides of an accordion root that moved in its parent's layout. */
-const ROOT_SLIDES = new WeakMap<Element, Animation>();
-
-/** `length + offset px`, folded to a plain px value when possible. */
-function plus(length: string, offset: number): string {
-  const px = /^(-?[\d.]+)px$/.exec(length);
-  if (px) return `${Number(px[1]) + offset}px`;
-  return `calc(${length} + ${offset}px)`;
-}
-
 /**
- * The accordion's own box can move when it grows: a parent that centers it
- * (a flex/grid stage, a dialog) shifts it by half the new height in one step.
- * Glide it from where it was drawn at the click (`from`) back to rest, on the
- * panels' clock, so the rows above the panel don't jump either. Only the
- * outermost accordion glides; a nested one rides along.
+ * Sweep the clip edge of the root's own panels that changed: the box (the
+ * panel) slides by its height while its content slides back, so the text
+ * holds still.
  */
-function glideRoot(root: HTMLElement, from: DOMRect, t: PanelTiming) {
-  ROOT_SLIDES.get(root)?.cancel();
-  ROOT_SLIDES.delete(root);
-  if (t.reduce || typeof root.animate !== "function") return;
-  // Nested: the outer accordion sees the same change and glides its own box,
-  // carrying this one with it; gliding here too would move it twice as far.
-  if (root.parentElement?.closest('[data-slot="accordion"]')) return;
-  const now = root.getBoundingClientRect();
-  const dx = from.left - now.left;
-  const dy = from.top - now.top;
-  if (Math.abs(dx) < 0.5 && Math.abs(dy) < 0.5) return;
-  const own = root.ownerDocument.defaultView?.getComputedStyle(root).translate;
-  const [x = "0px", y = "0px"] =
-    own && own !== "none" ? own.trim().split(/\s+/) : [];
-  const animation = root.animate(
-    [
-      { translate: `${plus(x, dx)} ${plus(y, dy)}` },
-      { translate: `${x} ${y}` },
-    ],
-    { duration: t.ms, easing: t.ease },
-  );
-  ROOT_SLIDES.set(root, animation);
-  animation.onfinish = () => {
-    if (ROOT_SLIDES.get(root) === animation) ROOT_SLIDES.delete(root);
-  };
-}
-
-interface PanelTiming {
-  ms: number;
-  /** The rows' spring, shared by the edge. */
-  ease: string;
-  /** The fades' curve (`--ease-out-expo`). */
-  fade: string;
-  stagger: number;
-  reduce: boolean;
-}
-
-/**
- * Sweep a panel's clip edge: the box moves `from → to` and its content the
- * opposite way, so the text holds still on screen while the edge travels.
- * Opening, the content's blocks fade in a beat apart; closing, the body fades
- * out ahead of the edge. Reduced motion: no movement, only the fades.
- */
-function slidePanel(panel: HTMLElement, open: boolean, t: PanelTiming) {
-  const content = panel.firstElementChild as HTMLElement | null;
-  if (!content || typeof panel.animate !== "function") return;
-  const view = panel.ownerDocument.defaultView;
-  const previous = SLIDES.get(panel) ?? [];
-  // Mid-sweep, read what's drawn before cancelling so a reversal carries on
-  // from there. A finished close (held by its fill) starts fresh.
-  const running = previous.some((a) => a.playState !== "finished");
-  const current = running ? drawnY(panel) : null;
-  const blocks = blocksOf(content);
-  const opacities = blocks.map((block) =>
-    running ? Number(view?.getComputedStyle(block).opacity ?? 1) : open ? 0 : 1,
-  );
-  for (const animation of previous) animation.cancel();
-  const fill: FillMode = open ? "backwards" : "forwards";
-  const animations: Animation[] = blocks.map((block, i) =>
-    block.animate([{ opacity: opacities[i] }, { opacity: open ? 1 : 0 }], {
-      duration: t.ms,
-      // Fresh opens cascade; reversals and exits move as one.
-      delay: open && !running ? Math.min(i, 3) * t.stagger : 0,
-      easing: t.fade,
-      fill,
-    }),
-  );
-  const height = panel.offsetHeight;
-  const from = current ?? (open ? -height : 0);
-  const to = open ? 0 : -height;
-  if (!t.reduce && from !== to) {
-    const timing = { duration: t.ms, easing: t.ease, fill };
-    animations.push(
-      panel.animate(
-        [{ translate: `0 ${from}px` }, { translate: `0 ${to}px` }],
-        timing,
-      ),
-      content.animate(
-        [{ translate: `0 ${-from}px` }, { translate: `0 ${-to}px` }],
-        timing,
-      ),
-    );
-  }
-  SLIDES.set(panel, animations);
-  // Radix keeps a closed panel's element (hidden, children dropped), so a
-  // close keeps its forwards fill until the reopen cancels it; an open lets
-  // go once it's done.
-  if (open) {
-    Promise.all(animations.map((a) => a.finished)).then(
-      () => SLIDES.get(panel) === animations && SLIDES.delete(panel),
-      () => {},
-    );
-  }
-}
-
-/**
- * Watches every item's open state under the root (nested accordions too, so
- * their height changes glide this root's rows as well). On a change it FLIPs
- * the rows in the same task — before the snapped layout is painted — and
- * sweeps the clip edge of this root's own panels on the same clock. Opening
- * takes `--godui-duration-base`; a pure collapse the quicker
- * `--godui-duration-fast`. One clock per change keeps every edge and row glued.
- */
-function useAccordionMotion(
-  rootRef: React.RefObject<HTMLElement | null>,
-  flip: (ms: number) => void,
+function sweepItems(
+  root: HTMLElement | null,
+  changed: Map<HTMLElement, boolean>,
+  t: RevealTiming,
 ) {
-  React.useEffect(() => {
-    const root = rootRef.current;
-    const view = root?.ownerDocument.defaultView;
-    if (!root || !view || typeof MutationObserver === "undefined") return;
-    // Where the root is drawn just before a click toggles an item (capture
-    // runs before Radix's handler); a click that toggles nothing forgets it.
-    let before: DOMRect | null = null;
-    const remember = () => {
-      before = root.getBoundingClientRect();
-      view.setTimeout(() => {
-        before = null;
-      });
-    };
-    root.addEventListener("click", remember, true);
-    const observer = new MutationObserver((records) => {
-      const changed = new Map<HTMLElement, boolean>();
-      for (const record of records) {
-        const item = record.target as HTMLElement;
-        if (item.getAttribute("data-slot") !== "accordion-item") continue;
-        const state = item.getAttribute("data-state");
-        if (state === record.oldValue) continue;
-        changed.set(item, state === "open");
-      }
-      if (changed.size === 0) return;
-      const style = view.getComputedStyle(root);
-      const fast = toMs(style.getPropertyValue("--godui-duration-fast"), 150);
-      const opening = [...changed.values()].includes(true);
-      const ms = opening
-        ? toMs(style.getPropertyValue("--godui-duration-base"), 260)
-        : fast;
-      flushSync(() => flip(ms));
-      const ease = style.transitionTimingFunction;
-      const expo =
-        style.getPropertyValue("--ease-out-expo").trim() ||
-        "cubic-bezier(0.16, 1, 0.3, 1)";
-      const timing: PanelTiming = {
-        ms,
-        ease: ease && ease !== "ease" ? ease : expo,
-        fade: expo,
-        stagger: fast / 4,
-        reduce:
-          view.matchMedia?.("(prefers-reduced-motion: reduce)").matches ??
-          false,
-      };
-      if (before) glideRoot(root, before, timing);
-      before = null;
-      for (const [item, open] of changed) {
-        if (item.parentElement !== root) continue;
-        const panel = item.querySelector<HTMLElement>(
-          ':scope > [data-slot="accordion-content"]',
-        );
-        if (panel) slidePanel(panel, open, timing);
-      }
-    });
-    observer.observe(root, {
-      subtree: true,
-      attributes: true,
-      attributeFilter: ["data-state"],
-      attributeOldValue: true,
-    });
-    return () => {
-      observer.disconnect();
-      root.removeEventListener("click", remember, true);
-    };
-  }, [rootRef, flip]);
+  for (const [item, open] of changed) {
+    if (item.parentElement !== root) continue;
+    const panel = item.querySelector<HTMLElement>(
+      ':scope > [data-slot="accordion-content"]',
+    );
+    const content = panel?.firstElementChild as HTMLElement | null;
+    if (!panel || !content) continue;
+    sweepPanel(
+      {
+        box: panel,
+        layers: [content],
+        blocks: blocksOf(content),
+        open,
+        distance: panel.offsetHeight,
+      },
+      t,
+    );
+  }
 }
 
 function Accordion({
@@ -248,10 +72,10 @@ function Accordion({
 }: React.ComponentProps<typeof AccordionPrimitive.Root>) {
   const rootRef = React.useRef<HTMLDivElement>(null);
   const [move, flip] = React.useReducer(
-    (state: { version: number; ms?: number }, ms: number) => ({
-      version: state.version + 1,
-      ms,
-    }),
+    (
+      state: { version: number; ms?: number; ease?: string },
+      next: { ms: number; ease: string },
+    ) => ({ version: state.version + 1, ...next }),
     { version: 0 },
   );
   // Rows whose position changed play an inverse translate back to rest, on
@@ -259,8 +83,15 @@ function Accordion({
   useFlipGroup(rootRef, move.version, {
     selector: ':scope > [data-slot="accordion-item"]',
     duration: move.ms,
+    easing: move.ease,
   });
-  useAccordionMotion(rootRef, flip);
+  // Any open state below the root (nested Accordions and Collapsibles too)
+  // FLIPs the rows in the click's task, before the snapped layout is painted,
+  // and sweeps this root's own changed panels on the same clock.
+  useReveal(rootRef, {
+    flip,
+    sweep: (changed, t) => sweepItems(rootRef.current, changed, t),
+  });
   const setRootRef = useMergedRef(rootRef, ref);
 
   return (
@@ -326,7 +157,7 @@ function AccordionContent({
       // once) and a no-op hold keyframe keeps Radix from unmounting it until
       // its edge has swept up. The box ignores the pointer: mid-sweep it
       // overlaps the trigger; its content takes events back.
-      className="pointer-events-none overflow-hidden text-sm data-[state=closed]:absolute data-[state=closed]:inset-x-0 data-[state=closed]:animate-godui-accordion-hold"
+      className="pointer-events-none overflow-hidden text-sm data-[state=closed]:absolute data-[state=closed]:inset-x-0 data-[state=closed]:animate-godui-reveal-hold"
       {...props}
     >
       <div className={cn("pointer-events-auto pt-0 pb-4", className)}>

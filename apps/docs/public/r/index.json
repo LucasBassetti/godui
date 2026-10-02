@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "revision": "4c352f281e7247fd4b8d53b736822a56af3c3020",
+  "revision": "fab652bb396bc2c279406f7905a83061811eefc8",
   "components": [
     {
       "name": "accordion",
@@ -216,7 +216,7 @@
     {
       "name": "collapsible",
       "title": "Collapsible",
-      "description": "An interactive component which expands/collapses a panel. The panel's height snaps and the content after it slides into place (FLIP); GPU-only.",
+      "description": "An interactive component which expands/collapses a panel. A height animation faked on the compositor: the panel's clip edge sweeps while its content holds still, and the content after the Collapsible rides the edge. GPU-only.",
       "category": "Components",
       "dependencies": ["radix-ui"],
       "registryDependencies": ["utils", "@godui/godui-motion"],
@@ -461,7 +461,7 @@
     {
       "name": "godui-motion",
       "title": "GodUI Motion",
-      "description": "GPU-only motion foundation for GodUI components: spring easings as CSS linear(), shared enter/exit keyframes, reduced-motion fallbacks and a FLIP hook.",
+      "description": "GPU-only motion foundation for GodUI components: spring easings as CSS linear(), shared enter/exit keyframes, reduced-motion fallbacks, a FLIP hook and the faked height animation engine (useReveal).",
       "category": "Components",
       "dependencies": [],
       "registryDependencies": [],

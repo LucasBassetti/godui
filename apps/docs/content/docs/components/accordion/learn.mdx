@@ -91,7 +91,7 @@ from there too.
   code={`<AccordionPrimitive.Content
   className="pointer-events-none overflow-hidden …
     data-[state=closed]:absolute data-[state=closed]:inset-x-0
-    data-[state=closed]:animate-godui-accordion-hold"
+    data-[state=closed]:animate-godui-reveal-hold"
 >`}
 >
 
@@ -99,7 +99,7 @@ A closing panel can't shrink first and let the rows follow, because that is two
 steps. So the moment it closes it leaves the flow (`absolute`): the layout
 collapses at once, the rows below start rising, and the panel's edge sweeps
 back up with them. Radix would hide the panel immediately, so a near-silent
-`godui-accordion-hold` keyframe keeps it mounted until the sweep is done.
+`godui-reveal-hold` keyframe keeps it mounted until the sweep is done.
 
 Closing runs on `--godui-duration-fast`, and the text fades out ahead of the
 edge: exits are quicker and softer than entrances. Opening, the content's

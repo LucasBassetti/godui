@@ -19,8 +19,17 @@ function nestedItems(panel: Element): Element[] {
       item.parentElement?.closest('[data-slot="accordion-content"]') === panel,
   );
 }
+// When set, a nested accordion sits centered in a stage at least this tall
+// inside its outer panel (it grows past it with the inner rows).
+let stage = 0;
+const rowsOf = (root: Element) =>
+  [...root.children].filter(
+    (c) => c.getAttribute("data-slot") === "accordion-item",
+  );
 function panelHeight(panel: Element): number {
-  return ROW + nestedItems(panel).reduce((sum, i) => sum + heightOf(i), 0);
+  const nested = nestedItems(panel);
+  const rows = nested.reduce((sum, i) => sum + heightOf(i), 0);
+  return ROW + (stage && nested.length > 0 ? Math.max(stage, rows) : rows);
 }
 function heightOf(item: Element): number {
   const panel = panelOf(item);
@@ -32,13 +41,11 @@ let centered = false;
 function topOf(el: Element): number {
   const slot = el.getAttribute("data-slot");
   if (slot === "accordion") {
+    const rows = rowsOf(el).reduce((sum, r) => sum + heightOf(r), 0);
     const panel = el.parentElement?.closest('[data-slot="accordion-content"]');
-    if (panel) return topOf(panel);
+    if (panel) return topOf(panel) + (Math.max(stage, rows) - rows) / 2;
     if (!centered) return 0;
-    const rows = [...el.children].filter(
-      (c) => c.getAttribute("data-slot") === "accordion-item",
-    );
-    return -rows.reduce((sum, r) => sum + heightOf(r), 0) / 2;
+    return -rows / 2;
   }
   if (slot === "accordion-content") {
     const item = el.parentElement;
@@ -95,6 +102,7 @@ beforeEach(() => {
 
 afterEach(() => {
   centered = false;
+  stage = 0;
   Element.prototype.getBoundingClientRect = originalRect;
   if (originalOffsetHeight) {
     Object.defineProperty(
@@ -132,7 +140,7 @@ function liveStyles(
   const style = document.createElement("style");
   style.dataset.testAnim = "";
   style.textContent =
-    '[data-slot="accordion-content"][data-state="closed"] { animation-name: godui-accordion-hold; }';
+    '[data-slot="accordion-content"][data-state="closed"] { animation-name: godui-reveal-hold; }';
   document.head.append(style);
   restore.push(() => spy.mockRestore());
 }
@@ -278,7 +286,7 @@ describe("Accordion", () => {
     expect(fades()[0].frames).toEqual([{ opacity: 1 }, { opacity: 0 }]);
     // Radix hides it (and drops its children) once the hold keyframe ends.
     const end = Object.assign(new Event("animationend", { bubbles: true }), {
-      animationName: "godui-accordion-hold",
+      animationName: "godui-reveal-hold",
     });
     act(() => {
       box.dispatchEvent(end);
@@ -324,16 +332,21 @@ describe("Accordion", () => {
 
   it("reversing mid-sweep carries on from where the edge is drawn", async () => {
     let drawn = "";
+    let edgeHandle: Handle | undefined;
+    // Drawn mid-sweep until the edge's sweep is cancelled; then at rest.
     liveStyles((el, prop) =>
       prop === "translate" &&
       el.getAttribute("data-slot") === "accordion-content"
-        ? drawn
+        ? edgeHandle?.cancel.mock.calls.length
+          ? "none"
+          : drawn
         : undefined,
     );
     const user = userEvent.setup();
     render(<Usage ui={Godui} />);
     await click(user, "Product Information");
     const firstHandles = [...handles];
+    edgeHandle = handles.find((_, i) => animate.mock.contexts[i] === panel());
     drawn = "0px -12px";
     await click(user, "Product Information");
     for (const h of firstHandles) expect(h.cancel).toHaveBeenCalled();
@@ -500,6 +513,82 @@ describe("Accordion", () => {
     expect(moves().some((m) => m.el === inner)).toBe(false);
   });
 
+  it("a nested accordion its own stage re-centers glides by that move alone", async () => {
+    // The inner accordion is centered in a fixed-height stage inside the outer
+    // panel: opening it moves it up 20px relative to the outer one, which
+    // itself stays put. Skipping every nested glide made this jump.
+    stage = 200;
+    const { Accordion, AccordionContent, AccordionItem, AccordionTrigger } =
+      Godui;
+    const user = userEvent.setup();
+    render(
+      <Accordion type="single" collapsible defaultValue="outer-a">
+        <AccordionItem value="outer-a">
+          <AccordionTrigger>Outer A</AccordionTrigger>
+          <AccordionContent>
+            <Accordion type="single" collapsible>
+              <AccordionItem value="inner">
+                <AccordionTrigger>Inner</AccordionTrigger>
+                <AccordionContent>Inner body.</AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>,
+    );
+    await act(settle);
+    await click(user, "Inner");
+    const [outer, inner] = document.querySelectorAll('[data-slot="accordion"]');
+    const glide = moves().find((m) => m.el === inner);
+    expect(glide?.frames).toEqual([
+      { translate: "0px 20px" },
+      { translate: "0px 0px" },
+    ]);
+    const edge = moves().find(
+      (m) => m.el === inner.querySelector('[data-slot="accordion-content"]'),
+    );
+    expect(glide?.options).toMatchObject({
+      duration: edge?.options.duration,
+      easing: edge?.options.easing,
+    });
+    expect(moves().some((m) => m.el === outer)).toBe(false);
+  });
+
+  it("a nested accordion that moves with its outer one and relative to it glides by the difference", async () => {
+    // A 60px stage: the inner rows grow 40 → 80, so the stage grows 20px and
+    // the centered outer accordion moves up 10px; the inner one also loses
+    // its 10px centering offset — 20px in all, 10 of them the outer glide's.
+    stage = 60;
+    centered = true;
+    const { Accordion, AccordionContent, AccordionItem, AccordionTrigger } =
+      Godui;
+    const user = userEvent.setup();
+    render(
+      <Accordion type="single" collapsible defaultValue="outer-a">
+        <AccordionItem value="outer-a">
+          <AccordionTrigger>Outer A</AccordionTrigger>
+          <AccordionContent>
+            <Accordion type="single" collapsible>
+              <AccordionItem value="inner">
+                <AccordionTrigger>Inner</AccordionTrigger>
+                <AccordionContent>Inner body.</AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>,
+    );
+    await act(settle);
+    await click(user, "Inner");
+    const [outer, inner] = document.querySelectorAll('[data-slot="accordion"]');
+    expect(moves().find((m) => m.el === outer)?.frames[0]).toEqual({
+      translate: "0px 10px",
+    });
+    expect(moves().find((m) => m.el === inner)?.frames[0]).toEqual({
+      translate: "0px 10px",
+    });
+  });
+
   it("AccordionContent asChild works like shadcn's", () => {
     const { Accordion, AccordionContent, AccordionItem, AccordionTrigger } =
       Godui;
@@ -545,7 +634,7 @@ describe("Accordion", () => {
     expect(box.className).toContain("pointer-events-none");
     expect(box.firstElementChild?.className).toContain("pointer-events-auto");
     expect(box.className).toContain(
-      "data-[state=closed]:animate-godui-accordion-hold",
+      "data-[state=closed]:animate-godui-reveal-hold",
     );
     expect(items()[0].className).toContain("relative");
     expect(

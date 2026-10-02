@@ -15,6 +15,9 @@ import {
   CarouselNext,
   CarouselPrevious,
   Checkbox,
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
   Command,
   CommandGroup,
   CommandItem,
@@ -777,6 +780,73 @@ function AccordionSweep({
   );
 }
 
+const COLLAPSIBLE_SLOW_MS = 1200;
+const COLLAPSIBLE_ROW = "flex h-8 items-center rounded-md border px-3";
+
+/**
+ * The real Collapsible (shadcn's demo shape) on a slowed clock, opening and
+ * closing on a timer. `outlined` outlines the panel box, so you can see it
+ * slide out from under the row above while the rows inside hold still.
+ */
+function CollapsibleSweep({
+  reduced,
+  outlined = false,
+}: {
+  reduced: boolean;
+  outlined?: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    if (reduced) return;
+    const id = setInterval(() => setOpen((v) => !v), COLLAPSIBLE_SLOW_MS * 2);
+    return () => clearInterval(id);
+  }, [reduced]);
+  return (
+    <div className="flex w-64 flex-col gap-2 [--godui-duration-base:1200ms] [--godui-duration-fast:1200ms]">
+      <Collapsible
+        open={open}
+        onOpenChange={() => {}}
+        className="flex flex-col gap-2"
+      >
+        <div className="flex items-center justify-between gap-4 px-1">
+          <Bar className="w-32 bg-[var(--foreground)]/45" />
+          <CollapsibleTrigger
+            tabIndex={-1}
+            className="pointer-events-none size-6 rounded-md bg-[var(--foreground)]/10"
+          />
+        </div>
+        <div className={COLLAPSIBLE_ROW}>
+          <Bar className="w-28 bg-[var(--foreground)]/25" />
+        </div>
+        <CollapsibleContent
+          className={
+            outlined
+              ? "flex flex-col gap-2 outline-1 outline-[var(--foreground)]/40 outline-dashed -outline-offset-1"
+              : "flex flex-col gap-2"
+          }
+        >
+          <div className={COLLAPSIBLE_ROW}>
+            <Bar className="w-24 bg-[var(--foreground)]/25" />
+          </div>
+          <div className={COLLAPSIBLE_ROW}>
+            <Bar className="w-32 bg-[var(--foreground)]/25" />
+          </div>
+        </CollapsibleContent>
+      </Collapsible>
+      <Bar className="mt-2 w-44 bg-[var(--foreground)]/20" />
+      <Bar className="w-36 bg-[var(--foreground)]/20" />
+    </div>
+  );
+}
+
+function CollapsibleWindow({ reduced }: { reduced: boolean }) {
+  return <CollapsibleSweep reduced={reduced} outlined />;
+}
+
+function CollapsibleGlide({ reduced }: { reduced: boolean }) {
+  return <CollapsibleSweep reduced={reduced} />;
+}
+
 function AccordionWindow({ reduced }: { reduced: boolean }) {
   return <AccordionSweep reduced={reduced} outlined />;
 }
@@ -1113,6 +1183,8 @@ const DEMOS = {
   carousel: CarouselGlide,
   "carousel-jump": CarouselJump,
   checkbox: CheckboxToggle,
+  collapsible: CollapsibleGlide,
+  "collapsible-window": CollapsibleWindow,
   command: CommandCycle,
   "focus-ring": FocusRingCompare,
   "focus-ring-slow": FocusRingSlow,

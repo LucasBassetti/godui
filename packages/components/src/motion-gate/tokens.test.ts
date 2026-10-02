@@ -26,6 +26,7 @@ const KEYFRAMES = [
   "godui-fade-out",
   "godui-popover-in",
   "godui-popover-out",
+  "godui-reveal-hold",
 ];
 
 describe("godui-motion tokens", () => {
@@ -101,11 +102,13 @@ describe("godui-motion tokens", () => {
     }
     // No fixed `target`: the CLI places the hook under the project's own
     // `aliases.hooks`, which is also where component imports are rewritten to.
-    const hook = motion.files.find((f: { path: string }) =>
-      f.path.endsWith("hooks/use-flip-group.ts"),
-    );
-    expect(hook).toMatchObject({ type: "registry:hook" });
-    expect(hook).not.toHaveProperty("target");
+    for (const name of ["use-flip-group", "use-reveal"]) {
+      const hook = motion.files.find((f: { path: string }) =>
+        f.path.endsWith(`hooks/${name}.ts`),
+      );
+      expect(hook, name).toMatchObject({ type: "registry:hook" });
+      expect(hook, name).not.toHaveProperty("target");
+    }
   });
 
   it("does not alias --color-muted to the foreground color", () => {

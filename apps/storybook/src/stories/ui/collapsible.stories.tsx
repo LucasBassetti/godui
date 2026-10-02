@@ -17,8 +17,8 @@ type Story = StoryObj<typeof meta>;
 
 const repo = "rounded-md border px-4 py-2 font-mono text-sm";
 
-export const Default: Story = {
-  render: () => (
+function Starred() {
+  return (
     <div className="flex w-[350px] flex-col gap-2 text-foreground">
       <Collapsible className="flex flex-col gap-2">
         <div className="flex items-center justify-between gap-4 px-4">
@@ -42,6 +42,64 @@ export const Default: Story = {
         Content after the collapsible slides into place.
       </p>
       <div className={repo}>Another block below</div>
+    </div>
+  );
+}
+
+export const Default: Story = {
+  render: () => <Starred />,
+};
+
+/** In a stage that centers it vertically, like a docs preview or a dialog. */
+export const Centered: Story = {
+  render: () => (
+    <div className="flex h-[32rem] w-[28rem] items-center justify-center">
+      <Starred />
+    </div>
+  ),
+};
+
+/** A Collapsible inside another one's panel. */
+export const Nested: Story = {
+  render: () => (
+    <div className="flex w-[350px] flex-col gap-2 text-foreground">
+      <Collapsible className="flex flex-col gap-2">
+        <CollapsibleTrigger asChild>
+          <Button variant="outline">Outer</Button>
+        </CollapsibleTrigger>
+        <CollapsibleContent className="flex flex-col gap-2">
+          <div className={repo}>Outer — first</div>
+          <Collapsible className="flex flex-col gap-2">
+            <CollapsibleTrigger asChild>
+              <Button variant="outline">Inner</Button>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="flex flex-col gap-2">
+              <div className={repo}>Inner — first</div>
+              <div className={repo}>Inner — second</div>
+            </CollapsibleContent>
+          </Collapsible>
+          <div className={repo}>Outer — last</div>
+        </CollapsibleContent>
+      </Collapsible>
+      <p className="px-4 text-sm text-muted-foreground">After both</p>
+    </div>
+  ),
+};
+
+/** Loose text in the panel can't hold still while the edge sweeps: it fades. */
+export const PlainText: Story = {
+  render: () => (
+    <div className="flex w-[350px] flex-col gap-2 text-foreground">
+      <Collapsible className="flex flex-col gap-2">
+        <CollapsibleTrigger asChild>
+          <Button variant="outline">Can I use this in my project?</Button>
+        </CollapsibleTrigger>
+        <CollapsibleContent className="px-4 text-sm">
+          Yes. Free to use for personal and commercial projects. No attribution
+          required.
+        </CollapsibleContent>
+      </Collapsible>
+      <p className="px-4 text-sm text-muted-foreground">After the answer</p>
     </div>
   ),
 };

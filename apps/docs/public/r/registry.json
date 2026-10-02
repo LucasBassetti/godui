@@ -149,7 +149,7 @@
       "name": "godui-motion",
       "type": "registry:item",
       "title": "GodUI Motion",
-      "description": "GPU-only motion foundation for GodUI components: spring easings as CSS linear(), shared enter/exit keyframes, reduced-motion fallbacks and a FLIP hook.",
+      "description": "GPU-only motion foundation for GodUI components: spring easings as CSS linear(), shared enter/exit keyframes, reduced-motion fallbacks, a FLIP hook and the faked height animation engine (useReveal).",
       "files": [
         {
           "path": "packages/components/src/hooks/use-flip-group.ts",
@@ -165,6 +165,10 @@
         },
         {
           "path": "packages/components/src/hooks/use-merged-ref.ts",
+          "type": "registry:hook"
+        },
+        {
+          "path": "packages/components/src/hooks/use-reveal.ts",
           "type": "registry:hook"
         }
       ],
@@ -188,7 +192,8 @@
           "animate-godui-fade-in": "godui-fade-in var(--godui-duration-base) var(--ease-spring-snappy) backwards",
           "animate-godui-fade-out": "godui-fade-out var(--godui-duration-fast) var(--ease-out-expo) both",
           "animate-godui-popover-in": "godui-popover-in var(--godui-duration-base) var(--ease-spring-snappy) backwards",
-          "animate-godui-popover-out": "godui-popover-out var(--godui-duration-fast) var(--ease-out-expo) both"
+          "animate-godui-popover-out": "godui-popover-out var(--godui-duration-fast) var(--ease-out-expo) both",
+          "animate-godui-reveal-hold": "godui-reveal-hold var(--godui-duration-base) linear"
         }
       },
       "css": {
@@ -300,6 +305,11 @@
             "opacity": "0",
             "scale": "calc(1 - (1 - var(--godui-enter-scale)) * var(--godui-motion))",
             "translate": "calc(var(--godui-enter-x) * var(--godui-motion)) calc(var(--godui-enter-y) * var(--godui-motion))"
+          }
+        },
+        "@keyframes godui-reveal-hold": {
+          "to": {
+            "opacity": "0.99"
           }
         }
       }
@@ -452,19 +462,7 @@
           "path": "packages/components/src/ui/accordion.tsx",
           "type": "registry:ui"
         }
-      ],
-      "cssVars": {
-        "theme": {
-          "animate-godui-accordion-hold": "godui-accordion-hold var(--godui-duration-base) linear"
-        }
-      },
-      "css": {
-        "@keyframes godui-accordion-hold": {
-          "to": {
-            "opacity": "0.99"
-          }
-        }
-      }
+      ]
     },
     {
       "name": "switch",
@@ -630,7 +628,7 @@
       "name": "collapsible",
       "type": "registry:ui",
       "title": "Collapsible",
-      "description": "An interactive component which expands/collapses a panel. The panel's height snaps and the content after it slides into place (FLIP); GPU-only.",
+      "description": "An interactive component which expands/collapses a panel. A height animation faked on the compositor: the panel's clip edge sweeps while its content holds still, and the content after the Collapsible rides the edge. GPU-only.",
       "dependencies": ["radix-ui"],
       "registryDependencies": ["utils", "@godui/godui-motion"],
       "files": [
