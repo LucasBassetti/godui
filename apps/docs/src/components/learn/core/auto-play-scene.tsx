@@ -38,6 +38,7 @@ import {
   RadioGroup,
   RadioGroupItem,
   Skeleton,
+  Slider,
   Switch,
   Tabs,
   TabsContent,
@@ -761,6 +762,151 @@ function FocusRingSlow({ reduced }: { reduced: boolean }) {
   );
 }
 
+/**
+ * The real Slider, pressed on the timer. The press is imperative in the
+ * component too (`data-pressed` on the root, `data-active` on the thumb it
+ * moves), so the scene sets the same attributes a pointerdown would.
+ */
+function SliderPress({ reduced }: { reduced: boolean }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const on = useToggle(reduced);
+  useEffect(() => {
+    const root = ref.current;
+    const thumb = root?.querySelector('[data-slot="slider-thumb"]');
+    if (!root || !thumb) return;
+    root.toggleAttribute("data-pressed", on);
+    thumb.toggleAttribute("data-active", on);
+  }, [on]);
+  return (
+    <div className="w-64 scale-150">
+      <Slider
+        ref={ref}
+        defaultValue={[60]}
+        aria-label="Demo slider"
+        className="pointer-events-none [--godui-duration-base:700ms] [--godui-duration-fast:700ms]"
+      />
+    </div>
+  );
+}
+
+/** The thumb's ::before halo, forced on the timer (stands in for :hover). */
+function SliderHalo({ reduced }: { reduced: boolean }) {
+  const on = useToggle(reduced) || reduced;
+  return (
+    <div className="w-64 scale-150">
+      <Slider
+        defaultValue={[60]}
+        aria-label="Demo slider"
+        data-halo={on ? "on" : undefined}
+        className="pointer-events-none [--godui-duration-fast:700ms] data-[halo=on]:[&_[data-slot=slider-thumb]]:before:scale-100 data-[halo=on]:[&_[data-slot=slider-thumb]]:before:opacity-100"
+      />
+    </div>
+  );
+}
+
+const SLIDER_STEPS = [
+  { one: 25, two: [20, 55] },
+  { one: 80, two: [45, 90] },
+  { one: 50, two: [10, 70] },
+];
+
+/**
+ * Real Sliders on a slowed clock: a new `value` glides the thumb and the
+ * range together, on one clock.
+ */
+function SliderGlide({ reduced }: { reduced: boolean }) {
+  const [step, setStep] = useState(0);
+  useEffect(() => {
+    if (reduced) return;
+    const id = setInterval(
+      () => setStep((s) => (s + 1) % SLIDER_STEPS.length),
+      STEP_MS * 1.5,
+    );
+    return () => clearInterval(id);
+  }, [reduced]);
+  const { one, two } = SLIDER_STEPS[step];
+  return (
+    <div className="flex w-72 flex-col gap-10">
+      <Slider
+        value={[one]}
+        aria-label="Demo slider"
+        className="pointer-events-none [--godui-duration-base:1100ms]"
+      />
+      <Slider
+        value={two}
+        aria-label="Demo range"
+        className="pointer-events-none [--godui-duration-base:1100ms]"
+      />
+    </div>
+  );
+}
+
+/** Sigmoid give past the end, as the Slider computes it (max 24px). */
+const bandGive = (px: number) => 2 * (1 / (1 + Math.exp(-px / 24)) - 0.5) * 24;
+
+/**
+ * The rubber band, replayed on the real Slider: the scene writes what a drag
+ * past the end writes (`data-dragging`, the stretch vars on the track, the
+ * thumb's ride), then lets go, and the component's own CSS springs it back.
+ */
+function SliderBand({ reduced }: { reduced: boolean }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  useEffect(() => {
+    const root = ref.current;
+    const track = root?.querySelector<HTMLElement>(
+      '[data-slot="slider-track"]',
+    );
+    const thumb = root?.querySelector<HTMLElement>(
+      '[data-slot="slider-thumb"]',
+    );
+    if (reduced || !root || !track || !thumb) return;
+    let frame = 0;
+    let start = 0;
+    const PULL_MS = 700;
+    const loop = (now: number) => {
+      start ||= now;
+      const t = (now - start) % (STEP_MS * 2);
+      if (t < PULL_MS) {
+        root.setAttribute("data-pressed", "");
+        root.setAttribute("data-dragging", "");
+        thumb.setAttribute("data-active", "");
+        const give = bandGive((t / PULL_MS) * 90);
+        const len = track.offsetWidth || 1;
+        track.style.setProperty("--godui-slider-origin", "0% 50%");
+        track.style.setProperty(
+          "--godui-slider-stretch",
+          String(1 + give / len),
+        );
+        track.style.setProperty(
+          "--godui-slider-thin",
+          String(1 - (0.2 * give) / 24),
+        );
+        thumb.style.setProperty("--godui-slider-ride", `${give}px, 0px`);
+      } else if (root.hasAttribute("data-dragging")) {
+        root.removeAttribute("data-pressed");
+        root.removeAttribute("data-dragging");
+        thumb.removeAttribute("data-active");
+        track.style.removeProperty("--godui-slider-stretch");
+        track.style.removeProperty("--godui-slider-thin");
+        thumb.style.removeProperty("--godui-slider-ride");
+      }
+      frame = requestAnimationFrame(loop);
+    };
+    frame = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(frame);
+  }, [reduced]);
+  return (
+    <div className="w-60 scale-150">
+      <Slider
+        ref={ref}
+        defaultValue={[100]}
+        aria-label="Demo slider"
+        className="pointer-events-none [--godui-duration-slow:900ms]"
+      />
+    </div>
+  );
+}
+
 const DEMOS = {
   accordion: AccordionGlide,
   "accordion-window": AccordionWindow,
@@ -780,6 +926,10 @@ const DEMOS = {
   "progress-indeterminate": ProgressIndeterminate,
   radio: RadioCycle,
   skeleton: SkeletonShimmer,
+  "slider-band": SliderBand,
+  "slider-glide": SliderGlide,
+  "slider-halo": SliderHalo,
+  "slider-press": SliderPress,
   "skeleton-pulse": SkeletonPulse,
   toggle: TogglePress,
   "toggle-group": ToggleGroupCycle,

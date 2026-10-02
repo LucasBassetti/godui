@@ -584,7 +584,7 @@
       "name": "slider",
       "type": "registry:ui",
       "title": "Slider",
-      "description": "An input where the user selects a value from within a given range. The held thumb grows on a spring; GPU-only.",
+      "description": "An input where the user selects a value from within a given range. Clicks, keys and new values glide the thumb and range on one clock; a press lifts the thumb and thickens the track; overdrag stretches it like a rubber band; GPU-only.",
       "dependencies": ["radix-ui"],
       "registryDependencies": ["utils", "@godui/godui-motion"],
       "files": [

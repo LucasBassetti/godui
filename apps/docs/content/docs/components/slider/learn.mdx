@@ -1,6 +1,6 @@
 ---
 title: Anatomy of the GodUI Slider
-description: Why the thumb grows while you hold it, and why the drag itself must never be animated.
+description: How a click glides the thumb and the range on one clock without laying out, why the press is set before React renders, and how the track stretches past its end.
 learnPlayer: true
 ---
 
@@ -9,55 +9,169 @@ import { SliderDemo } from "@/components/demos/core/slider-demo";
 <LearnPlayer>
 
 <LearnChapter
-  label="The thumb grows"
-  scene={<SpringCurveScene label="The thumb grows" easing="bouncy" />}
-  code={`<SliderPrimitive.Thumb
-  data-slot="slider-thumb"
-  className="block size-4 shrink-0 rounded-full border border-primary bg-white shadow-sm ring-ring/50
-    transition-[scale] duration-(--godui-duration-base) ease-spring-bouncy
-    active:scale-[1.15] motion-reduce:transition-none hover:ring-4 …"
-/>`}
+  label="Press anywhere"
+  scene={<AutoPlayScene label="Press anywhere" demo="slider-press" />}
+  code={`// pointerdown, capture phase, before Radix moves the value:
+root.setAttribute("data-pressed", "");
+thumb.setAttribute("data-active", ""); // the thumb this press moves
+
+// Thumb:
+"motion-safe:group-data-[pressed]/slider:data-[active]:scale-[1.15]"
+// Track, scaleY so its height never lays out:
+"motion-safe:group-data-[pressed]/slider:data-[orientation=horizontal]:scale-y-150"`}
 >
 
-While the pointer is down on a thumb, `active:scale-[1.15]` makes it grow,
-on the bouncy spring so it overshoots slightly and settles. It's the
-inverse of a button press: a button sinks under your finger, a slider thumb
-lifts toward it, so you can see what you're holding.
+shadcn's thumb has no press state, and `:active` wouldn't help: Radix
+captures the pointer on whatever you pressed, so a press on the track never
+makes the thumb `:active`.
 
-shadcn transitions the thumb's `color` and `box-shadow`, which means the
-hover ring tweens in by repainting. GodUI snaps the ring and animates only
-`scale`.
+GodUI marks the press itself. A capture-phase `pointerdown` listener puts
+`data-pressed` on the root and `data-active` on the thumb that will move
+(the one under the pointer, or the closest one for a track press, the same
+one Radix picks). The thumb lifts to 115% on `ease-spring-bouncy` and the
+track thickens to 150% with `scale`, so neither ever changes size in layout.
+
+These are attributes written straight to the DOM, not React state. A render
+between the press and the first pointer move would arrive a frame late, and
+the next chapters depend on the press being known before Radix commits the
+new value.
 
 </LearnChapter>
 
 <LearnChapter
-  label="Dragging isn't animation"
-  scene={<SpringCurveScene label="Dragging isn't animation" easing="snappy" />}
-  code={`// Radix positions the thumb from the value, every pointermove:
-<span style={{ left: \`calc(\${percent}% + \${offset}px)\` }}>
-  <SliderPrimitive.Thumb … />
-</span>`}
+  label="The halo"
+  scene={<AutoPlayScene label="The halo" demo="slider-halo" />}
+  code={`"relative … shadow-sm
+  before:absolute before:-inset-1 before:rounded-full before:bg-ring/50
+  before:opacity-0 before:scale-60
+  before:transition-[opacity,scale] before:ease-out-expo
+  hover:before:opacity-100 hover:before:scale-100
+  focus-visible:before:opacity-100 focus-visible:before:scale-100
+  after:absolute after:inset-0 after:rounded-full
+  after:border after:border-primary after:bg-white"`}
 >
 
-The thumb and the range follow the pointer exactly. Radix sets their
-position from the current value on every `pointermove`, and nothing eases
-between frames. That's on purpose: an eased drag lags behind your finger and
+shadcn draws hover and focus as `ring-4`, a `box-shadow`, and transitions
+it. A shadow can't run on the compositor, so GodUI draws the same 4px ring as
+a `::before` disc in the same color and fades and grows it in from 60%.
+
+A pseudo-element painted on top of the thumb would cover it while it grows,
+so the body moves to `::after`. The thumb keeps the drop shadow, the halo
+paints over that, and the body paints over the halo: the same stacking order
+as shadcn's ring. Once fully in, the halo matches shadcn's ring pixel for
+pixel.
+
+</LearnChapter>
+
+<LearnChapter
+  label="A range that never resizes"
+  scene={<AutoPlayScene label="A range that never resizes" demo="slider-glide" />}
+  code={`<SliderPrimitive.Range
+  className="… inset-0! origin-top-left
+    [translate:calc(var(--godui-slider-range-start)*100%)_0]
+    [scale:var(--godui-slider-range-size)_1]"
+/>
+
+// Radix still writes style="left: 20%; right: 45%" on every commit.
+// A MutationObserver reads it back into the track's vars:
+--godui-slider-range-start: 0.2;
+--godui-slider-range-size: 0.35;`}
+>
+
+Radix draws the range with inline `left` and `right`, which means layout on
+every change. GodUI overrides both with `inset-0!`, so the range is always as
+long as the track, and moves it with `translate` to its start and `scale` to
+its length, anchored at the top-left. The track is `overflow-hidden`, so
+scaling a plain bar is invisible.
+
+The values come from Radix itself. A MutationObserver watches the range's
+inline style and copies the start and length into two vars, so inverted, RTL,
+vertical and two-thumb sliders are all handled for free: whichever edge Radix
+anchors, the observer reads the physical left and right. The first box is
+also computed during render, so the server HTML already has it.
+
+</LearnChapter>
+
+<LearnChapter
+  label="One clock"
+  scene={<SpringCurveScene label="One clock" easing="snappy" />}
+  code={`// After Radix commits the value (observer, before paint):
+const from = oldSpot + drawnOffset; // where the thumb is drawn now
+thumb.animate(
+  [{ translate: \`\${from - newSpot}px 0px\` }, { translate: "0px 0px" }],
+  timing,
+);
+range.animate([boxFrame(drawnBox), boxFrame(newBox)], timing);
+
+// click, Home/End/Page, new value: 260ms ease-spring-snappy
+// arrow key:                       150ms ease-out-expo`}
+>
+
+The thumb's wrapper snaps to its new spot in the same commit. Before the
+frame is painted, GodUI starts the thumb from where it was drawn with a
+`translate` animation, and starts the range from its drawn box. Both get the
+same duration and the same `linear()` spring, so the end of the range stays
+glued to the thumb every frame instead of poking out ahead or lagging behind.
+
+Interrupting is just another start. A second key press reads where the thumb
+and range are drawn mid-glide and carries on from there, and any other thumb
+still moving is put on the new clock too. Arrow keys use the quicker
+`ease-out-expo` so key repeat retargets cleanly; bigger jumps get the spring.
+
+</LearnChapter>
+
+<LearnChapter
+  label="A drag isn't animated"
+  scene={<SpringCurveScene label="A drag isn't animated" easing="expo" />}
+  code={`if (dragging) return jump >= 12 ? "step" : null; // null = snap
+// data-dragging: after 3px of travel while pressed
+"group-data-[dragging]/slider:[transition:scale_var(--godui-duration-base)_…]"`}
+>
+
+Once the pointer has travelled 3px, the root gets `data-dragging` and any
+glide in flight is dropped. From then on the thumb is wherever Radix puts it
+for the pointer, in the same frame: an eased drag trails your finger and
 feels broken.
 
-Each move writes a new `left`, so dragging does run layout, but only as often
-as the pointer reports, and only while you're dragging. No animation runs,
-so there's no layout tween to move onto the compositor. GodUI's motion
-budget goes to the moment you grab and release the thumb.
+The exception is a coarse `step`. If one step moves the thumb 12px or more,
+jumping would flicker, so each step glides on the quick 150ms curve.
+
+</LearnChapter>
+
+<LearnChapter
+  label="The rubber band"
+  scene={<AutoPlayScene label="The rubber band" demo="slider-band" />}
+  code={`const give = 2 * (1 / (1 + Math.exp(-past / 24)) - 0.5) * 24;
+
+track.style.setProperty("--godui-slider-origin", "0% 50%"); // far end
+track.style.setProperty("--godui-slider-stretch", 1 + give / length);
+track.style.setProperty("--godui-slider-thin", 1 - 0.2 * give / 24);
+thumb.style.setProperty("--godui-slider-ride", \`\${give}px, 0px\`);
+
+// release: the vars go, and the track's transition comes back:
+"[transition:…,transform_var(--godui-duration-slow)_var(--ease-spring-bouncy)]"`}
+>
+
+Past the end of the track, Radix has nothing left to do: the value is at
+its limit. GodUI turns the extra distance into give. A sigmoid makes it
+easy at first and stiffer the further you pull, and it never passes 24px.
+
+The track stretches with `transform: scale()` from its far end and thins
+slightly, and the end thumb rides the stretched end. While you drag, those
+values follow the pointer with no transition. On release `data-dragging`
+goes and the vars are cleared in the same style change, so the transition
+that came back springs the band home on `ease-spring-bouncy`.
 
 </LearnChapter>
 
 <LearnChapter
   label="The result"
-  scene={<LiveResult hint="press and drag a thumb"><SliderDemo /></LiveResult>}
+  scene={<LiveResult hint="click the track, press a key, drag past the end"><SliderDemo /></LiveResult>}
   isResult
 >
 
-Press and hold a thumb, drag it, and let go. Arrow keys step the value too.
+Click anywhere on a track, use the arrow keys or Home and End, drag a thumb,
+then pull it past the end and let go.
 
 </LearnChapter>
 
@@ -65,9 +179,12 @@ Press and hold a thumb, drag it, and let go. Arrow keys step the value too.
 
 ## Why GPU-only
 
-The only animation is the thumb's `scale`. The drag is direct manipulation and
-doesn't animate at all.
+Everything that animates is `translate`, `scale`, `transform` or `opacity`.
+Layout happens only once per value commit, when Radix moves the thumb's
+wrapper, and never while something is animating.
 
 ## Reduced motion
 
-`motion-reduce:transition-none` makes the thumb grow instantly when held.
+Values snap instead of gliding, the press doesn't lift the thumb or thicken
+the track (`motion-safe:`), there's no rubber band, and the halo only fades
+(`motion-reduce:before:scale-100`).
