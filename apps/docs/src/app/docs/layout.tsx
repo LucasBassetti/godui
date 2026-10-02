@@ -27,6 +27,9 @@ export default function Layout({ children }: LayoutProps<"/docs">) {
         style: docsLayoutStyle,
       }}
       sidebar={{ collapsible: false, className: "!items-start" }}
+      // No root-folder switcher atop the sidebar: Extras is reached from the
+      // header, and its pages keep their own sidebar tree.
+      tabs={false}
       links={[{ type: "custom", on: "menu", children: <MobileMenu /> }]}
       slots={{
         header: DocsHeader,
