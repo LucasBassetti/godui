@@ -2,7 +2,7 @@
 
 // GodUI Menubar — mirrors shadcn/ui new-york-v4 components/ui/menubar.tsx (registry snapshot 2026-10-01).
 // Motion: each menu and sub-menu grows from its trigger and drifts out of it on a spring (godui-popover-*);
-// hopping between menus exits the old one while the new one enters. Check and radio indicators pop in from 50%. GPU-only.
+// hopping between menus exits the old one while the new one enters. Check and radio indicators pop in from 50% — only when toggled, never when the menu opens. GPU-only.
 // Additive: an exiting MenubarContent (data-state=closed) ignores outside focus/presses, so it can't dismiss the next menu.
 
 import { CheckIcon, ChevronRightIcon, CircleIcon } from "lucide-react";
@@ -44,11 +44,33 @@ function MenubarPortal({
   return <MenubarPrimitive.Portal data-slot="menubar-portal" {...props} />;
 }
 
+/** The radio group's value, so a radio item can tell when it became checked. */
+const MenubarRadioValueContext = React.createContext<{
+  value: string | undefined;
+} | null>(null);
+
+/**
+ * Pop an indicator only after `checked` changes. Menu content mounts when it
+ * opens, so a pre-checked item starts with this false and stays still; a
+ * toggle while the menu is open flips it (the Checkbox mount rule).
+ */
+function useAnimateOnChange(checked: unknown) {
+  const [animate, setAnimate] = React.useState(false);
+  const [lastChecked, setLastChecked] = React.useState(checked);
+  if (checked !== lastChecked) {
+    setLastChecked(checked);
+    setAnimate(true);
+  }
+  return animate;
+}
+
 function MenubarRadioGroup({
   ...props
 }: React.ComponentProps<typeof MenubarPrimitive.RadioGroup>) {
   return (
-    <MenubarPrimitive.RadioGroup data-slot="menubar-radio-group" {...props} />
+    <MenubarRadioValueContext.Provider value={{ value: props.value }}>
+      <MenubarPrimitive.RadioGroup data-slot="menubar-radio-group" {...props} />
+    </MenubarRadioValueContext.Provider>
   );
 }
 
@@ -78,11 +100,23 @@ function MenubarContent({
   ...props
 }: React.ComponentProps<typeof MenubarPrimitive.Content>) {
   const contentRef = React.useRef<HTMLDivElement | null>(null);
+  // React 19: a callback ref may return its own cleanup; pass it through.
   const composedRef = React.useCallback(
     (node: HTMLDivElement | null) => {
       contentRef.current = node;
-      if (typeof ref === "function") ref(node);
-      else if (ref) ref.current = node;
+      if (typeof ref === "function") {
+        const cleanup = ref(node);
+        return () => {
+          contentRef.current = null;
+          if (typeof cleanup === "function") cleanup();
+          else ref(null);
+        };
+      }
+      if (ref) ref.current = node;
+      return () => {
+        contentRef.current = null;
+        if (ref) ref.current = null;
+      };
     },
     [ref],
   );
@@ -143,18 +177,20 @@ function MenubarCheckboxItem({
   checked,
   ...props
 }: React.ComponentProps<typeof MenubarPrimitive.CheckboxItem>) {
+  const animate = useAnimateOnChange(checked);
   return (
     <MenubarPrimitive.CheckboxItem
       data-slot="menubar-checkbox-item"
+      data-animate={animate || undefined}
       className={cn(
-        "relative flex cursor-default items-center gap-2 rounded-xs py-1.5 pr-2 pl-8 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        "group/menubar-checkbox-item relative flex cursor-default items-center gap-2 rounded-xs py-1.5 pr-2 pl-8 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         className,
       )}
       checked={checked}
       {...props}
     >
       <span className="pointer-events-none absolute left-2 flex size-3.5 items-center justify-center">
-        <MenubarPrimitive.ItemIndicator className="[--godui-enter-scale:0.5] animate-godui-fade-scale-in">
+        <MenubarPrimitive.ItemIndicator className="[--godui-enter-scale:0.5] group-data-[animate=true]/menubar-checkbox-item:animate-godui-fade-scale-in">
           <CheckIcon className="size-4" />
         </MenubarPrimitive.ItemIndicator>
       </span>
@@ -168,17 +204,22 @@ function MenubarRadioItem({
   children,
   ...props
 }: React.ComponentProps<typeof MenubarPrimitive.RadioItem>) {
+  const group = React.useContext(MenubarRadioValueContext);
+  const animate = useAnimateOnChange(
+    group ? group.value === props.value : undefined,
+  );
   return (
     <MenubarPrimitive.RadioItem
       data-slot="menubar-radio-item"
+      data-animate={animate || undefined}
       className={cn(
-        "relative flex cursor-default items-center gap-2 rounded-xs py-1.5 pr-2 pl-8 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        "group/menubar-radio-item relative flex cursor-default items-center gap-2 rounded-xs py-1.5 pr-2 pl-8 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         className,
       )}
       {...props}
     >
       <span className="pointer-events-none absolute left-2 flex size-3.5 items-center justify-center">
-        <MenubarPrimitive.ItemIndicator className="[--godui-enter-scale:0.5] animate-godui-fade-scale-in">
+        <MenubarPrimitive.ItemIndicator className="[--godui-enter-scale:0.5] group-data-[animate=true]/menubar-radio-item:animate-godui-fade-scale-in">
           <CircleIcon className="size-2 fill-current" />
         </MenubarPrimitive.ItemIndicator>
       </span>

@@ -10,9 +10,10 @@ import { ComboboxMultipleDemo } from "@/components/demos/core/combobox-multiple-
 <Workbench>
 
 The shadcn/ui combobox, built on Base UI like shadcn's own. The popup grows
-from the input and drifts out of it on a spring, and the selected item's
-check pops in. In multiple mode, each new chip pops in, and when you remove
-one, the chips after it slide over instead of jumping (FLIP). Only `scale`,
+from the input and drifts out of it on a spring, and the check pops in on
+the item you select. In multiple mode, each chip you add pops in (the chips
+and checks already there when the combobox or popup mounts don't), and when
+you remove one, the chips after it slide over instead of jumping (FLIP). Only `scale`,
 `translate` and `opacity` animate.
 
 <Example label="Default" story="ui-combobox" code={`"use client";

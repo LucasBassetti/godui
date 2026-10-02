@@ -58,13 +58,15 @@ direction and the origin.
       ]}
     />
   }
-  code={`<ContextMenuPrimitive.ItemIndicator className="[--godui-enter-scale:0.5] animate-godui-fade-scale-in">
+  code={`<ContextMenuPrimitive.ItemIndicator className="[--godui-enter-scale:0.5]
+    group-data-[animate=true]/context-menu-checkbox-item:animate-godui-fade-scale-in">
   <CheckIcon className="size-4" />
 </ContextMenuPrimitive.ItemIndicator>`}
 >
 
 Checkbox and radio items show their indicator only while checked, so the
-check pops in from 50% when you pick it, the same as in
+check pops in from 50% when you pick it, and stays still when the menu opens
+on an item that's already checked, the same as in
 [Dropdown Menu](/docs/components/dropdown-menu/learn).
 
 </LearnChapter>

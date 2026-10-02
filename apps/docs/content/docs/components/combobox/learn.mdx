@@ -63,8 +63,9 @@ plays each moved chip's old position back to its new one with `translate`,
 using the same `useFlipGroup` hook as Accordion.
 
 Each chip renders a tiny signal that bumps a counter on mount and unmount,
-the exact commit where the layout changed. New chips pop in with
-`godui-fade-scale-in`. If you remove chips quickly, a chip that's still
+the exact commit where the layout changed. Chips added after the container
+mounted pop in with `godui-fade-scale-in`; the chips of the initial value are
+part of the first paint and don't. If you remove chips quickly, a chip that's still
 sliding starts its next slide from where it's drawn.
 
 </LearnChapter>

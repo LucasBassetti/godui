@@ -199,4 +199,79 @@ describe("Combobox", () => {
     const container = document.querySelector('[data-slot="combobox-chips"]');
     expect(container?.className).not.toContain("transition-[color");
   });
+
+  it("chips on first paint don't pop; a chip added later does", async () => {
+    const user = userEvent.setup();
+    render(<Multiple ui={Godui} />);
+    for (const chip of chips()) {
+      expect(chip).not.toHaveAttribute("data-animate");
+      // The keyframe is gated on data-animate, never applied bare.
+      expect(chip.className.split(" ")).not.toContain(
+        "animate-godui-fade-scale-in",
+      );
+    }
+    await user.click(screen.getByLabelText("Frameworks"));
+    await user.click(await screen.findByRole("option", { name: "SvelteKit" }));
+    await waitFor(() => expect(chips()).toHaveLength(4));
+    const added = chips().find((chip) => chip.textContent === "SvelteKit");
+    expect(added).toHaveAttribute("data-animate", "true");
+    expect(added?.className).toContain(
+      "data-[animate=true]:animate-godui-fade-scale-in",
+    );
+    for (const chip of chips().filter((chip) => chip !== added)) {
+      expect(chip).not.toHaveAttribute("data-animate");
+    }
+  });
+
+  it("the check doesn't pop when the popup opens; it pops when selected while open", async () => {
+    const user = userEvent.setup();
+    render(<Multiple ui={Godui} />);
+    await user.click(screen.getByLabelText("Frameworks"));
+    const indicator = (name: string) =>
+      screen
+        .getByRole("option", { name })
+        .querySelector('[data-slot="combobox-item-indicator"]');
+    const nextjs = await waitFor(() => {
+      const el = indicator("Next.js");
+      expect(el).not.toBeNull();
+      return el as HTMLElement;
+    });
+    expect(nextjs).not.toHaveAttribute("data-animate");
+    expect(nextjs.className.split(" ")).not.toContain(
+      "animate-godui-fade-scale-in",
+    );
+    expect(indicator("SvelteKit")).toBeNull();
+    await user.click(screen.getByRole("option", { name: "SvelteKit" }));
+    const added = await waitFor(() => {
+      const el = indicator("SvelteKit");
+      expect(el).not.toBeNull();
+      return el as HTMLElement;
+    });
+    expect(added).toHaveAttribute("data-animate", "true");
+    expect(added.className).toContain(
+      "data-[animate=true]:animate-godui-fade-scale-in",
+    );
+  });
+
+  it("passes a React 19 callback ref's cleanup through (ComboboxChips)", () => {
+    const cleanup = vi.fn();
+    const seen: Array<HTMLElement | null> = [];
+    const ref = (node: HTMLDivElement | null) => {
+      seen.push(node);
+      return cleanup;
+    };
+    const { unmount } = render(
+      <Godui.Combobox multiple items={FRAMEWORKS}>
+        <Godui.ComboboxChips ref={ref}>
+          <Godui.ComboboxChipsInput aria-label="Frameworks" />
+        </Godui.ComboboxChips>
+      </Godui.Combobox>,
+    );
+    expect(seen[0]).toBe(
+      document.querySelector('[data-slot="combobox-chips"]'),
+    );
+    unmount();
+    expect(cleanup).toHaveBeenCalledTimes(1);
+    expect(seen).not.toContain(null);
+  });
 });

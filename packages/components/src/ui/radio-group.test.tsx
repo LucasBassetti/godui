@@ -1,5 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import * as React from "react";
 import { expectSlotParity, slotTree } from "../../test/parity";
 import * as Shadcn from "../../test/shadcn/radio-group";
 import * as Godui from "./radio-group";
@@ -47,7 +48,88 @@ describe("RadioGroup", () => {
     expect(item.className).toContain("motion-reduce:transition-none");
     expect(item.className).not.toContain("transition-[color");
     const indicator = item.querySelector('[data-slot="radio-group-indicator"]');
-    expect(indicator?.className).toContain("animate-godui-fade-scale-in");
+    expect(indicator?.className).toContain(
+      "group-data-[animate=true]/radio-group-item:animate-godui-fade-scale-in",
+    );
     expect(indicator?.className).toContain("[--godui-enter-scale:0.3]");
+  });
+
+  it("does not pop on first paint", () => {
+    const { unmount } = render(<Usage ui={Godui} />);
+    const item = screen.getByRole("radio", { name: "comfortable" });
+    expect(item).toHaveAttribute("data-state", "checked");
+    expect(item).not.toHaveAttribute("data-animate");
+    // The dot's keyframe is gated on data-animate, never applied bare.
+    const indicator = item.querySelector('[data-slot="radio-group-indicator"]');
+    expect(indicator?.className.split(" ")).not.toContain(
+      "animate-godui-fade-scale-in",
+    );
+    // A remount (same value) is a first paint too.
+    unmount();
+    render(<Usage ui={Godui} />);
+    expect(
+      screen.getByRole("radio", { name: "comfortable" }),
+    ).not.toHaveAttribute("data-animate");
+  });
+
+  it("pops after a change (click)", async () => {
+    const user = userEvent.setup();
+    render(<Usage ui={Godui} />);
+    const compact = screen.getByRole("radio", { name: "compact" });
+    await user.click(compact);
+    expect(compact).toHaveAttribute("data-state", "checked");
+    expect(compact).toHaveAttribute("data-animate", "true");
+    expect(
+      compact.querySelector('[data-slot="radio-group-indicator"]'),
+    ).toBeInTheDocument();
+  });
+
+  it("pops after a controlled change", () => {
+    function Controlled({ value }: { value: string }) {
+      return (
+        <Godui.RadioGroup value={value}>
+          {["a", "b"].map((v) => (
+            <Godui.RadioGroupItem key={v} value={v} aria-label={v} />
+          ))}
+        </Godui.RadioGroup>
+      );
+    }
+    const { rerender } = render(<Controlled value="a" />);
+    expect(screen.getByRole("radio", { name: "a" })).not.toHaveAttribute(
+      "data-animate",
+    );
+    rerender(<Controlled value="b" />);
+    expect(screen.getByRole("radio", { name: "b" })).toHaveAttribute(
+      "data-animate",
+      "true",
+    );
+  });
+
+  it("still calls onValueChange", async () => {
+    const user = userEvent.setup();
+    const onValueChange = vi.fn();
+    function WithHandler() {
+      const [value, setValue] = React.useState("a");
+      return (
+        <Godui.RadioGroup
+          value={value}
+          onValueChange={(next) => {
+            onValueChange(next);
+            setValue(next);
+          }}
+        >
+          {["a", "b"].map((v) => (
+            <Godui.RadioGroupItem key={v} value={v} aria-label={v} />
+          ))}
+        </Godui.RadioGroup>
+      );
+    }
+    render(<WithHandler />);
+    await user.click(screen.getByRole("radio", { name: "b" }));
+    expect(onValueChange).toHaveBeenCalledWith("b");
+    expect(screen.getByRole("radio", { name: "b" })).toHaveAttribute(
+      "data-animate",
+      "true",
+    );
   });
 });

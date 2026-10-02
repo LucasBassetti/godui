@@ -60,15 +60,19 @@ edge first.
     />
   }
   code={`<span className="pointer-events-none absolute left-2 flex size-3.5 items-center justify-center">
-  <DropdownMenuPrimitive.ItemIndicator className="[--godui-enter-scale:0.5] animate-godui-fade-scale-in">
+  <DropdownMenuPrimitive.ItemIndicator className="[--godui-enter-scale:0.5]
+    group-data-[animate=true]/dropdown-menu-checkbox-item:animate-godui-fade-scale-in">
     <CheckIcon className="size-4" />
   </DropdownMenuPrimitive.ItemIndicator>
 </span>`}
 >
 
-Radix mounts `ItemIndicator` only while its item is checked. A keyframe on
-the indicator therefore plays exactly when the check appears: no state
-tracking, no effect.
+Radix mounts `ItemIndicator` only while its item is checked, so a keyframe on
+the indicator plays when the check appears. But the menu's items mount every
+time it opens, and an already-checked item would pop on each open. So the
+keyframe is gated on the item's `data-animate`, which the item sets only once
+its `checked` value changes: opening the menu shows the checks still, and a
+toggle while it's open pops.
 
 The indicator reuses `godui-fade-scale-in` and overrides the start scale
 locally with `--godui-enter-scale: 0.5`, so the check grows from half size

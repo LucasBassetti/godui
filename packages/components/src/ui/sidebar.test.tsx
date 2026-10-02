@@ -289,6 +289,24 @@ describe("Sidebar", () => {
     expect(slot("sidebar-surface")).toBeNull();
     expect(outer().className).toContain("bg-sidebar");
   });
+
+  it("passes a React 19 callback ref's cleanup through (SidebarProvider)", () => {
+    const cleanup = vi.fn();
+    const seen: Array<HTMLElement | null> = [];
+    const ref = (node: HTMLDivElement | null) => {
+      seen.push(node);
+      return cleanup;
+    };
+    const { unmount } = render(
+      <Godui.SidebarProvider ref={ref}>
+        <Godui.SidebarInset />
+      </Godui.SidebarProvider>,
+    );
+    expect(seen[0]).toBe(slot("sidebar-wrapper"));
+    unmount();
+    expect(cleanup).toHaveBeenCalledTimes(1);
+    expect(seen).not.toContain(null);
+  });
 });
 
 describe("Sidebar FLIP", () => {

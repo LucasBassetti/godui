@@ -1,5 +1,6 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import * as React from "react";
 import { expectSlotParity, slotTree } from "../../test/parity";
 import * as Shadcn from "../../test/shadcn/menubar";
 import * as Godui from "./menubar";
@@ -303,5 +304,107 @@ describe("Menubar", () => {
       expect(el.className).not.toMatch(/(^|\s)transition/);
     }
     expect(content()?.className).toContain("animate-godui-popover-in");
+  });
+
+  it("passes a React 19 callback ref's cleanup through (MenubarContent)", () => {
+    const cleanup = vi.fn();
+    const seen: Array<HTMLElement | null> = [];
+    const ref = (node: HTMLDivElement | null) => {
+      seen.push(node);
+      return cleanup;
+    };
+    const { unmount } = render(
+      <Godui.Menubar defaultValue="file">
+        <Godui.MenubarMenu value="file">
+          <Godui.MenubarTrigger>File</Godui.MenubarTrigger>
+          <Godui.MenubarContent ref={ref}>
+            <Godui.MenubarItem>New Tab</Godui.MenubarItem>
+          </Godui.MenubarContent>
+        </Godui.MenubarMenu>
+      </Godui.Menubar>,
+    );
+    expect(seen[0]).toBe(content());
+    unmount();
+    expect(cleanup).toHaveBeenCalledTimes(1);
+    // React calls the cleanup instead of ref(null).
+    expect(seen).not.toContain(null);
+  });
+});
+
+describe("Menubar indicators (mount rule)", () => {
+  const keepOpen = (event: Event) => event.preventDefault();
+
+  function Stateful() {
+    const {
+      MenubarCheckboxItem: CheckboxItem,
+      MenubarRadioGroup: RadioGroup,
+      MenubarRadioItem: RadioItem,
+    } = Godui;
+    const [checked, setChecked] = React.useState(true);
+    const [value, setValue] = React.useState("a");
+    return (
+      <Godui.Menubar>
+        <Godui.MenubarMenu>
+          <Godui.MenubarTrigger>Open</Godui.MenubarTrigger>
+          <Godui.MenubarContent>
+            <CheckboxItem
+              checked={checked}
+              onCheckedChange={setChecked}
+              onSelect={keepOpen}
+            >
+              Bar
+            </CheckboxItem>
+            <RadioGroup value={value} onValueChange={setValue}>
+              <RadioItem value="a" onSelect={keepOpen}>
+                A
+              </RadioItem>
+              <RadioItem value="b" onSelect={keepOpen}>
+                B
+              </RadioItem>
+            </RadioGroup>
+          </Godui.MenubarContent>
+        </Godui.MenubarMenu>
+      </Godui.Menubar>
+    );
+  }
+
+  const checkbox = () => screen.getByRole("menuitemcheckbox", { name: "Bar" });
+  const radio = (name: string) => screen.getByRole("menuitemradio", { name });
+  const indicatorClasses = (item: HTMLElement) =>
+    (item.querySelector('[data-state="checked"]')?.className ?? "").split(" ");
+
+  it("does not pop when the menu opens", async () => {
+    const user = userEvent.setup();
+    render(<Stateful />);
+    await user.click(screen.getByRole("menuitem", { name: "Open" }));
+    for (const item of [checkbox(), radio("A")]) {
+      expect(item).toHaveAttribute("data-state", "checked");
+      expect(item).not.toHaveAttribute("data-animate");
+      // The keyframe is gated on the item's data-animate, never applied bare.
+      expect(indicatorClasses(item)).not.toContain(
+        "animate-godui-fade-scale-in",
+      );
+    }
+  });
+
+  it("pops after a change", async () => {
+    const user = userEvent.setup();
+    render(<Stateful />);
+    await user.click(screen.getByRole("menuitem", { name: "Open" }));
+    await user.click(checkbox());
+    expect(checkbox()).toHaveAttribute("data-state", "unchecked");
+    await user.click(checkbox());
+    expect(checkbox()).toHaveAttribute("data-state", "checked");
+    expect(checkbox()).toHaveAttribute("data-animate", "true");
+    expect(indicatorClasses(checkbox())).toContain(
+      "group-data-[animate=true]/menubar-checkbox-item:animate-godui-fade-scale-in",
+    );
+    expect(radio("B")).not.toHaveAttribute("data-animate");
+    await user.click(radio("B"));
+    expect(radio("B")).toHaveAttribute("data-state", "checked");
+    expect(radio("B")).toHaveAttribute("data-animate", "true");
+    expect(indicatorClasses(radio("B"))).toContain(
+      "group-data-[animate=true]/menubar-radio-item:animate-godui-fade-scale-in",
+    );
   });
 });

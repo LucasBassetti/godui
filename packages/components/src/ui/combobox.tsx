@@ -4,7 +4,8 @@
 // Built on Base UI, as shadcn's is. Motion: the popup grows from its anchor
 // and drifts out of it on a spring (godui-popover-*); the selected check pops
 // in; chips pop in, and when one is removed the chips after it FLIP into
-// place. GPU-only.
+// place. The check and chips pop only when added after their container
+// mounted — never on first paint or when the popup opens. GPU-only.
 
 import { Combobox as ComboboxPrimitive } from "@base-ui/react";
 import { CheckIcon, ChevronDownIcon, XIcon } from "lucide-react";
@@ -148,30 +149,59 @@ function ComboboxList({ className, ...props }: ComboboxPrimitive.List.Props) {
   );
 }
 
+/**
+ * Whether the enclosing item (or chips container) has finished mounting. An
+ * indicator or chip that mounts with it is part of the first paint and stays
+ * still; one that mounts later was just selected and pops.
+ */
+function useMountedRef() {
+  const mounted = React.useRef(false);
+  useIsoLayoutEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+    };
+  }, []);
+  return mounted;
+}
+
+const ComboboxItemMountedContext =
+  React.createContext<React.RefObject<boolean> | null>(null);
+
+/** The check's box; pops only when selected after its item mounted. */
+function ComboboxItemIndicatorBox(props: React.ComponentProps<"span">) {
+  const itemMounted = React.useContext(ComboboxItemMountedContext);
+  const [animate] = React.useState(() => itemMounted?.current ?? false);
+  return <span data-animate={animate || undefined} {...props} />;
+}
+
 function ComboboxItem({
   className,
   children,
   ...props
 }: ComboboxPrimitive.Item.Props) {
+  const mounted = useMountedRef();
   return (
-    <ComboboxPrimitive.Item
-      data-slot="combobox-item"
-      className={cn(
-        "relative flex w-full cursor-default items-center gap-2 rounded-sm py-1.5 pr-8 pl-2 text-sm outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
-        className,
-      )}
-      {...props}
-    >
-      {children}
-      <ComboboxPrimitive.ItemIndicator
-        data-slot="combobox-item-indicator"
-        render={
-          <span className="pointer-events-none absolute right-2 flex size-4 items-center justify-center [--godui-enter-scale:0.5] animate-godui-fade-scale-in" />
-        }
+    <ComboboxItemMountedContext.Provider value={mounted}>
+      <ComboboxPrimitive.Item
+        data-slot="combobox-item"
+        className={cn(
+          "relative flex w-full cursor-default items-center gap-2 rounded-sm py-1.5 pr-8 pl-2 text-sm outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+          className,
+        )}
+        {...props}
       >
-        <CheckIcon className="pointer-events-none size-4 pointer-coarse:size-5" />
-      </ComboboxPrimitive.ItemIndicator>
-    </ComboboxPrimitive.Item>
+        {children}
+        <ComboboxPrimitive.ItemIndicator
+          data-slot="combobox-item-indicator"
+          render={
+            <ComboboxItemIndicatorBox className="pointer-events-none absolute right-2 flex size-4 items-center justify-center [--godui-enter-scale:0.5] data-[animate=true]:animate-godui-fade-scale-in" />
+          }
+        >
+          <CheckIcon className="pointer-events-none size-4 pointer-coarse:size-5" />
+        </ComboboxPrimitive.ItemIndicator>
+      </ComboboxPrimitive.Item>
+    </ComboboxItemMountedContext.Provider>
   );
 }
 
@@ -233,8 +263,14 @@ function ComboboxSeparator({
   );
 }
 
-/** Signals the chips container that a chip mounted or unmounted. */
-const ComboboxChipsFlipContext = React.createContext<(() => void) | null>(null);
+/**
+ * Lets a chip signal the chips container's FLIP when it mounts or unmounts,
+ * and tell whether it was added after the container mounted.
+ */
+const ComboboxChipsFlipContext = React.createContext<{
+  bump: () => void;
+  mounted: React.RefObject<boolean>;
+} | null>(null);
 
 function ComboboxChips({
   className,
@@ -249,16 +285,30 @@ function ComboboxChips({
   useFlipGroup(chipsRef, version, {
     selector: '[data-slot="combobox-chip"], [data-slot="combobox-chip-input"]',
   });
+  const mounted = useMountedRef();
+  const flip = React.useMemo(() => ({ bump, mounted }), [mounted]);
+  // React 19: a callback ref may return its own cleanup; pass it through.
   const setChipsRef = React.useCallback(
     (node: HTMLDivElement | null) => {
       chipsRef.current = node;
-      if (typeof ref === "function") ref(node);
-      else if (ref) ref.current = node;
+      if (typeof ref === "function") {
+        const cleanup = ref(node);
+        return () => {
+          chipsRef.current = null;
+          if (typeof cleanup === "function") cleanup();
+          else ref(null);
+        };
+      }
+      if (ref) ref.current = node;
+      return () => {
+        chipsRef.current = null;
+        if (ref) ref.current = null;
+      };
     },
     [ref],
   );
   return (
-    <ComboboxChipsFlipContext.Provider value={bump}>
+    <ComboboxChipsFlipContext.Provider value={flip}>
       <ComboboxPrimitive.Chips
         ref={setChipsRef}
         data-slot="combobox-chips"
@@ -274,7 +324,7 @@ function ComboboxChips({
 
 /** Bumps the chips container's FLIP signal on mount and unmount. */
 function ComboboxChipFlipSignal() {
-  const bump = React.useContext(ComboboxChipsFlipContext);
+  const bump = React.useContext(ComboboxChipsFlipContext)?.bump;
   useIsoLayoutEffect(() => {
     bump?.();
     return () => bump?.();
@@ -290,11 +340,16 @@ function ComboboxChip({
 }: ComboboxPrimitive.Chip.Props & {
   showRemove?: boolean;
 }) {
+  // Only chips added after the container mounted pop; the initial value's
+  // chips are part of the first paint.
+  const chips = React.useContext(ComboboxChipsFlipContext);
+  const [animate] = React.useState(() => chips?.mounted.current ?? false);
   return (
     <ComboboxPrimitive.Chip
       data-slot="combobox-chip"
+      data-animate={animate || undefined}
       className={cn(
-        "animate-godui-fade-scale-in flex h-[calc(--spacing(5.5))] w-fit items-center justify-center gap-1 rounded-sm bg-muted px-1.5 text-xs font-medium whitespace-nowrap text-foreground has-disabled:pointer-events-none has-disabled:cursor-not-allowed has-disabled:opacity-50 has-data-[slot=combobox-chip-remove]:pr-0",
+        "data-[animate=true]:animate-godui-fade-scale-in flex h-[calc(--spacing(5.5))] w-fit items-center justify-center gap-1 rounded-sm bg-muted px-1.5 text-xs font-medium whitespace-nowrap text-foreground has-disabled:pointer-events-none has-disabled:cursor-not-allowed has-disabled:opacity-50 has-data-[slot=combobox-chip-remove]:pr-0",
         className,
       )}
       {...props}

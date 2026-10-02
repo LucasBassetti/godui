@@ -157,11 +157,23 @@ function useMergedRef<T>(
   local: React.RefObject<T | null>,
   ref: React.Ref<T> | undefined,
 ) {
+  // React 19: a callback ref may return its own cleanup; pass it through.
   return React.useCallback(
     (node: T | null) => {
       local.current = node;
-      if (typeof ref === "function") ref(node);
-      else if (ref) ref.current = node;
+      if (typeof ref === "function") {
+        const cleanup = ref(node);
+        return () => {
+          local.current = null;
+          if (typeof cleanup === "function") cleanup();
+          else ref(null);
+        };
+      }
+      if (ref) ref.current = node;
+      return () => {
+        local.current = null;
+        if (ref) ref.current = null;
+      };
     },
     [local, ref],
   );
