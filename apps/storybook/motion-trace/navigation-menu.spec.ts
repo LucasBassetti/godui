@@ -109,16 +109,32 @@ test("the indicator glides with a running transform transition", async ({
       (el) => new DOMMatrix(getComputedStyle(el).transform).m41,
     );
   const start = await xOf();
+  // Sample every frame from before the hover until a running transform
+  // transition has moved the indicator off its start (bounded at ~1s), so the
+  // check doesn't depend on when Radix reacts to the hover. A fixed 60ms
+  // sample was flaky: sometimes it landed before the glide began.
+  const sampling = indicator.evaluate(async (el, from) => {
+    const read = () => ({
+      x: new DOMMatrix(getComputedStyle(el).transform).m41,
+      target: new DOMMatrix(el.style.transform).m41,
+      transitions: el
+        .getAnimations()
+        .filter((a) => a.playState === "running")
+        .map((a) => (a as CSSTransition).transitionProperty)
+        .filter(Boolean),
+    });
+    for (let frame = 0; frame < 60; frame++) {
+      await new Promise(requestAnimationFrame);
+      const now = read();
+      if (now.transitions.includes("transform") && now.x > from + 0.5) {
+        return { ...now, frame };
+      }
+    }
+    return { ...read(), frame: -1 };
+  }, start);
   await page.getByRole("button", { name: "Components" }).hover();
-  await page.waitForTimeout(60);
-  const mid = await indicator.evaluate((el) => ({
-    x: new DOMMatrix(getComputedStyle(el).transform).m41,
-    target: new DOMMatrix(el.style.transform).m41,
-    transitions: el
-      .getAnimations()
-      .map((a) => (a as CSSTransition).transitionProperty)
-      .filter(Boolean),
-  }));
+  const mid = await sampling;
+  expect(mid.frame, "a transform transition moved it within ~1s").not.toBe(-1);
   expect(mid.transitions).toContain("transform");
   // Mid-flight: past the start, short of where Radix put it.
   expect(mid.x).toBeGreaterThan(start);

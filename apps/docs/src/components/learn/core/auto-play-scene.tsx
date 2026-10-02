@@ -425,8 +425,15 @@ const NAV_ORDER = [0, 1, 2, 1];
  * Real NavigationMenu; the controlled `value` walks right and back, so each
  * switch slides the old content out toward the new trigger and the new one in
  * from the other side. Panels differ in size, so the viewport snaps.
+ * `outlined` dashes the viewport's box, so the snap is visible on its own.
  */
-function NavigationMenuHop({ reduced }: { reduced: boolean }) {
+function NavigationMenuHop({
+  reduced,
+  outlined = false,
+}: {
+  reduced: boolean;
+  outlined?: boolean;
+}) {
   const [step, setStep] = useState(0);
   useEffect(() => {
     if (reduced) return;
@@ -438,7 +445,14 @@ function NavigationMenuHop({ reduced }: { reduced: boolean }) {
   }, [reduced]);
   return (
     <div className="flex h-60 items-start pt-2">
-      <NavigationMenu value={NAV_ITEMS[NAV_ORDER[step]].value}>
+      <NavigationMenu
+        value={NAV_ITEMS[NAV_ORDER[step]].value}
+        className={
+          outlined
+            ? "**:data-[slot=navigation-menu-viewport]:outline-1 **:data-[slot=navigation-menu-viewport]:-outline-offset-1 **:data-[slot=navigation-menu-viewport]:outline-dashed **:data-[slot=navigation-menu-viewport]:outline-[var(--foreground)]/50"
+            : undefined
+        }
+      >
         <NavigationMenuList>
           {NAV_ITEMS.map((item) => (
             <NavigationMenuItem key={item.value} value={item.value}>
@@ -461,6 +475,10 @@ function NavigationMenuHop({ reduced }: { reduced: boolean }) {
       </NavigationMenu>
     </div>
   );
+}
+
+function NavigationMenuSnap({ reduced }: { reduced: boolean }) {
+  return <NavigationMenuHop reduced={reduced} outlined />;
 }
 
 const CAROUSEL_SLIDES = [
@@ -1100,6 +1118,7 @@ const DEMOS = {
   "focus-ring-slow": FocusRingSlow,
   menubar: MenubarHop,
   "navigation-menu": NavigationMenuHop,
+  "navigation-menu-snap": NavigationMenuSnap,
   progress: ProgressStep,
   "progress-indeterminate": ProgressIndeterminate,
   radio: RadioCycle,
