@@ -165,7 +165,11 @@ selected day keeps its fill, as it does in light mode.
 
 ### Tuning
 
-Set these on `className` to retune the month change and the range sweep:
+Set these on the root `className` to retune the month change and the range
+sweep. They're inherited custom properties that the weeks, the caption and the
+days all read, so the root is the one place that reaches every part. Set on
+`classNames.weeks` or `classNames.month_caption`, a variable changes only that
+part, and the weeks and caption can fall out of step:
 
 | Variable | Default | What it sets |
 | --- | --- | --- |

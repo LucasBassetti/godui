@@ -97,11 +97,13 @@ the old one is hidden for the same duration, so it still ends in the
     data-animate={motion.fillAnimate || undefined}
     onAnimationEnd={settleFill} // comes to rest, or goes
     className={cn(
-      "absolute inset-0 isolate flex … text-primary-foreground before:absolute before:inset-0 before:-z-10 before:bg-primary",
+      "absolute inset-0 isolate flex … text-primary-foreground
+       before:absolute before:inset-0 before:-z-10 before:bg-primary",
       settled && "-z-10", // at rest: under the number, over the track
       filled
         ? "…:data-animate:animate-godui-calendar-fill-in"
-        : "opacity-0 …:data-animate:animate-godui-calendar-fade-out …:data-animate:before:animate-godui-calendar-fill-shrink",
+        : "opacity-0 …:data-animate:animate-godui-calendar-fade-out
+           …:data-animate:before:animate-godui-calendar-fill-shrink",
     )}
   >
     {motion.fillMoving ? children : null}

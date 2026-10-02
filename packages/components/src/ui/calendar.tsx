@@ -505,12 +505,15 @@ function CalendarDayButton({
   // If the layer's animation never runs — cancelled by your CSS
   // (`animate-none`), or the day is in a `display: none` subtree —
   // animationend never comes: settle it now rather than keep the copy.
+  // Without getAnimations (jsdom, old engines) there's no way to tell, and
+  // animationend may never fire either: settle at once too.
   React.useEffect(() => {
     const el = fillRef.current;
-    if (!motion.fillMoving || !el || typeof el.getAnimations !== "function") {
-      return;
-    }
-    if (el.getAnimations().length === 0) {
+    if (!motion.fillMoving || !el) return;
+    if (
+      typeof el.getAnimations !== "function" ||
+      el.getAnimations().length === 0
+    ) {
       setMotion((m) => ({ ...m, fillMoving: false }));
     }
   }, [motion.fillMoving]);

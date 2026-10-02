@@ -612,6 +612,26 @@ describe("Calendar", () => {
         expect(dayButton(14).textContent).toBe("14");
       });
 
+      it("without getAnimations (jsdom, no polyfill) the layer settles at once: the day reads its number once", async () => {
+        const proto = Element.prototype as Partial<Element>;
+        const polyfill = proto.getAnimations;
+        delete (HTMLElement.prototype as Partial<HTMLElement>).getAnimations;
+        delete proto.getAnimations;
+        try {
+          const user = userEvent.setup();
+          render(<Single ui={Godui} />);
+          expect(typeof document.body.getAnimations).toBe("undefined");
+          await user.click(dayButton(20));
+          // No animationend ever fires here.
+          expect(dayButton(20).textContent).toBe("20");
+          expectSettledFill(dayButton(20), 20);
+          expect(dayButton(14).textContent).toBe("14");
+          expect(fill(dayButton(14))).toBeNull();
+        } finally {
+          if (polyfill) proto.getAnimations = polyfill;
+        }
+      });
+
       it("while it runs, the layer waits for its animationend", async () => {
         HTMLElement.prototype.getAnimations = () => [{} as Animation];
         const user = userEvent.setup();
