@@ -412,12 +412,22 @@ test("a new press during the spring-back lets the band finish springing (no snap
     const root = document.querySelector('[data-slot="slider"]');
     const t = document.querySelector('[data-slot="slider-track"]');
     if (!root || !t) throw new Error("no slider");
-    const out: Array<{ right: number; dragging: boolean }> = [];
+    const thumb = root.querySelector('[data-slot="slider-thumb"]');
+    if (!thumb?.parentElement) throw new Error("no thumb");
+    const center = (r: DOMRect) => r.left + r.width / 2;
+    const out: Array<{
+      right: number;
+      dragging: boolean;
+      drawn: number;
+      spot: number;
+    }> = [];
     for (let i = 0; i < 30; i++) {
       await new Promise(requestAnimationFrame);
       out.push({
         right: t.getBoundingClientRect().right,
         dragging: root.hasAttribute("data-dragging"),
+        drawn: center(thumb.getBoundingClientRect()),
+        spot: center(thumb.parentElement.getBoundingClientRect()),
       });
     }
     return out;
@@ -437,4 +447,49 @@ test("a new press during the spring-back lets the band finish springing (no snap
   // settles there.
   expect(Math.min(...during.map((x) => x.right - rest))).toBeLessThan(-1);
   expect(Math.abs(f[f.length - 1].right - rest)).toBeLessThan(0.5);
+  // ...while the thumb itself is the pointer's: no ride spring under a drag.
+  for (const x of during)
+    expect(Math.abs(x.drawn - x.spot)).toBeLessThanOrEqual(0.5);
+});
+
+test("pulling back inside mid-drag: the band springs home, the thumb stays on the pointer", async ({
+  page,
+}) => {
+  await open(page, "default");
+  const thumb = await boxOf(page, "slider-thumb");
+  const track = await boxOf(page, "slider-track");
+  const y = thumb.y + thumb.height / 2;
+  await page.mouse.move(thumb.x + thumb.width / 2, y);
+  await page.mouse.down();
+  await page.mouse.move(track.x + track.width + 300, y, { steps: 20 });
+  const frames = page.evaluate(async () => {
+    const t = document.querySelector('[data-slot="slider-track"]');
+    const thumb = document.querySelector('[data-slot="slider-thumb"]');
+    if (!t || !thumb?.parentElement) throw new Error("no slider");
+    const center = (r: DOMRect) => r.left + r.width / 2;
+    const out: Array<{ right: number; drawn: number; spot: number }> = [];
+    for (let i = 0; i < 30; i++) {
+      await new Promise(requestAnimationFrame);
+      out.push({
+        right: t.getBoundingClientRect().right,
+        drawn: center(thumb.getBoundingClientRect()),
+        spot: center(thumb.parentElement.getBoundingClientRect()),
+      });
+    }
+    return out;
+  });
+  // Straight back inside, still holding.
+  await page.mouse.move(track.x + track.width * 0.7, y);
+  const f = await frames;
+  await page.mouse.up();
+  const rest = track.x + track.width;
+  const back = f.findIndex((x) => x.spot < rest - track.width * 0.2);
+  expect(back).toBeGreaterThanOrEqual(0);
+  const after = f.slice(back);
+  // The band springs home (dips past rest, settles)...
+  expect(Math.min(...after.map((x) => x.right - rest))).toBeLessThan(-1);
+  expect(Math.abs(f[f.length - 1].right - rest)).toBeLessThan(0.5);
+  // ...and from the first frame back inside the thumb is on its spot.
+  for (const x of after)
+    expect(Math.abs(x.drawn - x.spot)).toBeLessThanOrEqual(0.5);
 });

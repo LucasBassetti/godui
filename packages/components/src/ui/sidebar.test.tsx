@@ -228,11 +228,26 @@ describe("Sidebar", () => {
     expect(rail.className).toContain("ease-spring-smooth");
   });
 
-  it("the wrapper clips x overflow and lifts the content while it moves", async () => {
+  it("at rest the wrapper clips nothing: wide content still scrolls the page", () => {
+    render(<Usage ui={Godui} />);
+    const classes = slot("sidebar-wrapper").className.split(/\s+/);
+    expect(classes.filter((c) => /^overflow/.test(c))).toEqual([]);
+    expect(classes).toContain("data-moving:overflow-x-clip");
+    expect(slot("sidebar-wrapper")).not.toHaveAttribute("data-moving");
+  });
+
+  it("while it moves, the wrapper clips x overflow and lifts the content", async () => {
     const user = userEvent.setup();
     render(<Usage ui={Godui} />);
     const wrapper = slot("sidebar-wrapper");
-    expect(wrapper.className).toContain("overflow-x-clip");
+    // The move's animations in the wrapper: the glides (260ms) and a
+    // sub-menu's delayed fade-in, which is keyed on the flag (ends at 450ms).
+    const ends = [260, 450];
+    wrapper.getAnimations = () =>
+      ends.map((endTime) => ({
+        effect: { getComputedTiming: () => ({ endTime }) },
+        finished: new Promise((resolve) => setTimeout(resolve, endTime)),
+      })) as unknown as Animation[];
     expect(wrapper.className).toContain("ease-spring-smooth");
     expect(wrapper.className).toContain(
       "[&[data-moving]>[data-slot=sidebar]~*]:z-20",
@@ -241,14 +256,32 @@ describe("Sidebar", () => {
     vi.useFakeTimers({ shouldAdvanceTime: true });
     try {
       await user.click(trigger());
-      expect(wrapper).toHaveAttribute("data-moving");
-      act(() => {
+      // Set in the commit that snaps the layout, so the first frame clips.
+      expect(wrapper).toHaveAttribute("data-moving", "collapsing");
+      // Held past the glides (260ms) until the sub-menu's fade has ended too,
+      // so it isn't cut short.
+      await act(async () => {
         vi.advanceTimersByTime(300);
+      });
+      expect(wrapper).toHaveAttribute("data-moving");
+      await act(async () => {
+        vi.advanceTimersByTime(200);
       });
       expect(wrapper).not.toHaveAttribute("data-moving");
     } finally {
       vi.useRealTimers();
     }
+  });
+
+  it("only an icon sidebar fades its sub-menus back in (offcanvas never hid them)", () => {
+    const fade =
+      "in-data-[moving=expanding]:[&_[data-sidebar=menu-sub]]:animate-godui-fade-in";
+    const { unmount } = render(<Usage ui={Godui} collapsible="icon" />);
+    expect(slot("sidebar-container").className).toContain(fade);
+    expect(slot("sidebar-menu-sub").className).not.toMatch(/animate-/);
+    unmount();
+    render(<Usage ui={Godui} collapsible="offcanvas" />);
+    expect(slot("sidebar-container").className).not.toContain(fade);
   });
 
   it('collapsible="none" renders shadcn\'s static panel, no surface', () => {
@@ -309,10 +342,42 @@ describe("Sidebar FLIP", () => {
     return { x: 0, y: 0 };
   }
 
+  /**
+   * The resting translate a class gives the panel's pieces (jsdom has no CSS):
+   * offcanvas moves the container, icon mode the surface.
+   */
+  function rest(el: Element): string | null {
+    const mode =
+      document
+        .querySelector('[data-slot="sidebar"]')
+        ?.getAttribute("data-collapsible") ?? "";
+    const slotName = el.getAttribute("data-slot");
+    if (slotName === "sidebar-container")
+      return mode === "offcanvas" ? "-256px 0px" : "0px 0px";
+    if (slotName === "sidebar-surface")
+      return mode === "icon" ? "-208px 0px" : "0px 0px";
+    return null;
+  }
+  const px = (value: string | null) =>
+    (value ?? "0px 0px").split(" ").map((v) => Number.parseFloat(v));
+  const originalComputed = window.getComputedStyle;
+
   beforeEach(() => {
     drawn.clear();
     calls = [];
     reduce = false;
+    window.getComputedStyle = ((el: Element, pseudo?: string | null) => {
+      const style = originalComputed.call(window, el, pseudo);
+      const translate = rest(el);
+      if (translate === null) return style;
+      return new Proxy(style, {
+        get(target, key) {
+          if (key === "translate") return translate;
+          const value = Reflect.get(target, key);
+          return typeof value === "function" ? value.bind(target) : value;
+        },
+      });
+    }) as typeof window.getComputedStyle;
     Element.prototype.getBoundingClientRect = function (this: Element) {
       const at = base(this);
       const off = drawn.get(this) ?? { x: 0, y: 0 };
@@ -322,12 +387,14 @@ describe("Sidebar FLIP", () => {
     };
     Element.prototype.animate = function (this: Element, frames: Keyframe[]) {
       calls.push({ el: this, frames });
-      const [x, y] = String(frames[0].translate)
-        .split(" ")
-        .map((v) => Number.parseFloat(v));
-      drawn.set(this, { x, y });
+      // Like a browser, the FLIP replaces the element's translate: it's drawn
+      // at the first keyframe, i.e. that far from its class rest.
+      const [x, y] = px(String(frames[0].translate));
+      const [ownX, ownY] = px(rest(this));
+      drawn.set(this, { x: x - ownX, y: y - ownY });
 
       return {
+        effect: { getKeyframes: () => frames },
         cancel: () => drawn.delete(this),
         onfinish: null,
         finished: new Promise(() => {}),
@@ -342,6 +409,7 @@ describe("Sidebar FLIP", () => {
   });
 
   afterEach(() => {
+    window.getComputedStyle = originalComputed;
     Element.prototype.getBoundingClientRect = originalRect;
     delete (Element.prototype as Partial<Element>).animate;
     window.matchMedia = originalMatchMedia;
@@ -375,14 +443,22 @@ describe("Sidebar FLIP", () => {
     const user = userEvent.setup();
     const { unmount } = render(<Usage ui={Godui} collapsible="offcanvas" />);
     await user.click(trigger());
-    expect(animated("sidebar-container")?.frames[0].translate).toBe(
-      "256px 0px",
-    );
-    // Reversed halfway: container and content carry on from what's drawn.
-    drawn.set(slot("sidebar-container"), { x: 128, y: 0 });
+    // Its class rest is now -256px: the FLIP holds it at 0 and lets it go.
+    expect(animated("sidebar-container")?.frames).toEqual([
+      { translate: "0px 0px" },
+      { translate: "-256px 0px" },
+    ]);
+    // Reversed halfway, when both were drawn at 128 / -128. The panel's
+    // class rest is back to 0, but its running FLIP replaces translate, so it
+    // is still drawn at -128. The content's FLIP is an offset (+128) from its
+    // layout spot, which just snapped back to 256.
+    drawn.set(slot("sidebar-container"), { x: -128, y: 0 });
     drawn.set(slot("sidebar-inset"), { x: 128, y: 0 });
     calls = [];
     await user.click(trigger());
+    // Both carry on from what was drawn (-128 / 128), still glued. Without
+    // accounting for the panel's own rest changing under its running FLIP,
+    // the panel would restart from -384.
     expect(animated("sidebar-container")?.frames[0].translate).toBe(
       "-128px 0px",
     );
@@ -391,7 +467,10 @@ describe("Sidebar FLIP", () => {
     calls = [];
     render(<Usage ui={Godui} collapsible="icon" />);
     await user.click(trigger());
-    expect(animated("sidebar-surface")?.frames[0].translate).toBe("208px 0px");
+    expect(animated("sidebar-surface")?.frames).toEqual([
+      { translate: "0px 0px" },
+      { translate: "-208px 0px" },
+    ]);
     expect(animated("sidebar-container")).toBeUndefined();
   });
 

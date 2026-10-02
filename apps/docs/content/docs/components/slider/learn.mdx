@@ -156,7 +156,9 @@ thumb.style.setProperty("--godui-slider-ride", \`\${give / lift}px, 0px\`);
 
 // back inside or released: the vars and data-overdrag go together, and the
 // transition that comes back springs the band home:
-"[transition:…,transform_var(--godui-duration-slow)_var(--ease-spring-bouncy)]"`}
+"[transition:…,transform_var(--godui-duration-slow)_var(--ease-spring-bouncy)]"
+// the thumb's ride transition is dropped for the whole drag instead:
+"group-data-[dragging]/slider:[transition:scale_…]"`}
 >
 
 Past the end of the track, Radix has nothing left to do: the value is at
@@ -165,11 +167,17 @@ easy at first and stiffer the further you pull, and it never passes 24px.
 
 The track stretches with `transform: scale()` from its far end and thins
 slightly, and the end thumb rides the stretched end. While it's stretched,
-`data-overdrag` drops the transition so the band follows the pointer exactly.
-When you let go, or pull back inside, the attribute and the vars go in the
-same style change, so the returning transition springs the band home on
-`ease-spring-bouncy`. Only stretching drops the transition, not every drag,
-so grabbing the thumb again mid spring-back lets the spring finish.
+`data-overdrag` drops the band's transition so it follows the pointer
+exactly. When you let go, or pull back inside, the attribute and the vars go
+in the same style change, so the returning transition springs the band home
+on `ease-spring-bouncy`.
+
+The band and the thumb are gated separately. The band's transition is only
+dropped while it's stretched, so pulling back inside, or grabbing the thumb
+again mid spring-back, lets the band finish its spring. The thumb's ride
+transition is dropped for the whole drag, so a thumb under your finger snaps
+straight to the pointer and stays there; it only springs home after you let
+go.
 
 </LearnChapter>
 

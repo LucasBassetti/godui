@@ -33,9 +33,14 @@ for (const story of ["offcanvas", "icon"] as const) {
       expect(result.animationCount).toBeGreaterThan(0);
       // The gap's and the container's widths snap on the click's own frame
       // (inside the settle window). After that only translate/scale/opacity
-      // run, plus one discrete frame where the move ends and the content
-      // drops back under the panel (`data-moving` cleared).
-      expectGpuOnly(result);
+      // run, plus one discrete frame where the move ends: the glides finish
+      // and `data-moving` clears (the wrapper's x clip and the content's
+      // lift go). Expanding from icon mode, a sub-menu fades back in after
+      // the rows make room and `data-moving` holds until that fade ends
+      // (~300ms), one frame after the glides end (~260ms): two discrete
+      // frames, neither repeating per frame.
+      const subMenuFade = story === "icon" && direction === "expands";
+      expectGpuOnly(result, { maxLayoutFrames: subMenuFade ? 2 : 1 });
     });
   }
 }
@@ -283,4 +288,25 @@ test("reduced motion: the panel and the content take their places at once", asyn
     expect(Math.abs(first.edge - frames[0].edge)).toBeGreaterThan(150);
     expect(await page.evaluate(() => document.getAnimations().length)).toBe(0);
   }
+});
+
+test("at rest nothing is clipped: wide content still scrolls the page", async ({
+  page,
+}) => {
+  await open(page, "offcanvas");
+  const overflow = () =>
+    page.evaluate(
+      () =>
+        document.documentElement.scrollWidth -
+        document.documentElement.clientWidth,
+    );
+  await page.evaluate(() => {
+    const wide = document.createElement("div");
+    wide.style.cssText = "width: 3000px; height: 8px; flex: none";
+    document.querySelector('[data-slot="sidebar-inset"]')?.append(wide);
+  });
+  expect(await overflow()).toBeGreaterThan(1000);
+  await toggle(page);
+  await page.waitForTimeout(600);
+  expect(await overflow()).toBeGreaterThan(1000);
 });

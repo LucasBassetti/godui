@@ -762,15 +762,18 @@ A few things differ, all on desktop:
   draws the panel's background and border (and the floating card's rounded
   border and shadow). `sidebar-inner` is transparent, so put background
   overrides on the surface, not the inner.
-- The wrapper clips horizontal overflow (`overflow-x-clip`): for a moment the
-  gliding content is drawn past the right edge. Wide content inside the inset
-  should scroll in its own container, as shadcn's blocks already do; the page
-  itself no longer scrolls sideways.
+- While the sidebar moves, the wrapper clips horizontal overflow
+  (`overflow-x-clip`): for a moment the gliding content is drawn past the
+  right edge, and that shouldn't flash a scrollbar. At rest nothing is
+  clipped, so wide content scrolls the page as it does in shadcn.
 - While the sidebar moves (one `--godui-duration-base`), the content after it
   is lifted above the panel. Expanding from icon mode, labels snap in at full
   width before the surface's edge reaches them; the content, glued to that
   edge, covers them until it passes. Give that content a background
   (`SidebarInset` has `bg-background`).
+- While the content glides (about 260ms), `position: fixed` descendants of
+  `SidebarInset` move with it (the FLIP's `translate` makes it their
+  containing block), and the lift keeps their `z-index` inside it.
 - A right-side sidebar's content glides with its edge too. The page content
   before it changes width at once: its left edge doesn't move, so there is
   nothing to glide.

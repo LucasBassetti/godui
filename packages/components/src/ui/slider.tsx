@@ -161,7 +161,8 @@ function useSliderMotion(
     };
     /**
      * What the rubber band's ride adds to a thumb's drawn center right now
-     * (its `transform`, maybe mid spring-back, times the lift it sits inside).
+     * (its `transform`, maybe mid spring-back, times the lift it sits inside),
+     * in local px like `centerOf`.
      */
     const rideOf = (thumb: HTMLElement): Point => {
       const m = /matrix\(([^)]+)\)/.exec(
@@ -270,8 +271,8 @@ function useSliderMotion(
         const drawn = centerOf(thumb, f);
         const ride = rideOf(thumb);
         from.set(thumb, {
-          x: old.x + drawn.x - spot.x - ride.x / f.k,
-          y: old.y + drawn.y - spot.y - ride.y / f.k,
+          x: old.x + drawn.x - spot.x - ride.x,
+          y: old.y + drawn.y - spot.y - ride.y,
         });
       }
       const fromBox = rangeGlide ? drawnBox() : box;
@@ -356,7 +357,9 @@ function useSliderMotion(
       }
       const give = Math.abs(over);
       // While stretched, the band follows the pointer with no transition. A
-      // press mid spring-back doesn't set it, so the spring carries on.
+      // press mid spring-back doesn't set it, so the band's spring carries
+      // on. The thumbs' ride drops its transition for any drag instead
+      // (`data-dragging`): a dragged thumb sits exactly under the pointer.
       root.setAttribute("data-overdrag", "");
       track.style.setProperty(
         "--godui-slider-origin",
@@ -639,7 +642,7 @@ function Slider({
           // shadcn's thumb, with its `ring-4 ring-ring/50` hover/focus ring
           // redrawn as a ::before ring (4px border around the 16px body:
           // -5px from the padding box) that fades and grows in.
-          className="relative block size-4 shrink-0 rounded-full border border-primary bg-white shadow-sm [transform:translate(var(--godui-slider-ride,0px,0px))] [transition:scale_var(--godui-duration-base)_var(--ease-spring-bouncy),transform_var(--godui-duration-slow)_var(--ease-spring-bouncy)] group-data-[overdrag]/slider:[transition:scale_var(--godui-duration-base)_var(--ease-spring-bouncy)] motion-reduce:transition-none motion-safe:group-data-[pressed]/slider:data-[active]:scale-[1.15] before:pointer-events-none before:absolute before:-inset-[5px] before:rounded-full before:border-4 before:border-ring/50 before:opacity-0 before:scale-60 before:transition-[opacity,scale] before:duration-(--godui-duration-fast) before:ease-out-expo hover:before:opacity-100 hover:before:scale-100 focus-visible:before:opacity-100 focus-visible:before:scale-100 motion-reduce:before:scale-100 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50"
+          className="relative block size-4 shrink-0 rounded-full border border-primary bg-white shadow-sm [transform:translate(var(--godui-slider-ride,0px,0px))] [transition:scale_var(--godui-duration-base)_var(--ease-spring-bouncy),transform_var(--godui-duration-slow)_var(--ease-spring-bouncy)] group-data-[dragging]/slider:[transition:scale_var(--godui-duration-base)_var(--ease-spring-bouncy)] motion-reduce:transition-none motion-safe:group-data-[pressed]/slider:data-[active]:scale-[1.15] before:pointer-events-none before:absolute before:-inset-[5px] before:rounded-full before:border-4 before:border-ring/50 before:opacity-0 before:scale-60 before:transition-[opacity,scale] before:duration-(--godui-duration-fast) before:ease-out-expo hover:before:opacity-100 hover:before:scale-100 focus-visible:before:opacity-100 focus-visible:before:scale-100 motion-reduce:before:scale-100 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50"
         />
       ))}
     </SliderPrimitive.Root>

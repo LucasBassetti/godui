@@ -23,6 +23,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { PanelLeftIcon } from "lucide-react";
 import { Slot } from "radix-ui";
 import * as React from "react";
+import { flushSync } from "react-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
@@ -167,9 +168,11 @@ function useMergedRef<T>(
 }
 
 /**
- * Which way the sidebar is moving, for one `--godui-duration-base` after a
- * change (null at rest and on first paint). Set in the same render as the new
- * state, so CSS keyed on it applies in the commit that snaps the layout.
+ * Which way the sidebar is moving (null at rest and on first paint). Set in
+ * the same render as the new state, so CSS keyed on it applies in the commit
+ * that snaps the layout. Cleared when the move's last animation in the
+ * wrapper ends (the glides, or a sub-menu's fade-in, which is keyed on this
+ * flag), so the clear lands in the frame the motion ends and cuts nothing.
  */
 function useMoving(
   ref: React.RefObject<HTMLElement | null>,
@@ -184,15 +187,44 @@ function useMoving(
     setMoving(state === "expanded" ? "expanding" : "collapsing");
   }
   React.useEffect(() => {
-    const view = ref.current?.ownerDocument.defaultView;
-    if (!moving || !ref.current || !view) return;
-    const ms = toMs(
-      view
-        .getComputedStyle(ref.current)
-        .getPropertyValue("--godui-duration-base"),
+    const wrapper = ref.current;
+    const view = wrapper?.ownerDocument.defaultView;
+    if (!moving || !wrapper || !view) return;
+    let live = true;
+    // Committed synchronously, in the frame the motion ends: the wrapper's
+    // clip and the lift go with the glides' own last layout, not a frame later.
+    const clear = () => {
+      if (live) flushSync(() => setMoving(null));
+    };
+    // Finite animations only: a looping one (a skeleton's shimmer) never ends.
+    const running = (wrapper.getAnimations?.({ subtree: true }) ?? []).filter(
+      (animation) =>
+        Number.isFinite(
+          Number(animation.effect?.getComputedTiming().endTime ?? Number.NaN),
+        ),
     );
-    const timer = view.setTimeout(() => setMoving(null), ms);
-    return () => view.clearTimeout(timer);
+    let timer: number | undefined;
+    if (running.length > 0) {
+      // Settled, not fulfilled: one cancelled along the way (a reversal, a
+      // row re-glided by a Collapsible) still lets the flag clear. After a
+      // reversal the new run owns the flag (`live`).
+      Promise.allSettled(running.map((animation) => animation.finished)).then(
+        clear,
+      );
+    } else {
+      timer = view.setTimeout(
+        clear,
+        toMs(
+          view
+            .getComputedStyle(wrapper)
+            .getPropertyValue("--godui-duration-base"),
+        ),
+      );
+    }
+    return () => {
+      live = false;
+      if (timer !== undefined) view.clearTimeout(timer);
+    };
   }, [ref, moving]);
   return moving;
 }
@@ -317,9 +349,11 @@ function SidebarProvider({
           }
           className={cn(
             "group/sidebar-wrapper flex min-h-svh w-full has-data-[variant=inset]:bg-sidebar",
-            // The gliding content is drawn past the right edge for a moment;
-            // clip it rather than flash a scrollbar.
-            "overflow-x-clip ease-spring-smooth [&[data-moving]>[data-slot=sidebar]~*]:z-20",
+            // While it glides, the content is drawn past the right edge: clip
+            // x then (only then, so wide content still scrolls the page at
+            // rest) rather than flash a scrollbar. It's also lifted above the
+            // panel; z-20 deliberately pairs with shadcn's own z-10 container.
+            "ease-spring-smooth data-moving:overflow-x-clip [&[data-moving]>[data-slot=sidebar]~*]:z-20",
             className,
           )}
           {...props}
@@ -351,6 +385,8 @@ function SidebarSurface({
       <div
         data-slot="sidebar-surface"
         className={cn(
+          // -z-10: behind the inner, inside the container's own (z-10)
+          // stacking context.
           "pointer-events-none absolute inset-y-0 -z-10 w-(--sidebar-width) bg-sidebar group-data-[side=left]:left-0 group-data-[side=right]:right-0",
           "group-data-[collapsible=icon]:group-data-[side=left]:-translate-x-[calc(var(--sidebar-width)-var(--sidebar-width-icon))] group-data-[collapsible=icon]:group-data-[side=right]:translate-x-[calc(var(--sidebar-width)-var(--sidebar-width-icon))]",
           "group-data-[variant=sidebar]:group-data-[side=left]:border-r group-data-[variant=sidebar]:group-data-[side=right]:border-l",
@@ -509,6 +545,11 @@ function Sidebar({
           "fixed inset-y-0 z-10 hidden h-svh w-(--sidebar-width) md:flex",
           side === "left" ? "left-0" : "right-0",
           "group-data-[collapsible=offcanvas]:group-data-[side=left]:-translate-x-full group-data-[collapsible=offcanvas]:group-data-[side=right]:translate-x-full",
+          // Sub-menus hidden in icon mode come back as the panel expands: the
+          // rows below glide down to make room first, then they fade in (no
+          // text drawn over a passing row).
+          collapsible === "icon" &&
+            "in-data-[moving=expanding]:[&_[data-sidebar=menu-sub]]:animate-godui-fade-in in-data-[moving=expanding]:[&_[data-sidebar=menu-sub]]:[--godui-duration-base:var(--godui-duration-fast)] in-data-[moving=expanding]:[&_[data-sidebar=menu-sub]]:[animation-delay:var(--godui-duration-fast)] motion-reduce:[&_[data-sidebar=menu-sub]]:animate-none",
           // Adjust the padding for floating and inset variants.
           variant === "floating" || variant === "inset"
             ? "p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]"
@@ -933,9 +974,8 @@ function SidebarMenuSub({ className, ...props }: React.ComponentProps<"ul">) {
       data-sidebar="menu-sub"
       className={cn(
         "mx-3.5 flex min-w-0 translate-x-px flex-col gap-1 border-l border-sidebar-border px-2.5 py-0.5",
-        // Shown again as the panel expands: the rows below glide down to make
-        // room first, then it fades in (no text drawn over a passing row).
-        "group-data-[collapsible=icon]:hidden in-data-[moving=expanding]:animate-godui-fade-in in-data-[moving=expanding]:[--godui-duration-base:var(--godui-duration-fast)] in-data-[moving=expanding]:[animation-delay:var(--godui-duration-fast)] motion-reduce:animate-none",
+        // Coming back from icon mode it fades in (see the Sidebar container).
+        "group-data-[collapsible=icon]:hidden",
         className,
       )}
       {...props}

@@ -68,7 +68,10 @@ function thumbOffset(thumb: Element): number {
   const p = now === null ? 0 : ((Number(now) - min) / (max - min)) * 100;
   return (p / 100) * LEN + THUMB / 2 - (p / 50) * (THUMB / 2);
 }
-function rect(left: number, top: number, width: number, height: number) {
+/** Screen px per local px: an ancestor scaled by `zoom` (offsets stay local). */
+let zoom = 1;
+function rect(l: number, t: number, w: number, h: number) {
+  const [left, top, width, height] = [l, t, w, h].map((n) => n * zoom);
   return {
     left,
     top,
@@ -103,7 +106,13 @@ function fakeRect(this: Element): DOMRect {
     const base = wrapperRect(this.parentElement as HTMLElement);
     const fake = running.get(this);
     const [dx, dy] = fake ? current(fake, "translate") : [0, 0];
-    return rect(base.left + dx + drawnRide, base.top + dy, THUMB, THUMB);
+    // `base` is in screen px; the offsets are local.
+    return rect(
+      base.left / zoom + dx + drawnRide,
+      base.top / zoom + dy,
+      THUMB,
+      THUMB,
+    );
   }
   if (slot === "slider-range") {
     const fake = running.get(this);
@@ -230,6 +239,7 @@ beforeEach(() => {
 
 afterEach(() => {
   drawnRide = 0;
+  zoom = 1;
   tokens.remove();
   for (const undo of saved.reverse()) undo();
   saved.length = 0;
@@ -898,24 +908,43 @@ describe("Slider", () => {
       fireEvent.pointerUp(thumb, { clientX: 344 });
     });
 
-    it("a key right after a release glides from the thumb's spot, not counting the ride still springing home", async () => {
-      const user = userEvent.setup();
+    for (const scale of [1, 2]) {
+      it(`a key right after a release glides from the thumb's spot, not counting the ride still springing home (ancestor zoom ${scale})`, async () => {
+        zoom = scale;
+        const user = userEvent.setup();
+        await mount(<Godui.Slider defaultValue={[50]} aria-label="Volume" />);
+        const [thumb] = thumbsOf();
+        // The ride's transition is mid-way: 10 local px drawn, on `transform`
+        // (computed transforms are local px; rects are screen px).
+        drawnRide = 10;
+        computed((el, prop) =>
+          isThumb(el) && prop === "transform"
+            ? "matrix(1, 0, 0, 1, 10, 0)"
+            : undefined,
+        );
+        thumb.focus();
+        await user.keyboard("{ArrowRight}");
+        await settle();
+        // Local px: 1% of (LEN − THUMB) back, whatever the zoom.
+        expect(nums(lastGlide(thumb)?.keyframes[0].translate)[0]).toBeCloseTo(
+          -3.04,
+          6,
+        );
+      });
+    }
+
+    it("a dragged thumb's ride never transitions (1:1); the band's does unless stretched", async () => {
       await mount(<Godui.Slider defaultValue={[50]} aria-label="Volume" />);
-      const [thumb] = thumbsOf();
-      // The ride's transition is mid-way: 10px drawn, on `transform`.
-      drawnRide = 10;
-      computed((el, prop) =>
-        isThumb(el) && prop === "transform"
-          ? "matrix(1, 0, 0, 1, 10, 0)"
-          : undefined,
+      const thumb = thumbsOf()[0].className;
+      const track = trackOf().className;
+      expect(thumb).toContain(
+        "group-data-[dragging]/slider:[transition:scale_var(--godui-duration-base)_var(--ease-spring-bouncy)]",
       );
-      thumb.focus();
-      await user.keyboard("{ArrowRight}");
-      await settle();
-      expect(nums(lastGlide(thumb)?.keyframes[0].translate)[0]).toBeCloseTo(
-        -3.04,
-        6,
+      expect(thumb).not.toContain("group-data-[overdrag]");
+      expect(track).toContain(
+        "group-data-[overdrag]/slider:[transition:scale_var(--godui-duration-fast)_var(--ease-spring-snappy)]",
       );
+      expect(track).not.toContain("group-data-[dragging]");
     });
 
     it("stretches from the right end when pulled past the left", async () => {

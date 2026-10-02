@@ -86,10 +86,11 @@ cancels it, and accounts for the panel's own resting `translate` having
 changed underneath.
 
 While it glides, the content is drawn partly past the right edge of the page.
-The wrapper clips that (`overflow-x-clip`), so no scrollbar flashes. The
-content is also lifted above the panel for the length of the move: expanding
-from icon mode, labels snap in at full width before the surface reaches them,
-and the content riding the edge covers them until it passes.
+For the length of the move the wrapper clips that (`overflow-x-clip`), so no
+scrollbar flashes; at rest it clips nothing. The content is also lifted above
+the panel while it moves: expanding from icon mode, labels snap in at full
+width before the surface reaches them, and the content riding the edge covers
+them until it passes.
 
 </LearnChapter>
 

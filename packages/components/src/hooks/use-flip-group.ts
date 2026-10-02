@@ -202,10 +202,12 @@ export function useFlipGroup(
       if (active) {
         // The rest it was gliding to: if the element's own translate changed
         // since (a class moved it), the running FLIP still holds the old one.
+        // Duck-typed: `instanceof` fails across realms (an iframe whose DOM
+        // is driven from the parent window's JS).
+        const effect = active.effect as Partial<KeyframeEffect> | null;
         const frames =
-          typeof KeyframeEffect !== "undefined" &&
-          active.effect instanceof KeyframeEffect
-            ? active.effect.getKeyframes()
+          typeof effect?.getKeyframes === "function"
+            ? effect.getKeyframes()
             : [];
         const target = frames[frames.length - 1]?.translate;
         active.cancel();

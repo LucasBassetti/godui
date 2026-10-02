@@ -302,20 +302,16 @@ describe("useFlipGroup measure", () => {
 
 describe("useFlipGroup own translate", () => {
   it("reversing a FLIP whose element's own translate changed starts from what's drawn", () => {
-    class FakeEffect {
-      constructor(private frames: Keyframe[]) {}
-      getKeyframes() {
-        return this.frames;
-      }
-    }
-    vi.stubGlobal("KeyframeEffect", FakeEffect);
+    // A plain object, not a KeyframeEffect: effects from another realm (an
+    // iframe driven by the parent window's JS) fail `instanceof`, so the hook
+    // duck-types `getKeyframes`. jsdom has no KeyframeEffect at all.
     animate.mockImplementation(function (
       this: HTMLElement,
       frames: Keyframe[],
     ) {
       const id = this.dataset.id as string;
       return {
-        effect: new FakeEffect(frames),
+        effect: { getKeyframes: () => frames },
         cancel: () => offset.delete(id),
       };
     });
@@ -345,7 +341,7 @@ describe("useFlipGroup own translate", () => {
         { translate: "0px 0px" },
       ]);
     } finally {
-      vi.unstubAllGlobals();
+      animate.mockReset();
     }
   });
 });
