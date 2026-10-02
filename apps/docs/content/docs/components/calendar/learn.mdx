@@ -89,12 +89,13 @@ the old one is hidden for the same duration, so it still ends in the
 <LearnChapter
   label="A fill with its own number"
   scene={<AutoPlayScene label="A fill with its own number" demo="calendar-pop" note="slowed 2x" />}
-  code={`{motion.hasFill ? (
+  code={`{motion.fillLayer ? (
   <span
     aria-hidden="true"
     data-calendar-layer="fill"
     data-state={filled ? "on" : "off"}
     data-animate={motion.fillAnimate || undefined}
+    onAnimationEnd={settleFill} // unmounts the layer
     className={cn(
       "absolute inset-0 isolate flex … text-primary-foreground before:absolute before:inset-0 before:-z-10 before:bg-primary",
       filled
@@ -112,12 +113,13 @@ Colour can't animate on the GPU, and switching the number to the light colour
 at the start would show white text on a fill that hasn't arrived yet. So the
 fill is a layer over the day button that carries its own copy of the number
 in the light colour. It grows from 60% on a bouncy spring and fades in over
-its first third. Under it the real number never changes colour. At rest the
-layer covers it exactly, so the day looks the same as shadcn's, and the copy
-is `aria-hidden`.
+its first third, while the button under it keeps the unselected look. When the
+pop ends, the layer unmounts and the button paints shadcn's own fill, the same
+pixels, so at rest the day is shadcn's markup with its number in it once. The
+copy is `aria-hidden`.
 
-The day you leave keeps its layer: the fill shrinks to 85% while the layer
-fades out in 150ms. Only the fill shrinks, not the copy, so the copy never
+The day you leave mounts a layer for its exit: the fill shrinks to 85% while
+the layer fades out in 150ms, then it unmounts. Only the fill shrinks, not the copy, so the copy never
 drifts out of line with the real number under it.
 
 Nothing pops on first paint or when you page to a month: each day remembers

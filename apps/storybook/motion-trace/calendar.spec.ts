@@ -7,10 +7,12 @@ const previous = (p: Page) =>
 const day = (p: Page, iso: string) =>
   p.locator(`td[data-day="${iso}"]:not([data-outside]) button`).first();
 
+// Per month: old + new weeks and old + new captions (4), but a dropdown
+// caption's new half doesn't animate (3: the weeks and the old caption's hide).
 for (const [story, minAnimations] of [
   ["single", 4],
   ["range-two-months", 8],
-  ["dropdown-caption", 4],
+  ["dropdown-caption", 3],
 ] as const) {
   for (const [label, button] of [
     ["Next", next],
@@ -26,7 +28,6 @@ for (const [story, minAnimations] of [
         },
         windowMs: 700,
       });
-      // Old + new weeks and old + new captions, per month.
       expect(result.animationCount).toBeGreaterThanOrEqual(minAnimations);
       expectGpuOnly(result);
     });
@@ -175,6 +176,14 @@ for (const story of [
   }
 }
 
+/**
+ * A fill layer exists only while it animates: the pop's layer and the
+ * ghost's each unmount on their own animationend (≈260ms and ≈150ms), a
+ * discrete DOM change apiece in different frames, plus the frame the
+ * animations finish in. Nothing lays out while they run.
+ */
+const FILL_SETTLES = { maxLayoutFrames: 3 };
+
 test("selecting a day pops its fill and shrinks the old one on the compositor", async ({
   page,
 }) => {
@@ -187,7 +196,7 @@ test("selecting a day pops its fill and shrinks the old one on the compositor", 
   });
   // The new fill's pop, the old fill's fade + shrink, the focus ring.
   expect(result.animationCount).toBeGreaterThanOrEqual(3);
-  expectGpuOnly(result);
+  expectGpuOnly(result, FILL_SETTLES);
 });
 
 test("extending a range sweeps its track on the compositor", async ({
@@ -202,7 +211,7 @@ test("extending a range sweeps its track on the compositor", async ({
   });
   // Nov 3 → Nov 12: 18 newly covered halves, plus the pop and the ghost.
   expect(result.animationCount).toBeGreaterThanOrEqual(18);
-  expectGpuOnly(result);
+  expectGpuOnly(result, FILL_SETTLES);
 });
 
 test("a new range sweeps across the month boundary on the compositor", async ({
@@ -222,7 +231,7 @@ test("a new range sweeps across the month boundary on the compositor", async ({
     windowMs: 700,
   });
   expect(result.animationCount).toBeGreaterThanOrEqual(20);
-  expectGpuOnly(result);
+  expectGpuOnly(result, FILL_SETTLES);
 });
 
 test("hovering a day fades its overlay on the compositor", async ({ page }) => {
@@ -284,4 +293,54 @@ test("the focus ring fades in on entering the grid and jumps between days on arr
   await page.evaluate(() => new Promise(requestAnimationFrame));
   expect(await ring("2026-10-15")).toBe(1);
   expect(await ring("2026-10-14")).toBe(0);
+});
+
+test("a picked day's fill layer hands over to the button's own fill when its pop ends", async ({
+  page,
+}) => {
+  await page.goto("/iframe.html?id=ui-calendar--single&viewMode=story");
+  await page.waitForLoadState("networkidle");
+  const picked = day(page, "2026-10-21");
+  await picked.click();
+  // Mid-pop: the layer (with its copy of the number) is there.
+  expect(await picked.locator("[data-calendar-layer=fill]").count()).toBe(1);
+  await page.waitForTimeout(500);
+  // Settled: no layer anywhere, the number once, shadcn's fill on the button.
+  expect(await page.locator("[data-calendar-layer=fill]").count()).toBe(0);
+  expect(await picked.textContent()).toBe("21");
+  const [button, primary] = await picked.evaluate((el) => {
+    const probe = document.createElement("i");
+    probe.style.background = "var(--primary)";
+    el.append(probe);
+    const want = getComputedStyle(probe).backgroundColor;
+    probe.remove();
+    return [getComputedStyle(el).backgroundColor, want];
+  });
+  expect(button).toBe(primary);
+});
+
+test("RTL: a forward sweep grows from the right, a backward one from the left", async ({
+  page,
+}) => {
+  await page.goto("/iframe.html?id=ui-calendar--rtl&viewMode=story");
+  await page.waitForLoadState("networkidle");
+  const origin = (iso: string, half: "start" | "end") =>
+    day(page, iso)
+      .locator(`[data-calendar-layer=track-${half}]`)
+      .evaluate((el) => {
+        const [x] = getComputedStyle(el).transformOrigin.split(" ");
+        return {
+          x: Number.parseFloat(x ?? ""),
+          width: (el as HTMLElement).offsetWidth,
+        };
+      });
+  // Oct 7 – 16 → Oct 20: sweeps forward (leftward in RTL).
+  await day(page, "2026-10-20").click();
+  const forward = await origin("2026-10-20", "start");
+  expect(forward.x).toBeCloseTo(forward.width, 0);
+  await page.waitForTimeout(400);
+  // → Oct 3 – 20: sweeps backward (rightward in RTL).
+  await day(page, "2026-10-03").click();
+  const backward = await origin("2026-10-03", "end");
+  expect(backward.x).toBeCloseTo(0, 0);
 });

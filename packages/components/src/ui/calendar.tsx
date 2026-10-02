@@ -3,15 +3,15 @@
 // GodUI Calendar — mirrors shadcn/ui new-york-v4 components/ui/calendar.tsx (registry snapshot 2026-10-01).
 // Motion: on Next/Previous the old month drifts a short way out and fades
 // (150ms) while the new one drifts in from a quarter width a beat later (20ms
-// delay, 260ms spring); the caption
-// drifts less than the grid, so it reads as a layer behind it (mirrored in
-// RTL). Dropdown captions don't move: the old one hides at once. Picking a day
-// pops a fill layer that carries its own copy of the number; the deselected
-// day's fill shrinks away. A range's track sweeps out from the day picked
-// first, cell by cell, in the same total time however long it is. Hover fades
-// an overlay; the focus ring fades in on entering the grid and jumps between
-// days on arrow keys. Nothing animates on first paint or month navigation.
-// GPU-only (transform, opacity, filter).
+// delay, 260ms spring); the caption drifts less than the grid, so it reads as
+// a layer behind it (mirrored in RTL). Dropdown captions don't move: the old
+// one hides at once. Picking a day pops a fill layer that carries its own copy
+// of the number; the deselected day's fill shrinks away (the layer exists only
+// while it animates). A range's track sweeps out from the day picked first,
+// cell by cell, in the same total time however long it is. Hover fades an
+// overlay; the focus ring fades in on entering the grid and jumps between
+// days on keys. Nothing animates on first paint or month navigation.
+// GPU-only (transform, opacity).
 
 import {
   ChevronDownIcon,
@@ -88,8 +88,10 @@ function Calendar({
         // drift-out: how far the old ones leave; caption-drift: the caption's
         // shorter trip (it exits half of it); delay: the new month's beat after
         // the old one starts leaving; sweep: how long a range's track takes
-        // to draw, however many days it spans.
-        "[--godui-calendar-caption-drift:14px] [--godui-calendar-delay:20ms] [--godui-calendar-dir:1] [--godui-calendar-drift-out:12%] [--godui-calendar-drift:25%] [--godui-calendar-sweep:240ms] rtl:[--godui-calendar-dir:-1]",
+        // to draw, however many days it spans; caption-lag: how much later
+        // than the weeks the new caption starts (it ends with them);
+        // ease-out: the old month's and caption's exit curve.
+        "[--godui-calendar-caption-drift:14px] [--godui-calendar-caption-lag:40ms] [--godui-calendar-delay:20ms] [--godui-calendar-ease-out:cubic-bezier(0.25,0.46,0.45,0.94)] [--godui-calendar-dir:1] [--godui-calendar-drift-out:12%] [--godui-calendar-drift:25%] [--godui-calendar-sweep:240ms] rtl:[--godui-calendar-dir:-1]",
         className,
       )}
       captionLayout={captionLayout}
@@ -331,16 +333,18 @@ type DayMotion = {
   /** Each track half's slice of the sweep that drew it. */
   startWave: Wave | null;
   endWave: Wave | null;
-  /** Layers are rendered from the first time they're needed until unmount. */
-  hasFill: boolean;
+  /**
+   * The fill layer is mounted only while it animates (in or out); at rest the
+   * button paints shadcn's fill itself, so the number is in the DOM once.
+   */
+  fillLayer: boolean;
+  /** Track halves are rendered from the first time they're needed. */
   hasTrack: boolean;
 };
 
 const sameSpan = (a: Span, b: Span) =>
   a === b || (a !== null && b !== null && a.from === b.from && a.to === b.to);
 
-// The layers' animations stay off inside rdp's exiting clone of the old
-// month, which copies the DOM (data-animate included) as it is.
 const TRACK_HALF = {
   start: "start-0 end-1/2",
   end: "start-1/2 end-0",
@@ -390,7 +394,9 @@ function CalendarTrackHalf({
           : "origin-left rtl:origin-right",
         // Leaving is a keyframe too, not a transition: after an opacity
         // transition Chrome won't composite the next sweep's opacity keyframe
-        // on the same element.
+        // on the same element. `not-in-[…]`: the layers' animations stay off
+        // inside rdp's exiting clone of the old month, which copies the DOM
+        // (data-animate included) as it is.
         on
           ? "not-in-[[data-animated-month][aria-hidden=true]]:data-animate:animate-godui-calendar-track-in"
           : "opacity-0 not-in-[[data-animated-month][aria-hidden=true]]:data-animate:animate-godui-calendar-fade-out",
@@ -413,20 +419,16 @@ function CalendarDayButton({
     if (modifiers.focused) ref.current?.focus();
   }, [modifiers.focused]);
 
-  // The ring fades in when focus enters the grid and jumps between days on
-  // arrow keys: rdp marks the next day focused while the browser's focus is
-  // still on the previous one (the effect above moves it).
+  // The ring fades in only when focus entered this day itself (Tab, a
+  // click): the browser focuses it before rdp marks it focused. Anything rdp
+  // moves by key snaps: arrow keys (focus still on the previous day, the
+  // effect above moves it) and a keyboard month change (the previous day
+  // was unmounted with its month, focus is on <body>).
   React.useLayoutEffect(() => {
     const el = ref.current;
     if (!modifiers.focused || !el) return;
-    const active = el.ownerDocument.activeElement;
-    const fromDay =
-      active !== el &&
-      active instanceof HTMLElement &&
-      active.closest("td[data-day]") !== null &&
-      active.closest("[data-slot=calendar]") ===
-        el.closest("[data-slot=calendar]");
-    el.dataset.focusRing = fromDay ? "snap" : "fade";
+    el.dataset.focusRing =
+      el.ownerDocument.activeElement === el ? "fade" : "snap";
   }, [modifiers.focused]);
 
   const { selected, dayPickerProps } = useDayPicker();
@@ -445,6 +447,18 @@ function CalendarDayButton({
   const start = covers(units, 2 * date);
   const end = covers(units, 2 * date + 1);
 
+  const settleFill = (event: React.AnimationEvent<HTMLSpanElement>) => {
+    // The layer's own animation (not its ::before's, not a child's) ending
+    // as the one its current state plays: drop the layer.
+    if (event.target !== event.currentTarget || event.pseudoElement) return;
+    const name = event.animationName;
+    setMotion((m) =>
+      name === (m.filled ? "godui-calendar-fill-in" : "godui-calendar-fade-out")
+        ? { ...m, fillLayer: false }
+        : m,
+    );
+  };
+
   // Animate only changes that happen while this day is on screen — not first
   // paint, and not month navigation (rdp remounts every day of a newly shown
   // month). The filled day (a single date or a range end) pops; a range's
@@ -460,7 +474,7 @@ function CalendarDayButton({
     endAnimate: false,
     startWave: null,
     endWave: null,
-    hasFill: filled,
+    fillLayer: false,
     hasTrack: start || end,
   }));
   if (motion.filled !== filled || !sameSpan(motion.span, span)) {
@@ -482,7 +496,7 @@ function CalendarDayButton({
         : motion.end
           ? motion.endWave
           : waveFor(2 * date + 1, motion.span, span),
-      hasFill: motion.hasFill || filled,
+      fillLayer: filled === motion.filled ? motion.fillLayer : true,
       hasTrack: motion.hasTrack || start || end,
     });
   }
@@ -502,14 +516,20 @@ function CalendarDayButton({
       data-range-start={modifiers.range_start}
       data-range-end={modifiers.range_end}
       data-range-middle={modifiers.range_middle}
+      data-fill={filled ? (motion.fillLayer ? "layer" : "settled") : undefined}
       className={cn(
-        // shadcn's fills (bg-primary on a selected day or range end, bg-accent
-        // on the range middle) and its box-shadow focus ring move to layers;
-        // the steady state is the same. The number stays the unselected
-        // colour: the fill layer covers it with its own copy.
+        // shadcn's range-middle accent and box-shadow focus ring move to
+        // layers; the steady state is the same. A selected day or range end
+        // paints shadcn's fill itself once settled; while the fill layer
+        // pops in or shrinks away the button keeps the unselected look and
+        // the layer covers it with its own copy of the number.
         "relative isolate flex aspect-square size-auto w-full min-w-(--cell-size) flex-col gap-1 leading-none font-normal group-data-[focused=true]/day:z-10 data-[range-end=true]:rounded-md data-[range-end=true]:rounded-r-md data-[range-middle=true]:rounded-none data-[range-middle=true]:text-accent-foreground data-[range-start=true]:rounded-md data-[range-start=true]:rounded-l-md dark:hover:text-accent-foreground [&>span:not([data-calendar-layer])]:text-xs [&>span:not([data-calendar-layer])]:opacity-70",
         // Hover: the ghost button's accent moves to an overlay that fades.
-        "hover:bg-transparent dark:hover:bg-transparent after:pointer-events-none after:absolute after:inset-0 after:-z-10 after:rounded-[inherit] after:bg-accent after:opacity-0 after:transition-[opacity] after:duration-100 after:ease-out hover:after:opacity-100 dark:after:bg-accent/50",
+        // A settled fill keeps its colours under the pointer (in both themes).
+        filled && !motion.fillLayer
+          ? "bg-primary text-primary-foreground after:hidden hover:bg-primary hover:text-primary-foreground dark:hover:bg-primary dark:hover:text-primary-foreground"
+          : "hover:bg-transparent dark:hover:bg-transparent",
+        "after:pointer-events-none after:absolute after:inset-0 after:-z-10 after:rounded-[inherit] after:bg-accent after:opacity-0 after:transition-[opacity] after:duration-100 after:ease-out hover:after:opacity-100 dark:after:bg-accent/50",
         // Focus ring: a ::before layer (opacity + scale from 98%) instead of
         // shadcn's ring box-shadow (the Button's own one is off); it fades in
         // only when not moved by keys.
@@ -538,19 +558,23 @@ function CalendarDayButton({
           />
         </>
       ) : null}
-      {motion.hasFill ? (
+      {motion.fillLayer ? (
         // The fill and a copy of the number in its colour, so the number
-        // never shows white on a fill that hasn't arrived yet.
+        // never shows white on a fill that hasn't arrived yet. Mounted only
+        // for the animation: it unmounts on its own animationend.
         <span
           aria-hidden="true"
           data-calendar-layer="fill"
           data-state={filled ? "on" : "off"}
           data-animate={motion.fillAnimate || undefined}
+          onAnimationEnd={settleFill}
           className={cn(
             "pointer-events-none absolute inset-0 isolate flex flex-col items-center justify-center gap-1 rounded-[inherit] text-primary-foreground before:absolute before:inset-0 before:-z-10 before:rounded-[inherit] before:bg-primary [&>span]:text-xs [&>span]:opacity-70",
             // Popping in, the fill and its number grow together. Leaving,
             // only the fill shrinks: the number fades where it is, over the
-            // real one, so the two never show out of register.
+            // real one, so the two never show out of register. `not-in-[…]`:
+            // off inside rdp's exiting clone of the old month (it copies the
+            // DOM as it is), where the layer then shows its resting state.
             filled
               ? "not-in-[[data-animated-month][aria-hidden=true]]:data-animate:animate-godui-calendar-fill-in"
               : "opacity-0 not-in-[[data-animated-month][aria-hidden=true]]:data-animate:animate-godui-calendar-fade-out not-in-[[data-animated-month][aria-hidden=true]]:data-animate:before:animate-godui-calendar-fill-shrink",

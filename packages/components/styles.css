@@ -353,15 +353,16 @@
  * calendar-* tuning variables are set on the Calendar root; every distance
  * and delay is multiplied by --godui-motion. No blur: Chrome won't composite
  * a filter that moves pixels, so a blurred month change runs on the main
- * thread. Month change: the old weeks
- * leave fast and short, the new ones arrive a beat later from further away.
- * The exit fades on an ease-out quad, not expo: expo empties the old month
- * before the new one shows (both together dip to 16% opacity, a blink);
- * quad keeps them above 65%. react-day-picker drops the old month on the old
+ * thread. Month change: the old weeks leave fast and short, the new ones
+ * arrive a beat later from further away. The exit fades on
+ * --godui-calendar-ease-out (an ease-out quad), not expo: expo empties the
+ * old month before the new one shows (both together dip to 16% opacity, a
+ * blink); quad keeps them above 65%. react-day-picker drops the old month on the old
  * caption's animationend, so the caption's exit (and the dropdown caption's
  * hide) last delay + base, the moment the new weeks land. The caption is
  * text on text, so it doesn't cross-fade like the grid: the old one is gone
- * by 30% of that, the new one starts 40ms after the weeks and ends with them. */
+ * by 30% of that, the new one starts --godui-calendar-caption-lag after the
+ * weeks and ends with them. */
 @theme inline {
   --animate-godui-calendar-in-from-end: godui-calendar-in-from-end
     var(--godui-duration-base) var(--ease-spring-snappy)
@@ -370,17 +371,33 @@
     var(--godui-duration-base) var(--ease-spring-snappy)
     calc(var(--godui-calendar-delay) * var(--godui-motion)) backwards;
   --animate-godui-calendar-out-to-start: godui-calendar-out-to-start
-    var(--godui-duration-fast) cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+    var(--godui-duration-fast) var(--godui-calendar-ease-out) both;
   --animate-godui-calendar-out-to-end: godui-calendar-out-to-end
-    var(--godui-duration-fast) cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+    var(--godui-duration-fast) var(--godui-calendar-ease-out) both;
   --animate-godui-calendar-caption-in-from-end: godui-calendar-caption-in-from-end
-    calc(var(--godui-duration-base) - 40ms * var(--godui-motion))
+    calc(
+      var(--godui-duration-base) -
+      var(--godui-calendar-caption-lag) *
+      var(--godui-motion)
+    )
     var(--ease-spring-snappy)
-    calc((var(--godui-calendar-delay) + 40ms) * var(--godui-motion)) backwards;
+    calc(
+      (var(--godui-calendar-delay) + var(--godui-calendar-caption-lag)) *
+      var(--godui-motion)
+    )
+    backwards;
   --animate-godui-calendar-caption-in-from-start: godui-calendar-caption-in-from-start
-    calc(var(--godui-duration-base) - 40ms * var(--godui-motion))
+    calc(
+      var(--godui-duration-base) -
+      var(--godui-calendar-caption-lag) *
+      var(--godui-motion)
+    )
     var(--ease-spring-snappy)
-    calc((var(--godui-calendar-delay) + 40ms) * var(--godui-motion)) backwards;
+    calc(
+      (var(--godui-calendar-delay) + var(--godui-calendar-caption-lag)) *
+      var(--godui-motion)
+    )
+    backwards;
   --animate-godui-calendar-caption-out-to-start: godui-calendar-caption-out-to-start
     calc(
       var(--godui-duration-base) +
@@ -493,6 +510,9 @@
       0;
   }
 }
+/* The caption exits' curve is --godui-calendar-ease-out written out: Chrome
+ * doesn't resolve var() in a keyframe's animation-timing-function (it falls
+ * back to linear). */
 @keyframes godui-calendar-caption-out-to-start {
   0% {
     opacity: 1;

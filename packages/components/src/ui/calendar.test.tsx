@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import * as React from "react";
 import type { DateRange } from "react-day-picker";
@@ -126,6 +126,25 @@ function keyframes(name: string): string {
   return css.slice(start, css.indexOf("\n}", start));
 }
 
+/** `@keyframes name` from styles.css as the registry writes it: selector → declarations. */
+function keyframeObject(name: string) {
+  const body = keyframes(name).replace(/\/\*[\s\S]*?\*\//g, "");
+  const norm = (v: string) =>
+    v.replace(/\s+/g, " ").replace(/\( /g, "(").replace(/ \)/g, ")").trim();
+  const frames: Record<string, Record<string, string>> = {};
+  for (const [, selector, decls] of body
+    .slice(body.indexOf("{") + 1)
+    .matchAll(/([^{}]+?)\s*\{([^{}]*)\}/g)) {
+    const out: Record<string, string> = {};
+    for (const decl of (decls ?? "").split(";")) {
+      const at = decl.indexOf(":");
+      if (at > 0) out[decl.slice(0, at).trim()] = norm(decl.slice(at + 1));
+    }
+    frames[(selector ?? "").trim().replace(/\s*,\s*/g, ", ")] = out;
+  }
+  return frames;
+}
+
 /** The sweep's slice for the `index`th of `length` halves (ease-out cubic front). */
 const reachedAt = (x: number) => 1 - (1 - x) ** (1 / 3);
 function slice(index: number, length: number) {
@@ -164,14 +183,47 @@ const NEW_KEYFRAMES = [
 ];
 const GATE = "not-in-[[data-animated-month][aria-hidden=true]]:data-animate:";
 
+/**
+ * Fire `animationend` with its AnimationEvent fields (jsdom has no
+ * AnimationEvent, so they're set on a plain bubbling Event).
+ */
+function animationEnd(el: Element, animationName: string, pseudoElement = "") {
+  const event = new Event("animationend", { bubbles: true });
+  Object.assign(event, { animationName, pseudoElement, elapsedTime: 0 });
+  act(() => {
+    el.dispatchEvent(event);
+  });
+}
+
+/** End the fill layer's own animation, as the browser would. */
+function endFill(button: HTMLElement) {
+  const el = fill(button);
+  if (!el) throw new Error("no fill layer");
+  animationEnd(
+    el,
+    el.dataset.state === "on"
+      ? "godui-calendar-fill-in"
+      : "godui-calendar-fade-out",
+  );
+}
+
+/** The button paints shadcn's fill itself (no layer): a settled selected day. */
+function expectSettledFill(button: HTMLElement, day: number) {
+  expect(fill(button)).toBeNull();
+  expect(button).toHaveAttribute("data-fill", "settled");
+  expect(button).toHaveClass("bg-primary", "text-primary-foreground");
+  // The number is in the DOM once.
+  expect(button.textContent).toBe(String(day));
+}
+
 describe("Calendar", () => {
   it("matches shadcn's data-slot tree and exports (single, selected date)", () => {
     const { unmount } = render(<Single ui={Shadcn} />);
     const expected = slotTree();
     unmount();
     render(<Single ui={Godui} />);
-    // The selected day's fill layer is rendered: layers carry no data-slot.
-    expect(fill(dayButton(14))).not.toBeNull();
+    // At rest the selected day paints shadcn's fill itself, no layer.
+    expectSettledFill(dayButton(14), 14);
     expectSlotParity(slotTree(), expected);
     expect(Object.keys(Godui)).toEqual(
       expect.arrayContaining(Object.keys(Shadcn)),
@@ -240,8 +292,10 @@ describe("Calendar", () => {
         drift: "25%",
         "drift-out": "12%",
         "caption-drift": "14px",
+        "caption-lag": "40ms",
         delay: "20ms",
         dir: "1",
+        "ease-out": "cubic-bezier(0.25,0.46,0.45,0.94)",
         sweep: "240ms",
       });
       expect(tuning("rtl:")).toEqual({ dir: "-1" });
@@ -265,7 +319,7 @@ describe("Calendar", () => {
     it("the exit is shorter and subtler than the enter, and the enter waits a beat", () => {
       // Exit: fast, no delay. Enter: base, after --godui-calendar-delay.
       expect(token("godui-calendar-out-to-start")).toMatch(
-        /^godui-calendar-out-to-start var\(--godui-duration-fast\) cubic-bezier\([^)]*\) both$/,
+        /^godui-calendar-out-to-start var\(--godui-duration-fast\) var\(--godui-calendar-ease-out\) both$/,
       );
       expect(token("godui-calendar-in-from-end")).toBe(
         "godui-calendar-in-from-end var(--godui-duration-base) var(--ease-spring-snappy) calc(var(--godui-calendar-delay) * var(--godui-motion)) backwards",
@@ -290,10 +344,22 @@ describe("Calendar", () => {
       const enterEnd =
         "var(--godui-duration-base) var(--ease-spring-snappy) calc(var(--godui-calendar-delay) * var(--godui-motion))";
       expect(token("godui-calendar-in-from-end")).toContain(enterEnd);
-      // The caption starts 40ms later and runs 40ms shorter: same end.
+      // The caption starts --godui-calendar-caption-lag later and runs that
+      // much shorter: same end.
       expect(token("godui-calendar-caption-in-from-end")).toContain(
-        "calc(var(--godui-duration-base) - 40ms * var(--godui-motion)) var(--ease-spring-snappy) calc((var(--godui-calendar-delay) + 40ms) * var(--godui-motion))",
+        "calc(var(--godui-duration-base) - var(--godui-calendar-caption-lag) * var(--godui-motion)) var(--ease-spring-snappy) calc((var(--godui-calendar-delay) + var(--godui-calendar-caption-lag)) * var(--godui-motion))",
       );
+      // Its exit eases on the same curve as the weeks' — written out, since
+      // Chrome doesn't resolve var() in a keyframe's timing function.
+      const ease = tuning()["ease-out"]?.replace(/,/g, ", ");
+      for (const name of [
+        "godui-calendar-caption-out-to-start",
+        "godui-calendar-caption-out-to-end",
+      ]) {
+        expect(keyframes(name), name).toContain(
+          `animation-timing-function: ${ease};`,
+        );
+      }
       // ...and so does the caption's exit: no earlier, or the cleanup would
       // cut the enter short.
       const exitDuration =
@@ -434,11 +500,12 @@ describe("Calendar", () => {
       );
       // The fill is the layer's ::before; the layer's text is primary-foreground.
       expect(layer).toHaveClass("text-primary-foreground", "before:bg-primary");
-      // The button's own fill and number colour no longer change.
-      expect(day.className).not.toMatch(/(^|\s)\S*:bg-primary(\s|$)/);
+      // While it pops, the button keeps the unselected look under it.
+      expect(day).toHaveAttribute("data-fill", "layer");
+      expect(day.className).not.toContain("bg-primary");
       expect(day.className).not.toContain("text-primary-foreground");
-      // The deselected day's layer stays mounted and animates out: the
-      // layer (number included) fades, its ::before fill shrinks. Keyframes,
+      // The deselected day mounts a layer that animates out: the layer
+      // (number included) fades, its ::before fill shrinks. Keyframes,
       // not transitions — after an opacity transition Chrome won't composite
       // the next pop's opacity keyframe on the same element.
       const ghost = fill(dayButton(14));
@@ -457,6 +524,52 @@ describe("Calendar", () => {
       expect(keyframes("godui-calendar-fill-shrink")).toContain(
         "scale: calc(1 - 0.15 * var(--godui-motion))",
       );
+    });
+
+    it("the layer exists only while it animates: once its animation ends, the day reads its number once", async () => {
+      const user = userEvent.setup();
+      render(<Single ui={Godui} />);
+      await user.click(dayButton(20));
+      // Mid-animation the copy is there too.
+      expect(dayButton(20).textContent).toBe("2020");
+      expect(dayButton(14).textContent).toBe("1414");
+      // Neither the ::before's animationend nor a stale one drops the layer.
+      animationEnd(
+        fill(dayButton(14)) as HTMLElement,
+        "godui-calendar-fill-shrink",
+        "::before",
+      );
+      animationEnd(
+        fill(dayButton(14)) as HTMLElement,
+        "godui-calendar-fill-in",
+      );
+      // A child's (bubbling) animationend doesn't either.
+      const child = document.createElement("i");
+      fill(dayButton(14))?.append(child);
+      animationEnd(child, "godui-calendar-fade-out");
+      expect(fill(dayButton(14))).not.toBeNull();
+      // The pop ends: the button takes over shadcn's fill.
+      endFill(dayButton(20));
+      expectSettledFill(dayButton(20), 20);
+      // The ghost ends: an unselected day, one number, no fill.
+      endFill(dayButton(14));
+      const left = dayButton(14);
+      expect(fill(left)).toBeNull();
+      expect(left.textContent).toBe("14");
+      expect(left).not.toHaveAttribute("data-fill");
+      expect(left.className).not.toContain("bg-primary");
+    });
+
+    it("a settled selected day keeps its fill under the pointer (no hover overlay)", () => {
+      render(<Single ui={Godui} />);
+      expect(dayButton(14)).toHaveClass(
+        "hover:bg-primary",
+        "dark:hover:bg-primary",
+        "hover:text-primary-foreground",
+        "dark:hover:text-primary-foreground",
+        "after:hidden",
+      );
+      expect(dayButton(14).className).not.toContain("hover:bg-transparent");
     });
 
     it("re-picking a deselected day pops it again", async () => {
@@ -494,15 +607,33 @@ describe("Calendar", () => {
     it("mount rule: nothing pops on first paint or month navigation", async () => {
       const user = userEvent.setup();
       render(<Single ui={Godui} />);
-      expect(fill(dayButton(14))).toHaveAttribute("data-state", "on");
-      expect(fill(dayButton(14))).not.toHaveAttribute("data-animate");
+      expectSettledFill(dayButton(14), 14);
       await user.click(screen.getByRole("button", { name: /next month/i }));
       finishMonthChange();
       await user.click(screen.getByRole("button", { name: /previous month/i }));
-      expect(fill(dayButton(14))).toHaveAttribute("data-state", "on");
-      expect(fill(dayButton(14))).not.toHaveAttribute("data-animate");
-      // No other day has a layer: unselected days render none.
-      expect(fill(dayButton(15))).toBeNull();
+      expectSettledFill(dayButton(14), 14);
+      expect(document.querySelector("[data-calendar-layer]")).toBeNull();
+    });
+
+    it("mount rule: a controlled remount (a new key) with a selected day doesn't pop", () => {
+      const onSelect = () => {};
+      const view = (key: string) => (
+        <Godui.Calendar
+          key={key}
+          mode="single"
+          defaultMonth={OCT}
+          selected={SELECTED}
+          onSelect={onSelect}
+        />
+      );
+      const { rerender } = render(view("a"));
+      const before = dayButton(14);
+      rerender(view("b"));
+      // A fresh grid, not the same element...
+      expect(dayButton(14)).not.toBe(before);
+      // ...painting its selection at rest.
+      expectSettledFill(dayButton(14), 14);
+      expect(document.querySelector("[data-animate]")).toBeNull();
     });
 
     it("mount rule: a controlled re-render with the same date doesn't pop; a new date does", () => {
@@ -517,7 +648,7 @@ describe("Calendar", () => {
       );
       const { rerender } = render(view(SELECTED));
       rerender(view(new Date(2026, 9, 14)));
-      expect(fill(dayButton(14))).not.toHaveAttribute("data-animate");
+      expectSettledFill(dayButton(14), 14);
       rerender(view(new Date(2026, 9, 21)));
       expect(fill(dayButton(21))).toHaveAttribute("data-animate", "true");
       expect(fill(dayButton(14))).toHaveAttribute("data-state", "off");
@@ -707,14 +838,25 @@ describe("Calendar", () => {
       expect(fill(dayButton(20))).toHaveAttribute("data-animate", "true");
     });
 
-    it("RTL: the sweep grows from the other side", async () => {
+    it("RTL: each sweep direction carries its mirrored origin, which dir=rtl selects", async () => {
       const user = userEvent.setup();
       render(<Range ui={Godui} dir="rtl" />);
+      // The `rtl:` variant matches under the root's dir attribute.
       expect(root()).toHaveAttribute("dir", "rtl");
       await user.click(dayButton(5, 10));
-      // `rtl:origin-right` wins under dir=rtl for a forward sweep.
-      expect(startHalf(dayButton(5, 10))).toHaveClass("rtl:origin-right");
+      // Forward (toward later days, leftward in RTL): grows from the right.
+      const forward = startHalf(dayButton(5, 10));
+      expect(forward).toHaveAttribute("data-sweep", "forward");
+      expect(forward).toHaveClass("origin-left", "rtl:origin-right");
+      expect(forward?.className).not.toContain("rtl:origin-left");
+      await user.click(dayButton(8));
+      // Backward (rightward in RTL): grows from the left.
+      const backward = endHalf(dayButton(8));
+      expect(backward).toHaveAttribute("data-sweep", "backward");
+      expect(backward).toHaveClass("origin-right", "rtl:origin-left");
+      expect(backward?.className).not.toContain("rtl:origin-right");
       expect(tuning("rtl:").dir).toBe("-1");
+      // The Chrome trace checks the computed transform-origin.
     });
 
     it("a range end moving from the second month to the first doesn't pop or sweep", async () => {
@@ -724,7 +866,7 @@ describe("Calendar", () => {
       expect(caption()).toHaveTextContent("November 2026");
       const end = dayButton(3, 10);
       expect(end).toHaveAttribute("data-range-end", "true");
-      expect(fill(end)).not.toHaveAttribute("data-animate");
+      expectSettledFill(end, 3);
       finishMonthChange();
       await user.click(screen.getByRole("button", { name: /previous month/i }));
       expect(
@@ -787,6 +929,16 @@ describe("Calendar", () => {
       expect(dayButton(22)).toHaveAttribute("data-focus-ring", "snap");
     });
 
+    it("a keyboard month change snaps the ring onto the new month's day", async () => {
+      const user = userEvent.setup();
+      render(<Single ui={Godui} />);
+      dayButton(14).focus();
+      await user.keyboard("{PageDown}");
+      const moved = dayButton(14, 10);
+      expect(moved).toHaveFocus();
+      expect(moved).toHaveAttribute("data-focus-ring", "snap");
+    });
+
     it("tabbing into the grid fades the ring in", async () => {
       const user = userEvent.setup();
       render(<Single ui={Godui} />);
@@ -828,7 +980,7 @@ describe("Calendar", () => {
         "godui-calendar-caption-in-from-start",
       ]) {
         expect(token(name), name).toContain(
-          "calc((var(--godui-calendar-delay) + 40ms) * var(--godui-motion))",
+          "calc((var(--godui-calendar-delay) + var(--godui-calendar-caption-lag)) * var(--godui-motion))",
         );
       }
       expect(token("godui-calendar-track-in")).toContain(
@@ -861,7 +1013,9 @@ describe("Calendar", () => {
     );
     for (const name of NEW_KEYFRAMES) {
       expect(theme[`animate-${name}`], name).toBe(token(name));
-      expect(entry.css[`@keyframes ${name}`], name).toBeDefined();
+      expect(entry.css[`@keyframes ${name}`], name).toEqual(
+        keyframeObject(name),
+      );
     }
     // Not in the shared theme entry.
     const godTheme = registry.items.find(
