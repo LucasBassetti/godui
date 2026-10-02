@@ -12,7 +12,7 @@
 // hovering (or focusing) a day previews the range it would make: a lighter
 // track sweeps out to a ghost end pill that glides along the row with the
 // sweep's front; clicking commits it in place (the tint deepens, the end
-// pops, nothing re-sweeps), leaving the grid folds it away. Hover fades an
+// pops, nothing re-sweeps), leaving the grid fades it out. Hover fades an
 // overlay; the focus ring fades in on entering the grid and jumps between
 // days on keys. Nothing animates on first paint or month navigation.
 // GPU-only (transform, opacity).
@@ -203,7 +203,6 @@ function Calendar({
         Root: CalendarRoot,
         Chevron: CalendarChevron,
         DayButton: CalendarDayButton,
-        MonthGrid: CalendarMonthGrid,
         WeekNumber: CalendarWeekNumber,
         ...components,
       }}
@@ -365,8 +364,8 @@ function waveFor(
 // ── Range preview ────────────────────────────────────────────────────────────
 
 /**
- * How long the preview holds after the pointer leaves a month's grid for the
- * space between two months: long enough to cross to the other one.
+ * How long the preview holds after the pointer leaves the grid (for the space
+ * between two months, say): long enough to cross to the other month's grid.
  */
 const PREVIEW_GRACE_MS = 80;
 
@@ -393,7 +392,10 @@ type RangeRules = {
  * day picked: a one-day range, or no `to` yet) and the click would extend it
  * — the same rules React DayPicker applies (`min`, `max`, `required`,
  * `excludeDisabled`, `resetOnSelect`). Anything else would start over: no
- * preview.
+ * preview. It runs on the default date library: rdp's `dateLib` and
+ * `timeZone` aren't on its context, so with a custom date library or a time
+ * zone the prediction may disagree with the click in edge cases (a day
+ * boundary, a week rule).
  */
 function predictSpan(
   target: PreviewTarget | null,
@@ -432,9 +434,15 @@ function createPreviewStore() {
   let target: PreviewTarget | null = null;
   let timer: ReturnType<typeof setTimeout> | undefined;
   let cache: { key: unknown[]; span: Span } | null = null;
+  let unwatch: (() => void) | undefined;
   const listeners = new Set<() => void>();
-  const set = (next: PreviewTarget | null) => {
+  const stop = () => {
     clearTimeout(timer);
+    unwatch?.();
+    unwatch = undefined;
+  };
+  const set = (next: PreviewTarget | null) => {
+    stop();
     if (
       next === target ||
       (next && target && next.index === target.index && next.row === target.row)
@@ -443,6 +451,11 @@ function createPreviewStore() {
     }
     target = next;
     for (const listener of listeners) listener();
+  };
+  /** Clear, unless a day is entered first. */
+  const clearSoon = () => {
+    stop();
+    timer = setTimeout(() => set(null), PREVIEW_GRACE_MS);
   };
   return {
     get: () => target,
@@ -453,14 +466,26 @@ function createPreviewStore() {
       };
     },
     set,
-    /** Clear, unless a day is entered first. */
-    clearSoon() {
-      clearTimeout(timer);
-      timer = setTimeout(() => set(null), PREVIEW_GRACE_MS);
+    clearSoon,
+    /**
+     * The pointer left `day` for the grid around the days (a row gap, the
+     * weekdays): follow it until it enters a day (its mouseenter takes over)
+     * or leaves the grid.
+     */
+    follow(day: Element) {
+      stop();
+      const doc = day.ownerDocument;
+      const over = (event: Event) => {
+        const where = whereIs(asElement(event.target), day);
+        if (where === "grid") return;
+        stop();
+        if (where === "disabled") set(null);
+        else if (where === "away") clearSoon();
+      };
+      doc.addEventListener("mouseover", over, true);
+      unwatch = () => doc.removeEventListener("mouseover", over, true);
     },
-    dispose() {
-      clearTimeout(timer);
-    },
+    dispose: stop,
     /** `predictSpan`, worked out once per change for all the days. */
     preview(
       at: PreviewTarget | null,
@@ -503,49 +528,20 @@ function asElement(target: EventTarget | null): Element | null {
 const calendarOf = (el: Element) => el.closest("[data-slot=calendar]");
 
 /**
- * shadcn's grid table. It also ends a range preview when the pointer leaves
- * the grid — after a short grace if it went into the space between two
- * months — or crosses a disabled day (a disabled button gets no mouseenter).
+ * Where the pointer went, seen from a day of the same calendar: another day
+ * (its mouseenter moves the preview), a disabled day (it can't end a range,
+ * and its button gets no mouse events), the grid around the days (row gaps,
+ * weekdays), or away.
  */
-function CalendarMonthGrid({
-  onMouseLeave,
-  onMouseOver,
-  ...props
-}: React.ComponentProps<NonNullable<CustomComponents["MonthGrid"]>>) {
-  const preview = React.useContext(CalendarPreviewContext);
-  return (
-    // biome-ignore lint/a11y/useKeyWithMouseEvents: the keyboard side is the day buttons' focus/blur (focus moves the preview, Escape or leaving the grid ends it)
-    <table
-      {...props}
-      onMouseOver={(event) => {
-        onMouseOver?.(event);
-        const cell = asElement(event.target)?.closest("td");
-        if (cell?.hasAttribute("data-disabled")) preview?.set(null);
-      }}
-      onMouseLeave={(event) => {
-        onMouseLeave?.(event);
-        if (!preview) return;
-        const grid = event.currentTarget;
-        const to = asElement(event.relatedTarget);
-        const otherGrid = to?.closest("table");
-        // Straight into the other month's grid (a fast pointer): that grid
-        // takes over, and its own leave ends the preview.
-        if (
-          otherGrid &&
-          otherGrid !== grid &&
-          calendarOf(otherGrid) === calendarOf(grid)
-        ) {
-          return;
-        }
-        // Into the space between two months: the pointer may be crossing.
-        if (to?.contains(grid) && to.querySelectorAll("table").length > 1) {
-          preview.clearSoon();
-          return;
-        }
-        preview.set(null);
-      }}
-    />
-  );
+function whereIs(
+  to: Element | null,
+  from: Element,
+): "day" | "disabled" | "grid" | "away" {
+  if (!to || calendarOf(to) !== calendarOf(from)) return "away";
+  const cell = to.closest("td");
+  if (cell?.hasAttribute("data-disabled")) return "disabled";
+  if (cell?.hasAttribute("data-day") && to.closest("button")) return "day";
+  return to.closest("table, [role=grid]") ? "grid" : "away";
 }
 
 // ── Day ──────────────────────────────────────────────────────────────────────
@@ -583,7 +579,7 @@ const restingHalf = (on: boolean, preview: boolean, cap: boolean): Half => ({
 /**
  * The preview's ghost end pill: it `pop`s in when a preview starts, `glide`s
  * in from the previous end along a row (`from`: that end, in days from
- * here), snaps across rows, and `fade`s when the preview folds or commits.
+ * here), snaps across rows, and `fade`s when the preview ends or commits.
  */
 type Ghost = {
   on: boolean;
@@ -665,14 +661,15 @@ function CalendarTrackHalf({
           : undefined
       }
       className={cn(
-        // The range's accent is the ::after; under it, the span's own
-        // lighter tint is what a preview shows. On commit the accent fades
-        // in over it. Layout-free, as Chrome traces showed: the ::after is
+        // The range's accent is the ::after; under it, the span's own tint
+        // and hairline edges (the ghost pill's language: outlined is
+        // tentative, filled is committed) are what a preview shows. On
+        // commit the accent fades in over both. Layout-free, as Chrome traces showed: the ::after is
         // an in-flow block (an `absolute` child of a sweeping half lays out
         // every frame), `isolate` (else its opacity reaching or leaving 1
         // adds or drops a paint layer: a layout), and hidden until a range
         // draws the half, so a moving preview never changes it.
-        "pointer-events-none absolute inset-y-0 -z-10 bg-accent/50 after:block after:size-full after:rounded-[inherit] after:bg-accent after:opacity-0 after:isolate data-commit:after:transition-[opacity] data-commit:after:duration-(--godui-duration-fast) data-commit:after:ease-out data-[tint=range]:after:opacity-100",
+        "pointer-events-none absolute inset-y-0 -z-10 bg-accent/50 shadow-[inset_0_1px_0,inset_0_-1px_0] shadow-primary/20 after:block after:size-full after:rounded-[inherit] after:bg-accent after:opacity-0 after:isolate data-commit:after:transition-[opacity] data-commit:after:duration-(--godui-duration-fast) data-commit:after:ease-out data-[tint=range]:after:opacity-100",
         TRACK_HALF[half],
         (middle || state.cap) && TRACK_CORNERS[half],
         // Each half grows from the side the sweep comes from.
@@ -698,6 +695,7 @@ function CalendarDayButton({
   modifiers,
   children,
   onMouseEnter,
+  onMouseLeave,
   onFocus,
   onBlur,
   onKeyDown,
@@ -918,6 +916,20 @@ function CalendarDayButton({
       onMouseEnter={(event) => {
         onMouseEnter?.(event);
         store?.set(point(event.currentTarget));
+      }}
+      onMouseLeave={(event) => {
+        onMouseLeave?.(event);
+        // Ends the preview when the pointer leaves the grid (after a short
+        // grace: it may be crossing to the other month) or crosses a
+        // disabled day; a row gap keeps it.
+        if (!store) return;
+        const where = whereIs(
+          asElement(event.relatedTarget),
+          event.currentTarget,
+        );
+        if (where === "disabled") store.set(null);
+        else if (where === "grid") store.follow(event.currentTarget);
+        else if (where === "away") store.clearSoon();
       }}
       onFocus={(event) => {
         onFocus?.(event);

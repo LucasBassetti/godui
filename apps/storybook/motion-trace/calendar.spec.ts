@@ -541,8 +541,8 @@ test("moving along a row extends the preview and glides the ghost on the composi
   });
   // Each step sweeps (or fades) two halves and glides the ghost: 21. The
   // trace undercounts them (Chrome reuses a finished animation's trace id),
-  // so this only proves the window saw animations; the ghost sampler below
-  // checks each step moves it.
+  // so this only proves the window saw animations; it is not a gate. The
+  // ghost sampler below checks that each step moves it.
   expect(result.animationCount).toBeGreaterThanOrEqual(5);
   // Moving the preview changes attributes on layers every day already
   // carries: no DOM insertion, so no layout at all after the first frame.
@@ -710,14 +710,71 @@ for (const dir of ["ltr", "rtl"] as const) {
   });
 }
 
-/** A pixel inside `iso`'s button, away from its number (its lower-left corner area). */
-async function trackPixel(page: Page, iso: string) {
-  const [px] = await samplePixels(page, day(page, iso), [[0.08, 0.85]]);
-  return px as number[];
+test("a slow pointer crossing the gap between two rows keeps the preview; leaving the calendar folds it", async ({
+  page,
+}) => {
+  await page.goto(`/iframe.html?id=${PREVIEW}&viewMode=story`);
+  await page.waitForLoadState("networkidle");
+  await page.mouse.move(2, 2);
+  await pointAt(page, "2026-10-14");
+  await page.waitForTimeout(400);
+  // 14 → 21, straight down at ~60px/s: several frames over the row gap.
+  const xs = await sampleGhost(page, 900, async () => {
+    await pointAt(page, "2026-10-21", 50);
+  });
+  expect(xs.length).toBeGreaterThan(30);
+  expect(xs.filter((x) => x === null)).toEqual([]);
+  // Off the calendar: gone after the grace and the fade.
+  await page.mouse.move(2, 2, { steps: 4 });
+  await page.waitForTimeout(400);
+  await expect(
+    page.locator("[data-calendar-layer=ghost][data-state=on]"),
+  ).toHaveCount(0);
+  await expect(
+    page.locator(
+      "[data-calendar-layer^=track][data-tint=preview][data-state=on]",
+    ),
+  ).toHaveCount(0);
+});
+
+/** sRGB (0–255) to OKLab. */
+function oklab([r, g, b]: number[]) {
+  const lin = (c: number) => {
+    const v = c / 255;
+    return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+  };
+  const [R, G, B] = [lin(r as number), lin(g as number), lin(b as number)];
+  const l = Math.cbrt(0.4122214708 * R + 0.5363325363 * G + 0.0514459929 * B);
+  const m = Math.cbrt(0.2119034982 * R + 0.6806995451 * G + 0.1073969566 * B);
+  const s = Math.cbrt(0.0883024619 * R + 0.2817188376 * G + 0.6299787005 * B);
+  return [
+    0.2104542553 * l + 0.793617785 * m - 0.0040720468 * s,
+    1.9779984951 * l - 2.428592205 * m + 0.4505937099 * s,
+    0.0259040371 * l + 0.7827717662 * m - 0.808675766 * s,
+  ];
+}
+const deltaE = (a: number[], b: number[]) => {
+  const [x, y] = [oklab(a), oklab(b)];
+  return Math.hypot(...x.map((v, i) => v - (y[i] as number)));
+};
+
+/**
+ * A middle day's track, as painted: its center (the fill) and its top and
+ * bottom edge rows (where a preview draws its hairlines).
+ */
+async function trackPixels(page: Page, iso: string) {
+  const [center, ...edges] = await samplePixels(page, day(page, iso), [
+    [0.3, 0.85],
+    [0.5, 0],
+    [0.5, 0.03],
+    [0.5, 0.97],
+    [0.5, 1],
+  ]);
+  return { center: center as number[], edges: edges as number[][] };
 }
 
 for (const theme of ["light", "dark"] as const) {
-  test(`${theme}: a preview's track is a lighter tint than the committed range's`, async ({
+  test(`${theme}: a preview's track reads as tentative (outlined), a committed one as filled`, async ({
     page,
   }) => {
     await page.goto(
@@ -725,30 +782,26 @@ for (const theme of ["light", "dark"] as const) {
     );
     await page.waitForLoadState("networkidle");
     await page.mouse.move(2, 2);
-    const [accent, background] = [
-      await tokenRgb(page, "--accent"),
-      await tokenRgb(page, "--background"),
-    ];
+    const accent = await tokenRgb(page, "--accent");
     await pointAt(page, "2026-10-14");
     await page.waitForTimeout(500);
-    const preview = await trackPixel(page, "2026-10-11");
-    // Half the accent over the background.
-    expectColor(
-      preview,
-      accent.map((c, i) => Math.round((c + (background[i] as number)) / 2)),
-      "preview",
-    );
+    const preview = await trackPixels(page, "2026-10-12");
     await page.mouse.down();
     await page.mouse.up();
     await page.waitForTimeout(500);
-    const committed = await trackPixel(page, "2026-10-11");
-    expectColor(committed, accent, "committed");
-    // Distinct: the lighter one is the preview (closer to the background).
-    const distance = (a: number[], b: number[]) =>
-      a.reduce((sum, c, i) => sum + Math.abs(c - (b[i] as number)), 0);
-    expect(distance(preview, committed)).toBeGreaterThanOrEqual(6);
-    expect(distance(preview, background)).toBeLessThan(
-      distance(committed, background),
+    const committed = await trackPixels(page, "2026-10-12");
+    // Committed: shadcn's accent.
+    expectColor(committed.center, accent, "committed center");
+    // Preview: its hairline edges differ perceptibly from the committed
+    // track's (the fill alone is ΔL ≈ 0.015 in light: not enough).
+    const edge = Math.max(
+      ...preview.edges.map((px, i) =>
+        deltaE(px, committed.edges[i] as number[]),
+      ),
     );
+    expect(
+      edge,
+      `OKLab ΔE at the edge: ${edge.toFixed(3)}`,
+    ).toBeGreaterThanOrEqual(0.04);
   });
 }

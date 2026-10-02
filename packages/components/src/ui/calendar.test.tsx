@@ -1331,48 +1331,65 @@ describe("Calendar", () => {
     });
 
     describe("ends when", () => {
-      it("the pointer leaves the grid: the track folds back (fades), the ghost fades", async () => {
-        render(<Pending />);
-        hover(dayButton(14));
-        hover(document.body);
-        expect(previewing()).toBe(0);
-        for (const half of halves(8, 14)) {
-          expect(half).toHaveAttribute("data-state", "off");
-          expect(half).toHaveClass(`${GATE}animate-godui-calendar-fade-out`);
-        }
-        expect(ghost(dayButton(14))).toHaveAttribute("data-animate", "fade");
-        // The anchor stays as it was.
-        expect(dayButton(8)).toHaveAttribute("data-fill", "settled");
-      });
-
-      it("the pointer crossing a row gap or straight into the other month's grid keeps it; the space between the months, only for a moment", () => {
+      it("the pointer leaves the grid: after a short grace the track folds back (fades), the ghost fades", () => {
         vi.useFakeTimers();
         try {
           render(<Pending />);
-          fireEvent.mouseEnter(dayButton(14));
+          hover(dayButton(14));
+          hover(document.body);
+          // Held for the grace (it may be crossing to the other month)...
           expect(previewing()).toBeGreaterThan(0);
-          const october = dayButton(14).closest("table") as HTMLElement;
-          const november = dayButton(3, 10).closest("table") as HTMLElement;
+          act(() => {
+            vi.advanceTimersByTime(80);
+          });
+          // ...then it ends.
+          expect(previewing()).toBe(0);
+          for (const half of halves(8, 14)) {
+            expect(half).toHaveAttribute("data-state", "off");
+            expect(half).toHaveClass(`${GATE}animate-godui-calendar-fade-out`);
+          }
+          expect(ghost(dayButton(14))).toHaveAttribute("data-animate", "fade");
+          // The anchor stays as it was.
+          expect(dayButton(8)).toHaveAttribute("data-fill", "settled");
+        } finally {
+          vi.useRealTimers();
+        }
+      });
+
+      it("a row gap keeps it however long the pointer stays; so does a jump straight into the other month's grid; the space between the months, only for a moment", () => {
+        vi.useFakeTimers();
+        try {
+          render(<Pending />);
+          hover(dayButton(14));
+          const october = dayButton(14).closest("tbody") as HTMLElement;
+          // The gap between two rows is the grid's, not a day's.
+          hover(october);
+          act(() => {
+            vi.advanceTimersByTime(500);
+          });
+          expect(ghost(dayButton(14))).toHaveAttribute("data-state", "on");
+          hover(dayButton(21));
+          expect(ghost(dayButton(21))).toHaveAttribute("data-state", "on");
           // Straight into November's grid (a fast pointer).
-          fireEvent.mouseLeave(october, { relatedTarget: dayButton(3, 10) });
-          expect(previewing()).toBeGreaterThan(0);
+          hover(dayButton(3, 10));
+          expect(ghost(dayButton(3, 10))).toHaveAttribute("data-state", "on");
           // Into the space between the months: held for the grace...
           const between = october.closest("[data-animated-month]")
             ?.parentElement as HTMLElement;
-          fireEvent.mouseLeave(november, { relatedTarget: between });
+          hover(between);
           act(() => {
             vi.advanceTimersByTime(60);
           });
           expect(previewing()).toBeGreaterThan(0);
           // ...a day entered in time keeps it going...
-          fireEvent.mouseEnter(dayButton(3, 10));
+          hover(dayButton(4, 10));
           act(() => {
             vi.advanceTimersByTime(200);
           });
-          expect(previewing()).toBeGreaterThan(0);
-          expect(ghost(dayButton(3, 10))).toHaveAttribute("data-state", "on");
-          // ...else it ends.
-          fireEvent.mouseLeave(november, { relatedTarget: between });
+          expect(ghost(dayButton(4, 10))).toHaveAttribute("data-state", "on");
+          // ...else it ends: from a row gap out of the grid too.
+          hover(dayButton(4, 10).closest("tbody") as HTMLElement);
+          hover(between);
           act(() => {
             vi.advanceTimersByTime(80);
           });
@@ -1382,11 +1399,41 @@ describe("Calendar", () => {
         }
       });
 
-      it("the pointer crosses a disabled day (its button is disabled, so it gets no mouseenter)", () => {
-        render(<Pending disabled={[new Date(2026, 9, 15)]} />);
-        fireEvent.mouseEnter(dayButton(14));
+      it("with your own MonthGrid, leaving still ends it (the days watch it, not the table)", () => {
+        vi.useFakeTimers();
+        try {
+          render(
+            <Pending
+              components={{
+                MonthGrid: (props) => <table data-mine="" {...props} />,
+              }}
+            />,
+          );
+          expect(document.querySelector("table[data-mine]")).not.toBeNull();
+          hover(dayButton(14));
+          expect(previewing()).toBeGreaterThan(0);
+          hover(document.body);
+          act(() => {
+            vi.advanceTimersByTime(80);
+          });
+          expect(previewing()).toBe(0);
+        } finally {
+          vi.useRealTimers();
+        }
+      });
+
+      it("the pointer crosses a disabled day (its button is disabled, so it gets no mouseenter), from a day or from a row gap", () => {
+        render(
+          <Pending disabled={[new Date(2026, 9, 15), new Date(2026, 9, 22)]} />,
+        );
+        hover(dayButton(14));
         expect(previewing()).toBeGreaterThan(0);
-        fireEvent.mouseOver(dayButton(15).closest("td") as HTMLElement);
+        hover(dayButton(15).closest("td") as HTMLElement);
+        expect(previewing()).toBe(0);
+        hover(dayButton(16));
+        expect(previewing()).toBeGreaterThan(0);
+        hover(dayButton(16).closest("tbody") as HTMLElement);
+        hover(dayButton(22).closest("td") as HTMLElement);
         expect(previewing()).toBe(0);
       });
 
@@ -1451,6 +1498,14 @@ describe("Calendar", () => {
         expect(previewing()).toBeGreaterThan(0);
         hover(dayButton(14));
         expect(previewing()).toBe(0);
+      });
+
+      it("resetOnSelect: the first pick ({ from, to: undefined }) previews", () => {
+        render(<Pending resetOnSelect initial={{ from: undefined }} />);
+        fireEvent.click(dayButton(8));
+        hover(dayButton(12));
+        expect(ghost(dayButton(12))).toHaveAttribute("data-state", "on");
+        expect(previewing()).toBe(halves(8, 12).length);
       });
 
       it("resetOnSelect: a one-day range starts over", async () => {

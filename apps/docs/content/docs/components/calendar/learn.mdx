@@ -4,7 +4,7 @@ description: How the months drift past each other on React DayPicker's own anima
 learnPlayer: true
 ---
 
-import { CalendarRangeDemo } from "@/components/demos/core/calendar-range-demo";
+import { CalendarRangePreviewDemo } from "@/components/demos/core/calendar-range-preview-demo";
 
 <LearnPlayer>
 
@@ -195,9 +195,11 @@ Once a range's first day is picked, the day under the pointer (or the focus)
 draws the range a click there would make. It asks React DayPicker's own range
 rules, so with `min`, `max` or `excludeDisabled` a day that would start the
 range over previews nothing. It's drawn with the same track halves and the
-same sweep as a picked range, in a lighter tint and on a quicker clock: as the
-pointer moves on, only the halves newly covered sweep out from the part
-already drawn, and the ones it leaves fade.
+same sweep as a picked range, on a quicker clock, outlined with hairline edges
+in the ghost pill's colour over a lighter tint (in light mode the tint alone
+is too close to the range's accent to tell apart): as the pointer moves on,
+only the halves newly covered sweep out from the part already drawn, and the
+ones it leaves fade.
 
 The end is a ghost pill. It pops in when the preview starts; along a row it
 glides from the previous end with the same duration and ease-out curve as the
@@ -207,19 +209,21 @@ jumps: a slide over other weeks would read as a zip.
 
 Clicking commits what's already drawn. The halves keep their classes and
 timing, so nothing sweeps again; the range's accent, a pseudo-element hidden
-under the preview's tint, fades in over it while the end pops. Leaving the
-grid folds the preview back. The hovered day lives in a small store outside
-React DayPicker, and every day carries its layers from the start, so a pointer
-crossing the grid re-renders the days and changes attributes, never the DOM.
-Chrome traces caught two layouts that came back: an `absolute` pseudo-element
-inside a sweeping half lays out every frame, and an opacity reaching 1 drops
-a paint layer, so the accent is an in-flow block with `isolation: isolate`.
+under the preview's tint, fades in over the tint and its edges while the end
+pops. Leaving the grid fades the preview out where it is, after an 80ms grace
+in case the pointer is crossing to the other month. The hovered day lives in a
+small store outside React DayPicker, and every day carries its layers from the
+start, so a pointer crossing the grid re-renders the days and changes
+attributes, never the DOM. Chrome traces caught two layouts that came back: an
+`absolute` pseudo-element inside a sweeping half lays out every frame, and an
+opacity reaching 1 drops a paint layer, so the accent is an in-flow block with
+`isolation: isolate`.
 
 </LearnChapter>
 
 <LearnChapter
   label="The result"
-  scene={<LiveResult hint="hover a day to preview the range, click to commit"><CalendarRangeDemo /></LiveResult>}
+  scene={<LiveResult hint="hover a day to preview the range, click to commit"><CalendarRangePreviewDemo /></LiveResult>}
   isResult
 >
 

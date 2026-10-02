@@ -69,7 +69,7 @@ export const RangeTwoMonths: Story = {
  * A range with its first day picked (Oct 8). Hover a day, or move the focus
  * with the arrow keys: a lighter track sweeps out to a ghost end that glides
  * along the row; click to commit it in place (the tint deepens, the end
- * pops); leave the grid and it folds back.
+ * pops); leave the grid and it fades out.
  */
 export const RangePreview: Story = {
   name: "Range preview",

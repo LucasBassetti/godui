@@ -8,6 +8,7 @@ import { CalendarDemo } from "@/components/demos/core/calendar-demo";
 import { CalendarDropdownDemo } from "@/components/demos/core/calendar-dropdown-demo";
 import { CalendarPopoverDemo } from "@/components/demos/core/calendar-popover-demo";
 import { CalendarRangeDemo } from "@/components/demos/core/calendar-range-demo";
+import { CalendarRangePreviewDemo } from "@/components/demos/core/calendar-range-preview-demo";
 
 <Workbench>
 
@@ -21,7 +22,7 @@ Once a range's first day is picked, hovering a day (or moving the focus with
 the arrow keys) previews the range a click would make: a lighter track sweeps
 out to a ghost end that glides along the row with the sweep's front. Clicking
 commits it where it is: the track deepens to the range's tint and the end
-pops, nothing sweeps again. Leaving the grid folds the preview away.
+pops, nothing sweeps again. Leaving the grid fades the preview out.
 Hover fades in, and the focus ring fades in when you enter the grid and jumps
 from day to day on the arrow keys. Nothing animates on first paint or when you
 page back to a month. Only `translate`, `scale` and `opacity` animate.
@@ -44,16 +45,44 @@ export function CalendarDemo() {
   <CalendarDemo />
 </Example>
 
-The range below starts with its first day picked. Move the pointer over
-another day: the range a click would make draws in under it, lighter, ending
-in a ghost pill. Click to commit it, or leave the calendar to fold it away.
-
-<Example label="Range" story="ui-calendar--range-preview" code={`import { Calendar } from "@/components/ui/calendar";
+<Example label="Range" story="ui-calendar--range-two-months" code={`import { Calendar } from "@/components/ui/calendar";
 import * as React from "react";
 import type { DateRange } from "react-day-picker";
 
 export function CalendarRangeDemo() {
-  // The first day picked: hover another to preview the range, click to
+  const [range, setRange] = React.useState<DateRange | undefined>(() => {
+    const from = new Date();
+    const to = new Date(from);
+    to.setDate(from.getDate() + 9);
+    return { from, to };
+  });
+
+  return (
+    <Calendar
+      mode="range"
+      defaultMonth={range?.from}
+      selected={range}
+      onSelect={setRange}
+      numberOfMonths={2}
+      className="rounded-lg border shadow-sm"
+    />
+  );
+}`}>
+  <CalendarRangeDemo />
+</Example>
+
+The second range starts with only its first day picked. Move the pointer over
+another day: the range a click would make draws in under it, outlined and
+lighter, ending in a ghost pill. Click to commit it, or leave the calendar and
+it fades out. A complete range becomes pending again when you click its start
+(it shrinks to that one day), and the preview picks up from there.
+
+<Example label="Range preview" story="ui-calendar--range-preview" code={`import { Calendar } from "@/components/ui/calendar";
+import * as React from "react";
+import type { DateRange } from "react-day-picker";
+
+export function CalendarRangePreviewDemo() {
+  // Only the first day picked: hover another to preview the range, click to
   // commit it.
   const [range, setRange] = React.useState<DateRange | undefined>(() => {
     const today = new Date();
@@ -71,7 +100,7 @@ export function CalendarRangeDemo() {
     />
   );
 }`}>
-  <CalendarRangeDemo />
+  <CalendarRangePreviewDemo />
 </Example>
 
 <Example label="Month & year dropdowns" story="ui-calendar--dropdown-caption" code={`import { Calendar } from "@/components/ui/calendar";
@@ -156,8 +185,7 @@ cells and nav buttons are built on.
 Two additive changes: `animate` (React DayPicker's own prop) defaults to `true`,
 so pass `animate={false}` to turn the month change off; and `Root`, `Chevron`
 and `WeekNumber` are declared once at module level instead of inline, so a
-controlled re-render doesn't remount the grid. `MonthGrid` is GodUI's too
-(the same `<table>`): it ends a range preview when the pointer leaves it. Your own `classNames` and
+controlled re-render doesn't remount the grid. Your own `classNames` and
 `components` still override GodUI's, key by key: `weeks_after_enter` and the
 other enter/exit keys replace the animation itself. The timing lives in the
 keyframes and in a few variables on the root, so overriding `weeks` or
@@ -227,10 +255,10 @@ return (
 | The day you leave | `godui-calendar-fill-shrink` on its fill, `godui-calendar-fade-out` on the layer | `scale` to 85%, `opacity` | `ease-out-expo` | 150ms |
 | Range track | `godui-calendar-track-in`, per half-cell, back to back from the part already drawn | `scale` (x) | linear slices of an ease-out cubic | 240ms in all |
 | Range track leaving | `godui-calendar-fade-out` | `opacity` | `ease-out-expo` | 150ms |
-| Range preview: track | `godui-calendar-track-in`, a lighter tint, from the part already drawn (from the anchor at first) | `scale` (x) | linear slices of an ease-out cubic | 160ms in all |
+| Range preview: track | `godui-calendar-track-in`, a lighter tint with hairline edges, from the part already drawn (from the anchor at first) | `scale` (x) | linear slices of an ease-out cubic | 160ms in all |
 | Range preview: ghost end appears | `godui-calendar-fill-in` on the ghost layer, from 60% | `scale`, `opacity` | `ease-spring-bouncy` | 260ms |
 | Range preview: ghost end moves along a row | `godui-calendar-ghost-glide` from the previous end (snaps across rows and across the anchor) | `translate` | ease-out cubic, with the track's front | 160ms |
-| Range preview: leaving the grid, Escape | `godui-calendar-fade-out` on the track and the ghost | `opacity` | `ease-out-expo` | 150ms |
+| Range preview: leaving the grid (after 80ms), Escape | `godui-calendar-fade-out` on the track and the ghost | `opacity` | `ease-out-expo` | 150ms |
 | Range preview: commit | the range's tint (`::after`) fades in over the preview's; the end pops; the ghost fades | `opacity`, `scale` | ease-out / `ease-spring-bouncy` | 150ms / 260ms |
 | Hover | `::after` overlay | `opacity` | ease-out | 100ms |
 | Focus ring | `::before` ring, fades in entering the grid, jumps on arrow keys | `opacity`, `scale` from 98% | `ease-out-expo` | 150ms |
@@ -256,8 +284,9 @@ DayPicker's own rules for what a click would select, so with `min`, `max`,
 `excludeDisabled` or `resetOnSelect` a day that would start the range over
 shows no preview, and a disabled day never ends one. Moving between days only
 changes attributes on layers every day already has: no layout, and only the
-days re-render, not the picker. Crossing from one month's grid to the other keeps the preview;
-pausing in the gap between them (over 80ms) folds it.
+days re-render, not the picker. Crossing a row gap or from one month's grid
+to the other keeps the preview; leaving the grid ends it after an 80ms grace
+(time to cross the gap between the two months).
 
 Under `prefers-reduced-motion` nothing travels or scales: the months
 cross-fade in 150ms, a picked day's fill fades in, a range's track fades in
