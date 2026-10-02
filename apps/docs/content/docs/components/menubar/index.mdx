@@ -232,7 +232,8 @@ the next one opens. `MenubarContent` therefore ignores outside focus and presses
 while it is closing (`data-state="closed"`); without that, the exiting menu
 would treat the next menu as "outside" and close the whole menubar. An open
 menu dismisses as before, and your own `onInteractOutside`,
-`onFocusOutside` and `onPointerDownOutside` still run.
+`onFocusOutside` and `onPointerDownOutside` still run. `MenubarSubContent`
+does the same while a sub-menu animates out.
 
 ## Usage
 

@@ -3,7 +3,7 @@
 // GodUI Menubar — mirrors shadcn/ui new-york-v4 components/ui/menubar.tsx (registry snapshot 2026-10-01).
 // Motion: each menu and sub-menu grows from its trigger and drifts out of it on a spring (godui-popover-*);
 // hopping between menus exits the old one while the new one enters. Check and radio indicators pop in from 50% — only when toggled, never when the menu opens. GPU-only.
-// Additive: an exiting MenubarContent (data-state=closed) ignores outside focus/presses, so it can't dismiss the next menu.
+// Additive: an exiting MenubarContent or MenubarSubContent (data-state=closed) ignores outside focus/presses, so it can't dismiss the next menu.
 
 import { CheckIcon, ChevronRightIcon, CircleIcon } from "lucide-react";
 import { Menubar as MenubarPrimitive } from "radix-ui";
@@ -277,11 +277,24 @@ function MenubarSubTrigger({
 
 function MenubarSubContent({
   className,
+  ref,
+  onInteractOutside,
   ...props
 }: React.ComponentProps<typeof MenubarPrimitive.SubContent>) {
+  const contentRef = React.useRef<HTMLDivElement | null>(null);
+  const composedRef = useMergedRef(contentRef, ref);
   return (
     <MenubarPrimitive.SubContent
       data-slot="menubar-sub-content"
+      ref={composedRef}
+      onInteractOutside={(event) => {
+        onInteractOutside?.(event);
+        // Like MenubarContent: a sub-menu that is animating out never
+        // dismisses anything (focus or a press in the next one is "outside").
+        if (contentRef.current?.dataset.state === "closed") {
+          event.preventDefault();
+        }
+      }}
       className={cn(
         "z-50 min-w-[8rem] origin-(--radix-menubar-content-transform-origin) overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-lg data-[side=bottom]:[--godui-enter-y:-0.25rem] data-[side=left]:[--godui-enter-x:0.25rem] data-[side=right]:[--godui-enter-x:-0.25rem] data-[side=top]:[--godui-enter-y:0.25rem] data-[state=open]:animate-godui-popover-in data-[state=closed]:animate-godui-popover-out",
         className,

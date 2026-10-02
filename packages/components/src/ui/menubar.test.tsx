@@ -1,4 +1,10 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import * as React from "react";
 import { expectSlotParity, slotTree } from "../../test/parity";
@@ -306,6 +312,78 @@ describe("Menubar", () => {
     expect(content()?.className).toContain("animate-godui-popover-in");
   });
 
+  it("an exiting sub-menu ignores outside presses and focus too (it never dismisses anything)", async () => {
+    // Keep a closing sub-content mounted, as a browser does mid-exit.
+    const real = window.getComputedStyle.bind(window);
+    const spy = vi
+      .spyOn(window, "getComputedStyle")
+      .mockImplementation((el, pseudo) => {
+        const style = real(el, pseudo);
+        if (!(el instanceof HTMLElement)) return style;
+        if (el.dataset.slot !== "menubar-sub-content") return style;
+        return new Proxy(style, {
+          get(target, key) {
+            if (key === "animationName")
+              return el.dataset.state === "closed"
+                ? "godui-popover-out"
+                : "godui-popover-in";
+            const value = Reflect.get(target, key);
+            return typeof value === "function" ? value.bind(target) : value;
+          },
+        });
+      });
+    const seen: Event[] = [];
+    function Bar({ open }: { open: "a" | "b" }) {
+      return (
+        <Godui.Menubar defaultValue="file">
+          <Godui.MenubarMenu value="file">
+            <Godui.MenubarTrigger>File</Godui.MenubarTrigger>
+            <Godui.MenubarContent>
+              <Godui.MenubarSub open={open === "a"}>
+                <Godui.MenubarSubTrigger>Share</Godui.MenubarSubTrigger>
+                <Godui.MenubarSubContent
+                  onInteractOutside={(event) => seen.push(event)}
+                >
+                  <Godui.MenubarItem>Email link</Godui.MenubarItem>
+                </Godui.MenubarSubContent>
+              </Godui.MenubarSub>
+              <Godui.MenubarSub open={open === "b"}>
+                <Godui.MenubarSubTrigger>Export</Godui.MenubarSubTrigger>
+                <Godui.MenubarSubContent>
+                  <Godui.MenubarItem>PDF</Godui.MenubarItem>
+                </Godui.MenubarSubContent>
+              </Godui.MenubarSub>
+            </Godui.MenubarContent>
+          </Godui.MenubarMenu>
+        </Godui.Menubar>
+      );
+    }
+    try {
+      const { rerender } = render(<Bar open="a" />);
+      rerender(<Bar open="b" />);
+      const subs = () => [
+        ...document.querySelectorAll<HTMLElement>(
+          '[data-slot="menubar-sub-content"]',
+        ),
+      ];
+      await waitFor(() => expect(subs()).toHaveLength(2));
+      const [share, exportSub] = subs();
+      expect(share).toHaveAttribute("data-state", "closed");
+      // (Focus moving into Export while Share was still open was a real
+      // outside interaction; only what happens during the exit counts.)
+      seen.length = 0;
+      // The exiting Share sub sees a press and focus in Export as "outside".
+      fireEvent.pointerDown(exportSub);
+      act(() => exportSub.focus());
+      await act(() => new Promise((resolve) => setTimeout(resolve, 0)));
+      expect(seen.length).toBeGreaterThan(0);
+      for (const event of seen) expect(event.defaultPrevented).toBe(true);
+      expect(exportSub).toHaveAttribute("data-state", "open");
+    } finally {
+      spy.mockRestore();
+    }
+  });
+
   it("passes a React 19 callback ref's cleanup through (MenubarContent)", () => {
     const cleanup = vi.fn();
     const seen: Array<HTMLElement | null> = [];
@@ -327,6 +405,35 @@ describe("Menubar", () => {
     unmount();
     expect(cleanup).toHaveBeenCalledTimes(1);
     // React calls the cleanup instead of ref(null).
+    expect(seen).not.toContain(null);
+  });
+  it("passes a React 19 callback ref's cleanup through (MenubarSubContent)", () => {
+    const cleanup = vi.fn();
+    const seen: Array<HTMLElement | null> = [];
+    const ref = (node: HTMLDivElement | null) => {
+      seen.push(node);
+      return cleanup;
+    };
+    const { unmount } = render(
+      <Godui.Menubar defaultValue="file">
+        <Godui.MenubarMenu value="file">
+          <Godui.MenubarTrigger>File</Godui.MenubarTrigger>
+          <Godui.MenubarContent>
+            <Godui.MenubarSub open>
+              <Godui.MenubarSubTrigger>Share</Godui.MenubarSubTrigger>
+              <Godui.MenubarSubContent ref={ref}>
+                <Godui.MenubarItem>Email link</Godui.MenubarItem>
+              </Godui.MenubarSubContent>
+            </Godui.MenubarSub>
+          </Godui.MenubarContent>
+        </Godui.MenubarMenu>
+      </Godui.Menubar>,
+    );
+    expect(seen[0]).toBe(
+      document.querySelector('[data-slot="menubar-sub-content"]'),
+    );
+    unmount();
+    expect(cleanup).toHaveBeenCalledTimes(1);
     expect(seen).not.toContain(null);
   });
 });
