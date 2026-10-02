@@ -83,6 +83,26 @@ const RUNNING = new WeakMap<Element, Animation>();
 
 const self = (el: HTMLElement): Element => el;
 
+/**
+ * Finite animations moving `el` that aren't a FLIP of this hook's (e.g. a
+ * Collapsible panel's clip-edge sweep moving its box and children): a
+ * baseline taken mid-way would include their offsets.
+ */
+function foreignMoves(el: Element): Animation[] {
+  if (typeof el.getAnimations !== "function") return [];
+  return el.getAnimations().filter((animation) => {
+    if (animation === RUNNING.get(el) || animation.playState !== "running") {
+      return false;
+    }
+    const effect = animation.effect as Partial<KeyframeEffect> | null;
+    const end = Number(effect?.getComputedTiming?.().endTime);
+    if (!Number.isFinite(end)) return false;
+    const frames =
+      typeof effect?.getKeyframes === "function" ? effect.getKeyframes() : [];
+    return frames.some((f) => "translate" in f || "transform" in f);
+  });
+}
+
 /** Each matched child's position relative to the container. */
 function measure(
   container: HTMLElement,
@@ -113,7 +133,8 @@ function measure(
  * interruption starts from where the element is drawn instead of jumping.
  * Layout changes that no trigger accounts for (content loading, reflow) are
  * picked up by a ResizeObserver and become the new baseline without
- * animating — once no FLIP (from this group or another) is running on the
+ * animating — once no FLIP (from this group or another) and no other finite
+ * translate animation (a reveal's sweep) is running on the container or the
  * candidates, so a baseline never includes an in-flight offset.
  */
 export function useFlipGroup(
@@ -140,11 +161,13 @@ export function useFlipGroup(
     if (!container || typeof ResizeObserver === "undefined") return;
     settle.current = () => {
       const busy: Array<[Element, Animation]> = [];
-      for (const el of container.querySelectorAll(selector)) {
+      const candidates = [...container.querySelectorAll(selector)];
+      for (const el of candidates) {
         const animation = RUNNING.get(el);
         if (animation) busy.push([el, animation]);
       }
-      if (busy.length === 0) {
+      const foreign = [container, ...candidates].flatMap(foreignMoves);
+      if (busy.length === 0 && foreign.length === 0) {
         dirty.current = false;
         last.current = measure(container, selector, tracker.current);
         return;
@@ -159,6 +182,8 @@ export function useFlipGroup(
         };
         animation.finished?.then(done, done);
       }
+      const again = () => settle.current();
+      for (const animation of foreign) animation.finished?.then(again, again);
     };
     const observer = new ResizeObserver(() => settle.current());
     resizes.current = observer;

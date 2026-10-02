@@ -1,4 +1,4 @@
-import { render } from "@testing-library/react";
+import { act, render } from "@testing-library/react";
 import * as React from "react";
 import { vi } from "vitest";
 import { useFlipGroup } from "./use-flip-group";
@@ -182,6 +182,44 @@ describe("useFlipGroup baseline and tokens", () => {
     handles[0].onfinish?.();
     rerender(<Group trigger={2} order={["a", "b"]} />);
     expect(animate).toHaveBeenCalledTimes(1);
+  });
+
+  it("waits for another animation moving a candidate (a reveal's sweep) before re-baselining", async () => {
+    // Mounted mid-sweep: b is drawn 100px off its layout spot by an animation
+    // that isn't a FLIP. Baselining there would FLIP b by 100px on the next
+    // trigger, though it never moved.
+    layout.set("a", { left: 0, top: 0 });
+    layout.set("b", { left: 0, top: 40 });
+    offset.set("b", { left: 0, top: 100 });
+    let end = () => {};
+    const sweep = {
+      playState: "running",
+      effect: {
+        getComputedTiming: () => ({ endTime: 260 }),
+        getKeyframes: () => [{ translate: "0 100px" }, { translate: "0 0" }],
+      },
+      finished: new Promise<void>((resolve) => {
+        end = resolve;
+      }),
+    };
+    const getAnimations = vi
+      .spyOn(HTMLElement.prototype, "getAnimations")
+      .mockImplementation(function (this: HTMLElement) {
+        return this.dataset.id === "b" && sweep.playState === "running"
+          ? ([sweep] as unknown as Animation[])
+          : [];
+      });
+    const { rerender } = render(<Group trigger={0} order={["a", "b"]} />);
+    fire();
+    offset.delete("b");
+    sweep.playState = "finished";
+    await act(async () => {
+      end();
+      await sweep.finished;
+    });
+    rerender(<Group trigger={1} order={["a", "b"]} />);
+    expect(animate).not.toHaveBeenCalled();
+    getAnimations.mockRestore();
   });
 
   it("defaults the duration to --godui-duration-base (ms or s)", () => {

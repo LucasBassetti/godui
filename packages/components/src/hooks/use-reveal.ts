@@ -12,6 +12,9 @@
 import * as React from "react";
 import { flushSync } from "react-dom";
 
+const useIsoLayoutEffect =
+  typeof window === "undefined" ? React.useEffect : React.useLayoutEffect;
+
 /** Reveal roots: each one watches every open-state change beneath it. */
 const ROOTS = '[data-slot="accordion"], [data-slot="collapsible"]';
 /** Elements whose `data-state` marks a panel opening or closing. */
@@ -151,13 +154,16 @@ export function sweepPanel(
     const to = open ? rest : 0;
     // Fresh opens cascade (capped at 4 beats); reversals and exits move as
     // one. Every fade still ends with the edge: one clock, one last frame.
-    const delay = open && !running ? Math.min(i, 3) * t.stagger : 0;
+    // Clamped to the clock: a 0ms token must not make a negative duration
+    // (animate() would throw inside the observer).
+    const delay =
+      open && !running ? Math.min(Math.min(i, 3) * t.stagger, t.ms) : 0;
     const frames =
       block === box
         ? [{ filter: `opacity(${from})` }, { filter: `opacity(${to})` }]
         : [{ opacity: from }, { opacity: to }];
     return block.animate(frames, {
-      duration: t.ms - delay,
+      duration: Math.max(0, t.ms - delay),
       delay,
       easing: t.fade,
       fill,
@@ -298,10 +304,13 @@ function gliderOf(root: Element): HTMLElement | null {
   return el;
 }
 
-/** The glider of the nearest reveal root around this one. */
-function outerGliderOf(root: Element): HTMLElement | null {
-  const outer = root.parentElement?.closest(ROOTS);
-  return outer ? gliderOf(outer) : null;
+/**
+ * The nearest reveal root around this one. Whatever moves it in a change, its
+ * own machinery puts it back (its glider glides, or its parent's FLIP group
+ * plays it back), carrying this one along.
+ */
+function outerRootOf(root: Element): HTMLElement | null {
+  return (root.parentElement?.closest(ROOTS) as HTMLElement | null) ?? null;
 }
 
 /** Running glides by element. */
@@ -315,9 +324,10 @@ interface Drawn {
 /**
  * Glide a root's glider from where it was drawn at the click back to rest, on
  * the panels' clock, so nothing above the panel jumps. Nested: the glider
- * moves by its own displacement minus the outer root's glider's — the outer
- * glide carries it that far — so a nested root that just rides along doesn't
- * move twice as far, and one its own stage re-centers still glides.
+ * moves by its own displacement minus the outer root's — the outer root is
+ * put back (glided or FLIPped) and carries it that far — so a nested root
+ * that just rides along doesn't move twice as far, and one its own stage
+ * re-centers still glides.
  */
 function glide(root: HTMLElement, before: Drawn, t: RevealTiming) {
   const el = gliderOf(root);
@@ -328,7 +338,7 @@ function glide(root: HTMLElement, before: Drawn, t: RevealTiming) {
   const now = el.getBoundingClientRect();
   let dx = before.own.left - now.left;
   let dy = before.own.top - now.top;
-  const outer = before.outer && outerGliderOf(root)?.getBoundingClientRect();
+  const outer = before.outer && outerRootOf(root)?.getBoundingClientRect();
   if (before.outer && outer) {
     dx -= before.outer.left - outer.left;
     dy -= before.outer.top - outer.top;
@@ -370,7 +380,9 @@ export function useReveal(
   options: RevealOptions,
 ) {
   const latest = React.useRef(options);
-  latest.current = options;
+  useIsoLayoutEffect(() => {
+    latest.current = options;
+  });
   React.useEffect(() => {
     const root = rootRef.current;
     const view = root?.ownerDocument.defaultView;
@@ -379,14 +391,16 @@ export function useReveal(
     // (capture runs before Radix's handler); a click that toggles nothing
     // forgets it. Programmatic changes have no baseline and don't glide.
     let before: Drawn | null = null;
+    let forget: number | undefined;
     const remember = () => {
       const own = gliderOf(root);
       if (!own) return;
       before = {
         own: own.getBoundingClientRect(),
-        outer: outerGliderOf(root)?.getBoundingClientRect() ?? null,
+        outer: outerRootOf(root)?.getBoundingClientRect() ?? null,
       };
-      view.setTimeout(() => {
+      view.clearTimeout(forget);
+      forget = view.setTimeout(() => {
         before = null;
       });
     };
@@ -425,6 +439,7 @@ export function useReveal(
     return () => {
       observer.disconnect();
       root.removeEventListener("click", remember, true);
+      view.clearTimeout(forget);
     };
   }, [rootRef]);
 }

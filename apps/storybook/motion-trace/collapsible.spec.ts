@@ -169,6 +169,58 @@ test("in a stage that centers it, the trigger never jumps when the panel opens o
   expect(await biggestStep()).toBeLessThan(25);
 });
 
+for (const story of ["nested", "nested-in-stage"] as const) {
+  for (const direction of ["opening", "closing"] as const) {
+    test(`${story}, inner ${direction}: the inner trigger never jumps or moves twice as far`, async ({
+      page,
+    }) => {
+      await page.goto(
+        `/iframe.html?id=ui-collapsible--${story}&viewMode=story`,
+      );
+      await page.waitForLoadState("networkidle");
+      await page.addStyleTag({
+        content:
+          ":root{--godui-duration-base:1200ms!important;--godui-duration-fast:1200ms!important}",
+      });
+      if (story === "nested") {
+        await page.getByRole("button", { name: "Outer" }).click();
+        await page.waitForTimeout(1500);
+      }
+      const inner = page.getByRole("button", { name: "Inner" });
+      if (direction === "closing") {
+        await inner.click();
+        await page.waitForTimeout(1500);
+      }
+      const { tops, settled } = await page.evaluate(async () => {
+        const trigger = [...document.querySelectorAll("button")].find(
+          (b) => b.textContent === "Inner",
+        ) as HTMLElement;
+        const top = () => trigger.getBoundingClientRect().top;
+        const out = [top()];
+        trigger.click();
+        for (let i = 0; i < 40; i++) {
+          await new Promise(requestAnimationFrame);
+          out.push(top());
+        }
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+        return { tops: out, settled: top() };
+      });
+      const steps = tops.slice(1).map((t, i) => Math.abs(t - tops[i]));
+      // On a 1200ms clock a glide moves a few px a frame; a second glide on
+      // top would jump by half the panel (~45px) in the first frame.
+      expect(Math.max(...steps)).toBeLessThan(8);
+      // It travels from where it was to where it settles, never past it.
+      const [from] = tops;
+      const lo = Math.min(from, settled) - 0.5;
+      const hi = Math.max(from, settled) + 0.5;
+      for (const t of tops) {
+        expect(t).toBeGreaterThanOrEqual(lo);
+        expect(t).toBeLessThanOrEqual(hi);
+      }
+    });
+  }
+}
+
 test("sibling collapsibles never move the header you clicked", async ({
   page,
 }) => {

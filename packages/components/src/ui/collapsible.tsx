@@ -61,8 +61,9 @@ function paints(box: HTMLElement): boolean {
 /**
  * Sweep the Collapsible's own panel when the root's state changed. The box
  * is the content element (with `asChild`, the child it renders); its element
- * children hold still. Loose text can't be counter-moved, and a box that
- * paints would slide its paint over the trigger: those fade instead.
+ * children hold still. Loose text and inline or `display: contents` children
+ * can't be counter-moved, and a box that paints would slide its paint over
+ * the trigger: those fade instead.
  */
 function sweepOwn(
   root: HTMLElement | null,
@@ -76,7 +77,14 @@ function sweepOwn(
   const loose = [...box.childNodes].some(
     (node) => node.nodeType === 3 && node.textContent?.trim(),
   );
-  const split = children.length > 0 && !loose && !paints(box);
+  const view = box.ownerDocument.defaultView;
+  // `translate` doesn't apply to inline boxes or `display: contents`: those
+  // would slide with the box, like loose text.
+  const flat = children.some((child) => {
+    const display = view?.getComputedStyle(child).display;
+    return display === "inline" || display === "contents";
+  });
+  const split = children.length > 0 && !loose && !flat && !paints(box);
   sweepPanel(
     {
       box,
@@ -92,9 +100,22 @@ function sweepOwn(
 function Collapsible({
   ref,
   className,
+  asChild,
   ...props
 }: React.ComponentProps<typeof CollapsiblePrimitive.Root>) {
   const rootRef = React.useRef<HTMLDivElement | null>(null);
+  // The root anchors a closing panel once it leaves the flow. With asChild,
+  // Slot concatenates classes, so a `relative` class could fight the child's
+  // own absolute/fixed/sticky: position it only if nothing else does.
+  useIsoLayoutEffect(() => {
+    const root = rootRef.current;
+    const view = root?.ownerDocument.defaultView;
+    if (!asChild || !root || !view) return;
+    const position = view.getComputedStyle(root).position;
+    if (!position || position === "static") {
+      root.style.setProperty("position", "relative");
+    }
+  }, [asChild]);
   // What moves when the panel snaps is the content after it: the root's
   // later children and the Collapsible's later siblings (in its parent).
   const parentRef = React.useRef<HTMLElement | null>(null);
@@ -130,9 +151,10 @@ function Collapsible({
     <CollapsiblePrimitive.Root
       ref={setRootRef}
       data-slot="collapsible"
+      asChild={asChild}
       // `relative` anchors a closing panel once it leaves the flow; the
       // spring is shared by the clip edge and everything that rides it.
-      className={cn("relative ease-spring-smooth", className)}
+      className={cn(!asChild && "relative", "ease-spring-smooth", className)}
       {...props}
     />
   );

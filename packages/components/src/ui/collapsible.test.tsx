@@ -2,7 +2,7 @@ import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { expectSlotParity, slotTree } from "../../test/parity";
 import * as Shadcn from "../../test/shadcn/collapsible";
-import * as Godui from "./accordion";
+import * as GoduiAccordion from "./accordion";
 import * as GoduiCollapsible from "./collapsible";
 
 // jsdom has no layout; this models one. Leaves are 40px rows. Stacks (the
@@ -748,7 +748,7 @@ describe("Collapsible nesting", () => {
 
   it("inside an Accordion: the rows below ride the Collapsible's edge", async () => {
     const { Accordion, AccordionContent, AccordionItem, AccordionTrigger } =
-      Godui;
+      GoduiAccordion;
     const user = userEvent.setup();
     render(
       <Accordion type="single" collapsible defaultValue="a">
@@ -789,7 +789,7 @@ describe("Collapsible nesting", () => {
 
   it("an Accordion inside a Collapsible: the content after the Collapsible rides the accordion's edge", async () => {
     const { Accordion, AccordionContent, AccordionItem, AccordionTrigger } =
-      Godui;
+      GoduiAccordion;
     const user = userEvent.setup();
     render(
       <div data-parent>
@@ -812,5 +812,165 @@ describe("Collapsible nesting", () => {
     expect(moveOf(screen.getByTestId("after"))?.frames[0]).toEqual({
       translate: `0px -${ROW}px`,
     });
+  });
+});
+
+describe("Collapsible nesting in a stage that centers the outer root", () => {
+  // The outer Collapsible sits directly in a fixed-height stage that centers
+  // it: when the inner panel opens, the stage moves the outer root (its
+  // parent group FLIPs it back) while its glider — the stage — stays put. The
+  // inner root rides that FLIP; gliding it too would move it twice as far.
+  function Stage({
+    inner,
+    open = true,
+  }: {
+    inner: "collapsible" | "accordion";
+    open?: boolean;
+  }) {
+    const { Accordion, AccordionContent, AccordionItem, AccordionTrigger } =
+      GoduiAccordion;
+    return (
+      <div data-parent data-stage="400">
+        <Collapsible defaultOpen={open} data-centered="" data-testid="outer">
+          <CollapsibleTrigger>Outer</CollapsibleTrigger>
+          <CollapsibleContent>
+            {inner === "collapsible" ? (
+              <div data-parent data-testid="inner-parent">
+                <Collapsible>
+                  <CollapsibleTrigger>Inner</CollapsibleTrigger>
+                  <CollapsibleContent>
+                    <div>Inner body</div>
+                  </CollapsibleContent>
+                </Collapsible>
+              </div>
+            ) : (
+              <Accordion type="single" collapsible data-testid="inner-root">
+                <AccordionItem value="a">
+                  <AccordionTrigger>Inner</AccordionTrigger>
+                  <AccordionContent>Inner body</AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            )}
+          </CollapsibleContent>
+        </Collapsible>
+      </div>
+    );
+  }
+
+  for (const inner of ["collapsible", "accordion"] as const) {
+    const glider = () =>
+      screen.getByTestId(
+        inner === "collapsible" ? "inner-parent" : "inner-root",
+      );
+    // The inner one opens 48px (collapsible: row + gap) or 40px (accordion).
+    const half = (inner === "collapsible" ? ROW + GAP : ROW) / 2;
+
+    it(`inner ${inner} mounted with the outer one (its observer runs first): only the outer root's FLIP moves it`, async () => {
+      const user = userEvent.setup();
+      render(<Stage inner={inner} />);
+      await act(settle);
+      await click(user, "Inner");
+      expect(moveOf(screen.getByTestId("outer"))?.frames[0]).toEqual({
+        translate: `0px ${half}px`,
+      });
+      expect(moveOf(glider())).toBeUndefined();
+    });
+
+    it(`inner ${inner} mounted after the outer one (its observer runs last): only the outer root's FLIP moves it`, async () => {
+      const user = userEvent.setup();
+      render(<Stage inner={inner} open={false} />);
+      await click(user, "Outer");
+      await act(settle);
+      animate.mockClear();
+      handles.length = 0;
+      await click(user, "Inner");
+      expect(moveOf(screen.getByTestId("outer"))?.frames[0]).toEqual({
+        translate: `0px ${half}px`,
+      });
+      expect(moveOf(glider())).toBeUndefined();
+    });
+  }
+});
+
+describe("Collapsible fallbacks and clamps", () => {
+  for (const [label, child] of [
+    [
+      "an inline child",
+      <span key="s" style={{ display: "inline" }}>
+        Inline
+      </span>,
+    ],
+    [
+      "a display: contents child",
+      <div key="d" style={{ display: "contents" }}>
+        Contents
+      </div>,
+    ],
+  ] as const) {
+    it(`${label} ignores translate: the panel fades instead`, async () => {
+      const user = userEvent.setup();
+      render(
+        <div data-parent>
+          <Collapsible>
+            <CollapsibleTrigger>Toggle</CollapsibleTrigger>
+            <CollapsibleContent>{child}</CollapsibleContent>
+          </Collapsible>
+          <p data-testid="after">After</p>
+        </div>,
+      );
+      await click(user);
+      expect(moveOf(box())).toBeUndefined();
+      expect(fades().map((f) => f.el)).toEqual([box()]);
+      expect(moveOf(screen.getByTestId("after"))).toBeDefined();
+    });
+  }
+
+  it("a 0ms clock never makes a negative duration or a delay past it", async () => {
+    const real = window.getComputedStyle.bind(window);
+    liveStyles((el, prop) =>
+      prop === "getPropertyValue" && slot(el) === "collapsible"
+        ? (name: string) =>
+            name === "--godui-duration-base"
+              ? "0ms"
+              : real(el).getPropertyValue(name)
+        : undefined,
+    );
+    const user = userEvent.setup();
+    render(<Usage ui={GoduiCollapsible} />);
+    await click(user);
+    expect(fades()).toHaveLength(2);
+    for (const call of calls()) {
+      expect(Number(call.options.duration)).toBeGreaterThanOrEqual(0);
+      expect(Number(call.options.delay ?? 0)).toBeLessThanOrEqual(0);
+    }
+  });
+});
+
+describe("Collapsible root positioning", () => {
+  it("is relative by class, so a closing panel has a fixed anchor", () => {
+    render(<Collapsible className="flex" />);
+    const root = document.querySelector('[data-slot="collapsible"]');
+    expect(root?.className).toContain("relative");
+  });
+
+  it("asChild: no relative class (Slot would concatenate it); inline relative only on a static child", () => {
+    render(
+      <>
+        <Collapsible asChild>
+          <li data-testid="static">Static</li>
+        </Collapsible>
+        <Collapsible asChild>
+          <li data-testid="pinned" style={{ position: "absolute" }}>
+            Pinned
+          </li>
+        </Collapsible>
+      </>,
+    );
+    const plain = screen.getByTestId("static");
+    const pinned = screen.getByTestId("pinned");
+    expect(plain.className).not.toContain("relative");
+    expect(pinned.className).not.toContain("relative");
+    expect(plain.style.position).toBe("relative");
+    expect(pinned.style.position).toBe("absolute");
   });
 });

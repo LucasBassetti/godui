@@ -92,8 +92,10 @@ in a centered stage, the shorter parent re-centers in that same step.
 
 <LearnChapter
   label="Nesting"
-  scene={<FlipScene label="Nesting" variant="accordion" />}
-  code={`// Each glider moves by its own displacement minus the outer one's.
+  scene={<AutoPlayScene label="Nesting" demo="collapsible-nested" note="slowed to 1.2s · the inner one toggles" />}
+  code={`// A nested root's glider moves by its own displacement minus the
+// nearest outer root's: the outer one is put back (glided or FLIPped)
+// and carries it that far.
 let dy = before.own.top - now.top;
 if (outer) dy -= before.outer.top - outerNow.top;`}
 >
@@ -102,8 +104,13 @@ Every Collapsible and Accordion watches the open states beneath it, so an
 inner panel's change also glides the outer one's followers, on one clock. An
 inner one that just rides along with its outer one mustn't glide again, or it
 would move twice as far. One that its own stage re-centers still has to glide
-by that move. So a nested one glides by its own displacement minus its outer
-one's: zero in the first case, the relative move in the second.
+by that move. So a nested one glides by its own displacement minus the nearest
+outer root's (whatever moved the outer root, its own glide or its parent's
+FLIP puts it back): zero in the first case, the relative move in the second.
+
+A FLIP group measures where things sit before a change. An inner Collapsible
+that mounts while the outer panel is still sweeping would measure its content
+mid-sweep, so the baseline waits until the sweep is done.
 
 </LearnChapter>
 
@@ -131,4 +138,5 @@ Chrome won't composite two opacity animations on one element.
 ## Reduced motion
 
 Nothing moves: the height and the content after it change in one step, and
-the panel's content only fades in or out (150ms).
+the panel's content only fades in or out, over `--godui-duration-base` opening
+and `--godui-duration-fast` closing (both 150ms under reduced motion).

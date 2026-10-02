@@ -86,6 +86,35 @@ export const Nested: Story = {
   ),
 };
 
+/**
+ * The outer Collapsible alone in a stage that centers it: the stage moves the
+ * outer root (its parent FLIPs it back) while the inner one rides along.
+ */
+export const NestedInStage: Story = {
+  render: () => (
+    <div className="flex h-[32rem] w-[28rem] items-center justify-center text-foreground">
+      <Collapsible defaultOpen className="flex w-[350px] flex-col gap-2">
+        <CollapsibleTrigger asChild>
+          <Button variant="outline">Outer</Button>
+        </CollapsibleTrigger>
+        <CollapsibleContent className="flex flex-col gap-2">
+          <div className={repo}>Outer — first</div>
+          <Collapsible className="flex flex-col gap-2">
+            <CollapsibleTrigger asChild>
+              <Button variant="outline">Inner</Button>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="flex flex-col gap-2">
+              <div className={repo}>Inner — first</div>
+              <div className={repo}>Inner — second</div>
+            </CollapsibleContent>
+          </Collapsible>
+          <div className={repo}>Outer — last</div>
+        </CollapsibleContent>
+      </Collapsible>
+    </div>
+  ),
+};
+
 /** Loose text in the panel can't hold still while the edge sweeps: it fades. */
 export const PlainText: Story = {
   render: () => (

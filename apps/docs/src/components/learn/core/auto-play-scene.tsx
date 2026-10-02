@@ -957,6 +957,61 @@ function CollapsibleSweep({
   );
 }
 
+/**
+ * A real Collapsible inside another one's panel, the inner one toggling on a
+ * slowed timer: the outer panel's edge and what follows the outer Collapsible
+ * ride the inner edge, on one clock, and nothing glides twice.
+ */
+function CollapsibleNested({ reduced }: { reduced: boolean }) {
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    if (reduced) return;
+    const id = setInterval(() => setOpen((v) => !v), COLLAPSIBLE_SLOW_MS * 2);
+    return () => clearInterval(id);
+  }, [reduced]);
+  return (
+    <div className="flex w-64 flex-col gap-2 [--godui-duration-base:1200ms] [--godui-duration-fast:1200ms]">
+      <Collapsible open onOpenChange={() => {}} className="flex flex-col gap-2">
+        <div className="flex items-center justify-between gap-4 px-1">
+          <Bar className="w-32 bg-[var(--foreground)]/45" />
+          <CollapsibleTrigger
+            tabIndex={-1}
+            className="pointer-events-none size-6 rounded-md bg-[var(--foreground)]/10"
+          />
+        </div>
+        <CollapsibleContent className="flex flex-col gap-2 pl-3">
+          <div className={COLLAPSIBLE_ROW}>
+            <Bar className="w-24 bg-[var(--foreground)]/25" />
+          </div>
+          <Collapsible
+            open={open}
+            onOpenChange={() => {}}
+            className="flex flex-col gap-2"
+          >
+            <div className="flex items-center justify-between gap-4 px-1">
+              <Bar className="w-24 bg-[var(--foreground)]/35" />
+              <CollapsibleTrigger
+                tabIndex={-1}
+                className="pointer-events-none size-5 rounded-md bg-[var(--foreground)]/10"
+              />
+            </div>
+            <CollapsibleContent className="flex flex-col gap-2">
+              <div className={COLLAPSIBLE_ROW}>
+                <Bar className="w-20 bg-[var(--foreground)]/25" />
+              </div>
+              <div className={COLLAPSIBLE_ROW}>
+                <Bar className="w-28 bg-[var(--foreground)]/25" />
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
+        </CollapsibleContent>
+      </Collapsible>
+      <Bar className="mt-2 w-44 bg-[var(--foreground)]/20" />
+      <Bar className="w-36 bg-[var(--foreground)]/20" />
+    </div>
+  );
+}
+
 function CollapsibleWindow({ reduced }: { reduced: boolean }) {
   return <CollapsibleSweep reduced={reduced} outlined />;
 }
@@ -1304,6 +1359,7 @@ const DEMOS = {
   checkbox: CheckboxToggle,
   collapsible: CollapsibleGlide,
   "collapsible-window": CollapsibleWindow,
+  "collapsible-nested": CollapsibleNested,
   command: CommandCycle,
   "focus-ring": FocusRingCompare,
   "focus-ring-slow": FocusRingSlow,
