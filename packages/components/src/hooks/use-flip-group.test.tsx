@@ -282,6 +282,61 @@ describe("useFlipGroup settling", () => {
   });
 });
 
+describe("useFlipGroup rapid triggers", () => {
+  it("waits on each animation once, so toggling mid-move can't multiply the waits (Ctrl+B spam)", async () => {
+    let fire = () => {};
+    const Original = globalThis.ResizeObserver;
+    globalThis.ResizeObserver = class {
+      constructor(cb: () => void) {
+        fire = cb;
+      }
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+    } as unknown as typeof ResizeObserver;
+    // Like a browser: cancelling rejects `finished` (a microtask later).
+    let waits = 0;
+    animate.mockImplementation(() => {
+      const rejects: Array<() => void> = [];
+      return {
+        onfinish: null,
+        cancel: () => {
+          for (const reject of rejects) queueMicrotask(reject);
+        },
+        finished: {
+          // biome-ignore lint/suspicious/noThenProperty: a thenable stand-in for `finished`.
+          then(_: () => void, reject: () => void) {
+            waits++;
+            rejects.push(reject);
+          },
+        },
+      };
+    });
+    const ids = ["a", "b", "c", "d", "e", "f"];
+    const place = (step: number) =>
+      ids.forEach((id, i) => {
+        layout.set(id, { left: 0, top: i * 40 + (step % 2) * 20 });
+      });
+    try {
+      place(0);
+      const { rerender } = render(<Group trigger={0} order={ids} />);
+      for (let step = 1; step <= 5; step++) {
+        place(step);
+        rerender(<Group trigger={step} order={ids} />);
+        // A resize mid-move: the group waits on the running FLIPs.
+        fire();
+        await act(async () => {
+          await new Promise((r) => setTimeout(r, 0));
+        });
+      }
+      // One wait per FLIP (6 per toggle), not 6, 36, 216, ...
+      expect(waits).toBeLessThanOrEqual(ids.length * 5);
+    } finally {
+      globalThis.ResizeObserver = Original;
+    }
+  });
+});
+
 describe("useFlipGroup easing", () => {
   it("defaults to the container's own transition-timing-function (e.g. an ease-spring-* class)", () => {
     function Eased({ trigger }: { trigger: number }) {

@@ -159,6 +159,11 @@ export function useFlipGroup(
   React.useEffect(() => {
     const container = containerRef.current;
     if (!container || typeof ResizeObserver === "undefined") return;
+    // What this group already waits on. Each animation is waited on once:
+    // re-attaching on every settle would let each cancelled FLIP (a toggle
+    // mid-move) re-wait on every new one, multiplying the waits per toggle
+    // until rapid toggling (Ctrl+B spam) hangs the page.
+    const waiting = new WeakSet<Animation>();
     settle.current = () => {
       const busy: Array<[Element, Animation]> = [];
       const candidates = [...container.querySelectorAll(selector)];
@@ -174,6 +179,8 @@ export function useFlipGroup(
       }
       dirty.current = true;
       for (const [el, animation] of busy) {
+        if (waiting.has(animation)) continue;
+        waiting.add(animation);
         // `finished` can settle before `onfinish` runs; clear the entry here
         // too, or settle() would keep re-waiting on a resolved promise.
         const done = () => {
@@ -183,7 +190,11 @@ export function useFlipGroup(
         animation.finished?.then(done, done);
       }
       const again = () => settle.current();
-      for (const animation of foreign) animation.finished?.then(again, again);
+      for (const animation of foreign) {
+        if (waiting.has(animation)) continue;
+        waiting.add(animation);
+        animation.finished?.then(again, again);
+      }
     };
     const observer = new ResizeObserver(() => settle.current());
     resizes.current = observer;
