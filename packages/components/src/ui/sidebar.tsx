@@ -81,34 +81,41 @@ const useIsoLayoutEffect =
  * An absolutely positioned child is placed against the padding box, so the
  * surface offsets itself outward by these to cover the border box, as the
  * element's own background and border do in shadcn. CSS can't turn an
- * inherited border width into a length, so this reads it back (it re-reads on
- * every render and whenever the box resizes, which a border change does).
+ * inherited border width into a length, so this reads it back: on every
+ * render, and (one observer per element, made while `active`) whenever the box
+ * resizes, which a border change does. `client*`/`offset*` are rounded to
+ * whole pixels, and an `overflow-y: scroll` container's scrollbar counts as
+ * border here (it inflates `--sidebar-br`/`--sidebar-bb`).
  */
-function useBorderInsets(ref: React.RefObject<HTMLElement | null>) {
-  useIsoLayoutEffect(() => {
+function useBorderInsets(
+  ref: React.RefObject<HTMLElement | null>,
+  active: boolean,
+) {
+  const publish = React.useCallback(() => {
     const el = ref.current;
     if (!el) return;
-    const publish = () => {
-      const { clientTop, clientLeft, clientWidth, clientHeight } = el;
-      const values = {
-        "--sidebar-bt": clientTop,
-        "--sidebar-bl": clientLeft,
-        "--sidebar-br": el.offsetWidth - clientWidth - clientLeft,
-        "--sidebar-bb": el.offsetHeight - clientHeight - clientTop,
-      };
-      for (const [name, px] of Object.entries(values)) {
-        const next = `${px}px`;
-        if (el.style.getPropertyValue(name) !== next) {
-          el.style.setProperty(name, next);
-        }
-      }
+    const { clientTop, clientLeft, clientWidth, clientHeight } = el;
+    const values = {
+      "--sidebar-bt": clientTop,
+      "--sidebar-bl": clientLeft,
+      "--sidebar-br": el.offsetWidth - clientWidth - clientLeft,
+      "--sidebar-bb": el.offsetHeight - clientHeight - clientTop,
     };
-    publish();
-    if (typeof ResizeObserver !== "function") return;
+    for (const [name, px] of Object.entries(values)) {
+      const next = `${px}px`;
+      if (el.style.getPropertyValue(name) !== next) {
+        el.style.setProperty(name, next);
+      }
+    }
+  }, [ref]);
+  useIsoLayoutEffect(publish);
+  useIsoLayoutEffect(() => {
+    const el = ref.current;
+    if (!active || !el || typeof ResizeObserver !== "function") return;
     const observer = new ResizeObserver(publish);
     observer.observe(el);
     return () => observer.disconnect();
-  });
+  }, [ref, active, publish]);
 }
 
 /**
@@ -506,7 +513,7 @@ function Sidebar({
   const innerRef = React.useRef<HTMLDivElement | null>(null);
   const containerRef = React.useRef<HTMLDivElement | null>(null);
   const setContainerRef = useMergedRef(containerRef, ref);
-  useBorderInsets(containerRef);
+  useBorderInsets(containerRef, !isMobile && collapsible !== "none");
   useFlipGroup(innerRef, state, {
     selector: ROWS_SELECTOR,
     measure: trackRow,

@@ -520,6 +520,7 @@ for (const [plain, bordered, side] of [
   ["icon", "border-all", "left"],
   ["right", "border-all-right", "right"],
   ["offcanvas", "border-all-offcanvas", "left"],
+  ["inset", "border-all-inset", "left"],
 ] as const) {
   test(`${bordered}: a call-site border paints on the box edge, as in shadcn (${side}), at rest and mid-slide`, async ({
     page,

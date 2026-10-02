@@ -238,6 +238,60 @@ describe("Sidebar", () => {
     }
   });
 
+  it("watches the container's size with one observer, not a new one per render", () => {
+    const created: { observe: number; disconnect: number }[] = [];
+    const Original = globalThis.ResizeObserver;
+    globalThis.ResizeObserver = class {
+      stats = { observe: 0, disconnect: 0 };
+      constructor() {
+        created.push(this.stats);
+      }
+      observe() {
+        this.stats.observe++;
+      }
+      unobserve() {}
+      disconnect() {
+        this.stats.disconnect++;
+      }
+    } as unknown as typeof ResizeObserver;
+    try {
+      const { rerender, unmount } = render(<Usage ui={Godui} />);
+      const initial = created.filter((stats) => stats.observe > 0).length;
+      expect(initial).toBeGreaterThan(0);
+      const before = created.length;
+      rerender(<Usage ui={Godui} className="border" />);
+      rerender(<Usage ui={Godui} className="border-2" />);
+      // None was torn down and rebuilt either.
+      expect(created.length).toBe(before);
+      expect(created.every((stats) => stats.disconnect === 0)).toBe(true);
+      unmount();
+    } finally {
+      globalThis.ResizeObserver = Original;
+    }
+  });
+
+  it("without ResizeObserver (a consumer's jsdom) the insets are still published, once, without throwing", () => {
+    const Original = globalThis.ResizeObserver;
+    delete (globalThis as { ResizeObserver?: unknown }).ResizeObserver;
+    try {
+      expect("ResizeObserver" in globalThis).toBe(false);
+      const getter = vi
+        .spyOn(HTMLElement.prototype, "clientLeft", "get")
+        .mockReturnValue(2);
+      const { rerender } = render(<Usage ui={Godui} />);
+      const container = slot("sidebar-container");
+      expect(container.style.getPropertyValue("--sidebar-bl")).toBe("2px");
+      expect(container.style.getPropertyValue("--sidebar-bt")).toBe("0px");
+      expect(() =>
+        rerender(<Usage ui={Godui} className="border" />),
+      ).not.toThrow();
+      expect(container.style.getPropertyValue("--sidebar-bl")).toBe("2px");
+      getter.mockRestore();
+    } finally {
+      globalThis.ResizeObserver = Original;
+    }
+  });
+
   it("the surface draws the container's own border, so a call site's border classes carry over", () => {
     // shadcn's sidebar-10/-15 pass className="border-r-0" to Sidebar; it lands
     // on the container. The container's border classes must match shadcn's

@@ -296,3 +296,12 @@ export const BorderAllOffcanvas: Story = {
     </SidebarProvider>
   ),
 };
+
+export const BorderAllInset: Story = {
+  render: () => (
+    <SidebarProvider>
+      <AppSidebar variant="inset" collapsible="icon" className="border" />
+      <Page />
+    </SidebarProvider>
+  ),
+};
