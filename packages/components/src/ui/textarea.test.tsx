@@ -40,7 +40,7 @@ describe("Textarea", () => {
     expect(classes.filter((c) => /(^|:)transition/.test(c))).toEqual([]);
   });
 
-  it("stays a native textarea: typing and disabled work", () => {
+  it("stays a native textarea: it takes focus; disabled is disabled", () => {
     render(<Usage ui={Godui} />);
     const textarea = screen.getByPlaceholderText<HTMLTextAreaElement>(
       "Type your message here.",

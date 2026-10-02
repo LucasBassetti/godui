@@ -12,7 +12,7 @@ import { InputGroupTextareaDemo } from "@/components/demos/core/input-group-text
 <Workbench>
 
 The shadcn/ui input group. Focus the field and the ring fades in while it
-grows from 98% to full size, then sits exactly where shadcn's ring sits. The
+grows from 99% to full size, then sits exactly where shadcn's ring sits. The
 ring is a `::before` layer, so only its `opacity` and `scale` change; the
 border colour snaps. Addon buttons stay clickable through it.
 
@@ -233,7 +233,10 @@ working. It also installs `godui-motion` for the easing and duration tokens.
 The group's focus and invalid ring classes move to its `::before`
 (`before:ring-[3px]` instead of `ring-[3px]`). If a call site set a ring
 colour on the group, prefix it with `before:`. Don't put `overflow-hidden` on
-the group: the ring sits outside its border, like shadcn's.
+the group: the ring sits outside its border, like shadcn's. The layer reaches
+that border box with `before:-inset-px`, which assumes shadcn's 1px `border`;
+if you give the group a thicker one, match it (`border-2` with
+`before:-inset-0.5`), or the ring starts inside the border.
 
 ## Usage
 
@@ -261,7 +264,7 @@ import {
 | Focus ring | `::before` transition | `opacity`, `scale` | `ease-out-expo` | 150ms |
 | Border colour, invalid colour | snap | — | — | — |
 
-Blur plays the same transition backwards. The ring is shadcn's: 3px of
+Blur fades it out the same way. The ring is shadcn's: 3px of
 `ring/50` (or `destructive/20`, `destructive/40` in dark, on an invalid
 control), drawn by a layer that covers the group's border box with the same
 radius.

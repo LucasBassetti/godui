@@ -90,19 +90,4 @@ describe("Input, Textarea, InputGroup", () => {
       expect(classes.filter((c) => /(^|:)transition/.test(c))).toEqual([]);
     }
   });
-
-  it("the input group transitions only its ::before ring (opacity, scale)", () => {
-    render(
-      <Usage
-        ui={{ input: GoduiInput, textarea: GoduiTextarea, group: GoduiGroup }}
-      />,
-    );
-    const group = document.querySelector<HTMLElement>(
-      '[data-slot="input-group"]',
-    );
-    const classes = group?.className.split(/\s+/) ?? [];
-    expect(classes.filter((c) => /(^|:)transition-(?!none)/.test(c))).toEqual([
-      "before:transition-[opacity,scale]",
-    ]);
-  });
 });

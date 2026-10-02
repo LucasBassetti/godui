@@ -11,7 +11,7 @@ import { InputGroupButtonDemo } from "@/components/demos/core/input-group-button
 <LearnChapter
   label="A ring that grows in"
   scene={<AutoPlayScene label="A ring that grows in" demo="focus-ring" />}
-  code={`"before:opacity-0 before:scale-[0.98]
+  code={`"before:opacity-0 before:scale-[0.99]
  before:transition-[opacity,scale]
  before:duration-(--godui-duration-fast) before:ease-out-expo",
 "has-[[data-slot=input-group-control]:focus-visible]:border-ring
@@ -20,8 +20,11 @@ import { InputGroupButtonDemo } from "@/components/demos/core/input-group-button
 >
 
 When the field inside the group gets focus, the ring fades in and grows from
-98% to full size in 150ms on `ease-out-expo`, so most of the change lands in
-the first few frames. The border colour snaps in the same frame, which keeps
+99% to full size in 150ms on `ease-out-expo`, so most of the change lands in
+the first few frames. A uniform `scale` moves the long sides more than the
+short ones: on a 640px field a 98% start tucked the ring 3px inside the side
+borders on its first visible frame, while the top and bottom sat in place.
+99% halves that and still reads as growing on a default-width field. The border colour snaps in the same frame, which keeps
 the focused state readable before the ring has finished.
 
 The scene runs at 800ms. On the left is a plain Input, whose ring snaps

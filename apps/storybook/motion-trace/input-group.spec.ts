@@ -74,8 +74,8 @@ test("the ::before ring fades and grows in, reaching full opacity and size", asy
   const mid = frames.filter((f) => f.opacity > 0.05 && f.opacity < 0.95);
   // It fades: several frames between 0 and 1, not a snap.
   expect(mid.length).toBeGreaterThan(3);
-  // It grows from 98%: mid-fade frames are still smaller than full size.
-  expect(mid.some((f) => f.scale < 1 && f.scale >= 0.98)).toBe(true);
+  // It grows from 99%: mid-fade frames are still smaller than full size.
+  expect(mid.some((f) => f.scale < 1 && f.scale >= 0.99)).toBe(true);
   // Opacity and scale only ever rise.
   for (let i = 1; i < frames.length; i++) {
     expect(frames[i].opacity).toBeGreaterThanOrEqual(frames[i - 1].opacity);
@@ -84,44 +84,54 @@ test("the ::before ring fades and grows in, reaching full opacity and size", asy
   expect(frames.at(-1)).toEqual({ opacity: 1, scale: 1 });
 });
 
-test("the ring sits where shadcn's box-shadow ring sits", async ({ page }) => {
-  await page.goto(`/iframe.html?id=${STORY}&viewMode=story`);
-  await page.waitForLoadState("networkidle");
-  await focusControl(page);
-  await page.waitForTimeout(400);
-  const geometry = await page.evaluate(() => {
-    const group = document.querySelector(
-      '[data-slot="input-group"]',
-    ) as HTMLElement;
-    const own = getComputedStyle(group);
-    const ring = getComputedStyle(group, "::before");
-    return {
-      groupRadius: own.borderTopLeftRadius,
-      groupShadow: own.boxShadow,
-      groupOverflow: own.overflow,
-      ringRadius: ring.borderTopLeftRadius,
-      ringInset: [ring.top, ring.right, ring.bottom, ring.left],
-      ringWidth: Number.parseFloat(ring.width),
-      ringHeight: Number.parseFloat(ring.height),
-      groupWidth: group.offsetWidth,
-      groupHeight: group.offsetHeight,
-      ringShadow: ring.boxShadow,
-      ringPointerEvents: ring.pointerEvents,
-    };
+// Over a single-line input, a textarea (taller, block-end addon) and an
+// invalid control (destructive ring colour), the layer covers the same box.
+for (const { story, placeholder } of [
+  { story: STORY, placeholder: "Search..." },
+  { story: "ui-input-group--textarea", placeholder: "Ask, Search or Chat..." },
+  { story: "ui-input-group--invalid", placeholder: "example.com" },
+]) {
+  test(`the ring sits where shadcn's box-shadow ring sits (${story})`, async ({
+    page,
+  }) => {
+    await page.goto(`/iframe.html?id=${story}&viewMode=story`);
+    await page.waitForLoadState("networkidle");
+    await page.getByPlaceholder(placeholder).click();
+    await page.waitForTimeout(400);
+    const geometry = await page.evaluate(() => {
+      const group = document.querySelector(
+        '[data-slot="input-group"]',
+      ) as HTMLElement;
+      const own = getComputedStyle(group);
+      const ring = getComputedStyle(group, "::before");
+      return {
+        groupRadius: own.borderTopLeftRadius,
+        groupShadow: own.boxShadow,
+        groupOverflow: own.overflow,
+        ringRadius: ring.borderTopLeftRadius,
+        ringInset: [ring.top, ring.right, ring.bottom, ring.left],
+        ringWidth: Number.parseFloat(ring.width),
+        ringHeight: Number.parseFloat(ring.height),
+        groupWidth: group.offsetWidth,
+        groupHeight: group.offsetHeight,
+        ringShadow: ring.boxShadow,
+        ringPointerEvents: ring.pointerEvents,
+      };
+    });
+    // The ::before covers the group's border box (inset -1px over a 1px border)
+    // with the same radius, so its 3px spread lands exactly on shadcn's ring.
+    expect(geometry.ringInset).toEqual(["-1px", "-1px", "-1px", "-1px"]);
+    expect(geometry.ringWidth).toBeCloseTo(geometry.groupWidth, 1);
+    expect(geometry.ringHeight).toBeCloseTo(geometry.groupHeight, 1);
+    expect(geometry.ringRadius).toBe(geometry.groupRadius);
+    expect(geometry.ringShadow).toMatch(/0px 0px 0px 3px/);
+    // The group itself no longer paints a ring, and doesn't clip the layer.
+    expect(geometry.groupShadow).not.toMatch(/0px 0px 0px 3px/);
+    expect(geometry.groupOverflow).toBe("visible");
+    // Addon buttons under the layer stay clickable.
+    expect(geometry.ringPointerEvents).toBe("none");
   });
-  // The ::before covers the group's border box (inset -1px over a 1px border)
-  // with the same radius, so its 3px spread lands exactly on shadcn's ring.
-  expect(geometry.ringInset).toEqual(["-1px", "-1px", "-1px", "-1px"]);
-  expect(geometry.ringWidth).toBeCloseTo(geometry.groupWidth, 1);
-  expect(geometry.ringHeight).toBeCloseTo(geometry.groupHeight, 1);
-  expect(geometry.ringRadius).toBe(geometry.groupRadius);
-  expect(geometry.ringShadow).toMatch(/0px 0px 0px 3px/);
-  // The group itself no longer paints a ring, and doesn't clip the layer.
-  expect(geometry.groupShadow).not.toMatch(/0px 0px 0px 3px/);
-  expect(geometry.groupOverflow).toBe("visible");
-  // Addon buttons under the layer stay clickable.
-  expect(geometry.ringPointerEvents).toBe("none");
-});
+}
 
 test("reduced motion: the ring appears without a transition", async ({
   page,

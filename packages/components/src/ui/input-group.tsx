@@ -1,7 +1,7 @@
 "use client";
 
 // GodUI Input Group — mirrors shadcn/ui new-york-v4 components/ui/input-group.tsx (registry snapshot 2026-10-01).
-// Motion: the focus ring is a ::before layer that fades and scales in from 98% (opacity + scale,
+// Motion: the focus ring is a ::before layer that fades and scales in from 99% (opacity + scale,
 // ease-out-expo, --godui-duration-fast), where shadcn transitions the group's box-shadow. The
 // border colour snaps. Reduced motion: the ring appears without a transition. GPU-only.
 
@@ -30,7 +30,7 @@ function InputGroup({ className, ...props }: React.ComponentProps<"div">) {
 
         // Focus state. shadcn's `ring-[3px]` box-shadow moves to a ::before layer covering the
         // border box, so the ring can fade + scale on the compositor; the border colour snaps.
-        "before:pointer-events-none before:absolute before:-inset-px before:rounded-[inherit] before:opacity-0 before:ring-[3px] before:ring-ring/50 before:scale-[0.98] before:transition-[opacity,scale] before:duration-(--godui-duration-fast) before:ease-out-expo motion-reduce:before:transition-none",
+        "before:pointer-events-none before:absolute before:-inset-px before:rounded-[inherit] before:opacity-0 before:ring-[3px] before:ring-ring/50 before:scale-[0.99] before:transition-[opacity,scale] before:duration-(--godui-duration-fast) before:ease-out-expo motion-reduce:before:transition-none",
         "has-[[data-slot=input-group-control]:focus-visible]:border-ring has-[[data-slot=input-group-control]:focus-visible]:before:opacity-100 has-[[data-slot=input-group-control]:focus-visible]:before:scale-100",
 
         // Error state.

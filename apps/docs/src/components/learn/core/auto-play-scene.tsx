@@ -837,7 +837,7 @@ function FocusRingCompare({ reduced }: { reduced: boolean }) {
   );
 }
 
-/** The Input Group ring alone on a slow clock, so the 98% → 100% grow reads. */
+/** The Input Group ring alone on a slow clock, so the 99% → 100% grow reads. */
 function FocusRingSlow({ reduced }: { reduced: boolean }) {
   const on = useToggle(reduced) || reduced;
   return (

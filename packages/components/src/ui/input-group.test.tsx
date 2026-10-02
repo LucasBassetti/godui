@@ -88,7 +88,7 @@ describe("InputGroup", () => {
         "before:opacity-0",
         "before:ring-[3px]",
         "before:ring-ring/50",
-        "before:scale-[0.98]",
+        "before:scale-[0.99]",
         "before:transition-[opacity,scale]",
         "before:duration-(--godui-duration-fast)",
         "before:ease-out-expo",
