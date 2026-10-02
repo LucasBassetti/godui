@@ -158,6 +158,10 @@
         {
           "path": "packages/components/src/hooks/use-active-indicator.ts",
           "type": "registry:hook"
+        },
+        {
+          "path": "packages/components/src/hooks/use-animate-on-change.ts",
+          "type": "registry:hook"
         }
       ],
       "cssVars": {

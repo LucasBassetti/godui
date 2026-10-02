@@ -8,6 +8,7 @@
 import { CircleIcon } from "lucide-react";
 import { RadioGroup as RadioGroupPrimitive } from "radix-ui";
 import * as React from "react";
+import { useAnimateOnChange } from "@/hooks/use-animate-on-change";
 import { cn } from "@/lib/utils";
 
 /**
@@ -54,13 +55,9 @@ function RadioGroupItem({
   // key or controlled change) — a pre-selected item never animates on first
   // paint or remount. Same rule as Checkbox.
   const group = React.useContext(RadioGroupValueContext);
-  const checked = group ? group.value === props.value : undefined;
-  const [animate, setAnimate] = React.useState(false);
-  const [lastChecked, setLastChecked] = React.useState(checked);
-  if (checked !== lastChecked) {
-    setLastChecked(checked);
-    setAnimate(true);
-  }
+  const animate = useAnimateOnChange(
+    group ? group.value === props.value : undefined,
+  );
 
   return (
     <RadioGroupPrimitive.Item
@@ -74,7 +71,7 @@ function RadioGroupItem({
     >
       <RadioGroupPrimitive.Indicator
         data-slot="radio-group-indicator"
-        className="relative flex items-center justify-center [--godui-enter-scale:0.3] group-data-[animate=true]/radio-group-item:animate-godui-fade-scale-in"
+        className="relative flex items-center justify-center [--godui-enter-scale:0.3] group-data-[animate=true]/radio-group-item:data-[state=checked]:animate-godui-fade-scale-in"
       >
         <CircleIcon className="absolute top-1/2 left-1/2 size-2 -translate-x-1/2 -translate-y-1/2 fill-primary" />
       </RadioGroupPrimitive.Indicator>

@@ -49,7 +49,7 @@ describe("RadioGroup", () => {
     expect(item.className).not.toContain("transition-[color");
     const indicator = item.querySelector('[data-slot="radio-group-indicator"]');
     expect(indicator?.className).toContain(
-      "group-data-[animate=true]/radio-group-item:animate-godui-fade-scale-in",
+      "group-data-[animate=true]/radio-group-item:data-[state=checked]:animate-godui-fade-scale-in",
     );
     expect(indicator?.className).toContain("[--godui-enter-scale:0.3]");
   });

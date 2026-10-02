@@ -3,6 +3,9 @@ import {
   ContextMenuCheckboxItem,
   ContextMenuContent,
   ContextMenuItem,
+  ContextMenuLabel,
+  ContextMenuRadioGroup,
+  ContextMenuRadioItem,
   ContextMenuSeparator,
   ContextMenuShortcut,
   ContextMenuSub,
@@ -11,6 +14,7 @@ import {
   ContextMenuTrigger,
 } from "@godui/components";
 import type { Meta, StoryObj } from "@storybook/react";
+import { useState } from "react";
 
 const meta = {
   title: "UI/Context Menu",
@@ -51,3 +55,46 @@ export const Default: Story = {
     </ContextMenu>
   ),
 };
+
+function CheckboxMenu() {
+  const [bookmarks, setBookmarks] = useState(true);
+  const [urls, setUrls] = useState(false);
+  const [person, setPerson] = useState("pedro");
+  const keepOpen = (event: Event) => event.preventDefault();
+  return (
+    <ContextMenu>
+      <ContextMenuTrigger className="flex h-[150px] w-[300px] items-center justify-center rounded-md border border-dashed text-sm text-foreground">
+        Right click here
+      </ContextMenuTrigger>
+      <ContextMenuContent className="w-52">
+        <ContextMenuCheckboxItem
+          checked={bookmarks}
+          onCheckedChange={setBookmarks}
+          onSelect={keepOpen}
+        >
+          Show Bookmarks
+        </ContextMenuCheckboxItem>
+        <ContextMenuCheckboxItem
+          checked={urls}
+          onCheckedChange={setUrls}
+          onSelect={keepOpen}
+        >
+          Show Full URLs
+        </ContextMenuCheckboxItem>
+        <ContextMenuSeparator />
+        <ContextMenuRadioGroup value={person} onValueChange={setPerson}>
+          <ContextMenuLabel inset>People</ContextMenuLabel>
+          <ContextMenuRadioItem value="pedro" onSelect={keepOpen}>
+            Pedro Duarte
+          </ContextMenuRadioItem>
+          <ContextMenuRadioItem value="colm" onSelect={keepOpen}>
+            Colm Tuite
+          </ContextMenuRadioItem>
+        </ContextMenuRadioGroup>
+      </ContextMenuContent>
+    </ContextMenu>
+  );
+}
+
+/** Stateful checkbox and radio items that keep the menu open when toggled. */
+export const Checkboxes: Story = { render: () => <CheckboxMenu /> };

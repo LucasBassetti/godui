@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { deselect } from "./deselect";
 import { expectGpuOnly, traceInteraction } from "./trace";
 
 test("menubar opens a menu on the compositor", async ({ page }) => {
@@ -74,4 +75,42 @@ test("a sub-menu opens fully visible, not clipped by its parent", async ({
     return Boolean(at && el.contains(at));
   });
   expect(hit).toBe(true);
+});
+
+test("a deselected indicator is removed at once, without re-popping", async ({
+  page,
+}) => {
+  await page.goto("/iframe.html?id=ui-menubar--default&viewMode=story");
+  await page.waitForLoadState("networkidle");
+  await page.getByRole("menuitem", { name: "View" }).click();
+  await page.waitForTimeout(500);
+  const checkbox = {
+    selector: '[data-slot="menubar-checkbox-item"]',
+    text: "Always Show Full URLs",
+  };
+  const indicator = '[data-state="checked"]';
+  // Checked on open: unchecking it removes the check in the same frame.
+  expect(
+    await deselect(page, { checked: checkbox, indicator, click: checkbox }),
+  ).toEqual({ connectedAfterOneFrame: false, animations: [] });
+  // After a toggle (data-animate set): re-check (pops), then uncheck again.
+  await page
+    .getByRole("menuitemcheckbox", { name: "Always Show Full URLs" })
+    .click();
+  await page.waitForTimeout(500);
+  expect(
+    await deselect(page, { checked: checkbox, indicator, click: checkbox }),
+  ).toEqual({ connectedAfterOneFrame: false, animations: [] });
+  // Picking another radio removes the old dot in the same frame.
+  await page.keyboard.press("Escape");
+  await page.waitForTimeout(300);
+  await page.getByRole("menuitem", { name: "Profiles" }).click();
+  await page.waitForTimeout(500);
+  expect(
+    await deselect(page, {
+      checked: { selector: '[data-slot="menubar-radio-item"]', text: "Benoit" },
+      indicator,
+      click: { selector: '[data-slot="menubar-radio-item"]', text: "Andy" },
+    }),
+  ).toEqual({ connectedAfterOneFrame: false, animations: [] });
 });

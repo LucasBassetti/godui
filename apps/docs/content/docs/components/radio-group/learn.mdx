@@ -24,7 +24,7 @@ import { RadioGroupDemo } from "@/components/demos/core/radio-group-demo";
   code={`<RadioGroupPrimitive.Indicator
   data-slot="radio-group-indicator"
   className="relative flex items-center justify-center [--godui-enter-scale:0.3]
-    group-data-[animate=true]/radio-group-item:animate-godui-fade-scale-in"
+    group-data-[animate=true]/radio-group-item:data-[state=checked]:animate-godui-fade-scale-in"
 >
   <CircleIcon className="absolute top-1/2 left-1/2 size-2 -translate-x-1/2 -translate-y-1/2 fill-primary" />
 </RadioGroupPrimitive.Indicator>`}
@@ -34,7 +34,9 @@ Radix mounts a radio's indicator only while that radio is selected, so a
 keyframe on it runs exactly when the selection lands there. The keyframe is
 gated on the item's `data-animate`, which is set only once its checked state
 changes, so the option that's selected on first paint shows its dot without
-popping (the same rule as Checkbox).
+popping (the same rule as Checkbox). It also requires the dot's own
+`data-state="checked"`, so the dot being deselected leaves at once instead of
+re-popping on its way out.
 
 The dot starts at 30% of its size, deeper than the checkbox's 50%, because
 it has more room to grow inside the ring before it reads as "filled". The

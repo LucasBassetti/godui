@@ -150,28 +150,25 @@ function ComboboxList({ className, ...props }: ComboboxPrimitive.List.Props) {
 }
 
 /**
- * Whether the enclosing item (or chips container) has finished mounting. An
- * indicator or chip that mounts with it is part of the first paint and stays
- * still; one that mounts later was just selected and pops.
+ * Whether the enclosing item (or chips container) has finished mounting:
+ * `false` in the render that mounts it, `true` from the re-render its layout
+ * effect triggers (before paint). An indicator or chip that mounts with it
+ * reads `false` and stays still; one that mounts later was just selected and
+ * pops.
  */
-function useMountedRef() {
-  const mounted = React.useRef(false);
-  useIsoLayoutEffect(() => {
-    mounted.current = true;
-    return () => {
-      mounted.current = false;
-    };
-  }, []);
+function useMounted() {
+  const [mounted, setMounted] = React.useState(false);
+  useIsoLayoutEffect(() => setMounted(true), []);
   return mounted;
 }
 
-const ComboboxItemMountedContext =
-  React.createContext<React.RefObject<boolean> | null>(null);
+const ComboboxItemMountedContext = React.createContext(false);
 
 /** The check's box; pops only when selected after its item mounted. */
 function ComboboxItemIndicatorBox(props: React.ComponentProps<"span">) {
   const itemMounted = React.useContext(ComboboxItemMountedContext);
-  const [animate] = React.useState(() => itemMounted?.current ?? false);
+  // Decided once, when the check mounts.
+  const [animate] = React.useState(itemMounted);
   return <span data-animate={animate || undefined} {...props} />;
 }
 
@@ -180,7 +177,7 @@ function ComboboxItem({
   children,
   ...props
 }: ComboboxPrimitive.Item.Props) {
-  const mounted = useMountedRef();
+  const mounted = useMounted();
   return (
     <ComboboxItemMountedContext.Provider value={mounted}>
       <ComboboxPrimitive.Item
@@ -269,7 +266,7 @@ function ComboboxSeparator({
  */
 const ComboboxChipsFlipContext = React.createContext<{
   bump: () => void;
-  mounted: React.RefObject<boolean>;
+  mounted: boolean;
 } | null>(null);
 
 function ComboboxChips({
@@ -285,7 +282,7 @@ function ComboboxChips({
   useFlipGroup(chipsRef, version, {
     selector: '[data-slot="combobox-chip"], [data-slot="combobox-chip-input"]',
   });
-  const mounted = useMountedRef();
+  const mounted = useMounted();
   const flip = React.useMemo(() => ({ bump, mounted }), [mounted]);
   // React 19: a callback ref may return its own cleanup; pass it through.
   const setChipsRef = React.useCallback(
@@ -343,7 +340,8 @@ function ComboboxChip({
   // Only chips added after the container mounted pop; the initial value's
   // chips are part of the first paint.
   const chips = React.useContext(ComboboxChipsFlipContext);
-  const [animate] = React.useState(() => chips?.mounted.current ?? false);
+  // Decided once, when the chip mounts.
+  const [animate] = React.useState(chips?.mounted ?? false);
   return (
     <ComboboxPrimitive.Chip
       data-slot="combobox-chip"

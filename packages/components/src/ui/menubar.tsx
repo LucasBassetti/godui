@@ -8,6 +8,7 @@
 import { CheckIcon, ChevronRightIcon, CircleIcon } from "lucide-react";
 import { Menubar as MenubarPrimitive } from "radix-ui";
 import * as React from "react";
+import { useAnimateOnChange } from "@/hooks/use-animate-on-change";
 import { cn } from "@/lib/utils";
 
 function Menubar({
@@ -48,21 +49,6 @@ function MenubarPortal({
 const MenubarRadioValueContext = React.createContext<{
   value: string | undefined;
 } | null>(null);
-
-/**
- * Pop an indicator only after `checked` changes. Menu content mounts when it
- * opens, so a pre-checked item starts with this false and stays still; a
- * toggle while the menu is open flips it (the Checkbox mount rule).
- */
-function useAnimateOnChange(checked: unknown) {
-  const [animate, setAnimate] = React.useState(false);
-  const [lastChecked, setLastChecked] = React.useState(checked);
-  if (checked !== lastChecked) {
-    setLastChecked(checked);
-    setAnimate(true);
-  }
-  return animate;
-}
 
 function MenubarRadioGroup({
   ...props
@@ -190,7 +176,7 @@ function MenubarCheckboxItem({
       {...props}
     >
       <span className="pointer-events-none absolute left-2 flex size-3.5 items-center justify-center">
-        <MenubarPrimitive.ItemIndicator className="[--godui-enter-scale:0.5] group-data-[animate=true]/menubar-checkbox-item:animate-godui-fade-scale-in">
+        <MenubarPrimitive.ItemIndicator className="[--godui-enter-scale:0.5] group-data-[animate=true]/menubar-checkbox-item:data-[state=checked]:animate-godui-fade-scale-in group-data-[animate=true]/menubar-checkbox-item:data-[state=indeterminate]:animate-godui-fade-scale-in">
           <CheckIcon className="size-4" />
         </MenubarPrimitive.ItemIndicator>
       </span>
@@ -219,7 +205,7 @@ function MenubarRadioItem({
       {...props}
     >
       <span className="pointer-events-none absolute left-2 flex size-3.5 items-center justify-center">
-        <MenubarPrimitive.ItemIndicator className="[--godui-enter-scale:0.5] group-data-[animate=true]/menubar-radio-item:animate-godui-fade-scale-in">
+        <MenubarPrimitive.ItemIndicator className="[--godui-enter-scale:0.5] group-data-[animate=true]/menubar-radio-item:data-[state=checked]:animate-godui-fade-scale-in">
           <CircleIcon className="size-2 fill-current" />
         </MenubarPrimitive.ItemIndicator>
       </span>

@@ -177,14 +177,35 @@ describe("DropdownMenu indicators (mount rule)", () => {
     expect(checkbox()).toHaveAttribute("data-state", "checked");
     expect(checkbox()).toHaveAttribute("data-animate", "true");
     expect(indicatorClasses(checkbox())).toContain(
-      "group-data-[animate=true]/dropdown-menu-checkbox-item:animate-godui-fade-scale-in",
+      "group-data-[animate=true]/dropdown-menu-checkbox-item:data-[state=checked]:animate-godui-fade-scale-in",
     );
     expect(radio("B")).not.toHaveAttribute("data-animate");
     await user.click(radio("B"));
     expect(radio("B")).toHaveAttribute("data-state", "checked");
     expect(radio("B")).toHaveAttribute("data-animate", "true");
     expect(indicatorClasses(radio("B"))).toContain(
-      "group-data-[animate=true]/dropdown-menu-radio-item:animate-godui-fade-scale-in",
+      "group-data-[animate=true]/dropdown-menu-radio-item:data-[state=checked]:animate-godui-fade-scale-in",
     );
+  });
+
+  it("toggle, close, reopen: the fresh mount doesn't pop", async () => {
+    const user = userEvent.setup();
+    render(<Stateful />);
+    await user.click(screen.getByRole("button", { name: "Open" }));
+    await user.click(checkbox());
+    await user.click(radio("B"));
+    expect(checkbox()).toHaveAttribute("data-animate", "true");
+    await user.keyboard("{Escape}");
+    await waitFor(() =>
+      expect(
+        document.querySelector('[data-slot="dropdown-menu-content"]'),
+      ).toBeNull(),
+    );
+    await user.click(screen.getByRole("button", { name: "Open" }));
+    // Items remount on open: whatever changed last time, nothing pops now.
+    for (const item of [checkbox(), radio("A"), radio("B")]) {
+      expect(item).not.toHaveAttribute("data-animate");
+    }
+    expect(radio("B")).toHaveAttribute("data-state", "checked");
   });
 });

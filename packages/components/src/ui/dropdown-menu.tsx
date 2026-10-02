@@ -6,6 +6,7 @@
 import { CheckIcon, ChevronRightIcon, CircleIcon } from "lucide-react";
 import { DropdownMenu as DropdownMenuPrimitive } from "radix-ui";
 import * as React from "react";
+import { useAnimateOnChange } from "@/hooks/use-animate-on-change";
 import { cn } from "@/lib/utils";
 
 function DropdownMenu({
@@ -103,7 +104,7 @@ function DropdownMenuCheckboxItem({
       {...props}
     >
       <span className="pointer-events-none absolute left-2 flex size-3.5 items-center justify-center">
-        <DropdownMenuPrimitive.ItemIndicator className="[--godui-enter-scale:0.5] group-data-[animate=true]/dropdown-menu-checkbox-item:animate-godui-fade-scale-in">
+        <DropdownMenuPrimitive.ItemIndicator className="[--godui-enter-scale:0.5] group-data-[animate=true]/dropdown-menu-checkbox-item:data-[state=checked]:animate-godui-fade-scale-in group-data-[animate=true]/dropdown-menu-checkbox-item:data-[state=indeterminate]:animate-godui-fade-scale-in">
           <CheckIcon className="size-4" />
         </DropdownMenuPrimitive.ItemIndicator>
       </span>
@@ -116,21 +117,6 @@ function DropdownMenuCheckboxItem({
 const DropdownMenuRadioValueContext = React.createContext<{
   value: string | undefined;
 } | null>(null);
-
-/**
- * Pop an indicator only after `checked` changes. Menu content mounts when it
- * opens, so a pre-checked item starts with this false and stays still; a
- * toggle while the menu is open flips it (the Checkbox mount rule).
- */
-function useAnimateOnChange(checked: unknown) {
-  const [animate, setAnimate] = React.useState(false);
-  const [lastChecked, setLastChecked] = React.useState(checked);
-  if (checked !== lastChecked) {
-    setLastChecked(checked);
-    setAnimate(true);
-  }
-  return animate;
-}
 
 function DropdownMenuRadioGroup({
   ...props
@@ -165,7 +151,7 @@ function DropdownMenuRadioItem({
       {...props}
     >
       <span className="pointer-events-none absolute left-2 flex size-3.5 items-center justify-center">
-        <DropdownMenuPrimitive.ItemIndicator className="[--godui-enter-scale:0.5] group-data-[animate=true]/dropdown-menu-radio-item:animate-godui-fade-scale-in">
+        <DropdownMenuPrimitive.ItemIndicator className="[--godui-enter-scale:0.5] group-data-[animate=true]/dropdown-menu-radio-item:data-[state=checked]:animate-godui-fade-scale-in">
           <CircleIcon className="size-2 fill-current" />
         </DropdownMenuPrimitive.ItemIndicator>
       </span>
