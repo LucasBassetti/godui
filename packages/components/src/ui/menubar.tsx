@@ -9,6 +9,7 @@ import { CheckIcon, ChevronRightIcon, CircleIcon } from "lucide-react";
 import { Menubar as MenubarPrimitive } from "radix-ui";
 import * as React from "react";
 import { useAnimateOnChange } from "@/hooks/use-animate-on-change";
+import { useMergedRef } from "@/hooks/use-merged-ref";
 import { cn } from "@/lib/utils";
 
 function Menubar({
@@ -86,26 +87,7 @@ function MenubarContent({
   ...props
 }: React.ComponentProps<typeof MenubarPrimitive.Content>) {
   const contentRef = React.useRef<HTMLDivElement | null>(null);
-  // React 19: a callback ref may return its own cleanup; pass it through.
-  const composedRef = React.useCallback(
-    (node: HTMLDivElement | null) => {
-      contentRef.current = node;
-      if (typeof ref === "function") {
-        const cleanup = ref(node);
-        return () => {
-          contentRef.current = null;
-          if (typeof cleanup === "function") cleanup();
-          else ref(null);
-        };
-      }
-      if (ref) ref.current = node;
-      return () => {
-        contentRef.current = null;
-        if (ref) ref.current = null;
-      };
-    },
-    [ref],
-  );
+  const composedRef = useMergedRef(contentRef, ref);
   return (
     <MenubarPortal>
       <MenubarPrimitive.Content

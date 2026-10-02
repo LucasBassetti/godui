@@ -8,6 +8,7 @@
 import { Collapsible as CollapsiblePrimitive } from "radix-ui";
 import * as React from "react";
 import { useFlipGroup } from "@/hooks/use-flip-group";
+import { useMergedRef } from "@/hooks/use-merged-ref";
 import { cn } from "@/lib/utils";
 
 const useIsoLayoutEffect =
@@ -29,14 +30,7 @@ function Collapsible({
   });
   const [version, bump] = React.useReducer((n: number) => n + 1, 0);
   useFlipGroup(parentRef, version, { selector: ":scope > *" });
-  const setRootRef = React.useCallback(
-    (node: HTMLDivElement | null) => {
-      rootRef.current = node;
-      if (typeof ref === "function") ref(node);
-      else if (ref) ref.current = node;
-    },
-    [ref],
-  );
+  const setRootRef = useMergedRef(rootRef, ref);
 
   return (
     <CollapsibleFlipContext.Provider value={bump}>

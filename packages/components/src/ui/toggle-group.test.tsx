@@ -179,4 +179,26 @@ describe("ToggleGroup", () => {
       expect(screen.getByRole("radio", { name: "Center" })).toHaveFocus(),
     );
   });
+
+  it("passes a React 19 callback ref's cleanup through (ToggleGroup)", () => {
+    const cleanup = vi.fn();
+    const seen: Array<HTMLElement | null> = [];
+    const ref = (node: HTMLDivElement | null) => {
+      seen.push(node);
+      return cleanup;
+    };
+    const { unmount } = render(
+      <Godui.ToggleGroup ref={ref} type="single" aria-label="Align">
+        <Godui.ToggleGroupItem value="left">Left</Godui.ToggleGroupItem>
+        <Godui.ToggleGroupItem value="right">Right</Godui.ToggleGroupItem>
+      </Godui.ToggleGroup>,
+    );
+    expect(seen).toEqual([
+      document.querySelector('[data-slot="toggle-group"]'),
+    ]);
+    unmount();
+    expect(cleanup).toHaveBeenCalledTimes(1);
+    // React calls the cleanup instead of ref(null).
+    expect(seen).not.toContain(null);
+  });
 });

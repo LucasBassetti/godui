@@ -13,6 +13,7 @@
 
 import { Direction, Slider as SliderPrimitive } from "radix-ui";
 import * as React from "react";
+import { useMergedRef } from "@/hooks/use-merged-ref";
 import { cn } from "@/lib/utils";
 
 /** Pointer travel (px) before a press becomes a drag. */
@@ -576,26 +577,7 @@ function Slider({
     ),
   );
   const rootRef = React.useRef<HTMLSpanElement>(null);
-  // React 19: a callback ref may return its own cleanup; pass it through.
-  const setRootRef = React.useCallback(
-    (node: HTMLSpanElement | null) => {
-      rootRef.current = node;
-      if (typeof ref === "function") {
-        const cleanup = ref(node);
-        return () => {
-          rootRef.current = null;
-          if (typeof cleanup === "function") cleanup();
-          else ref(null);
-        };
-      }
-      if (ref) ref.current = node;
-      return () => {
-        rootRef.current = null;
-        if (ref) ref.current = null;
-      };
-    },
-    [ref],
-  );
+  const setRootRef = useMergedRef(rootRef, ref);
   const steps = React.useRef<Steps>({ step: 1, min, max });
   steps.current = { step: props.step ?? 1, min, max };
   useSliderMotion(rootRef, steps);

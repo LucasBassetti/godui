@@ -18,6 +18,7 @@ import { Accordion as AccordionPrimitive } from "radix-ui";
 import * as React from "react";
 import { flushSync } from "react-dom";
 import { useFlipGroup } from "@/hooks/use-flip-group";
+import { useMergedRef } from "@/hooks/use-merged-ref";
 import { cn } from "@/lib/utils";
 
 /** Running panel animations (edge, content, fades), cancelled together. */
@@ -256,14 +257,7 @@ function Accordion({
     duration: move.ms,
   });
   useAccordionMotion(rootRef, flip);
-  const setRootRef = React.useCallback(
-    (node: HTMLDivElement | null) => {
-      rootRef.current = node;
-      if (typeof ref === "function") ref(node);
-      else if (ref) ref.current = node;
-    },
-    [ref],
-  );
+  const setRootRef = useMergedRef(rootRef, ref);
 
   return (
     <AccordionPrimitive.Root

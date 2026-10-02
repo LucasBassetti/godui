@@ -12,6 +12,7 @@ import {
   type IndicatorBox,
   useActiveIndicator,
 } from "@/hooks/use-active-indicator";
+import { useMergedRef } from "@/hooks/use-merged-ref";
 import { cn } from "@/lib/utils";
 
 function Tabs({
@@ -74,14 +75,7 @@ function TabsList({
   VariantProps<typeof tabsListVariants>) {
   const listRef = React.useRef<HTMLDivElement>(null);
   const indicatorRef = React.useRef<HTMLSpanElement>(null);
-  const setListRef = React.useCallback(
-    (node: HTMLDivElement | null) => {
-      listRef.current = node;
-      if (typeof ref === "function") ref(node);
-      else if (ref) ref.current = node;
-    },
-    [ref],
-  );
+  const setListRef = useMergedRef(listRef, ref);
   // One indicator follows the active trigger: its box snaps, then a FLIP
   // plays translate + scale from the old box. Controlled values, inserted
   // triggers and resizes are covered (see useActiveIndicator).

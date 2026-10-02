@@ -18,6 +18,11 @@
       "path": "packages/components/src/hooks/use-animate-on-change.ts",
       "content": "\"use client\";\n\nimport * as React from \"react\";\n\n/**\n * The mount rule for selection pops: `true` once `value` has changed since\n * this component mounted — never on first paint or remount (menu items mount\n * on every open). Compared during render, so it flips in the same commit as\n * the change. Set it as `data-animate` and gate the pop keyframe on it.\n *\n * If the animated element is Presence-managed (a Radix `*Indicator`), also\n * gate the keyframe on the element's own \"on\" state\n * (`data-[state=checked]:`): otherwise the commit that unchecks it adds the\n * keyframe, Presence sees a new animation, and the indicator re-pops before\n * it disappears.\n */\nexport function useAnimateOnChange(value: unknown): boolean {\n  const [animate, setAnimate] = React.useState(false);\n  const [last, setLast] = React.useState(value);\n  if (!Object.is(value, last)) {\n    setLast(value);\n    setAnimate(true);\n  }\n  return animate;\n}\n",
       "type": "registry:hook"
+    },
+    {
+      "path": "packages/components/src/hooks/use-merged-ref.ts",
+      "content": "import * as React from \"react\";\n\n/**\n * One callback ref that points both `local` and the caller's `ref` (callback\n * or object) at the same node. React 19: a callback ref may return its own\n * cleanup, which React then calls instead of `ref(null)`; it's passed through,\n * so a caller's cleanup runs on unmount and their ref is never called with null.\n */\nexport function useMergedRef<T>(\n  local: React.RefObject<T | null>,\n  ref: React.Ref<T> | undefined,\n) {\n  return React.useCallback(\n    (node: T | null) => {\n      local.current = node;\n      if (typeof ref === \"function\") {\n        const cleanup = ref(node);\n        return () => {\n          local.current = null;\n          if (typeof cleanup === \"function\") cleanup();\n          else ref(null);\n        };\n      }\n      if (ref) ref.current = node;\n      return () => {\n        local.current = null;\n        if (ref) ref.current = null;\n      };\n    },\n    [local, ref],\n  );\n}\n",
+      "type": "registry:hook"
     }
   ],
   "cssVars": {

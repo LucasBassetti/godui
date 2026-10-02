@@ -172,4 +172,28 @@ describe("Command", () => {
       "not-in-[[data-slot=command-list][data-indicator=ready]]:data-[selected=true]:bg-accent",
     );
   });
+
+  it("passes a React 19 callback ref's cleanup through (CommandList)", () => {
+    const cleanup = vi.fn();
+    const seen: Array<HTMLElement | null> = [];
+    const ref = (node: HTMLDivElement | null) => {
+      seen.push(node);
+      return cleanup;
+    };
+    const { unmount } = render(
+      <Godui.Command>
+        <Godui.CommandInput placeholder="Search" />
+        <Godui.CommandList ref={ref}>
+          <Godui.CommandItem>One</Godui.CommandItem>
+        </Godui.CommandList>
+      </Godui.Command>,
+    );
+    expect(seen).toEqual([
+      document.querySelector('[data-slot="command-list"]'),
+    ]);
+    unmount();
+    expect(cleanup).toHaveBeenCalledTimes(1);
+    // React calls the cleanup instead of ref(null).
+    expect(seen).not.toContain(null);
+  });
 });

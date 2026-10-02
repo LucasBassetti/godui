@@ -122,4 +122,24 @@ describe("Collapsible", () => {
       window.matchMedia = original;
     }
   });
+
+  it("passes a React 19 callback ref's cleanup through (Collapsible)", () => {
+    const cleanup = vi.fn();
+    const seen: Array<HTMLElement | null> = [];
+    const ref = (node: HTMLDivElement | null) => {
+      seen.push(node);
+      return cleanup;
+    };
+    const { unmount } = render(
+      <Godui.Collapsible ref={ref}>
+        <Godui.CollapsibleTrigger>Toggle</Godui.CollapsibleTrigger>
+        <Godui.CollapsibleContent>Body</Godui.CollapsibleContent>
+      </Godui.Collapsible>,
+    );
+    expect(seen).toEqual([document.querySelector('[data-slot="collapsible"]')]);
+    unmount();
+    expect(cleanup).toHaveBeenCalledTimes(1);
+    // React calls the cleanup instead of ref(null).
+    expect(seen).not.toContain(null);
+  });
 });

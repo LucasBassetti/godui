@@ -42,6 +42,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useFlipGroup } from "@/hooks/use-flip-group";
+import { useMergedRef } from "@/hooks/use-merged-ref";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 
@@ -150,33 +151,6 @@ function toMs(value: string | undefined, fallback = 260): number {
   const n = Number.parseFloat(value ?? "");
   if (!Number.isFinite(n)) return fallback;
   return /\ds\s*$/.test(value ?? "") ? n * 1000 : n;
-}
-
-/** Points `ref` (callback or object) and `local` at the same node. */
-function useMergedRef<T>(
-  local: React.RefObject<T | null>,
-  ref: React.Ref<T> | undefined,
-) {
-  // React 19: a callback ref may return its own cleanup; pass it through.
-  return React.useCallback(
-    (node: T | null) => {
-      local.current = node;
-      if (typeof ref === "function") {
-        const cleanup = ref(node);
-        return () => {
-          local.current = null;
-          if (typeof cleanup === "function") cleanup();
-          else ref(null);
-        };
-      }
-      if (ref) ref.current = node;
-      return () => {
-        local.current = null;
-        if (ref) ref.current = null;
-      };
-    },
-    [local, ref],
-  );
 }
 
 /**

@@ -13,6 +13,7 @@ import * as React from "react";
 import { toggleVariants } from "@/components/ui/toggle";
 
 import { useActiveIndicator } from "@/hooks/use-active-indicator";
+import { useMergedRef } from "@/hooks/use-merged-ref";
 import { cn } from "@/lib/utils";
 
 const ToggleGroupContext = React.createContext<
@@ -39,14 +40,7 @@ function ToggleGroup({
   }) {
   const rootRef = React.useRef<HTMLDivElement>(null);
   const indicatorRef = React.useRef<HTMLSpanElement>(null);
-  const setRootRef = React.useCallback(
-    (node: HTMLDivElement | null) => {
-      rootRef.current = node;
-      if (typeof ref === "function") ref(node);
-      else if (ref) ref.current = node;
-    },
-    [ref],
-  );
+  const setRootRef = useMergedRef(rootRef, ref);
   // A single-select group behaves like a segmented control: one indicator
   // slides to the pressed item. Multiple selection has no single target.
   const single = props.type === "single" && !props.asChild;

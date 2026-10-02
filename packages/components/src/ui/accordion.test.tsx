@@ -531,4 +531,26 @@ describe("Accordion", () => {
       "[[data-state=closed]>&]:duration-(--godui-duration-fast)",
     );
   });
+
+  it("passes a React 19 callback ref's cleanup through (Accordion)", () => {
+    const cleanup = vi.fn();
+    const seen: Array<HTMLElement | null> = [];
+    const ref = (node: HTMLDivElement | null) => {
+      seen.push(node);
+      return cleanup;
+    };
+    const { unmount } = render(
+      <Godui.Accordion ref={ref} type="single" collapsible>
+        <Godui.AccordionItem value="a">
+          <Godui.AccordionTrigger>A</Godui.AccordionTrigger>
+          <Godui.AccordionContent>Body</Godui.AccordionContent>
+        </Godui.AccordionItem>
+      </Godui.Accordion>,
+    );
+    expect(seen).toEqual([document.querySelector('[data-slot="accordion"]')]);
+    unmount();
+    expect(cleanup).toHaveBeenCalledTimes(1);
+    // React calls the cleanup instead of ref(null).
+    expect(seen).not.toContain(null);
+  });
 });

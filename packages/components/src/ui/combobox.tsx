@@ -18,6 +18,7 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { useFlipGroup } from "@/hooks/use-flip-group";
+import { useMergedRef } from "@/hooks/use-merged-ref";
 import { cn } from "@/lib/utils";
 
 const useIsoLayoutEffect =
@@ -284,26 +285,7 @@ function ComboboxChips({
   });
   const mounted = useMounted();
   const flip = React.useMemo(() => ({ bump, mounted }), [mounted]);
-  // React 19: a callback ref may return its own cleanup; pass it through.
-  const setChipsRef = React.useCallback(
-    (node: HTMLDivElement | null) => {
-      chipsRef.current = node;
-      if (typeof ref === "function") {
-        const cleanup = ref(node);
-        return () => {
-          chipsRef.current = null;
-          if (typeof cleanup === "function") cleanup();
-          else ref(null);
-        };
-      }
-      if (ref) ref.current = node;
-      return () => {
-        chipsRef.current = null;
-        if (ref) ref.current = null;
-      };
-    },
-    [ref],
-  );
+  const setChipsRef = useMergedRef(chipsRef, ref);
   return (
     <ComboboxChipsFlipContext.Provider value={flip}>
       <ComboboxPrimitive.Chips

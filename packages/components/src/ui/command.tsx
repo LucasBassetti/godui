@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/dialog";
 
 import { useActiveIndicator } from "@/hooks/use-active-indicator";
+import { useMergedRef } from "@/hooks/use-merged-ref";
 import { cn } from "@/lib/utils";
 
 function Command({
@@ -96,14 +97,7 @@ function CommandList({
 }: React.ComponentProps<typeof CommandPrimitive.List>) {
   const listRef = React.useRef<HTMLDivElement>(null);
   const indicatorRef = React.useRef<HTMLSpanElement>(null);
-  const setListRef = React.useCallback(
-    (node: HTMLDivElement | null) => {
-      listRef.current = node;
-      if (typeof ref === "function") ref(node);
-      else if (ref) ref.current = node;
-    },
-    [ref],
-  );
+  const setListRef = useMergedRef(listRef, ref);
   // One highlight follows the selected item. cmdk moves `data-selected` on
   // arrow keys and pointer moves (slide); filtering re-renders items (snap).
   useActiveIndicator(listRef, indicatorRef, {

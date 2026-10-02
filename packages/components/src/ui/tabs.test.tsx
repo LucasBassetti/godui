@@ -293,4 +293,26 @@ describe("Tabs", () => {
       "data-[state=active]:animate-godui-fade-in",
     );
   });
+
+  it("passes a React 19 callback ref's cleanup through (TabsList)", () => {
+    const cleanup = vi.fn();
+    const seen: Array<HTMLElement | null> = [];
+    const ref = (node: HTMLDivElement | null) => {
+      seen.push(node);
+      return cleanup;
+    };
+    const { unmount } = render(
+      <Godui.Tabs defaultValue="a">
+        <Godui.TabsList ref={ref}>
+          <Godui.TabsTrigger value="a">A</Godui.TabsTrigger>
+          <Godui.TabsTrigger value="b">B</Godui.TabsTrigger>
+        </Godui.TabsList>
+      </Godui.Tabs>,
+    );
+    expect(seen).toEqual([document.querySelector('[data-slot="tabs-list"]')]);
+    unmount();
+    expect(cleanup).toHaveBeenCalledTimes(1);
+    // React calls the cleanup instead of ref(null).
+    expect(seen).not.toContain(null);
+  });
 });
