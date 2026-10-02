@@ -47,8 +47,12 @@ import {
   SidebarHeader,
   SidebarInset,
   SidebarMenu,
+  SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
   SidebarProvider,
   SidebarTrigger,
   Skeleton,
@@ -1257,10 +1261,13 @@ function SidebarMove({
   reduced,
   collapsible,
   outline,
+  rich,
 }: {
   reduced: boolean;
   collapsible: "offcanvas" | "icon";
   outline?: "box" | "gap";
+  /** An open sub-menu under the first row and a badge on the last. */
+  rich?: boolean;
 }) {
   const [open, setOpen] = useState(true);
   useEffect(() => {
@@ -1275,7 +1282,7 @@ function SidebarMove({
       open={open}
       onOpenChange={() => {}}
       style={{ "--sidebar-width": "11rem" } as CSSProperties}
-      className={`pointer-events-none relative h-64 min-h-0 w-[28rem] max-w-full overflow-hidden rounded-lg border [--godui-duration-base:900ms] [--godui-duration-fast:450ms] ${
+      className={`pointer-events-none relative ${rich ? "h-80" : "h-64"} min-h-0 w-[28rem] max-w-full overflow-hidden rounded-lg border [--godui-duration-base:900ms] [--godui-duration-fast:520ms] ${
         outline === "gap"
           ? "[&_[data-slot=sidebar-gap]]:outline-1 [&_[data-slot=sidebar-gap]]:-outline-offset-1 [&_[data-slot=sidebar-gap]]:outline-dashed [&_[data-slot=sidebar-gap]]:outline-[var(--foreground)]/50"
           : ""
@@ -1312,6 +1319,24 @@ function SidebarMove({
                     <row.icon />
                     <Bar className={`${row.bar} bg-[var(--foreground)]/30`} />
                   </SidebarMenuButton>
+                  {rich && i === SIDEBAR_ROWS.length - 1 ? (
+                    <SidebarMenuBadge>
+                      <Bar className="w-3 bg-[var(--foreground)]/30" />
+                    </SidebarMenuBadge>
+                  ) : null}
+                  {rich && i === 0 ? (
+                    <SidebarMenuSub>
+                      {["w-12", "w-9"].map((bar) => (
+                        <SidebarMenuSubItem key={bar}>
+                          <SidebarMenuSubButton tabIndex={-1}>
+                            <Bar
+                              className={`${bar} bg-[var(--foreground)]/25`}
+                            />
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                      ))}
+                    </SidebarMenuSub>
+                  ) : null}
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
@@ -1345,6 +1370,10 @@ function SidebarGlide({ reduced }: { reduced: boolean }) {
   return <SidebarMove reduced={reduced} collapsible="icon" outline="gap" />;
 }
 
+function SidebarLabels({ reduced }: { reduced: boolean }) {
+  return <SidebarMove reduced={reduced} collapsible="icon" rich />;
+}
+
 const DEMOS = {
   accordion: AccordionGlide,
   "accordion-window": AccordionWindow,
@@ -1371,6 +1400,7 @@ const DEMOS = {
   radio: RadioCycle,
   sidebar: SidebarOffcanvas,
   "sidebar-flip": SidebarGlide,
+  "sidebar-labels": SidebarLabels,
   "sidebar-surface": SidebarSurface,
   skeleton: SkeletonShimmer,
   "slider-band": SliderBand,

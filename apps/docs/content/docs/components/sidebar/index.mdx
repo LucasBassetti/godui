@@ -754,7 +754,8 @@ existing imports keep working. It also installs `godui-motion` (easings,
 keyframes, the FLIP hook) and shadcn's `use-mobile` hook and `separator`.
 `useFlipGroup` gains an optional `measure` (track one element, move another)
 and now carries a running glide over a change of the element's own
-`translate`.
+`translate`. It also waits on each running animation only once while it
+re-baselines, so toggling many times mid-move can't pile up work.
 
 A few things differ, all on desktop:
 
@@ -773,13 +774,22 @@ A few things differ, all on desktop:
   therefore disappears for the length of the move and comes back when it
   ends.
 - While the sidebar moves, the content after it is lifted above the panel.
-  That lasts as long as the glides (one `--godui-duration-base`); expanding
-  from icon mode it holds until the sub-menus' fade-in has ended too. If one
-  of those animations is paused, it lets go one `--godui-duration-slow` after
-  that animation should have ended. Expanding from icon mode, labels snap in at full
-  width before the surface's edge reaches them; the content, glued to that
-  edge, covers them until it passes. Give that content a background
+  That lasts as long as the move's animations (one `--godui-duration-base`).
+  If one of them is paused, it lets go one `--godui-duration-slow` after
+  that animation should have ended. The panel's content is laid out at full
+  width while the surface's edge is still on its way (expanding at once;
+  collapsing to icons until the move ends), and the content, glued to that
+  edge, covers it until the edge passes. Give that content a background
   (`SidebarInset` has `bg-background`).
+- Collapsing to icons, the panel's content keeps its full width (and its
+  badges, actions and sub-menus stay drawn) until the move ends, so labels
+  can fade out instead of being cut by the snapped rail. The rows take their
+  icon-layout heights at once. Code that measures the panel's content in that
+  ~260ms sees the full width; the icon layout's widths apply when the move
+  ends (at once under reduced motion).
+- A menu button's label is everything after its first child (its icon):
+  that's what fades. A button whose first child is text keeps it, clipped
+  by the rail, as in shadcn.
 - While the content glides (about 260ms), `position: fixed` descendants of
   `SidebarInset` move with it (the FLIP's `translate` makes it their
   containing block), and the lift keeps their `z-index` inside it.
@@ -814,19 +824,21 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 | Icon collapse / expand | `sidebar-surface`'s class translate, glided there by FLIP | `translate` by the width difference | `ease-spring-smooth` | 260ms |
 | Floating card, icon mode | left cap still, middle scales from its left, right cap slides with it | `scale`, `translate` | `ease-spring-smooth` | 260ms |
 | Content beside the sidebar | FLIP (`useFlipGroup` on the wrapper) | `translate` | `ease-spring-smooth` | 260ms |
-| Rows in icon mode (labels tuck up, header and footer buttons shrink) | FLIP inside the panel | `translate` | `ease-spring-smooth` | 260ms |
-| Group labels | `transition` | `opacity` | linear | 150ms |
-| Sub-menus shown again on expand | `godui-fade-in`, after a 150ms beat | `opacity` | `ease-spring-snappy` | 150ms |
+| Rows in icon mode (group labels tuck up, header and footer buttons shrink, badges and actions ride their row) | FLIP inside the panel | `translate` | `ease-spring-smooth` | 260ms |
+| Labels collapsing to icons (menu text and chevrons, group labels, badges, actions) | WAAPI fade, from what's drawn; menu text tucks 4px toward its icon | `opacity`, `translate` | `ease-spring-smooth` | 150ms |
+| Labels expanding from icons | WAAPI fade, starting when the panel's edge reaches each one (a small top-first cascade), ending with the move | `opacity`, `translate` | `ease-spring-smooth` | ≤ 260ms |
+| Sub-menus, icon collapse / expand | the Accordion's clip window: the box's edge rides the row below, its items hold still with their own row and fade as the edge passes them | `translate`, `opacity` | `ease-spring-smooth` | 260ms |
 | Rail | `transition` | `translate` | `ease-spring-smooth` | 260ms |
-| Gap and container width, button size and padding | snap | — | — | — |
+| Gap and container width, button size and padding | snap (collapsing to icons, the panel's content keeps its width until the move ends, when everything it hides has faded) | — | — | — |
 | Mobile (below 768px) | GodUI Sheet | `translate`, `opacity` | `ease-spring-smooth` | 380ms |
 
-The panel, its surface and the content all glide on one clock: the same Web
-Animations FLIP, spring and duration, started in the same frame. Toggle again
-mid-way and each piece turns around from where it's drawn, still glued.
+The panel, its surface, the content, the rows, the labels and the sub-menus
+all move on one clock: Web Animations on the same spring, started in the same
+frame. Toggle again mid-way (or hold <kbd>Ctrl</kbd>/<kbd>⌘</kbd>+<kbd>B</kbd>)
+and each piece turns around from where it's drawn, still glued.
 
 Under `prefers-reduced-motion` everything snaps: no slide, no glide, and the
-labels and sub-menus appear at once.
+labels and sub-menus appear and disappear at once.
 
 ## API
 

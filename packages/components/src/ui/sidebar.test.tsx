@@ -3,6 +3,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { act, fireEvent, render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { PanelLeftIcon } from "lucide-react";
 import { expectSlotParity, slotTree } from "../../test/parity";
 import * as Shadcn from "../../test/shadcn/sidebar";
 import * as Godui from "./sidebar";
@@ -353,11 +354,15 @@ describe("Sidebar", () => {
     expect(inner.className).not.toContain("bg-sidebar");
   });
 
-  it("labels fade on the fast clock; menu buttons don't transition their box", () => {
+  it("no CSS transition on labels or menu buttons (the move's fades are WAAPI, on one clock)", () => {
     render(<Usage ui={Godui} />);
     const label = slot("sidebar-group-label");
+    // A CSS opacity transition and a WAAPI opacity fade on one element make
+    // Chrome drop the fade off the compositor; and a CSS transition runs on
+    // its own clock, so a reversal would part it from the edge.
+    expect(label.className).not.toMatch(/transition/);
     expect(label.className).toContain(
-      "transition-[opacity] duration-(--godui-duration-fast)",
+      "group-data-[collapsible=icon]:opacity-0",
     );
     const button = slot("sidebar-menu-button");
     expect(button.className).not.toMatch(/transition-\[/);
@@ -512,15 +517,46 @@ describe("Sidebar", () => {
     }
   });
 
-  it("only an icon sidebar fades its sub-menus back in (offcanvas never hid them)", () => {
-    const fade =
-      "in-data-[moving=expanding]:[&_[data-sidebar=menu-sub]]:animate-godui-fade-in";
+  it("collapsing to icons, the content keeps its full width until the move ends (motion only, icon only)", () => {
     const { unmount } = render(<Usage ui={Godui} collapsible="icon" />);
-    expect(slot("sidebar-container").className).toContain(fade);
-    expect(slot("sidebar-menu-sub").className).not.toMatch(/animate-/);
+    const inner = slot("sidebar-inner").className.split(/\s+/);
+    expect(inner).toEqual(
+      expect.arrayContaining([
+        "motion-safe:in-data-[moving=collapsing]:w-[calc(var(--sidebar-width)-var(--sidebar-bl,0px)-var(--sidebar-br,0px))]",
+        "motion-safe:in-data-[moving=collapsing]:shrink-0",
+        // Out-specifies the icon layout's size-8! (0,2,0) with (0,3,0).
+        "motion-safe:[[data-moving=collapsing]_&_[data-sidebar=menu-button]]:w-full!",
+        "motion-safe:[[data-moving=collapsing]_&_[data-sidebar=menu-button]]:overflow-visible",
+        // Kept drawn to fade and sweep instead of vanishing on the click.
+        "motion-safe:[[data-moving=collapsing]_&_[data-sidebar=menu-badge]]:flex!",
+        "motion-safe:[[data-moving=collapsing]_&_[data-sidebar=menu-action]]:flex!",
+        "motion-safe:[[data-moving=collapsing]_&_[data-sidebar=group-action]]:flex!",
+        "motion-safe:[[data-moving=collapsing]_&_[data-sidebar=menu-sub]]:flex!",
+        "motion-safe:[[data-moving=collapsing]_&_[data-sidebar=menu-sub-button]]:flex!",
+      ]),
+    );
+    // Nothing of it applies at rest: every class waits on data-moving.
+    expect(
+      inner
+        .filter((c) => c.startsWith("motion-safe:"))
+        .every((c) => c.includes("moving=collapsing")),
+    ).toBe(true);
+    // The sub-menu clips y while its edge sweeps; its items draw its line.
+    const sub = slot("sidebar-menu-sub").className;
+    expect(sub).toContain("data-sweeping:overflow-y-clip");
+    expect(sub).toContain("data-sweeping:pointer-events-none");
+    expect(slot("sidebar-menu-sub-item").className).toContain(
+      "[[data-sidebar=menu-sub][data-sweeping]>&]:before:bg-(--sidebar-sub-line)",
+    );
     unmount();
+    // Floating and inset: the content box is inside the 2-unit padding.
+    const floating = render(<Usage ui={Godui} variant="floating" />);
+    expect(slot("sidebar-inner").className).toContain(
+      "motion-safe:in-data-[moving=collapsing]:w-[calc(var(--sidebar-width)-(--spacing(4))-var(--sidebar-bl,0px)-var(--sidebar-br,0px))]",
+    );
+    floating.unmount();
     render(<Usage ui={Godui} collapsible="offcanvas" />);
-    expect(slot("sidebar-container").className).not.toContain(fade);
+    expect(slot("sidebar-inner").className).not.toContain("data-moving");
   });
 
   it('collapsible="none" renders shadcn\'s static panel, no surface', () => {
@@ -553,8 +589,19 @@ describe("Sidebar FLIP", () => {
   // 48px icon, 0 offcanvas); a group label sits 32px higher in icon mode.
   // Running FLIP offsets are added like a browser's getBoundingClientRect.
   const drawn = new Map<Element, { x: number; y: number }>();
+  /** Opacity as drawn mid-fade (a browser's computed opacity). */
+  const shown = new Map<Element, number>();
+  /** `translate` as drawn mid-animation, where a test sets one. */
+  const translated = new Map<Element, string>();
   const originalRect = Element.prototype.getBoundingClientRect;
-  let calls: Array<{ el: Element; frames: Keyframe[] }>;
+  let calls: Array<{
+    el: Element;
+    frames: Keyframe[];
+    options: KeyframeAnimationOptions;
+    cancelled: boolean;
+    /** Ends the animation (resolves `finished`). */
+    finish: () => void;
+  }>;
   let reduce = false;
   const originalMatchMedia = window.matchMedia;
 
@@ -581,6 +628,10 @@ describe("Sidebar FLIP", () => {
     }
     if (slotName === "sidebar-group-label") {
       return { x: 8, y: mode === "icon" ? 64 : 96 };
+    }
+    // Menu items rise 32px with the label above them (badges track them).
+    if (slotName === "sidebar-menu-item") {
+      return { x: 8, y: mode === "icon" ? 96 : 128 };
     }
     // A right panel's box grows leftwards: its inner's left edge moves.
     if (
@@ -621,15 +672,23 @@ describe("Sidebar FLIP", () => {
 
   beforeEach(() => {
     drawn.clear();
+    shown.clear();
+    translated.clear();
     calls = [];
     reduce = false;
     window.getComputedStyle = ((el: Element, pseudo?: string | null) => {
       const style = originalComputed.call(window, el, pseudo);
       const translate = rest(el);
-      if (translate === null) return style;
+      if (translate === null && !shown.has(el) && !translated.has(el)) {
+        return style;
+      }
       return new Proxy(style, {
         get(target, key) {
-          if (key === "translate") return translate;
+          if (key === "translate" && translated.has(el)) {
+            return translated.get(el);
+          }
+          if (key === "translate" && translate !== null) return translate;
+          if (key === "opacity" && shown.has(el)) return String(shown.get(el));
           const value = Reflect.get(target, key);
           return typeof value === "function" ? value.bind(target) : value;
         },
@@ -642,19 +701,44 @@ describe("Sidebar FLIP", () => {
       const top = at.y + off.y;
       return { left, top, x: left, y: top, width: 10, height: 10 } as DOMRect;
     };
-    Element.prototype.animate = function (this: Element, frames: Keyframe[]) {
-      calls.push({ el: this, frames });
+    Element.prototype.animate = function (
+      this: Element,
+      frames: Keyframe[],
+      options?: number | KeyframeAnimationOptions,
+    ) {
+      let finish = () => {};
+      const finished = new Promise<void>((resolve) => {
+        finish = resolve;
+      });
+      const call = {
+        el: this,
+        frames,
+        options: typeof options === "object" ? options : {},
+        cancelled: false,
+        finish: () => finish(),
+      };
+      calls.push(call);
       // Like a browser, the FLIP replaces the element's translate: it's drawn
       // at the first keyframe, i.e. that far from its class rest.
-      const [x, y] = px(String(frames[0].translate));
-      const [ownX, ownY] = px(rest(this));
-      drawn.set(this, { x: x - ownX, y: y - ownY });
+      if ("translate" in frames[0] && "translate" in frames[1]) {
+        const [x, y] = px(String(frames[0].translate));
+        const [ownX, ownY] = px(rest(this));
+        drawn.set(this, { x: x - ownX, y: y - ownY });
+      }
 
       return {
         effect: { getKeyframes: () => frames },
-        cancel: () => drawn.delete(this),
+        cancel: () => {
+          call.cancelled = true;
+          // What it drew goes with it (not what other animations draw).
+          if ("translate" in frames[0]) {
+            drawn.delete(this);
+            translated.delete(this);
+          }
+          if ("opacity" in frames[0]) shown.delete(this);
+        },
         onfinish: null,
-        finished: new Promise(() => {}),
+        finished,
       } as unknown as Animation;
     } as Element["animate"];
     window.matchMedia = ((query: string) => ({
@@ -780,6 +864,307 @@ describe("Sidebar FLIP", () => {
     render(<Usage ui={Godui} collapsible="offcanvas" side="right" />);
     await user.click(trigger());
     expect(animated("sidebar-inner")).toBeUndefined();
+  });
+
+  /** shadcn's sidebar-07 rows: an icon and a label, a badge, a sub-menu. */
+  function IconUsage() {
+    const S = Godui;
+    return (
+      <S.SidebarProvider>
+        <S.Sidebar collapsible="icon">
+          <S.SidebarContent>
+            <S.SidebarGroup>
+              <S.SidebarGroupLabel>Platform</S.SidebarGroupLabel>
+              <S.SidebarMenu>
+                <S.SidebarMenuItem>
+                  <S.SidebarMenuButton>
+                    <PanelLeftIcon />
+                    <span>Playground</span>
+                  </S.SidebarMenuButton>
+                  <S.SidebarMenuBadge>24</S.SidebarMenuBadge>
+                  <S.SidebarMenuSub>
+                    {["History", "Starred"].map((name) => (
+                      <S.SidebarMenuSubItem key={name}>
+                        <S.SidebarMenuSubButton href={`#${name}`}>
+                          <span>{name}</span>
+                        </S.SidebarMenuSubButton>
+                      </S.SidebarMenuSubItem>
+                    ))}
+                  </S.SidebarMenuSub>
+                </S.SidebarMenuItem>
+              </S.SidebarMenu>
+            </S.SidebarGroup>
+          </S.SidebarContent>
+        </S.Sidebar>
+        <S.SidebarInset>
+          <S.SidebarTrigger />
+        </S.SidebarInset>
+      </S.SidebarProvider>
+    );
+  }
+
+  /** jsdom has no layout: the sub-menu is 64px tall, 32px into its item. */
+  function layoutSubMenu() {
+    const sub = (el: HTMLElement) => el.dataset.sidebar === "menu-sub";
+    return [
+      vi
+        .spyOn(HTMLElement.prototype, "offsetHeight", "get")
+        .mockImplementation(function (this: HTMLElement) {
+          return sub(this) ? 64 : 0;
+        }),
+      vi
+        .spyOn(HTMLElement.prototype, "offsetTop", "get")
+        .mockImplementation(function (this: HTMLElement) {
+          return sub(this) ? 32 : 0;
+        }),
+    ];
+  }
+
+  const fadesOf = (el: Element) =>
+    calls.filter((c) => c.el === el && "opacity" in c.frames[0]);
+  const glidesOf = (el: Element) =>
+    calls.filter((c) => c.el === el && !("opacity" in c.frames[0]));
+  /** Collapse, then let the move end (jsdom: the flag's fallback timer). */
+  async function collapseAndSettle(user: ReturnType<typeof userEvent.setup>) {
+    await user.click(trigger());
+    await act(async () => {
+      vi.advanceTimersByTime(400);
+    });
+    expect(slot("sidebar-wrapper")).not.toHaveAttribute("data-moving");
+  }
+
+  it("icon collapse: labels fade out fast on the panel's spring and tuck toward their icon; icons stay", async () => {
+    const user = userEvent.setup();
+    render(<IconUsage />);
+    // Nothing on first paint.
+    expect(calls).toEqual([]);
+    await user.click(trigger());
+    const [icon, text] = [...slot("sidebar-menu-button").children];
+    expect(calls.filter((c) => c.el === icon)).toEqual([]);
+    const [fade] = fadesOf(text);
+    expect(fade.frames).toEqual([
+      { opacity: 1, translate: "0px 0px" },
+      { opacity: 0, translate: "-4px 0px" },
+    ]);
+    // Quicker than the edge (fast token), held until the move ends, and on
+    // the same spring as everything else that moves.
+    expect(fade.options).toMatchObject({
+      duration: 150,
+      delay: 0,
+      fill: "forwards",
+    });
+    expect(fade.options.easing).toBe(animated("sidebar-inset")?.options.easing);
+    // The group label's class already hides it; collapsing from rest it was
+    // shown. Badges fade without tucking.
+    expect(fadesOf(slot("sidebar-group-label"))[0].frames).toEqual([
+      { opacity: 1 },
+      { opacity: 0 },
+    ]);
+    expect(fadesOf(slot("sidebar-menu-badge"))[0].frames).toEqual([
+      { opacity: 1 },
+      { opacity: 0 },
+    ]);
+  });
+
+  it("icon collapse: a badge glides with its row (it's hidden in icon mode, so its item is measured)", async () => {
+    const user = userEvent.setup();
+    render(<IconUsage />);
+    await user.click(trigger());
+    expect(glidesOf(slot("sidebar-menu-badge"))[0].frames[0].translate).toBe(
+      "0px 32px",
+    );
+  });
+
+  it("icon expand: labels fade in from nothing, top first, every fade ending with the clock", async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    try {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+      render(<IconUsage />);
+      await collapseAndSettle(user);
+      calls = [];
+      await user.click(trigger());
+      const text = slot("sidebar-menu-button").children[1];
+      const [fade] = fadesOf(text);
+      expect(fade.frames).toEqual([
+        { opacity: 0, translate: "-4px 0px" },
+        { opacity: 1, translate: "0px 0px" },
+      ]);
+      expect(fade.options.fill).toBe("backwards");
+      for (const el of [text, slot("sidebar-group-label")]) {
+        const { delay = 0, duration } = fadesOf(el)[0].options;
+        expect(delay).toBeGreaterThanOrEqual(0);
+        expect(delay + Number(duration)).toBe(260);
+      }
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("once the collapse ends, its held fades are let go (the content has snapped to the rail in that commit)", async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    try {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+      render(<IconUsage />);
+      await user.click(trigger());
+      const text = slot("sidebar-menu-button").children[1];
+      const [fade] = fadesOf(text);
+      expect(fade.cancelled).toBe(false);
+      await act(async () => {
+        vi.advanceTimersByTime(400);
+      });
+      expect(fade.cancelled).toBe(true);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("after an expand has played out, the next collapse fades the group label from shown (its class already hides it)", async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    try {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+      render(<IconUsage />);
+      await collapseAndSettle(user);
+      calls = [];
+      await user.click(trigger());
+      const label = slot("sidebar-group-label");
+      // The expand's fade ends: the label rests on its class (opacity 1 now,
+      // but 0 the moment the next collapse commits, as a browser reads it).
+      for (const call of calls) call.finish();
+      await act(async () => {
+        vi.advanceTimersByTime(400);
+      });
+      shown.set(label, 0);
+      calls = [];
+      await user.click(trigger());
+      expect(fadesOf(label)[0].frames).toEqual([
+        { opacity: 1 },
+        { opacity: 0 },
+      ]);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("reversed mid-way, a label fades from where it's drawn, on the full clock", async () => {
+    const user = userEvent.setup();
+    render(<IconUsage />);
+    await user.click(trigger());
+    const text = slot("sidebar-menu-button").children[1];
+    shown.set(text, 0.4);
+    translated.set(text, "-2px 0px");
+    calls = [];
+    await user.click(trigger());
+    const [fade] = fadesOf(text);
+    expect(fade.frames).toEqual([
+      { opacity: 0.4, translate: "-2px 0px" },
+      { opacity: 1, translate: "0px 0px" },
+    ]);
+    expect(fade.options).toMatchObject({ delay: 0, duration: 260 });
+  });
+
+  it("icon collapse: a sub-menu leaves the flow and sweeps shut, its items holding still with their row", async () => {
+    const spies = layoutSubMenu();
+    try {
+      const user = userEvent.setup();
+      render(<IconUsage />);
+      await user.click(trigger());
+      const sub = slot("sidebar-menu-sub");
+      // Out of the flow where it was laid out, so the rows below rise at once.
+      expect(sub.style.position).toBe("absolute");
+      expect(sub.style.top).toBe("32px");
+      expect(sub).toHaveAttribute("data-sweeping");
+      const [box] = glidesOf(sub);
+      expect(box.frames).toEqual([
+        { translate: "0px 0px" },
+        { translate: "0px -64px" },
+      ]);
+      expect(box.options).toMatchObject({ duration: 260, fill: "forwards" });
+      for (const item of sub.children) {
+        expect(glidesOf(item)[0].frames).toEqual([
+          { translate: "0px 0px" },
+          { translate: "0px 64px" },
+        ]);
+        expect(fadesOf(item)[0].frames).toEqual([
+          { opacity: 1 },
+          { opacity: 0 },
+        ]);
+      }
+    } finally {
+      for (const spy of spies) spy.mockRestore();
+    }
+  });
+
+  it("icon expand: the sub-menu is back in the flow and sweeps open from its row", async () => {
+    const spies = layoutSubMenu();
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    try {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+      render(<IconUsage />);
+      await collapseAndSettle(user);
+      const sub = slot("sidebar-menu-sub");
+      expect(sub.style.position).toBe("");
+      expect(sub).not.toHaveAttribute("data-sweeping");
+      calls = [];
+      await user.click(trigger());
+      expect(sub.style.position).toBe("");
+      const [box] = glidesOf(sub);
+      expect(box.frames).toEqual([
+        { translate: "0px -64px" },
+        { translate: "0px 0px" },
+      ]);
+      expect(box.options).toMatchObject({ duration: 260, fill: "backwards" });
+      for (const item of sub.children) {
+        expect(glidesOf(item)[0].frames).toEqual([
+          { translate: "0px 64px" },
+          { translate: "0px 0px" },
+        ]);
+        expect(fadesOf(item)[0].frames).toEqual([
+          { opacity: 0 },
+          { opacity: 1 },
+        ]);
+      }
+    } finally {
+      vi.useRealTimers();
+      for (const spy of spies) spy.mockRestore();
+    }
+  });
+
+  it("a sub-menu reversed mid-sweep carries on from how far shut it's drawn", async () => {
+    const spies = layoutSubMenu();
+    try {
+      const user = userEvent.setup();
+      render(<IconUsage />);
+      await user.click(trigger());
+      const sub = slot("sidebar-menu-sub");
+      // Half shut: its items hold still by sitting 32 of 64px down the box.
+      for (const item of sub.children) {
+        translated.set(item, "0px 32px");
+        shown.set(item, 0.3);
+      }
+      calls = [];
+      await user.click(trigger());
+      expect(glidesOf(sub)[0].frames[0].translate).toBe("0px -32px");
+      for (const item of sub.children) {
+        expect(glidesOf(item)[0].frames[0].translate).toBe("0px 32px");
+        expect(fadesOf(item)[0].frames[0].opacity).toBe(0.3);
+      }
+    } finally {
+      for (const spy of spies) spy.mockRestore();
+    }
+  });
+
+  it("reduced motion: no fades, and sub-menus never leave the flow", async () => {
+    reduce = true;
+    const spies = layoutSubMenu();
+    try {
+      const user = userEvent.setup();
+      render(<IconUsage />);
+      await user.click(trigger());
+      expect(calls).toEqual([]);
+      expect(slot("sidebar-menu-sub").style.position).toBe("");
+    } finally {
+      for (const spy of spies) spy.mockRestore();
+    }
   });
 
   it("reduced motion: nothing glides", async () => {

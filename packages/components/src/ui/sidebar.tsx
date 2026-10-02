@@ -17,7 +17,14 @@
 //   that content above the panel while it moves, so labels that snap in before
 //   the edge arrives are uncovered by the edge instead of drawn over the page;
 // - inside the panel, rows that the icon layout moves (group labels sliding
-//   up, the header button shrinking) glide there too; labels fade.
+//   up, the header button shrinking) glide there too, on the same clock;
+// - icon mode's labels (menu text, group labels, badges, actions) fade out
+//   fast as the panel collapses, tucking toward their icons, while the
+//   content keeps its full width until the move ends (so the edge wipes past
+//   faded labels; no box snaps and cuts them). Expanding, they fade in top
+//   first as the edge uncovers them. Sub-menus open and shut with the
+//   Accordion's clip window: the box's edge rides the row below, the items
+//   hold still with their own row. All of it starts from what's drawn.
 // Mobile is GodUI's Sheet. Reduced motion: everything snaps.
 
 import { cva, type VariantProps } from "class-variance-authority";
@@ -58,20 +65,41 @@ const SIDEBAR_KEYBOARD_SHORTCUT = "b";
 const CONTENT_SELECTOR = ':scope > [data-slot="sidebar"] ~ *';
 /**
  * What the icon layout moves inside the panel: group labels (they slide up
- * under the row above) and menu buttons (rows below a label or a shrinking
- * header button rise).
+ * under the row above), menu buttons (rows below a label or a shrinking
+ * header button rise) and the badges and actions placed beside them.
  */
 const ROWS_SELECTOR =
-  '[data-sidebar="group-label"], [data-sidebar="menu-button"]';
+  '[data-sidebar="group-label"], [data-sidebar="menu-button"], [data-sidebar="menu-badge"], [data-sidebar="menu-action"], [data-sidebar="group-action"]';
 
 /**
  * A large button's padding snaps to 0 in icon mode, so its leading icon moves
  * 8px inside it: track the icon, glide the button. Moving the box (not the
  * icon inside it) keeps the icon from being clipped by the snapped box.
+ * Badges and actions are hidden in icon mode (nothing to measure there):
+ * they're placed against their row or group, so track that.
  */
 function trackRow(el: HTMLElement): Element {
+  const kind = el.dataset.sidebar;
+  if (kind === "menu-badge" || kind === "menu-action") {
+    return el.closest('[data-sidebar="menu-item"]') ?? el;
+  }
+  if (kind === "group-action") {
+    return el.closest('[data-sidebar="group"]') ?? el;
+  }
   return el.dataset.size === "lg" ? (el.firstElementChild ?? el) : el;
 }
+
+/**
+ * What the icon layout hides and the move fades: a menu button's label
+ * (everything after its leading icon: text, chevrons), group labels, and the
+ * badges and actions beside rows.
+ */
+const LABELS_SELECTOR =
+  '[data-sidebar="menu-button"] > :not(:first-child), [data-sidebar="group-label"], [data-sidebar="menu-badge"], [data-sidebar="menu-action"], [data-sidebar="group-action"]';
+const SUBS_SELECTOR = '[data-sidebar="menu-sub"]';
+/** How far a label tucks toward its icon as it fades out, in px. */
+const TUCK = 4;
+const SVG_NS = "http://www.w3.org/2000/svg";
 
 const useIsoLayoutEffect =
   typeof window === "undefined" ? React.useEffect : React.useLayoutEffect;
@@ -196,6 +224,415 @@ function toMs(value: string | undefined, fallback = 260): number {
   return /\ds\s*$/.test(value ?? "") ? n * 1000 : n;
 }
 
+/** One clock for a move, read off the wrapper (or the element itself). */
+function clockOf(el: HTMLElement) {
+  const view = el.ownerDocument.defaultView;
+  const wrapper =
+    el.closest<HTMLElement>('[data-slot="sidebar-wrapper"]') ?? el;
+  const style = view?.getComputedStyle(wrapper);
+  const spring = style?.transitionTimingFunction;
+  const expo =
+    style?.getPropertyValue("--ease-out-expo").trim() ||
+    "cubic-bezier(0.16, 1, 0.3, 1)";
+  return {
+    ms: toMs(style?.getPropertyValue("--godui-duration-base")),
+    fast: toMs(style?.getPropertyValue("--godui-duration-fast"), 150),
+    ease: spring && spring !== "ease" ? spring : expo,
+    reduce:
+      typeof view?.matchMedia === "function" &&
+      view.matchMedia("(prefers-reduced-motion: reduce)").matches,
+  };
+}
+
+/** The element's opacity as drawn (1 when unknown). */
+function opacityOf(el: Element): number {
+  const value = el.ownerDocument.defaultView?.getComputedStyle(el).opacity;
+  const n = Number.parseFloat(value ?? "");
+  return Number.isFinite(n) ? n : 1;
+}
+
+/** The element's `translate` as drawn, as px [x, y] (unset: 0 0). */
+function translateOf(el: Element): [number, number] {
+  const value =
+    el.ownerDocument.defaultView?.getComputedStyle(el).translate || "none";
+  if (value === "none") return [0, 0];
+  const [x = "0", y = "0"] = value.trim().split(/\s+/);
+  return [Number.parseFloat(x) || 0, Number.parseFloat(y) || 0];
+}
+
+/** The y of a `translate` keyframe value (`"0px 12px"`), in px. */
+function keyframeY(value: unknown): number {
+  const y = String(value ?? "")
+    .trim()
+    .split(/\s+/)[1];
+  return Number.parseFloat(y ?? "0") || 0;
+}
+
+/**
+ * Where a sub-menu's row is drawn relative to its rest, at the start of the
+ * move: the offset its menu button's FLIP (just started) begins from.
+ */
+function rowOffset(sub: HTMLElement): number {
+  const button = sub
+    .closest('[data-sidebar="menu-item"]')
+    ?.querySelector<HTMLElement>('[data-sidebar="menu-button"]');
+  if (!button || typeof button.getAnimations !== "function") return 0;
+  for (const animation of button.getAnimations()) {
+    if (animation.playState !== "running") continue;
+    const effect = animation.effect as Partial<KeyframeEffect> | null;
+    const frames =
+      typeof effect?.getKeyframes === "function" ? effect.getKeyframes() : [];
+    if (frames.length < 2 || !("translate" in frames[0])) continue;
+    return (
+      keyframeY(frames[0].translate) -
+      keyframeY(frames[frames.length - 1].translate)
+    );
+  }
+  return 0;
+}
+
+/**
+ * When a curve first reaches each 5% of its progress, in ms: sampled off a
+ * detached, paused animation on the same timing (any easing, `linear()`
+ * springs included). Null where Web Animations can't be built (jsdom).
+ */
+function progressTimes(ms: number, easing: string): number[] | null {
+  if (typeof Animation !== "function" || typeof KeyframeEffect !== "function") {
+    return null;
+  }
+  try {
+    const animation = new Animation(
+      new KeyframeEffect(null, null, { duration: ms, easing }),
+    );
+    animation.pause();
+    const steps = 60;
+    const times: number[] = [];
+    for (let i = 0; i <= steps; i++) {
+      animation.currentTime = (ms * i) / steps;
+      const progress = Number(
+        animation.effect?.getComputedTiming().progress ?? 0,
+      );
+      while (times.length <= 20 && progress >= times.length / 20) {
+        times.push((ms * i) / steps);
+      }
+    }
+    while (times.length <= 20) times.push(ms);
+    return times;
+  } catch {
+    return null;
+  }
+}
+
+/** Running fades and sweeps of the icon move, by element. */
+const MOVES = new WeakMap<Element, Animation[]>();
+
+function stop(el: Element) {
+  for (const animation of MOVES.get(el) ?? []) animation.cancel();
+  MOVES.delete(el);
+}
+
+/**
+ * Remember an element's move. One that isn't held at its end (expanding: the
+ * element rests where it ends) is forgotten when it ends, or the next move
+ * would take the element's class value for a drawn one mid-fade.
+ */
+function track(el: Element, animations: Animation[], held: boolean) {
+  MOVES.set(el, animations);
+  if (held) return;
+  Promise.allSettled(animations.map((a) => a.finished)).then(() => {
+    if (MOVES.get(el) === animations) MOVES.delete(el);
+  });
+}
+
+/** Sub-menus out of the flow while they close: their saved inline styles. */
+const OUT = new WeakMap<HTMLElement, string[]>();
+const PLACED = ["position", "top", "left", "width"] as const;
+
+/**
+ * Take a closing sub-menu out of the flow where it's laid out (against its
+ * menu item, which is `relative`), so the rows below rise at once and ride
+ * its clip edge up. Returns false when it isn't drawn.
+ */
+function leaveFlow(sub: HTMLElement): boolean {
+  if (OUT.has(sub)) return true;
+  if (sub.offsetHeight === 0) return false;
+  const { offsetTop, offsetLeft, offsetWidth } = sub;
+  OUT.set(
+    sub,
+    PLACED.map((p) => sub.style.getPropertyValue(p)),
+  );
+  sub.style.setProperty("position", "absolute");
+  sub.style.setProperty("top", `${offsetTop}px`);
+  sub.style.setProperty("left", `${offsetLeft}px`);
+  sub.style.setProperty("width", `${offsetWidth}px`);
+  return true;
+}
+
+function rejoinFlow(sub: HTMLElement) {
+  const saved = OUT.get(sub);
+  if (!saved) return;
+  OUT.delete(sub);
+  PLACED.forEach((p, i) => {
+    if (saved[i]) sub.style.setProperty(p, saved[i]);
+    else sub.style.removeProperty(p);
+  });
+}
+
+/**
+ * Icon mode hides the sub-menus. Collapsing, each one that's drawn leaves the
+ * flow before the rows are measured (so the rows below rise at once, riding
+ * its clip edge); expanding, they're back in the flow before that. Runs ahead
+ * of the rows' FLIP.
+ */
+function useSubMenuFlow(
+  innerRef: React.RefObject<HTMLElement | null>,
+  state: "expanded" | "collapsed",
+  active: boolean,
+) {
+  const last = React.useRef(state);
+  useIsoLayoutEffect(() => {
+    const before = last.current;
+    last.current = state;
+    const inner = innerRef.current;
+    if (!active || before === state || !inner) return;
+    const subs = inner.querySelectorAll<HTMLElement>(SUBS_SELECTOR);
+    if (state === "expanded" || clockOf(inner).reduce) {
+      for (const sub of subs) rejoinFlow(sub);
+      return;
+    }
+    for (const sub of subs) leaveFlow(sub);
+  }, [innerRef, state, active]);
+}
+
+/**
+ * The icon move's labels and sub-menus, on the panel's clock. Collapsing, the
+ * labels (menu buttons' text, group labels, badges, actions) fade out fast and
+ * tuck toward their icons, so the panel's edge never wipes across a label at
+ * full strength; the panel's content keeps its full width until the move ends
+ * (classes keyed on `data-moving`), so nothing is cut by a snapped box.
+ * Expanding, they fade in as the edge uncovers them, top row first. A
+ * sub-menu's box sweeps its clip edge with the row below it while its items
+ * hold still with their own row (the Accordion's clip window), so it opens
+ * and closes instead of popping. Every piece starts from what's drawn, so a
+ * reversal mid-way carries on. Collapsed, the held fades are let go once the
+ * move ends, in the commit that snaps the panel's content to the rail.
+ */
+function useIconMove(
+  innerRef: React.RefObject<HTMLElement | null>,
+  state: "expanded" | "collapsed",
+  moving: "expanding" | "collapsing" | null,
+  active: boolean,
+) {
+  const last = React.useRef(state);
+  useIsoLayoutEffect(() => {
+    const before = last.current;
+    last.current = state;
+    const inner = innerRef.current;
+    if (!active || before === state || !inner) return;
+    const t = clockOf(inner);
+    const collapsing = state === "collapsed";
+    const labels = [...inner.querySelectorAll<HTMLElement>(LABELS_SELECTOR)];
+    const subs = [...inner.querySelectorAll<HTMLElement>(SUBS_SELECTOR)];
+    if (t.reduce) {
+      for (const el of [...labels, ...subs]) stop(el);
+      for (const sub of subs) {
+        for (const item of sub.children) stop(item);
+        sub.removeAttribute("data-sweeping");
+      }
+      return;
+    }
+    // Expanding, a label starts to fade in once the panel's edge reaches it
+    // (read off the edge's own spring: where it's drawn now, where it rests)
+    // and, a beat apart, top first (at most half the fast token down the
+    // panel). Every fade still ends with the clock.
+    const box = inner.getBoundingClientRect();
+    const surface = inner.parentElement?.querySelector<HTMLElement>(
+      ':scope > [data-slot="sidebar-surface"]',
+    );
+    const edgeEl =
+      surface && surface.children.length > 0
+        ? (surface.lastElementChild as HTMLElement)
+        : surface;
+    const left =
+      inner.closest('[data-slot="sidebar"]')?.getAttribute("data-side") !==
+      "right";
+    const start = edgeEl?.getBoundingClientRect().right ?? 0;
+    const times = collapsing ? null : progressTimes(t.ms, t.ease);
+    /** When an edge moving on the clock has covered `share` of its way. */
+    const when = (share: number) => {
+      if (!times) return 0;
+      const at = Math.min(Math.max(share, 0), 1);
+      return times[Math.ceil(at * 20)] ?? 0;
+    };
+    /** When the panel's edge reaches `x` (a right panel's content rides it). */
+    const reach = (x: number) =>
+      left && box.right - start >= 1
+        ? when((x - start) / (box.right - start))
+        : 0;
+    /**
+     * An expanding label's delay: once the edge reaches it, and (fresh, not
+     * a reversal) a beat down the panel, top first.
+     */
+    const wave = (el: Element, fresh: boolean, after = 0) => {
+      if (collapsing) return 0;
+      const rect = el.getBoundingClientRect();
+      const at = box.height > 0 ? (rect.top - box.top) / box.height : 0;
+      const down = fresh ? Math.min(Math.max(at, 0), 1) * (t.fast / 2) : 0;
+      return Math.min(Math.max(down, reach(rect.left), after), t.ms);
+    };
+    const fade = (
+      el: HTMLElement,
+      opts: {
+        from: number | null;
+        tuck: boolean;
+        drawnX: number | null;
+        /** Expanding: not before this (a sub-menu's clip edge reaching it). */
+        after?: number;
+      },
+    ) => {
+      const rest = opacityOf(el);
+      const from = opts.from ?? (collapsing ? rest : 0);
+      const to = collapsing ? 0 : rest;
+      if (from === to) return null;
+      const delay = wave(el, opts.from === null, opts.after);
+      const duration = collapsing ? t.fast : Math.max(0, t.ms - delay);
+      const frames: Keyframe[] = [{ opacity: from }, { opacity: to }];
+      // On the edge's spring, so a label's opacity keeps pace with the edge
+      // (out on the quicker fast token).
+      const easing = t.ease;
+      if (opts.tuck) {
+        const [ownX, ownY] = translateOf(el);
+        const fromX = opts.drawnX ?? (collapsing ? 0 : -TUCK);
+        const toX = collapsing ? -TUCK : 0;
+        frames[0].translate = `${ownX + fromX}px ${ownY}px`;
+        frames[1].translate = `${ownX + toX}px ${ownY}px`;
+      }
+      return el.animate(frames, {
+        duration,
+        delay,
+        easing,
+        fill: collapsing ? "forwards" : "backwards",
+      });
+    };
+    for (const el of labels) {
+      if (typeof el.animate !== "function") continue;
+      const running = MOVES.has(el);
+      const tuck =
+        el.namespaceURI !== SVG_NS &&
+        el.parentElement?.dataset.sidebar === "menu-button";
+      // Read what's drawn before letting the running fade go.
+      const drawn = running ? opacityOf(el) : null;
+      const [x] = running && tuck ? translateOf(el) : [0];
+      stop(el);
+      const [ownX] = running && tuck ? translateOf(el) : [0];
+      // A group label's own class hides it in icon mode already: collapsing
+      // from rest, it was fully shown.
+      const from =
+        drawn ??
+        (collapsing && el.dataset.sidebar === "group-label" ? 1 : null);
+      const animation = fade(el, {
+        from,
+        tuck,
+        drawnX: running && tuck ? x - ownX : null,
+      });
+      if (animation) track(el, [animation], collapsing);
+    }
+    for (const sub of subs) {
+      if (typeof sub.animate !== "function") continue;
+      const room = sub.offsetHeight;
+      const items = [...sub.children] as HTMLElement[];
+      const running = MOVES.has(sub);
+      // How closed it's drawn (1: shut), read off its first item's
+      // counter-move (it holds still with the row by moving `room · shut`).
+      const shut =
+        running && items[0] && room > 0
+          ? Math.min(Math.max(translateOf(items[0])[1] / room, 0), 1)
+          : collapsing
+            ? 0
+            : 1;
+      const shown = items.map((item) =>
+        MOVES.has(item) ? opacityOf(item) : null,
+      );
+      stop(sub);
+      for (const item of items) stop(item);
+      if (room === 0) continue;
+      if (!sub.hasAttribute("data-sweeping")) {
+        // Its items draw its line while it sweeps (so the line holds still
+        // with them and is cut by the same edge).
+        const view = sub.ownerDocument.defaultView;
+        const line = view?.getComputedStyle(sub).borderLeftColor;
+        if (line) sub.style.setProperty("--sidebar-sub-line", line);
+        const first = items[0]?.getBoundingClientRect();
+        if (first) {
+          const x = sub.getBoundingClientRect().left - first.left;
+          sub.style.setProperty("--sidebar-sub-line-x", `${x}px`);
+        }
+        sub.setAttribute("data-sweeping", "");
+      }
+      const row = rowOffset(sub);
+      const [ownX, ownY] = translateOf(sub);
+      const timing = {
+        duration: t.ms,
+        easing: t.ease,
+        fill: collapsing ? ("forwards" as const) : ("backwards" as const),
+      };
+      // The box: its bottom edge rides the row below; its items ride their
+      // own row (the box's move plus theirs is the row's).
+      const boxFrom = row - room * shut;
+      const boxTo = collapsing ? -room : 0;
+      const animations = [
+        sub.animate(
+          [
+            { translate: `${ownX}px ${ownY + boxFrom}px` },
+            { translate: `${ownX}px ${ownY + boxTo}px` },
+          ],
+          timing,
+        ),
+      ];
+      for (const [i, item] of items.entries()) {
+        const glide = item.animate(
+          [
+            { translate: `0px ${room * shut}px` },
+            { translate: `0px ${collapsing ? room : 0}px` },
+          ],
+          timing,
+        );
+        // Expanding, an item fades in once the box's clip edge (on the
+        // same spring) reaches it: it has `room · shut` to go from where
+        // it's drawn.
+        const top = item.offsetTop - sub.offsetTop;
+        const faded = fade(item, {
+          from: shown[i],
+          tuck: false,
+          drawnX: null,
+          after: shut > 0 ? when((top - room * (1 - shut)) / (room * shut)) : 0,
+        });
+        if (faded) track(item, [faded], collapsing);
+        animations.push(glide);
+      }
+      track(sub, animations, collapsing);
+      if (!collapsing) {
+        Promise.allSettled(animations.map((a) => a.finished)).then(() => {
+          if (!MOVES.has(sub)) sub.removeAttribute("data-sweeping");
+        });
+      }
+    }
+  }, [innerRef, state, active]);
+  // Collapsed and at rest: the content has snapped to the rail in this very
+  // commit, so the held fades and sweeps can go (nothing they hid is drawn).
+  useIsoLayoutEffect(() => {
+    const inner = innerRef.current;
+    if (!active || moving !== null || state !== "collapsed" || !inner) return;
+    for (const el of inner.querySelectorAll(LABELS_SELECTOR)) stop(el);
+    for (const sub of inner.querySelectorAll<HTMLElement>(SUBS_SELECTOR)) {
+      stop(sub);
+      for (const item of sub.children) stop(item);
+      sub.removeAttribute("data-sweeping");
+      rejoinFlow(sub);
+    }
+  }, [innerRef, moving, state, active]);
+}
+
 /**
  * How far into its run an animation can be and still count as started by
  * this move: the effect that reads them runs in the same task as the toggle,
@@ -207,8 +644,8 @@ const FRESH_MS = 100;
  * Which way the sidebar is moving (null at rest and on first paint). Set in
  * the same render as the new state, so CSS keyed on it applies in the commit
  * that snaps the layout. Cleared when the move's last animation in the
- * wrapper ends (the glides, or a sub-menu's fade-in, which is keyed on this
- * flag), so the clear lands in the frame the motion ends and cuts nothing —
+ * wrapper ends (the glides, the labels' fades, the sub-menus' sweeps), so the
+ * clear lands in the frame the motion ends and cuts nothing —
  * or, if one never ends (paused), one `--godui-duration-slow` after the
  * longest of them should have.
  */
@@ -234,9 +671,9 @@ function useMoving(
     const clear = () => {
       if (live) flushSync(() => setMoving(null));
     };
-    // The animations this move started: the glides (created in the layout
-    // effect before this one) and a sub-menu's fade-in (started by the flag).
-    // They're fresh — still at their start. One already running in the page
+    // The animations this move started: the glides, fades and sweeps
+    // (created in the layout effects before this one). They're fresh — still
+    // at their start. One already running in the page
     // content (a long entrance) isn't the sidebar's to wait for, and a looping
     // one (a skeleton's shimmer) never ends.
     const started = (wrapper.getAnimations?.({ subtree: true }) ?? []).flatMap(
@@ -292,6 +729,11 @@ type SidebarContextProps = {
 };
 
 const SidebarContext = React.createContext<SidebarContextProps | null>(null);
+
+/** Which way the sidebar is moving (GodUI-only, not part of `useSidebar`). */
+const SidebarMovingContext = React.createContext<
+  "expanding" | "collapsing" | null
+>(null);
 
 function useSidebar() {
   const context = React.useContext(SidebarContext);
@@ -387,32 +829,34 @@ function SidebarProvider({
 
   return (
     <SidebarContext.Provider value={contextValue}>
-      <TooltipProvider delayDuration={0}>
-        <div
-          ref={setWrapperRef}
-          data-slot="sidebar-wrapper"
-          data-moving={moving ?? undefined}
-          style={
-            {
-              "--sidebar-width": SIDEBAR_WIDTH,
-              "--sidebar-width-icon": SIDEBAR_WIDTH_ICON,
-              ...style,
-            } as React.CSSProperties
-          }
-          className={cn(
-            "group/sidebar-wrapper flex min-h-svh w-full has-data-[variant=inset]:bg-sidebar",
-            // While it glides, the content is drawn past the right edge: clip
-            // x then (only then, so wide content still scrolls the page at
-            // rest) rather than flash a scrollbar. It's also lifted above the
-            // panel; z-20 deliberately pairs with shadcn's own z-10 container.
-            "ease-spring-smooth data-moving:overflow-x-clip [&[data-moving]>[data-slot=sidebar]~*]:z-20",
-            className,
-          )}
-          {...props}
-        >
-          {children}
-        </div>
-      </TooltipProvider>
+      <SidebarMovingContext.Provider value={moving}>
+        <TooltipProvider delayDuration={0}>
+          <div
+            ref={setWrapperRef}
+            data-slot="sidebar-wrapper"
+            data-moving={moving ?? undefined}
+            style={
+              {
+                "--sidebar-width": SIDEBAR_WIDTH,
+                "--sidebar-width-icon": SIDEBAR_WIDTH_ICON,
+                ...style,
+              } as React.CSSProperties
+            }
+            className={cn(
+              "group/sidebar-wrapper flex min-h-svh w-full has-data-[variant=inset]:bg-sidebar",
+              // While it glides, the content is drawn past the right edge: clip
+              // x then (only then, so wide content still scrolls the page at
+              // rest) rather than flash a scrollbar. It's also lifted above the
+              // panel; z-20 deliberately pairs with shadcn's own z-10 container.
+              "ease-spring-smooth data-moving:overflow-x-clip [&[data-moving]>[data-slot=sidebar]~*]:z-20",
+              className,
+            )}
+            {...props}
+          >
+            {children}
+          </div>
+        </TooltipProvider>
+      </SidebarMovingContext.Provider>
     </SidebarContext.Provider>
   );
 }
@@ -508,12 +952,16 @@ function Sidebar({
   collapsible?: "offcanvas" | "icon" | "none";
 }) {
   const { isMobile, state, openMobile, setOpenMobile } = useSidebar();
+  const moving = React.useContext(SidebarMovingContext);
+  const iconMove = !isMobile && collapsible === "icon";
   // Rows the icon layout moves glide there on the panel's clock (measured in
   // the inner, so a move of the whole panel doesn't count).
   const innerRef = React.useRef<HTMLDivElement | null>(null);
   const containerRef = React.useRef<HTMLDivElement | null>(null);
   const setContainerRef = useMergedRef(containerRef, ref);
   useBorderInsets(containerRef, !isMobile && collapsible !== "none");
+  // Before the rows are measured: closing sub-menus leave the flow.
+  useSubMenuFlow(innerRef, state, iconMove);
   useFlipGroup(innerRef, state, {
     selector: ROWS_SELECTOR,
     measure: trackRow,
@@ -536,6 +984,8 @@ function Sidebar({
     state,
     variant === "floating" && collapsible === "icon",
   );
+  // After the FLIPs have started (a sub-menu's sweep reads its row's).
+  useIconMove(innerRef, state, moving, iconMove);
 
   if (collapsible === "none") {
     return (
@@ -606,11 +1056,6 @@ function Sidebar({
           "fixed inset-y-0 z-10 hidden h-svh w-(--sidebar-width) md:flex",
           side === "left" ? "left-0" : "right-0",
           "group-data-[collapsible=offcanvas]:group-data-[side=left]:-translate-x-full group-data-[collapsible=offcanvas]:group-data-[side=right]:translate-x-full",
-          // Sub-menus hidden in icon mode come back as the panel expands: the
-          // rows below glide down to make room first, then they fade in (no
-          // text drawn over a passing row).
-          collapsible === "icon" &&
-            "in-data-[moving=expanding]:[&_[data-sidebar=menu-sub]]:animate-godui-fade-in in-data-[moving=expanding]:[&_[data-sidebar=menu-sub]]:[--godui-duration-base:var(--godui-duration-fast)] in-data-[moving=expanding]:[&_[data-sidebar=menu-sub]]:[animation-delay:var(--godui-duration-fast)] motion-reduce:[&_[data-sidebar=menu-sub]]:animate-none",
           // Adjust the padding for floating and inset variants.
           variant === "floating" || variant === "inset"
             ? "p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]"
@@ -633,7 +1078,23 @@ function Sidebar({
           data-slot="sidebar-inner"
           // Transparent: the surface behind it is the background. The floating
           // card's border moved to the surface; a clear one keeps the inset.
-          className="flex h-full w-full flex-col ease-spring-smooth group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:border-transparent"
+          className={cn(
+            "flex h-full w-full flex-col ease-spring-smooth group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:border-transparent",
+            // Collapsing to icons, the content keeps its expanded width until
+            // the move ends: labels fade (and the edge wipes past them)
+            // instead of being cut by a box that snapped to the rail, and
+            // badges, actions and sub-menus stay drawn to fade and sweep.
+            // Rows still take their icon-layout heights (and glide there);
+            // a large button's two lines aren't clipped by its new height.
+            // The snap lands in the commit that ends the move, when all of
+            // it is faded out.
+            collapsible === "icon" &&
+              "motion-safe:in-data-[moving=collapsing]:shrink-0 motion-safe:[[data-moving=collapsing]_&_[data-sidebar=menu-button]]:w-full! motion-safe:[[data-moving=collapsing]_&_[data-sidebar=menu-button]]:overflow-visible motion-safe:[[data-moving=collapsing]_&_[data-sidebar=menu-badge]]:flex! motion-safe:[[data-moving=collapsing]_&_[data-sidebar=menu-action]]:flex! motion-safe:[[data-moving=collapsing]_&_[data-sidebar=group-action]]:flex! motion-safe:[[data-moving=collapsing]_&_[data-sidebar=menu-sub]]:flex! motion-safe:[[data-moving=collapsing]_&_[data-sidebar=menu-sub-button]]:flex!",
+            collapsible === "icon" &&
+              (variant === "floating" || variant === "inset"
+                ? "motion-safe:in-data-[moving=collapsing]:w-[calc(var(--sidebar-width)-(--spacing(4))-var(--sidebar-bl,0px)-var(--sidebar-br,0px))]"
+                : "motion-safe:in-data-[moving=collapsing]:w-[calc(var(--sidebar-width)-var(--sidebar-bl,0px)-var(--sidebar-br,0px))]"),
+          )}
         >
           {children}
         </div>
@@ -799,8 +1260,8 @@ function SidebarGroupLabel({
       data-sidebar="group-label"
       className={cn(
         // The margin snaps; the label (and the rows under it) glide up with
-        // the panel's FLIP while it fades.
-        "flex h-8 shrink-0 items-center rounded-md px-2 text-xs font-medium text-sidebar-foreground/70 ring-sidebar-ring outline-hidden transition-[opacity] duration-(--godui-duration-fast) ease-linear focus-visible:ring-2 motion-reduce:transition-none [&>svg]:size-4 [&>svg]:shrink-0",
+        // the panel's FLIP while it fades (on the move's clock, see Sidebar).
+        "flex h-8 shrink-0 items-center rounded-md px-2 text-xs font-medium text-sidebar-foreground/70 ring-sidebar-ring outline-hidden focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0",
         "group-data-[collapsible=icon]:-mt-8 group-data-[collapsible=icon]:opacity-0",
         className,
       )}
@@ -1041,8 +1502,10 @@ function SidebarMenuSub({ className, ...props }: React.ComponentProps<"ul">) {
       data-sidebar="menu-sub"
       className={cn(
         "mx-3.5 flex min-w-0 translate-x-px flex-col gap-1 border-l border-sidebar-border px-2.5 py-0.5",
-        // Coming back from icon mode it fades in (see the Sidebar container).
-        "group-data-[collapsible=icon]:hidden",
+        // Icon mode hides it; the move sweeps it shut and open (see Sidebar).
+        // While its edge sweeps it clips y, lets the pointer through, and its
+        // items draw its line (so the line holds still and is cut too).
+        "group-data-[collapsible=icon]:hidden data-sweeping:pointer-events-none data-sweeping:overflow-y-clip data-sweeping:has-[>[data-sidebar=menu-sub-item]]:border-l-transparent",
         className,
       )}
       {...props}
@@ -1058,7 +1521,12 @@ function SidebarMenuSubItem({
     <li
       data-slot="sidebar-menu-sub-item"
       data-sidebar="menu-sub-item"
-      className={cn("group/menu-sub-item relative", className)}
+      className={cn(
+        "group/menu-sub-item relative",
+        // Its sub-menu's line while that sweeps (see SidebarMenuSub).
+        "[[data-sidebar=menu-sub][data-sweeping]>&]:before:absolute [[data-sidebar=menu-sub][data-sweeping]>&]:before:inset-y-[-2px] [[data-sidebar=menu-sub][data-sweeping]>&]:before:left-(--sidebar-sub-line-x) [[data-sidebar=menu-sub][data-sweeping]>&]:before:w-px [[data-sidebar=menu-sub][data-sweeping]>&]:before:bg-(--sidebar-sub-line)",
+        className,
+      )}
       {...props}
     />
   );
