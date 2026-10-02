@@ -303,6 +303,77 @@ describe("Sidebar", () => {
     }
   });
 
+  it("an unrelated long animation in the content doesn't hold the flag; it clears when the glide ends", async () => {
+    const user = userEvent.setup();
+    render(<Usage ui={Godui} />);
+    const wrapper = slot("sidebar-wrapper");
+    // A 5s entrance already 1s into its run inside the inset, plus this
+    // move's glide (fresh, 260ms).
+    wrapper.getAnimations = () =>
+      [
+        {
+          currentTime: 1000,
+          playbackRate: 1,
+          effect: {
+            getComputedTiming: () => ({ endTime: 5000, localTime: 1000 }),
+          },
+          finished: new Promise((resolve) => setTimeout(resolve, 4000)),
+        },
+        {
+          currentTime: 0,
+          playbackRate: 1,
+          effect: {
+            getComputedTiming: () => ({ endTime: 260, localTime: 0 }),
+          },
+          finished: new Promise((resolve) => setTimeout(resolve, 260)),
+        },
+      ] as unknown as Animation[];
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    try {
+      await user.click(trigger());
+      expect(wrapper).toHaveAttribute("data-moving", "collapsing");
+      await act(async () => {
+        vi.advanceTimersByTime(300);
+      });
+      expect(wrapper).not.toHaveAttribute("data-moving");
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("the cap scales with playbackRate", async () => {
+    const user = userEvent.setup();
+    render(<Usage ui={Godui} />);
+    const wrapper = slot("sidebar-wrapper");
+    // Never finishes; ends at 3000ms of effect time, played at 3x: 1000ms of
+    // real time, + 380ms of slack (unscaled it would hold until 3380ms).
+    wrapper.getAnimations = () =>
+      [
+        {
+          currentTime: 0,
+          playbackRate: 3,
+          effect: {
+            getComputedTiming: () => ({ endTime: 3000, localTime: 0 }),
+          },
+          finished: new Promise(() => {}),
+        },
+      ] as unknown as Animation[];
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    try {
+      await user.click(trigger());
+      await act(async () => {
+        vi.advanceTimersByTime(1200);
+      });
+      expect(wrapper).toHaveAttribute("data-moving");
+      await act(async () => {
+        vi.advanceTimersByTime(300);
+      });
+      expect(wrapper).not.toHaveAttribute("data-moving");
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it("only an icon sidebar fades its sub-menus back in (offcanvas never hid them)", () => {
     const fade =
       "in-data-[moving=expanding]:[&_[data-sidebar=menu-sub]]:animate-godui-fade-in";

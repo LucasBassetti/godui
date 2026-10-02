@@ -180,6 +180,13 @@ function useMergedRef<T>(
 }
 
 /**
+ * How far into its run an animation can be and still count as started by
+ * this move: the effect that reads them runs in the same task as the toggle,
+ * or a frame or so later for a non-discrete update.
+ */
+const FRESH_MS = 100;
+
+/**
  * Which way the sidebar is moving (null at rest and on first paint). Set in
  * the same render as the new state, so CSS keyed on it applies in the commit
  * that snaps the layout. Cleared when the move's last animation in the
@@ -210,17 +217,23 @@ function useMoving(
     const clear = () => {
       if (live) flushSync(() => setMoving(null));
     };
-    // Finite animations only: a looping one (a skeleton's shimmer) never ends.
-    const timings = (wrapper.getAnimations?.({ subtree: true }) ?? []).map(
-      (animation) => ({
-        animation,
-        timing: animation.effect?.getComputedTiming(),
-      }),
+    // The animations this move started: the glides (created in the layout
+    // effect before this one) and a sub-menu's fade-in (started by the flag).
+    // They're fresh — still at their start. One already running in the page
+    // content (a long entrance) isn't the sidebar's to wait for, and a looping
+    // one (a skeleton's shimmer) never ends.
+    const started = (wrapper.getAnimations?.({ subtree: true }) ?? []).flatMap(
+      (animation) => {
+        const timing = animation.effect?.getComputedTiming();
+        const end = Number(timing?.endTime ?? Number.NaN);
+        if (!Number.isFinite(end)) return [];
+        if (Number(animation.currentTime ?? 0) > FRESH_MS) return [];
+        const rate = animation.playbackRate;
+        const left = end - Number(timing?.localTime ?? 0);
+        return [{ animation, remaining: rate > 0 ? left / rate : left }];
+      },
     );
-    const finite = timings.filter(({ timing }) =>
-      Number.isFinite(Number(timing?.endTime ?? Number.NaN)),
-    );
-    const running = finite.map(({ animation }) => animation);
+    const running = started.map(({ animation }) => animation);
     const token = (name: string, fallback: number) =>
       toMs(view.getComputedStyle(wrapper).getPropertyValue(name), fallback);
     let timer: number | undefined;
@@ -235,12 +248,7 @@ function useMoving(
       // and lift: give up one slow token after the longest one should have
       // ended. Read off the animations themselves, so a retuned (or slowed)
       // clock still runs to its end.
-      const remaining = Math.max(
-        ...finite.map(
-          ({ timing }) =>
-            Number(timing?.endTime) - Number(timing?.localTime ?? 0),
-        ),
-      );
+      const remaining = Math.max(...started.map((run) => run.remaining));
       timer = view.setTimeout(
         clear,
         remaining + token("--godui-duration-slow", 380),
