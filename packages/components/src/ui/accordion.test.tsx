@@ -416,7 +416,7 @@ describe("Accordion", () => {
         </AccordionItem>
       </Accordion>,
     );
-    await settle();
+    await act(settle);
     const root = document.querySelector('[data-slot="accordion"]');
     expect(moves().some((m) => m.el === root)).toBe(false);
   });

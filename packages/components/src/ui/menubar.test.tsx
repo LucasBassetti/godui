@@ -251,7 +251,7 @@ describe("Menubar", () => {
     onInteractOutside.mockClear();
     await user.click(screen.getByRole("menuitem", { name: "File" }));
     expect(content()).not.toBeNull();
-    screen.getByRole("button", { name: "Elsewhere" }).focus();
+    act(() => screen.getByRole("button", { name: "Elsewhere" }).focus());
     await waitFor(() => expect(content()).toBeNull());
     expect(onFocusOutside).toHaveBeenCalled();
     expect(onInteractOutside).toHaveBeenCalled();

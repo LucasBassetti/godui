@@ -988,7 +988,7 @@ describe("Calendar", () => {
         "group-data-[focused=true]/day:ring-",
       );
       // Focus enters the grid: fade.
-      day.focus();
+      act(() => day.focus());
       await user.keyboard("{ArrowRight}");
       const next = dayButton(15);
       expect(next).toHaveFocus();
@@ -1002,7 +1002,7 @@ describe("Calendar", () => {
     it("a keyboard month change snaps the ring onto the new month's day", async () => {
       const user = userEvent.setup();
       render(<Single ui={Godui} />);
-      dayButton(14).focus();
+      act(() => dayButton(14).focus());
       await user.keyboard("{PageDown}");
       const moved = dayButton(14, 10);
       expect(moved).toHaveFocus();
