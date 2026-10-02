@@ -79,7 +79,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 Under `dir="rtl"` the loop plays in reverse, so the band sweeps right to left.
 Under `prefers-reduced-motion` the band is hidden and the block runs shadcn's
-`animate-pulse` (an `opacity` fade) instead.
+`animate-pulse` (an `opacity` fade) instead. As in shadcn, `className="animate-none"`
+stops it: no band, and no pulse under reduced motion either.
 
 ## API
 

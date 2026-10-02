@@ -77,9 +77,20 @@ describe("Skeleton", () => {
 
   it("reduced motion: the band is hidden and the block pulses instead", () => {
     render(<Godui.Skeleton data-testid="skeleton" />);
-    const cls = skeleton().className;
-    expect(cls).toContain("motion-reduce:animate-pulse");
+    const cls = skeleton().className.split(/\s+/);
+    expect(cls).toContain("motion-reduce:[&:not(.animate-none)]:animate-pulse");
     expect(cls).toContain("motion-reduce:after:hidden");
+  });
+
+  it("a call site's \"animate-none\" stops it, like shadcn's pulse", () => {
+    // shadcn: animate-none replaces animate-pulse. Here it also hides the
+    // band and keeps the reduced-motion pulse off (both keyed on the class,
+    // which out-specifies the variants that would otherwise win).
+    render(<Godui.Skeleton data-testid="skeleton" className="animate-none" />);
+    const cls = skeleton().className.split(/\s+/);
+    expect(cls).toContain("animate-none");
+    expect(cls).toContain("[&.animate-none]:after:hidden");
+    expect(cls).not.toContain("motion-reduce:animate-pulse");
   });
 
   it("lets a call site's absolute replace relative", () => {

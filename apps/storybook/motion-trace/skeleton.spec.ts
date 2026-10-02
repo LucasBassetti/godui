@@ -24,3 +24,28 @@ test("the shimmer band sweeps on the compositor", async ({ page }) => {
   expect(result.animationCount).toBeGreaterThan(0);
   expectGpuOnly(result);
 });
+
+test('className="animate-none" stops it, as it stops shadcn\'s pulse (reduced motion too)', async ({
+  page,
+}) => {
+  for (const reducedMotion of ["no-preference", "reduce"] as const) {
+    await page.emulateMedia({ reducedMotion });
+    await page.goto("/iframe.html?id=ui-skeleton--static&viewMode=story");
+    await page.waitForSelector('[data-slot="skeleton"]');
+    const state = await page.evaluate(() =>
+      [...document.querySelectorAll('[data-slot="skeleton"]')].map((el) => ({
+        root: getComputedStyle(el).animationName,
+        band: getComputedStyle(el, "::after").display,
+        running: el.getAnimations({ subtree: true }).length,
+      })),
+    );
+    expect(state.length).toBe(3);
+    for (const s of state) {
+      expect(s, reducedMotion).toEqual({
+        root: "none",
+        band: "none",
+        running: 0,
+      });
+    }
+  }
+});

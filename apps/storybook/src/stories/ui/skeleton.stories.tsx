@@ -48,3 +48,16 @@ export const AvatarRow: Story = {
     </div>
   ),
 };
+
+/** `className="animate-none"` stops it, as it stops shadcn's pulse. */
+export const Static: Story = {
+  render: (args) => (
+    <div className="flex items-center space-x-4">
+      <Skeleton {...args} className="h-12 w-12 animate-none rounded-full" />
+      <div className="space-y-2">
+        <Skeleton {...args} className="h-4 w-[250px] animate-none" />
+        <Skeleton {...args} className="h-4 w-[200px] animate-none" />
+      </div>
+    </div>
+  ),
+};
