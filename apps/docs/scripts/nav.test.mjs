@@ -76,7 +76,9 @@ test("the components index shows a preview for every component", () => {
       "utf8",
     ),
   );
-  assert.equal(previews.length, pages.length);
+  // Fumadocs separators (`---Label---`) are headings, not components.
+  const components = pages.filter((p) => !/^---.*---$/.test(p));
+  assert.equal(previews.length, components.length);
 });
 
 test("core components carry no New badge", () => {

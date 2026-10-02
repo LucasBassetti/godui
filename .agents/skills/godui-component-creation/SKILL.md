@@ -27,9 +27,8 @@ are frozen — don't add new components there.
 | Docs | `apps/docs/content/docs/components/{name}/index.mdx` (no category folder) |
 | Docs demo | `apps/docs/src/components/demos/core/{name}-demo.tsx` (imports `@godui/components`) |
 | Learn tab (required) | `apps/docs/content/docs/components/{name}/learn.mdx` built from the core kit in `apps/docs/src/components/learn/core/` (`KeyframeScene`, `SpringCurveScene`, `FlipScene`, `AutoPlayScene`, `LiveResult`) — see the `godui-learn-article` skill for LearnPlayer rules |
-| Nav | `components/{name}` in the root `apps/docs/content/docs/meta.json` (components are listed in the main sidebar) and `{name}` in `apps/docs/content/docs/components/meta.json` |
+| Nav (main sidebar) | `components/{name}` in the root `apps/docs/content/docs/meta.json` (Components section, alphabetical) and `{name}` in `apps/docs/content/docs/components/meta.json` |
 | Index card | `apps/docs/content/docs/components/index.mdx` → `<PreviewCard href title>` under its group, preview `apps/docs/src/components/card-previews/core/{name}.tsx` (skeleton `Sk`/`Ac`/`Panel`, GPU-only `group-hover` transitions) registered in `card-previews/registry.tsx` |
-| Sidebar | `components/{name}` in the root `apps/docs/content/docs/meta.json` (Components section) and `{name}` in `components/meta.json` |
 
 ## 1. Create the component
 
@@ -449,10 +448,11 @@ last segment, so the key **must** equal the docs slug. Previews are statically i
 - **NEVER** diverge from shadcn's public API (names, props, `data-slot`s) — additive only. Core uses React 19 `ref`-as-prop like shadcn v4, not `forwardRef`.
 - **NEVER** add `"use client"` unless hooks/client APIs are used.
 - **NEVER** animate anything but transform/opacity/filter — no `height`, `width`, `box-shadow`, `color`, bare `transition`, `transition-colors`, `transition-all`. There is no allowlist (see "Motion").
+- **NEVER** pop a selection indicator (check, dot, chip, selected day) on first paint, remount or menu open — gate the keyframe on a `data-animate` set only when the value changes (the mount rule in `AGENTS.md`; pattern: `checkbox.tsx`).
 - **NEVER** invent spring/duration/easing numbers — use `godui-motion` tokens (`animate-godui-*`, `ease-spring-*`, `--godui-duration-*`).
 - **NEVER** use arbitrary z-index — use the scale: `z-base`, `z-raised`, `z-overlay`, `z-sticky`, `z-popover`, `z-modal`, `z-toast`.
 - **NEVER** put bare text on its own line inside a block tag in `Example` children — MDX wraps it in a `<p>`, causing `<p>`-in-`<p>` hydration errors. Keep text inline (see §5).
-- **NEVER** skip nav registration — add the page to `apps/docs/content/docs/components/meta.json` and a `<PreviewCard>` in `components/index.mdx`, or it won't appear (see §5).
+- **NEVER** skip nav registration — add `components/{name}` to the root `apps/docs/content/docs/meta.json`, `{name}` to `apps/docs/content/docs/components/meta.json`, and a `<PreviewCard>` in `components/index.mdx`, or it won't appear (see §5).
 - **NEVER** ship a component without a Learn tab — every component needs `{name}/learn.mdx`, built via the `godui-learn-article` skill (see §5.5).
 - **NEVER** use fixed-luminance colors (`bg-black/*`, `bg-white/*`, `border-white/*`, `text-white`, hex) in a Learn scene — they only contrast in one theme. Use theme tokens and verify light **and** dark (see §5.5).
 - **NEVER** ship a `<PreviewCard>` without its placeholder preview — create `card-previews/core/{name}.tsx` and register it as `Core<Pascal>` in `card-previews/registry.tsx` (key = href slug), or the card renders text-only and breaks the uniform grid (see §6).

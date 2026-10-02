@@ -616,8 +616,8 @@
 
 /* ── progress ────────────────────────────────────────────────────────────────
  * Component keyframe (also in the progress registry entry). Transform only:
- * the indeterminate bar sweeps across the track on a symmetric ease-in-out. An animation beats the
- * indicator's inline transform. */
+ * the indeterminate bar sweeps across the track on a symmetric ease-in-out.
+ * An animation beats the indicator's inline transform. */
 @theme inline {
   --animate-godui-progress-indeterminate: godui-progress-indeterminate 1.4s
     cubic-bezier(0.65, 0, 0.35, 1) infinite;

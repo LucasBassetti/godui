@@ -1,8 +1,9 @@
 "use client";
 
-import { Separator as SeparatorPrimitive } from "radix-ui";
 // GodUI Separator — mirrors shadcn/ui new-york-v4 components/ui/separator.tsx (registry snapshot 2026-10-01).
 // Motion: static — not animated; ships as stock shadcn.
+
+import { Separator as SeparatorPrimitive } from "radix-ui";
 import type * as React from "react";
 import { cn } from "@/lib/utils";
 
