@@ -16,6 +16,8 @@
     "drawer",
     "dropdown-menu",
     "hover-card",
+    "input",
+    "input-group",
     "input-otp",
     "menubar",
     "navigation-menu",
@@ -29,6 +31,7 @@
     "sonner",
     "switch",
     "tabs",
+    "textarea",
     "toggle",
     "toggle-group",
     "tooltip"

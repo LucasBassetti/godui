@@ -24,6 +24,8 @@
     "components/drawer",
     "components/dropdown-menu",
     "components/hover-card",
+    "components/input",
+    "components/input-group",
     "components/input-otp",
     "components/menubar",
     "components/navigation-menu",
@@ -37,6 +39,7 @@
     "components/sonner",
     "components/switch",
     "components/tabs",
+    "components/textarea",
     "components/toggle",
     "components/toggle-group",
     "components/tooltip"

@@ -70,7 +70,7 @@ describe("Input, Textarea, InputGroup", () => {
     }
   });
 
-  it("don't transition paint (focus rings snap)", () => {
+  it("input and textarea keep shadcn's ring, which snaps: no transition class", () => {
     render(
       <Usage
         ui={{ input: GoduiInput, textarea: GoduiTextarea, group: GoduiGroup }}
@@ -79,9 +79,30 @@ describe("Input, Textarea, InputGroup", () => {
     for (const el of [
       screen.getByPlaceholderText("Email"),
       screen.getByPlaceholderText("Message"),
-      document.querySelector('[data-slot="input-group"]') as HTMLElement,
     ]) {
-      expect(el.className).not.toMatch(/transition-\[color|transition-all/);
+      const classes = el.className.split(/\s+/);
+      expect(classes).toEqual(
+        expect.arrayContaining([
+          "focus-visible:ring-[3px]",
+          "focus-visible:ring-ring/50",
+        ]),
+      );
+      expect(classes.filter((c) => /(^|:)transition/.test(c))).toEqual([]);
     }
+  });
+
+  it("the input group transitions only its ::before ring (opacity, scale)", () => {
+    render(
+      <Usage
+        ui={{ input: GoduiInput, textarea: GoduiTextarea, group: GoduiGroup }}
+      />,
+    );
+    const group = document.querySelector<HTMLElement>(
+      '[data-slot="input-group"]',
+    );
+    const classes = group?.className.split(/\s+/) ?? [];
+    expect(classes.filter((c) => /(^|:)transition-(?!none)/.test(c))).toEqual([
+      "before:transition-[opacity,scale]",
+    ]);
   });
 });

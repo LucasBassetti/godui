@@ -22,6 +22,8 @@ import CoreDialog from "./core/dialog";
 import CoreDrawer from "./core/drawer";
 import CoreDropdownMenu from "./core/dropdown-menu";
 import CoreHoverCard from "./core/hover-card";
+import CoreInput from "./core/input";
+import CoreInputGroup from "./core/input-group";
 import CoreInputOtp from "./core/input-otp";
 import CoreMenubar from "./core/menubar";
 import CoreNavigationMenu from "./core/navigation-menu";
@@ -35,6 +37,7 @@ import CoreSlider from "./core/slider";
 import CoreSonner from "./core/sonner";
 import CoreSwitch from "./core/switch";
 import CoreTabs from "./core/tabs";
+import CoreTextarea from "./core/textarea";
 import CoreToggle from "./core/toggle";
 import CoreToggleGroup from "./core/toggle-group";
 import CoreTooltip from "./core/tooltip";
@@ -165,6 +168,8 @@ export const cardPreviews: Record<string, Preview> = {
   drawer: CoreDrawer,
   "dropdown-menu": CoreDropdownMenu,
   "hover-card": CoreHoverCard,
+  input: CoreInput,
+  "input-group": CoreInputGroup,
   "input-otp": CoreInputOtp,
   menubar: CoreMenubar,
   "navigation-menu": CoreNavigationMenu,
@@ -178,6 +183,7 @@ export const cardPreviews: Record<string, Preview> = {
   sonner: CoreSonner,
   switch: CoreSwitch,
   tabs: CoreTabs,
+  textarea: CoreTextarea,
   toggle: CoreToggle,
   "toggle-group": CoreToggleGroup,
   tooltip: CoreTooltip,

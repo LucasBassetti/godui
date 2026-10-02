@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "revision": "17ea39f3f1690da7b8fd4b156d4edcb501c0aeb8",
+  "revision": "c5036b1e38f60e8cd1bee11d163632759ec2c074",
   "components": [
     {
       "name": "accordion",
@@ -601,7 +601,7 @@
     {
       "name": "input",
       "title": "Input",
-      "description": "Displays a form input field. GPU-only: no paint transitions (focus ring snaps).",
+      "description": "Displays a form input field or a component that looks like an input field. The focus ring snaps (no box-shadow transition); use Input Group for an animated ring. GPU-only.",
       "category": "Components",
       "dependencies": [],
       "registryDependencies": ["utils"],
@@ -611,11 +611,12 @@
     {
       "name": "input-group",
       "title": "Input Group",
-      "description": "Add addons, buttons and helper content to inputs. GPU-only: no paint transitions.",
+      "description": "Display additional information or actions to an input or textarea. The focus ring fades and grows in on a ::before layer (opacity + scale); the border snaps. GPU-only.",
       "category": "Components",
       "dependencies": ["class-variance-authority"],
       "registryDependencies": [
         "utils",
+        "@godui/godui-motion",
         "@godui/button",
         "@godui/input",
         "@godui/textarea"
@@ -1296,7 +1297,7 @@
     {
       "name": "textarea",
       "title": "Textarea",
-      "description": "Displays a form textarea. GPU-only: no paint transitions (focus ring snaps).",
+      "description": "Displays a form textarea or a component that looks like a textarea. The focus ring snaps (no box-shadow transition); use Input Group for an animated ring. GPU-only.",
       "category": "Components",
       "dependencies": [],
       "registryDependencies": ["utils"],

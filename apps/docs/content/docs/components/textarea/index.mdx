@@ -1,0 +1,101 @@
+---
+title: Textarea
+description: Displays a form textarea or a component that looks like a textarea. The focus ring snaps; for an animated ring, use Input Group.
+workbench: true
+---
+
+import { TextareaDemo } from "@/components/demos/core/textarea-demo";
+import { TextareaDisabledDemo } from "@/components/demos/core/textarea-disabled-demo";
+import { TextareaWithButtonDemo } from "@/components/demos/core/textarea-with-button-demo";
+
+<Workbench>
+
+The shadcn/ui textarea, unchanged except for one thing: shadcn fades the
+focus ring in by transitioning `box-shadow`, which repaints the field on every
+frame. GodUI drops that transition, so the ring snaps on. A `<textarea>` can't
+hold a `::before` layer, and wrapping it would break the drop-in, so the
+animated ring lives on [Input Group](/docs/components/input-group), which also
+takes a textarea.
+
+<Example label="Default" story="ui-textarea--default" code={`import { Textarea } from "@/components/ui/textarea";
+
+export function TextareaDemo() {
+  return (
+    <div className="w-full max-w-sm">
+      <Textarea placeholder="Type your message here." />
+    </div>
+  );
+}`}>
+  <TextareaDemo />
+</Example>
+
+<Example label="With button" story="ui-textarea--with-button" code={`import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+
+export function TextareaWithButtonDemo() {
+  return (
+    <div className="grid w-full max-w-sm gap-2">
+      <Textarea placeholder="Type your message here." />
+      <Button>Send message</Button>
+    </div>
+  );
+}`}>
+  <TextareaWithButtonDemo />
+</Example>
+
+<Example label="Disabled" story="ui-textarea--disabled" code={`import { Textarea } from "@/components/ui/textarea";
+
+export function TextareaDisabledDemo() {
+  return (
+    <div className="w-full max-w-sm">
+      <Textarea placeholder="Type your message here." disabled />
+    </div>
+  );
+}`}>
+  <TextareaDisabledDemo />
+</Example>
+
+## Installation
+
+<ComponentInstall name="textarea" />
+
+## Replacing shadcn
+
+`npx shadcn add @godui/textarea` overwrites `components/ui/textarea.tsx`.
+Exports, props and the `data-slot` attribute match shadcn/ui new-york-v4, so
+existing imports keep working. The only class removed is
+`transition-[color,box-shadow]`.
+
+## Usage
+
+```tsx
+import { Textarea } from "@/components/ui/textarea";
+```
+
+```tsx
+<Textarea placeholder="Type your message here." />
+```
+
+## What's animated
+
+| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
+| --- | --- | --- | --- | --- |
+| Focus ring | snaps (`box-shadow`, no transition) | — | — | — |
+| Border, invalid ring | snap | — | — | — |
+
+Why it snaps: the ring is a `box-shadow` on the textarea itself, and
+`box-shadow` can only be animated by repainting. A GPU fade needs a separate
+layer whose `opacity` changes, and `<textarea>` is a replaced element, so it
+can't have a `::before`. A wrapper would give it one, but your `className` and
+`ref` would land on the wrong element. For a ring that fades in, use
+`InputGroupTextarea` inside [Input Group](/docs/components/input-group).
+
+The textarea still grows with its content (`field-sizing-content`); that
+resize is the browser's layout, not an animation.
+
+## API
+
+Props are identical to [shadcn/ui Textarea](https://ui.shadcn.com/docs/components/textarea):
+every native `textarea` prop, plus `className`.
+
+</Workbench>

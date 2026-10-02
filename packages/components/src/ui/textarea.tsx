@@ -1,5 +1,7 @@
 // GodUI Textarea — mirrors shadcn/ui new-york-v4 components/ui/textarea.tsx (registry snapshot 2026-10-01).
-// Motion: none yet — focus ring snaps (no paint transition); focus motion lands in wave 3.
+// Motion: none — the focus ring snaps. shadcn transitions its box-shadow (paint); a replaced
+// <textarea> can't host a ::before ring and a wrapper would break the drop-in, so the
+// transition is dropped. For an animated ring, use Input Group. GPU-only.
 import type * as React from "react";
 import { cn } from "@/lib/utils";
 

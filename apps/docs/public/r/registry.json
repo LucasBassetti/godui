@@ -480,7 +480,7 @@
       "name": "input",
       "type": "registry:ui",
       "title": "Input",
-      "description": "Displays a form input field. GPU-only: no paint transitions (focus ring snaps).",
+      "description": "Displays a form input field or a component that looks like an input field. The focus ring snaps (no box-shadow transition); use Input Group for an animated ring. GPU-only.",
       "dependencies": [],
       "registryDependencies": ["utils"],
       "files": [
@@ -494,7 +494,7 @@
       "name": "textarea",
       "type": "registry:ui",
       "title": "Textarea",
-      "description": "Displays a form textarea. GPU-only: no paint transitions (focus ring snaps).",
+      "description": "Displays a form textarea or a component that looks like a textarea. The focus ring snaps (no box-shadow transition); use Input Group for an animated ring. GPU-only.",
       "dependencies": [],
       "registryDependencies": ["utils"],
       "files": [
@@ -508,10 +508,11 @@
       "name": "input-group",
       "type": "registry:ui",
       "title": "Input Group",
-      "description": "Add addons, buttons and helper content to inputs. GPU-only: no paint transitions.",
+      "description": "Display additional information or actions to an input or textarea. The focus ring fades and grows in on a ::before layer (opacity + scale); the border snaps. GPU-only.",
       "dependencies": ["class-variance-authority"],
       "registryDependencies": [
         "utils",
+        "@godui/godui-motion",
         "@godui/button",
         "@godui/input",
         "@godui/textarea"

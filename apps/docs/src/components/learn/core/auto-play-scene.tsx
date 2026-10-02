@@ -19,6 +19,10 @@ import {
   CommandGroup,
   CommandItem,
   CommandList,
+  Input,
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
   Menubar,
   MenubarContent,
   MenubarItem,
@@ -43,7 +47,7 @@ import {
   ToggleGroup,
   ToggleGroupItem,
 } from "@godui/components";
-import { Bold, Circle } from "lucide-react";
+import { Bold, Circle, SearchIcon } from "lucide-react";
 import {
   type ComponentProps,
   Fragment,
@@ -695,6 +699,68 @@ function AccordionGlide({ reduced }: { reduced: boolean }) {
   return <AccordionSweep reduced={reduced} />;
 }
 
+/**
+ * Forced focus: the scenes can't hold real focus on two fields (and shouldn't
+ * steal it from the page), so `data-ring` stands in for `:focus-visible`.
+ */
+const INPUT_RING_ON =
+  "data-[ring=on]:border-ring data-[ring=on]:ring-[3px] data-[ring=on]:ring-ring/50";
+const GROUP_RING_ON =
+  "data-[ring=on]:border-ring data-[ring=on]:before:scale-100 data-[ring=on]:before:opacity-100";
+
+/** The real Input: shadcn's box-shadow ring, which snaps in GodUI. */
+function SnappingField({ on }: { on: boolean }) {
+  return (
+    <div className="relative w-full">
+      <Input
+        tabIndex={-1}
+        readOnly
+        aria-label="Demo field"
+        data-ring={on ? "on" : undefined}
+        className={`pointer-events-none ${INPUT_RING_ON}`}
+      />
+      <Bar className="pointer-events-none absolute top-1/2 left-3 w-20 -translate-y-1/2 bg-[var(--foreground)]/25" />
+    </div>
+  );
+}
+
+/** The real Input Group: its ::before ring fades and grows in. */
+function FadingField({ on, slowMs }: { on: boolean; slowMs: string }) {
+  return (
+    <InputGroup
+      data-ring={on ? "on" : undefined}
+      className={`pointer-events-none ${slowMs} ${GROUP_RING_ON}`}
+    >
+      <InputGroupInput tabIndex={-1} readOnly aria-label="Demo field" />
+      <InputGroupAddon>
+        <SearchIcon />
+        <Bar className="w-20 bg-[var(--foreground)]/25" />
+      </InputGroupAddon>
+    </InputGroup>
+  );
+}
+
+/** Left: Input (ring snaps). Right: Input Group (ring fades + grows in). */
+function FocusRingCompare({ reduced }: { reduced: boolean }) {
+  const on = useToggle(reduced) || reduced;
+  return (
+    <div className="grid w-full max-w-md grid-cols-2 gap-6 px-4">
+      <SnappingField on={on} />
+      <FadingField on={on} slowMs="[--godui-duration-fast:800ms]" />
+    </div>
+  );
+}
+
+/** The Input Group ring alone on a slow clock, so the 98% → 100% grow reads. */
+function FocusRingSlow({ reduced }: { reduced: boolean }) {
+  const on = useToggle(reduced) || reduced;
+  return (
+    <div className="w-full max-w-xs px-4">
+      <FadingField on={on} slowMs="[--godui-duration-fast:1100ms]" />
+    </div>
+  );
+}
+
 const DEMOS = {
   accordion: AccordionGlide,
   "accordion-window": AccordionWindow,
@@ -706,6 +772,8 @@ const DEMOS = {
   "carousel-jump": CarouselJump,
   checkbox: CheckboxToggle,
   command: CommandCycle,
+  "focus-ring": FocusRingCompare,
+  "focus-ring-slow": FocusRingSlow,
   menubar: MenubarHop,
   "navigation-menu": NavigationMenuHop,
   progress: ProgressStep,
