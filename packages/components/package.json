@@ -31,7 +31,8 @@
   },
   "peerDependencies": {
     "geist": ">=1.3.0",
-    "react": "^18 || ^19"
+    "react": "^19",
+    "react-dom": "^19"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",
