@@ -913,7 +913,7 @@ const bandGive = (px: number) => 2 * (1 / (1 + Math.exp(-px / 24)) - 0.5) * 24;
 
 /**
  * The rubber band, replayed on the real Slider: the scene writes what a drag
- * past the end writes (`data-dragging`, the stretch vars on the track, the
+ * past the end writes (`data-overdrag`, the stretch vars on the track, the
  * thumb's ride), then lets go, and the component's own CSS springs it back.
  */
 function SliderBand({ reduced }: { reduced: boolean }) {
@@ -936,6 +936,7 @@ function SliderBand({ reduced }: { reduced: boolean }) {
       if (t < PULL_MS) {
         root.setAttribute("data-pressed", "");
         root.setAttribute("data-dragging", "");
+        root.setAttribute("data-overdrag", "");
         thumb.setAttribute("data-active", "");
         const give = bandGive((t / PULL_MS) * 90);
         const len = track.offsetWidth || 1;
@@ -948,10 +949,13 @@ function SliderBand({ reduced }: { reduced: boolean }) {
           "--godui-slider-thin",
           String(1 - (0.2 * give) / 24),
         );
-        thumb.style.setProperty("--godui-slider-ride", `${give}px, 0px`);
+        // The lift's scale applies outside the ride's transform.
+        const lift = Number.parseFloat(getComputedStyle(thumb).scale) || 1;
+        thumb.style.setProperty("--godui-slider-ride", `${give / lift}px, 0px`);
       } else if (root.hasAttribute("data-dragging")) {
         root.removeAttribute("data-pressed");
         root.removeAttribute("data-dragging");
+        root.removeAttribute("data-overdrag");
         thumb.removeAttribute("data-active");
         track.style.removeProperty("--godui-slider-stretch");
         track.style.removeProperty("--godui-slider-thin");

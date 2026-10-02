@@ -213,6 +213,65 @@ test("pressing lifts the thumb and thickens the track on the compositor", async 
   );
 });
 
+test("a fast drag (35px per event) on a fine slider stays 1:1 every frame", async ({
+  page,
+}) => {
+  await open(page, "default");
+  const track = await boxOf(page, "slider-track");
+  const thumb = await boxOf(page, "slider-thumb");
+  const y = thumb.y + thumb.height / 2;
+  const start = thumb.x + thumb.width / 2;
+  await page.mouse.move(start, y);
+  await page.mouse.down();
+  for (const dx of [35, 70, 105, 140, 105, 35, -35, -105, -140]) {
+    const x = start + dx;
+    await page.mouse.move(x, y);
+    // Two frames after each move: the drawn thumb is on its spot, the range
+    // ends where Radix puts it, and the value is the pointer's.
+    const seen = await page.evaluate(async () => {
+      const out: Array<{
+        drawn: number;
+        spot: number;
+        end: number;
+        value: number;
+      }> = [];
+      const t = document.querySelector('[data-slot="slider-thumb"]');
+      const range = document.querySelector('[data-slot="slider-range"]');
+      if (!t?.parentElement || !range) throw new Error("no thumb");
+      for (let i = 0; i < 2; i++) {
+        await new Promise(requestAnimationFrame);
+        const d = t.getBoundingClientRect();
+        const s = t.parentElement.getBoundingClientRect();
+        out.push({
+          drawn: d.left + d.width / 2,
+          spot: s.left + s.width / 2,
+          end: range.getBoundingClientRect().right,
+          value: Number(t.getAttribute("aria-valuenow")),
+        });
+      }
+      return out;
+    });
+    for (const f of seen) {
+      expect(Math.abs(f.drawn - f.spot)).toBeLessThanOrEqual(0.5);
+      const end = track.x + (f.value / 100) * track.width;
+      expect(Math.abs(f.end - end)).toBeLessThanOrEqual(0.5);
+      const pointer = ((x - track.x) / track.width) * 100;
+      expect(Math.abs(f.value - pointer)).toBeLessThanOrEqual(0.5);
+    }
+  }
+  // No glide ran on the thumb at any point (only CSS transitions, e.g. the
+  // lift, are allowed).
+  const glides = await page.evaluate(
+    () =>
+      document
+        .querySelector('[data-slot="slider-thumb"]')
+        ?.getAnimations()
+        .filter((a) => !(a instanceof CSSTransition)).length ?? 0,
+  );
+  expect(glides).toBe(0);
+  await page.mouse.up();
+});
+
 test("dragging follows the pointer in the same frame (no glide lag)", async ({
   page,
 }) => {
@@ -255,35 +314,41 @@ test("dragging follows the pointer in the same frame (no glide lag)", async ({
   await page.mouse.up();
 });
 
-test("overdrag stretches the track and springs back on the compositor", async ({
-  page,
-}) => {
-  const result = await traceInteraction(page, {
-    storyId: "ui-slider--default",
-    // Grab the thumb and drag it to the end before tracing: the drag itself
-    // is Radix's `left`, 1:1. Past the end only our transforms change.
-    setup: async (p) => {
-      const thumb = await boxOf(p, "slider-thumb");
-      const track = await boxOf(p, "slider-track");
-      const y = thumb.y + thumb.height / 2;
-      await p.mouse.move(thumb.x + thumb.width / 2, y);
-      await p.mouse.down();
-      await p.mouse.move(track.x + track.width, y, { steps: 8 });
-    },
-    act: async (p) => {
-      const track = await boxOf(p, "slider-track");
-      const y = track.y + track.height / 2;
-      for (let i = 1; i <= 12; i++) {
-        await p.mouse.move(track.x + track.width + i * 8, y);
-        await p.waitForTimeout(16);
-      }
-      await p.mouse.up();
-    },
-    windowMs: 700,
+// `steps` (step 25) glides from step to step on the way to the end, so its
+// spring-back also proves the ride's `transform` transition composites on a
+// thumb whose `translate` glides were cancelled (Chrome refuses a `translate`
+// transition there).
+for (const story of ["default", "steps"]) {
+  test(`overdrag stretches the track and springs back on the compositor (${story})`, async ({
+    page,
+  }) => {
+    const result = await traceInteraction(page, {
+      storyId: `ui-slider--${story}`,
+      // Grab the thumb and drag it to the end before tracing: the drag itself
+      // is Radix's `left`, 1:1. Past the end only our transforms change.
+      setup: async (p) => {
+        const thumb = await boxOf(p, "slider-thumb");
+        const track = await boxOf(p, "slider-track");
+        const y = thumb.y + thumb.height / 2;
+        await p.mouse.move(thumb.x + thumb.width / 2, y);
+        await p.mouse.down();
+        await p.mouse.move(track.x + track.width, y, { steps: 8 });
+      },
+      act: async (p) => {
+        const track = await boxOf(p, "slider-track");
+        const y = track.y + track.height / 2;
+        for (let i = 1; i <= 12; i++) {
+          await p.mouse.move(track.x + track.width + i * 8, y);
+          await p.waitForTimeout(16);
+        }
+        await p.mouse.up();
+      },
+      windowMs: 700,
+    });
+    expect(result.animationCount).toBeGreaterThan(0);
+    expectGpuOnly(result);
   });
-  expect(result.animationCount).toBeGreaterThan(0);
-  expectGpuOnly(result);
-});
+}
 
 test("overdrag: the band gives up to 24px, the thumb rides its end, release springs home", async ({
   page,
@@ -305,9 +370,14 @@ test("overdrag: the band gives up to 24px, the thumb rides its end, release spri
   expect(give).toBeLessThanOrEqual(24);
   // Thinner while stretched.
   expect(stretched.height).toBeLessThan(track.height * 1.5);
-  // The thumb rides the stretched end (its center stays half a thumb in).
-  const end = track.x + track.width - thumb.width / 2;
-  expect(riding.x + riding.width / 2 - end).toBeGreaterThan(give - 1);
+  // The thumb rides its point of the stretched band exactly: half a thumb in
+  // from the end at rest, stretched with the band (the 115% lift included).
+  const at = track.width - thumb.width / 2;
+  const onBand = stretched.x + (at * stretched.width) / track.width;
+  expect(riding.width).toBeCloseTo(thumb.width * 1.15, 0);
+  expect(Math.abs(riding.x + riding.width / 2 - onBand)).toBeLessThanOrEqual(
+    0.5,
+  );
   await page.mouse.up();
   // It springs home (bouncy, so it passes rest before settling).
   const frames = await page.evaluate(async () => {
@@ -324,4 +394,47 @@ test("overdrag: the band gives up to 24px, the thumb rides its end, release spri
   expect(frames[0] - rest).toBeGreaterThan(10);
   expect(Math.abs(frames[frames.length - 1] - rest)).toBeLessThan(0.5);
   expect(Math.min(...frames)).toBeLessThan(rest);
+});
+
+test("a new press during the spring-back lets the band finish springing (no snap)", async ({
+  page,
+}) => {
+  await open(page, "default");
+  const thumb = await boxOf(page, "slider-thumb");
+  const track = await boxOf(page, "slider-track");
+  const y = thumb.y + thumb.height / 2;
+  await page.mouse.move(thumb.x + thumb.width / 2, y);
+  await page.mouse.down();
+  await page.mouse.move(track.x + track.width + 300, y, { steps: 20 });
+  await page.mouse.up();
+  // Per frame: the band's end, and whether the new drag has started.
+  const frames = page.evaluate(async () => {
+    const root = document.querySelector('[data-slot="slider"]');
+    const t = document.querySelector('[data-slot="slider-track"]');
+    if (!root || !t) throw new Error("no slider");
+    const out: Array<{ right: number; dragging: boolean }> = [];
+    for (let i = 0; i < 30; i++) {
+      await new Promise(requestAnimationFrame);
+      out.push({
+        right: t.getBoundingClientRect().right,
+        dragging: root.hasAttribute("data-dragging"),
+      });
+    }
+    return out;
+  });
+  // Grab the thumb again mid spring-back and drag it inward.
+  const end = track.x + track.width - thumb.width / 2;
+  await page.mouse.move(end, y);
+  await page.mouse.down();
+  await page.mouse.move(end - 30, y, { steps: 3 });
+  const f = await frames;
+  await page.mouse.up();
+  const rest = track.x + track.width;
+  const during = f.filter((x) => x.dragging);
+  expect(during.length).toBeGreaterThan(10);
+  // The bouncy spring keeps going under the new drag: it still dips past
+  // rest (a snap would sit at rest from the first dragging frame) and
+  // settles there.
+  expect(Math.min(...during.map((x) => x.right - rest))).toBeLessThan(-1);
+  expect(Math.abs(f[f.length - 1].right - rest)).toBeLessThan(0.5);
 });

@@ -2,6 +2,7 @@ import { act, fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Direction } from "radix-ui";
 import type * as React from "react";
+import { createRef } from "react";
 import { renderToString } from "react-dom/server";
 import { expectSlotParity, slotTree } from "../../test/parity";
 import * as Shadcn from "../../test/shadcn/slider";
@@ -85,8 +86,13 @@ function wrapperRect(wrapper: HTMLElement): DOMRect {
   if (isVertical(wrapper)) {
     return rect(0, LEN - at - THUMB / 2, THUMB, THUMB);
   }
-  return rect(at - THUMB / 2, 0, THUMB, THUMB);
+  // RTL runs from the right edge.
+  const rtl =
+    wrapper.closest('[data-slot="slider"]')?.getAttribute("dir") === "rtl";
+  return rect((rtl ? LEN - at : at) - THUMB / 2, 0, THUMB, THUMB);
 }
+/** A rubber-band ride still drawn on the thumbs (its `transform`), in px. */
+let drawnRide = 0;
 function fakeRect(this: Element): DOMRect {
   const slot = this.getAttribute("data-slot");
   const vertical = isVertical(this);
@@ -97,7 +103,7 @@ function fakeRect(this: Element): DOMRect {
     const base = wrapperRect(this.parentElement as HTMLElement);
     const fake = running.get(this);
     const [dx, dy] = fake ? current(fake, "translate") : [0, 0];
-    return rect(base.left + dx, base.top + dy, THUMB, THUMB);
+    return rect(base.left + dx + drawnRide, base.top + dy, THUMB, THUMB);
   }
   if (slot === "slider-range") {
     const fake = running.get(this);
@@ -223,6 +229,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+  drawnRide = 0;
   tokens.remove();
   for (const undo of saved.reverse()) undo();
   saved.length = 0;
@@ -240,6 +247,28 @@ function reducedMotion() {
     window.matchMedia = original;
   });
 }
+
+/** Force computed values (e.g. the thumb's lift `scale`, its `transform`). */
+function computed(override: (el: Element, prop: string) => string | undefined) {
+  const real = window.getComputedStyle;
+  const spy = vi
+    .spyOn(window, "getComputedStyle")
+    .mockImplementation((el: Element, pseudo?: string | null) => {
+      const style = real(el, pseudo);
+      return new Proxy(style, {
+        get(target, prop) {
+          const forced =
+            typeof prop === "string" ? override(el, prop) : undefined;
+          if (forced !== undefined) return forced;
+          const value = Reflect.get(target, prop);
+          return typeof value === "function" ? value.bind(target) : value;
+        },
+      });
+    });
+  saved.push(() => spy.mockRestore());
+}
+const isThumb = (el: Element) =>
+  el.getAttribute("data-slot") === "slider-thumb";
 
 const rootOf = (i = 0) =>
   document.querySelectorAll<HTMLElement>('[data-slot="slider"]')[i];
@@ -365,12 +394,15 @@ describe("Slider", () => {
   });
 
   describe("halo", () => {
-    it("fades and grows a ::before halo in on hover/focus instead of a box-shadow ring", () => {
+    it("fades and grows a ::before ring in on hover/focus instead of a box-shadow ring", () => {
       render(<Godui.Slider defaultValue={[50]} aria-label="Volume" />);
       const cls = thumbsOf()[0].className;
       for (const c of [
-        "before:-inset-1",
-        "before:bg-ring/50",
+        // shadcn's 4px ring around the 16px body: 24px, 5px out from the
+        // padding box, hollow.
+        "before:-inset-[5px]",
+        "before:border-4",
+        "before:border-ring/50",
         "before:opacity-0",
         "before:scale-60",
         "before:transition-[opacity,scale]",
@@ -383,6 +415,32 @@ describe("Slider", () => {
       }
       expect(cls).not.toMatch(/(^|\s)(hover|focus-visible):ring-4/);
       expect(cls).not.toContain("transition-[color");
+      expect(cls).not.toMatch(/before:bg-/);
+    });
+
+    it("the thumb element is the painted body, so a caller's bg/border overrides land", () => {
+      render(
+        <Godui.Slider
+          defaultValue={[50]}
+          aria-label="Volume"
+          className="[&_[data-slot=slider-thumb]]:bg-red-500"
+        />,
+      );
+      const [thumb] = thumbsOf();
+      for (const c of ["border", "border-primary", "bg-white", "shadow-sm"]) {
+        expect(thumb.className.split(" ")).toContain(c);
+      }
+      // Nothing paints a second body over it.
+      expect(thumb.className).not.toContain("after:");
+      // A stylesheet override (what the caller's class compiles to) reaches
+      // the painted element.
+      const sheet = document.createElement("style");
+      sheet.textContent =
+        '[data-slot="slider"] [data-slot="slider-thumb"] { background-color: rgb(255, 0, 0); border-color: rgb(0, 0, 255); }';
+      document.head.append(sheet);
+      saved.push(() => sheet.remove());
+      expect(getComputedStyle(thumb).backgroundColor).toBe("rgb(255, 0, 0)");
+      expect(getComputedStyle(thumb).borderColor).toBe("rgb(0, 0, 255)");
     });
   });
 
@@ -680,6 +738,57 @@ describe("Slider", () => {
       fireEvent.pointerUp(thumb, { clientX: 240 });
     });
 
+    it("a fast drag on a fine slider (step 1, 20px per event) never glides", async () => {
+      await mount(<Godui.Slider defaultValue={[50]} aria-label="Volume" />);
+      const [thumb] = thumbsOf();
+      fireEvent.pointerDown(thumb, { clientX: 160 });
+      for (const x of [180, 200, 220, 240, 260, 240, 200, 160, 120]) {
+        fireEvent.pointerMove(thumb, { clientX: x });
+        await settle();
+      }
+      expect(thumb).toHaveAttribute("aria-valuenow", "38");
+      expect(animations).toHaveLength(0);
+      fireEvent.pointerUp(thumb, { clientX: 120 });
+    });
+
+    it("the coarse gate is the step's length on the track, not the travel per event", async () => {
+      // step 3 → 9.6px on a 320px track: under 12px, so 1:1 even for big jumps.
+      await mount(<Godui.Slider defaultValue={[51]} step={3} aria-label="S" />);
+      const [thumb] = thumbsOf();
+      fireEvent.pointerDown(thumb, { clientX: 163 });
+      for (const x of [203, 243, 283]) {
+        fireEvent.pointerMove(thumb, { clientX: x });
+        await settle();
+      }
+      expect(animations).toHaveLength(0);
+      fireEvent.pointerUp(thumb, { clientX: 283 });
+    });
+
+    it("two thumbs in RTL: a track press picks the closest thumb, then the drag is 1:1", async () => {
+      await mount(
+        <Godui.Slider defaultValue={[20, 80]} dir="rtl" aria-label="Range" />,
+      );
+      const [low, high] = thumbsOf();
+      // In RTL 20 sits near the right end (x ≈ 251).
+      fireEvent.pointerDown(trackOf(), { clientX: 260 });
+      expect(low).toHaveAttribute("data-active");
+      expect(high).not.toHaveAttribute("data-active");
+      await settle();
+      expect(low).toHaveAttribute("aria-valuenow", "19");
+      const pressed = animations.length;
+      for (const x of [240, 220, 200, 180]) {
+        fireEvent.pointerMove(trackOf(), { clientX: x });
+        await settle();
+      }
+      // Moving left raises the value in RTL.
+      expect(low).toHaveAttribute("aria-valuenow", "44");
+      expect(high).toHaveAttribute("aria-valuenow", "80");
+      expect(animations).toHaveLength(pressed);
+      expect(vars().start).toBeCloseTo(0.2, 6);
+      expect(vars().size).toBeCloseTo(0.36, 6);
+      fireEvent.pointerUp(trackOf(), { clientX: 180 });
+    });
+
     it("reduced motion: values snap, nothing glides", async () => {
       reducedMotion();
       const user = userEvent.setup();
@@ -730,8 +839,82 @@ describe("Slider", () => {
       expect(track.className).toContain(
         "transform_var(--godui-duration-slow)_var(--ease-spring-bouncy)",
       );
+      // Only an overdrag drops the band's transition (not every drag).
       expect(track.className).toContain(
-        "group-data-[dragging]/slider:[transition:scale_var(--godui-duration-fast)_var(--ease-spring-snappy)]",
+        "group-data-[overdrag]/slider:[transition:scale_var(--godui-duration-fast)_var(--ease-spring-snappy)]",
+      );
+      expect(track.className).not.toContain("group-data-[dragging]");
+      expect(rootOf()).not.toHaveAttribute("data-overdrag");
+    });
+
+    it("marks the overdrag only while stretched", async () => {
+      await mount(<Godui.Slider defaultValue={[90]} aria-label="Volume" />);
+      const [thumb] = thumbsOf();
+      fireEvent.pointerDown(thumb, { clientX: 290 });
+      fireEvent.pointerMove(thumb, { clientX: 300 });
+      expect(rootOf()).toHaveAttribute("data-dragging");
+      expect(rootOf()).not.toHaveAttribute("data-overdrag");
+      fireEvent.pointerMove(thumb, { clientX: 350 });
+      expect(rootOf()).toHaveAttribute("data-overdrag");
+      // Back inside while still dragging: the band lets go (springs home).
+      fireEvent.pointerMove(thumb, { clientX: 300 });
+      expect(rootOf()).not.toHaveAttribute("data-overdrag");
+      expect(trackOf().style.getPropertyValue("--godui-slider-stretch")).toBe(
+        "",
+      );
+      fireEvent.pointerUp(thumb, { clientX: 300 });
+    });
+
+    it("a new press during the spring-back lets it finish (no overdrag, so the transition stays)", async () => {
+      await mount(<Godui.Slider defaultValue={[90]} aria-label="Volume" />);
+      const [thumb] = thumbsOf();
+      fireEvent.pointerDown(thumb, { clientX: 290 });
+      fireEvent.pointerMove(thumb, { clientX: 400 });
+      fireEvent.pointerUp(thumb, { clientX: 400 });
+      // Mid spring-back: press again and drag inside the track.
+      fireEvent.pointerDown(thumb, { clientX: 312 });
+      fireEvent.pointerMove(thumb, { clientX: 280 });
+      expect(rootOf()).toHaveAttribute("data-dragging");
+      expect(rootOf()).not.toHaveAttribute("data-overdrag");
+      expect(trackOf().style.getPropertyValue("--godui-slider-stretch")).toBe(
+        "",
+      );
+      fireEvent.pointerUp(thumb, { clientX: 280 });
+    });
+
+    it("the ride is divided by the held thumb's lift, so it lands on the band's end", async () => {
+      computed((el, prop) =>
+        isThumb(el) && prop === "scale" ? "1.15" : undefined,
+      );
+      await mount(<Godui.Slider defaultValue={[90]} aria-label="Volume" />);
+      const [thumb] = thumbsOf();
+      fireEvent.pointerDown(thumb, { clientX: 290 });
+      fireEvent.pointerMove(thumb, { clientX: 330 });
+      await settle();
+      fireEvent.pointerMove(thumb, { clientX: 344 });
+      const give = 2 * (1 / (1 + Math.exp(-1)) - 0.5) * 24;
+      const [ride] = nums(thumb.style.getPropertyValue("--godui-slider-ride"));
+      expect(ride * 1.15).toBeCloseTo((give * (LEN - THUMB / 2)) / LEN, 3);
+      fireEvent.pointerUp(thumb, { clientX: 344 });
+    });
+
+    it("a key right after a release glides from the thumb's spot, not counting the ride still springing home", async () => {
+      const user = userEvent.setup();
+      await mount(<Godui.Slider defaultValue={[50]} aria-label="Volume" />);
+      const [thumb] = thumbsOf();
+      // The ride's transition is mid-way: 10px drawn, on `transform`.
+      drawnRide = 10;
+      computed((el, prop) =>
+        isThumb(el) && prop === "transform"
+          ? "matrix(1, 0, 0, 1, 10, 0)"
+          : undefined,
+      );
+      thumb.focus();
+      await user.keyboard("{ArrowRight}");
+      await settle();
+      expect(nums(lastGlide(thumb)?.keyframes[0].translate)[0]).toBeCloseTo(
+        -3.04,
+        6,
       );
     });
 
@@ -759,6 +942,57 @@ describe("Slider", () => {
       );
       fireEvent.pointerUp(thumb, { clientX: 400 });
     });
+  });
+
+  it("removes its listeners and observers on unmount", async () => {
+    const disconnect = vi.spyOn(MutationObserver.prototype, "disconnect");
+    const { unmount } = await mount(
+      <Godui.Slider defaultValue={[50]} aria-label="Volume" />,
+    );
+    const root = rootOf();
+    const removed = vi.spyOn(root, "removeEventListener");
+    unmount();
+    expect(disconnect).toHaveBeenCalled();
+    const types = removed.mock.calls.map(([type]) => type);
+    for (const type of [
+      "pointerdown",
+      "pointermove",
+      "pointerup",
+      "pointercancel",
+      "lostpointercapture",
+      "keydown",
+    ]) {
+      expect(types).toContain(type);
+    }
+    disconnect.mockRestore();
+    // Nothing is listening any more: a press doesn't mark the detached root.
+    fireEvent.pointerDown(root, { clientX: 10 });
+    expect(root).not.toHaveAttribute("data-pressed");
+  });
+
+  it("passes a React 19 callback ref's cleanup through", async () => {
+    const cleanup = vi.fn();
+    const seen: Array<HTMLElement | null> = [];
+    const ref = (node: HTMLSpanElement | null) => {
+      seen.push(node);
+      return cleanup;
+    };
+    const { unmount } = await mount(
+      <Godui.Slider ref={ref} defaultValue={[50]} aria-label="Volume" />,
+    );
+    expect(seen[0]).toBe(rootOf());
+    unmount();
+    expect(cleanup).toHaveBeenCalledTimes(1);
+    // React calls the cleanup instead of ref(null).
+    expect(seen).not.toContain(null);
+
+    const object = createRef<HTMLSpanElement>();
+    const second = await mount(
+      <Godui.Slider ref={object} defaultValue={[50]} aria-label="Volume" />,
+    );
+    expect(object.current).toBe(rootOf());
+    second.unmount();
+    expect(object.current).toBeNull();
   });
 
   it("reduced motion: press scale and thicken are motion-safe only; transitions off", async () => {

@@ -41,25 +41,26 @@ new value.
 <LearnChapter
   label="The halo"
   scene={<AutoPlayScene label="The halo" demo="slider-halo" />}
-  code={`"relative … shadow-sm
-  before:absolute before:-inset-1 before:rounded-full before:bg-ring/50
+  code={`"relative … border border-primary bg-white shadow-sm
+  before:absolute before:-inset-[5px] before:rounded-full
+  before:border-4 before:border-ring/50
   before:opacity-0 before:scale-60
   before:transition-[opacity,scale] before:ease-out-expo
   hover:before:opacity-100 hover:before:scale-100
-  focus-visible:before:opacity-100 focus-visible:before:scale-100
-  after:absolute after:inset-0 after:rounded-full
-  after:border after:border-primary after:bg-white"`}
+  focus-visible:before:opacity-100 focus-visible:before:scale-100"`}
 >
 
 shadcn draws hover and focus as `ring-4`, a `box-shadow`, and transitions
 it. A shadow can't run on the compositor, so GodUI draws the same 4px ring as
-a `::before` disc in the same color and fades and grows it in from 60%.
+a hollow `::before`: a 4px border in the ring's color, 5px out from the
+thumb's padding box, so its inside edge meets the body's edge. It fades in
+and grows from 60%.
 
-A pseudo-element painted on top of the thumb would cover it while it grows,
-so the body moves to `::after`. The thumb keeps the drop shadow, the halo
-paints over that, and the body paints over the halo: the same stacking order
-as shadcn's ring. Once fully in, the halo matches shadcn's ring pixel for
-pixel.
+The thumb itself is still shadcn's body, `bg-white` and `border-primary`, so
+a class that restyles the thumb still restyles what you see. The ring paints
+over the drop shadow, as shadcn's does. Measured against shadcn's ring in
+Chrome at 3× zoom, fully in, 259 of the 9,216 pixels around the thumb differ
+by more than 2%, all along the ring's anti-aliased edges.
 
 </LearnChapter>
 
@@ -123,9 +124,10 @@ still moving is put on the new clock too. Arrow keys use the quicker
 <LearnChapter
   label="A drag isn't animated"
   scene={<SpringCurveScene label="A drag isn't animated" easing="expo" />}
-  code={`if (dragging) return jump >= 12 ? "step" : null; // null = snap
-// data-dragging: after 3px of travel while pressed
-"group-data-[dragging]/slider:[transition:scale_var(--godui-duration-base)_…]"`}
+  code={`// One step's length on the track, not how far this move went:
+const stepPx = (step / (max - min)) * trackLength;
+if (dragging) return stepPx >= 12 ? "step" : null; // null = snap
+// data-dragging: after 3px of travel while pressed`}
 >
 
 Once the pointer has travelled 3px, the root gets `data-dragging` and any
@@ -133,8 +135,10 @@ glide in flight is dropped. From then on the thumb is wherever Radix puts it
 for the pointer, in the same frame: an eased drag trails your finger and
 feels broken.
 
-The exception is a coarse `step`. If one step moves the thumb 12px or more,
-jumping would flicker, so each step glides on the quick 150ms curve.
+The exception is a coarse `step`. If one step is 12px or more of track,
+jumping would flicker, so each step glides on the quick 150ms curve. The
+test is the step's length, never how far the pointer moved between events:
+a fast drag on a fine slider covers 30px a frame and still follows exactly.
 
 </LearnChapter>
 
@@ -146,9 +150,12 @@ jumping would flicker, so each step glides on the quick 150ms curve.
 track.style.setProperty("--godui-slider-origin", "0% 50%"); // far end
 track.style.setProperty("--godui-slider-stretch", 1 + give / length);
 track.style.setProperty("--godui-slider-thin", 1 - 0.2 * give / 24);
-thumb.style.setProperty("--godui-slider-ride", \`\${give}px, 0px\`);
+root.setAttribute("data-overdrag", ""); // drops the band's transition
+// The lift's scale applies outside \`transform\`, so divide it out:
+thumb.style.setProperty("--godui-slider-ride", \`\${give / lift}px, 0px\`);
 
-// release: the vars go, and the track's transition comes back:
+// back inside or released: the vars and data-overdrag go together, and the
+// transition that comes back springs the band home:
 "[transition:…,transform_var(--godui-duration-slow)_var(--ease-spring-bouncy)]"`}
 >
 
@@ -157,10 +164,12 @@ its limit. GodUI turns the extra distance into give. A sigmoid makes it
 easy at first and stiffer the further you pull, and it never passes 24px.
 
 The track stretches with `transform: scale()` from its far end and thins
-slightly, and the end thumb rides the stretched end. While you drag, those
-values follow the pointer with no transition. On release `data-dragging`
-goes and the vars are cleared in the same style change, so the transition
-that came back springs the band home on `ease-spring-bouncy`.
+slightly, and the end thumb rides the stretched end. While it's stretched,
+`data-overdrag` drops the transition so the band follows the pointer exactly.
+When you let go, or pull back inside, the attribute and the vars go in the
+same style change, so the returning transition springs the band home on
+`ease-spring-bouncy`. Only stretching drops the transition, not every drag,
+so grabbing the thumb again mid spring-back lets the spring finish.
 
 </LearnChapter>
 
@@ -179,9 +188,12 @@ then pull it past the end and let go.
 
 ## Why GPU-only
 
-Everything that animates is `translate`, `scale`, `transform` or `opacity`.
-Layout happens only once per value commit, when Radix moves the thumb's
-wrapper, and never while something is animating.
+Everything that animates is `translate`, `scale`, `transform` or `opacity`,
+so no glide, press or spring lays out frame by frame. Layout happens once per
+value commit, when Radix moves the thumb's wrapper. That can land mid-glide:
+a held arrow key or a coarse drag step commits a new value while the last
+glide is still running, which costs one layout for that commit, not for every
+frame of the glide.
 
 ## Reduced motion
 

@@ -69,10 +69,10 @@ import { Slider } from "@/components/ui/slider";
 | --- | --- | --- | --- | --- |
 | Press (thumb or track) | `data-pressed` on the root, `data-active` on the thumb it moves | thumb `scale` 1 → 1.15 | `ease-spring-bouncy` | 260ms |
 | Press, the track | same attribute | track `scale` (Y) 1 → 1.5 | `ease-spring-snappy` | 150ms |
-| Hover / focus | thumb `::before` halo, drawn like shadcn's `ring-4` | `opacity` 0 → 1, `scale` 0.6 → 1 | `ease-out-expo` | 150ms |
+| Hover / focus | a hollow `::before` ring around the thumb, sized like shadcn's `ring-4` | `opacity` 0 → 1, `scale` 0.6 → 1 | `ease-out-expo` | 150ms |
 | Click on the track, Home / End / Page keys, new `value` | WAAPI glide from where the thumb is drawn; the full-length range glides on the same clock | thumb `translate`, range `translate` + `scale` | `ease-spring-snappy` | 260ms |
 | Arrow key | same glide, retargeted on key repeat | thumb `translate`, range `translate` + `scale` | `ease-out-expo` | 150ms |
-| Drag | follows the pointer 1:1 (Radix's position, no animation); steps of 12px or more glide | thumb `translate` (coarse steps only) | `ease-out-expo` | 150ms |
+| Drag | follows the pointer 1:1, however fast (Radix's position, no animation); only a `step` that spans 12px or more of track glides from step to step | thumb `translate` (coarse steps only) | `ease-out-expo` | 150ms |
 | Pull past an end | track stretches toward the pointer (max 24px, sigmoid), thins, the end thumb rides it | track `transform`, thumb `transform` | live; release `ease-spring-bouncy` | release 380ms |
 
 The range is always the full length of the track: Radix's inline `left` /

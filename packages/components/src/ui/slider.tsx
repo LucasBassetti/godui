@@ -3,7 +3,7 @@
 // GodUI Slider — mirrors shadcn/ui new-york-v4 components/ui/slider.tsx (registry snapshot 2026-10-01).
 // Motion: a press anywhere on the slider lifts the thumb it moves (scale, bouncy
 // spring) and thickens the track (scaleY); hover and focus fade a halo in
-// behind the thumb, drawn exactly like shadcn's ring (opacity + scale). A track
+// around the thumb, drawn like shadcn's ring (opacity + scale). A track
 // click, a key or a new `value` glides the thumb from where it is drawn (WAAPI
 // `translate`) and the range on the same clock: the range is full length and
 // placed with `translate` + `scale` from Radix's own start/end. A drag follows
@@ -19,11 +19,20 @@ import { cn } from "@/lib/utils";
 const SLOP = 3;
 /** The most the track gives past an end (px). */
 const MAX_OVER = 24;
-/** A drag step at least this long (px) glides instead of jumping. */
+/**
+ * A `step` this long on the track (px) or longer glides from step to step
+ * mid-drag; anything finer follows the pointer 1:1, however fast.
+ */
 const COARSE_STEP = 12;
 const STEP_KEYS = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"];
 const JUMP_KEYS = ["Home", "End", "PageUp", "PageDown"];
+// Fallbacks for when the godui-motion tokens can't be read; the glides read
+// the tokens themselves. Mirror `--godui-duration-fast` / `-base`,
+// `--ease-out-expo` and (approximately) `--ease-spring-snappy`.
+const FAST_MS = 150;
+const BASE_MS = 260;
 const EXPO = "cubic-bezier(0.16, 1, 0.3, 1)";
+const SNAPPY = "cubic-bezier(0.25, 1, 0.5, 1)";
 
 /** The range as fractions of the track, from its left (top when vertical). */
 type Box = { start: number; size: number };
@@ -105,11 +114,18 @@ function toMs(value: string, fallback: number): number {
  *   — starts thumb and range from where they're drawn on one clock.
  * - Dragging past an end writes the stretch onto the track and each thumb.
  */
-function useSliderMotion(rootRef: React.RefObject<HTMLSpanElement | null>) {
+type Steps = { step: number; min: number; max: number };
+
+function useSliderMotion(
+  rootRef: React.RefObject<HTMLSpanElement | null>,
+  steps: React.RefObject<Steps>,
+) {
   React.useEffect(() => {
     const root = rootRef.current;
     const view = root?.ownerDocument.defaultView;
     if (!root || !view) return;
+    // Read at commit time: the latest step/min/max from render.
+    const settings = steps;
     const vertical = () => root.getAttribute("data-orientation") === "vertical";
     const thumbs = () => [
       ...root.querySelectorAll<HTMLElement>('[data-slot="slider-thumb"]'),
@@ -138,6 +154,35 @@ function useSliderMotion(rootRef: React.RefObject<HTMLSpanElement | null>) {
     /** Where Radix lays a thumb out: its wrapper, which we never move. */
     const spotOf = (thumb: HTMLElement, f: Frame) =>
       centerOf(thumb.parentElement ?? thumb, f);
+    /** The thumb's current lift (`scale`, 1 at rest or mid-transition). */
+    const liftOf = (thumb: HTMLElement) => {
+      const n = Number.parseFloat(view.getComputedStyle(thumb).scale);
+      return Number.isFinite(n) && n > 0 ? n : 1;
+    };
+    /**
+     * What the rubber band's ride adds to a thumb's drawn center right now
+     * (its `transform`, maybe mid spring-back, times the lift it sits inside).
+     */
+    const rideOf = (thumb: HTMLElement): Point => {
+      const m = /matrix\(([^)]+)\)/.exec(
+        view.getComputedStyle(thumb).transform ?? "",
+      );
+      if (!m) return { x: 0, y: 0 };
+      const [, , , , e = 0, f = 0] = m[1].split(",").map(Number);
+      const lift = liftOf(thumb);
+      return { x: (e || 0) * lift, y: (f || 0) * lift };
+    };
+    /** One `step` along the track, in px. */
+    const stepPx = () => {
+      const { step, min, max } = settings.current;
+      const track = trackOf();
+      const len = track
+        ? vertical()
+          ? track.offsetHeight
+          : track.offsetWidth
+        : 0;
+      return max > min ? (Math.abs(step) / (max - min)) * len : 0;
+    };
 
     let spots = new Map<Element, Point>();
     let box: Box | null = null;
@@ -185,18 +230,20 @@ function useSliderMotion(rootRef: React.RefObject<HTMLSpanElement | null>) {
       const token = (name: string) => style.getPropertyValue(name).trim();
       return kind === "step"
         ? {
-            duration: toMs(token("--godui-duration-fast"), 150),
+            duration: toMs(token("--godui-duration-fast"), FAST_MS),
             easing: token("--ease-out-expo") || EXPO,
           }
         : {
-            duration: toMs(token("--godui-duration-base"), 260),
-            easing: token("--ease-spring-snappy") || EXPO,
+            duration: toMs(token("--godui-duration-base"), BASE_MS),
+            easing: token("--ease-spring-snappy") || SNAPPY,
           };
     };
-    /** How a value change should move, given the longest thumb jump (px). */
-    const kindOf = (jump: number): Glide | null => {
+    /** How a value change should move (null: snap). */
+    const kindOf = (): Glide | null => {
       if (reduced()) return null;
-      if (dragging) return jump >= COARSE_STEP ? "step" : null;
+      // Mid-drag only a coarse `step` glides; a fast drag on a fine slider
+      // moves far per event but must still follow the pointer exactly.
+      if (dragging) return stepPx() >= COARSE_STEP ? "step" : null;
       // A track press jumps the thumb; a wobble under the slop retargets
       // that glide. A held thumb nudged under the slop just follows.
       if (press) return downJump || glides.size > 0 ? "jump" : null;
@@ -211,24 +258,24 @@ function useSliderMotion(rootRef: React.RefObject<HTMLSpanElement | null>) {
     const commit = (valued: boolean, fresh: Set<Element> = new Set()) => {
       const f = frame();
       const v = vertical();
-      // What's drawn = the old spot plus whatever is still drawn on top of
-      // the new one (a glide in flight, the rubber band's ride).
+      // Where the glide starts = the old spot plus the glide offset still
+      // drawn on top of the new one. The rubber band's ride is left out: it
+      // lives on `transform` and springs home on its own.
       const from = new Map<Element, Point>();
-      let jump = 0;
       for (const thumb of thumbs()) {
         const old = spots.get(thumb);
         // A thumb Radix only just placed has no spot to glide from.
         if (!old || fresh.has(thumb)) continue;
         const spot = spotOf(thumb, f);
         const drawn = centerOf(thumb, f);
+        const ride = rideOf(thumb);
         from.set(thumb, {
-          x: old.x + drawn.x - spot.x,
-          y: old.y + drawn.y - spot.y,
+          x: old.x + drawn.x - spot.x - ride.x / f.k,
+          y: old.y + drawn.y - spot.y - ride.y / f.k,
         });
-        jump = Math.max(jump, Math.hypot(spot.x - old.x, spot.y - old.y));
       }
       const fromBox = rangeGlide ? drawnBox() : box;
-      const kind = valued ? kindOf(jump) : null;
+      const kind = valued ? kindOf() : null;
       stop();
       const range = rangeOf();
       const next = range ? readBox(range, v) : null;
@@ -296,7 +343,10 @@ function useSliderMotion(rootRef: React.RefObject<HTMLSpanElement | null>) {
       const v = vertical();
       const len = v ? track.offsetHeight : track.offsetWidth;
       if (over === 0 || !len) {
-        // The origin stays put so the spring back pivots where it stretched.
+        // One style change: the transitions return as the stretch goes, so
+        // the band springs home. The origin stays put so the spring back
+        // pivots where it stretched.
+        root.removeAttribute("data-overdrag");
         track.style.removeProperty("--godui-slider-stretch");
         track.style.removeProperty("--godui-slider-thin");
         for (const thumb of thumbs()) {
@@ -305,6 +355,9 @@ function useSliderMotion(rootRef: React.RefObject<HTMLSpanElement | null>) {
         return;
       }
       const give = Math.abs(over);
+      // While stretched, the band follows the pointer with no transition. A
+      // press mid spring-back doesn't set it, so the spring carries on.
+      root.setAttribute("data-overdrag", "");
       track.style.setProperty(
         "--godui-slider-origin",
         v
@@ -326,13 +379,17 @@ function useSliderMotion(rootRef: React.RefObject<HTMLSpanElement | null>) {
       // Each thumb rides its point of the track: the far end moves the full
       // give, the anchored end not at all. (On `transform`, not `translate`:
       // Chrome won't composite a `translate` transition on an element whose
-      // earlier `translate` glides were cancelled, i.e. a coarse drag.)
+      // earlier `translate` glides were cancelled, i.e. a coarse drag.) The
+      // lift's `scale` applies outside `transform`, so the ride is divided
+      // by it to land on the band's end.
       const f = frame();
       const first = v ? track.offsetTop : track.offsetLeft;
       for (const thumb of thumbs()) {
         const spot = spotOf(thumb, f);
         const at = (v ? spot.y : spot.x) - first;
-        const ride = round((over * (over > 0 ? at : len - at)) / len);
+        const ride = round(
+          (over * (over > 0 ? at : len - at)) / len / liftOf(thumb),
+        );
         thumb.style.setProperty(
           "--godui-slider-ride",
           v ? `0px, ${ride}px` : `${ride}px, 0px`,
@@ -399,8 +456,6 @@ function useSliderMotion(rootRef: React.RefObject<HTMLSpanElement | null>) {
       press = null;
       dragging = false;
       downJump = false;
-      // One style change: the transitions come back as the stretch goes, so
-      // the band springs home.
       root.removeAttribute("data-pressed");
       root.removeAttribute("data-dragging");
       setActive(null);
@@ -481,7 +536,7 @@ function useSliderMotion(rootRef: React.RefObject<HTMLSpanElement | null>) {
       root.removeEventListener("keydown", onKey, true);
       stop();
     };
-  }, [rootRef]);
+  }, [rootRef, steps]);
 }
 
 function Slider({
@@ -518,15 +573,29 @@ function Slider({
     ),
   );
   const rootRef = React.useRef<HTMLSpanElement>(null);
+  // React 19: a callback ref may return its own cleanup; pass it through.
   const setRootRef = React.useCallback(
     (node: HTMLSpanElement | null) => {
       rootRef.current = node;
-      if (typeof ref === "function") ref(node);
-      else if (ref) ref.current = node;
+      if (typeof ref === "function") {
+        const cleanup = ref(node);
+        return () => {
+          rootRef.current = null;
+          if (typeof cleanup === "function") cleanup();
+          else ref(null);
+        };
+      }
+      if (ref) ref.current = node;
+      return () => {
+        rootRef.current = null;
+        if (ref) ref.current = null;
+      };
     },
     [ref],
   );
-  useSliderMotion(rootRef);
+  const steps = React.useRef<Steps>({ step: 1, min, max });
+  steps.current = { step: props.step ?? 1, min, max };
+  useSliderMotion(rootRef, steps);
 
   return (
     <SliderPrimitive.Root
@@ -549,7 +618,7 @@ function Slider({
         style={rangeStyle}
         className={cn(
           "relative grow overflow-hidden rounded-full bg-muted data-[orientation=horizontal]:h-1.5 data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full data-[orientation=vertical]:w-1.5",
-          "[transform-origin:var(--godui-slider-origin,50%_50%)] [transition:scale_var(--godui-duration-fast)_var(--ease-spring-snappy),transform_var(--godui-duration-slow)_var(--ease-spring-bouncy)] group-data-[dragging]/slider:[transition:scale_var(--godui-duration-fast)_var(--ease-spring-snappy)] motion-reduce:transition-none data-[orientation=horizontal]:[transform:scale(var(--godui-slider-stretch,1),var(--godui-slider-thin,1))] data-[orientation=vertical]:[transform:scale(var(--godui-slider-thin,1),var(--godui-slider-stretch,1))] motion-safe:group-data-[pressed]/slider:data-[orientation=horizontal]:scale-y-150 motion-safe:group-data-[pressed]/slider:data-[orientation=vertical]:scale-x-150",
+          "[transform-origin:var(--godui-slider-origin,50%_50%)] [transition:scale_var(--godui-duration-fast)_var(--ease-spring-snappy),transform_var(--godui-duration-slow)_var(--ease-spring-bouncy)] group-data-[overdrag]/slider:[transition:scale_var(--godui-duration-fast)_var(--ease-spring-snappy)] motion-reduce:transition-none data-[orientation=horizontal]:[transform:scale(var(--godui-slider-stretch,1),var(--godui-slider-thin,1))] data-[orientation=vertical]:[transform:scale(var(--godui-slider-thin,1),var(--godui-slider-stretch,1))] motion-safe:group-data-[pressed]/slider:data-[orientation=horizontal]:scale-y-150 motion-safe:group-data-[pressed]/slider:data-[orientation=vertical]:scale-x-150",
         )}
       >
         <SliderPrimitive.Range
@@ -567,9 +636,10 @@ function Slider({
           data-slot="slider-thumb"
           // biome-ignore lint/suspicious/noArrayIndexKey: shadcn parity — thumbs are positional (one per value index)
           key={index}
-          // The body is ::after so the ::before halo (shadcn's ring-4
-          // ring-ring/50, as a fading layer) sits between its shadow and it.
-          className="relative block size-4 shrink-0 rounded-full shadow-sm [transform:translate(var(--godui-slider-ride,0px,0px))] [transition:scale_var(--godui-duration-base)_var(--ease-spring-bouncy),transform_var(--godui-duration-slow)_var(--ease-spring-bouncy)] group-data-[dragging]/slider:[transition:scale_var(--godui-duration-base)_var(--ease-spring-bouncy)] motion-reduce:transition-none motion-safe:group-data-[pressed]/slider:data-[active]:scale-[1.15] before:pointer-events-none before:absolute before:-inset-1 before:rounded-full before:bg-ring/50 before:opacity-0 before:scale-60 before:transition-[opacity,scale] before:duration-(--godui-duration-fast) before:ease-out-expo hover:before:opacity-100 hover:before:scale-100 focus-visible:before:opacity-100 focus-visible:before:scale-100 motion-reduce:before:scale-100 after:absolute after:inset-0 after:rounded-full after:border after:border-primary after:bg-white focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50"
+          // shadcn's thumb, with its `ring-4 ring-ring/50` hover/focus ring
+          // redrawn as a ::before ring (4px border around the 16px body:
+          // -5px from the padding box) that fades and grows in.
+          className="relative block size-4 shrink-0 rounded-full border border-primary bg-white shadow-sm [transform:translate(var(--godui-slider-ride,0px,0px))] [transition:scale_var(--godui-duration-base)_var(--ease-spring-bouncy),transform_var(--godui-duration-slow)_var(--ease-spring-bouncy)] group-data-[overdrag]/slider:[transition:scale_var(--godui-duration-base)_var(--ease-spring-bouncy)] motion-reduce:transition-none motion-safe:group-data-[pressed]/slider:data-[active]:scale-[1.15] before:pointer-events-none before:absolute before:-inset-[5px] before:rounded-full before:border-4 before:border-ring/50 before:opacity-0 before:scale-60 before:transition-[opacity,scale] before:duration-(--godui-duration-fast) before:ease-out-expo hover:before:opacity-100 hover:before:scale-100 focus-visible:before:opacity-100 focus-visible:before:scale-100 motion-reduce:before:scale-100 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50"
         />
       ))}
     </SliderPrimitive.Root>
