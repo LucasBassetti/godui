@@ -185,7 +185,8 @@ function useMergedRef<T>(
  * that snaps the layout. Cleared when the move's last animation in the
  * wrapper ends (the glides, or a sub-menu's fade-in, which is keyed on this
  * flag), so the clear lands in the frame the motion ends and cuts nothing —
- * or, if one never ends (paused), after twice `--godui-duration-slow`.
+ * or, if one never ends (paused), one `--godui-duration-slow` after the
+ * longest of them should have.
  */
 function useMoving(
   ref: React.RefObject<HTMLElement | null>,
@@ -210,12 +211,16 @@ function useMoving(
       if (live) flushSync(() => setMoving(null));
     };
     // Finite animations only: a looping one (a skeleton's shimmer) never ends.
-    const running = (wrapper.getAnimations?.({ subtree: true }) ?? []).filter(
-      (animation) =>
-        Number.isFinite(
-          Number(animation.effect?.getComputedTiming().endTime ?? Number.NaN),
-        ),
+    const timings = (wrapper.getAnimations?.({ subtree: true }) ?? []).map(
+      (animation) => ({
+        animation,
+        timing: animation.effect?.getComputedTiming(),
+      }),
     );
+    const finite = timings.filter(({ timing }) =>
+      Number.isFinite(Number(timing?.endTime ?? Number.NaN)),
+    );
+    const running = finite.map(({ animation }) => animation);
     const token = (name: string, fallback: number) =>
       toMs(view.getComputedStyle(wrapper).getPropertyValue(name), fallback);
     let timer: number | undefined;
@@ -226,10 +231,20 @@ function useMoving(
       Promise.allSettled(running.map((animation) => animation.finished)).then(
         clear,
       );
-      // A paused or overlong animation (your CSS, a backgrounded tab) must
-      // not hold the clip and lift: give up after twice the slow token, well
-      // past the longest move (the glides, then a sub-menu's fade-in).
-      timer = view.setTimeout(clear, 2 * token("--godui-duration-slow", 380));
+      // A paused animation (your CSS, a stalled tab) must not hold the clip
+      // and lift: give up one slow token after the longest one should have
+      // ended. Read off the animations themselves, so a retuned (or slowed)
+      // clock still runs to its end.
+      const remaining = Math.max(
+        ...finite.map(
+          ({ timing }) =>
+            Number(timing?.endTime) - Number(timing?.localTime ?? 0),
+        ),
+      );
+      timer = view.setTimeout(
+        clear,
+        remaining + token("--godui-duration-slow", 380),
+      );
     } else {
       timer = view.setTimeout(clear, token("--godui-duration-base", 260));
     }

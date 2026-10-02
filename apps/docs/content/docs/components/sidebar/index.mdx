@@ -771,9 +771,9 @@ A few things differ, all on desktop:
   ends.
 - While the sidebar moves, the content after it is lifted above the panel.
   That lasts as long as the glides (one `--godui-duration-base`); expanding
-  from icon mode it holds until the sub-menus' fade-in has ended too, and it
-  never outlasts twice `--godui-duration-slow`, even if an animation is
-  paused. Expanding from icon mode, labels snap in at full
+  from icon mode it holds until the sub-menus' fade-in has ended too. If one
+  of those animations is paused, it lets go one `--godui-duration-slow` after
+  that animation should have ended. Expanding from icon mode, labels snap in at full
   width before the surface's edge reaches them; the content, glued to that
   edge, covers them until it passes. Give that content a background
   (`SidebarInset` has `bg-background`).

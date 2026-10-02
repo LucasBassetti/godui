@@ -273,15 +273,15 @@ describe("Sidebar", () => {
     }
   });
 
-  it("a paused or overlong animation can't hold the flag: it clears after twice the slow token", async () => {
+  it("a paused animation can't hold the flag: it clears one slow token after it should have ended", async () => {
     const user = userEvent.setup();
     render(<Usage ui={Godui} />);
     const wrapper = slot("sidebar-wrapper");
-    // Finite, but never finishes (paused by your CSS, say).
+    // Finite (ends at 450ms), but never finishes (paused by your CSS, say).
     wrapper.getAnimations = () =>
       [
         {
-          effect: { getComputedTiming: () => ({ endTime: 5000 }) },
+          effect: { getComputedTiming: () => ({ endTime: 450, localTime: 0 }) },
           finished: new Promise(() => {}),
         },
       ] as unknown as Animation[];
@@ -289,13 +289,13 @@ describe("Sidebar", () => {
     try {
       await user.click(trigger());
       expect(wrapper).toHaveAttribute("data-moving", "collapsing");
-      // --godui-duration-slow is 380ms (jsdom has no CSS: the fallback).
+      // 450ms + --godui-duration-slow (380ms; jsdom has no CSS: the fallback).
       await act(async () => {
-        vi.advanceTimersByTime(700);
+        vi.advanceTimersByTime(780);
       });
       expect(wrapper).toHaveAttribute("data-moving");
       await act(async () => {
-        vi.advanceTimersByTime(100);
+        vi.advanceTimersByTime(80);
       });
       expect(wrapper).not.toHaveAttribute("data-moving");
     } finally {
