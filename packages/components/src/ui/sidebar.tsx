@@ -146,9 +146,9 @@ function useFloatingStretch(
 }
 
 /** A CSS time (`260ms`, `0.3s`) in milliseconds; 260 when unset or invalid. */
-function toMs(value: string | undefined): number {
+function toMs(value: string | undefined, fallback = 260): number {
   const n = Number.parseFloat(value ?? "");
-  if (!Number.isFinite(n)) return 260;
+  if (!Number.isFinite(n)) return fallback;
   return /\ds\s*$/.test(value ?? "") ? n * 1000 : n;
 }
 
@@ -184,7 +184,8 @@ function useMergedRef<T>(
  * the same render as the new state, so CSS keyed on it applies in the commit
  * that snaps the layout. Cleared when the move's last animation in the
  * wrapper ends (the glides, or a sub-menu's fade-in, which is keyed on this
- * flag), so the clear lands in the frame the motion ends and cuts nothing.
+ * flag), so the clear lands in the frame the motion ends and cuts nothing —
+ * or, if one never ends (paused), after twice `--godui-duration-slow`.
  */
 function useMoving(
   ref: React.RefObject<HTMLElement | null>,
@@ -215,6 +216,8 @@ function useMoving(
           Number(animation.effect?.getComputedTiming().endTime ?? Number.NaN),
         ),
     );
+    const token = (name: string, fallback: number) =>
+      toMs(view.getComputedStyle(wrapper).getPropertyValue(name), fallback);
     let timer: number | undefined;
     if (running.length > 0) {
       // Settled, not fulfilled: one cancelled along the way (a reversal, a
@@ -223,15 +226,12 @@ function useMoving(
       Promise.allSettled(running.map((animation) => animation.finished)).then(
         clear,
       );
+      // A paused or overlong animation (your CSS, a backgrounded tab) must
+      // not hold the clip and lift: give up after twice the slow token, well
+      // past the longest move (the glides, then a sub-menu's fade-in).
+      timer = view.setTimeout(clear, 2 * token("--godui-duration-slow", 380));
     } else {
-      timer = view.setTimeout(
-        clear,
-        toMs(
-          view
-            .getComputedStyle(wrapper)
-            .getPropertyValue("--godui-duration-base"),
-        ),
-      );
+      timer = view.setTimeout(clear, token("--godui-duration-base", 260));
     }
     return () => {
       live = false;

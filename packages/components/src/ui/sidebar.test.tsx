@@ -273,6 +273,36 @@ describe("Sidebar", () => {
     }
   });
 
+  it("a paused or overlong animation can't hold the flag: it clears after twice the slow token", async () => {
+    const user = userEvent.setup();
+    render(<Usage ui={Godui} />);
+    const wrapper = slot("sidebar-wrapper");
+    // Finite, but never finishes (paused by your CSS, say).
+    wrapper.getAnimations = () =>
+      [
+        {
+          effect: { getComputedTiming: () => ({ endTime: 5000 }) },
+          finished: new Promise(() => {}),
+        },
+      ] as unknown as Animation[];
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    try {
+      await user.click(trigger());
+      expect(wrapper).toHaveAttribute("data-moving", "collapsing");
+      // --godui-duration-slow is 380ms (jsdom has no CSS: the fallback).
+      await act(async () => {
+        vi.advanceTimersByTime(700);
+      });
+      expect(wrapper).toHaveAttribute("data-moving");
+      await act(async () => {
+        vi.advanceTimersByTime(100);
+      });
+      expect(wrapper).not.toHaveAttribute("data-moving");
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it("only an icon sidebar fades its sub-menus back in (offcanvas never hid them)", () => {
     const fade =
       "in-data-[moving=expanding]:[&_[data-sidebar=menu-sub]]:animate-godui-fade-in";
