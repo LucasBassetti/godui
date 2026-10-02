@@ -3,8 +3,9 @@
 // GodUI Navigation Menu viewport frame — internal helper for navigation-menu.tsx (not part of shadcn's API).
 // The positioning wrapper around the Radix viewport, as a client component so the main file can stay
 // server-safe. It watches the viewport and replays the exit Radix drops (see keepExitingContent), and
-// anchors the viewport under the open trigger (see anchorToTrigger). GPU-only: the copy runs the
-// content's own godui-slide-out keyframe; the anchor moves on `translate`.
+// anchors the viewport under the open trigger (see anchorToTrigger). Also hosts the click guard that
+// keeps a hover-opened trigger open when it's then clicked (see guardHoverOpenedClicks). GPU-only: the
+// copy runs the content's own godui-slide-out keyframe; the anchor moves on `translate`.
 
 import type * as React from "react";
 
@@ -249,4 +250,60 @@ function NavigationMenuViewportFrame(props: React.ComponentProps<"div">) {
   return <div {...props} ref={frameRef} />;
 }
 
-export { NavigationMenuViewportFrame };
+/**
+ * Radix opens a trigger on hover (after ~200ms) and toggles it on click, so
+ * the natural "rest on it, then click" closes the menu the hover just opened
+ * — it looks like the trigger doesn't work. This listens to clicks on the
+ * menu in the capture phase (before Radix's handler) and keeps a hover-opened
+ * trigger open; a click on a trigger you opened by clicking (or Enter) still
+ * closes it. `preventDefault()` is what Radix checks to skip its toggle.
+ */
+function guardHoverOpenedClicks(marker: HTMLSpanElement | null) {
+  const root = marker?.parentElement;
+  if (!root) return;
+  let clicked: Element | null = null;
+  const onClick = (event: MouseEvent) => {
+    const trigger = (event.target as Element | null)?.closest(
+      '[data-slot="navigation-menu-trigger"]',
+    );
+    if (!trigger || trigger.closest('[data-slot="navigation-menu"]') !== root)
+      return;
+    if (trigger.getAttribute("data-state") !== "open") {
+      clicked = trigger;
+      return;
+    }
+    if (clicked === trigger) {
+      clicked = null;
+      return;
+    }
+    // Opened by hover (or by a click on another trigger): keep it open.
+    event.preventDefault();
+    clicked = trigger;
+  };
+  // Forget once nothing is open, so the next hover-open is guarded again.
+  const states = new MutationObserver(() => {
+    if (
+      !root.querySelector(
+        '[data-slot="navigation-menu-trigger"][data-state="open"]',
+      )
+    )
+      clicked = null;
+  });
+  states.observe(root, {
+    subtree: true,
+    attributes: true,
+    attributeFilter: ["data-state"],
+  });
+  root.addEventListener("click", onClick, true);
+  return () => {
+    states.disconnect();
+    root.removeEventListener("click", onClick, true);
+  };
+}
+
+/** Renders nothing visible; hosts the click guard on the menu root. */
+function NavigationMenuClickGuard() {
+  return <span hidden ref={guardHoverOpenedClicks} />;
+}
+
+export { NavigationMenuClickGuard, NavigationMenuViewportFrame };

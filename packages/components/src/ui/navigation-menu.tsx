@@ -4,14 +4,18 @@
 // the menu), glides to the next trigger on a spring, and its size snaps. Without the viewport each
 // content fades and scales from the top. The chevron rotates and the indicator slides with transforms. GPU-only.
 // Additive: the viewport keeps an inert copy of the content you leave until its exit ends (works around Radix
-// dropping that exit) — done in navigation-menu-viewport-frame.tsx, so this file stays a server-safe module
-// like shadcn's (navigationMenuTriggerStyle() is callable from Server Components).
+// dropping that exit), and a click on a trigger the hover just opened keeps it open instead of toggling it
+// shut — both done in navigation-menu-viewport-frame.tsx, so this file stays a server-safe module like
+// shadcn's (navigationMenuTriggerStyle() is callable from Server Components).
 
 import { cva } from "class-variance-authority";
 import { ChevronDownIcon } from "lucide-react";
 import { NavigationMenu as NavigationMenuPrimitive } from "radix-ui";
 import type * as React from "react";
-import { NavigationMenuViewportFrame } from "@/components/ui/navigation-menu-viewport-frame";
+import {
+  NavigationMenuClickGuard,
+  NavigationMenuViewportFrame,
+} from "@/components/ui/navigation-menu-viewport-frame";
 import { cn } from "@/lib/utils";
 
 function NavigationMenu({
@@ -33,6 +37,7 @@ function NavigationMenu({
       {...props}
     >
       {children}
+      <NavigationMenuClickGuard />
       {viewport && <NavigationMenuViewport />}
     </NavigationMenuPrimitive.Root>
   );

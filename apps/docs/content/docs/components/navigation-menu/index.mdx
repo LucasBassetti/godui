@@ -406,6 +406,11 @@ import {
 | Indicator | `transition` (position), `godui-fade-in` / `-out` (visibility) | `transform`, `opacity` | `ease-spring-snappy` | 260ms |
 | Trigger and link highlight | snaps | — | — | — |
 
+Radix opens a trigger on hover and toggles it on click, so resting on a trigger
+and then clicking it closed the menu the hover had just opened. GodUI keeps a
+hover-opened trigger open on that click; clicking a trigger you opened by
+clicking still closes it.
+
 shadcn pins the shared viewport to the menu's left edge, so a small panel
 opens far from its trigger. GodUI centers it under the open trigger, keeping it
 inside the menu; a panel wider than the room left stays left-aligned, as in

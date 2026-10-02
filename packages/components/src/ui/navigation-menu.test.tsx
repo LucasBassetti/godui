@@ -157,6 +157,33 @@ describe("NavigationMenu", () => {
     await waitFor(() => expect(slot("navigation-menu-content")).toBeNull());
   });
 
+  it("a click on a trigger that opened without a click (hover) keeps it open; the next click closes", async () => {
+    for (const viewport of [true, false]) {
+      const user = userEvent.setup();
+      // Open without a click, as a hover does after its delay.
+      const { unmount } = render(
+        <Usage ui={Godui} viewport={viewport} defaultValue="home" />,
+      );
+      const home = screen.getByRole("button", { name: "Home" });
+      expect(home).toHaveAttribute("data-state", "open");
+      await user.click(home);
+      expect(home).toHaveAttribute("data-state", "open");
+      await user.click(home);
+      expect(home).toHaveAttribute("data-state", "closed");
+      unmount();
+    }
+  });
+
+  it("a click-opened trigger still closes on the next click (Radix's toggle)", async () => {
+    const user = userEvent.setup();
+    render(<Usage ui={Godui} />);
+    const home = screen.getByRole("button", { name: "Home" });
+    await user.click(home);
+    expect(home).toHaveAttribute("data-state", "open");
+    await user.click(home);
+    expect(home).toHaveAttribute("data-state", "closed");
+  });
+
   it("chevron rotates with transform on a spring (SVG-safe), honouring reduced motion", () => {
     render(<Usage ui={Godui} />);
     const chevron = screen
