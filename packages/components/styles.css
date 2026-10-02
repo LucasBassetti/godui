@@ -348,6 +348,235 @@
   }
 }
 
+/* ── calendar ────────────────────────────────────────────────────────────────
+ * Component keyframes (also in the calendar registry entry). The --godui-
+ * calendar-* tuning variables are set on the Calendar root; every distance
+ * and delay is multiplied by --godui-motion. No blur: Chrome won't composite
+ * a filter that moves pixels, so a blurred month change runs on the main
+ * thread. Month change: the old weeks
+ * leave fast and short, the new ones arrive a beat later from further away.
+ * The exit fades on an ease-out quad, not expo: expo empties the old month
+ * before the new one shows (both together dip to 16% opacity, a blink);
+ * quad keeps them above 65%. react-day-picker drops the old month on the old
+ * caption's animationend, so the caption's exit (and the dropdown caption's
+ * hide) last delay + base, the moment the new weeks land. The caption is
+ * text on text, so it doesn't cross-fade like the grid: the old one is gone
+ * by 30% of that, the new one starts 40ms after the weeks and ends with them. */
+@theme inline {
+  --animate-godui-calendar-in-from-end: godui-calendar-in-from-end
+    var(--godui-duration-base) var(--ease-spring-snappy)
+    calc(var(--godui-calendar-delay) * var(--godui-motion)) backwards;
+  --animate-godui-calendar-in-from-start: godui-calendar-in-from-start
+    var(--godui-duration-base) var(--ease-spring-snappy)
+    calc(var(--godui-calendar-delay) * var(--godui-motion)) backwards;
+  --animate-godui-calendar-out-to-start: godui-calendar-out-to-start
+    var(--godui-duration-fast) cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  --animate-godui-calendar-out-to-end: godui-calendar-out-to-end
+    var(--godui-duration-fast) cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  --animate-godui-calendar-caption-in-from-end: godui-calendar-caption-in-from-end
+    calc(var(--godui-duration-base) - 40ms * var(--godui-motion))
+    var(--ease-spring-snappy)
+    calc((var(--godui-calendar-delay) + 40ms) * var(--godui-motion)) backwards;
+  --animate-godui-calendar-caption-in-from-start: godui-calendar-caption-in-from-start
+    calc(var(--godui-duration-base) - 40ms * var(--godui-motion))
+    var(--ease-spring-snappy)
+    calc((var(--godui-calendar-delay) + 40ms) * var(--godui-motion)) backwards;
+  --animate-godui-calendar-caption-out-to-start: godui-calendar-caption-out-to-start
+    calc(
+      var(--godui-duration-base) +
+      var(--godui-calendar-delay) *
+      var(--godui-motion)
+    )
+    linear both;
+  --animate-godui-calendar-caption-out-to-end: godui-calendar-caption-out-to-end
+    calc(
+      var(--godui-duration-base) +
+      var(--godui-calendar-delay) *
+      var(--godui-motion)
+    )
+    linear both;
+  --animate-godui-calendar-caption-hide: godui-calendar-caption-hide
+    calc(
+      var(--godui-duration-base) +
+      var(--godui-calendar-delay) *
+      var(--godui-motion)
+    )
+    linear both;
+  --animate-godui-calendar-fill-in: godui-calendar-fill-in
+    var(--godui-duration-base) var(--ease-spring-bouncy) backwards;
+  --animate-godui-calendar-fade-out: godui-calendar-fade-out
+    var(--godui-duration-fast) var(--ease-out-expo) both;
+  --animate-godui-calendar-fill-shrink: godui-calendar-fill-shrink
+    var(--godui-duration-fast) var(--ease-out-expo) both;
+  --animate-godui-calendar-track-in: godui-calendar-track-in
+    calc(
+      var(--godui-calendar-track-span, 1) *
+      var(--godui-calendar-sweep) *
+      var(--godui-motion) +
+      var(--godui-duration-fast) *
+      (1 - var(--godui-motion))
+    )
+    linear
+    calc(
+      var(--godui-calendar-track-at, 0) *
+      var(--godui-calendar-sweep) *
+      var(--godui-motion)
+    )
+    backwards;
+}
+@keyframes godui-calendar-in-from-end {
+  from {
+    opacity: 0;
+    translate: calc(
+        var(--godui-calendar-drift) *
+        var(--godui-calendar-dir) *
+        var(--godui-motion)
+      )
+      0;
+  }
+}
+@keyframes godui-calendar-in-from-start {
+  from {
+    opacity: 0;
+    translate: calc(
+        var(--godui-calendar-drift) *
+        var(--godui-calendar-dir) *
+        -1 *
+        var(--godui-motion)
+      )
+      0;
+  }
+}
+@keyframes godui-calendar-out-to-start {
+  to {
+    opacity: 0;
+    translate: calc(
+        var(--godui-calendar-drift-out) *
+        var(--godui-calendar-dir) *
+        -1 *
+        var(--godui-motion)
+      )
+      0;
+  }
+}
+@keyframes godui-calendar-out-to-end {
+  to {
+    opacity: 0;
+    translate: calc(
+        var(--godui-calendar-drift-out) *
+        var(--godui-calendar-dir) *
+        var(--godui-motion)
+      )
+      0;
+  }
+}
+@keyframes godui-calendar-caption-in-from-end {
+  from {
+    opacity: 0;
+    translate: calc(
+        var(--godui-calendar-caption-drift) *
+        var(--godui-calendar-dir) *
+        var(--godui-motion)
+      )
+      0;
+  }
+}
+@keyframes godui-calendar-caption-in-from-start {
+  from {
+    opacity: 0;
+    translate: calc(
+        var(--godui-calendar-caption-drift) *
+        var(--godui-calendar-dir) *
+        -1 *
+        var(--godui-motion)
+      )
+      0;
+  }
+}
+@keyframes godui-calendar-caption-out-to-start {
+  0% {
+    opacity: 1;
+    translate: 0 0;
+    animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  30%,
+  100% {
+    opacity: 0;
+    translate: calc(
+        var(--godui-calendar-caption-drift) *
+        var(--godui-calendar-dir) *
+        -0.5 *
+        var(--godui-motion)
+      )
+      0;
+  }
+}
+@keyframes godui-calendar-caption-out-to-end {
+  0% {
+    opacity: 1;
+    translate: 0 0;
+    animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  30%,
+  100% {
+    opacity: 0;
+    translate: calc(
+        var(--godui-calendar-caption-drift) *
+        var(--godui-calendar-dir) *
+        0.5 *
+        var(--godui-motion)
+      )
+      0;
+  }
+}
+/* The old dropdown caption, hidden for the whole change: 0 → 0.01, not 0
+ * throughout — Chrome won't composite an animation with no visible change. */
+@keyframes godui-calendar-caption-hide {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.01;
+  }
+}
+/* A picked day's fill (and its copy of the number) grows from 60% while it
+ * fades in over the first third; the spring overshoots to ≈108%. */
+@keyframes godui-calendar-fill-in {
+  0% {
+    opacity: 0;
+    scale: calc(1 - 0.4 * var(--godui-motion));
+  }
+  35% {
+    opacity: 1;
+  }
+}
+/* A layer leaving (a deselected day's fill, a range track half): from 1,
+ * explicitly — its resting style is already opacity 0, so it stays hidden
+ * once the fade ends and inside rdp's clone of the old month. */
+@keyframes godui-calendar-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+/* …while a deselected day's fill (the layer's ::before) shrinks. */
+@keyframes godui-calendar-fill-shrink {
+  to {
+    scale: calc(1 - 0.15 * var(--godui-motion));
+  }
+}
+/* A range track half grows across from the side its sweep comes from, in its
+ * slice of the sweep (linear: the halves run back to back, one continuous
+ * front); under reduced motion every half fades in at once, in fast. */
+@keyframes godui-calendar-track-in {
+  from {
+    opacity: var(--godui-motion);
+    scale: calc(1 - var(--godui-motion)) 1;
+  }
+}
+
 /* ── input-otp ───────────────────────────────────────────────────────────────
  * Component keyframe (also in the input-otp registry entry). Opacity only. */
 @theme inline {

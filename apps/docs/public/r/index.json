@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "revision": "c5036b1e38f60e8cd1bee11d163632759ec2c074",
+  "revision": "4c352f281e7247fd4b8d53b736822a56af3c3020",
   "components": [
     {
       "name": "accordion",
@@ -176,7 +176,7 @@
     {
       "name": "calendar",
       "title": "Calendar",
-      "description": "A date field component that allows users to enter and edit date. Months slide in a full width while the old one slides out; a newly selected day pops. GPU-only.",
+      "description": "A date field component that allows users to enter and edit date. The old month drifts out as the new one drifts in a beat later, the caption on its own layer; a picked day pops, a range sweeps in, hover and focus fade. GPU-only.",
       "category": "Components",
       "dependencies": ["react-day-picker@latest", "date-fns", "lucide-react"],
       "registryDependencies": ["utils", "@godui/godui-motion", "@godui/button"],
@@ -1117,7 +1117,7 @@
     {
       "name": "slider",
       "title": "Slider",
-      "description": "An input where the user selects a value from within a given range. The held thumb grows on a spring; GPU-only.",
+      "description": "An input where the user selects a value from within a given range. Clicks, keys and new values glide the thumb and range on one clock; a press lifts the thumb and thickens the track; overdrag stretches it like a rubber band; GPU-only.",
       "category": "Components",
       "dependencies": ["radix-ui"],
       "registryDependencies": ["utils", "@godui/godui-motion"],

@@ -1,6 +1,6 @@
 ---
 title: Calendar
-description: A date field component that allows users to enter and edit date. Months slide a full width and a newly picked day pops.
+description: A date field component that allows users to enter and edit date. Months drift in layers, a picked day pops, a range sweeps out to its end.
 workbench: true
 ---
 
@@ -12,12 +12,14 @@ import { CalendarRangeDemo } from "@/components/demos/core/calendar-range-demo";
 <Workbench>
 
 The shadcn/ui calendar, built on [React DayPicker](https://daypicker.dev).
-Next and Previous slide the new month in a full width while the old one slides
-out the other way, both on one curve so the two months move as a single strip;
-the caption cross-fades. Picking a day pops it. The pop plays only when the
-selection changes, so a calendar that loads with a date selected, or a month
-you navigate back to, never animates. Only `translate`, `scale` and `opacity`
-animate.
+On Next and Previous the old month drifts a short way out and fades while the
+new one drifts in from a quarter width a beat later; the caption moves less
+than the grid, like a layer further back. Picking a day pops its fill, and the
+day you leave shrinks away. In a range, the track sweeps out from the part
+already drawn to the day you picked, in the same time however long the range.
+Hover fades in, and the focus ring fades in when you enter the grid and jumps
+from day to day on the arrow keys. Nothing animates on first paint or when you
+page back to a month. Only `translate`, `scale` and `opacity` animate.
 
 <Example label="Single" story="ui-calendar--single" code={`import { Calendar } from "@/components/ui/calendar";
 import * as React from "react";
@@ -143,14 +145,36 @@ keyframes, the FLIP hook) into your project and the GodUI `button` the day
 cells and nav buttons are built on.
 
 Two additive changes: `animate` (React DayPicker's own prop) defaults to `true`,
-so pass `animate={false}` to turn the month slide off; and `Root`, `Chevron` and
-`WeekNumber` are declared once at module level instead of inline, so a
+so pass `animate={false}` to turn the month change off; and `Root`, `Chevron`
+and `WeekNumber` are declared once at module level instead of inline, so a
 controlled re-render doesn't remount the grid. Your own `classNames` and
 `components` still override GodUI's, key by key: `weeks_after_enter` and the
-other enter/exit keys replace the animation itself. The slide's timing
-(distance, duration, shared curve) sits on the root `className`, scoped to the
-elements React DayPicker animates, so overriding `weeks` or `month_caption`
-restyles them without breaking the slide.
+other enter/exit keys replace the animation itself. The timing lives in the
+keyframes and in a few variables on the root, so overriding `weeks` or
+`month_caption` restyles them without breaking the month change.
+
+The day button draws shadcn's fills on layers instead of its own background:
+the selected fill (with a copy of the number on it), the range's accent track,
+the hover tint and the focus ring. At rest it looks the same as shadcn's, pixel
+for pixel; in RTL the accent behind a range's ends sits on the inner side,
+where shadcn draws it on the outer one. The one other visible difference: in
+dark mode, hovering a selected day keeps its fill, as it does in light mode.
+
+### Tuning
+
+Set these on `className` to retune the month change and the range sweep:
+
+| Variable | Default | What it sets |
+| --- | --- | --- |
+| `--godui-calendar-drift` | `25%` | How far the new weeks travel in, as a share of their width (`100%` is a full page turn) |
+| `--godui-calendar-drift-out` | `12%` | How far the old weeks travel out |
+| `--godui-calendar-caption-drift` | `14px` | The caption's trip in (it leaves by half of it) |
+| `--godui-calendar-delay` | `20ms` | The new month's beat after the old one starts leaving |
+| `--godui-calendar-sweep` | `240ms` | How long a range's track takes to draw |
+
+```tsx
+<Calendar className="[--godui-calendar-drift:100%] [--godui-calendar-drift-out:100%]" />
+```
 
 ## Usage
 
@@ -175,20 +199,34 @@ return (
 
 | Interaction | Keyframe / mechanism | Properties | Easing | Duration |
 | --- | --- | --- | --- | --- |
-| Next / Previous (new month) | `godui-slide-in-from-right` / `-left`, a full month width | `translate`, `opacity` | `ease-spring-smooth` | 260ms |
-| Next / Previous (old month) | `godui-slide-out-to-left` / `-right` on React DayPicker's clone | `translate`, `opacity` | `ease-spring-smooth` | 260ms |
-| Caption | `godui-fade-in` / `godui-fade-out` | `opacity` | `ease-spring-snappy` / `ease-out-expo` | 260ms |
-| Pick a day | `godui-pop` | `scale` 1 → 0.88 → 1 | `ease-spring-bouncy` | 260ms |
-| Selection fill, range middle, month height | snap | — | — | — |
+| Next / Previous: old weeks | `godui-calendar-out-to-start` / `-end` on React DayPicker's clone, to 12% | `translate`, `opacity` | ease-out quad | 150ms |
+| Next / Previous: new weeks | `godui-calendar-in-from-end` / `-start`, from 25%, after 20ms | `translate`, `opacity` | `ease-spring-snappy` | 260ms |
+| Next / Previous: caption | `godui-calendar-caption-out-*` (gone by 30%), then `godui-calendar-caption-in-*` from 14px | `translate`, `opacity` | ease-out quad / `ease-spring-snappy` | 280ms / 220ms |
+| Next / Previous: dropdown caption | the old one hidden (`godui-calendar-caption-hide`), the new one shown at once | `opacity` | — | 280ms |
+| Pick a day | `godui-calendar-fill-in` on the fill layer, from 60% | `scale`, `opacity` | `ease-spring-bouncy` | 260ms |
+| The day you leave | `godui-calendar-fill-shrink` on its fill, `godui-calendar-fade-out` on the layer | `scale` to 85%, `opacity` | `ease-out-expo` | 150ms |
+| Range track | `godui-calendar-track-in`, per half-cell, back to back from the part already drawn | `scale` (x) | linear slices of an ease-out cubic | 240ms in all |
+| Range track leaving | `godui-calendar-fade-out` | `opacity` | `ease-out-expo` | 150ms |
+| Hover | `::after` overlay | `opacity` | ease-out | 100ms |
+| Focus ring | `::before` ring, fades in entering the grid, jumps on arrow keys | `opacity`, `scale` from 98% | `ease-out-expo` | 150ms |
+| Weekdays, nav buttons, month height | static / snap | — | — | — |
 
 React DayPicker removes the old month on its caption's `animationend`, so the
-caption's fade-out runs as long as the slide. A month with six weeks after one
-with five makes the calendar one row taller at once; nothing animates the
-height. A second Next while a slide is running changes the month without a
-second slide.
+old caption's exit lasts until the new weeks land (delay + 260ms), with its
+fade done in the first 30%. A second Next during a change moves to the next
+month without a second animation, and a month change made from the keyboard
+doesn't animate.
 
-Under `prefers-reduced-motion` the months cross-fade without sliding and the
-picked day fills without the dip.
+There's no blur: Chrome won't composite a `filter` that moves pixels, so a
+blurred month change would run on the main thread.
+
+A month with six weeks after one with five makes the calendar a row taller at
+once; nothing animates the height. Pass `fixedWeeks` to always show six weeks
+and keep the height fixed.
+
+Under `prefers-reduced-motion` nothing travels or scales: the months
+cross-fade in 150ms, a picked day's fill fades in, and a range's track fades in
+all at once.
 
 ## API
 

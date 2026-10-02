@@ -550,8 +550,9 @@ const CALENDAR_FORMATTERS = {
 const CALENDAR_SLIDE_MS = 800;
 
 /**
- * Real Calendar, wordless, on a slowed clock: the controlled `month`
- * alternates Next and Previous, so the strip slides both ways. `outlined`
+ * Real Calendar, wordless, on a ~3x slowed clock (every duration and the
+ * enter's delay, so the overlap keeps its shape): the controlled `month`
+ * alternates Next and Previous, so the months drift both ways. `outlined`
  * dashes the old month's clone (React DayPicker marks it `aria-hidden`).
  */
 function CalendarSlide({
@@ -575,7 +576,7 @@ function CalendarSlide({
       onMonthChange={() => {}}
       formatters={CALENDAR_FORMATTERS}
       components={CALENDAR_PARTS}
-      className={`pointer-events-none rounded-lg border shadow-sm [--cell-size:--spacing(9)] [--godui-duration-base:800ms] ${
+      className={`pointer-events-none rounded-lg border shadow-sm [--cell-size:--spacing(9)] [--godui-calendar-delay:60ms] [--godui-duration-base:780ms] [--godui-duration-fast:450ms] ${
         outlined
           ? "[&_[data-animated-month][aria-hidden=true]_[data-animated-weeks]>tr]:outline-1 [&_[data-animated-month][aria-hidden=true]_[data-animated-weeks]>tr]:-outline-offset-1 [&_[data-animated-month][aria-hidden=true]_[data-animated-weeks]>tr]:outline-[var(--foreground)]/40 [&_[data-animated-month][aria-hidden=true]_[data-animated-weeks]>tr]:outline-dashed"
           : ""
@@ -589,8 +590,8 @@ function CalendarClone({ reduced }: { reduced: boolean }) {
 }
 
 /**
- * Pick a day (pop), pick another (pop), go to the next month and back (the
- * selected day comes back still), pick again (pop).
+ * Pick a day (pop; the old one shrinks away), pick another, go to the next
+ * month and back (the selected day comes back still), pick again. Slowed 2x.
  */
 const CALENDAR_POP_STEPS = [
   { month: 9, day: 14 },
@@ -620,7 +621,52 @@ function CalendarPop({ reduced }: { reduced: boolean }) {
       onSelect={() => {}}
       formatters={CALENDAR_FORMATTERS}
       components={CALENDAR_PARTS}
-      className="pointer-events-none rounded-lg border shadow-sm [--cell-size:--spacing(9)]"
+      className="pointer-events-none rounded-lg border shadow-sm [--cell-size:--spacing(9)] [--godui-duration-base:520ms] [--godui-duration-fast:300ms]"
+    />
+  );
+}
+
+/**
+ * A range, picked: one day, then an end far away (the track sweeps out to
+ * it), a nearer end (the rest fades), an end before the start (it sweeps
+ * back the other way), and clear. The sweep is slowed to 0.9s.
+ */
+const CALENDAR_RANGE_STEPS: Array<[number, number] | null> = [
+  [5, 5],
+  [5, 23],
+  [5, 14],
+  [2, 14],
+  null,
+];
+
+function CalendarRangeSweep({ reduced }: { reduced: boolean }) {
+  const [step, setStep] = useState(reduced ? 1 : 0);
+  useEffect(() => {
+    if (reduced) return;
+    const id = setInterval(
+      () => setStep((s) => (s + 1) % CALENDAR_RANGE_STEPS.length),
+      STEP_MS + 200,
+    );
+    return () => clearInterval(id);
+  }, [reduced]);
+  const range = CALENDAR_RANGE_STEPS[step];
+  return (
+    <Calendar
+      mode="range"
+      month={new Date(2026, 9, 1)}
+      onMonthChange={() => {}}
+      selected={
+        range
+          ? {
+              from: new Date(2026, 9, range[0]),
+              to: new Date(2026, 9, range[1]),
+            }
+          : undefined
+      }
+      onSelect={() => {}}
+      formatters={CALENDAR_FORMATTERS}
+      components={CALENDAR_PARTS}
+      className="pointer-events-none rounded-lg border shadow-sm [--cell-size:--spacing(9)] [--godui-calendar-sweep:900ms] [--godui-duration-base:520ms] [--godui-duration-fast:300ms]"
     />
   );
 }
@@ -914,6 +960,7 @@ const DEMOS = {
   calendar: CalendarSlide,
   "calendar-clone": CalendarClone,
   "calendar-pop": CalendarPop,
+  "calendar-range": CalendarRangeSweep,
   carousel: CarouselGlide,
   "carousel-jump": CarouselJump,
   checkbox: CheckboxToggle,
