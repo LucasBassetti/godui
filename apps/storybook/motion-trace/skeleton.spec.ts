@@ -49,3 +49,32 @@ test('className="animate-none" stops it, as it stops shadcn\'s pulse (reduced mo
     }
   }
 });
+
+test("a call site's motion-reduce:animate-none stops the reduced-motion pulse, as in shadcn", async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto(
+    "/iframe.html?id=ui-skeleton--reduced-motion-none&viewMode=story",
+  );
+  await page.waitForSelector('[data-slot="skeleton"]');
+  const state = await page.evaluate(() =>
+    [...document.querySelectorAll('[data-slot="skeleton"]')].map((el) => ({
+      root: getComputedStyle(el).animationName,
+      band: getComputedStyle(el, "::after").display,
+      running: el.getAnimations({ subtree: true }).length,
+    })),
+  );
+  expect(state.length).toBe(1);
+  expect(state[0]).toEqual({ root: "none", band: "none", running: 0 });
+  // Without the call-site class the pulse is back under reduced motion.
+  await page.goto("/iframe.html?id=ui-skeleton--default&viewMode=story");
+  await page.waitForSelector('[data-slot="skeleton"]');
+  const pulse = await page.evaluate(
+    () =>
+      getComputedStyle(
+        document.querySelector('[data-slot="skeleton"]') as Element,
+      ).animationName,
+  );
+  expect(pulse).toBe("pulse");
+});

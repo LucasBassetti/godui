@@ -61,3 +61,10 @@ export const Static: Story = {
     </div>
   ),
 };
+
+/** `motion-reduce:animate-none` stops the reduced-motion pulse, as in shadcn. */
+export const ReducedMotionNone: Story = {
+  render: (args) => (
+    <Skeleton {...args} className="h-4 w-[250px] motion-reduce:animate-none" />
+  ),
+};

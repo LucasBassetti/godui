@@ -78,7 +78,7 @@ describe("Skeleton", () => {
   it("reduced motion: the band is hidden and the block pulses instead", () => {
     render(<Godui.Skeleton data-testid="skeleton" />);
     const cls = skeleton().className.split(/\s+/);
-    expect(cls).toContain("motion-reduce:[&:not(.animate-none)]:animate-pulse");
+    expect(cls).toContain("motion-reduce:animate-pulse");
     expect(cls).toContain("motion-reduce:after:hidden");
   });
 
@@ -90,7 +90,24 @@ describe("Skeleton", () => {
     const cls = skeleton().className.split(/\s+/);
     expect(cls).toContain("animate-none");
     expect(cls).toContain("[&.animate-none]:after:hidden");
+    // The reduced-motion pulse stays in the list; [&.animate-none]:animate-none
+    // (a higher specificity) is what keeps it off.
+    expect(cls).toContain("[&.animate-none]:animate-none");
+  });
+
+  it('a call site\'s "motion-reduce:animate-none" replaces the reduced-motion pulse', () => {
+    // Same variant set, so tailwind-merge drops the base pulse (as it drops
+    // shadcn's animate-pulse); the band stays hidden.
+    render(
+      <Godui.Skeleton
+        data-testid="skeleton"
+        className="motion-reduce:animate-none"
+      />,
+    );
+    const cls = skeleton().className.split(/\s+/);
+    expect(cls).toContain("motion-reduce:animate-none");
     expect(cls).not.toContain("motion-reduce:animate-pulse");
+    expect(cls).toContain("motion-reduce:after:hidden");
   });
 
   it("lets a call site's absolute replace relative", () => {
