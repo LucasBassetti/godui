@@ -64,12 +64,16 @@ function plus(length: string, offset: number): string {
  * The accordion's own box can move when it grows: a parent that centers it
  * (a flex/grid stage, a dialog) shifts it by half the new height in one step.
  * Glide it from where it was drawn at the click (`from`) back to rest, on the
- * panels' clock, so the rows above the panel don't jump either.
+ * panels' clock, so the rows above the panel don't jump either. Only the
+ * outermost accordion glides; a nested one rides along.
  */
 function glideRoot(root: HTMLElement, from: DOMRect, t: PanelTiming) {
   ROOT_SLIDES.get(root)?.cancel();
   ROOT_SLIDES.delete(root);
   if (t.reduce || typeof root.animate !== "function") return;
+  // Nested: the outer accordion sees the same change and glides its own box,
+  // carrying this one with it; gliding here too would move it twice as far.
+  if (root.parentElement?.closest('[data-slot="accordion"]')) return;
   const now = root.getBoundingClientRect();
   const dx = from.left - now.left;
   const dy = from.top - now.top;

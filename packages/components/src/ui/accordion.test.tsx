@@ -465,6 +465,41 @@ describe("Accordion", () => {
     expect(moves().some((m) => m.el === outerPanel)).toBe(false);
   });
 
+  it("a nested accordion doesn't glide its own box: it rides the outer one's glide", async () => {
+    centered = true;
+    const { Accordion, AccordionContent, AccordionItem, AccordionTrigger } =
+      Godui;
+    const user = userEvent.setup();
+    render(
+      <Accordion type="single" collapsible defaultValue="outer-a">
+        <AccordionItem value="outer-a">
+          <AccordionTrigger>Outer A</AccordionTrigger>
+          <AccordionContent>
+            <Accordion type="single" collapsible>
+              <AccordionItem value="inner">
+                <AccordionTrigger>Inner</AccordionTrigger>
+                <AccordionContent>Inner body.</AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="outer-b">
+          <AccordionTrigger>Outer B</AccordionTrigger>
+          <AccordionContent>B body.</AccordionContent>
+        </AccordionItem>
+      </Accordion>,
+    );
+    await act(settle);
+    await click(user, "Inner");
+    const [outer, inner] = document.querySelectorAll('[data-slot="accordion"]');
+    // The centering parent moves both roots up 20px; only the outer glides
+    // back, carrying the inner one with it (a second glide would double it).
+    expect(moves().find((m) => m.el === outer)?.frames[0]).toEqual({
+      translate: "0px 20px",
+    });
+    expect(moves().some((m) => m.el === inner)).toBe(false);
+  });
+
   it("AccordionContent asChild works like shadcn's", () => {
     const { Accordion, AccordionContent, AccordionItem, AccordionTrigger } =
       Godui;
