@@ -201,6 +201,43 @@ describe("Sidebar", () => {
     expect(slot("sidebar-inner").className).not.toContain("bg-sidebar");
   });
 
+  it("the surface is offset outward by the container's border widths, so borders paint on the box edge", () => {
+    // jsdom has no layout: give the container a 2px left, 3px top border box
+    // (client* are the box minus its borders) and a 1px right/bottom one.
+    const dims = {
+      clientTop: 3,
+      clientLeft: 2,
+      clientWidth: 197,
+      clientHeight: 596,
+      offsetWidth: 200,
+      offsetHeight: 600,
+    };
+    const spies = Object.entries(dims).map(([key, value]) =>
+      vi
+        .spyOn(HTMLElement.prototype, key as "clientTop", "get")
+        .mockReturnValue(value),
+    );
+    try {
+      render(<Usage ui={Godui} />);
+      const container = slot("sidebar-container");
+      expect(container.style.getPropertyValue("--sidebar-bt")).toBe("3px");
+      expect(container.style.getPropertyValue("--sidebar-bl")).toBe("2px");
+      expect(container.style.getPropertyValue("--sidebar-br")).toBe("1px");
+      expect(container.style.getPropertyValue("--sidebar-bb")).toBe("1px");
+      const surface = slot("sidebar-surface").className.split(/\s+/);
+      expect(surface).toEqual(
+        expect.arrayContaining([
+          "top-[calc(var(--sidebar-bt,0px)*-1)]",
+          "bottom-[calc(var(--sidebar-bb,0px)*-1)]",
+          "group-data-[side=left]:left-[calc(var(--sidebar-bl,0px)*-1)]",
+          "group-data-[side=right]:right-[calc(var(--sidebar-br,0px)*-1)]",
+        ]),
+      );
+    } finally {
+      for (const spy of spies) spy.mockRestore();
+    }
+  });
+
   it("the surface draws the container's own border, so a call site's border classes carry over", () => {
     // shadcn's sidebar-10/-15 pass className="border-r-0" to Sidebar; it lands
     // on the container. The container's border classes must match shadcn's

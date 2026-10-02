@@ -473,3 +473,66 @@ test("a call site's border color reaches the painted edge; the snapped box paint
     true,
   );
 });
+
+/**
+ * The surface's edges relative to the container's border box (what shadcn
+ * paints its border on), at rest and mid-slide: where the surface sits against
+ * the box, for the same story with and without a call-site border.
+ */
+async function surfaceOffsets(page: Page, story: string) {
+  const read = () =>
+    page.evaluate(() => {
+      const box = (slot: string) =>
+        (
+          document.querySelector(`[data-slot="${slot}"]`) as Element
+        ).getBoundingClientRect();
+      const c = box("sidebar-container");
+      const s = box("sidebar-surface");
+      return {
+        top: s.top - c.top,
+        bottom: s.bottom - c.bottom,
+        left: s.left - c.left,
+        right: s.right - c.right,
+      };
+    });
+  await open(page, story, 3000);
+  const frames: Record<string, Awaited<ReturnType<typeof read>>> = {
+    rest: await read(),
+  };
+  for (const direction of ["collapsing", "expanding"]) {
+    await toggle(page);
+    await page.waitForTimeout(150);
+    await page.evaluate(() => {
+      for (const a of document.getAnimations()) {
+        a.pause();
+        a.currentTime = 1000;
+      }
+    });
+    frames[direction] = await read();
+    await freeze(page, false);
+    await page.waitForTimeout(3500);
+    frames[`${direction} (settled)`] = await read();
+  }
+  return frames;
+}
+
+for (const [plain, bordered, side] of [
+  ["icon", "border-all", "left"],
+  ["right", "border-all-right", "right"],
+  ["offcanvas", "border-all-offcanvas", "left"],
+] as const) {
+  test(`${bordered}: a call-site border paints on the box edge, as in shadcn (${side}), at rest and mid-slide`, async ({
+    page,
+  }) => {
+    const expected = await surfaceOffsets(page, plain);
+    const actual = await surfaceOffsets(page, bordered);
+    for (const frame of Object.keys(expected)) {
+      for (const edge of ["top", "bottom", "left", "right"] as const) {
+        expect(
+          Math.abs(actual[frame][edge] - expected[frame][edge]),
+          `${frame}, ${edge}: ${actual[frame][edge]} vs ${expected[frame][edge]}`,
+        ).toBeLessThanOrEqual(0.5);
+      }
+    }
+  });
+}

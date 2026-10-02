@@ -264,3 +264,35 @@ export const NoBorder: Story = {
     </SidebarProvider>
   ),
 };
+
+/**
+ * A call-site `border` (all four sides) on the container: shadcn paints each
+ * on the box edge. The surface covers the container's border box, so the top,
+ * bottom and left lines land there too, at rest and while the edge slides.
+ */
+export const BorderAll: Story = {
+  render: () => (
+    <SidebarProvider>
+      <AppSidebar collapsible="icon" className="border" />
+      <Page />
+    </SidebarProvider>
+  ),
+};
+
+export const BorderAllRight: Story = {
+  render: () => (
+    <SidebarProvider>
+      <Page />
+      <AppSidebar side="right" collapsible="icon" className="border" />
+    </SidebarProvider>
+  ),
+};
+
+export const BorderAllOffcanvas: Story = {
+  render: () => (
+    <SidebarProvider>
+      <AppSidebar className="border-2" />
+      <Page />
+    </SidebarProvider>
+  ),
+};

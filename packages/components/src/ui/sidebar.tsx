@@ -77,6 +77,41 @@ const useIsoLayoutEffect =
   typeof window === "undefined" ? React.useEffect : React.useLayoutEffect;
 
 /**
+ * Publishes an element's border widths as `--sidebar-bt|br|bb|bl` on itself.
+ * An absolutely positioned child is placed against the padding box, so the
+ * surface offsets itself outward by these to cover the border box, as the
+ * element's own background and border do in shadcn. CSS can't turn an
+ * inherited border width into a length, so this reads it back (it re-reads on
+ * every render and whenever the box resizes, which a border change does).
+ */
+function useBorderInsets(ref: React.RefObject<HTMLElement | null>) {
+  useIsoLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const publish = () => {
+      const { clientTop, clientLeft, clientWidth, clientHeight } = el;
+      const values = {
+        "--sidebar-bt": clientTop,
+        "--sidebar-bl": clientLeft,
+        "--sidebar-br": el.offsetWidth - clientWidth - clientLeft,
+        "--sidebar-bb": el.offsetHeight - clientHeight - clientTop,
+      };
+      for (const [name, px] of Object.entries(values)) {
+        const next = `${px}px`;
+        if (el.style.getPropertyValue(name) !== next) {
+          el.style.setProperty(name, next);
+        }
+      }
+    };
+    publish();
+    if (typeof ResizeObserver !== "function") return;
+    const observer = new ResizeObserver(publish);
+    observer.observe(el);
+    return () => observer.disconnect();
+  });
+}
+
+/**
  * What moves in the panel when it collapses, for one sidebar in the wrapper.
  * Offcanvas: the whole container. Icon: the surface (the floating card's far
  * cap); on the right, the box grows leftwards, so the inner glides with the
@@ -397,7 +432,11 @@ function SidebarSurface({
         className={cn(
           // -z-10: behind the inner, inside the container's own (z-10)
           // stacking context.
-          "pointer-events-none absolute inset-y-0 -z-10 w-(--sidebar-width) bg-sidebar group-data-[side=left]:left-0 group-data-[side=right]:right-0",
+          // Positioned from the container's border edge (the box is offset
+          // outward by its border widths, `--sidebar-b*`, set by
+          // `useBorderInsets`), so any border class on Sidebar paints where
+          // it does in shadcn: on the box edge, at rest and while sliding.
+          "pointer-events-none absolute top-[calc(var(--sidebar-bt,0px)*-1)] bottom-[calc(var(--sidebar-bb,0px)*-1)] -z-10 w-(--sidebar-width) bg-sidebar group-data-[side=left]:left-[calc(var(--sidebar-bl,0px)*-1)] group-data-[side=right]:right-[calc(var(--sidebar-br,0px)*-1)]",
           "group-data-[collapsible=icon]:group-data-[side=left]:-translate-x-[calc(var(--sidebar-width)-var(--sidebar-width-icon))] group-data-[collapsible=icon]:group-data-[side=right]:translate-x-[calc(var(--sidebar-width)-var(--sidebar-width-icon))]",
           // The container's own border (shadcn's, plus any call-site
           // override such as border-r-0 or a color), painted here instead.
@@ -465,6 +504,9 @@ function Sidebar({
   // Rows the icon layout moves glide there on the panel's clock (measured in
   // the inner, so a move of the whole panel doesn't count).
   const innerRef = React.useRef<HTMLDivElement | null>(null);
+  const containerRef = React.useRef<HTMLDivElement | null>(null);
+  const setContainerRef = useMergedRef(containerRef, ref);
+  useBorderInsets(containerRef);
   useFlipGroup(innerRef, state, {
     selector: ROWS_SELECTOR,
     measure: trackRow,
@@ -551,7 +593,7 @@ function Sidebar({
         )}
       />
       <div
-        ref={ref}
+        ref={setContainerRef}
         data-slot="sidebar-container"
         className={cn(
           "fixed inset-y-0 z-10 hidden h-svh w-(--sidebar-width) md:flex",
