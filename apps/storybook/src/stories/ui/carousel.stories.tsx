@@ -75,7 +75,7 @@ export const Vertical: Story = {
       >
         <CarouselContent className="-mt-1 h-[200px]">
           {[1, 2, 3, 4, 5].map((n) => (
-            <CarouselItem key={n} className="pt-1 md:basis-1/2">
+            <CarouselItem key={n} className="basis-1/2 pt-1">
               <Slide n={n} className="h-full" />
             </CarouselItem>
           ))}

@@ -69,6 +69,10 @@ async function nextFrameVsSettled(page: Page) {
     if (!track || !next) throw new Error("story markup changed");
     const start = track.style.transform;
     next.click();
+    // Embla writes the track's transform from its own requestAnimationFrame
+    // loop, scheduled by the click. Waiting two frames makes sure that frame
+    // has run whatever order the callbacks fire in — and a smooth scroll (the
+    // control below) is still only a sliver into its travel by then.
     await new Promise((r) => requestAnimationFrame(r));
     await new Promise((r) => requestAnimationFrame(r));
     const first = track.style.transform;
@@ -80,7 +84,7 @@ async function nextFrameVsSettled(page: Page) {
 }
 
 test.describe("prefers-reduced-motion", () => {
-  test("Next jumps: the track reaches its end value within one frame", async ({
+  test("Next jumps: the track is at its end value two frames after the click", async ({
     page,
   }) => {
     await page.emulateMedia({ reducedMotion: "reduce" });

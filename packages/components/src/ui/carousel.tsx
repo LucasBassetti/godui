@@ -40,7 +40,12 @@ const CarouselContext = React.createContext<CarouselContextProps | null>(null);
 
 const REDUCED_MOTION = "(prefers-reduced-motion: reduce)";
 
+// Some environments (old engines, a bare jsdom) have no matchMedia: there's
+// no preference to read, so treat them as not reduced.
+const hasMatchMedia = () => typeof window.matchMedia === "function";
+
 function subscribeReducedMotion(onChange: () => void) {
+  if (!hasMatchMedia()) return () => {};
   const query = window.matchMedia(REDUCED_MOTION);
   query.addEventListener("change", onChange);
   return () => query.removeEventListener("change", onChange);
@@ -50,7 +55,7 @@ function subscribeReducedMotion(onChange: () => void) {
 function usePrefersReducedMotion() {
   return React.useSyncExternalStore(
     subscribeReducedMotion,
-    () => window.matchMedia(REDUCED_MOTION).matches,
+    () => hasMatchMedia() && window.matchMedia(REDUCED_MOTION).matches,
     () => false,
   );
 }

@@ -212,6 +212,22 @@ describe("Carousel", () => {
     spy.mockRestore();
   });
 
+  it("renders and scrolls where matchMedia doesn't exist (old engines, bare jsdom)", async () => {
+    const original = window.matchMedia;
+    // @ts-expect-error -- simulate an environment without matchMedia
+    delete window.matchMedia;
+    try {
+      expect(typeof window.matchMedia).toBe("undefined");
+      const user = userEvent.setup();
+      render(<Usage ui={Godui} />);
+      await user.click(screen.getByRole("button", { name: "Next slide" }));
+      // No preference to read: smooth scrolling, as without reduced motion.
+      expect(embla.api.scrollNext).toHaveBeenLastCalledWith(false);
+    } finally {
+      window.matchMedia = original;
+    }
+  });
+
   it("disables the buttons at the ends from Embla's state", () => {
     embla.api.canScrollPrev.mockReturnValueOnce(false);
     render(<Usage ui={Godui} />);
