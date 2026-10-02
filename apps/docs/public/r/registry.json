@@ -353,6 +353,30 @@
       ]
     },
     {
+      "name": "sidebar",
+      "type": "registry:ui",
+      "title": "Sidebar",
+      "description": "A composable, themeable and customizable sidebar component. Widths snap: offcanvas slides the panel, icon mode slides its surface to the rail, and the content beside it glides along (FLIP) on the same spring. GPU-only.",
+      "dependencies": ["radix-ui", "class-variance-authority", "lucide-react"],
+      "registryDependencies": [
+        "utils",
+        "@godui/godui-motion",
+        "@godui/button",
+        "separator",
+        "@godui/sheet",
+        "@godui/tooltip",
+        "@godui/input",
+        "use-mobile",
+        "@godui/skeleton"
+      ],
+      "files": [
+        {
+          "path": "packages/components/src/ui/sidebar.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "popover",
       "type": "registry:ui",
       "title": "Popover",

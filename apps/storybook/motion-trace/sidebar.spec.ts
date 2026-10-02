@@ -1,0 +1,286 @@
+import { expect, type Page, test } from "@playwright/test";
+import { expectGpuOnly, traceInteraction } from "./trace";
+
+const toggle = async (page: Page) => {
+  await page.locator('[data-slot="sidebar-trigger"]').click();
+};
+
+const open = async (page: Page, story: string, slowMs?: number) => {
+  await page.goto(`/iframe.html?id=ui-sidebar--${story}&viewMode=story`);
+  await page.waitForLoadState("networkidle");
+  await page.waitForSelector('[data-slot="sidebar-container"]');
+  if (slowMs) {
+    // Slow the clock so many frames land mid-move.
+    await page.addStyleTag({
+      content: `:root{--godui-duration-base:${slowMs}ms!important;--godui-duration-fast:${slowMs}ms!important}`,
+    });
+  }
+};
+
+for (const story of ["offcanvas", "icon"] as const) {
+  for (const direction of ["collapses", "expands"] as const) {
+    test(`${story} sidebar ${direction} on the compositor`, async ({
+      page,
+    }) => {
+      const result = await traceInteraction(page, {
+        storyId: `ui-sidebar--${story}`,
+        // Collapsing starts from the story's resting state; the no-op setup
+        // still lets the freshly loaded page settle before tracing.
+        setup: direction === "expands" ? toggle : async () => {},
+        act: toggle,
+        windowMs: 700,
+      });
+      expect(result.animationCount).toBeGreaterThan(0);
+      // The gap's and the container's widths snap on the click's own frame
+      // (inside the settle window). After that only translate/scale/opacity
+      // run, plus one discrete frame where the move ends and the content
+      // drops back under the panel (`data-moving` cleared).
+      expectGpuOnly(result);
+    });
+  }
+}
+
+/**
+ * Per frame, while the sidebar moves: the panel's visible edge (the surface's,
+ * or the floating card's right cap), the content beside it, the trigger, and
+ * whether the page grew a horizontal scrollbar.
+ */
+async function sampleMove(
+  page: Page,
+  frames: number,
+  how: "click" | "shortcut" = "click",
+) {
+  return page.evaluate(
+    async ({ count, how }) => {
+      const q = (s: string) => document.querySelector(s) as HTMLElement;
+      const sidebar = q('[data-slot="sidebar"]');
+      const right = sidebar.dataset.side === "right";
+      const surface = q('[data-slot="sidebar-surface"]');
+      // The floating card's far edge is its last slice.
+      const edgeEl =
+        surface.children.length > 0
+          ? (surface.lastElementChild as HTMLElement)
+          : surface;
+      const content = right
+        ? q('[data-slot="sidebar-inner"]')
+        : q('[data-slot="sidebar-inset"]');
+      const trigger = q('[data-slot="sidebar-trigger"]');
+      const read = () => {
+        const e = edgeEl.getBoundingClientRect();
+        const c = content.getBoundingClientRect();
+        const root = document.documentElement;
+        return {
+          edge: right ? e.left : e.right,
+          content: c.left,
+          trigger: trigger.getBoundingClientRect().left,
+          overflow: root.scrollWidth - root.clientWidth,
+        };
+      };
+      const out = [read()];
+      if (how === "shortcut") {
+        window.dispatchEvent(
+          new KeyboardEvent("keydown", { key: "b", ctrlKey: true }),
+        );
+      } else {
+        trigger.click();
+      }
+      for (let i = 0; i < count; i++) {
+        await new Promise(requestAnimationFrame);
+        out.push(read());
+      }
+      return out;
+    },
+    { count: frames, how },
+  );
+}
+
+type Frame = Awaited<ReturnType<typeof sampleMove>>[number];
+
+/** The content holds the gap it had at rest to the panel's edge, every frame. */
+function expectGlued(frames: Frame[], slack = 0.5) {
+  const gaps = frames.map((f) => f.content - f.edge);
+  const first = gaps[0];
+  const last = gaps[gaps.length - 1];
+  for (const gap of gaps) {
+    // Floating cards change their gutter by 2px end to end (shadcn's +2px
+    // border allowance); in between it moves monotonically, never jumps.
+    expect(gap).toBeGreaterThanOrEqual(Math.min(first, last) - slack);
+    expect(gap).toBeLessThanOrEqual(Math.max(first, last) + slack);
+  }
+  // And the edge really travelled (not a snap).
+  const edges = frames.map((f) => f.edge);
+  expect(Math.max(...edges) - Math.min(...edges)).toBeGreaterThan(150);
+}
+
+for (const story of ["offcanvas", "icon", "floating", "right"] as const) {
+  for (const direction of ["collapsing", "expanding"] as const) {
+    test(`${story}, ${direction}: the content stays glued to the panel's edge, no scrollbar`, async ({
+      page,
+    }) => {
+      await open(page, story, 1200);
+      if (direction === "expanding") {
+        await toggle(page);
+        await page.waitForTimeout(1500);
+      }
+      const frames = await sampleMove(page, 50);
+      expect(frames.length).toBeGreaterThan(40);
+      expectGlued(frames);
+      for (const f of frames) expect(f.overflow).toBeLessThanOrEqual(0);
+    });
+  }
+}
+
+for (const story of ["offcanvas", "icon", "floating"] as const) {
+  test(`${story}: reversed mid-way, panel and content carry on from where they're drawn`, async ({
+    page,
+  }) => {
+    await open(page, story, 1200);
+    const frames = await page.evaluate(async () => {
+      const q = (s: string) => document.querySelector(s) as HTMLElement;
+      const surface = q('[data-slot="sidebar-surface"]');
+      const edgeEl =
+        surface.children.length > 0
+          ? (surface.lastElementChild as HTMLElement)
+          : surface;
+      const inset = q('[data-slot="sidebar-inset"]');
+      const trigger = q('[data-slot="sidebar-trigger"]');
+      const out: Array<{ edge: number; content: number }> = [];
+      const read = () =>
+        out.push({
+          edge: edgeEl.getBoundingClientRect().right,
+          content: inset.getBoundingClientRect().left,
+        });
+      read();
+      trigger.click();
+      for (let i = 0; i < 15; i++) {
+        await new Promise(requestAnimationFrame);
+        read();
+      }
+      trigger.click();
+      for (let i = 0; i < 40; i++) {
+        await new Promise(requestAnimationFrame);
+        read();
+      }
+      return out;
+    });
+    const gaps = frames.map((f) => f.content - f.edge);
+    // Glued through the reversal (floating: its 6–8px gutter)...
+    expect(Math.max(...gaps) - Math.min(...gaps)).toBeLessThan(2.5);
+    // ...and nothing jumps at the reversal: a 1.2s move covers 200+px, so no
+    // single frame moves more than a few dozen.
+    const steps = frames
+      .slice(1)
+      .map((f, i) => Math.abs(f.edge - frames[i].edge));
+    expect(Math.max(...steps)).toBeLessThan(30);
+  });
+}
+
+test("at real speed the trigger never jumps on the first frame", async ({
+  page,
+}) => {
+  for (const story of ["offcanvas", "icon"] as const) {
+    await open(page, story);
+    for (const _ of [0, 1]) {
+      const frames = await sampleMove(page, 30);
+      const steps = frames
+        .slice(1)
+        .map((f, i) => Math.abs(f.trigger - frames[i].trigger));
+      // 208–256px over a 260ms spring: the first frames move the most, but
+      // never the whole distance at once.
+      expect(steps[0]).toBeLessThan(80);
+      expect(Math.max(...steps)).toBeLessThan(80);
+      expectGlued(frames, 1);
+      await page.waitForTimeout(500);
+    }
+  }
+});
+
+test("Ctrl+B toggles the sidebar with the same glued move", async ({
+  page,
+}) => {
+  await open(page, "icon", 1200);
+  const sidebar = page.locator('[data-slot="sidebar"]');
+  await expect(sidebar).toHaveAttribute("data-state", "expanded");
+  const frames = await sampleMove(page, 40, "shortcut");
+  await expect(sidebar).toHaveAttribute("data-state", "collapsed");
+  expectGlued(frames);
+});
+
+test("icon mode: menu buttons show their tooltip once collapsed", async ({
+  page,
+}) => {
+  await open(page, "icon");
+  await toggle(page);
+  await page.waitForTimeout(500);
+  await page.locator('[data-sidebar="menu-button"]').nth(2).hover();
+  await expect(page.getByRole("tooltip")).toContainText("Models");
+});
+
+test("icon mode: labels fade, rows glide up, nothing is cut while moving", async ({
+  page,
+}) => {
+  await open(page, "icon", 1200);
+  const frames = await page.evaluate(async () => {
+    const label = document.querySelector(
+      '[data-sidebar="group-label"]',
+    ) as HTMLElement;
+    const row = document.querySelectorAll('[data-sidebar="menu-button"]')[1];
+    const out: Array<{ opacity: number; label: number; row: number }> = [];
+    (
+      document.querySelector('[data-slot="sidebar-trigger"]') as HTMLElement
+    ).click();
+    for (let i = 0; i < 40; i++) {
+      await new Promise(requestAnimationFrame);
+      out.push({
+        opacity: Number(getComputedStyle(label).opacity),
+        label: label.getBoundingClientRect().top,
+        row: row.getBoundingClientRect().top,
+      });
+    }
+    return out;
+  });
+  // The label fades over many frames instead of vanishing...
+  expect(
+    frames.filter((f) => f.opacity > 0.05 && f.opacity < 0.95).length,
+  ).toBeGreaterThan(5);
+  // ...and it and the rows below rise smoothly (no one-frame jump).
+  const steps = frames.slice(1).map((f, i) => Math.abs(f.row - frames[i].row));
+  expect(Math.max(...steps)).toBeLessThan(12);
+  const rows = frames.map((f) => f.row);
+  expect(Math.max(...rows) - Math.min(...rows)).toBeGreaterThan(40);
+});
+
+test("mobile: the sidebar is GodUI's Sheet, sliding in on the compositor", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 500, height: 800 });
+  const result = await traceInteraction(page, {
+    storyId: "ui-sidebar--offcanvas",
+    act: toggle,
+    windowMs: 700,
+  });
+  await expect(page.getByRole("dialog")).toBeVisible();
+  await expect(
+    page.locator('[data-slot="sidebar"][data-mobile="true"]'),
+  ).toBeVisible();
+  expect(result.animationCount).toBeGreaterThan(0);
+  expectGpuOnly(result);
+});
+
+test("reduced motion: the panel and the content take their places at once", async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  for (const story of ["offcanvas", "icon", "floating"] as const) {
+    await open(page, story);
+    const frames = await sampleMove(page, 3);
+    const [, first, ...rest] = frames;
+    // Already at rest on the first frame after the click, and it stays there.
+    for (const f of rest) {
+      expect(f.edge).toBe(first.edge);
+      expect(f.content).toBe(first.content);
+    }
+    expect(Math.abs(first.edge - frames[0].edge)).toBeGreaterThan(150);
+    expect(await page.evaluate(() => document.getAnimations().length)).toBe(0);
+  }
+});

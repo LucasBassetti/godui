@@ -34,6 +34,7 @@
     "components/radio-group",
     "components/select",
     "components/sheet",
+    "components/sidebar",
     "components/skeleton",
     "components/slider",
     "components/sonner",

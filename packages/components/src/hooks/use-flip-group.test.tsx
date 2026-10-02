@@ -267,3 +267,85 @@ describe("useFlipGroup easing", () => {
     });
   });
 });
+
+describe("useFlipGroup measure", () => {
+  it("tracks another element's position but moves the candidate", () => {
+    function Boxes({ trigger }: { trigger: number }) {
+      const ref = React.useRef<HTMLDivElement>(null);
+      useFlipGroup(ref, trigger, {
+        measure: (el) => el.firstElementChild ?? el,
+      });
+      return (
+        <div ref={ref}>
+          <div data-flip data-id="box">
+            <span data-id="icon" />
+          </div>
+        </div>
+      );
+    }
+    layout.set("box", { left: 8, top: 0 });
+    layout.set("icon", { left: 16, top: 8 });
+    const { rerender, container } = render(<Boxes trigger={0} />);
+    // The box stays; its padding snaps, so the icon lands 8px up and left.
+    layout.set("icon", { left: 8, top: 0 });
+    rerender(<Boxes trigger={1} />);
+    expect(animate).toHaveBeenCalledTimes(1);
+    expect(animate.mock.contexts[0]).toBe(
+      container.querySelector('[data-id="box"]'),
+    );
+    expect(animate.mock.calls[0][0]).toEqual([
+      { translate: "8px 8px" },
+      { translate: "0px 0px" },
+    ]);
+  });
+});
+
+describe("useFlipGroup own translate", () => {
+  it("reversing a FLIP whose element's own translate changed starts from what's drawn", () => {
+    class FakeEffect {
+      constructor(private frames: Keyframe[]) {}
+      getKeyframes() {
+        return this.frames;
+      }
+    }
+    vi.stubGlobal("KeyframeEffect", FakeEffect);
+    animate.mockImplementation(function (
+      this: HTMLElement,
+      frames: Keyframe[],
+    ) {
+      const id = this.dataset.id as string;
+      return {
+        effect: new FakeEffect(frames),
+        cancel: () => offset.delete(id),
+      };
+    });
+    try {
+      layout.set("s", { left: 0, top: 0 });
+      const { rerender, container } = render(
+        <Group trigger={0} order={["s"]} />,
+      );
+      const el = container.querySelector<HTMLElement>('[data-id="s"]');
+      if (!el) throw new Error("missing");
+      // A class slides it 200px left: the FLIP holds it, then lets it go.
+      el.style.translate = "-200px 0px";
+      layout.set("s", { left: -200, top: 0 });
+      rerender(<Group trigger={1} order={["s"]} />);
+      expect(animate.mock.calls[0][0]).toEqual([
+        { translate: "0px 0px" },
+        { translate: "-200px 0px" },
+      ]);
+      // Reversed when it's drawn at -60: the class goes back to 0, but the
+      // running FLIP (which replaces translate) still draws it at -60.
+      el.style.translate = "0px 0px";
+      layout.set("s", { left: 0, top: 0 });
+      offset.set("s", { left: -60, top: 0 });
+      rerender(<Group trigger={2} order={["s"]} />);
+      expect(animate.mock.calls[1][0]).toEqual([
+        { translate: "-60px 0px" },
+        { translate: "0px 0px" },
+      ]);
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+});

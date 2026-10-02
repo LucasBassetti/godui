@@ -13,6 +13,13 @@ export interface FlipGroupOptions {
    * ease-out-expo curve.
    */
   easing?: string;
+  /**
+   * The element whose position is tracked for a candidate (default: the
+   * candidate itself). The offset still animates the candidate, so a box can
+   * glide by the distance its content moved, e.g. a button whose padding
+   * snapped: moving the box keeps its icon from being clipped by it.
+   */
+  measure?: (el: HTMLElement) => Element;
 }
 
 const useIsoLayoutEffect =
@@ -38,6 +45,28 @@ function plus(length: string, offset: number): string {
   return `calc(${length} + ${offset}px)`;
 }
 
+/** One translate length (`8px`, `-100%`, `calc(-100% + 8px)`) in px. */
+function lengthPx(length: string, size: number): number | null {
+  const inner = /^calc\((.*)\)$/.exec(length.trim())?.[1] ?? length;
+  let total = 0;
+  for (const term of inner.replace(/\s-\s/g, " + -").split(/\s\+\s/)) {
+    const match = /^(-?[\d.]+(?:e-?\d+)?)(px|%)$/.exec(term.trim());
+    if (!match) return null;
+    const n = Number(match[1]);
+    total += match[2] === "%" ? (n * size) / 100 : n;
+  }
+  return total;
+}
+
+/** A translate value (`"8px 0px"`, `"-100%"`) as px for `el`, or null. */
+function translatePx(value: string, el: HTMLElement): Point | null {
+  if (!value || value === "none") return { x: 0, y: 0 };
+  const parts = value.trim().match(/(?:calc\([^)]*\)|[^\s]+)/g) ?? [];
+  const x = lengthPx(parts[0] ?? "0px", el.offsetWidth);
+  const y = lengthPx(parts[1] ?? "0px", el.offsetHeight);
+  return x === null || y === null ? null : { x, y };
+}
+
 /** A CSS time (`260ms`, `0.3s`) in milliseconds; 260 when unset or invalid. */
 function toMs(value: string | undefined): number {
   const n = Number.parseFloat(value ?? "");
@@ -52,12 +81,18 @@ function toMs(value: string | undefined): number {
  */
 const RUNNING = new WeakMap<Element, Animation>();
 
+const self = (el: HTMLElement): Element => el;
+
 /** Each matched child's position relative to the container. */
-function measure(container: HTMLElement, selector: string) {
+function measure(
+  container: HTMLElement,
+  selector: string,
+  track: (el: HTMLElement) => Element,
+) {
   const origin = container.getBoundingClientRect();
   const positions = new Map<Element, Point>();
   for (const el of container.querySelectorAll<HTMLElement>(selector)) {
-    const rect = el.getBoundingClientRect();
+    const rect = track(el).getBoundingClientRect();
     positions.set(el, { x: rect.left - origin.left, y: rect.top - origin.top });
   }
   return positions;
@@ -84,12 +119,20 @@ function measure(container: HTMLElement, selector: string) {
 export function useFlipGroup(
   containerRef: React.RefObject<HTMLElement | null>,
   trigger: unknown,
-  { selector = "[data-flip]", duration, easing }: FlipGroupOptions = {},
+  {
+    selector = "[data-flip]",
+    duration,
+    easing,
+    measure: track = self,
+  }: FlipGroupOptions = {},
 ): void {
   const last = React.useRef(new Map<Element, Point>());
   const dirty = React.useRef(false);
   const resizes = React.useRef<ResizeObserver | null>(null);
   const settle = React.useRef<() => void>(() => {});
+  // Read through a ref: an inline `measure` needn't re-run the effects.
+  const tracker = React.useRef(track);
+  tracker.current = track;
 
   // Re-baseline on resizes no trigger caused, once nothing is mid-FLIP.
   React.useEffect(() => {
@@ -103,7 +146,7 @@ export function useFlipGroup(
       }
       if (busy.length === 0) {
         dirty.current = false;
-        last.current = measure(container, selector);
+        last.current = measure(container, selector, tracker.current);
         return;
       }
       dirty.current = true;
@@ -152,15 +195,31 @@ export function useFlipGroup(
     const next = new Map<Element, Point>();
     for (const el of container.querySelectorAll<HTMLElement>(selector)) {
       resizes.current?.observe(el);
-      let rect = el.getBoundingClientRect();
+      const tracked = tracker.current(el);
+      let rect = tracked.getBoundingClientRect();
       let carry: Point = { x: 0, y: 0 };
       const active = RUNNING.get(el);
       if (active) {
+        // The rest it was gliding to: if the element's own translate changed
+        // since (a class moved it), the running FLIP still holds the old one.
+        const frames =
+          typeof KeyframeEffect !== "undefined" &&
+          active.effect instanceof KeyframeEffect
+            ? active.effect.getKeyframes()
+            : [];
+        const target = frames[frames.length - 1]?.translate;
         active.cancel();
         RUNNING.delete(el);
-        const settled = el.getBoundingClientRect();
+        const settled = tracked.getBoundingClientRect();
         carry = { x: rect.left - settled.left, y: rect.top - settled.top };
         rect = settled;
+        const before =
+          typeof target === "string" ? translatePx(target, el) : null;
+        const after = translatePx(ownTranslate(el).join(" "), el);
+        if (before && after) {
+          carry.x += after.x - before.x;
+          carry.y += after.y - before.y;
+        }
       }
       const now = { x: rect.left - origin.left, y: rect.top - origin.top };
       next.set(el, now);

@@ -37,6 +37,17 @@ import {
   Progress,
   RadioGroup,
   RadioGroupItem,
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+  SidebarTrigger,
   Skeleton,
   Slider,
   Switch,
@@ -48,9 +59,19 @@ import {
   ToggleGroup,
   ToggleGroupItem,
 } from "@godui/components";
-import { Bold, Circle, SearchIcon } from "lucide-react";
+import {
+  Bold,
+  BookOpenIcon,
+  BotIcon,
+  Circle,
+  FrameIcon,
+  GalleryVerticalEndIcon,
+  SearchIcon,
+  SquareTerminalIcon,
+} from "lucide-react";
 import {
   type ComponentProps,
+  type CSSProperties,
   Fragment,
   type HTMLAttributes,
   useEffect,
@@ -953,6 +974,112 @@ function SliderBand({ reduced }: { reduced: boolean }) {
   );
 }
 
+const SIDEBAR_SLOW_MS = 900;
+const SIDEBAR_ROWS = [
+  { icon: SquareTerminalIcon, bar: "w-16" },
+  { icon: BotIcon, bar: "w-12" },
+  { icon: BookOpenIcon, bar: "w-20" },
+  { icon: FrameIcon, bar: "w-14" },
+];
+
+/**
+ * The real Sidebar on a slowed clock (900ms), its `open` flipping on a timer.
+ * `outline` dashes the box that snaps: the container (`box`, icon mode: its
+ * width snaps while the surface behind it slides) or the gap (`gap`: where the
+ * content beside it is laid out at once, while it's drawn gliding).
+ */
+function SidebarMove({
+  reduced,
+  collapsible,
+  outline,
+}: {
+  reduced: boolean;
+  collapsible: "offcanvas" | "icon";
+  outline?: "box" | "gap";
+}) {
+  const [open, setOpen] = useState(true);
+  useEffect(() => {
+    if (reduced) return;
+    const id = setInterval(() => setOpen((v) => !v), SIDEBAR_SLOW_MS * 2);
+    return () => clearInterval(id);
+  }, [reduced]);
+  const dashed =
+    "outline-1 -outline-offset-1 outline-dashed outline-[var(--foreground)]/50";
+  return (
+    <SidebarProvider
+      open={open}
+      onOpenChange={() => {}}
+      style={{ "--sidebar-width": "11rem" } as CSSProperties}
+      className={`pointer-events-none relative h-64 min-h-0 w-[28rem] max-w-full overflow-hidden rounded-lg border [--godui-duration-base:900ms] [--godui-duration-fast:450ms] ${
+        outline === "gap"
+          ? "[&_[data-slot=sidebar-gap]]:outline-1 [&_[data-slot=sidebar-gap]]:-outline-offset-1 [&_[data-slot=sidebar-gap]]:outline-dashed [&_[data-slot=sidebar-gap]]:outline-[var(--foreground)]/50"
+          : ""
+      }`}
+    >
+      <Sidebar
+        collapsible={collapsible}
+        className={`absolute h-full ${outline === "box" ? dashed : ""}`}
+      >
+        <SidebarHeader>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton size="lg" tabIndex={-1}>
+                <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                  <GalleryVerticalEndIcon className="size-4" />
+                </div>
+                <span className="grid flex-1 gap-1.5">
+                  <Bar className="w-16 bg-[var(--foreground)]/40" />
+                  <Bar className="w-10 bg-[var(--foreground)]/20" />
+                </span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarHeader>
+        <SidebarContent>
+          <SidebarGroup>
+            <SidebarGroupLabel>
+              <Bar className="w-10 bg-[var(--foreground)]/20" />
+            </SidebarGroupLabel>
+            <SidebarMenu>
+              {SIDEBAR_ROWS.map((row, i) => (
+                <SidebarMenuItem key={row.bar}>
+                  <SidebarMenuButton tabIndex={-1} isActive={i === 0}>
+                    <row.icon />
+                    <Bar className={`${row.bar} bg-[var(--foreground)]/30`} />
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroup>
+        </SidebarContent>
+      </Sidebar>
+      <SidebarInset>
+        <div className="flex h-10 shrink-0 items-center gap-2 px-3">
+          <SidebarTrigger tabIndex={-1} className="-ml-1" />
+          <Bar className="w-20 bg-[var(--foreground)]/25" />
+        </div>
+        <div className="grid flex-1 grid-cols-2 gap-2 p-3 pt-0">
+          <div className="rounded-md bg-[var(--muted)]" />
+          <div className="rounded-md bg-[var(--muted)]" />
+          <div className="col-span-2 rounded-md bg-[var(--muted)]" />
+        </div>
+      </SidebarInset>
+    </SidebarProvider>
+  );
+}
+
+function SidebarOffcanvas({ reduced }: { reduced: boolean }) {
+  return <SidebarMove reduced={reduced} collapsible="offcanvas" />;
+}
+
+function SidebarSurface({ reduced }: { reduced: boolean }) {
+  return <SidebarMove reduced={reduced} collapsible="icon" outline="box" />;
+}
+
+function SidebarGlide({ reduced }: { reduced: boolean }) {
+  return <SidebarMove reduced={reduced} collapsible="icon" outline="gap" />;
+}
+
 const DEMOS = {
   accordion: AccordionGlide,
   "accordion-window": AccordionWindow,
@@ -972,6 +1099,9 @@ const DEMOS = {
   progress: ProgressStep,
   "progress-indeterminate": ProgressIndeterminate,
   radio: RadioCycle,
+  sidebar: SidebarOffcanvas,
+  "sidebar-flip": SidebarGlide,
+  "sidebar-surface": SidebarSurface,
   skeleton: SkeletonShimmer,
   "slider-band": SliderBand,
   "slider-glide": SliderGlide,
