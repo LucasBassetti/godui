@@ -35,6 +35,11 @@ describe("Progress", () => {
     expect(indicator()).toHaveAttribute("data-state", "loading");
   });
 
+  it("rounds the fill like the track, so its leading end isn't a square cut", () => {
+    render(<Godui.Progress value={40} />);
+    expect(indicator()?.className).toContain("rounded-full");
+  });
+
   it("slides the fill on a spring with transform only", () => {
     render(<Usage ui={Godui} />);
     const cls = indicator()?.className ?? "";
