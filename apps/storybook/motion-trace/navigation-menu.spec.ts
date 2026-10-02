@@ -126,3 +126,51 @@ test("the indicator glides with a running transform transition", async ({
   await page.waitForTimeout(600);
   expect(await xOf()).toBeCloseTo(mid.target, 0);
 });
+
+test("the viewport opens under its own trigger, in place, then glides to the next", async ({
+  page,
+}) => {
+  await page.goto("/iframe.html?id=ui-navigation-menu--default&viewMode=story");
+  await page.waitForLoadState("networkidle");
+  const lefts = () =>
+    page.evaluate(async () => {
+      const viewport = () =>
+        document.querySelector('[data-slot="navigation-menu-viewport"]');
+      const out: number[] = [];
+      for (let i = 0; i < 40; i++) {
+        await new Promise(requestAnimationFrame);
+        const wrapper = viewport()?.parentElement;
+        if (wrapper)
+          out.push(
+            new DOMMatrix(
+              getComputedStyle(wrapper).transform === "none"
+                ? undefined
+                : getComputedStyle(wrapper).transform,
+            ).m41 +
+              Number.parseFloat(
+                getComputedStyle(wrapper).translate.split(" ")[0] || "0",
+              ),
+          );
+      }
+      return out;
+    });
+  const trigger = page.getByRole("button", { name: "With Icon" });
+  await trigger.click();
+  const open = await lefts();
+  // First open: one position from the first frame (no slide in from the left).
+  expect(new Set(open.map(Math.round)).size).toBe(1);
+  // …and the small panel overlaps its trigger instead of the menu's left edge.
+  const t = await trigger.boundingBox();
+  const v = await page
+    .locator('[data-slot="navigation-menu-viewport"]')
+    .boundingBox();
+  if (!t || !v) throw new Error("missing boxes");
+  expect(v.x).toBeLessThan(t.x + t.width);
+  expect(v.x + v.width).toBeGreaterThan(t.x);
+  expect(v.x).toBeGreaterThan(t.x - v.width);
+  // Hopping to Home (pointer moves over it, as a user does) glides: several
+  // distinct positions, not a jump. A click would toggle it closed again.
+  await page.getByRole("button", { name: "Home" }).hover();
+  const hop = await lefts();
+  expect(new Set(hop.map(Math.round)).size).toBeGreaterThan(5);
+});

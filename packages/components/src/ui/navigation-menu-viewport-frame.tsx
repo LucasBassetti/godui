@@ -2,8 +2,9 @@
 
 // GodUI Navigation Menu viewport frame — internal helper for navigation-menu.tsx (not part of shadcn's API).
 // The positioning wrapper around the Radix viewport, as a client component so the main file can stay
-// server-safe. It watches the viewport and replays the exit Radix drops (see keepExitingContent). GPU-only:
-// the copy runs the content's own godui-slide-out keyframe.
+// server-safe. It watches the viewport and replays the exit Radix drops (see keepExitingContent), and
+// anchors the viewport under the open trigger (see anchorToTrigger). GPU-only: the copy runs the
+// content's own godui-slide-out keyframe; the anchor moves on `translate`.
 
 import type * as React from "react";
 
@@ -139,8 +140,113 @@ function keepExitingContent(wrapper: HTMLDivElement | null) {
   };
 }
 
+/**
+ * shadcn pins the shared viewport to the menu's left edge, so a small panel
+ * (a 200px list under the last trigger) opens far from its trigger. This
+ * centers the viewport under the open trigger, clamped inside the menu (a
+ * panel wider than the room left stays left-aligned, as in shadcn), via the
+ * wrapper's `translate`. First open snaps into place; hopping to another
+ * trigger glides on the wrapper's `transition-[translate]` while the size
+ * snaps. The target width is the open content's own (Radix resizes the
+ * viewport to it a frame later), so the first open lands in place at once.
+ */
+function anchorToTrigger(wrapper: HTMLDivElement | null) {
+  const root = wrapper?.parentElement;
+  if (!wrapper || !root || typeof ResizeObserver === "undefined") return;
+  const view = wrapper.ownerDocument.defaultView;
+  let wasOpen = false;
+  let snapping = true;
+  let frame = 0;
+
+  const openTrigger = () =>
+    [
+      ...root.querySelectorAll<HTMLElement>(
+        '[data-slot="navigation-menu-trigger"][data-state="open"]',
+      ),
+    ].find((t) => t.closest('[data-slot="navigation-menu"]') === root);
+
+  const place = () => {
+    const viewport = wrapper.querySelector<HTMLElement>(
+      '[data-slot="navigation-menu-viewport"]',
+    );
+    const trigger = openTrigger();
+    // Closing: stay where it is while the exit plays.
+    if (!viewport || !trigger) {
+      wasOpen = false;
+      return;
+    }
+    if (!wasOpen) snapping = true;
+    wasOpen = true;
+    const rootBox = root.getBoundingClientRect();
+    const box = trigger.getBoundingClientRect();
+    // The open content's own width is known the moment it mounts; Radix only
+    // resizes the viewport to it a frame later. Add the viewport's borders.
+    // Content in the viewport carries no data-state; the trigger names it.
+    const id = trigger.getAttribute("aria-controls");
+    const content = [
+      ...viewport.querySelectorAll<HTMLElement>(
+        ':scope > [data-slot="navigation-menu-content"]:not([data-exiting])',
+      ),
+    ].find((el) => el.id === id);
+    const borders = viewport.offsetWidth - viewport.clientWidth;
+    const width = content
+      ? content.offsetWidth + borders
+      : viewport.offsetWidth;
+    const center = box.left - rootBox.left + box.width / 2;
+    const room = Math.max(0, root.clientWidth - width);
+    const x = Math.round(Math.min(Math.max(center - width / 2, 0), room));
+    if (snapping) {
+      wrapper.style.transition = "none";
+      wrapper.style.translate = `${x}px 0px`;
+      // Keep snapping until the content is in (its width is the target).
+      if (content && width > borders) {
+        view?.cancelAnimationFrame(frame);
+        frame =
+          view?.requestAnimationFrame(() => {
+            wrapper.style.transition = "";
+            snapping = false;
+          }) ?? 0;
+      }
+      return;
+    }
+    wrapper.style.translate = `${x}px 0px`;
+  };
+
+  const states = new MutationObserver(place);
+  states.observe(root, {
+    subtree: true,
+    attributes: true,
+    attributeFilter: ["data-state"],
+  });
+  const sizes = new ResizeObserver(place);
+  sizes.observe(root);
+  // The viewport mounts and unmounts with the menu; watch it whenever it's in.
+  const mounts = new MutationObserver(() => {
+    const viewport = wrapper.querySelector(
+      '[data-slot="navigation-menu-viewport"]',
+    );
+    if (viewport) sizes.observe(viewport);
+    place();
+  });
+  mounts.observe(wrapper, { childList: true });
+  return () => {
+    states.disconnect();
+    sizes.disconnect();
+    mounts.disconnect();
+    view?.cancelAnimationFrame(frame);
+  };
+}
+
+/** Both behaviours on one stable callback ref (React 19 cleanup). */
+function frameRef(wrapper: HTMLDivElement | null) {
+  const cleanups = [keepExitingContent(wrapper), anchorToTrigger(wrapper)];
+  return () => {
+    for (const cleanup of cleanups) cleanup?.();
+  };
+}
+
 function NavigationMenuViewportFrame(props: React.ComponentProps<"div">) {
-  return <div {...props} ref={keepExitingContent} />;
+  return <div {...props} ref={frameRef} />;
 }
 
 export { NavigationMenuViewportFrame };

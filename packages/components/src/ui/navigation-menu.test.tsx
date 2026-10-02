@@ -282,6 +282,79 @@ describe("NavigationMenu", () => {
     expect(cls).not.toMatch(/(^|\s)transition/);
   });
 
+  it("the viewport opens under its trigger (clamped in the menu) and glides between triggers", async () => {
+    // jsdom has no layout: the menu is 500px wide, Home sits at 0–80px,
+    // Components at 90–210px, and every open panel is 200px (+1px borders).
+    const restore: Array<() => void> = [];
+    const rect = Element.prototype.getBoundingClientRect;
+    Element.prototype.getBoundingClientRect = function (this: Element) {
+      const text = this.textContent ?? "";
+      const trigger =
+        this.getAttribute("data-slot") === "navigation-menu-trigger";
+      const left = trigger && text.startsWith("Components") ? 90 : 0;
+      const width = trigger ? (left ? 120 : 80) : 500;
+      return { left, top: 0, width, height: 36, x: left, y: 0 } as DOMRect;
+    };
+    restore.push(() => {
+      Element.prototype.getBoundingClientRect = rect;
+    });
+    for (const [prop, value] of [
+      [
+        "offsetWidth",
+        (el: HTMLElement) =>
+          el.dataset.slot === "navigation-menu-content"
+            ? 200
+            : el.dataset.slot === "navigation-menu-viewport"
+              ? 202
+              : 0,
+      ],
+      [
+        "clientWidth",
+        (el: HTMLElement) =>
+          el.dataset.slot === "navigation-menu"
+            ? 500
+            : el.dataset.slot === "navigation-menu-viewport"
+              ? 200
+              : 0,
+      ],
+    ] as const) {
+      const original = Object.getOwnPropertyDescriptor(
+        HTMLElement.prototype,
+        prop,
+      );
+      Object.defineProperty(HTMLElement.prototype, prop, {
+        configurable: true,
+        get(this: HTMLElement) {
+          return value(this);
+        },
+      });
+      restore.push(() => {
+        if (original)
+          Object.defineProperty(HTMLElement.prototype, prop, original);
+      });
+    }
+    try {
+      const user = userEvent.setup();
+      render(<Usage ui={Godui} />);
+      const wrapper = slot("navigation-menu")?.lastElementChild as HTMLElement;
+      expect(wrapper.className).toContain("transition-[translate]");
+      expect(wrapper.className).toContain("motion-reduce:transition-none");
+      await user.click(screen.getByRole("button", { name: "Components" }));
+      // Centered under Components (150px) → 150 − 101 = 49px; first open
+      // lands there at once.
+      await waitFor(() => expect(wrapper.style.translate).toBe("49px 0px"));
+      expect(wrapper.style.transition).toBe("none");
+      await waitFor(() => expect(wrapper.style.transition).toBe(""));
+      // Home's center (40px) would put the panel off the menu's left edge:
+      // clamped to 0, and this time it glides (no transition override).
+      await user.click(screen.getByRole("button", { name: "Home" }));
+      await waitFor(() => expect(wrapper.style.translate).toBe("0px 0px"));
+      expect(wrapper.style.transition).toBe("");
+    } finally {
+      for (const undo of restore.reverse()) undo();
+    }
+  });
+
   it("viewport={false}: content fades and scales from the top on its own", async () => {
     const user = userEvent.setup();
     render(<Usage ui={Godui} viewport={false} />);

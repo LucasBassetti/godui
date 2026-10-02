@@ -1,6 +1,7 @@
 // GodUI Navigation Menu — mirrors shadcn/ui new-york-v4 components/ui/navigation-menu.tsx (registry snapshot 2026-10-01).
 // Motion: switching items slides the old content out and the new one in from the matching side (3rem,
-// Radix data-motion); the viewport scales in from the top and its size snaps. Without the viewport each
+// Radix data-motion); the viewport scales in from the top under the open trigger (centered, clamped inside
+// the menu), glides to the next trigger on a spring, and its size snaps. Without the viewport each
 // content fades and scales from the top. The chevron rotates and the indicator slides with transforms. GPU-only.
 // Additive: the viewport keeps an inert copy of the content you leave until its exit ends (works around Radix
 // dropping that exit) — done in navigation-menu-viewport-frame.tsx, so this file stays a server-safe module
@@ -114,7 +115,7 @@ function NavigationMenuViewport({
   return (
     <NavigationMenuViewportFrame
       className={cn(
-        "absolute top-full left-0 isolate z-50 flex justify-center",
+        "absolute top-full left-0 isolate z-50 flex justify-center transition-[translate] duration-(--godui-duration-base) ease-spring-snappy motion-reduce:transition-none",
       )}
     >
       <NavigationMenuPrimitive.Viewport
