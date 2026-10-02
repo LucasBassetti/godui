@@ -555,6 +555,73 @@ describe("NavigationMenu", () => {
       }
     });
 
+    it("works in another realm (an iframe preview): no instanceof checks", async () => {
+      // The docs' mobile preview renders into an iframe while the code runs
+      // in the parent window, so its nodes fail the parent's `instanceof
+      // HTMLElement`. jsdom gives an iframe its own realm, like a browser.
+      const iframe = document.createElement("iframe");
+      document.body.append(iframe);
+      const frameWindow = iframe.contentWindow as Window & typeof globalThis;
+      const doc = frameWindow.document;
+      const real = frameWindow.getComputedStyle.bind(frameWindow);
+      const spy = vi
+        .spyOn(frameWindow, "getComputedStyle")
+        .mockImplementation((el, pseudo) => {
+          const style = real(el, pseudo);
+          if ((el as HTMLElement).dataset?.slot !== "navigation-menu-content")
+            return style;
+          return new Proxy(style, {
+            get(target, key) {
+              if (key === "animationName") return "godui-out";
+              const value = Reflect.get(target, key);
+              return typeof value === "function" ? value.bind(target) : value;
+            },
+          });
+        });
+      try {
+        const container = doc.body.appendChild(doc.createElement("div"));
+        render(
+          <NavigationMenuViewportFrame>
+            <div data-slot="navigation-menu-viewport" data-state="open" />
+          </NavigationMenuViewportFrame>,
+          { container },
+        );
+        const viewport = container.querySelector(
+          '[data-slot="navigation-menu-viewport"]',
+        ) as HTMLElement;
+        expect(viewport).not.toBeInstanceOf(HTMLElement);
+        const flush = () => new Promise((resolve) => setTimeout(resolve, 0));
+        const add = (id: string, motion?: string) => {
+          const el = doc.createElement("div");
+          el.dataset.slot = "navigation-menu-content";
+          if (motion) el.dataset.motion = motion;
+          el.id = id;
+          viewport.append(el);
+          return el;
+        };
+        const ghosts = () => viewport.querySelectorAll("[data-exiting]");
+        // A dropped exit is replayed...
+        const a = add("a", "to-start");
+        await flush();
+        a.remove();
+        await flush();
+        expect(ghosts()).toHaveLength(1);
+        // ...and an exit that already played is not.
+        const b = add("b");
+        await flush();
+        b.dataset.motion = "to-end";
+        b.dispatchEvent(
+          new frameWindow.Event("animationstart", { bubbles: true }),
+        );
+        b.remove();
+        await flush();
+        expect(ghosts()).toHaveLength(1);
+      } finally {
+        spy.mockRestore();
+        iframe.remove();
+      }
+    });
+
     it("unmounting removes pending copies and their timers", async () => {
       const spy = stubAnimations();
       const clear = vi.spyOn(window, "clearTimeout");

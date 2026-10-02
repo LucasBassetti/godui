@@ -28,6 +28,19 @@ function animationMs(style: CSSStyleDeclaration): number {
 const CONTENT = "navigation-menu-content";
 
 /**
+ * Duck-typed: `instanceof HTMLElement` fails across realms (the docs' mobile
+ * preview renders into an iframe while this code runs in the parent window).
+ */
+function isHTMLElement(node: unknown): node is HTMLElement {
+  return (
+    typeof node === "object" &&
+    node !== null &&
+    (node as Node).nodeType === 1 &&
+    "dataset" in node
+  );
+}
+
+/**
  * Radix NavigationMenu (1.2.22, still in 1.3.0-rc) loses the viewport
  * content's exit: the Presence around each content never receives its node,
  * so the content you leave is removed at once instead of after its slide-out.
@@ -44,13 +57,14 @@ const CONTENT = "navigation-menu-content";
  *   observer is never torn down mid-switch; cleanup clears timers and copies.
  */
 function keepExitingContent(wrapper: HTMLDivElement | null) {
-  if (!wrapper) return;
+  const view = wrapper?.ownerDocument.defaultView;
+  if (!wrapper || !view) return;
   const timers = new Set<number>();
   const ghosts = new Set<HTMLElement>();
 
   const markExitPlayed = (event: Event) => {
     const target = event.target;
-    if (!(target instanceof HTMLElement)) return;
+    if (!isHTMLElement(target)) return;
     if (target.dataset.slot !== CONTENT) return;
     if (target.hasAttribute("data-exiting")) return;
     if (target.dataset.motion?.startsWith("to-")) {
@@ -75,7 +89,7 @@ function keepExitingContent(wrapper: HTMLDivElement | null) {
       const viewport = record.target as HTMLElement;
       if (viewport.dataset.slot !== "navigation-menu-viewport") continue;
       for (const node of record.addedNodes) {
-        if (!(node instanceof HTMLElement)) continue;
+        if (!isHTMLElement(node)) continue;
         if (node.dataset.slot !== CONTENT || node.hasAttribute("data-exiting"))
           continue;
         node.removeAttribute("data-exit-played");
@@ -83,7 +97,7 @@ function keepExitingContent(wrapper: HTMLDivElement | null) {
       }
       if (viewport.dataset.state !== "open") continue;
       for (const node of record.removedNodes) {
-        if (!(node instanceof HTMLElement)) continue;
+        if (!isHTMLElement(node)) continue;
         if (node.dataset.slot !== CONTENT) continue;
         if (node.hasAttribute("data-exiting")) continue;
         if (node.hasAttribute("data-exit-played")) continue;
@@ -104,7 +118,7 @@ function keepExitingContent(wrapper: HTMLDivElement | null) {
         ghost.style.pointerEvents = "none";
         // First child, so the incoming content paints over the exiting one.
         viewport.insertBefore(ghost, viewport.firstChild);
-        const style = getComputedStyle(ghost);
+        const style = view.getComputedStyle(ghost);
         if ((style.animationName || "none") === "none") {
           ghost.remove();
           continue;
@@ -113,7 +127,7 @@ function keepExitingContent(wrapper: HTMLDivElement | null) {
         let timer = 0;
         const remove = (event?: Event) => {
           if (event && event.target !== ghost) return;
-          window.clearTimeout(timer);
+          view.clearTimeout(timer);
           timers.delete(timer);
           ghosts.delete(ghost);
           ghost.remove();
@@ -122,7 +136,7 @@ function keepExitingContent(wrapper: HTMLDivElement | null) {
         ghost.addEventListener("animationcancel", remove);
         // Fallback in case no end event arrives (e.g. the tab is hidden).
         const ms = animationMs(style);
-        timer = window.setTimeout(
+        timer = view.setTimeout(
           () => remove(),
           (Number.isFinite(ms) ? ms : 1000) + 100,
         );
@@ -134,7 +148,7 @@ function keepExitingContent(wrapper: HTMLDivElement | null) {
   return () => {
     observer.disconnect();
     wrapper.removeEventListener("animationstart", markExitPlayed, true);
-    for (const timer of timers) window.clearTimeout(timer);
+    for (const timer of timers) view.clearTimeout(timer);
     for (const ghost of ghosts) ghost.remove();
     timers.clear();
     ghosts.clear();
