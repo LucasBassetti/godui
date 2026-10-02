@@ -153,11 +153,11 @@ other enter/exit keys replace the animation itself. The timing lives in the
 keyframes and in a few variables on the root, so overriding `weeks` or
 `month_caption` restyles them without breaking the month change.
 
-The day button draws the range's accent track, the hover tint and the focus
-ring on layers instead of its own background. A picked day's fill is a layer,
-with its own copy of the number, only while it pops in or shrinks away; it
-unmounts on its `animationend` and the button paints shadcn's fill itself, so
-at rest a day's text is its number once and queries like `getByText("14")`
+The day button draws shadcn's fills on layers instead of its own background:
+the selected fill, the range's accent track, the hover tint and the focus
+ring. The selected fill carries its own copy of the number only while it pops
+in or shrinks away; at rest it lies under the button's number and the copy is
+gone, so a day's text is its number once and queries like `getByText("14")`
 keep working. At rest it looks the same as shadcn's, pixel for pixel; in RTL
 the accent behind a range's ends sits on the inner side, where shadcn draws it
 on the outer one. The one other visible difference: in dark mode, hovering a

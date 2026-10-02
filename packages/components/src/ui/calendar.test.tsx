@@ -207,16 +207,46 @@ function endFill(button: HTMLElement) {
   );
 }
 
-/** The button paints shadcn's fill itself (no layer): a settled selected day. */
+/**
+ * A settled selected day: the fill layer rests under the button's own number
+ * (z -10, after the track halves), without a copy; the number turns
+ * primary-foreground and is in the DOM once.
+ */
 function expectSettledFill(button: HTMLElement, day: number) {
-  expect(fill(button)).toBeNull();
+  const layer = fill(button);
+  expect(layer).toHaveAttribute("data-state", "on");
+  expect(layer).toHaveClass("-z-10", "before:bg-primary");
+  expect(layer?.textContent).toBe("");
+  // Above the range track: later in the same (negative) layer.
+  const track = layer?.parentElement?.querySelectorAll(
+    ":scope > [data-calendar-layer^=track]",
+  );
+  for (const half of track ?? []) {
+    expect(
+      half.compareDocumentPosition(layer as Node) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(half).toHaveClass("-z-10");
+  }
   expect(button).toHaveAttribute("data-fill", "settled");
-  expect(button).toHaveClass("bg-primary", "text-primary-foreground");
-  // The number is in the DOM once.
+  expect(button).toHaveClass("text-primary-foreground");
+  // The button's own background never fills: the track would paint over it.
+  expect(button.className).not.toMatch(/(^|\s)(\S+:)?bg-primary(\s|$)/);
   expect(button.textContent).toBe(String(day));
 }
 
 describe("Calendar", () => {
+  // A fill layer settles at once if nothing animates it (getAnimations()
+  // empty). jsdom runs no CSS animations, so stand in a running one; the
+  // fallback's own tests override this.
+  const getAnimations = HTMLElement.prototype.getAnimations;
+  beforeEach(() => {
+    HTMLElement.prototype.getAnimations = () => [{} as Animation];
+  });
+  afterEach(() => {
+    HTMLElement.prototype.getAnimations = getAnimations;
+  });
+
   it("matches shadcn's data-slot tree and exports (single, selected date)", () => {
     const { unmount } = render(<Single ui={Shadcn} />);
     const expected = slotTree();
@@ -501,7 +531,7 @@ describe("Calendar", () => {
       // The fill is the layer's ::before; the layer's text is primary-foreground.
       expect(layer).toHaveClass("text-primary-foreground", "before:bg-primary");
       // While it pops, the button keeps the unselected look under it.
-      expect(day).toHaveAttribute("data-fill", "layer");
+      expect(day).toHaveAttribute("data-fill", "moving");
       expect(day.className).not.toContain("bg-primary");
       expect(day.className).not.toContain("text-primary-foreground");
       // The deselected day mounts a layer that animates out: the layer
@@ -526,7 +556,7 @@ describe("Calendar", () => {
       );
     });
 
-    it("the layer exists only while it animates: once its animation ends, the day reads its number once", async () => {
+    it("the copy of the number exists only while the layer animates: once it ends, the day reads its number once", async () => {
       const user = userEvent.setup();
       render(<Single ui={Godui} />);
       await user.click(dayButton(20));
@@ -548,7 +578,7 @@ describe("Calendar", () => {
       fill(dayButton(14))?.append(child);
       animationEnd(child, "godui-calendar-fade-out");
       expect(fill(dayButton(14))).not.toBeNull();
-      // The pop ends: the button takes over shadcn's fill.
+      // The pop ends: the layer comes to rest under the number, copy gone.
       endFill(dayButton(20));
       expectSettledFill(dayButton(20), 20);
       // The ghost ends: an unselected day, one number, no fill.
@@ -563,13 +593,33 @@ describe("Calendar", () => {
     it("a settled selected day keeps its fill under the pointer (no hover overlay)", () => {
       render(<Single ui={Godui} />);
       expect(dayButton(14)).toHaveClass(
-        "hover:bg-primary",
-        "dark:hover:bg-primary",
         "hover:text-primary-foreground",
         "dark:hover:text-primary-foreground",
+        // The overlay would paint over the resting fill (same layer, later).
         "after:hidden",
       );
-      expect(dayButton(14).className).not.toContain("hover:bg-transparent");
+    });
+
+    describe("if the layer's animation never runs", () => {
+      it("(your CSS cancels it, or the day is hidden) the layer settles at once instead of keeping the copy", async () => {
+        HTMLElement.prototype.getAnimations = () => [];
+        const user = userEvent.setup();
+        render(<Single ui={Godui} />);
+        await user.click(dayButton(20));
+        // No animationend was fired.
+        expectSettledFill(dayButton(20), 20);
+        expect(fill(dayButton(14))).toBeNull();
+        expect(dayButton(14).textContent).toBe("14");
+      });
+
+      it("while it runs, the layer waits for its animationend", async () => {
+        HTMLElement.prototype.getAnimations = () => [{} as Animation];
+        const user = userEvent.setup();
+        render(<Single ui={Godui} />);
+        await user.click(dayButton(20));
+        expect(dayButton(20)).toHaveAttribute("data-fill", "moving");
+        expect(dayButton(20).textContent).toBe("2020");
+      });
     });
 
     it("re-picking a deselected day pops it again", async () => {
@@ -612,7 +662,7 @@ describe("Calendar", () => {
       finishMonthChange();
       await user.click(screen.getByRole("button", { name: /previous month/i }));
       expectSettledFill(dayButton(14), 14);
-      expect(document.querySelector("[data-calendar-layer]")).toBeNull();
+      expect(document.querySelector("[data-animate]")).toBeNull();
     });
 
     it("mount rule: a controlled remount (a new key) with a selected day doesn't pop", () => {

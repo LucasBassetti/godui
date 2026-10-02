@@ -6,12 +6,11 @@
 // delay, 260ms spring); the caption drifts less than the grid, so it reads as
 // a layer behind it (mirrored in RTL). Dropdown captions don't move: the old
 // one hides at once. Picking a day pops a fill layer that carries its own copy
-// of the number; the deselected day's fill shrinks away (the layer exists only
-// while it animates). A range's track sweeps out from the day picked first,
-// cell by cell, in the same total time however long it is. Hover fades an
-// overlay; the focus ring fades in on entering the grid and jumps between
-// days on keys. Nothing animates on first paint or month navigation.
-// GPU-only (transform, opacity).
+// of the number while it animates; the deselected day's fill shrinks away. A
+// range's track sweeps out from the day picked first, cell by cell, in the
+// same total time however long it is. Hover fades an overlay; the focus ring
+// fades in on entering the grid and jumps between days on keys. Nothing
+// animates on first paint or month navigation. GPU-only (transform, opacity).
 
 import {
   ChevronDownIcon,
@@ -334,10 +333,11 @@ type DayMotion = {
   startWave: Wave | null;
   endWave: Wave | null;
   /**
-   * The fill layer is mounted only while it animates (in or out); at rest the
-   * button paints shadcn's fill itself, so the number is in the DOM once.
+   * The fill layer is animating (in or out). Only then does it rise above
+   * the button's number and carry its own copy; at rest it lies under the
+   * number, so a day's text is its number once.
    */
-  fillLayer: boolean;
+  fillMoving: boolean;
   /** Track halves are rendered from the first time they're needed. */
   hasTrack: boolean;
 };
@@ -447,14 +447,15 @@ function CalendarDayButton({
   const start = covers(units, 2 * date);
   const end = covers(units, 2 * date + 1);
 
+  const fillRef = React.useRef<HTMLSpanElement>(null);
   const settleFill = (event: React.AnimationEvent<HTMLSpanElement>) => {
     // The layer's own animation (not its ::before's, not a child's) ending
-    // as the one its current state plays: drop the layer.
+    // as the one its current state plays: it comes to rest (or goes).
     if (event.target !== event.currentTarget || event.pseudoElement) return;
     const name = event.animationName;
     setMotion((m) =>
       name === (m.filled ? "godui-calendar-fill-in" : "godui-calendar-fade-out")
-        ? { ...m, fillLayer: false }
+        ? { ...m, fillMoving: false }
         : m,
     );
   };
@@ -474,7 +475,7 @@ function CalendarDayButton({
     endAnimate: false,
     startWave: null,
     endWave: null,
-    fillLayer: false,
+    fillMoving: false,
     hasTrack: start || end,
   }));
   if (motion.filled !== filled || !sameSpan(motion.span, span)) {
@@ -496,10 +497,26 @@ function CalendarDayButton({
         : motion.end
           ? motion.endWave
           : waveFor(2 * date + 1, motion.span, span),
-      fillLayer: filled === motion.filled ? motion.fillLayer : true,
+      fillMoving: filled === motion.filled ? motion.fillMoving : true,
       hasTrack: motion.hasTrack || start || end,
     });
   }
+
+  // If the layer's animation never runs — cancelled by your CSS
+  // (`animate-none`), or the day is in a `display: none` subtree —
+  // animationend never comes: settle it now rather than keep the copy.
+  React.useEffect(() => {
+    const el = fillRef.current;
+    if (!motion.fillMoving || !el || typeof el.getAnimations !== "function") {
+      return;
+    }
+    if (el.getAnimations().length === 0) {
+      setMotion((m) => ({ ...m, fillMoving: false }));
+    }
+  }, [motion.fillMoving]);
+
+  const fillLayer = filled || motion.fillMoving;
+  const settled = filled && !motion.fillMoving;
 
   return (
     <Button
@@ -516,20 +533,21 @@ function CalendarDayButton({
       data-range-start={modifiers.range_start}
       data-range-end={modifiers.range_end}
       data-range-middle={modifiers.range_middle}
-      data-fill={filled ? (motion.fillLayer ? "layer" : "settled") : undefined}
+      data-fill={filled ? (settled ? "settled" : "moving") : undefined}
       className={cn(
-        // shadcn's range-middle accent and box-shadow focus ring move to
-        // layers; the steady state is the same. A selected day or range end
-        // paints shadcn's fill itself once settled; while the fill layer
-        // pops in or shrinks away the button keeps the unselected look and
-        // the layer covers it with its own copy of the number.
+        // shadcn's fills (bg-primary on a selected day or range end, bg-accent
+        // on the range middle) and its box-shadow focus ring move to layers;
+        // the steady state is the same. While the fill layer pops in or
+        // shrinks away it covers the number with its own copy and the button
+        // keeps the unselected colour; at rest the fill lies under the
+        // button's own number, now primary-foreground.
         "relative isolate flex aspect-square size-auto w-full min-w-(--cell-size) flex-col gap-1 leading-none font-normal group-data-[focused=true]/day:z-10 data-[range-end=true]:rounded-md data-[range-end=true]:rounded-r-md data-[range-middle=true]:rounded-none data-[range-middle=true]:text-accent-foreground data-[range-start=true]:rounded-md data-[range-start=true]:rounded-l-md dark:hover:text-accent-foreground [&>span:not([data-calendar-layer])]:text-xs [&>span:not([data-calendar-layer])]:opacity-70",
-        // Hover: the ghost button's accent moves to an overlay that fades.
-        // A settled fill keeps its colours under the pointer (in both themes).
-        filled && !motion.fillLayer
-          ? "bg-primary text-primary-foreground after:hidden hover:bg-primary hover:text-primary-foreground dark:hover:bg-primary dark:hover:text-primary-foreground"
-          : "hover:bg-transparent dark:hover:bg-transparent",
-        "after:pointer-events-none after:absolute after:inset-0 after:-z-10 after:rounded-[inherit] after:bg-accent after:opacity-0 after:transition-[opacity] after:duration-100 after:ease-out hover:after:opacity-100 dark:after:bg-accent/50",
+        // Hover: the ghost button's accent moves to an overlay that fades. A
+        // settled fill keeps its colours under the pointer (in both themes):
+        // the overlay would paint over it.
+        settled &&
+          "text-primary-foreground after:hidden hover:text-primary-foreground dark:hover:text-primary-foreground",
+        "hover:bg-transparent dark:hover:bg-transparent after:pointer-events-none after:absolute after:inset-0 after:-z-10 after:rounded-[inherit] after:bg-accent after:opacity-0 after:transition-[opacity] after:duration-100 after:ease-out hover:after:opacity-100 dark:after:bg-accent/50",
         // Focus ring: a ::before layer (opacity + scale from 98%) instead of
         // shadcn's ring box-shadow (the Button's own one is off); it fades in
         // only when not moved by keys.
@@ -558,11 +576,14 @@ function CalendarDayButton({
           />
         </>
       ) : null}
-      {motion.fillLayer ? (
-        // The fill and a copy of the number in its colour, so the number
-        // never shows white on a fill that hasn't arrived yet. Mounted only
-        // for the animation: it unmounts on its own animationend.
+      {fillLayer ? (
+        // The fill (its ::before) above the range track. While it animates,
+        // it also rises above the number with a copy of it in its colour, so
+        // the number never shows white on a fill that hasn't arrived yet; at
+        // rest it drops under the button's own number (z -10, after the
+        // track halves) and the copy goes. It leaves after its fade-out.
         <span
+          ref={fillRef}
           aria-hidden="true"
           data-calendar-layer="fill"
           data-state={filled ? "on" : "off"}
@@ -570,6 +591,7 @@ function CalendarDayButton({
           onAnimationEnd={settleFill}
           className={cn(
             "pointer-events-none absolute inset-0 isolate flex flex-col items-center justify-center gap-1 rounded-[inherit] text-primary-foreground before:absolute before:inset-0 before:-z-10 before:rounded-[inherit] before:bg-primary [&>span]:text-xs [&>span]:opacity-70",
+            settled && "-z-10",
             // Popping in, the fill and its number grow together. Leaving,
             // only the fill shrinks: the number fades where it is, over the
             // real one, so the two never show out of register. `not-in-[…]`:
@@ -580,7 +602,7 @@ function CalendarDayButton({
               : "opacity-0 not-in-[[data-animated-month][aria-hidden=true]]:data-animate:animate-godui-calendar-fade-out not-in-[[data-animated-month][aria-hidden=true]]:data-animate:before:animate-godui-calendar-fill-shrink",
           )}
         >
-          {children}
+          {motion.fillMoving ? children : null}
         </span>
       ) : null}
     </Button>

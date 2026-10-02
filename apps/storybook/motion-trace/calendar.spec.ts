@@ -295,28 +295,161 @@ test("the focus ring fades in on entering the grid and jumps between days on arr
   expect(await ring("2026-10-14")).toBe(0);
 });
 
-test("a picked day's fill layer hands over to the button's own fill when its pop ends", async ({
+/** RGB of a theme colour token, as the page paints it. */
+async function tokenRgb(page: Page, token: string) {
+  return page.evaluate((t) => {
+    const probe = document.createElement("i");
+    probe.style.color = `var(${t})`;
+    document.querySelector("[data-slot=calendar]")?.append(probe);
+    const css = getComputedStyle(probe).color;
+    probe.remove();
+    const ctx = document.createElement("canvas").getContext("2d");
+    if (!ctx) throw new Error("no canvas");
+    ctx.fillStyle = css;
+    ctx.fillRect(0, 0, 1, 1);
+    return [...ctx.getImageData(0, 0, 1, 1).data.slice(0, 3)];
+  }, token);
+}
+
+/** Pixels at fractional points of `locator`'s box, from a real screenshot. */
+async function samplePixels(
+  page: Page,
+  locator: ReturnType<Page["locator"]>,
+  points: Array<[number, number]>,
+) {
+  const png = (await locator.screenshot({ animations: "allow" })).toString(
+    "base64",
+  );
+  return page.evaluate(
+    async ({ png, points }) => {
+      const img = new Image();
+      img.src = `data:image/png;base64,${png}`;
+      await img.decode();
+      const canvas = document.createElement("canvas");
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) throw new Error("no canvas");
+      ctx.drawImage(img, 0, 0);
+      return points.map(([x, y]) => [
+        ...ctx
+          .getImageData(
+            Math.round(x * (img.width - 1)),
+            Math.round(y * (img.height - 1)),
+            1,
+            1,
+          )
+          .data.slice(0, 3),
+      ]);
+    },
+    { png, points },
+  );
+}
+
+function expectColor(got: number[] | undefined, want: number[], label: string) {
+  const far = want.some((c, i) => Math.abs(c - (got?.[i] ?? -999)) > 10);
+  expect(far, `${label}: got rgb(${got}) want rgb(${want})`).toBe(false);
+}
+
+// A range end: its pill is full primary — the inner half too, where the
+// accent track runs on toward the range — and the accent shows only in the
+// pill's corners on that side (shadcn's look).
+const INNER = { start: [0.85, 0.5], end: [0.15, 0.5] } as const;
+const CORNER = { start: [0.99, 0.02], end: [0.01, 0.02] } as const;
+async function expectRangeEnd(
+  page: Page,
+  iso: string,
+  side: "start" | "end",
+  label: string,
+) {
+  const [primary, accent] = [
+    await tokenRgb(page, "--primary"),
+    await tokenRgb(page, "--accent"),
+  ];
+  const [inner, corner] = await samplePixels(page, day(page, iso), [
+    [...INNER[side]],
+    [...CORNER[side]],
+  ]);
+  expectColor(inner, primary, `${label} ${iso} inner half`);
+  expectColor(corner, accent, `${label} ${iso} corner`);
+}
+
+for (const theme of ["light", "dark"] as const) {
+  test(`${theme}: range ends are full primary pills over the track, at rest and at the pop's handover`, async ({
+    page,
+  }) => {
+    await page.goto(
+      `/iframe.html?id=ui-calendar--range-two-months&viewMode=story&globals=theme:${theme}`,
+    );
+    await page.waitForLoadState("networkidle");
+    await page.mouse.move(0, 0);
+    // At rest (first paint): Oct 12 – Nov 3.
+    await expectRangeEnd(page, "2026-10-12", "start", "rest");
+    await expectRangeEnd(page, "2026-11-03", "end", "rest");
+    // A new end, Nov 12: freeze the pop 1ms before it ends, still on the
+    // layer (with its copy) above the number...
+    await page.evaluate(async () => {
+      document
+        .querySelector<HTMLElement>(
+          'td[data-day="2026-11-12"]:not([data-outside]) button',
+        )
+        ?.click();
+      for (let i = 0; i < 5; i++) await Promise.resolve();
+      const w = window as unknown as { __a: Animation[] };
+      w.__a = document.getAnimations();
+      const pop = document
+        .querySelector('td[data-day="2026-11-12"] [data-calendar-layer=fill]')
+        ?.getAnimations()[0];
+      // Everything else (the sweep, the old end's exit) to its end; the
+      // pop to 1ms before its own.
+      for (const a of w.__a) {
+        a.pause();
+        a.currentTime = a === pop ? 259 : 1000;
+      }
+    });
+    await page.evaluate(() => (document.activeElement as HTMLElement)?.blur());
+    expect(await day(page, "2026-11-12").getAttribute("data-fill")).toBe(
+      "moving",
+    );
+    await expectRangeEnd(page, "2026-11-12", "end", "handover");
+    // ...then let it end: at rest under the number, the same pixels.
+    await page.evaluate(() => {
+      for (const a of (window as unknown as { __a: Animation[] }).__a) a.play();
+    });
+    await page.waitForTimeout(500);
+    expect(await day(page, "2026-11-12").getAttribute("data-fill")).toBe(
+      "settled",
+    );
+    expect(await day(page, "2026-11-12").textContent()).toBe("12");
+    await expectRangeEnd(page, "2026-11-12", "end", "settled");
+    await expectRangeEnd(page, "2026-10-12", "start", "settled");
+  });
+}
+
+test("a picked day's fill layer comes to rest under the number when its pop ends", async ({
   page,
 }) => {
   await page.goto("/iframe.html?id=ui-calendar--single&viewMode=story");
   await page.waitForLoadState("networkidle");
   const picked = day(page, "2026-10-21");
   await picked.click();
-  // Mid-pop: the layer (with its copy of the number) is there.
-  expect(await picked.locator("[data-calendar-layer=fill]").count()).toBe(1);
+  // Mid-pop: the layer carries a copy of the number.
+  expect(await picked.getAttribute("data-fill")).toBe("moving");
+  expect(await picked.textContent()).toBe("2121");
   await page.waitForTimeout(500);
-  // Settled: no layer anywhere, the number once, shadcn's fill on the button.
-  expect(await page.locator("[data-calendar-layer=fill]").count()).toBe(0);
+  // At rest: the copy is gone (the number once) and the pill is primary.
+  expect(await picked.getAttribute("data-fill")).toBe("settled");
   expect(await picked.textContent()).toBe("21");
-  const [button, primary] = await picked.evaluate((el) => {
-    const probe = document.createElement("i");
-    probe.style.background = "var(--primary)";
-    el.append(probe);
-    const want = getComputedStyle(probe).backgroundColor;
-    probe.remove();
-    return [getComputedStyle(el).backgroundColor, want];
-  });
-  expect(button).toBe(primary);
+  await page.evaluate(() => (document.activeElement as HTMLElement)?.blur());
+  const primary = await tokenRgb(page, "--primary");
+  for (const [i, px] of (
+    await samplePixels(page, picked, [
+      [0.15, 0.5],
+      [0.85, 0.5],
+    ])
+  ).entries()) {
+    expectColor(px, primary, `settled pill ${i}`);
+  }
 });
 
 test("RTL: a forward sweep grows from the right, a backward one from the left", async ({
