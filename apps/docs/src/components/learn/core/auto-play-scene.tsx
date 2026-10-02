@@ -1069,11 +1069,11 @@ function FadingField({ on, slowMs }: { on: boolean; slowMs: string }) {
   );
 }
 
-/** Left: Input (ring snaps). Right: Input Group (ring fades + grows in). */
+/** Top: Input (ring snaps). Bottom: Input Group (ring fades + grows in). */
 function FocusRingCompare({ reduced }: { reduced: boolean }) {
   const on = useToggle(reduced) || reduced;
   return (
-    <div className="grid w-full max-w-md grid-cols-2 gap-6 px-4">
+    <div className="grid w-60 scale-150 gap-5">
       <SnappingField on={on} />
       <FadingField on={on} slowMs="[--godui-duration-fast:800ms]" />
     </div>
@@ -1084,7 +1084,7 @@ function FocusRingCompare({ reduced }: { reduced: boolean }) {
 function FocusRingSlow({ reduced }: { reduced: boolean }) {
   const on = useToggle(reduced) || reduced;
   return (
-    <div className="w-full max-w-xs px-4">
+    <div className="w-60 scale-150">
       <FadingField on={on} slowMs="[--godui-duration-fast:1100ms]" />
     </div>
   );

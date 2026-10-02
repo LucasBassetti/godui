@@ -5,6 +5,7 @@ workbench: true
 ---
 
 import { InputGroupButtonDemo } from "@/components/demos/core/input-group-button-demo";
+import { InputGroupFocusDemo } from "@/components/demos/core/input-group-focus-demo";
 import { InputGroupIconDemo } from "@/components/demos/core/input-group-icon-demo";
 import { InputGroupTextDemo } from "@/components/demos/core/input-group-text-demo";
 import { InputGroupTextareaDemo } from "@/components/demos/core/input-group-textarea-demo";
@@ -15,6 +16,82 @@ The shadcn/ui input group. Focus the field and the ring fades in while it
 grows from 99% to full size, then sits exactly where shadcn's ring sits. The
 ring is a `::before` layer, so only its `opacity` and `scale` change; the
 border colour snaps. Addon buttons stay clickable through it.
+
+<Example label="Focus ring" story="ui-input-group" code={`"use client";
+
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+  InputGroupText,
+  InputGroupTextarea,
+} from "@/components/ui/input-group";
+import { Switch } from "@/components/ui/switch";
+import { CornerDownLeftIcon, SearchIcon } from "lucide-react";
+import * as React from "react";
+
+export function InputGroupFocusDemo() {
+  const [slow, setSlow] = React.useState(false);
+
+  return (
+    <div className="grid w-full max-w-sm gap-6">
+      <div className="flex items-center justify-between gap-4">
+        <span className="text-muted-foreground text-sm">
+          Click or Tab between the fields
+        </span>
+        <div className="flex items-center gap-2">
+          <Switch
+            id="input-group-slow"
+            size="sm"
+            checked={slow}
+            onCheckedChange={setSlow}
+          />
+          <label htmlFor="input-group-slow" className="font-medium text-sm">
+            Slow motion
+          </label>
+        </div>
+      </div>
+      <div
+        data-slow={slow}
+        className="grid gap-6 data-[slow=true]:[--godui-duration-fast:900ms]"
+      >
+        <InputGroup>
+          <InputGroupInput aria-label="Search" placeholder="Search..." />
+          <InputGroupAddon>
+            <SearchIcon />
+          </InputGroupAddon>
+          <InputGroupAddon align="inline-end">
+            <kbd className="rounded border px-1.5 font-mono text-xs">⌘K</kbd>
+          </InputGroupAddon>
+        </InputGroup>
+        <InputGroup>
+          <InputGroupAddon>
+            <InputGroupText>https://</InputGroupText>
+          </InputGroupAddon>
+          <InputGroupInput
+            aria-label="Website"
+            placeholder="example.com"
+            className="pl-0.5!"
+          />
+        </InputGroup>
+        <InputGroup>
+          <InputGroupTextarea
+            aria-label="Message"
+            placeholder="Write a message..."
+          />
+          <InputGroupAddon align="block-end">
+            <InputGroupButton size="sm" className="ml-auto" variant="default">
+              Send <CornerDownLeftIcon />
+            </InputGroupButton>
+          </InputGroupAddon>
+        </InputGroup>
+      </div>
+    </div>
+  );
+}`}>
+  <InputGroupFocusDemo />
+</Example>
 
 <Example label="Icon" story="ui-input-group--icon" code={`import {
   InputGroup,
@@ -258,6 +335,8 @@ import {
 ```
 
 ## What's animated
+
+Turn on Slow motion in the Focus ring example to watch the ring grow on a 900ms clock.
 
 | Interaction | Keyframe / mechanism | Properties | Easing | Duration |
 | --- | --- | --- | --- | --- |
