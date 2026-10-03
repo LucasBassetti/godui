@@ -8,13 +8,15 @@ export default function CheckboxPreview() {
     <div className="flex flex-col gap-2.5">
       {[0, 1, 2].map((row) => (
         <div key={row} className="flex items-center gap-2.5">
-          <div className="relative size-4 rounded-[4px] border border-[var(--muted-foreground)]/30">
+          {/* Ink: a disc the box's diagonal wide, squared off by the clip,
+              grows from a dot on hover. */}
+          <div className="relative size-4 overflow-hidden rounded-[4px] border border-[var(--muted-foreground)]/30">
             <Ac
               className={
                 row === 0
-                  ? "absolute -inset-px rounded-[4px]"
+                  ? "absolute -inset-px"
                   : row === 1
-                    ? "absolute -inset-px scale-50 rounded-[4px] opacity-0 transition-[translate,scale,opacity] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-100 group-hover:opacity-100"
+                    ? "absolute inset-[-30%] scale-0 rounded-full transition-[scale] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-100"
                     : "hidden"
               }
             />

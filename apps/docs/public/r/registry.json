@@ -558,7 +558,7 @@
       "name": "checkbox",
       "type": "registry:ui",
       "title": "Checkbox",
-      "description": "A control that allows the user to toggle between checked and not checked. The check pops in; the box presses on a spring. GPU-only.",
+      "description": "A control that allows the user to toggle between checked and not checked. Ink floods the box from a dot and the check is drawn; unchecking drains it. GPU-only.",
       "dependencies": ["radix-ui", "lucide-react"],
       "registryDependencies": ["utils", "@godui/godui-motion"],
       "files": [
@@ -566,7 +566,48 @@
           "path": "packages/components/src/ui/checkbox.tsx",
           "type": "registry:ui"
         }
-      ]
+      ],
+      "cssVars": {
+        "theme": {
+          "animate-godui-checkbox-fill-in": "godui-checkbox-fill-in var(--godui-duration-base) var(--ease-spring-smooth) backwards",
+          "animate-godui-checkbox-fill-out": "godui-checkbox-fill-out var(--godui-duration-fast) var(--ease-spring-smooth) both",
+          "animate-godui-checkbox-draw": "godui-checkbox-draw calc(var(--godui-duration-base) - 70ms * var(--godui-motion)) var(--ease-spring-smooth) calc(70ms * var(--godui-motion)) backwards",
+          "animate-godui-checkbox-ink": "godui-checkbox-ink calc(var(--godui-duration-base) - 70ms * var(--godui-motion)) var(--ease-spring-smooth) calc(70ms * var(--godui-motion)) backwards",
+          "animate-godui-checkbox-check-out": "godui-checkbox-check-out var(--godui-duration-fast) var(--ease-out-expo) both",
+          "animate-godui-checkbox-hold": "godui-reveal-hold var(--godui-duration-fast) linear"
+        }
+      },
+      "css": {
+        "@keyframes godui-checkbox-fill-in": {
+          "from": {
+            "opacity": "var(--godui-motion)",
+            "scale": "calc(1.42 * (1 - var(--godui-motion)))"
+          }
+        },
+        "@keyframes godui-checkbox-fill-out": {
+          "to": {
+            "opacity": "var(--godui-motion)",
+            "scale": "calc(1.42 * (1 - var(--godui-motion)))"
+          }
+        },
+        "@keyframes godui-checkbox-draw": {
+          "from": {
+            "translate": "calc(-100% * var(--godui-motion)) 0"
+          }
+        },
+        "@keyframes godui-checkbox-ink": {
+          "from": {
+            "opacity": "var(--godui-motion)",
+            "translate": "calc(100% * var(--godui-motion)) 0"
+          }
+        },
+        "@keyframes godui-checkbox-check-out": {
+          "to": {
+            "opacity": "0",
+            "scale": "calc(1 - 0.3 * var(--godui-motion))"
+          }
+        }
+      }
     },
     {
       "name": "radio-group",

@@ -1,6 +1,6 @@
 ---
 title: Anatomy of the GodUI Checkbox
-description: A check mark drawn with a translate inside a clip, a box that dips on a spring, and why neither plays when the page loads.
+description: How the GodUI Checkbox floods with ink from a dot, draws its check, and drains again, animating only scale, translate and opacity, in whatever colors the box is given.
 learnPlayer: true
 ---
 
@@ -9,58 +9,97 @@ import { CheckboxDemo } from "@/components/demos/core/checkbox-demo";
 <LearnPlayer>
 
 <LearnChapter
-  label="The check is drawn"
-  scene={
-    <KeyframeScene
-      label="The check is drawn"
-      motion="wipe"
-      subject="check"
-      tracks={[
-        { property: "translate", from: "-100% 0", to: "0 0" },
-        { property: "opacity", from: "0", to: "1" },
-      ]}
-    />
+  label="Ink from a dot"
+  scene={<AutoPlayScene label="Ink from a dot" demo="checkbox-slow" note="slowed to 900ms" />}
+  code={`<span className="size-full scale-[1.42] rounded-full bg-inherit
+  … :animate-godui-checkbox-fill-in" />
+
+@keyframes godui-checkbox-fill-in {
+  from {
+    opacity: var(--godui-motion);
+    scale: calc(1.42 * (1 - var(--godui-motion)));
   }
-  code={`<CheckboxPrimitive.Indicator
-  data-slot="checkbox-indicator"
-  className="grid place-content-center overflow-hidden text-current"
->
-  <span className="flex [--godui-duration-slow:var(--godui-duration-base)]
-    group-data-[animate=true]/checkbox:[--godui-enter-distance:100%]
-    group-data-[animate=true]/checkbox:animate-godui-slide-in-from-left">
-    <CheckIcon className="size-3.5" />
-  </span>
-</CheckboxPrimitive.Indicator>`}
+}`}
 >
 
-Drawing a check stroke by stroke would mean animating `stroke-dashoffset`,
-which repaints the SVG on every frame. GodUI fakes it with a clip instead.
+Checking the box doesn't switch its fill on. A dot appears in the middle and
+grows until it fills the box.
 
-The indicator is `overflow-hidden`, and the check inside it starts one full
-width to the left (`--godui-enter-distance: 100%`) and slides into place.
-Because the indicator clips it, you see the mark revealed left to right, the
-direction a check is drawn, while only `translate` moves. The keyframe sits on
-a `<span>` around the icon, because Chrome won't composite `translate` on an
-`<svg>` itself.
+The dot is a circle exactly as wide as the box's diagonal, which is why it rests
+at `scale: 1.42`. The box clips it to its own rounded corners, so at rest you
+only see a filled box. Grow the circle from `scale: 0` and the clip does the
+shape change: a dot, then a disc whose edge reaches the sides, then the corners
+fill in. A circle turning into a rounded square, animated with a single
+`scale`.
 
 </LearnChapter>
 
 <LearnChapter
-  label="The box pops"
-  scene={<AutoPlayScene label="The box pops" demo="checkbox" />}
-  code={`"… [--godui-pop-scale:0.85] data-[animate=true]:data-[state=checked]:animate-godui-pop …"
+  label="Whose color is it?"
+  scene={<AutoPlayScene label="Whose color is it?" demo="checkbox" />}
+  code={`// Root: shadcn's (or your) checked colors, but the fill isn't painted.
+"data-[state=checked]:bg-primary … not-data-[state=unchecked]:bg-clip-text"
 
-@keyframes godui-pop {
-  40% { scale: calc(1 - (1 - var(--godui-pop-scale)) * var(--godui-motion)); }
+// Indicator and disc pick the color up instead.
+<CheckboxPrimitive.Indicator className="bg-inherit bg-clip-text …">
+  <span className="… bg-inherit" />`}
+>
+
+The disc must be the box's checked color: shadcn's `bg-primary`, or whatever
+your own `data-[state=checked]:bg-*` class says. So GodUI leaves those classes
+on the box and changes where the color is painted.
+
+While checked, the box clips its background to its text (`background-clip:
+text`). A checkbox has no text, so the box paints no fill at all. The indicator
+inherits the color the same way, without painting it, and the disc inherits it
+from the indicator. Your colors, drawn by the disc.
+
+</LearnChapter>
+
+<LearnChapter
+  label="The check is drawn"
+  scene={<AutoPlayScene label="The check is drawn" demo="checkbox-slow" note="slowed to 900ms" />}
+  code={`// The window slides in from the left…
+@keyframes godui-checkbox-draw {
+  from { translate: calc(-100% * var(--godui-motion)) 0; }
+}
+// …and the mark inside it slides back by as much.
+@keyframes godui-checkbox-ink {
+  from { translate: calc(100% * var(--godui-motion)) 0; }
 }`}
 >
 
-At the same moment, the box itself dips to 85% and springs back on
-`ease-spring-bouncy`. The shared `godui-pop` keyframe has a single 40% frame,
-so the box squashes and returns past its size with the spring's overshoot.
+Drawing a check stroke by stroke would mean animating `stroke-dashoffset`,
+which repaints the SVG on every frame. GodUI draws it with a clip instead.
 
-The fill and border change instantly. On a 16px box, the dip and the drawn
-check already say "checked"; a color tween would only add paint work.
+The check sits in an `overflow-hidden` window. The window slides in from one
+width to the left while the mark inside slides back from one width to the
+right, on the same clock. The two cancel, so the stroke never moves; only the
+window's right edge does, uncovering it left to right, the direction a check is
+drawn. It starts a beat after the disc and ends with it.
+
+</LearnChapter>
+
+<LearnChapter
+  label="Draining"
+  scene={<AutoPlayScene label="Draining" demo="checkbox-slow" note="slowed to 600ms" />}
+  code={`// In the capture phase, before Radix unchecks the box:
+onClickCapture={() => readInk()}
+
+// Once it's unchecked, keep the old colors on the exiting indicator.
+el.style.color = ink.current.color;
+el.style.backgroundColor = ink.current.background;`}
+>
+
+Unchecking runs it backwards, faster: the mark fades and the disc shrinks to a
+dot. But once the box is unchecked, its colors are the unchecked ones, and the
+disc inherits them. A disc that inherits a transparent fill can't be seen
+shrinking.
+
+So the checkbox reads its checked colors while it still has them, on the
+click's way down before Radix toggles anything, and pins them on the indicator
+while it leaves. A near-silent hold keyframe keeps Radix from removing the
+indicator until the disc is gone.
 
 </LearnChapter>
 
@@ -83,15 +122,13 @@ if (checked !== lastChecked) {
 />`}
 >
 
-A settings page that loads with ten boxes already checked shouldn't pop ten
+A settings page that loads with ten boxes already checked shouldn't flood ten
 times. So the checkbox only animates after its state actually changes.
 
-It starts with `data-animate` unset, which turns both keyframes off. The first
+It starts with `data-animate` unset, which turns every keyframe off. The first
 change sets it: a click or Space through `onCheckedChange`, or a controlled
 `checked` prop compared against the last value during render. From then on,
-every check pops and draws. The comparison runs during render rather than in
-an effect, so the class is already there when the indicator mounts, and the
-check never flashes in place before animating.
+every check floods and draws, and every uncheck drains.
 
 </LearnChapter>
 
@@ -110,10 +147,12 @@ loads checked stays still until you change it.
 
 ## Why GPU-only
 
-The box animates `scale`; the check animates `translate` and `opacity` inside a
-clip. shadcn's checkbox transitions the focus ring's `box-shadow`; GodUI's
-doesn't.
+The disc animates `scale`, the check `translate`, `scale` and `opacity`, and
+the box dips on `scale`. The border changes color in one step; on a 16px box
+the ink says "checked" before a color tween could. shadcn's checkbox
+transitions the focus ring's `box-shadow`; GodUI's doesn't.
 
 ## Reduced motion
 
-`--godui-motion: 0` cancels the dip and the slide, so the check only fades in.
+`--godui-motion: 0` cancels the growth, the slide and the dip: the disc and the
+check fade in, and fade out again (150ms).

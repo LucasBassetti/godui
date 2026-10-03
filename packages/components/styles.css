@@ -613,6 +613,61 @@
   }
 }
 
+/* ── checkbox ────────────────────────────────────────────────────────────────
+ * Component keyframes (also in the checkbox registry entry). Scale, translate
+ * and opacity. The disc rests at scale 1.42 (a circle the box's diagonal
+ * wide), so it grows from and drains to 1.42 × (1 - motion): a dot, or under
+ * reduced motion no scale and a fade instead. The check's window slides in
+ * from -100% while the mark slides back from +100% on the same clock, so the
+ * stroke holds still; it starts 70ms in and ends with the disc and the
+ * box's pop (staggered ends would each cost a layout frame). The hold keeps Presence from removing the indicator
+ * until the ink has drained (godui-reveal-hold, from godui-motion). */
+@theme inline {
+  --animate-godui-checkbox-fill-in: godui-checkbox-fill-in
+    var(--godui-duration-base) var(--ease-spring-smooth) backwards;
+  --animate-godui-checkbox-fill-out: godui-checkbox-fill-out
+    var(--godui-duration-fast) var(--ease-spring-smooth) both;
+  --animate-godui-checkbox-draw: godui-checkbox-draw
+    calc(var(--godui-duration-base) - 70ms * var(--godui-motion))
+    var(--ease-spring-smooth) calc(70ms * var(--godui-motion)) backwards;
+  --animate-godui-checkbox-ink: godui-checkbox-ink
+    calc(var(--godui-duration-base) - 70ms * var(--godui-motion))
+    var(--ease-spring-smooth) calc(70ms * var(--godui-motion)) backwards;
+  --animate-godui-checkbox-check-out: godui-checkbox-check-out
+    var(--godui-duration-fast) var(--ease-out-expo) both;
+  --animate-godui-checkbox-hold: godui-reveal-hold var(--godui-duration-fast)
+    linear;
+}
+@keyframes godui-checkbox-fill-in {
+  from {
+    opacity: var(--godui-motion);
+    scale: calc(1.42 * (1 - var(--godui-motion)));
+  }
+}
+@keyframes godui-checkbox-fill-out {
+  to {
+    opacity: var(--godui-motion);
+    scale: calc(1.42 * (1 - var(--godui-motion)));
+  }
+}
+@keyframes godui-checkbox-draw {
+  from {
+    translate: calc(-100% * var(--godui-motion)) 0;
+  }
+}
+@keyframes godui-checkbox-ink {
+  from {
+    opacity: var(--godui-motion);
+    translate: calc(100% * var(--godui-motion)) 0;
+  }
+}
+@keyframes godui-checkbox-check-out {
+  to {
+    opacity: 0;
+    scale: calc(1 - 0.3 * var(--godui-motion));
+  }
+}
+
 /* ── input-otp ───────────────────────────────────────────────────────────────
  * Component keyframe (also in the input-otp registry entry). Opacity only. */
 @theme inline {

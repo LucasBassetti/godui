@@ -1,6 +1,6 @@
 ---
 title: Checkbox
-description: A control that allows the user to toggle between checked and not checked. The box pops and the check is drawn in.
+description: A control that allows the user to toggle between checked and not checked. Ink floods the box from a dot, the check is drawn, and unchecking drains it.
 workbench: true
 ---
 
@@ -8,10 +8,12 @@ import { CheckboxDemo } from "@/components/demos/core/checkbox-demo";
 
 <Workbench>
 
-The shadcn/ui checkbox. When you check it, the box dips and springs back, and
-the check mark is drawn in from left to right. Both run only when the state
-changes, so a form that loads with boxes already checked doesn't animate.
-Only `scale`, `translate` and `opacity` animate.
+The shadcn/ui checkbox. When you check it, the fill grows from a dot in the
+middle until it fills the box, and the check mark is drawn in from left to
+right. Unchecking drains it back to a dot. It all runs only when the state
+changes, so a form that loads with boxes already checked doesn't animate. The
+fill keeps your own checked colors. Only `scale`, `translate` and `opacity`
+animate.
 
 <Example label="Default" story="ui-checkbox" code={`import { Checkbox } from "@/components/ui/checkbox";
 
@@ -72,15 +74,18 @@ import { Checkbox } from "@/components/ui/checkbox";
 
 | Interaction | Keyframe / mechanism | Properties | Easing | Duration |
 | --- | --- | --- | --- | --- |
-| Check (box) | `godui-pop` | `scale` 1 → 0.85 → 1 | `ease-spring-bouncy` | 260ms |
-| Check (mark) | `godui-slide-in-from-left` inside a clipped indicator | `translate`, `opacity` | `ease-spring-smooth` | 260ms |
-| Uncheck, fill, border | snap | — | — | — |
+| Check (fill) | `godui-checkbox-fill-in`: a disc grows from a dot, squared off by the box's clip | `scale` 0 → 1.42 | `ease-spring-smooth` | 260ms |
+| Check (mark) | `godui-checkbox-draw` + `godui-checkbox-ink`: a clip window slides in while the mark slides back | `translate` | `ease-spring-smooth` | 190ms, after 70ms |
+| Check (box) | `godui-pop` | `scale` 1 → 0.9 → 1 | `ease-spring-bouncy` | 260ms |
+| Uncheck (mark) | `godui-checkbox-check-out` | `opacity`, `scale` 1 → 0.7 | `ease-out-expo` | 150ms |
+| Uncheck (fill) | `godui-checkbox-fill-out`: the disc shrinks back to a dot, in the checked colors | `scale` 1.42 → 0 | `ease-spring-smooth` | 150ms |
+| Border | snap | — | — | — |
 
 Animations run only after the checked state changes, by a click, the keyboard
 or a controlled `checked` prop, never on the first render.
 
-Under `prefers-reduced-motion` the box doesn't dip and the check fades in
-without sliding.
+Under `prefers-reduced-motion` nothing grows, slides or dips: the fill and the
+check fade in and out.
 
 ## API
 

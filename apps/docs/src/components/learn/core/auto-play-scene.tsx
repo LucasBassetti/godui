@@ -129,13 +129,26 @@ function SwitchToggle({ reduced }: { reduced: boolean }) {
   );
 }
 
-/** Real Checkbox; toggles on the timer, with a forced press while checking. */
+/** Real Checkboxes; one checks while the other unchecks, on the timer. */
 function CheckboxToggle({ reduced }: { reduced: boolean }) {
   const on = useToggle(reduced);
   return (
     <div className="flex items-center gap-6">
       <Checkbox checked={on} aria-label="Demo checkbox" className="scale-[2]" />
       <Checkbox checked={!on} aria-label="Demo checkbox, inverted" />
+    </div>
+  );
+}
+
+/**
+ * One real Checkbox, large, on a slowed clock (900ms in, 600ms out) so the
+ * disc's growth, the drawn stroke and the drain are easy to follow.
+ */
+function CheckboxSlow({ reduced }: { reduced: boolean }) {
+  const on = useToggle(reduced);
+  return (
+    <div className="[--godui-duration-base:900ms] [--godui-duration-fast:600ms]">
+      <Checkbox checked={on} aria-label="Demo checkbox" className="scale-[3]" />
     </div>
   );
 }
@@ -1387,6 +1400,7 @@ const DEMOS = {
   carousel: CarouselGlide,
   "carousel-jump": CarouselJump,
   checkbox: CheckboxToggle,
+  "checkbox-slow": CheckboxSlow,
   collapsible: CollapsibleGlide,
   "collapsible-window": CollapsibleWindow,
   "collapsible-nested": CollapsibleNested,

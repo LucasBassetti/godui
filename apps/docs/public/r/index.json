@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "revision": "b104396a10a6633ab71340e1e0dd5f67895cb8c9",
+  "revision": "71a17b3c9dded52b562ad0141b2e449a7040cef9",
   "components": [
     {
       "name": "accordion",
@@ -206,7 +206,7 @@
     {
       "name": "checkbox",
       "title": "Checkbox",
-      "description": "A control that allows the user to toggle between checked and not checked. The check pops in; the box presses on a spring. GPU-only.",
+      "description": "A control that allows the user to toggle between checked and not checked. Ink floods the box from a dot and the check is drawn; unchecking drains it. GPU-only.",
       "category": "Components",
       "dependencies": ["radix-ui", "lucide-react"],
       "registryDependencies": ["utils", "@godui/godui-motion"],
