@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { expectSlotParity, slotTree } from "../../test/parity";
 import * as Shadcn from "../../test/shadcn/navigation-menu";
@@ -174,13 +174,17 @@ describe("NavigationMenu", () => {
     }
   });
 
-  it("a click-opened trigger still closes on the next click (Radix's toggle)", async () => {
-    const user = userEvent.setup();
+  it("a click-opened trigger still closes on the next click (Radix's toggle)", () => {
+    // Plain clicks, no pointer moves: a real pointer entering the trigger
+    // starts Radix's 200ms hover-open timer, which its click toggle never
+    // clears, so on a slow machine it can reopen the menu right after the
+    // second click closes it (plain shadcn does the same). This test is about
+    // the click guard, not that timer.
     render(<Usage ui={Godui} />);
     const home = screen.getByRole("button", { name: "Home" });
-    await user.click(home);
+    fireEvent.click(home);
     expect(home).toHaveAttribute("data-state", "open");
-    await user.click(home);
+    fireEvent.click(home);
     expect(home).toHaveAttribute("data-state", "closed");
   });
 
@@ -361,12 +365,13 @@ describe("NavigationMenu", () => {
       });
     }
     try {
-      const user = userEvent.setup();
+      // Plain clicks: real pointer moves start Radix's hover timers, which
+      // can fire mid-test on a slow machine (see the toggle test above).
       render(<Usage ui={Godui} />);
       const wrapper = slot("navigation-menu")?.lastElementChild as HTMLElement;
       expect(wrapper.className).toContain("transition-[translate]");
       expect(wrapper.className).toContain("motion-reduce:transition-none");
-      await user.click(screen.getByRole("button", { name: "Components" }));
+      fireEvent.click(screen.getByRole("button", { name: "Components" }));
       // Centered under Components (150px) → 150 − 101 = 49px; first open
       // lands there at once.
       await waitFor(() => expect(wrapper.style.translate).toBe("49px 0px"));
@@ -374,7 +379,7 @@ describe("NavigationMenu", () => {
       await waitFor(() => expect(wrapper.style.transition).toBe(""));
       // Home's center (40px) would put the panel off the menu's left edge:
       // clamped to 0, and this time it glides (no transition override).
-      await user.click(screen.getByRole("button", { name: "Home" }));
+      fireEvent.click(screen.getByRole("button", { name: "Home" }));
       await waitFor(() => expect(wrapper.style.translate).toBe("0px 0px"));
       expect(wrapper.style.transition).toBe("");
     } finally {
