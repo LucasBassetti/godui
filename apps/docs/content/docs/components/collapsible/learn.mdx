@@ -127,6 +127,34 @@ Toggle the list, and click again mid-sweep to reverse it.
 
 </LearnPlayer>
 
+## What's animated
+
+shadcn's collapsible doesn't animate. GodUI's runs the same engine as
+[Accordion](/docs/components/accordion).
+
+| Interaction | Mechanism | Properties | Easing | Duration |
+| --- | --- | --- | --- | --- |
+| Open | height snaps; the panel box slides from `-room` to rest while each of its children slides the other way (the clip edge sweeps down); the content after it FLIPs on the same clock; the children fade in a beat apart | `translate`, `opacity` | `ease-spring-smooth`; fades `ease-out-expo` | 260ms |
+| Close | the panel leaves the flow at once (absolute, where it's drawn); the edge sweeps back up while the content after it rises; the children fade out ahead of the edge | `translate`, `opacity` | `ease-spring-smooth`; fades `ease-out-expo` | 150ms |
+| Parent moves | if a stage centers the Collapsible's parent, the parent glides to its new spot on the same clock | `translate` | `ease-spring-smooth` | as above |
+
+What rides the edge: the Collapsible's later siblings in its parent, and the
+root's own children after the panel. A Collapsible nested in another
+Collapsible or an Accordion moves the outer one's content too, on the same
+clock. `CollapsibleContent` with `asChild` works the same way: the child it
+renders is the box and its children hold still.
+
+The box clips only while its edge sweeps (`data-sweeping`), so focus rings and
+shadows of the content aren't cut off at rest. Two kinds of panel can't be
+split into a box and still children. One has loose text, or an inline or
+`display: contents` child, directly inside it; none of those can move on their
+own. The other has a box that paints a background, border or shadow, which
+would slide over the trigger. Those fade in and out instead, and the content
+after them still glides. Wrap loose text in a block element to get the sweep.
+
+The root gets `ease-spring-smooth`, the clock's curve. Add your own `ease-*`
+class to the root to change it.
+
 ## Why GPU-only
 
 The panel box, its children, the content after it and a centered parent
@@ -141,3 +169,17 @@ Chrome won't composite two opacity animations on one element.
 Nothing moves: the height and the content after it change in one step, and
 the panel's content only fades in or out, over `--godui-duration-base` opening
 and `--godui-duration-fast` closing (both 150ms under reduced motion).
+
+## Replacing shadcn
+
+`npx shadcn add @godui/collapsible` overwrites `components/ui/collapsible.tsx`.
+Exports, props and `data-slot` attributes match shadcn/ui new-york-v4, so
+existing imports keep working. It also installs `godui-motion`, which includes
+the `useFlipGroup` and `useReveal` hooks it uses.
+
+One layout difference: the `Collapsible` root is `relative`, so a closing panel
+has a fixed anchor when it leaves the flow. Absolutely positioned descendants
+that anchored to an outer ancestor now anchor to the root. With `asChild`, the
+root adds no class (Radix's Slot concatenates classes, so a child that is
+`absolute`, `fixed` or `sticky` would get both); it sets `position: relative`
+inline only if the child is otherwise static.

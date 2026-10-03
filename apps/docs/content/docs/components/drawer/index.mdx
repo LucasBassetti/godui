@@ -8,12 +8,6 @@ import { DrawerDemo } from "@/components/demos/core/drawer-demo";
 
 <Workbench>
 
-The shadcn/ui drawer, built on [vaul](https://vaul.emilkowal.ski). Vaul
-already moves the sheet with `transform` and fades the overlay with
-`opacity`: GodUI tests that it stays that way. GodUI adds one detail: the
-header and footer rise in 60ms and 120ms after the sheet starts moving, so
-the content settles into a sheet that's already arriving.
-
 <Example label="Default" story="ui-drawer" code={`"use client";
 
 import { Button } from "@/components/ui/button";
@@ -94,13 +88,6 @@ export function DrawerDemo() {
 
 <ComponentInstall name="drawer" />
 
-## Replacing shadcn
-
-`npx shadcn add @godui/drawer` overwrites `components/ui/drawer.tsx`. Exports,
-props and `data-slot` attributes match shadcn/ui new-york-v4, so existing
-imports keep working. It also installs `godui-motion` (easings, keyframes, the
-FLIP hook) into your project.
-
 ## Usage
 
 ```tsx
@@ -132,24 +119,52 @@ import {
 </Drawer>
 ```
 
-## What's animated
-
-| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
-| --- | --- | --- | --- | --- |
-| Open, close | vaul `slideFromBottom` / `slideToBottom` | `transform` | `cubic-bezier(0.32, 0.72, 0, 1)` | 500ms |
-| Overlay | vaul `fadeIn` / `fadeOut` | `opacity` | the same | 500ms |
-| Header, footer | `godui-slide-in-from-bottom`, delayed 60 / 120ms | `translate`, `opacity` | `ease-spring-snappy` | 260ms |
-| Drag | pointer-driven `transform` | `transform` | none | live |
-
-Vaul's `shouldScaleBackground` option also animates the page wrapper's
-`border-radius`, which is paint work. It's off by default; leave it off to stay
-GPU-only.
-
-Under `prefers-reduced-motion` the header and footer only fade.
-
 ## API
 
-Built on [vaul](https://vaul.emilkowal.ski/api). Props are identical to
-[shadcn/ui Drawer](https://ui.shadcn.com/docs/components/drawer).
+### Drawer
+
+Built on [vaul Drawer.Root](https://vaul.emilkowal.ski/api); accepts all its props.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `open` | `boolean` | none | Whether the drawer is open. Use when controlled. |
+| `defaultOpen` | `boolean` | `false` | Whether the drawer starts open. Skips the enter animation. |
+| `onOpenChange` | `(open: boolean) => void` | none | Called when the drawer opens or closes. |
+| `direction` | `"top" \| "bottom" \| "left" \| "right"` | `"bottom"` | Edge the drawer slides in from. |
+| `dismissible` | `boolean` | `true` | Allow closing by dragging, clicking outside or pressing Escape. |
+| `modal` | `boolean` | `true` | Block interaction with the rest of the page while open. |
+| `snapPoints` | `(number \| string)[]` | none | Heights to snap to, as fractions of the screen (`0.5`) or pixels (`"300px"`). |
+| `activeSnapPoint` | `number \| string \| null` | none | The current snap point. Use with `setActiveSnapPoint` when controlled. |
+| `setActiveSnapPoint` | `(snapPoint: number \| string \| null) => void` | none | Called when the snap point changes. |
+| `handleOnly` | `boolean` | `false` | Only allow dragging from the handle. |
+| `closeThreshold` | `number` | `0.25` | Fraction of the drawer's size to drag before it closes. |
+| `shouldScaleBackground` | `boolean` | none | Scale the page behind the drawer. Animates `border-radius`, which repaints; leave it off to stay GPU-only. |
+| `onAnimationEnd` | `(open: boolean) => void` | none | Called after the open or close animation ends. |
+
+### DrawerTrigger
+
+The button that opens the drawer. Built on vaul `Drawer.Trigger` (Radix Dialog Trigger); accepts all its props, including `asChild`.
+
+### DrawerContent
+
+The sheet, portaled with its overlay. On a bottom drawer it also renders the drag handle bar. Its header and footer rise in just after the sheet. Built on vaul `Drawer.Content` ([Radix Dialog Content](https://www.radix-ui.com/primitives/docs/components/dialog#content)); accepts all its props.
+
+### DrawerHeader, DrawerFooter
+
+Render native `<div>` elements and accept all of their props. They rise in 60ms and 120ms after the sheet starts moving.
+
+### DrawerTitle, DrawerDescription
+
+Built on vaul `Drawer.Title` and `Drawer.Description` (Radix Dialog [Title](https://www.radix-ui.com/primitives/docs/components/dialog#title) and [Description](https://www.radix-ui.com/primitives/docs/components/dialog#description)); each accepts all its props.
+
+### DrawerClose
+
+A button that closes the drawer. Built on vaul `Drawer.Close`; accepts all its props, including `asChild`.
+
+### DrawerPortal, DrawerOverlay
+
+Built on vaul `Drawer.Portal` and `Drawer.Overlay`; each accepts all its props. `DrawerContent` already renders both.
+
+Props match [shadcn/ui Drawer](https://ui.shadcn.com/docs/components/drawer).
 
 </Workbench>

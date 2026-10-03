@@ -52,6 +52,21 @@ For a ring that fades in, wrap the field in Input Group.
 
 </LearnPlayer>
 
+## What's animated
+
+| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
+| --- | --- | --- | --- | --- |
+| Focus ring | snaps (`box-shadow`, no transition) | none | none | none |
+| Border, invalid ring | snap | none | none | none |
+
+Why it snaps: the ring is a `box-shadow` on the input itself, and
+`box-shadow` can only be animated by repainting. A GPU fade needs a separate
+layer whose `opacity` changes, and `<input>` is a replaced element, so it
+can't have a `::before`. A wrapper `<div>` would give it one, but then
+`className`, `ref` and every layout class at your call sites would land on the
+wrong element. The snap keeps the input a drop-in replacement. When you want the ring
+to fade in, wrap the field in [Input Group](/docs/components/input-group).
+
 ## Why GPU-only
 
 A `box-shadow` transition repaints the input on every frame of the fade.
@@ -60,3 +75,9 @@ GodUI's input never animates, so focusing it costs one repaint.
 ## Reduced motion
 
 Nothing to reduce: the ring already appears in a single frame.
+
+## Replacing shadcn
+
+`npx shadcn add @godui/input` overwrites `components/ui/input.tsx`. Exports,
+props and the `data-slot` attribute match shadcn/ui new-york-v4, so existing
+imports keep working. The only class removed is `transition-[color,box-shadow]`.

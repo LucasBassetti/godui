@@ -81,6 +81,17 @@ Press and hold any button, then release. The `link` variant opts out with
 
 </LearnPlayer>
 
+## What's animated
+
+| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
+| --- | --- | --- | --- | --- |
+| Press | `transition` on `active:scale-[0.97]` | `scale` | `ease-spring-bouncy` | 260ms |
+| Hover, focus | snaps | none | none | none |
+
+shadcn's button uses `transition-all`, which also animates background color,
+border and the focus ring's `box-shadow`. All three repaint on the main thread.
+GodUI animates only `scale`. The `link` variant doesn't scale.
+
 ## Why GPU-only
 
 The press animates `scale` and nothing else. `scale` is composited, so the
@@ -90,3 +101,10 @@ browser doesn't run layout or paint while the button moves.
 
 `motion-reduce:transition-none` removes the transition. The button still
 scales while pressed, but instantly, with no spring.
+
+## Replacing shadcn
+
+`npx shadcn add @godui/button` overwrites `components/ui/button.tsx`. Exports,
+props and `data-slot` attributes match shadcn/ui new-york-v4, so existing
+imports keep working. It also installs `godui-motion` (easings, keyframes, the
+FLIP hook) into your project.

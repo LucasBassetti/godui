@@ -82,6 +82,20 @@ Remove a chip with its ×, then type in the input and add one back.
 
 </LearnPlayer>
 
+## What's animated
+
+The check pops in on the item you select, and only then: checks and chips
+already there when the combobox or popup mounts stay still.
+
+| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
+| --- | --- | --- | --- | --- |
+| Open | `godui-popover-in` | `opacity`, `scale` 0.96 → 1 from the anchor, `translate` 4px → 0 | `ease-spring-snappy` | 260ms |
+| Close | `godui-popover-out` | the same, reversed | `ease-out-expo` | 150ms |
+| Selected check | `godui-fade-scale-in` from 50% | `scale`, `opacity` | `ease-spring-snappy` | 260ms |
+| Chip added | `godui-fade-scale-in` | `scale`, `opacity` | `ease-spring-snappy` | 260ms |
+| Chip removed | the chips after it FLIP | `translate` | `ease-out-expo` | 260ms |
+| Item highlight | snaps | none | none | none |
+
 ## Why GPU-only
 
 The popup animates `opacity`, `scale` and `translate`; chips animate `scale`,
@@ -90,5 +104,12 @@ The popup animates `opacity`, `scale` and `translate`; chips animate `scale`,
 
 ## Reduced motion
 
-`--godui-motion: 0` turns the popup and chip entrances into fades, and
+`--godui-motion: 0` turns the popup, check and chip entrances into fades, and
 `useFlipGroup` moves chips into place without sliding.
+
+## Replacing shadcn
+
+`npx shadcn add @godui/combobox` overwrites `components/ui/combobox.tsx` and
+installs the GodUI `button` and `input-group` it uses. Exports, props and
+`data-slot` attributes match shadcn/ui new-york-v4, so existing imports keep
+working.

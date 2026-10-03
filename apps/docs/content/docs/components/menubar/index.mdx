@@ -10,13 +10,6 @@ import { MenubarSubDemo } from "@/components/demos/core/menubar-sub-demo";
 
 <Workbench>
 
-The shadcn/ui menubar: a row of [Dropdown Menus](/docs/components/dropdown-menu)
-with the same motion. Each menu scales up from its trigger and drifts out of it
-on a spring, and sub-menus grow from their parent item. Open one menu and move
-to the next with the pointer or the arrow keys: the old menu exits while the
-new one enters. Check and radio indicators pop in from 50% when toggled, not
-when a menu opens.
-
 <Example label="Default" story="ui-menubar" code={`import {
   Menubar,
   MenubarContent,
@@ -219,22 +212,6 @@ export function MenubarCheckboxesDemo() {
 
 <ComponentInstall name="menubar" />
 
-## Replacing shadcn
-
-`npx shadcn add @godui/menubar` overwrites `components/ui/menubar.tsx`.
-Exports, props and `data-slot` attributes match shadcn/ui new-york-v4, so
-existing imports keep working. It also installs `godui-motion` (easings,
-keyframes, the FLIP hook) into your project.
-
-shadcn's `MenubarContent` has no exit animation, so a menu vanishes the moment
-you leave it. GodUI adds one, which means the old menu is still mounted while
-the next one opens. `MenubarContent` therefore ignores outside focus and presses
-while it is closing (`data-state="closed"`); without that, the exiting menu
-would treat the next menu as "outside" and close the whole menubar. An open
-menu dismisses as before, and your own `onInteractOutside`,
-`onFocusOutside` and `onPointerDownOutside` still run. `MenubarSubContent`
-does the same while a sub-menu animates out.
-
 ## Usage
 
 ```tsx
@@ -267,21 +244,138 @@ import {
 </Menubar>
 ```
 
-## What's animated
-
-| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
-| --- | --- | --- | --- | --- |
-| Open (menu, sub-menu) | `godui-popover-in` | `opacity`, `scale` 0.96 → 1 from the trigger, `translate` 4px → 0 | `ease-spring-snappy` | 260ms |
-| Close | `godui-popover-out` | the same, reversed | `ease-out-expo` | 150ms |
-| Hop to the next menu | old menu `godui-popover-out`, new menu `godui-popover-in` | as above, both at once | as above | 150ms / 260ms |
-| Check / radio appears | `godui-fade-scale-in` from 50% | `opacity`, `scale` | `ease-spring-snappy` | 260ms |
-| Trigger and item highlight | snaps | none | none | none |
-
-Under `prefers-reduced-motion` the menus and indicators only fade (150ms).
-
 ## API
 
-Built on [Radix Menubar](https://www.radix-ui.com/primitives/docs/components/menubar).
-Props are identical to [shadcn/ui Menubar](https://ui.shadcn.com/docs/components/menubar).
+### Menubar
+
+Built on [Radix Menubar Root](https://www.radix-ui.com/primitives/docs/components/menubar#root); accepts all its props.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `value` | `string` | none | Controlled value of the open menu. Empty string when none is open. |
+| `defaultValue` | `string` | none | Initially open menu when uncontrolled. |
+| `onValueChange` | `(value: string) => void` | none | Called when the open menu changes. |
+| `loop` | `boolean` | `true` | Wrap keyboard focus from the last trigger to the first. |
+| `dir` | `"ltr" \| "rtl"` | none | Reading direction. Inherits from `DirectionProvider` when unset. |
+
+### MenubarMenu
+
+Built on [Radix Menubar Menu](https://www.radix-ui.com/primitives/docs/components/menubar#menu); wraps one trigger and its content.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `value` | `string` | none | Identifies the menu for the bar's `value`. Generated when unset. |
+
+### MenubarTrigger
+
+Built on [Radix Menubar Trigger](https://www.radix-ui.com/primitives/docs/components/menubar#trigger); renders a `<button>` and accepts all its props.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `disabled` | `boolean` | none | Prevents the menu from opening. |
+| `asChild` | `boolean` | `false` | Render the child element instead, merging props via [Radix Slot](https://www.radix-ui.com/primitives/docs/utilities/slot). |
+
+### MenubarContent
+
+Built on [Radix Menubar Content](https://www.radix-ui.com/primitives/docs/components/menubar#content), rendered in a portal; accepts all its props. While it animates out (`data-state="closed"`) it ignores outside focus and presses, so it can't close the menu you hop to. Your `onInteractOutside`, `onFocusOutside` and `onPointerDownOutside` still run.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `side` | `"top" \| "right" \| "bottom" \| "left"` | `"bottom"` | Preferred side of the trigger. Flips when it would collide. |
+| `sideOffset` | `number` | `8` | Distance from the trigger in px. |
+| `align` | `"start" \| "center" \| "end"` | `"start"` | Alignment against the trigger. |
+| `alignOffset` | `number` | `-4` | Offset from the `align` position in px. |
+| `loop` | `boolean` | `false` | Wrap keyboard focus from the last item to the first. |
+| `avoidCollisions` | `boolean` | `true` | Flip and shift to stay inside the collision boundary. |
+| `forceMount` | `true` | none | Keep the content mounted while closed. |
+
+### MenubarItem
+
+Built on [Radix Menubar Item](https://www.radix-ui.com/primitives/docs/components/menubar#item); accepts all its props.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `variant` | `"default" \| "destructive"` | `"default"` | `destructive` colors the text, icon and highlight red. |
+| `inset` | `boolean` | none | Indents the item to line up with checkbox and radio items. |
+| `disabled` | `boolean` | none | Skips the item in keyboard navigation and blocks selection. |
+| `onSelect` | `(event: Event) => void` | none | Called when the item is chosen. `event.preventDefault()` keeps the menu open. |
+| `textValue` | `string` | none | Text used for typeahead when the content isn't plain text. |
+
+### MenubarCheckboxItem
+
+Built on [Radix Menubar CheckboxItem](https://www.radix-ui.com/primitives/docs/components/menubar#checkboxitem); accepts all its props. The check pops in only when `checked` changes, not when the menu opens.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `checked` | `boolean \| "indeterminate"` | none | Checked state. |
+| `onCheckedChange` | `(checked: boolean) => void` | none | Called when the item is toggled. |
+| `disabled` | `boolean` | none | Blocks toggling. |
+| `onSelect` | `(event: Event) => void` | none | Called when the item is chosen. `event.preventDefault()` keeps the menu open. |
+
+### MenubarRadioGroup
+
+Built on [Radix Menubar RadioGroup](https://www.radix-ui.com/primitives/docs/components/menubar#radiogroup); accepts all its props.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `value` | `string` | none | Value of the selected item. |
+| `onValueChange` | `(value: string) => void` | none | Called when another item is selected. |
+
+### MenubarRadioItem
+
+Built on [Radix Menubar RadioItem](https://www.radix-ui.com/primitives/docs/components/menubar#radioitem); accepts all its props. The dot pops in only when the group's `value` changes to this item, not when the menu opens.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `value` | `string` | none | Value of the item. Required. |
+| `disabled` | `boolean` | none | Blocks selection. |
+
+### MenubarLabel
+
+Built on [Radix Menubar Label](https://www.radix-ui.com/primitives/docs/components/menubar#label); accepts all its props.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `inset` | `boolean` | none | Indents the label to line up with checkbox and radio items. |
+
+### MenubarSeparator, MenubarGroup, MenubarPortal
+
+Built on [Radix Menubar Separator](https://www.radix-ui.com/primitives/docs/components/menubar#separator), [Group](https://www.radix-ui.com/primitives/docs/components/menubar#group) and [Portal](https://www.radix-ui.com/primitives/docs/components/menubar#portal); each accepts all its props.
+
+### MenubarShortcut
+
+Renders a native `<span>` and accepts all of its props. Right-aligns a keyboard hint inside an item.
+
+### MenubarSub
+
+Built on [Radix Menubar Sub](https://www.radix-ui.com/primitives/docs/components/menubar#sub); accepts all its props.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `open` | `boolean` | none | Controlled open state of the sub-menu. |
+| `defaultOpen` | `boolean` | none | Initial open state when uncontrolled. |
+| `onOpenChange` | `(open: boolean) => void` | none | Called when the sub-menu opens or closes. |
+
+### MenubarSubTrigger
+
+Built on [Radix Menubar SubTrigger](https://www.radix-ui.com/primitives/docs/components/menubar#subtrigger); accepts all its props. Adds a chevron after its children.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `inset` | `boolean` | none | Indents the trigger to line up with checkbox and radio items. |
+| `disabled` | `boolean` | none | Prevents the sub-menu from opening. |
+
+### MenubarSubContent
+
+Built on [Radix Menubar SubContent](https://www.radix-ui.com/primitives/docs/components/menubar#subcontent); accepts all its props. Like `MenubarContent`, it ignores outside focus and presses while it animates out.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `sideOffset` | `number` | `0` | Distance from the sub-trigger in px. |
+| `alignOffset` | `number` | `0` | Offset from the sub-trigger's top edge in px. |
+| `loop` | `boolean` | `false` | Wrap keyboard focus from the last item to the first. |
+| `forceMount` | `true` | none | Keep the content mounted while closed. |
+
+Props match [shadcn/ui Menubar](https://ui.shadcn.com/docs/components/menubar).
 
 </Workbench>

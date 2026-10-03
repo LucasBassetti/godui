@@ -9,12 +9,6 @@ import { NavigationMenuNoViewportDemo } from "@/components/demos/core/navigation
 
 <Workbench>
 
-The shadcn/ui navigation menu. The viewport scales in from the top, and when
-you move to another trigger the content you leave slides 3rem out toward it
-while the new content slides in from the other side. The viewport's size
-snaps to the new content. Without the viewport, each content fades and scales
-in under its own trigger. The chevron turns over on a spring.
-
 <Example label="Default" story="ui-navigation-menu" code={`import { CircleCheckIcon, CircleHelpIcon, CircleIcon } from "lucide-react";
 import Link from "next/link";
 import type { ComponentProps } from "react";
@@ -341,30 +335,6 @@ function ListItem({
 
 <ComponentInstall name="navigation-menu" />
 
-## Replacing shadcn
-
-`npx shadcn add @godui/navigation-menu` overwrites
-`components/ui/navigation-menu.tsx`. Exports, props and `data-slot` attributes
-match shadcn/ui new-york-v4, so existing imports keep working. It also
-installs `godui-motion` (easings, keyframes, the FLIP hook) into your project.
-
-GodUI also works around a Radix bug. Radix currently drops the exit of
-viewport content: the content you leave is removed at once, so shadcn's slide-out
-never plays. GodUI's `NavigationMenuViewport` keeps an inert copy of that
-content (no ids, `aria-hidden`, no pointer events) in place until its exit
-animation ends, then removes it. Once Radix keeps the content mounted through
-its exit, the copy is skipped, so the exit never plays twice.
-
-That work happens in a small client component, so the install also adds
-`components/ui/navigation-menu-viewport-frame.tsx`. `navigation-menu.tsx`
-itself stays server-safe like shadcn's (no `"use client"`), so you can still
-call `navigationMenuTriggerStyle()` from a Server Component.
-
-`NavigationMenuIndicator` slides with the `translateX` Radix sets inline.
-Radix measures the trigger's `offsetLeft`, which is 0 inside shadcn's
-`relative` items, so the indicator only moves if you give the items
-`className="static"` (viewport mode).
-
 ## Usage
 
 ```tsx
@@ -391,37 +361,84 @@ import {
 </NavigationMenu>
 ```
 
-## What's animated
-
-| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
-| --- | --- | --- | --- | --- |
-| Viewport opens | `godui-fade-scale-in` from 95%, top origin | `opacity`, `scale` | `ease-spring-snappy` | 260ms |
-| Viewport closes | `godui-fade-scale-out` | `opacity`, `scale` | `ease-out-expo` | 150ms |
-| Switch item: new content | `godui-slide-in-from-right` / `-left` by direction | `opacity`, `translate` 3rem → 0 | `ease-spring-smooth` | 380ms |
-| Switch item: old content | `godui-slide-out-to-left` / `-right` by direction | `opacity`, `translate` 0 → 3rem | `ease-out-expo` | 260ms |
-| Viewport position on switch | glides under the new trigger (centered, clamped inside the menu); first open lands in place | `translate` | `ease-spring-snappy` | 260ms |
-| Viewport size on switch | snaps | none | none | none |
-| Without viewport: open / close | `godui-fade-scale-in` / `-out`, top origin | `opacity`, `scale` | `ease-spring-snappy` / `ease-out-expo` | 260ms / 150ms |
-| Chevron | `transition` | `transform` (`rotate` 0 → 180deg) | `ease-spring-snappy` | 260ms |
-| Indicator | `transition` (position), `godui-fade-in` / `-out` (visibility) | `transform`, `opacity` | `ease-spring-snappy` | 260ms |
-| Trigger and link highlight | snaps | none | none | none |
-
-Radix opens a trigger on hover and toggles it on click, so resting on a trigger
-and then clicking it closed the menu the hover had just opened. GodUI keeps a
-hover-opened trigger open on that click; clicking a trigger you opened by
-clicking still closes it.
-
-shadcn pins the shared viewport to the menu's left edge, so a small panel
-opens far from its trigger. GodUI centers it under the open trigger, keeping it
-inside the menu; a panel wider than the room left stays left-aligned, as in
-shadcn.
-
-Under `prefers-reduced-motion` contents and the viewport only fade (150ms),
-and the chevron, indicator and viewport position jump.
-
 ## API
 
-Built on [Radix Navigation Menu](https://www.radix-ui.com/primitives/docs/components/navigation-menu).
-Props are identical to [shadcn/ui Navigation Menu](https://ui.shadcn.com/docs/components/navigation-menu).
+### NavigationMenu
+
+Built on [Radix Navigation Menu Root](https://www.radix-ui.com/primitives/docs/components/navigation-menu#root); renders a `<nav>` and accepts all its props.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `viewport` | `boolean` | `true` | Render the shared `NavigationMenuViewport`. With `false`, each content opens under its own trigger. |
+| `value` | `string` | none | Controlled value of the open item. Empty string when none is open. |
+| `defaultValue` | `string` | none | Initially open item when uncontrolled. |
+| `onValueChange` | `(value: string) => void` | none | Called when the open item changes. |
+| `delayDuration` | `number` | `200` | Milliseconds of hover before a trigger opens. |
+| `skipDelayDuration` | `number` | `300` | Window in ms after leaving a trigger during which the next one opens without delay. |
+| `orientation` | `"horizontal" \| "vertical"` | `"horizontal"` | Layout of the list, used for keyboard navigation. |
+| `dir` | `"ltr" \| "rtl"` | none | Reading direction. Inherits from `DirectionProvider` when unset. |
+
+### NavigationMenuList
+
+Built on [Radix Navigation Menu List](https://www.radix-ui.com/primitives/docs/components/navigation-menu#list); renders a `<ul>` and accepts all its props.
+
+### NavigationMenuItem
+
+Built on [Radix Navigation Menu Item](https://www.radix-ui.com/primitives/docs/components/navigation-menu#item); renders a `<li>` and accepts all its props.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `value` | `string` | none | Identifies the item for the menu's `value`. Generated when unset. |
+
+### NavigationMenuTrigger
+
+Built on [Radix Navigation Menu Trigger](https://www.radix-ui.com/primitives/docs/components/navigation-menu#trigger); renders a `<button>` with a chevron after its children and accepts all its props. A click on a trigger that hover just opened keeps it open.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `disabled` | `boolean` | none | Prevents the item from opening. |
+| `asChild` | `boolean` | `false` | Render the child element instead, merging props via [Radix Slot](https://www.radix-ui.com/primitives/docs/utilities/slot). |
+
+### NavigationMenuContent
+
+Built on [Radix Navigation Menu Content](https://www.radix-ui.com/primitives/docs/components/navigation-menu#content); accepts all its props.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `forceMount` | `true` | none | Keep the content mounted while closed. |
+| `onEscapeKeyDown` | `(event: KeyboardEvent) => void` | none | Called on Escape. `event.preventDefault()` keeps it open. |
+| `onPointerDownOutside` | `(event: PointerDownOutsideEvent) => void` | none | Called on a press outside. `event.preventDefault()` keeps it open. |
+
+### NavigationMenuLink
+
+Built on [Radix Navigation Menu Link](https://www.radix-ui.com/primitives/docs/components/navigation-menu#link); renders an `<a>` and accepts all its props.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `active` | `boolean` | none | Marks the link as the current page (`data-active`, `aria-current="page"`). |
+| `onSelect` | `(event: Event) => void` | none | Called when the link is chosen. `event.preventDefault()` keeps the menu open. |
+| `asChild` | `boolean` | `false` | Render the child element instead, e.g. a framework `Link`. |
+
+### NavigationMenuViewport
+
+Built on [Radix Navigation Menu Viewport](https://www.radix-ui.com/primitives/docs/components/navigation-menu#viewport); accepts all its props. `NavigationMenu` renders it for you unless `viewport={false}`. It sits centered under the open trigger, kept inside the menu, and holds an inert copy of the content you leave until its exit animation ends.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `forceMount` | `true` | none | Keep the viewport mounted while closed. |
+
+### NavigationMenuIndicator
+
+Built on [Radix Navigation Menu Indicator](https://www.radix-ui.com/primitives/docs/components/navigation-menu#indicator); accepts all its props. Radix positions it from the trigger's `offsetLeft`, so give the items `className="static"` for it to move.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `forceMount` | `true` | none | Keep the indicator mounted while hidden. |
+
+### navigationMenuTriggerStyle
+
+The `cva` function behind `NavigationMenuTrigger`. Call `navigationMenuTriggerStyle()` to style a `NavigationMenuLink` as a trigger. It works in Server Components.
+
+Props match [shadcn/ui Navigation Menu](https://ui.shadcn.com/docs/components/navigation-menu).
 
 </Workbench>

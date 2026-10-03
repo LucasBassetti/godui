@@ -82,6 +82,13 @@ keeps sweeping.
 
 </LearnPlayer>
 
+## What's animated
+
+| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
+| --- | --- | --- | --- | --- |
+| Value change | `transition` | `transform` | `ease-spring-smooth` | 380ms |
+| Indeterminate | `godui-progress-indeterminate` | `transform` | `cubic-bezier(0.65, 0, 0.35, 1)` (ease-in-out) | 1.4s loop |
+
 ## Why GPU-only
 
 Both animations move `transform`. The fill never changes size; the
@@ -93,3 +100,16 @@ shadcn's `transition-all` is gone, so nothing else on the bar can tween.
 `motion-reduce:transition-none` makes a new value snap into place. An
 indeterminate bar stops sweeping: it fills the whole track and pulses its
 opacity, so it still reads as busy without moving.
+
+## Replacing shadcn
+
+`npx shadcn add @godui/progress` overwrites `components/ui/progress.tsx`.
+Exports, props and `data-slot` attributes match shadcn/ui new-york-v4, so
+existing imports keep working. It also installs `godui-motion` (easings,
+keyframes, the FLIP hook) into your project, plus the
+`godui-progress-indeterminate` keyframe.
+
+GodUI also fixes a shadcn bug: shadcn reads `value` but never hands it to Radix, so its
+bar has no `aria-valuenow` and always reports `data-state="indeterminate"`.
+GodUI passes `value` through, so screen readers hear the percentage and only a
+missing value counts as indeterminate.

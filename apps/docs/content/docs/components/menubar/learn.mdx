@@ -94,6 +94,19 @@ Share or Find to open a sub-menu.
 
 </LearnPlayer>
 
+## What's animated
+
+Check and radio indicators pop in from 50% when toggled, not when a menu
+opens.
+
+| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
+| --- | --- | --- | --- | --- |
+| Open (menu, sub-menu) | `godui-popover-in` | `opacity`, `scale` 0.96 → 1 from the trigger, `translate` 4px → 0 | `ease-spring-snappy` | 260ms |
+| Close | `godui-popover-out` | the same, reversed | `ease-out-expo` | 150ms |
+| Hop to the next menu | old menu `godui-popover-out`, new menu `godui-popover-in` | as above, both at once | as above | 150ms / 260ms |
+| Check / radio appears | `godui-fade-scale-in` from 50% | `opacity`, `scale` | `ease-spring-snappy` | 260ms |
+| Trigger and item highlight | snaps | none | none | none |
+
 ## Why GPU-only
 
 Menus, sub-menus and indicators animate `opacity`, `scale` and `translate`.
@@ -104,3 +117,19 @@ instead of animating paint.
 
 `--godui-motion: 0` removes the scale and drift from both keyframes. Menus
 and their indicators fade, in 150ms, and a hop is a crossfade.
+
+## Replacing shadcn
+
+`npx shadcn add @godui/menubar` overwrites `components/ui/menubar.tsx`.
+Exports, props and `data-slot` attributes match shadcn/ui new-york-v4, so
+existing imports keep working. It also installs `godui-motion` (easings,
+keyframes, the FLIP hook) into your project.
+
+shadcn's `MenubarContent` has no exit animation, so a menu vanishes the moment
+you leave it. GodUI adds one, which means the old menu is still mounted while
+the next one opens. `MenubarContent` therefore ignores outside focus and presses
+while it is closing (`data-state="closed"`); without that, the exiting menu
+would treat the next menu as "outside" and close the whole menubar. An open
+menu dismisses as before, and your own `onInteractOutside`,
+`onFocusOutside` and `onPointerDownOutside` still run. `MenubarSubContent`
+does the same while a sub-menu animates out.

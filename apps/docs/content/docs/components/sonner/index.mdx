@@ -9,12 +9,6 @@ import { SonnerTypesDemo } from "@/components/demos/core/sonner-types-demo";
 
 <Workbench>
 
-The shadcn/ui wrapper around [Sonner](https://sonner.emilkowal.ski), tuned to
-be GPU-only. Sonner moves toasts with `transform` and `opacity`, but it also
-transitions `height` (when the stack expands) and `box-shadow`. GodUI's
-`Toaster` limits every toast transition to `transform` and `opacity`, puts it
-on a spring, and lets heights change in one step.
-
 <Example label="Default" story="ui-sonner" code={`"use client";
 
 import { toast } from "sonner";
@@ -75,16 +69,6 @@ export function SonnerDemo() {
 
 <ComponentInstall name="sonner" />
 
-## Replacing shadcn
-
-`npx shadcn add @godui/sonner` overwrites `components/ui/sonner.tsx`. Exports
-and props match shadcn/ui new-york-v4 (`Toaster`, with the same icons, theme
-handling and CSS variables), so existing imports keep working. Keep calling
-`toast()` from `sonner`.
-
-If you pass `toastOptions.classNames`, GodUI merges its own classes with yours
-rather than replacing them.
-
 ## Usage
 
 ```tsx
@@ -101,22 +85,29 @@ import { toast } from "sonner";
 toast("Event has been created.");
 ```
 
-## What's animated
-
-| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
-| --- | --- | --- | --- | --- |
-| Enter, exit, stack | sonner's transitions | `transform`, `opacity` | `ease-spring-snappy` | 400ms |
-| Stack expand (heights) | snaps | none | none | none |
-| Swipe to dismiss | pointer-driven `transform` | `transform` | none | live |
-| Action, cancel, close buttons | sonner's transition | `opacity` | none | sonner's |
-
-Sonner injects its stylesheet unlayered, so GodUI's overrides use
-`!important`; only `transition-property` and the easing are forced. Sonner's
-own reduced-motion styles still apply.
-
 ## API
 
-Built on [Sonner](https://sonner.emilkowal.ski/toaster). Props are identical to
-[shadcn/ui Sonner](https://ui.shadcn.com/docs/components/sonner).
+### Toaster
+
+Built on the [Sonner `Toaster`](https://sonner.emilkowal.ski/toaster); accepts all its props. Render it once, near the root of the app.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `position` | `"top-left" \| "top-center" \| "top-right" \| "bottom-left" \| "bottom-center" \| "bottom-right"` | `"bottom-right"` | Where the stack sits on screen. |
+| `theme` | `"light" \| "dark" \| "system"` | `useTheme().theme` | Color scheme. Defaults to the current next-themes theme (`"system"` when unset). |
+| `richColors` | `boolean` | `false` | Color success, info, warning and error toasts. |
+| `expand` | `boolean` | `false` | Show every visible toast expanded instead of stacked. |
+| `closeButton` | `boolean` | `false` | Add a close button to each toast. |
+| `duration` | `number` | `4000` | Milliseconds before a toast dismisses itself. |
+| `visibleToasts` | `number` | `3` | Number of toasts visible at once. |
+| `gap` | `number` | `14` | Pixels between toasts when expanded. |
+| `offset` | `string \| number \| { top?, right?, bottom?, left? }` | `"24px"` | Distance from the viewport edges. |
+| `hotkey` | `string[]` | `["altKey", "KeyT"]` | Keys that focus the toast region. |
+| `toastOptions` | `ToastOptions` | none | Defaults for every toast. `classNames` are merged with GodUI's, not replaced. |
+| `icons` | `ToastIcons` | Lucide icons | Icons per toast type. Passing `icons` replaces the whole set. |
+
+### toast
+
+Imported from `sonner`, not from `@/components/ui/sonner`. `toast(message, options?)` shows a toast and returns its id. Variants: `toast.success`, `toast.info`, `toast.warning`, `toast.error`, `toast.loading`, `toast.promise`, `toast.custom`; `toast.dismiss(id?)` closes one or all. See the [Sonner toast docs](https://sonner.emilkowal.ski/toast).
 
 </Workbench>

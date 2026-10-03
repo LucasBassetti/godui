@@ -15,11 +15,6 @@ import { SelectDemo } from "@/components/demos/core/select-demo";
 
 <Workbench>
 
-The shadcn/ui select. Its list scales up on a spring from Radix's transform
-origin. With `position="popper"` it also drifts out of the trigger, like
-[Popover](/docs/components/popover). The selected item's check pops in from
-50%. The trigger's colors and focus ring change instantly.
-
 <Example label="Default" story="ui-select" code={`import {
   Select,
   SelectContent,
@@ -81,13 +76,6 @@ export function SelectDemo() {
 
 <ComponentInstall name="select" />
 
-## Replacing shadcn
-
-`npx shadcn add @godui/select` overwrites `components/ui/select.tsx`. Exports,
-props and `data-slot` attributes match shadcn/ui new-york-v4, so existing
-imports keep working. It also installs `godui-motion` (easings, keyframes, the
-FLIP hook) into your project.
-
 ## Usage
 
 ```tsx
@@ -113,20 +101,75 @@ import {
 </Select>
 ```
 
-## What's animated
-
-| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
-| --- | --- | --- | --- | --- |
-| Open | `godui-popover-in` | `opacity`, `scale` 0.96 → 1; `translate` toward the trigger in popper mode | `ease-spring-snappy` | 260ms |
-| Close | `godui-popover-out` | the same, reversed | `ease-out-expo` | 150ms |
-| Selected check | `godui-fade-scale-in` from 50% | `scale`, `opacity` | `ease-spring-snappy` | 260ms |
-| Trigger hover / focus | snaps | none | none | none |
-
-Under `prefers-reduced-motion` the list and the check only fade (150ms).
-
 ## API
 
-Built on [Radix Select](https://www.radix-ui.com/primitives/docs/components/select).
-Props are identical to [shadcn/ui Select](https://ui.shadcn.com/docs/components/select).
+### Select
+
+Built on [Radix Select Root](https://www.radix-ui.com/primitives/docs/components/select#root); accepts all its props.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `value` | `string` | none | Controlled selected value. |
+| `defaultValue` | `string` | none | Selected value on first render, when uncontrolled. |
+| `onValueChange` | `(value: string) => void` | none | Called when the selection changes. |
+| `open` | `boolean` | none | Controlled open state of the list. |
+| `defaultOpen` | `boolean` | none | Open state on first render, when uncontrolled. |
+| `onOpenChange` | `(open: boolean) => void` | none | Called when the list opens or closes. |
+| `disabled` | `boolean` | none | Disables the select. |
+| `required` | `boolean` | none | A value must be selected before the form submits. |
+| `name` | `string` | none | Name of the value submitted with a form. |
+
+### SelectTrigger
+
+Built on [Radix Select Trigger](https://www.radix-ui.com/primitives/docs/components/select#trigger); accepts all its props. Adds the chevron icon.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `size` | `"sm" \| "default"` | `"default"` | Trigger height: `h-8` or `h-9`. |
+
+### SelectValue
+
+Built on [Radix Select Value](https://www.radix-ui.com/primitives/docs/components/select#value); accepts all its props.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `placeholder` | `ReactNode` | none | Shown while no value is selected. |
+
+### SelectContent
+
+Built on [Radix Select Content](https://www.radix-ui.com/primitives/docs/components/select#content), rendered in a portal; accepts all its props. Wraps its children in the viewport between the scroll buttons.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `position` | `"item-aligned" \| "popper"` | `"item-aligned"` | `item-aligned` puts the selected item over the trigger. `popper` opens beside the trigger like a popover. |
+| `side` | `"top" \| "right" \| "bottom" \| "left"` | `"bottom"` | Preferred side of the trigger. `popper` only. |
+| `sideOffset` | `number` | `0` | Distance from the trigger in px. `popper` only; the content also adds a 4px offset of its own. |
+| `align` | `"start" \| "center" \| "end"` | `"center"` | Alignment against the trigger. `popper` only. |
+| `onCloseAutoFocus` | `(event: Event) => void` | none | Called when focus returns to the trigger on close. |
+| `onEscapeKeyDown` | `(event: KeyboardEvent) => void` | none | Called when Escape is pressed. Prevent it to keep the list open. |
+
+### SelectGroup, SelectLabel
+
+Built on [Radix Select Group](https://www.radix-ui.com/primitives/docs/components/select#group) and [Label](https://www.radix-ui.com/primitives/docs/components/select#label); accept all their props. A label inside a group names it.
+
+### SelectItem
+
+Built on [Radix Select Item](https://www.radix-ui.com/primitives/docs/components/select#item); accepts all its props. Adds the check indicator.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `value` | `string` | none | Required. The value this item selects. Can't be an empty string. |
+| `disabled` | `boolean` | none | Disables this item. |
+| `textValue` | `string` | none | Text used for typeahead when the item's content isn't plain text. |
+
+### SelectSeparator
+
+Built on [Radix Select Separator](https://www.radix-ui.com/primitives/docs/components/select#separator); accepts all its props.
+
+### SelectScrollUpButton, SelectScrollDownButton
+
+Built on [Radix Select ScrollUpButton](https://www.radix-ui.com/primitives/docs/components/select#scrollupbutton) and [ScrollDownButton](https://www.radix-ui.com/primitives/docs/components/select#scrolldownbutton); accept all their props. `SelectContent` already renders both.
+
+Props match [shadcn/ui Select](https://ui.shadcn.com/docs/components/select).
 
 </Workbench>

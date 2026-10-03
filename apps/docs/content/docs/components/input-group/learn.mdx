@@ -79,6 +79,19 @@ fades out, and the pill-shaped group's ring keeps its curve.
 
 </LearnPlayer>
 
+## What's animated
+
+On the main page, turn on Slow motion in the Focus ring example to watch the ring grow on a 900ms clock.
+
+| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
+| --- | --- | --- | --- | --- |
+| Focus ring | `::before` transition | `opacity`, `scale` | `ease-out-expo` | 150ms |
+| Border colour, invalid colour | snap | none | none | none |
+
+Blur fades it out the same way. The ring is shadcn's: 3px of `ring/50`, or of
+`destructive/20` on an invalid control (`destructive/40` in dark). A layer
+that covers the group's border box with the same radius draws it.
+
 ## Why GPU-only
 
 Only the `::before` layer's `opacity` and `scale` change, which the
@@ -89,3 +102,18 @@ because a colour transition repaints every frame.
 
 `motion-reduce:before:transition-none` removes the transition: the ring
 appears and disappears at full size in one frame.
+
+## Replacing shadcn
+
+`npx shadcn add @godui/input-group` overwrites `components/ui/input-group.tsx`
+(and installs GodUI's `button`, `input` and `textarea`). Exports, props and
+`data-slot` attributes match shadcn/ui new-york-v4, so existing imports keep
+working. It also installs `godui-motion` for the easing and duration tokens.
+
+The group's focus and invalid ring classes move to its `::before`
+(`before:ring-[3px]` instead of `ring-[3px]`). If a call site set a ring
+colour on the group, prefix it with `before:`. Don't put `overflow-hidden` on
+the group: the ring sits outside its border, like shadcn's. The layer reaches
+that border box with `before:-inset-px`, which assumes shadcn's 1px `border`;
+if you give the group a thicker one, match it (`border-2` with
+`before:-inset-0.5`), or the ring starts inside the border.

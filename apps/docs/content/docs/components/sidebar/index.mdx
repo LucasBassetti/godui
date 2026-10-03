@@ -11,13 +11,6 @@ import { SidebarInsetDemo } from "@/components/demos/core/sidebar-inset-demo";
 
 <Workbench>
 
-The shadcn/ui sidebar, without a width animation. Collapsing offcanvas, the
-whole panel slides out with `translate`. In icon mode the panel's box snaps to
-the rail at once, and a surface layer behind it (its background and border)
-slides its edge there. The content beside the sidebar glides along on the same
-spring, so its edge never parts from the panel's. Press the trigger, or
-<kbd>Ctrl</kbd>/<kbd>⌘</kbd>+<kbd>B</kbd>.
-
 <Example label="Offcanvas" story="ui-sidebar" code={`import {
   BookOpenIcon,
   BotIcon,
@@ -746,64 +739,6 @@ export function SidebarInsetDemo() {
 
 <ComponentInstall name="sidebar" />
 
-## Replacing shadcn
-
-`npx shadcn add @godui/sidebar` overwrites `components/ui/sidebar.tsx`.
-Exports, props and `data-slot` attributes match shadcn/ui new-york-v4, so
-existing imports keep working. It also installs `godui-motion` (easings,
-keyframes, the FLIP hook) and shadcn's `use-mobile` hook and `separator`.
-`useFlipGroup` gains an optional `measure` (track one element, move another)
-and now carries a running glide over a change of the element's own
-`translate`. It also waits on each running animation only once while it
-re-baselines, so toggling many times mid-move can't pile up work.
-
-A few things differ, all on desktop:
-
-- The container has one extra child, `data-slot="sidebar-surface"`, which
-  draws the panel's background and border (and the floating card's rounded
-  border and shadow). `sidebar-inner` is transparent, so put background
-  overrides on the surface, not the inner. The border is still the
-  container's (the surface inherits its width, style and color, and sits on
-  the container's border box), so border classes passed to `Sidebar` paint on
-  the box edge as they do in shadcn.
-- While the sidebar moves, the wrapper clips horizontal overflow
-  (`overflow-x-clip`): for a moment the gliding content is drawn past the
-  right edge, and that shouldn't flash a scrollbar. At rest nothing is
-  clipped, so wide content scrolls the page as it does in shadcn. On a page
-  that's wider than the window, a classic (non-overlay) horizontal scrollbar
-  therefore disappears for the length of the move and comes back when it
-  ends.
-- While the sidebar moves, the content after it is lifted above the panel.
-  That lasts as long as the move's animations (one `--godui-duration-base`).
-  If one of them is paused, it lets go one `--godui-duration-slow` after
-  that animation should have ended. The panel's content is laid out at full
-  width while the surface's edge is still on its way (expanding at once;
-  collapsing to icons until the move ends), and the content, glued to that
-  edge, covers it until the edge passes. Give that content a background
-  (`SidebarInset` has `bg-background`).
-- Collapsing to icons, the panel's content keeps its full width (and its
-  badges, actions and sub-menus stay drawn) until the move ends, so labels
-  can fade out instead of being cut by the snapped rail. The rows take their
-  icon-layout heights at once. Code that measures the panel's content in that
-  ~260ms sees the full width; the icon layout's widths apply when the move
-  ends (at once under reduced motion).
-- While collapsing to icons (about 260ms), badges, actions, group actions
-  and sub-menus are forced to `display: flex` so they can fade and sweep. A
-  call-site `className="hidden"` on one of them flashes visible during the
-  collapse; hide it with a conditional render instead.
-- A menu button's label is everything after its first child (its icon):
-  that's what fades. Wrap the label in an element (`<span>Home</span>`, as
-  shadcn's examples do). A bare text label (`<Home /> Home`) can't be faded
-  on the compositor, so that button skips the full-width hold and its label
-  is clipped by the rail on the click, as in shadcn. A button whose first
-  child is text keeps it, clipped by the rail, as in shadcn.
-- While the content glides (about 260ms), `position: fixed` descendants of
-  `SidebarInset` move with it (the FLIP's `translate` makes it their
-  containing block), and the lift keeps their `z-index` inside it.
-- A right-side sidebar's content glides with its edge too. The page content
-  before it changes width at once: its left edge doesn't move, so there is
-  nothing to glide.
-
 ## Usage
 
 ```tsx
@@ -823,33 +758,133 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 }
 ```
 
-## What's animated
-
-| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
-| --- | --- | --- | --- | --- |
-| Offcanvas collapse / expand | the container's class translate, glided there by FLIP | `translate` 0 ↔ ∓100% | `ease-spring-smooth` | 260ms |
-| Icon collapse / expand | `sidebar-surface`'s class translate, glided there by FLIP | `translate` by the width difference | `ease-spring-smooth` | 260ms |
-| Floating card, icon mode | left cap still, middle scales from its left, right cap slides with it | `scale`, `translate` | `ease-spring-smooth` | 260ms |
-| Content beside the sidebar | FLIP (`useFlipGroup` on the wrapper) | `translate` | `ease-spring-smooth` | 260ms |
-| Rows in icon mode (group labels tuck up, header and footer buttons shrink, badges and actions ride their row) | FLIP inside the panel | `translate` | `ease-spring-smooth` | 260ms |
-| Labels collapsing to icons (menu text and chevrons, group labels, badges, actions) | WAAPI fade, from what's drawn; menu text tucks 4px toward its icon | `opacity`, `translate` | `ease-spring-smooth` | 150ms |
-| Labels expanding from icons | WAAPI fade, starting when the panel's edge reaches each one (a small top-first cascade), ending with the move | `opacity`, `translate` | `ease-spring-smooth` | ≤ 260ms |
-| Sub-menus, icon collapse / expand | the Accordion's clip window: the box's edge rides the row below, its items hold still with their own row and fade as the edge passes them | `translate`, `opacity` | `ease-spring-smooth` | 260ms |
-| Rail | `transition` | `translate` | `ease-spring-smooth` | 260ms |
-| Gap and container width, button size and padding | snap (collapsing to icons, the panel's content keeps its width until the move ends, when everything it hides has faded) | none | none | none |
-| Mobile (below 768px) | GodUI Sheet | `translate`, `opacity` | `ease-spring-smooth` | 380ms |
-
-The panel, its surface, the content, the rows, the labels and the sub-menus
-all move on one clock: Web Animations on the same spring, started in the same
-frame. Toggle again mid-way (or hold <kbd>Ctrl</kbd>/<kbd>⌘</kbd>+<kbd>B</kbd>)
-and each piece turns around from where it's drawn, still glued.
-
-Under `prefers-reduced-motion` everything snaps: no slide, no glide, and the
-labels and sub-menus appear and disappear at once.
-
 ## API
 
-Props are identical to [shadcn/ui Sidebar](https://ui.shadcn.com/docs/components/sidebar).
-`useSidebar()` returns the same state and setters.
+### SidebarProvider
+
+Renders a native `<div>` wrapper and accepts all of its props. Holds the open state, persists it in the `sidebar_state` cookie and toggles it on <kbd>Ctrl</kbd>/<kbd>⌘</kbd>+<kbd>B</kbd>. Set `--sidebar-width` and `--sidebar-width-icon` in `style` to change the widths (`16rem` and `3rem`).
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `defaultOpen` | `boolean` | `true` | Open state on first render, when uncontrolled. |
+| `open` | `boolean` | none | Controlled open state (desktop). |
+| `onOpenChange` | `(open: boolean) => void` | none | Called when the desktop open state changes. |
+
+### Sidebar
+
+Renders a native `<div>` and accepts all of its props. Below 768px it renders a GodUI [Sheet](/docs/components/sheet) instead.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `side` | `"left" \| "right"` | `"left"` | Edge of the page the sidebar sits on. |
+| `variant` | `"sidebar" \| "floating" \| "inset"` | `"sidebar"` | `floating` draws a rounded card with a shadow; `inset` pairs with `SidebarInset`. |
+| `collapsible` | `"offcanvas" \| "icon" \| "none"` | `"offcanvas"` | `offcanvas` slides the panel out, `icon` collapses it to an icon rail, `none` never collapses. |
+
+### SidebarTrigger
+
+Renders a GodUI [Button](/docs/components/button) (`ghost`, `icon`) and accepts all its props. Toggles the sidebar after calling your `onClick`.
+
+### SidebarRail
+
+Renders a native `<button>` and accepts all of its props. A thin hit area on the panel's edge that toggles the sidebar.
+
+### SidebarInset
+
+Renders a native `<main>` and accepts all of its props. The page content beside an `inset` sidebar.
+
+### SidebarHeader, SidebarFooter, SidebarContent
+
+Render a native `<div>` and accept all of their props. The header and footer stay put; the content between them scrolls.
+
+### SidebarGroup, SidebarGroupContent
+
+Render a native `<div>` and accept all of their props. A group is a section of the panel.
+
+### SidebarGroupLabel
+
+Renders a native `<div>` and accepts all of its props. Hidden in icon mode.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `asChild` | `boolean` | `false` | Render the child element instead, merging props via [Radix Slot](https://www.radix-ui.com/primitives/docs/utilities/slot). |
+
+### SidebarGroupAction
+
+Renders a native `<button>` and accepts all of its props. Sits in the group's top-right corner. Hidden in icon mode.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `asChild` | `boolean` | `false` | Render the child element instead, merging props via [Radix Slot](https://www.radix-ui.com/primitives/docs/utilities/slot). |
+
+### SidebarMenu, SidebarMenuItem
+
+Render a native `<ul>` and `<li>` and accept all of their props.
+
+### SidebarMenuButton
+
+Renders a native `<button>` and accepts all of its props.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `asChild` | `boolean` | `false` | Render the child element instead (e.g. a link), merging props via [Radix Slot](https://www.radix-ui.com/primitives/docs/utilities/slot). |
+| `isActive` | `boolean` | `false` | Marks the current page; sets `data-active`. |
+| `variant` | `"default" \| "outline"` | `"default"` | Visual style. |
+| `size` | `"default" \| "sm" \| "lg"` | `"default"` | Height: `h-8`, `h-7` or `h-12`. |
+| `tooltip` | `string \| ComponentProps<typeof TooltipContent>` | none | Tooltip shown on hover while collapsed to icons on desktop. |
+
+### SidebarMenuAction
+
+Renders a native `<button>` and accepts all of its props. Sits at the right of a menu item. Hidden in icon mode.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `asChild` | `boolean` | `false` | Render the child element instead, merging props via [Radix Slot](https://www.radix-ui.com/primitives/docs/utilities/slot). |
+| `showOnHover` | `boolean` | `false` | Show the action only while its item is hovered, focused or open (always visible on mobile). |
+
+### SidebarMenuBadge
+
+Renders a native `<div>` and accepts all of its props. A count or label at the right of a menu item. Hidden in icon mode.
+
+### SidebarMenuSkeleton
+
+Renders a native `<div>` and accepts all of its props. A loading placeholder for a menu item, with a random text width between 50% and 90%.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `showIcon` | `boolean` | `false` | Adds an icon placeholder before the text. |
+
+### SidebarMenuSub, SidebarMenuSubItem
+
+Render a native `<ul>` and `<li>` and accept all of their props. A nested menu under a menu item. Hidden in icon mode.
+
+### SidebarMenuSubButton
+
+Renders a native `<a>` and accepts all of its props.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `asChild` | `boolean` | `false` | Render the child element instead, merging props via [Radix Slot](https://www.radix-ui.com/primitives/docs/utilities/slot). |
+| `size` | `"sm" \| "md"` | `"md"` | Text size: `text-xs` or `text-sm`. |
+| `isActive` | `boolean` | `false` | Marks the current page; sets `data-active`. |
+
+### SidebarInput, SidebarSeparator
+
+Render a GodUI [Input](/docs/components/input) and Separator, styled for the panel; accept all their props.
+
+### useSidebar
+
+Reads the sidebar state. Must be called inside `SidebarProvider`.
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `state` | `"expanded" \| "collapsed"` | Desktop state, also set as `data-state` on the sidebar. |
+| `open` | `boolean` | Whether the desktop sidebar is open. |
+| `setOpen` | `(open: boolean) => void` | Opens or closes the desktop sidebar. |
+| `openMobile` | `boolean` | Whether the mobile sheet is open. |
+| `setOpenMobile` | `(open: boolean) => void` | Opens or closes the mobile sheet. |
+| `isMobile` | `boolean` | `true` below 768px. |
+| `toggleSidebar` | `() => void` | Toggles the mobile sheet or the desktop sidebar, whichever is active. |
+
+Props match [shadcn/ui Sidebar](https://ui.shadcn.com/docs/components/sidebar).
 
 </Workbench>

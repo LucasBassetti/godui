@@ -71,6 +71,16 @@ to open it with the keyboard.
 
 </LearnPlayer>
 
+## What's animated
+
+The entrance matches [Popover](/docs/components/popover): the card scales up
+from the edge touching the link and drifts 4px away from it.
+
+| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
+| --- | --- | --- | --- | --- |
+| Open (after `openDelay`) | `godui-popover-in` | `opacity`, `scale` 0.96 → 1 from the link, `translate` 4px → 0 | `ease-spring-snappy` | 260ms |
+| Close (after `closeDelay`) | `godui-popover-out` | the same, reversed | `ease-out-expo` | 150ms |
+
 ## Why GPU-only
 
 The card animates `opacity`, `scale` and `translate`, all composited. It uses
@@ -81,3 +91,10 @@ alike.
 
 `--godui-motion: 0` cancels the scale and drift, so the card only fades, in
 150ms.
+
+## Replacing shadcn
+
+`npx shadcn add @godui/hover-card` overwrites `components/ui/hover-card.tsx`.
+Exports, props and `data-slot` attributes match shadcn/ui new-york-v4, so
+existing imports keep working. It also installs `godui-motion` (easings,
+keyframes, the FLIP hook) into your project.

@@ -9,11 +9,6 @@ import { SwitchDemo } from "@/components/demos/core/switch-demo";
 
 <Workbench>
 
-The shadcn/ui switch with a springy thumb. The thumb slides on
-`ease-spring-snappy`, and instead of repainting the track's background color,
-the checked color sits on a layer that fades in. Only `translate` and
-`opacity` animate.
-
 <Example label="Default" story="ui-switch" code={`import { Switch } from "@/components/ui/switch";
 
 export function SwitchDemo() {
@@ -46,13 +41,6 @@ export function SwitchDemo() {
 
 <ComponentInstall name="switch" />
 
-## Replacing shadcn
-
-`npx shadcn add @godui/switch` overwrites `components/ui/switch.tsx`. Exports,
-props and `data-slot` attributes match shadcn/ui new-york-v4, so existing
-imports keep working. It also installs `godui-motion` (easings, keyframes, the
-FLIP hook) into your project.
-
 ## Usage
 
 ```tsx
@@ -63,23 +51,23 @@ import { Switch } from "@/components/ui/switch";
 <Switch />
 ```
 
-## What's animated
-
-| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
-| --- | --- | --- | --- | --- |
-| Toggle (thumb) | `transition` | `translate` | `ease-spring-snappy` | 260ms |
-| Toggle (track color) | `transition` on a `::before` layer | `opacity` | `ease` | 150ms |
-
-The root's `className` is merged after GodUI's classes as usual. If you set a
-custom checked color with `data-[state=checked]:bg-*`, set it on the layer
-instead: `data-[state=checked]:before:bg-*`.
-
-Under `prefers-reduced-motion` the thumb moves instantly; the color still
-crossfades.
-
 ## API
 
-Built on [Radix Switch](https://www.radix-ui.com/primitives/docs/components/switch).
-Props are identical to [shadcn/ui Switch](https://ui.shadcn.com/docs/components/switch).
+### Switch
+
+Built on [Radix Switch Root](https://www.radix-ui.com/primitives/docs/components/switch#root); accepts all its props. Renders a `<button role="switch">` with the thumb inside.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `size` | `"default" \| "sm"` | `"default"` | Track and thumb size. |
+| `checked` | `boolean` | none | Controlled checked state. |
+| `defaultChecked` | `boolean` | none | Initial state when uncontrolled. |
+| `onCheckedChange` | `(checked: boolean) => void` | none | Called when the state changes. |
+| `disabled` | `boolean` | none | Prevent interaction. |
+| `required` | `boolean` | none | Mark the field as required in a form. |
+| `name` | `string` | none | Form field name. |
+| `value` | `string` | `"on"` | Value submitted with the form when checked. |
+
+To change the checked color, set it on the fade layer: `data-[state=checked]:before:bg-*`.
 
 </Workbench>

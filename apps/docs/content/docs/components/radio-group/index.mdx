@@ -8,10 +8,6 @@ import { RadioGroupDemo } from "@/components/demos/core/radio-group-demo";
 
 <Workbench>
 
-The shadcn/ui radio group. When an option is selected, its dot grows from 30%
-to full size on a spring (the option selected on first paint doesn't animate), and each ring presses down while the pointer is on
-it. Only `scale` and `opacity` animate.
-
 <Example label="Default" story="ui-radio-group" code={`import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const OPTIONS = [
@@ -41,13 +37,6 @@ export function RadioGroupDemo() {
 
 <ComponentInstall name="radio-group" />
 
-## Replacing shadcn
-
-`npx shadcn add @godui/radio-group` overwrites `components/ui/radio-group.tsx`.
-Exports, props and `data-slot` attributes match shadcn/ui new-york-v4, so
-existing imports keep working. It also installs `godui-motion` (easings,
-keyframes, the FLIP hook) into your project.
-
 ## Usage
 
 ```tsx
@@ -67,20 +56,32 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 </RadioGroup>
 ```
 
-## What's animated
-
-| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
-| --- | --- | --- | --- | --- |
-| Select | `godui-fade-scale-in` from 30% | `scale`, `opacity` | `ease-spring-snappy` | 260ms |
-| Press | `transition` on `active:scale-[0.9]` | `scale` | `ease-spring-bouncy` | 260ms |
-| Ring color, focus ring | snaps | none | none | none |
-
-Under `prefers-reduced-motion` the dot fades in without growing and the ring
-presses instantly.
-
 ## API
 
-Built on [Radix Radio Group](https://www.radix-ui.com/primitives/docs/components/radio-group).
-Props are identical to [shadcn/ui Radio Group](https://ui.shadcn.com/docs/components/radio-group).
+### RadioGroup
+
+Built on [Radix Radio Group Root](https://www.radix-ui.com/primitives/docs/components/radio-group#root); accepts all its props.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `value` | `string \| null` | none | Controlled selected value. |
+| `defaultValue` | `string` | none | Selected value on first render, when uncontrolled. |
+| `onValueChange` | `(value: string) => void` | none | Called when the selection changes. |
+| `disabled` | `boolean` | `false` | Disables every item. |
+| `required` | `boolean` | `false` | A value must be selected before the form submits. |
+| `name` | `string` | none | Name of the value submitted with a form. |
+| `orientation` | `"horizontal" \| "vertical"` | none | Limits arrow-key navigation to one axis. Without it, all arrow keys move. |
+| `loop` | `boolean` | `true` | Keyboard focus wraps from the last item to the first. |
+
+### RadioGroupItem
+
+Built on [Radix Radio Group Item](https://www.radix-ui.com/primitives/docs/components/radio-group#item); accepts all its props. Renders the ring and its indicator dot.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `value` | `string` | none | Required. The value this item selects. |
+| `disabled` | `boolean` | `false` | Disables this item. |
+
+Props match [shadcn/ui Radio Group](https://ui.shadcn.com/docs/components/radio-group).
 
 </Workbench>

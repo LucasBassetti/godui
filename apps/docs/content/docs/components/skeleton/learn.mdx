@@ -75,6 +75,14 @@ the same loop, offset by when it arrived.
 
 </LearnPlayer>
 
+## What's animated
+
+| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
+| --- | --- | --- | --- | --- |
+| Shimmer | `godui-shimmer` | `translate` | `cubic-bezier(0.65, 0, 0.35, 1)` (ease-in-out) | 1.6s loop |
+
+Under `dir="rtl"` the loop plays in reverse, so the band sweeps right to left.
+
 ## Why GPU-only
 
 The band is a single `::after` layer and the loop changes `translate`, nothing
@@ -84,4 +92,16 @@ else. Layout and paint stay out of it, however many skeletons are on screen.
 
 `motion-reduce:after:hidden` removes the band and `motion-reduce:animate-pulse`
 restores shadcn's opacity pulse, so the placeholder still reads as busy without
-a sweep.
+a sweep. As in shadcn, `className="animate-none"` stops it: no band, and no
+pulse under reduced motion either.
+
+## Replacing shadcn
+
+`npx shadcn add @godui/skeleton` overwrites `components/ui/skeleton.tsx`.
+Exports, props and `data-slot` attributes match shadcn/ui new-york-v4, so
+existing imports keep working. It also installs `godui-motion` (easings,
+keyframes, the FLIP hook) into your project, plus the `godui-shimmer` keyframe.
+
+One class changes meaning: the block is now `relative overflow-hidden` so it
+can clip the band. A call site's `absolute` or `fixed` still wins, because
+the classes go through `cn`.

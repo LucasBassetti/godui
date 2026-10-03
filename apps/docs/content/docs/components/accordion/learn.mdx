@@ -120,6 +120,25 @@ Open and close the items, and click again mid-sweep to reverse it.
 
 </LearnPlayer>
 
+## What's animated
+
+| Interaction | Mechanism | Properties | Easing | Duration |
+| --- | --- | --- | --- | --- |
+| Open | height snaps; the panel's box slides from under the trigger while its content counter-slides (a clip edge sweeping over still text); rows below FLIP with the edge | `translate` | `ease-spring-smooth` | 260ms |
+| Open, content | blocks fade in, a quarter of `--godui-duration-fast` apart (up to 4) | `opacity` | `ease-out-expo` | 260ms |
+| Close | the panel leaves the flow at once; its edge sweeps up as the rows rise; text fades out ahead of it | `translate`, `opacity` | `ease-spring-smooth` | 150ms |
+| Open one, close another | both edges and every row share one clock | `translate` | `ease-spring-smooth` | 260ms |
+| Chevron | `transition` on `transform` | `rotate(180deg)` | `ease-spring-smooth` | 260ms open, 150ms close |
+
+The text inside a panel never moves: the box and its content travel the same
+distance in opposite directions, so only the clip edge does. The row below
+starts on that edge and stays on it every frame. Clicking again mid-sweep
+reverses from what's drawn. The dividers are each item's top border, so a line
+travels with its row. A nested accordion's change glides the outer rows too.
+In a parent that centers it (a preview stage, a dialog), the accordion moves
+when it grows; its own box glides to the new spot on the same clock instead of
+jumping.
+
 ## Why GPU-only
 
 The panel's box, its content and the rows below animate `translate`, the
@@ -133,3 +152,13 @@ individual `rotate` property on an `<svg>`.
 Nothing moves: the height and the rows change in one step, and the panel's
 content only fades in or out (150ms). `motion-reduce:transition-none` stops the
 chevron's turn.
+
+## Replacing shadcn
+
+`npx shadcn add @godui/accordion` overwrites `components/ui/accordion.tsx`.
+Exports, props and `data-slot` attributes match shadcn/ui new-york-v4, so
+existing imports keep working. It also installs `godui-motion`, which
+includes the `useFlipGroup` hook the accordion uses.
+
+You can delete shadcn's `accordion-down` / `accordion-up` keyframes from your
+CSS; GodUI doesn't use them.

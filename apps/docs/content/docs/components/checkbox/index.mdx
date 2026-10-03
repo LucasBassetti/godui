@@ -8,13 +8,6 @@ import { CheckboxDemo } from "@/components/demos/core/checkbox-demo";
 
 <Workbench>
 
-The shadcn/ui checkbox. When you check it, the fill grows from a dot in the
-middle until it fills the box, and the check mark is drawn in from left to
-right. Unchecking drains it back to a dot. It all runs only when the state
-changes, so a form that loads with boxes already checked doesn't animate. The
-fill keeps your own checked colors. Only `scale`, `translate` and `opacity`
-animate.
-
 <Example label="Default" story="ui-checkbox" code={`import { Checkbox } from "@/components/ui/checkbox";
 
 export function CheckboxDemo() {
@@ -53,13 +46,6 @@ export function CheckboxDemo() {
 
 <ComponentInstall name="checkbox" />
 
-## Replacing shadcn
-
-`npx shadcn add @godui/checkbox` overwrites `components/ui/checkbox.tsx`.
-Exports, props and `data-slot` attributes match shadcn/ui new-york-v4, so
-existing imports keep working. It also installs `godui-motion` (easings,
-keyframes, the FLIP hook) into your project.
-
 ## Usage
 
 ```tsx
@@ -70,26 +56,22 @@ import { Checkbox } from "@/components/ui/checkbox";
 <Checkbox />
 ```
 
-## What's animated
-
-| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
-| --- | --- | --- | --- | --- |
-| Check (fill) | `godui-checkbox-fill-in`: a disc grows from a dot, squared off by the box's clip | `scale` 0 → 1.42 | `ease-spring-smooth` | 260ms |
-| Check (mark) | `godui-checkbox-draw` + `godui-checkbox-ink`: a clip window slides in while the mark slides back | `translate` | `ease-spring-smooth` | 190ms, after 70ms |
-| Check (box) | `godui-pop` | `scale` 1 → 0.9 → 1 | `ease-spring-bouncy` | 260ms |
-| Uncheck (mark) | `godui-checkbox-check-out` | `opacity`, `scale` 1 → 0.7 | `ease-out-expo` | 150ms |
-| Uncheck (fill) | `godui-checkbox-fill-out`: the disc shrinks back to a dot, in the checked colors | `scale` 1.42 → 0 | `ease-spring-smooth` | 150ms |
-| Border | snap | none | none | none |
-
-Animations run only after the checked state changes, by a click, the keyboard
-or a controlled `checked` prop, never on the first render.
-
-Under `prefers-reduced-motion` nothing grows, slides or dips: the fill and the
-check fade in and out.
-
 ## API
 
-Built on [Radix Checkbox](https://www.radix-ui.com/primitives/docs/components/checkbox).
-Props are identical to [shadcn/ui Checkbox](https://ui.shadcn.com/docs/components/checkbox).
+### Checkbox
+
+Built on [Radix Checkbox Root](https://www.radix-ui.com/primitives/docs/components/checkbox#root); accepts all its props. Renders a `<button role="checkbox">` with the check mark inside.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `checked` | `boolean \| "indeterminate"` | none | Controlled checked state. |
+| `defaultChecked` | `boolean \| "indeterminate"` | `false` | Checked state on first render, when uncontrolled. |
+| `onCheckedChange` | `(checked: boolean \| "indeterminate") => void` | none | Called when the checked state changes. |
+| `disabled` | `boolean` | `false` | Prevents interaction. |
+| `required` | `boolean` | `false` | Marks the checkbox as required in a form. |
+| `name` | `string` | none | Field name submitted with a form. |
+| `value` | `string` | `"on"` | Value submitted with a form when checked. |
+
+Props match [shadcn/ui Checkbox](https://ui.shadcn.com/docs/components/checkbox).
 
 </Workbench>

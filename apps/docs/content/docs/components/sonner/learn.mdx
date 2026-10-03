@@ -92,6 +92,18 @@ spread out on a spring and their heights change in one step.
 
 </LearnPlayer>
 
+## What's animated
+
+| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
+| --- | --- | --- | --- | --- |
+| Enter, exit, stack | sonner's transitions | `transform`, `opacity` | `ease-spring-snappy` | 400ms |
+| Stack expand (heights) | snaps | none | none | none |
+| Swipe to dismiss | pointer-driven `transform` | `transform` | none | live |
+| Action, cancel, close buttons | sonner's transition | `opacity` | none | sonner's |
+
+Sonner injects its stylesheet unlayered, so GodUI's overrides use
+`!important`; only `transition-property` and the easing are forced.
+
 ## Why GPU-only
 
 Every toast transition is `transform` or `opacity`, and the buttons only fade.
@@ -102,3 +114,13 @@ reports a `height` animation, and it does fail without GodUI's overrides.
 
 Sonner's own `prefers-reduced-motion` styles still apply: they turn off its
 transitions and animations, and GodUI doesn't override that.
+
+## Replacing shadcn
+
+`npx shadcn add @godui/sonner` overwrites `components/ui/sonner.tsx`. Exports
+and props match shadcn/ui new-york-v4 (`Toaster`, with the same icons, theme
+handling and CSS variables), so existing imports keep working. Keep calling
+`toast()` from `sonner`.
+
+If you pass `toastOptions.classNames`, GodUI merges its own classes with yours
+rather than replacing them.

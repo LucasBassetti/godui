@@ -146,6 +146,27 @@ and toggle again mid-way to reverse. Collapsed, hover an icon for its tooltip.
 
 </LearnPlayer>
 
+## What's animated
+
+| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
+| --- | --- | --- | --- | --- |
+| Offcanvas collapse / expand | the container's class translate, glided there by FLIP | `translate` 0 ↔ ∓100% | `ease-spring-smooth` | 260ms |
+| Icon collapse / expand | `sidebar-surface`'s class translate, glided there by FLIP | `translate` by the width difference | `ease-spring-smooth` | 260ms |
+| Floating card, icon mode | left cap still, middle scales from its left, right cap slides with it | `scale`, `translate` | `ease-spring-smooth` | 260ms |
+| Content beside the sidebar | FLIP (`useFlipGroup` on the wrapper) | `translate` | `ease-spring-smooth` | 260ms |
+| Rows in icon mode (group labels tuck up, header and footer buttons shrink, badges and actions ride their row) | FLIP inside the panel | `translate` | `ease-spring-smooth` | 260ms |
+| Labels collapsing to icons (menu text and chevrons, group labels, badges, actions) | WAAPI fade, from what's drawn; menu text tucks 4px toward its icon | `opacity`, `translate` | `ease-spring-smooth` | 150ms |
+| Labels expanding from icons | WAAPI fade, starting when the panel's edge reaches each one (a small top-first cascade), ending with the move | `opacity`, `translate` | `ease-spring-smooth` | ≤ 260ms |
+| Sub-menus, icon collapse / expand | the Accordion's clip window: the box's edge rides the row below, its items hold still with their own row and fade as the edge passes them | `translate`, `opacity` | `ease-spring-smooth` | 260ms |
+| Rail | `transition` | `translate` | `ease-spring-smooth` | 260ms |
+| Gap and container width, button size and padding | snap (collapsing to icons, the panel's content keeps its width until the move ends, when everything it hides has faded) | none | none | none |
+| Mobile (below 768px) | GodUI Sheet | `translate`, `opacity` | `ease-spring-smooth` | 380ms |
+
+The panel, its surface, the content, the rows, the labels and the sub-menus
+all move on one clock: Web Animations on the same spring, started in the same
+frame. Toggle again mid-way (or hold <kbd>Ctrl</kbd>/<kbd>⌘</kbd>+<kbd>B</kbd>)
+and each piece turns around from where it's drawn, still glued.
+
 ## Why GPU-only
 
 The panel, its surface, the content beside it and the sub-menus animate
@@ -161,3 +182,61 @@ their new places in one step, and labels and sub-menus appear and disappear
 at once. `useFlipGroup`, the floating card's stretch and the label and
 sub-menu moves skip their animations. The full-width hold is `motion-safe:`
 only, and the rail turns its transition off with `motion-reduce:transition-none`.
+
+## Replacing shadcn
+
+`npx shadcn add @godui/sidebar` overwrites `components/ui/sidebar.tsx`.
+Exports, props and `data-slot` attributes match shadcn/ui new-york-v4, so
+existing imports keep working. It also installs `godui-motion` (easings,
+keyframes, the FLIP hook) and shadcn's `use-mobile` hook and `separator`.
+`useFlipGroup` gains an optional `measure` (track one element, move another)
+and now carries a running glide over a change of the element's own
+`translate`. It also waits on each running animation only once while it
+re-baselines, so toggling many times mid-move can't pile up work.
+
+A few things differ, all on desktop:
+
+- The container has one extra child, `data-slot="sidebar-surface"`, which
+  draws the panel's background and border (and the floating card's rounded
+  border and shadow). `sidebar-inner` is transparent, so put background
+  overrides on the surface, not the inner. The border is still the
+  container's (the surface inherits its width, style and color, and sits on
+  the container's border box), so border classes passed to `Sidebar` paint on
+  the box edge as they do in shadcn.
+- While the sidebar moves, the wrapper clips horizontal overflow
+  (`overflow-x-clip`): for a moment the gliding content is drawn past the
+  right edge, and that shouldn't flash a scrollbar. At rest nothing is
+  clipped, so wide content scrolls the page as it does in shadcn. On a page
+  that's wider than the window, a classic (non-overlay) horizontal scrollbar
+  therefore disappears for the length of the move and comes back when it
+  ends.
+- While the sidebar moves, the content after it is lifted above the panel.
+  That lasts as long as the move's animations (one `--godui-duration-base`).
+  If one of them is paused, it lets go one `--godui-duration-slow` after
+  that animation should have ended. The panel's content is laid out at full
+  width while the surface's edge is still on its way (expanding at once;
+  collapsing to icons until the move ends), and the content, glued to that
+  edge, covers it until the edge passes. Give that content a background
+  (`SidebarInset` has `bg-background`).
+- Collapsing to icons, the panel's content keeps its full width (and its
+  badges, actions and sub-menus stay drawn) until the move ends, so labels
+  can fade out instead of being cut by the snapped rail. The rows take their
+  icon-layout heights at once. Code that measures the panel's content in that
+  ~260ms sees the full width; the icon layout's widths apply when the move
+  ends (at once under reduced motion).
+- While collapsing to icons (about 260ms), badges, actions, group actions
+  and sub-menus are forced to `display: flex` so they can fade and sweep. A
+  call-site `className="hidden"` on one of them flashes visible during the
+  collapse; hide it with a conditional render instead.
+- A menu button's label is everything after its first child (its icon):
+  that's what fades. Wrap the label in an element (`<span>Home</span>`, as
+  shadcn's examples do). A bare text label (`<Home /> Home`) can't be faded
+  on the compositor, so that button skips the full-width hold and its label
+  is clipped by the rail on the click, as in shadcn. A button whose first
+  child is text keeps it, clipped by the rail, as in shadcn.
+- While the content glides (about 260ms), `position: fixed` descendants of
+  `SidebarInset` move with it (the FLIP's `translate` makes it their
+  containing block), and the lift keeps their `z-index` inside it.
+- A right-side sidebar's content glides with its edge too. The page content
+  before it changes width at once: its left edge doesn't move, so there is
+  nothing to glide.

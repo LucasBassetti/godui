@@ -65,6 +65,18 @@ Arrow through the items, move the pointer over them, then type to filter.
 
 </LearnPlayer>
 
+## What's animated
+
+The highlight is the same FLIP that [Tabs](/docs/components/tabs) uses.
+Before JavaScript runs, the selected item paints its own background, exactly
+as in shadcn.
+
+| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
+| --- | --- | --- | --- | --- |
+| Arrow keys, pointer | FLIP (WAAPI) on the highlight | `translate`, `scale` | `ease-spring-snappy` | 260ms |
+| Typing (filter) | highlight snaps to the first match | none | none | none |
+| Dialog open / close | as [Dialog](/docs/components/dialog) | `opacity`, `scale` | snappy / expo | 260 / 150ms |
+
 ## Why GPU-only
 
 The highlight animates `translate` and `scale`. Items no longer repaint their
@@ -74,3 +86,10 @@ own background on selection.
 
 The highlight jumps to the selected item without sliding. `CommandDialog`
 fades without scaling.
+
+## Replacing shadcn
+
+`npx shadcn add @godui/command` overwrites `components/ui/command.tsx` and
+installs the GodUI `dialog` it uses. Exports, props and `data-slot` attributes
+match shadcn/ui new-york-v4, so existing imports keep working. `CommandList`
+renders one extra element, an `aria-hidden` `<span data-slot="command-indicator">`.

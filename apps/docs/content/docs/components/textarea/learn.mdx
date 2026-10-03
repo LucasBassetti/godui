@@ -51,6 +51,23 @@ frame.
 
 </LearnPlayer>
 
+## What's animated
+
+| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
+| --- | --- | --- | --- | --- |
+| Focus ring | snaps (`box-shadow`, no transition) | none | none | none |
+| Border, invalid ring | snap | none | none | none |
+
+Why it snaps: the ring is a `box-shadow` on the textarea itself, and
+`box-shadow` can only be animated by repainting. A GPU fade needs a separate
+layer whose `opacity` changes, and `<textarea>` is a replaced element, so it
+can't have a `::before`. A wrapper would give it one, but your `className` and
+`ref` would land on the wrong element. For a ring that fades in, use
+`InputGroupTextarea` inside [Input Group](/docs/components/input-group).
+
+The textarea still grows with its content (`field-sizing-content`); that
+resize is the browser's layout, not an animation.
+
 ## Why GPU-only
 
 A `box-shadow` transition repaints the textarea on every frame of the fade.
@@ -59,3 +76,10 @@ GodUI's textarea never animates, so focusing it costs one repaint.
 ## Reduced motion
 
 Nothing to reduce: the ring already appears in a single frame.
+
+## Replacing shadcn
+
+`npx shadcn add @godui/textarea` overwrites `components/ui/textarea.tsx`.
+Exports, props and the `data-slot` attribute match shadcn/ui new-york-v4, so
+existing imports keep working. The only class removed is
+`transition-[color,box-shadow]`.

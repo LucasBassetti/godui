@@ -8,11 +8,6 @@ import { HoverCardDemo } from "@/components/demos/core/hover-card-demo";
 
 <Workbench>
 
-The shadcn/ui hover card, with the same directional entrance as
-[Popover](/docs/components/popover): it scales up from the edge touching the
-link and drifts 4px away from it on a spring, then leaves the same way in
-150ms. Only `scale`, `translate` and `opacity` animate.
-
 <Example label="Default" story="ui-hover-card" code={`import { Button } from "@/components/ui/button";
 import {
   HoverCard,
@@ -53,13 +48,6 @@ export function HoverCardDemo() {
 
 <ComponentInstall name="hover-card" />
 
-## Replacing shadcn
-
-`npx shadcn add @godui/hover-card` overwrites `components/ui/hover-card.tsx`.
-Exports, props and `data-slot` attributes match shadcn/ui new-york-v4, so
-existing imports keep working. It also installs `godui-motion` (easings,
-keyframes, the FLIP hook) into your project.
-
 ## Usage
 
 ```tsx
@@ -79,18 +67,42 @@ import {
 </HoverCard>
 ```
 
-## What's animated
-
-| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
-| --- | --- | --- | --- | --- |
-| Open (after `openDelay`) | `godui-popover-in` | `opacity`, `scale` 0.96 → 1 from the link, `translate` 4px → 0 | `ease-spring-snappy` | 260ms |
-| Close (after `closeDelay`) | `godui-popover-out` | the same, reversed | `ease-out-expo` | 150ms |
-
-Under `prefers-reduced-motion` the card only fades (150ms).
-
 ## API
 
-Built on [Radix Hover Card](https://www.radix-ui.com/primitives/docs/components/hover-card).
-Props are identical to [shadcn/ui Hover Card](https://ui.shadcn.com/docs/components/hover-card).
+### HoverCard
+
+Built on [Radix Hover Card Root](https://www.radix-ui.com/primitives/docs/components/hover-card#root); accepts all its props.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `open` | `boolean` | none | Controlled open state. |
+| `defaultOpen` | `boolean` | none | Initial open state when uncontrolled. |
+| `onOpenChange` | `(open: boolean) => void` | none | Called when the open state changes. |
+| `openDelay` | `number` | `700` | Milliseconds from pointer enter until the card opens. |
+| `closeDelay` | `number` | `300` | Milliseconds from pointer leave until the card closes. |
+
+### HoverCardTrigger
+
+Built on [Radix Hover Card Trigger](https://www.radix-ui.com/primitives/docs/components/hover-card#trigger); renders an `<a>` and accepts all its props.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `asChild` | `boolean` | `false` | Render the child element instead, merging props via [Radix Slot](https://www.radix-ui.com/primitives/docs/utilities/slot). |
+
+### HoverCardContent
+
+Built on [Radix Hover Card Content](https://www.radix-ui.com/primitives/docs/components/hover-card#content), rendered in a portal; accepts all its props.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `side` | `"top" \| "right" \| "bottom" \| "left"` | `"bottom"` | Preferred side of the trigger. Flips when it would collide. |
+| `sideOffset` | `number` | `4` | Distance from the trigger in px. |
+| `align` | `"start" \| "center" \| "end"` | `"center"` | Alignment against the trigger. |
+| `alignOffset` | `number` | `0` | Offset from the `align` position in px. |
+| `avoidCollisions` | `boolean` | `true` | Flip and shift to stay inside the collision boundary. |
+| `collisionPadding` | `number \| Partial<Record<Side, number>>` | `0` | Distance from the boundary edges where collisions are detected. |
+| `forceMount` | `true` | none | Keep the content mounted while closed. |
+
+Props match [shadcn/ui Hover Card](https://ui.shadcn.com/docs/components/hover-card).
 
 </Workbench>

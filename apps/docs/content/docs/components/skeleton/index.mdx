@@ -9,11 +9,6 @@ import { SkeletonDemo } from "@/components/demos/core/skeleton-demo";
 
 <Workbench>
 
-The shadcn/ui skeleton. Instead of fading the whole block in and out, a soft
-band sweeps across it. The band is a pseudo-element moved with `translate`, so
-the loop runs on the compositor and never touches layout or paint. Under
-`prefers-reduced-motion` the band is hidden and the block pulses, as in shadcn.
-
 <Example label="Card" story="ui-skeleton--card" code={`import { Skeleton } from "@/components/ui/skeleton";
 
 export function SkeletonCardDemo() {
@@ -50,17 +45,6 @@ export function SkeletonDemo() {
 
 <ComponentInstall name="skeleton" />
 
-## Replacing shadcn
-
-`npx shadcn add @godui/skeleton` overwrites `components/ui/skeleton.tsx`.
-Exports, props and `data-slot` attributes match shadcn/ui new-york-v4, so
-existing imports keep working. It also installs `godui-motion` (easings,
-keyframes, the FLIP hook) into your project, plus the `godui-shimmer` keyframe.
-
-One class changes meaning: the block is now `relative overflow-hidden` so it
-can clip the band. A call site's `absolute` or `fixed` still wins, because
-the classes go through `cn`.
-
 ## Usage
 
 ```tsx
@@ -71,20 +55,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 <Skeleton className="h-[20px] w-[100px] rounded-full" />
 ```
 
-## What's animated
-
-| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
-| --- | --- | --- | --- | --- |
-| Shimmer | `godui-shimmer` | `translate` | `cubic-bezier(0.65, 0, 0.35, 1)` (ease-in-out) | 1.6s loop |
-
-Under `dir="rtl"` the loop plays in reverse, so the band sweeps right to left.
-Under `prefers-reduced-motion` the band is hidden and the block runs shadcn's
-`animate-pulse` (an `opacity` fade) instead. As in shadcn, `className="animate-none"`
-stops it: no band, and no pulse under reduced motion either.
-
 ## API
 
-Props are identical to [shadcn/ui Skeleton](https://ui.shadcn.com/docs/components/skeleton):
-a `div` that takes `className` and every other `div` prop.
+### Skeleton
+
+Renders a native `<div>` and accepts all of its props. Size and shape it with `className` (`h-*`, `w-*`, `rounded-*`). The block is `relative overflow-hidden` so it can clip the band; a call site's `absolute` or `fixed` still wins.
 
 </Workbench>

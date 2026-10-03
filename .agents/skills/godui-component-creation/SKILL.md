@@ -222,13 +222,17 @@ Learn tab can sit beside it: create
 `apps/docs/content/docs/components/{name}/index.mdx` (the main page) — the Learn
 tab is `learn.mdx` in the same folder (see §5.5).
 
-Besides the Workbench examples, every core page has a **What's animated** table
-(interaction, keyframe/token, properties, easing, duration) and a "Replacing
-shadcn" note: same file path, same API, install overwrites
-`components/ui/{name}.tsx`.
+Component pages are **Workbench-first** and minimal: stage examples as
+`<Example>` tabs, then **only** Installation → Usage → API in the Docs drawer.
+No lead paragraph, no motion prose. API = one `### <Part>` per exported part
+(one line naming what it renders / is built on + "accepts all its props", then a
+`Prop | Type | Default | Description` table of the wrapper's own props/defaults
+and the key library props; trivial styled parts get the sentence only).
 
-Component pages are **Workbench-first**: stage examples as `<Example>` tabs, then
-Installation → Usage → Props in the Docs drawer.
+Motion docs live on the **Learn tab** (`learn.mdx`), after `</LearnPlayer>`:
+a **What's animated** table (interaction, keyframe/token, properties, easing,
+duration) before `## Why GPU-only`, and a closing `## Replacing shadcn` note
+(same file path, same API, install overwrites `components/ui/{name}.tsx`).
 
 ```mdx
 ---
@@ -241,8 +245,6 @@ import { MyComponent } from "@godui/components";
 import { MyComponentDemo } from "@/components/demos/my-component-demo";
 
 <Workbench>
-
-One-sentence lead.
 
 <Example
   label="Default"
@@ -266,7 +268,12 @@ export function MyComponentDemo() {
 import { MyComponent } from "@/components/ui/my-component";
 \`\`\`
 
-## Props
+## API
+
+### MyComponent
+
+Renders a native `<div>` and accepts all of its props.
+
 | Prop | Type | Default | Description |
 | ---- | ---- | ------- | ----------- |
 | `variant` | `"primary" \| "secondary"` | `"primary"` | Visual style |
@@ -381,8 +388,8 @@ core kit in `apps/docs/src/components/learn/core/` (registered in `mdx.tsx`):
 | `LiveResult hint` | the final interactive chapter (`isResult`) |
 
 Write 2–3 chapters plus the result, with `code` excerpts copied from the real
-source, then `## Why GPU-only` and `## Reduced motion` sections after
-`</LearnPlayer>`. Core pages have **no Motion Score** — core is CI-gated
+source, then `## What's animated`, `## Why GPU-only`, `## Reduced motion` and
+`## Replacing shadcn` sections after `</LearnPlayer>`. Core pages have **no Motion Score** — core is CI-gated
 GPU-only, and the page shows the GPU-only + shadcn/ui badges instead. Use the
 `godui-learn-article` skill for LearnPlayer rules and gotchas when a component
 needs a bespoke scene.
@@ -480,7 +487,7 @@ last segment, so the key **must** equal the docs slug. Previews are statically i
 - [ ] Vitest `src/ui/{name}.test.tsx`: `Usage({ ui })` through `Shadcn` and `Godui` → `expectSlotParity`; exports ⊇ shadcn's; open/close + keyboard; reduced motion
 - [ ] Storybook story `stories/ui/{name}.stories.tsx` (title `UI/{Title Case}`, `tags: ["autodocs"]`)
 - [ ] Runtime trace spec `motion-trace/{name}.spec.ts` (open **and** close; `setup` for the close) passing (`pnpm --filter storybook test:motion-trace`), and shown to fail when the GPU fix is removed if it guards a library override
-- [ ] Docs `components/{name}/index.mdx` with Workbench + Example + ComponentInstall + "What's animated" table + "Replacing shadcn" note
+- [ ] Docs `components/{name}/index.mdx`: Workbench + Example tabs, then only Installation (ComponentInstall) → Usage → API (props table per part); "What's animated" table + "Replacing shadcn" note go in `learn.mdx`
 - [ ] Demo `demos/core/{name}-demo.tsx`; Example `code` = demo with `@/components/ui/*` imports
 - [ ] Learn tab `components/{name}/learn.mdx` (LearnPlayer + core kit scenes, code excerpts copied from the real source) — verified in **both** light and dark
 - [ ] Example children: text inline in its tag (no `<p>`-in-`<p>`)
