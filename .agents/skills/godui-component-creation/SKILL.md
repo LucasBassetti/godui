@@ -8,8 +8,9 @@ description: Create new core components for GodUI (@godui/components) — animat
 GodUI core (`@godui/components`) is **shadcn/ui, animated**: every component is a
 drop-in replacement for its shadcn new-york-v4 counterpart (same file, exports,
 props, `data-slot`s, Radix primitives) with motion that runs only on the
-compositor. Pre-pivot components live in `@godui/lab` (`packages/lab`) and
-are frozen — don't add new components there.
+compositor. Lab — GodUI's expressive, experimental pieces beyond the shadcn
+catalog — lives in `@godui/lab` (`packages/lab`), maintained as-is with a
+report-only GPU badge; don't add new components there.
 
 ## Quick reference
 
@@ -333,19 +334,20 @@ hydration error. **Keep text inline on the same line as its tag:**
 This is render-only (the live children), so `eslint` / `biome` won't catch it — it only
 shows in `docs:dev`. Same trap applies to any block tag with multi-line bare text.
 
-**Parameterized installs (Extras backgrounds only).** A component
+**Parameterized installs (Lab backgrounds only).** A component
 whose install should bake a choice is served by the dynamic route
-`apps/docs/src/app/r/extras/[item]/route.ts` (wrapping `@godui/lab/registry`) via a
-`?variant=` query param — **not** by `shadcn build`. Such items are removed from
-`registry.json` so the route owns `/r/{name}.json`, the generated component carries its
+`apps/docs/src/app/r/lab/[item]/route.ts` (wrapping `@godui/lab/registry`) via a
+`?variant=` query param — **not** by `shadcn build`. Such items are left out of
+`registry-lab.json` so the route owns `/r/lab/{name}.json` (the `/r/{name}.json` and
+`/r/extras/{name}.json` rewrites reach it too), the generated component carries its
 overridable defaults inside `// @default-props:start/end` markers (the route swaps that
 block), and the install command is the full-URL form
-`shadcn add "https://godui.design/r/{name}.json?variant=…"`. The interactive picker lives in
+`shadcn add "https://godui.design/r/lab/{name}.json?variant=…"`. The interactive picker lives in
 `apps/docs/src/components/background-showcase.tsx`.
 
 **Nav:** Components are listed in the **main sidebar** through the root
 `apps/docs/content/docs/meta.json` (add `components/{name}` to its Components
-section, alphabetical); Extras is header-only. Also add `{name}` to
+section, alphabetical); Lab is header-only. Also add `{name}` to
 `apps/docs/content/docs/components/meta.json` (`pages` entries are paths relative to
 that folder, e.g. `"popover"`) — the index preview-count test reads its length. A page
 absent from either file won't appear.

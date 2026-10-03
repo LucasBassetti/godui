@@ -19,7 +19,7 @@
  * (transform family, opacity, filter) may animate — cheap paint such as
  * `color` and Tailwind's bare `transition` / `transition-colors` are violations.
  *
- * Consumed by the core GPU gate and the Extras GPU report; test with
+ * Consumed by the core GPU gate and the Lab GPU report; test with
  * `pnpm --filter @godui/motion-lint test`. Not shipped in any component.
  */
 

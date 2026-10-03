@@ -65,28 +65,32 @@ pnpm dlx shadcn@latest init
 
 **2. Add the GodUI registries** to the `registries` field of your
 `components.json` (one-time setup). `@godui` serves the animated shadcn/ui
-drop-ins; `@godui-extras` serves the original GodUI components:
+drop-ins; `@godui-lab` serves Lab, GodUI's expressive, experimental pieces
+beyond the shadcn catalog:
 
 ```json
 {
   "registries": {
     "@godui": "https://godui.design/r/{name}.json",
-    "@godui-extras": "https://godui.design/r/extras/{name}.json"
+    "@godui-lab": "https://godui.design/r/lab/{name}.json"
   }
 }
 ```
 
+Lab used to be called Extras: an existing `"@godui-extras"` entry pointing at
+`https://godui.design/r/extras/{name}.json` keeps working.
+
 **3. Add any component by name:**
 
 ```bash
-pnpm dlx shadcn@latest add @godui-extras/magic-button
+pnpm dlx shadcn@latest add @godui-lab/magic-button
 ```
 
 This copies the component into `components/godui/` and merges the GodUI theme
 tokens and component styles into your global stylesheet automatically.
 
 > Prefer zero configuration? Skip step 2 and install with the full registry URL:
-> `pnpm dlx shadcn@latest add https://godui.design/r/extras/magic-button.json`
+> `pnpm dlx shadcn@latest add https://godui.design/r/lab/magic-button.json`
 
 See the full [installation guide](https://godui.design/docs/installation) for
 typography and dark-mode setup.
@@ -147,9 +151,9 @@ godui/
 │   └── storybook/     # Component showcase (Storybook)
 ├── packages/
 │   ├── components/    # @godui/components — animated shadcn/ui drop-ins (core)
-│   └── extras/        # @godui/lab — pre-pivot components (maintained as-is)
+│   └── lab/           # @godui/lab — expressive, experimental pieces (maintained as-is)
 ├── registry.json      # core shadcn registry definition (source of truth)
-└── registry-extras.json  # extras registry, served from /r/extras
+└── registry-lab.json  # Lab registry, served from /r/lab (/r/extras still works)
 ```
 
 ## 🤝 Contributing

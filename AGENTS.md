@@ -1,6 +1,6 @@
 # GodUI — Agent Rules
 
-GodUI is a design system monorepo (**pnpm + Turbo**): `@godui/components` (`packages/components`, core — animated shadcn/ui drop-ins), `@godui/lab` (`packages/lab`, pre-pivot components, maintained as-is), docs (`apps/docs`, Next.js + Fumadocs), and Storybook (`apps/storybook`).
+GodUI is a design system monorepo (**pnpm + Turbo**): `@godui/components` (`packages/components`, core — animated shadcn/ui drop-ins), `@godui/lab` (`packages/lab`, Lab — expressive, experimental pieces beyond the shadcn catalog, maintained as-is, report-only GPU badge), docs (`apps/docs`, Next.js + Fumadocs), and Storybook (`apps/storybook`).
 
 Skills live in `.agents/skills/` (`.claude/skills` and `.cursor/skills` symlink to it). Read the relevant SKILL.md **before** starting the matching task.
 
@@ -12,9 +12,9 @@ Use **pnpm** — never npm or yarn.
 | --- | --- |
 | `pnpm check` / `pnpm check:fix` | Biome lint + format (`:fix` writes) |
 | `pnpm test` | Vitest |
-| `pnpm build:registry` | Build both registries → `apps/docs/public/r` (+ `/r/extras`) |
+| `pnpm build:registry` | Build both registries → `apps/docs/public/r` (+ `/r/lab`) |
 | `pnpm --filter storybook test:motion-trace` | Runtime GPU-only trace (Playwright + Chrome tracing) |
-| `pnpm --filter @godui/lab motion:report` | Regenerate the Extras GPU report |
+| `pnpm --filter @godui/lab motion:report` | Regenerate the Lab GPU report |
 | `pnpm dev` | Turbo dev (all apps) |
 | `pnpm storybook` | Storybook |
 
@@ -31,13 +31,13 @@ Use **pnpm** — never npm or yarn.
 3. Entry in root `registry.json` (`registry:ui`, `registryDependencies` includes `@godui/godui-motion` + the shadcn deps upstream declares), then `pnpm build:registry`
 4. Storybook story `apps/storybook/src/stories/ui/<name>.stories.tsx` (title `UI/<Name>` with spaces for multi-word names, e.g. `UI/Alert Dialog` → story id `ui-alert-dialog`, matching the docs slug; `tags: ["autodocs"]`) **and** a trace spec `apps/storybook/motion-trace/<name>.spec.ts` using `traceInteraction` + `expectGpuOnly`
 5. Vitest `packages/components/src/ui/<name>.test.tsx`: parity, behaviour (open/close, keyboard), reduced motion. Parity = vendor shadcn's source (`node packages/components/scripts/vendor-shadcn.mjs <name>` → `test/shadcn/<name>.tsx`, never edit it), render the same `Usage({ ui })` through both modules and `expectSlotParity(slotTree(), expected, [extraSlots])` (`test/parity.ts`); typing `ui: typeof Shadcn` and passing GodUI makes tsc prove props are a superset
-6. Docs page `apps/docs/content/docs/components/<name>/index.mdx` (no category folder) + `learn.mdx` beside it; `<name>` in `apps/docs/content/docs/components/meta.json` **and** `components/<name>` in the root `apps/docs/content/docs/meta.json` (components are listed in the main sidebar; Extras is header-only); a `<PreviewCard>` under its group in `components/index.mdx` plus a hover-animated skeleton preview `apps/docs/src/components/card-previews/core/<name>.tsx` registered in `card-previews/registry.tsx`. No `date` frontmatter on core pages (no New badges). Learn scenes show no words: real components get skeleton bars/icons
+6. Docs page `apps/docs/content/docs/components/<name>/index.mdx` (no category folder) + `learn.mdx` beside it; `<name>` in `apps/docs/content/docs/components/meta.json` **and** `components/<name>` in the root `apps/docs/content/docs/meta.json` (components are listed in the main sidebar; Lab is header-only); a `<PreviewCard>` under its group in `components/index.mdx` plus a hover-animated skeleton preview `apps/docs/src/components/card-previews/core/<name>.tsx` registered in `card-previews/registry.tsx`. No `date` frontmatter on core pages (no New badges). Learn scenes show no words: real components get skeleton bars/icons
 
 ## Project gotchas (non-obvious — these bite repeatedly)
 
 - **GPU-only, strict, no allowlist.** Core may animate only `transform`/`translate`/`scale`/`rotate`, `opacity`, `filter`. No `transition`, `transition-colors`, `transition-shadow`, `transition-all`, no animated `height`/`width`/`box-shadow`/`background-position`/`color`. Sizes snap; moved siblings FLIP with `useFlipGroup`. Hover color changes snap or fade an overlay's `opacity`. `pnpm --filter @godui/components test` gates it (`src/motion-gate/`).
 - **Motion tokens come from `godui-motion`** (core `styles.css` + the `godui-motion` registry item): `animate-godui-*` keyframes on Radix `data-[state=open|closed]`, `ease-spring-snappy|smooth|bouncy` (CSS `linear()`), `--godui-duration-*`. Reduced motion is built into the `animate-godui-*` keyframes (root-only `--godui-motion` multiplier) and `useFlipGroup`; component-level **transform transitions** (switch thumb, tab indicator, hover lifts) still need `motion-reduce:` handling.
-- **Extras live in `packages/lab`** (registry `registry-extras.json` → `/r/extras/`, docs `/docs/extras/<category>/<name>`, stories `Extras/<Category>/<Name>`). Core shadcn drop-ins go in `packages/components`. Don't add new components to Extras.
+- **Lab lives in `packages/lab`** (registry `registry-lab.json` → `/r/lab/`, namespace `@godui-lab`, docs `/docs/lab/<category>/<name>`, stories `Lab/<Category>/<Name>`). Not held to the core GPU-only contract (report-only GPU badge). Core shadcn drop-ins go in `packages/components`. Don't add new components to Lab. Lab was called Extras: `next.config.ts` keeps `/docs/extras/*` (308) and `/r/extras/*` (rewrite, same JSON) working, and the MCP still accepts `@godui-extras/` — don't remove those.
 - **No new CSS files; no `@layer components` blocks.** Author component styles as **inline Tailwind utilities** in the `.tsx` (`group`/`peer` + `data-[…]` variants + arbitrary properties for masks/3D/gradients). `styles.css` is the Tailwind **entry only** — `@import`, `@theme`, `@custom-variant`, `@keyframes`. Reference animations with `animate-<name>` utilities, never a `${var}` nested inside an arbitrary value (the scanner can't resolve it — write the class literal).
 - **Keyframes are per-component, not in the shared theme** (shared enter/exit keyframes live in `godui-motion`). A component's `@keyframes` + its `--animate-*` token live in **two** places: `styles.css` (so Storybook/docs render) **and** that component's own `registry.json` entry (`cssVars.theme` for the token + `css` for the `@keyframes`). Keep them **out** of the `godui-theme` entry — the theme is pure design tokens, so installing one component pulls only its own animations. Shared keyframes (e.g. `magic-rainbow` on button/tab/input) are repeated in each entry; the shadcn CLI dedupes them on install. No per-component `@layer components` block.
 - **`registry.json` is hand-maintained.** Add the new entry, run `pnpm build:registry`; do **not** reformat existing entries.
@@ -46,7 +46,7 @@ Use **pnpm** — never npm or yarn.
 - **Border-ring mask needs inline longhand mask props.** Tailwind `[mask:...]` shorthand resets clip/composite — write the longhands.
 - **Theme tokens: sRGB-clamped base chroma + `@media (color-gamut: p3)`** to restore richer chroma. `oklch-skill` governs all color tokens.
 - Use the **z-index scale** (`z-base`, `z-raised`, `z-overlay`, `z-sticky`, `z-popover`, `z-modal`, `z-toast`), never arbitrary z values.
-- Add `"use client"` **only** where shadcn has it or the component uses hooks / client APIs. Core components follow shadcn v4: React 19 function components with `ref` as a prop (no `forwardRef`). Extras keep their existing `forwardRef` style.
+- Add `"use client"` **only** where shadcn has it or the component uses hooks / client APIs. Core components follow shadcn v4: React 19 function components with `ref` as a prop (no `forwardRef`). Lab components keep their existing `forwardRef` style.
 
 - **Core source imports are install-shaped** (`@/lib/utils`, `@/components/ui/<x>`, `@/hooks/<x>`), never relative — the shadcn CLI rewrites `@/` on install. The aliases live in **4 places**: `packages/components/{tsconfig.json,vitest.config.ts}`, `apps/docs/tsconfig.json` (exact `@/lib/utils` only — docs owns other `@/lib/*`), `apps/storybook/{tsconfig.json,vite.config.ts}`.
 - **Third-party CSS injected unlayered (sonner, vaul) beats Tailwind's `@layer utilities` at any specificity** — overriding it needs `!` (`[transition-property:opacity]!`). Audit the library's stylesheet in a unit test so upgrades can't add paint transitions back.
