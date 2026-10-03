@@ -1,7 +1,7 @@
 // Generates apps/docs/public/r/index.json — a lightweight catalog the GodUI MCP
 // server (@godui/mcp) fetches to power list/search. Static items come from the
-// root registry.json + registry-extras.json; dynamic background items come from the shared background
-// catalog. Categories come from the Extras sidebar config (extras/meta.json). Run via
+// root registry.json + registry-lab.json; dynamic background items come from the shared background
+// catalog. Categories come from the Lab sidebar config (lab/meta.json). Run via
 // `pnpm build:registry`.
 
 import { createHash } from "node:crypto";
@@ -28,8 +28,8 @@ function computeRevision(payload) {
 const registry = JSON.parse(
   readFileSync(resolve(repoRoot, "registry.json"), "utf8"),
 );
-const extrasRegistry = JSON.parse(
-  readFileSync(resolve(repoRoot, "registry-extras.json"), "utf8"),
+const labRegistry = JSON.parse(
+  readFileSync(resolve(repoRoot, "registry-lab.json"), "utf8"),
 );
 const backgroundCatalog = JSON.parse(
   readFileSync(
@@ -73,28 +73,28 @@ const toCatalogItem = (
   install,
 });
 
-assertNoCollisions(registry.items, extrasRegistry.items);
+assertNoCollisions(registry.items, labRegistry.items);
 
-// Extras (pre-pivot components) build to public/r/extras and install by URL.
-const extrasInstall = (name) =>
-  `npx shadcn@latest add "https://godui.design/r/extras/${name}.json"`;
+// Lab components build to public/r/lab and install by URL.
+const labInstall = (name) =>
+  `npx shadcn@latest add "https://godui.design/r/lab/${name}.json"`;
 
 const staticComponents = [
   ...registry.items
     .filter((item) => item.type !== "registry:theme")
     .map((item) => ({ ...toCatalogItem(item), registry: "core" })),
-  ...extrasRegistry.items
+  ...labRegistry.items
     .filter((item) => item.type !== "registry:theme")
     .map((item) => ({
-      ...toCatalogItem(item, extrasInstall(item.name)),
-      registry: "extras",
+      ...toCatalogItem(item, labInstall(item.name)),
+      registry: "lab",
     })),
 ];
 
 const dynamicBackgroundComponents = Object.entries(backgroundCatalog).map(
   ([name, item]) => ({
-    ...toCatalogItem({ name, ...item }, extrasInstall(name)),
-    registry: "extras",
+    ...toCatalogItem({ name, ...item }, labInstall(name)),
+    registry: "lab",
   }),
 );
 

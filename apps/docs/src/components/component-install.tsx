@@ -35,9 +35,9 @@ type ComponentInstallProps = {
   name?: string;
   /**
    * Which GodUI registry serves the item: core shadcn drop-ins (`/r`) or
-   * pre-pivot Extras (`/r/extras`).
+   * Lab (`/r/lab`).
    */
-  registry?: "core" | "extras";
+  registry?: "core" | "lab";
   /** PascalCase component name; converted to a kebab-case registry item. */
   componentName?: string;
   /**
@@ -143,7 +143,7 @@ export function ComponentInstall({
 }: ComponentInstallProps) {
   const itemName =
     name ?? (componentName ? toKebabCase(componentName) : "magic-button");
-  const registryPath = registry === "extras" ? "/r/extras" : "/r";
+  const registryPath = registry === "lab" ? "/r/lab" : "/r";
   const query = variant ? `?variant=${variant}` : "";
   const [tab, setTab] = useState("cli");
   const [manager, setManager] = useState<PackageManager>("pnpm");
@@ -238,7 +238,7 @@ export function ComponentInstall({
             <p className="text-sm text-fd-muted-foreground">
               Could not load the source for{" "}
               <code>
-                {registry === "extras" ? "@godui-extras" : "@godui"}/{itemName}
+                {registry === "lab" ? "@godui-lab" : "@godui"}/{itemName}
               </code>
               . Use the CLI tab, or browse{" "}
               <a

@@ -52,11 +52,15 @@ const nextConfig: NextConfig = {
   async rewrites() {
     // Pre-split install URLs (README, @godui/mcp@0.1.0) keep working. These run
     // after public/ files, so core items and index.json are served directly;
-    // anything else falls through to the extras registry (static file or the
-    // dynamic background route). `:item` is one segment, so /r/extras/* is
-    // never rewritten.
+    // anything else falls through to the Lab registry (static file or the
+    // dynamic background route). `:item` is one segment, so /r/lab/* is never
+    // rewritten.
+    // The Lab registry was called Extras: components.json files that still map
+    // "@godui-extras" to /r/extras/{name}.json get the same JSON. A rewrite,
+    // not a redirect, so clients that don't follow redirects keep installing.
     const registryCompat = [
-      { source: "/r/:item", destination: "/r/extras/:item" },
+      { source: "/r/extras/:item", destination: "/r/lab/:item" },
+      { source: "/r/:item", destination: "/r/lab/:item" },
     ];
     if (process.env.NODE_ENV === "development") {
       return [

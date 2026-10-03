@@ -395,27 +395,41 @@ export function createRegistryClient(
   return {
     getIndex,
     getComponent(name, variant) {
-      const slug = name.trim().replace(/^@godui(-extras)?\//, "");
+      // `@godui-extras/` is the Lab registry's old namespace; still accepted.
+      const slug = name.trim().replace(/^@godui(-lab|-extras)?\//, "");
       const query = variant ? `?variant=${encodeURIComponent(variant)}` : "";
       const key = `${slug}${query}`;
       let pending = componentCache.get(key);
       if (!pending) {
         const url = `${baseUrl}/${slug}.json${query}`;
-        // Extras live under /extras. godui.design rewrites legacy root URLs,
-        // but static mirrors don't — so retry there when the root item 404s.
-        const extrasUrl = `${baseUrl}/extras/${slug}.json${query}`;
+        // Lab items live under /lab. godui.design rewrites legacy root URLs,
+        // but static mirrors don't — so retry there when the root item 404s,
+        // then under /extras (the Lab's old path) for mirrors built before
+        // the rename.
+        const candidates = [
+          url,
+          `${baseUrl}/lab/${slug}.json${query}`,
+          `${baseUrl}/extras/${slug}.json${query}`,
+        ];
+        const fetchFirst = (
+          index: number,
+        ): Promise<{
+          item: RegistryItem;
+          from: string;
+        }> =>
+          get<RegistryItem>(candidates[index])
+            .then((item) => ({ item, from: candidates[index] }))
+            .catch((error: unknown) => {
+              if (
+                index + 1 >= candidates.length ||
+                (error as { status?: number })?.status !== 404
+              ) {
+                throw error;
+              }
+              return fetchFirst(index + 1);
+            });
         const request = (expectedRevision ? getIndex() : Promise.resolve())
-          .then(() =>
-            get<RegistryItem>(url)
-              .then((item) => ({ item, from: url }))
-              .catch((error: unknown) => {
-                if ((error as { status?: number })?.status !== 404) throw error;
-                return get<RegistryItem>(extrasUrl).then((item) => ({
-                  item,
-                  from: extrasUrl,
-                }));
-              }),
-          )
+          .then(() => fetchFirst(0))
           .then(({ item, from }) =>
             validateRegistryItem(item, from, expectedRevision),
           );

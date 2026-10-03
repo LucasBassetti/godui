@@ -58,7 +58,7 @@ server.registerTool(
       name: z
         .string()
         .describe(
-          "Exact component name, e.g. 'magic-button' (the '@godui/' or '@godui-extras/' prefix is optional).",
+          "Exact component name, e.g. 'magic-button' (the '@godui/' or '@godui-lab/' prefix is optional; the old '@godui-extras/' prefix also works).",
         ),
       variant: z
         .string()

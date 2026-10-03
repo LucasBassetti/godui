@@ -3,8 +3,9 @@ import type { NextRequest } from "next/server";
 
 // Background items are served dynamically (not by `shadcn build`) so the CLI can
 // bake a chosen variant's CSS via `?variant=`. Every other registry item is a
-// static file in public/r/extras and never reaches this handler. Legacy
-// /r/<name>.json URLs reach it through the rewrite in next.config.ts.
+// static file in public/r/lab and never reaches this handler. Legacy
+// /r/<name>.json and /r/extras/<name>.json URLs reach it through the rewrites
+// in next.config.ts.
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ item: string }> },

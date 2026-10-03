@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "revision": "fab652bb396bc2c279406f7905a83061811eefc8",
+  "revision": "b104396a10a6633ab71340e1e0dd5f67895cb8c9",
   "components": [
     {
       "name": "accordion",
@@ -20,8 +20,8 @@
       "category": "AI",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/agent-flow.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/agent-flow.json\"",
+      "registry": "lab"
     },
     {
       "name": "agent-timeline",
@@ -30,8 +30,8 @@
       "category": "AI",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/agent-timeline.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/agent-timeline.json\"",
+      "registry": "lab"
     },
     {
       "name": "alert-dialog",
@@ -50,8 +50,8 @@
       "category": "Visualizations",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/animated-beam.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/animated-beam.json\"",
+      "registry": "lab"
     },
     {
       "name": "animated-testimonials",
@@ -60,8 +60,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/animated-testimonials.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/animated-testimonials.json\"",
+      "registry": "lab"
     },
     {
       "name": "animated-tooltip",
@@ -70,8 +70,8 @@
       "category": "Overlays",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/animated-tooltip.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/animated-tooltip.json\"",
+      "registry": "lab"
     },
     {
       "name": "app-showcase",
@@ -80,8 +80,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/app-showcase.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/app-showcase.json\"",
+      "registry": "lab"
     },
     {
       "name": "ascii-dither",
@@ -90,8 +90,8 @@
       "category": "Effects",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/ascii-dither.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/ascii-dither.json\"",
+      "registry": "lab"
     },
     {
       "name": "aurora-text",
@@ -100,8 +100,8 @@
       "category": "Text",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/aurora-text.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/aurora-text.json\"",
+      "registry": "lab"
     },
     {
       "name": "avatar-group",
@@ -110,8 +110,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/avatar-group.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/avatar-group.json\"",
+      "registry": "lab"
     },
     {
       "name": "beam-draw",
@@ -120,8 +120,8 @@
       "category": "Effects",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/beam-draw.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/beam-draw.json\"",
+      "registry": "lab"
     },
     {
       "name": "bento-grid",
@@ -130,8 +130,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/bento-grid.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/bento-grid.json\"",
+      "registry": "lab"
     },
     {
       "name": "blueprint-grid",
@@ -140,8 +140,8 @@
       "category": "Backgrounds",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/blueprint-grid.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/blueprint-grid.json\"",
+      "registry": "lab"
     },
     {
       "name": "border-beam",
@@ -150,8 +150,8 @@
       "category": "Effects",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/border-beam.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/border-beam.json\"",
+      "registry": "lab"
     },
     {
       "name": "breadcrumbs",
@@ -160,8 +160,8 @@
       "category": "Navigation",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/breadcrumbs.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/breadcrumbs.json\"",
+      "registry": "lab"
     },
     {
       "name": "button",
@@ -190,8 +190,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/card-swap.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/card-swap.json\"",
+      "registry": "lab"
     },
     {
       "name": "carousel",
@@ -255,8 +255,8 @@
       "category": "Collaboration",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/comment-pin.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/comment-pin.json\"",
+      "registry": "lab"
     },
     {
       "name": "confetti",
@@ -265,8 +265,8 @@
       "category": "Effects",
       "dependencies": ["canvas-confetti"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/confetti.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/confetti.json\"",
+      "registry": "lab"
     },
     {
       "name": "container-scroll",
@@ -275,8 +275,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/container-scroll.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/container-scroll.json\"",
+      "registry": "lab"
     },
     {
       "name": "context-menu",
@@ -295,8 +295,8 @@
       "category": "AI",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/conversation-thread.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/conversation-thread.json\"",
+      "registry": "lab"
     },
     {
       "name": "cover-flow",
@@ -305,8 +305,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/cover-flow.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/cover-flow.json\"",
+      "registry": "lab"
     },
     {
       "name": "decorative-background",
@@ -315,8 +315,8 @@
       "category": "Static Effects",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/decorative-background.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/decorative-background.json\"",
+      "registry": "lab"
     },
     {
       "name": "dialog",
@@ -335,8 +335,8 @@
       "category": "Navigation",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/dock.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/dock.json\"",
+      "registry": "lab"
     },
     {
       "name": "drawer",
@@ -365,8 +365,8 @@
       "category": "Overlays",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/dynamic-island.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/dynamic-island.json\"",
+      "registry": "lab"
     },
     {
       "name": "effect-background",
@@ -375,8 +375,8 @@
       "category": "Static Effects",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/effect-background.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/effect-background.json\"",
+      "registry": "lab"
     },
     {
       "name": "elastic-text",
@@ -385,8 +385,8 @@
       "category": "Text",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/elastic-text.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/elastic-text.json\"",
+      "registry": "lab"
     },
     {
       "name": "encrypted-card",
@@ -395,8 +395,8 @@
       "category": "Effects",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/encrypted-card.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/encrypted-card.json\"",
+      "registry": "lab"
     },
     {
       "name": "filter-bar",
@@ -405,8 +405,8 @@
       "category": "Navigation",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/filter-bar.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/filter-bar.json\"",
+      "registry": "lab"
     },
     {
       "name": "floating-toolbar",
@@ -415,8 +415,8 @@
       "category": "Overlays",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/floating-toolbar.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/floating-toolbar.json\"",
+      "registry": "lab"
     },
     {
       "name": "flow-field",
@@ -425,8 +425,8 @@
       "category": "Backgrounds",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/flow-field.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/flow-field.json\"",
+      "registry": "lab"
     },
     {
       "name": "fluid-cursor",
@@ -435,8 +435,8 @@
       "category": "Effects",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/fluid-cursor.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/fluid-cursor.json\"",
+      "registry": "lab"
     },
     {
       "name": "geometric-background",
@@ -445,8 +445,8 @@
       "category": "Static Effects",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/geometric-background.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/geometric-background.json\"",
+      "registry": "lab"
     },
     {
       "name": "globe",
@@ -455,8 +455,8 @@
       "category": "Visualizations",
       "dependencies": ["cobe"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/globe.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/globe.json\"",
+      "registry": "lab"
     },
     {
       "name": "godui-motion",
@@ -475,8 +475,8 @@
       "category": "Buttons",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/gooey-fab.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/gooey-fab.json\"",
+      "registry": "lab"
     },
     {
       "name": "gooey-stack",
@@ -485,8 +485,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/gooey-stack.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/gooey-stack.json\"",
+      "registry": "lab"
     },
     {
       "name": "gradient-background",
@@ -495,8 +495,8 @@
       "category": "Static Effects",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/gradient-background.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/gradient-background.json\"",
+      "registry": "lab"
     },
     {
       "name": "gravity",
@@ -505,8 +505,8 @@
       "category": "Visualizations",
       "dependencies": ["matter-js"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/gravity.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/gravity.json\"",
+      "registry": "lab"
     },
     {
       "name": "hero-parallax",
@@ -515,8 +515,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/hero-parallax.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/hero-parallax.json\"",
+      "registry": "lab"
     },
     {
       "name": "highlighter",
@@ -525,8 +525,8 @@
       "category": "Text",
       "dependencies": ["framer-motion", "rough-notation"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/highlighter.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/highlighter.json\"",
+      "registry": "lab"
     },
     {
       "name": "hold-confirm-button",
@@ -535,8 +535,8 @@
       "category": "Buttons",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/hold-confirm-button.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/hold-confirm-button.json\"",
+      "registry": "lab"
     },
     {
       "name": "holographic-card",
@@ -545,8 +545,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/holographic-card.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/holographic-card.json\"",
+      "registry": "lab"
     },
     {
       "name": "hover-card",
@@ -565,8 +565,8 @@
       "category": "Layout",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/image-accordion.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/image-accordion.json\"",
+      "registry": "lab"
     },
     {
       "name": "image-compare",
@@ -575,8 +575,8 @@
       "category": "Layout",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/image-compare.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/image-compare.json\"",
+      "registry": "lab"
     },
     {
       "name": "image-trail",
@@ -585,8 +585,8 @@
       "category": "Effects",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/image-trail.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/image-trail.json\"",
+      "registry": "lab"
     },
     {
       "name": "inertia-gallery",
@@ -595,8 +595,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/inertia-gallery.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/inertia-gallery.json\"",
+      "registry": "lab"
     },
     {
       "name": "input",
@@ -641,8 +641,8 @@
       "category": "Buttons",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/jelly-button.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/jelly-button.json\"",
+      "registry": "lab"
     },
     {
       "name": "lamp",
@@ -651,8 +651,8 @@
       "category": "Effects",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/lamp.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/lamp.json\"",
+      "registry": "lab"
     },
     {
       "name": "light-rays",
@@ -661,8 +661,8 @@
       "category": "Backgrounds",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/light-rays.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/light-rays.json\"",
+      "registry": "lab"
     },
     {
       "name": "liquid-glass-card",
@@ -671,8 +671,8 @@
       "category": "Glass",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/liquid-glass-card.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/liquid-glass-card.json\"",
+      "registry": "lab"
     },
     {
       "name": "liquid-glass-lens",
@@ -681,8 +681,8 @@
       "category": "Glass",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/liquid-glass-lens.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/liquid-glass-lens.json\"",
+      "registry": "lab"
     },
     {
       "name": "liquid-image",
@@ -691,8 +691,8 @@
       "category": "Effects",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/liquid-image.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/liquid-image.json\"",
+      "registry": "lab"
     },
     {
       "name": "liquid-metaballs",
@@ -701,8 +701,8 @@
       "category": "Backgrounds",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/liquid-metaballs.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/liquid-metaballs.json\"",
+      "registry": "lab"
     },
     {
       "name": "live-cursors",
@@ -711,8 +711,8 @@
       "category": "Collaboration",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/live-cursors.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/live-cursors.json\"",
+      "registry": "lab"
     },
     {
       "name": "magic-button",
@@ -721,8 +721,8 @@
       "category": "Buttons",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/magic-button.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/magic-button.json\"",
+      "registry": "lab"
     },
     {
       "name": "magic-input",
@@ -731,8 +731,8 @@
       "category": "Inputs",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/magic-input.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/magic-input.json\"",
+      "registry": "lab"
     },
     {
       "name": "magic-tab",
@@ -741,8 +741,8 @@
       "category": "Navigation",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/magic-tab.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/magic-tab.json\"",
+      "registry": "lab"
     },
     {
       "name": "magnetic-button",
@@ -751,8 +751,8 @@
       "category": "Buttons",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/magnetic-button.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/magnetic-button.json\"",
+      "registry": "lab"
     },
     {
       "name": "marquee",
@@ -761,8 +761,8 @@
       "category": "Effects",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/marquee.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/marquee.json\"",
+      "registry": "lab"
     },
     {
       "name": "mask-button",
@@ -771,8 +771,8 @@
       "category": "Buttons",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/mask-button.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/mask-button.json\"",
+      "registry": "lab"
     },
     {
       "name": "mega-menu",
@@ -781,8 +781,8 @@
       "category": "Navigation",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/mega-menu.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/mega-menu.json\"",
+      "registry": "lab"
     },
     {
       "name": "menubar",
@@ -801,8 +801,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/morph-gallery.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/morph-gallery.json\"",
+      "registry": "lab"
     },
     {
       "name": "morphing-dialog",
@@ -811,8 +811,8 @@
       "category": "Overlays",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/morphing-dialog.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/morphing-dialog.json\"",
+      "registry": "lab"
     },
     {
       "name": "multi-button",
@@ -821,8 +821,8 @@
       "category": "Buttons",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/multi-button.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/multi-button.json\"",
+      "registry": "lab"
     },
     {
       "name": "navigation-menu",
@@ -841,8 +841,8 @@
       "category": "Collaboration",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/notification-inbox.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/notification-inbox.json\"",
+      "registry": "lab"
     },
     {
       "name": "number-ticker",
@@ -851,8 +851,8 @@
       "category": "Text",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/number-ticker.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/number-ticker.json\"",
+      "registry": "lab"
     },
     {
       "name": "orbit-carousel",
@@ -861,8 +861,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/orbit-carousel.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/orbit-carousel.json\"",
+      "registry": "lab"
     },
     {
       "name": "orbiting-circles",
@@ -871,8 +871,8 @@
       "category": "Visualizations",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/orbiting-circles.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/orbiting-circles.json\"",
+      "registry": "lab"
     },
     {
       "name": "otp-input",
@@ -881,8 +881,8 @@
       "category": "Inputs",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/otp-input.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/otp-input.json\"",
+      "registry": "lab"
     },
     {
       "name": "particle-dissolve",
@@ -891,8 +891,8 @@
       "category": "Effects",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/particle-dissolve.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/particle-dissolve.json\"",
+      "registry": "lab"
     },
     {
       "name": "pixel-grid",
@@ -901,8 +901,8 @@
       "category": "Backgrounds",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/pixel-grid.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/pixel-grid.json\"",
+      "registry": "lab"
     },
     {
       "name": "popover",
@@ -921,8 +921,8 @@
       "category": "Collaboration",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/presence-facepile.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/presence-facepile.json\"",
+      "registry": "lab"
     },
     {
       "name": "progress",
@@ -941,8 +941,8 @@
       "category": "Buttons",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/progress-fold-button.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/progress-fold-button.json\"",
+      "registry": "lab"
     },
     {
       "name": "progressive-card-reveal",
@@ -951,8 +951,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/progressive-card-reveal.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/progressive-card-reveal.json\"",
+      "registry": "lab"
     },
     {
       "name": "prompt-composer",
@@ -961,8 +961,8 @@
       "category": "AI",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/prompt-composer.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/prompt-composer.json\"",
+      "registry": "lab"
     },
     {
       "name": "prompt-suggestions",
@@ -971,8 +971,8 @@
       "category": "AI",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/prompt-suggestions.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/prompt-suggestions.json\"",
+      "registry": "lab"
     },
     {
       "name": "radio-group",
@@ -991,8 +991,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/reorder-list.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/reorder-list.json\"",
+      "registry": "lab"
     },
     {
       "name": "resizable-header",
@@ -1001,8 +1001,8 @@
       "category": "Navigation",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/resizable-header.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/resizable-header.json\"",
+      "registry": "lab"
     },
     {
       "name": "scroll-progress",
@@ -1011,8 +1011,8 @@
       "category": "Effects",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/scroll-progress.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/scroll-progress.json\"",
+      "registry": "lab"
     },
     {
       "name": "scroll-reveal",
@@ -1021,8 +1021,8 @@
       "category": "Effects",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/scroll-reveal.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/scroll-reveal.json\"",
+      "registry": "lab"
     },
     {
       "name": "scroll-stack",
@@ -1031,8 +1031,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/scroll-stack.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/scroll-stack.json\"",
+      "registry": "lab"
     },
     {
       "name": "scroll-text-reveal",
@@ -1041,8 +1041,8 @@
       "category": "Text",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/scroll-text-reveal.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/scroll-text-reveal.json\"",
+      "registry": "lab"
     },
     {
       "name": "scroll-timeline",
@@ -1051,8 +1051,8 @@
       "category": "Visualizations",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/scroll-timeline.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/scroll-timeline.json\"",
+      "registry": "lab"
     },
     {
       "name": "segmented-control",
@@ -1061,8 +1061,8 @@
       "category": "Navigation",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/segmented-control.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/segmented-control.json\"",
+      "registry": "lab"
     },
     {
       "name": "select",
@@ -1091,8 +1091,8 @@
       "category": "Buttons",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/shimmer-button.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/shimmer-button.json\"",
+      "registry": "lab"
     },
     {
       "name": "sidebar",
@@ -1131,8 +1131,8 @@
       "category": "Buttons",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/slide-confirm-button.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/slide-confirm-button.json\"",
+      "registry": "lab"
     },
     {
       "name": "slider",
@@ -1161,8 +1161,8 @@
       "category": "AI",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/source-citations.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/source-citations.json\"",
+      "registry": "lab"
     },
     {
       "name": "spin-viewer",
@@ -1171,8 +1171,8 @@
       "category": "Layout",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/spin-viewer.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/spin-viewer.json\"",
+      "registry": "lab"
     },
     {
       "name": "split-flap-display",
@@ -1181,8 +1181,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/split-flap-display.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/split-flap-display.json\"",
+      "registry": "lab"
     },
     {
       "name": "spotlight-card",
@@ -1191,8 +1191,8 @@
       "category": "Effects",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/spotlight-card.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/spotlight-card.json\"",
+      "registry": "lab"
     },
     {
       "name": "spotlight-reveal",
@@ -1201,8 +1201,8 @@
       "category": "Effects",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/spotlight-reveal.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/spotlight-reveal.json\"",
+      "registry": "lab"
     },
     {
       "name": "stack-badge",
@@ -1211,8 +1211,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/stack-badge.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/stack-badge.json\"",
+      "registry": "lab"
     },
     {
       "name": "stepper",
@@ -1221,8 +1221,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/stepper.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/stepper.json\"",
+      "registry": "lab"
     },
     {
       "name": "sticky-scroll",
@@ -1231,8 +1231,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/sticky-scroll.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/sticky-scroll.json\"",
+      "registry": "lab"
     },
     {
       "name": "store-badge",
@@ -1241,8 +1241,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion", "uqr"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/store-badge.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/store-badge.json\"",
+      "registry": "lab"
     },
     {
       "name": "swipe-deck",
@@ -1251,8 +1251,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/swipe-deck.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/swipe-deck.json\"",
+      "registry": "lab"
     },
     {
       "name": "switch",
@@ -1271,8 +1271,8 @@
       "category": "Navigation",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/tab-bar.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/tab-bar.json\"",
+      "registry": "lab"
     },
     {
       "name": "tabs",
@@ -1291,8 +1291,8 @@
       "category": "Effects",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/terminal.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/terminal.json\"",
+      "registry": "lab"
     },
     {
       "name": "text-animate",
@@ -1301,8 +1301,8 @@
       "category": "Text",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/text-animate.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/text-animate.json\"",
+      "registry": "lab"
     },
     {
       "name": "text-scramble",
@@ -1311,8 +1311,8 @@
       "category": "Text",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/text-scramble.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/text-scramble.json\"",
+      "registry": "lab"
     },
     {
       "name": "textarea",
@@ -1331,8 +1331,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/three-d-marquee.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/three-d-marquee.json\"",
+      "registry": "lab"
     },
     {
       "name": "tilt-card",
@@ -1341,8 +1341,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/tilt-card.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/tilt-card.json\"",
+      "registry": "lab"
     },
     {
       "name": "toggle",
@@ -1381,8 +1381,8 @@
       "category": "Backgrounds",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/topographic-drift.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/topographic-drift.json\"",
+      "registry": "lab"
     },
     {
       "name": "voice-orb",
@@ -1391,8 +1391,8 @@
       "category": "AI",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/voice-orb.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/voice-orb.json\"",
+      "registry": "lab"
     },
     {
       "name": "warp-starfield",
@@ -1401,8 +1401,8 @@
       "category": "Backgrounds",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/warp-starfield.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/warp-starfield.json\"",
+      "registry": "lab"
     },
     {
       "name": "world-map",
@@ -1411,8 +1411,8 @@
       "category": "Visualizations",
       "dependencies": ["dotted-map", "framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/extras/world-map.json\"",
-      "registry": "extras"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/world-map.json\"",
+      "registry": "lab"
     }
   ]
 }

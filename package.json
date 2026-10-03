@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "build": "turbo build",
-    "build:registry": "rm -rf apps/docs/public/r && shadcn build registry.json --output apps/docs/public/r && shadcn build registry-extras.json --output apps/docs/public/r/extras && node apps/docs/scripts/generate-mcp-index.mjs && biome format --write apps/docs/public/r",
+    "build:registry": "rm -rf apps/docs/public/r && shadcn build registry.json --output apps/docs/public/r && shadcn build registry-lab.json --output apps/docs/public/r/lab && node apps/docs/scripts/generate-mcp-index.mjs && biome format --write apps/docs/public/r",
     "check:registry": "pnpm build:registry && git diff --exit-code -- apps/docs/public/r && test -z \"$(git status --short --untracked-files=all -- apps/docs/public/r)\"",
     "dev": "turbo dev",
     "dev:portless": "portless",

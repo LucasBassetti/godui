@@ -29,10 +29,14 @@ and FLIP hook), so the `@godui` entry is required:
 {
   "registries": {
     "@godui": "https://godui.design/r/{name}.json",
-    "@godui-extras": "https://godui.design/r/extras/{name}.json"
+    "@godui-lab": "https://godui.design/r/lab/{name}.json"
   }
 }
 ```
+
+The Lab registry used to be called Extras. If your `components.json` still has
+`"@godui-extras": "https://godui.design/r/extras/{name}.json"`, it keeps
+working: those URLs serve the same items as `/r/lab`.
 
 ## 3. Add components
 
@@ -47,11 +51,11 @@ exports and props as shadcn/ui, so existing imports keep working) and merges
 the `godui-motion` tokens into your global stylesheet. Components it depends
 on, like `@godui/button`, come along.
 
-Components from [Extras](/docs/lab), the effects and showpieces from GodUI
-v1, install the same way from the second registry:
+Components from [Lab](/docs/lab), GodUI's expressive, experimental pieces
+beyond the shadcn catalog, install the same way from the second registry:
 
 ```bash
-pnpm dlx shadcn@latest add @godui-extras/magic-button
+pnpm dlx shadcn@latest add @godui-lab/magic-button
 ```
 
 ## Typography (bring your own font)

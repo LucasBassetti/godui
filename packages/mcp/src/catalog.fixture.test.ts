@@ -23,26 +23,28 @@ describe("generated MCP catalog fixture", () => {
     ]),
   );
 
-  it("installs dynamic backgrounds from the extras registry URL", () => {
+  it("installs dynamic backgrounds from the lab registry URL", () => {
     for (const name of dynamicBackgrounds) {
       expect(components.get(name)).toMatchObject({
-        install: `npx shadcn@latest add "https://godui.design/r/extras/${name}.json"`,
+        install: `npx shadcn@latest add "https://godui.design/r/lab/${name}.json"`,
       });
     }
   });
 
-  it("installs static extras from the extras registry URL", () => {
+  it("installs static lab items from the lab registry URL", () => {
     expect(components.get("marquee")).toMatchObject({
       install:
-        'npx shadcn@latest add "https://godui.design/r/extras/marquee.json"',
+        'npx shadcn@latest add "https://godui.design/r/lab/marquee.json"',
     });
   });
 
-  it("tags extras items with their registry", () => {
-    expect(components.get("marquee")).toMatchObject({ registry: "extras" });
+  it("tags lab items with their registry", () => {
+    expect(components.get("marquee")).toMatchObject({ registry: "lab" });
   });
 
-  it("does not list superseded components", () => {
+  // Core shadcn drop-ins replaced these Lab components; the names may exist in
+  // the core registry, never as Lab items.
+  it("does not list superseded Lab components", () => {
     for (const name of [
       "accordion",
       "dropdown-menu",
@@ -52,7 +54,7 @@ describe("generated MCP catalog fixture", () => {
       "combobox",
       "command-palette",
     ]) {
-      expect(components.has(name)).toBe(false);
+      expect(components.get(name)).not.toMatchObject({ registry: "lab" });
     }
   });
 });

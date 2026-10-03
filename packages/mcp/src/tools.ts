@@ -94,7 +94,8 @@ export async function getComponent(
   name: string,
   variant?: string,
 ): Promise<string> {
-  const slug = name.trim().replace(/^@godui(-extras)?\//, "");
+  // `@godui-extras/` is the Lab registry's old namespace; still accepted.
+  const slug = name.trim().replace(/^@godui(-lab|-extras)?\//, "");
   let item: RegistryItem;
   try {
     item = await client.getComponent(slug, variant);
@@ -105,7 +106,7 @@ export async function getComponent(
   }
 
   let installTarget = variant
-    ? `"https://godui.design/r/extras/${slug}.json?variant=${encodeURIComponent(variant)}"`
+    ? `"https://godui.design/r/lab/${slug}.json?variant=${encodeURIComponent(variant)}"`
     : `@godui/${slug}`;
   if (!variant) {
     try {
