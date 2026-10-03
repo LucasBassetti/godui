@@ -1,6 +1,6 @@
 "use client";
 
-import { AgentStep, AgentTimeline, type StepStatus } from "@godui/extras";
+import { AgentStep, AgentTimeline, type StepStatus } from "@godui/lab";
 import { useEffect, useState } from "react";
 
 const STEPS: { title: string; meta?: string; body?: string }[] = [

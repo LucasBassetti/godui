@@ -1,4 +1,4 @@
-import { MegaMenu, type MegaMenuItem } from "@godui/extras";
+import { MegaMenu, type MegaMenuItem } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "storybook/test";
 import { action, hidden, range } from "../playground/argtypes";

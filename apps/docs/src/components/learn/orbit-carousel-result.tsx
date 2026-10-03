@@ -1,6 +1,6 @@
 "use client";
 
-import { OrbitCarousel } from "@godui/extras";
+import { OrbitCarousel } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**

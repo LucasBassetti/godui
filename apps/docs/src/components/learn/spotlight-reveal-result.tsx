@@ -1,6 +1,6 @@
 "use client";
 
-import { SpotlightReveal } from "@godui/extras";
+import { SpotlightReveal } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 const Demo = (

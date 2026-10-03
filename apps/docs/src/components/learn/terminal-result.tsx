@@ -1,6 +1,6 @@
 "use client";
 
-import { Terminal, type TerminalLine } from "@godui/extras";
+import { Terminal, type TerminalLine } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 const LINES: TerminalLine[] = [

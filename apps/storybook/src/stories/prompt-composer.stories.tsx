@@ -1,4 +1,4 @@
-import { PromptComposer } from "@godui/extras";
+import { PromptComposer } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "storybook/test";
 import {

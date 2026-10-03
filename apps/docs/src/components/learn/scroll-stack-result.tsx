@@ -1,6 +1,6 @@
 "use client";
 
-import { ScrollStack } from "@godui/extras";
+import { ScrollStack } from "@godui/lab";
 import { BarChart3, GitBranch, Rocket } from "lucide-react";
 import type { ComponentType } from "react";
 import { useBareScene } from "@/components/learn/bare-scene-context";

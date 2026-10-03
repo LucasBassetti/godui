@@ -1,4 +1,4 @@
-import { LiquidGlassCard, type LiquidGlassCardProps } from "@godui/extras";
+import { LiquidGlassCard, type LiquidGlassCardProps } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import type { ReactNode } from "react";
 import { color, range } from "../playground/argtypes";

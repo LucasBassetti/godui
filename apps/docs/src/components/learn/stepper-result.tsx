@@ -1,6 +1,6 @@
 "use client";
 
-import { Stepper } from "@godui/extras";
+import { Stepper } from "@godui/lab";
 import * as React from "react";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 

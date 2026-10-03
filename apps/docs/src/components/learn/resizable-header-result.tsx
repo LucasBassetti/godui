@@ -1,6 +1,6 @@
 "use client";
 
-import { ResizableHeader } from "@godui/extras";
+import { ResizableHeader } from "@godui/lab";
 import { useRef, useState } from "react";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 

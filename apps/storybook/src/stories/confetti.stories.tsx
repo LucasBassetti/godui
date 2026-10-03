@@ -1,4 +1,4 @@
-import { ConfettiButton } from "@godui/extras";
+import { ConfettiButton } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "storybook/test";
 import { action, range, text } from "../playground/argtypes";

@@ -1,8 +1,4 @@
-import {
-  AgentFlow,
-  type AgentFlowEdge,
-  type AgentFlowNode,
-} from "@godui/extras";
+import { AgentFlow, type AgentFlowEdge, type AgentFlowNode } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 const NODES: AgentFlowNode[] = [

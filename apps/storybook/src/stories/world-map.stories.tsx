@@ -1,4 +1,4 @@
-import { WorldMap } from "@godui/extras";
+import { WorldMap } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { toggle } from "../playground/argtypes";
 import { centered } from "../playground/stage";

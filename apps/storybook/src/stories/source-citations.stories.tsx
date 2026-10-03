@@ -1,4 +1,4 @@
-import { SourceCitation, SourceList } from "@godui/extras";
+import { SourceCitation, SourceList } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { hidden, range, toggle } from "../playground/argtypes";
 import { centered } from "../playground/stage";

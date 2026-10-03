@@ -1,6 +1,6 @@
 "use client";
 
-import { MagicTab, type MagicTabItem } from "@godui/extras";
+import { MagicTab, type MagicTabItem } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 const ITEMS: MagicTabItem[] = [

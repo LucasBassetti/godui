@@ -1,6 +1,6 @@
 "use client";
 
-import { PromptComposer } from "@godui/extras";
+import { PromptComposer } from "@godui/lab";
 import { useState } from "react";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 

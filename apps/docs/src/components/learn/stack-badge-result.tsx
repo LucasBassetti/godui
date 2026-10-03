@@ -1,6 +1,6 @@
 "use client";
 
-import { StackBadge } from "@godui/extras";
+import { StackBadge } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**

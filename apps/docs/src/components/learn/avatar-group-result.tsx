@@ -1,6 +1,6 @@
 "use client";
 
-import { AvatarGroup } from "@godui/extras";
+import { AvatarGroup } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**

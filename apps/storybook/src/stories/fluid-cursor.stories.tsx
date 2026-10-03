@@ -1,4 +1,4 @@
-import { FluidCursor } from "@godui/extras";
+import { FluidCursor } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import * as React from "react";
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { FilterBar, type FilterValue } from "@godui/extras";
+import { FilterBar, type FilterValue } from "@godui/lab";
 import { useState } from "react";
 
 const facets = [

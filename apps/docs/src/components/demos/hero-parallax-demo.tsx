@@ -1,6 +1,6 @@
 "use client";
 
-import { HeroParallax } from "@godui/extras";
+import { HeroParallax } from "@godui/lab";
 import { useRef } from "react";
 import { DemoScrollPort } from "@/components/demos/_kit";
 

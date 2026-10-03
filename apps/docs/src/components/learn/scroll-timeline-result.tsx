@@ -1,6 +1,6 @@
 "use client";
 
-import { ScrollTimeline } from "@godui/extras";
+import { ScrollTimeline } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**

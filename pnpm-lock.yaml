@@ -32,9 +32,9 @@ importers:
       '@godui/components':
         specifier: workspace:*
         version: link:../../packages/components
-      '@godui/extras':
+      '@godui/lab':
         specifier: workspace:*
-        version: link:../../packages/extras
+        version: link:../../packages/lab
       '@next/third-parties':
         specifier: ^16.2.9
         version: 16.2.9(next@16.2.6(@babel/core@7.29.7)(@playwright/test@1.63.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)
@@ -114,9 +114,9 @@ importers:
       '@godui/components':
         specifier: workspace:*
         version: link:../../packages/components
-      '@godui/extras':
+      '@godui/lab':
         specifier: workspace:*
-        version: link:../../packages/extras
+        version: link:../../packages/lab
       '@tailwindcss/vite':
         specifier: ^4.1.16
         version: 4.3.1(vite@7.3.5(@types/node@25.9.3)(jiti@2.7.0)(lightningcss@1.32.0))
@@ -288,7 +288,7 @@ importers:
         specifier: ^3.0.0
         version: 3.2.6(@types/debug@4.1.13)(@types/node@25.9.3)(jiti@2.7.0)(jsdom@25.0.1)(lightningcss@1.32.0)(msw@2.14.6(@types/node@25.9.3)(typescript@5.9.3))
 
-  packages/extras:
+  packages/lab:
     dependencies:
       canvas-confetti:
         specifier: ^1.9.4

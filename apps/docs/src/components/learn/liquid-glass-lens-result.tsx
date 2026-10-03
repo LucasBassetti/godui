@@ -1,6 +1,6 @@
 "use client";
 
-import { LiquidGlassLens } from "@godui/extras";
+import { LiquidGlassLens } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**

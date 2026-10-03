@@ -1,4 +1,4 @@
-import { ImageAccordion, type ImageAccordionProps } from "@godui/extras";
+import { ImageAccordion, type ImageAccordionProps } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { range } from "../playground/argtypes";
 

@@ -1,4 +1,4 @@
-import { ImageTrail, type ImageTrailProps } from "@godui/extras";
+import { ImageTrail, type ImageTrailProps } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { range } from "../playground/argtypes";
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { AppShowcase } from "@godui/extras";
+import { AppShowcase } from "@godui/lab";
 
 const SRC = "https://picsum.photos/seed/godui-app/600/1300";
 

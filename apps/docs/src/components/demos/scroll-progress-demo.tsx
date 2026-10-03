@@ -1,6 +1,6 @@
 "use client";
 
-import { ScrollProgress } from "@godui/extras";
+import { ScrollProgress } from "@godui/lab";
 import * as React from "react";
 import { DemoScrollPort } from "@/components/demos/_kit";
 

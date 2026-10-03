@@ -1,4 +1,4 @@
-import { TextScramble, type TextScrambleProps } from "@godui/extras";
+import { TextScramble, type TextScrambleProps } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { range, select } from "../playground/argtypes";
 

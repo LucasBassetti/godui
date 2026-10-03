@@ -1,4 +1,4 @@
-import { AsciiDither, type AsciiDitherProps } from "@godui/extras";
+import { AsciiDither, type AsciiDitherProps } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { radio, range, select, toggle } from "../playground/argtypes";
 

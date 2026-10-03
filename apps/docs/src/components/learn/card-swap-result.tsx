@@ -1,6 +1,6 @@
 "use client";
 
-import { CardSwap } from "@godui/extras";
+import { CardSwap } from "@godui/lab";
 import { Activity, Globe, ScrollText, Zap } from "lucide-react";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 

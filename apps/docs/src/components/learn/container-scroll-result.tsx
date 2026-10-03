@@ -1,6 +1,6 @@
 "use client";
 
-import { ContainerScroll } from "@godui/extras";
+import { ContainerScroll } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 const demo = (

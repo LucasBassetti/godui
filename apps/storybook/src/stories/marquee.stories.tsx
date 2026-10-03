@@ -1,4 +1,4 @@
-import { Marquee, type MarqueeProps } from "@godui/extras";
+import { Marquee, type MarqueeProps } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import type { ReactNode } from "react";
 import { range, select, toggle } from "../playground/argtypes";

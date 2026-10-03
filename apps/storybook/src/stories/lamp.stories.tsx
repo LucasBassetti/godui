@@ -1,4 +1,4 @@
-import { Lamp } from "@godui/extras";
+import { Lamp } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { color, text } from "../playground/argtypes";
 

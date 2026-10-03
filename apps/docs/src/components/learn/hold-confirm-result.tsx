@@ -1,6 +1,6 @@
 "use client";
 
-import { HoldConfirmButton } from "@godui/extras";
+import { HoldConfirmButton } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**

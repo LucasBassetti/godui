@@ -1,4 +1,4 @@
-import { ImageCompare } from "@godui/extras";
+import { ImageCompare } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "storybook/test";
 import { action, hidden, range, select, text } from "../playground/argtypes";

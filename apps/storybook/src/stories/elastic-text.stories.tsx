@@ -1,4 +1,4 @@
-import { ElasticText } from "@godui/extras";
+import { ElasticText } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { hidden, radio, range, text, toggle } from "../playground/argtypes";
 import { centered } from "../playground/stage";

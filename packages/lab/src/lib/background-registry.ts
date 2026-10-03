@@ -113,7 +113,7 @@ export function buildBackgroundRegistryItem(
     registryDependencies: entry.registryDependencies,
     files: [
       {
-        path: `packages/extras/src/${name}/${name}.tsx`,
+        path: `packages/lab/src/${name}/${name}.tsx`,
         type: "registry:ui",
         target: `components/godui/${name}.tsx`,
         content,

@@ -1,4 +1,4 @@
-import { ShimmerButton } from "@godui/extras";
+import { ShimmerButton } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "storybook/test";
 import { action, select, text, toggle } from "../playground/argtypes";

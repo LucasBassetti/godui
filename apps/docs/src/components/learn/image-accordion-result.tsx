@@ -1,6 +1,6 @@
 "use client";
 
-import { ImageAccordion } from "@godui/extras";
+import { ImageAccordion } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**

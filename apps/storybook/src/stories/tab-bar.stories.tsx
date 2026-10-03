@@ -1,4 +1,4 @@
-import { TabBar, type TabBarTab } from "@godui/extras";
+import { TabBar, type TabBarTab } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "storybook/test";
 import { action, hidden, select, toggle } from "../playground/argtypes";

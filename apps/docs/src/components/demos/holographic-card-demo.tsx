@@ -1,6 +1,6 @@
 "use client";
 
-import { HolographicCard } from "@godui/extras";
+import { HolographicCard } from "@godui/lab";
 import { Sparkles } from "lucide-react";
 import { DemoCenter } from "@/components/demos/_kit";
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { ImageAccordion } from "@godui/extras";
+import { ImageAccordion } from "@godui/lab";
 import { DemoMedia } from "@/components/demos/_kit";
 
 const PANELS = [

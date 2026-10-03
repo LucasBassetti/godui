@@ -1,4 +1,4 @@
-import { OrbitCarousel, type OrbitCarouselProps } from "@godui/extras";
+import { OrbitCarousel, type OrbitCarouselProps } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { range } from "../playground/argtypes";
 

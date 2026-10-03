@@ -1,6 +1,6 @@
 "use client";
 
-import { BentoCard, BentoGrid } from "@godui/extras";
+import { BentoCard, BentoGrid } from "@godui/lab";
 import {
   Activity,
   Globe2,

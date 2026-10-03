@@ -1,6 +1,6 @@
 "use client";
 
-import { MaskButton } from "@godui/extras";
+import { MaskButton } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 const MaskButtons = () => (

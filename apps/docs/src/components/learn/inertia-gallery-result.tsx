@@ -1,6 +1,6 @@
 "use client";
 
-import { InertiaGallery } from "@godui/extras";
+import { InertiaGallery } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**

@@ -1,6 +1,6 @@
 "use client";
 
-import { SpinViewer } from "@godui/extras";
+import { SpinViewer } from "@godui/lab";
 import { useMemo } from "react";
 import { makeCubeFrames } from "./spin-viewer-frames";
 

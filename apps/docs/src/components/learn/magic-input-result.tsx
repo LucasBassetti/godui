@@ -1,6 +1,6 @@
 "use client";
 
-import { MagicInput } from "@godui/extras";
+import { MagicInput } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**

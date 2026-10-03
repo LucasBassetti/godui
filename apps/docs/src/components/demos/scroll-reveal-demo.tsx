@@ -1,6 +1,6 @@
 "use client";
 
-import { ScrollReveal } from "@godui/extras";
+import { ScrollReveal } from "@godui/lab";
 import { DemoScrollPort, DemoScrollRunway } from "@/components/demos/_kit";
 
 const GRID = ["Plan", "Build", "Ship", "Measure", "Iterate", "Scale"];

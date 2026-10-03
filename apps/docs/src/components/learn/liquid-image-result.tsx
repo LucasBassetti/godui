@@ -1,6 +1,6 @@
 "use client";
 
-import { LiquidImage } from "@godui/extras";
+import { LiquidImage } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 const Demo = () => (

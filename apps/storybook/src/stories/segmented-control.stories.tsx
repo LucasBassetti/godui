@@ -1,4 +1,4 @@
-import { SegmentedControl } from "@godui/extras";
+import { SegmentedControl } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "storybook/test";
 import { action, hidden, select } from "../playground/argtypes";

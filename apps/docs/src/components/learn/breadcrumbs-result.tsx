@@ -1,6 +1,6 @@
 "use client";
 
-import { Breadcrumbs } from "@godui/extras";
+import { Breadcrumbs } from "@godui/lab";
 import { Folder, FolderOpen, Home, Layers } from "lucide-react";
 import { useState } from "react";
 import { useBareScene } from "@/components/learn/bare-scene-context";

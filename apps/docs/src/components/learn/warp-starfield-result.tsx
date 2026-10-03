@@ -1,6 +1,6 @@
 "use client";
 
-import { WarpStarfield } from "@godui/extras";
+import { WarpStarfield } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**

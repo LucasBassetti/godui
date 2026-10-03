@@ -1,4 +1,4 @@
-import { InertiaGallery, type InertiaGalleryProps } from "@godui/extras";
+import { InertiaGallery, type InertiaGalleryProps } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { range, toggle } from "../playground/argtypes";
 

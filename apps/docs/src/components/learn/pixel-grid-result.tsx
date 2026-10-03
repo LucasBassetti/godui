@@ -1,6 +1,6 @@
 "use client";
 
-import { PixelGrid } from "@godui/extras";
+import { PixelGrid } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**

@@ -1,4 +1,4 @@
-import { type Step, Stepper } from "@godui/extras";
+import { type Step, Stepper } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { hidden, range, select } from "../playground/argtypes";
 import { padded } from "../playground/stage";

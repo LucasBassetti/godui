@@ -1,4 +1,4 @@
-import { ScrollTextReveal } from "@godui/extras";
+import { ScrollTextReveal } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { radio, range, text, toggle } from "../playground/argtypes";
 

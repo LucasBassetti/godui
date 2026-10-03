@@ -1,6 +1,6 @@
 "use client";
 
-import { BlueprintGrid } from "@godui/extras";
+import { BlueprintGrid } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 export function BlueprintGridResult() {

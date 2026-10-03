@@ -1,6 +1,6 @@
 "use client";
 
-import { MOTION_TIER_META, type MotionGrade } from "@godui/extras";
+import { MOTION_TIER_META, type MotionGrade } from "@godui/lab";
 import * as React from "react";
 import type { DependencyNote } from "@/lib/dependency-notes";
 import type { MotionNote } from "@/lib/motion-notes";

@@ -98,7 +98,7 @@ Route and content are unchanged. `meta.json` still references
 ### 2. Read the real component source
 
 The article must be grounded in the actual implementation, not invented. Read
-`packages/components/src/ui/{name}.tsx` (core) or `packages/extras/src/{name}/{name}.tsx` (Extras) and note the true mechanisms: transforms,
+`packages/components/src/ui/{name}.tsx` (core) or `packages/lab/src/{name}/{name}.tsx` (Extras) and note the true mechanisms: transforms,
 transition timings/beziers, keyframes, observers, a11y (keyboard/`focus-visible`/
 `motion-reduce`). Every claim and code excerpt in the article comes from here.
 
@@ -247,7 +247,7 @@ Reference scenes (technique patterns, not templates to clone):
 
 End with the real, interactive component so the reader feels every mechanism. Copy /
 generalize `result-preview.tsx` — same `ComponentPreview`-style chrome, importing the
-component from `@godui/components` (core) or `@godui/extras` (Extras):
+component from `@godui/components` (core) or `@godui/lab` (Extras):
 
 ```tsx
 "use client";

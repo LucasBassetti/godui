@@ -1,4 +1,4 @@
-import { EncryptedCard, type EncryptedCardProps } from "@godui/extras";
+import { EncryptedCard, type EncryptedCardProps } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 function CardBody() {

@@ -1,4 +1,4 @@
-import { LiquidMetaballs, type LiquidMetaballsProps } from "@godui/extras";
+import { LiquidMetaballs, type LiquidMetaballsProps } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { toggle } from "../playground/argtypes";
 import {

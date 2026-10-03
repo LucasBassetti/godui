@@ -1,6 +1,6 @@
 "use client";
 
-import { ScrollStack } from "@godui/extras";
+import { ScrollStack } from "@godui/lab";
 import { BarChart3, GitBranch, Rocket } from "lucide-react";
 import { DemoCenter } from "@/components/demos/_kit";
 

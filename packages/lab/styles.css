@@ -1,4 +1,4 @@
-/* GodUI Extras — per-component animation tokens + keyframes.
+/* GodUI Lab — per-component animation tokens + keyframes.
  * Import AFTER @godui/components/styles.css. Tokens stay in `@theme inline`
  * because they reference per-element vars (e.g. --speed). */
 

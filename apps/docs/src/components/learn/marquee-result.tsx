@@ -1,6 +1,6 @@
 "use client";
 
-import { Marquee } from "@godui/extras";
+import { Marquee } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**

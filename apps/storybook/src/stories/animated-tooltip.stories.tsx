@@ -1,4 +1,4 @@
-import { AnimatedTooltip } from "@godui/extras";
+import { AnimatedTooltip } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { hidden, select, text } from "../playground/argtypes";
 import { box } from "../playground/stage";

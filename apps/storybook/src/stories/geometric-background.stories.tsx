@@ -4,7 +4,7 @@ import {
   type GeometricBackgroundVariant,
   geometricBackgroundPresets,
   geometricBackgroundVariants,
-} from "@godui/extras";
+} from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { select } from "../playground/argtypes";
 import { effectStage } from "../playground/stage";

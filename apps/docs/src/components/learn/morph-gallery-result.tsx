@@ -1,6 +1,6 @@
 "use client";
 
-import { MorphGallery } from "@godui/extras";
+import { MorphGallery } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**

@@ -1,4 +1,4 @@
-import { AppShowcase } from "@godui/extras";
+import { AppShowcase } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 const TALL = "https://picsum.photos/seed/godui-app/600/1300";

@@ -1,4 +1,4 @@
-import { NumberTicker } from "@godui/extras";
+import { NumberTicker } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { hidden, number, radio, range } from "../playground/argtypes";
 import { centered } from "../playground/stage";

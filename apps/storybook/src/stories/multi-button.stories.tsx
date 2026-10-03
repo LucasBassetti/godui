@@ -2,7 +2,7 @@ import {
   CompactMultiButton,
   MultiButton,
   type MultiButtonItem,
-} from "@godui/extras";
+} from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import type { ReactNode } from "react";
 import { fn } from "storybook/test";

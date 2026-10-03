@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  AgentFlow,
-  type AgentFlowEdge,
-  type AgentFlowNode,
-} from "@godui/extras";
+import { AgentFlow, type AgentFlowEdge, type AgentFlowNode } from "@godui/lab";
 
 const NODES: AgentFlowNode[] = [
   {

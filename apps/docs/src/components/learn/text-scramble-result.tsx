@@ -1,6 +1,6 @@
 "use client";
 
-import { TextScramble } from "@godui/extras";
+import { TextScramble } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**

@@ -1,6 +1,6 @@
 "use client";
 
-import { Gravity, MatterBody } from "@godui/extras";
+import { Gravity, MatterBody } from "@godui/lab";
 
 const TAGS = [
   { label: "design", x: "20%", y: "10%" },

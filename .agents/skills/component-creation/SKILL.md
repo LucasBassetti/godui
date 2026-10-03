@@ -7,7 +7,7 @@ description: "Use when creating a new component for the design system. Covers fi
 
 This skill documents the general process for adding a component to the `@godui/components` design system monorepo.
 
-> **GodUI core is now an animated drop-in for shadcn/ui.** The authoritative workflow is the `godui-component-creation` skill: components live at `packages/components/src/ui/{name}.tsx`, mirror shadcn new-york-v4 (React 19 `ref` as prop, no `forwardRef`), and animate only transform/opacity/filter (CI-gated, no allowlist). Pre-pivot components live in `packages/extras` and are frozen. Where this skill disagrees, `godui-component-creation` wins.
+> **GodUI core is now an animated drop-in for shadcn/ui.** The authoritative workflow is the `godui-component-creation` skill: components live at `packages/components/src/ui/{name}.tsx`, mirror shadcn new-york-v4 (React 19 `ref` as prop, no `forwardRef`), and animate only transform/opacity/filter (CI-gated, no allowlist). Pre-pivot components live in `packages/lab` and are frozen. Where this skill disagrees, `godui-component-creation` wins.
 
 ## 1. Package Structure
 

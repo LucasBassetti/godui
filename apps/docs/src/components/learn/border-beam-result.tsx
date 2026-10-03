@@ -1,6 +1,6 @@
 "use client";
 
-import { BorderBeam } from "@godui/extras";
+import { BorderBeam } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**

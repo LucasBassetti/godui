@@ -1,6 +1,6 @@
 "use client";
 
-import { AsciiDither } from "@godui/extras";
+import { AsciiDither } from "@godui/lab";
 import { DemoMedia } from "@/components/demos/_kit";
 
 const PORTRAIT =

@@ -1,10 +1,10 @@
 @import "tailwindcss";
 @import "@godui/components/styles.css";
-@import "@godui/extras/styles.css";
+@import "@godui/lab/styles.css";
 @import "fumadocs-ui/css/preset.css";
 
 @source "../../../../packages/components/src";
-@source "../../../../packages/extras/src";
+@source "../../../../packages/lab/src";
 
 /* Map Fumadocs design tokens onto the @godui theme so docs UI follows it */
 @theme inline {

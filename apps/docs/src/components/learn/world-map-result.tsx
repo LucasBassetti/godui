@@ -1,6 +1,6 @@
 "use client";
 
-import { WorldMap } from "@godui/extras";
+import { WorldMap } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**

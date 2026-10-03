@@ -1,6 +1,6 @@
 "use client";
 
-import { ParticleDissolve } from "@godui/extras";
+import { ParticleDissolve } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**

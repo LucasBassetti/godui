@@ -1,6 +1,6 @@
 "use client";
 
-import { StickyScroll, type StickyScrollItem } from "@godui/extras";
+import { StickyScroll, type StickyScrollItem } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**

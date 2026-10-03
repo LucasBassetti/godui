@@ -1,4 +1,4 @@
-import { LiquidImage, type LiquidImageProps } from "@godui/extras";
+import { LiquidImage, type LiquidImageProps } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { radio, range } from "../playground/argtypes";
 

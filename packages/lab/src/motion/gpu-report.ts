@@ -32,9 +32,9 @@ const NOT_COMPONENTS = new Set(["lib", "motion", "assets"]);
 const uniqSorted = (xs: string[]) => [...new Set(xs)].sort();
 
 /**
- * Strict GPU-only scan of every Extras component: its source files plus the
- * keyframes behind any `animate-*` utility it uses. Report-only — Extras are
- * not gated; the docs badge reads this.
+ * Strict GPU-only scan of every Lab component: its source files plus the
+ * keyframes behind any `animate-*` utility it uses. Report-only — Lab
+ * components are not gated; the docs badge reads this.
  */
 export function buildGpuReport(srcDir: string, stylesCss: string): GpuReport {
   const blocks = keyframesBlocks(stylesCss);

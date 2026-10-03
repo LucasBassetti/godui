@@ -1,7 +1,7 @@
 import { existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import * as extras from "./index";
+import * as lab from "./index";
 
 const SRC = dirname(fileURLToPath(import.meta.url));
 
@@ -26,12 +26,12 @@ const SUPERSEDED_EXPORTS = [
   "CommandPalette",
 ];
 
-describe("superseded components are removed from extras", () => {
+describe("superseded components are removed from lab", () => {
   it.each(SUPERSEDED)("%s source dir is gone", (name) => {
     expect(existsSync(join(SRC, name))).toBe(false);
   });
 
   it.each(SUPERSEDED_EXPORTS)("%s is not exported", (name) => {
-    expect(name in extras).toBe(false);
+    expect(name in lab).toBe(false);
   });
 });

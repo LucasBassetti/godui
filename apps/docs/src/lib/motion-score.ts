@@ -1,4 +1,4 @@
-import { GPU_REPORT, type MotionGrade, motionTier } from "@godui/extras";
+import { GPU_REPORT, type MotionGrade, motionTier } from "@godui/lab";
 import { perfNote, STATIC_COMPONENTS } from "./motion-notes";
 
 /**

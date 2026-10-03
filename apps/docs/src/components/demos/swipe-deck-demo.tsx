@@ -1,6 +1,6 @@
 "use client";
 
-import { SwipeDeck } from "@godui/extras";
+import { SwipeDeck } from "@godui/lab";
 
 const CARDS = [
   { name: "Aria Wells", role: "Product Designer", img: "1027" },

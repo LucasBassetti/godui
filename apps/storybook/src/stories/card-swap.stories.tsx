@@ -1,4 +1,4 @@
-import { CardSwap, type CardSwapProps } from "@godui/extras";
+import { CardSwap, type CardSwapProps } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { range, toggle } from "../playground/argtypes";
 

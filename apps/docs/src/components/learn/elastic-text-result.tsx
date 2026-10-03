@@ -1,6 +1,6 @@
 "use client";
 
-import { ElasticText } from "@godui/extras";
+import { ElasticText } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**

@@ -1,6 +1,6 @@
 "use client";
 
-import { PromptComposer, PromptSuggestions } from "@godui/extras";
+import { PromptComposer, PromptSuggestions } from "@godui/lab";
 import { Languages, ListChecks, MessageSquare, Sparkles } from "lucide-react";
 import { useState } from "react";
 

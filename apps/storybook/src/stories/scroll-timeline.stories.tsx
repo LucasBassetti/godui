@@ -1,4 +1,4 @@
-import { ScrollTimeline } from "@godui/extras";
+import { ScrollTimeline } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { padded } from "../playground/stage";
 

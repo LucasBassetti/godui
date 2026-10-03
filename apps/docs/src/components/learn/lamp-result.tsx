@@ -1,6 +1,6 @@
 "use client";
 
-import { Lamp } from "@godui/extras";
+import { Lamp } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 const LampDemo = (

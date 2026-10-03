@@ -1,6 +1,6 @@
 "use client";
 
-import { type Facet, FilterBar, type FilterValue } from "@godui/extras";
+import { type Facet, FilterBar, type FilterValue } from "@godui/lab";
 import { useState } from "react";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 

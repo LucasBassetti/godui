@@ -1,6 +1,6 @@
 "use client";
 
-import { SourceCitation, SourceList } from "@godui/extras";
+import { SourceCitation, SourceList } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**

@@ -13,4 +13,4 @@ export {
   motionSafe,
   SPRING,
   STAGGER,
-} from "@godui/extras";
+} from "@godui/lab";

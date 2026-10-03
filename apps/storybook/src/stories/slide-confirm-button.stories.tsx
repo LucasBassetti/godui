@@ -1,4 +1,4 @@
-import { SlideConfirmButton } from "@godui/extras";
+import { SlideConfirmButton } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "storybook/test";
 import { action, range, select, text, toggle } from "../playground/argtypes";

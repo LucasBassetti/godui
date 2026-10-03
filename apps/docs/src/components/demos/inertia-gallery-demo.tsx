@@ -1,6 +1,6 @@
 "use client";
 
-import { InertiaGallery } from "@godui/extras";
+import { InertiaGallery } from "@godui/lab";
 import { DemoScene } from "@/components/demos/_kit";
 
 const SHOTS = [

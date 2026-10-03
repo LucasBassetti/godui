@@ -1,4 +1,4 @@
-import { TiltCard } from "@godui/extras";
+import { TiltCard } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { range, toggle } from "../playground/argtypes";
 import { centered } from "../playground/stage";

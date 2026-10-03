@@ -1,4 +1,4 @@
-import type { MotionGrade } from "@godui/extras";
+import type { MotionGrade } from "@godui/lab";
 
 /**
  * Per-component animated-property audits for the Learn Motion Score panel.

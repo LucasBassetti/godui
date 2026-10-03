@@ -7,7 +7,7 @@ const storybookDevOrigin = "http://127.0.0.1:6006";
 
 const nextConfig: NextConfig = {
   allowedDevOrigins: ["127.0.0.1"],
-  transpilePackages: ["@godui/components", "@godui/extras"],
+  transpilePackages: ["@godui/components", "@godui/lab"],
   async redirects() {
     const superseded = [
       "layout/accordion",

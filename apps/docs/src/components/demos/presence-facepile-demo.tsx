@@ -1,6 +1,6 @@
 "use client";
 
-import { PresenceFacepile } from "@godui/extras";
+import { PresenceFacepile } from "@godui/lab";
 
 const users = [
   { id: "1", name: "Ana Reyes", status: "active" as const },

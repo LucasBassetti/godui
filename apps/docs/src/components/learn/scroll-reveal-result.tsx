@@ -1,6 +1,6 @@
 "use client";
 
-import { ScrollReveal } from "@godui/extras";
+import { ScrollReveal } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**

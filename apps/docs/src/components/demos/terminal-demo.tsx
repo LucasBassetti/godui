@@ -1,6 +1,6 @@
 "use client";
 
-import { Terminal, type TerminalLine } from "@godui/extras";
+import { Terminal, type TerminalLine } from "@godui/lab";
 
 const LINES: TerminalLine[] = [
   { text: "npm install @godui/components", type: "command" },

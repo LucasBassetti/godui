@@ -1,6 +1,6 @@
 "use client";
 
-import { ShimmerButton } from "@godui/extras";
+import { ShimmerButton } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 const ShimmerResultBody = () => (

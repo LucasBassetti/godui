@@ -1,6 +1,6 @@
 "use client";
 
-import { TextAnimate } from "@godui/extras";
+import { TextAnimate } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**

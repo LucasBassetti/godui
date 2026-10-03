@@ -3,7 +3,7 @@ import {
   MorphingDialogClose,
   MorphingDialogContent,
   MorphingDialogTrigger,
-} from "@godui/extras";
+} from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 const meta = {

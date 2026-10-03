@@ -1,6 +1,6 @@
 "use client";
 
-import { PresenceFacepile } from "@godui/extras";
+import { PresenceFacepile } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**

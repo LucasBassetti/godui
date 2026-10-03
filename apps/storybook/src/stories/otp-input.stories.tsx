@@ -1,4 +1,4 @@
-import { OTPInput } from "@godui/extras";
+import { OTPInput } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "storybook/test";
 import { action, range, select, toggle } from "../playground/argtypes";

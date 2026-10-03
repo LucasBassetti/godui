@@ -5,7 +5,7 @@ import {
   MorphingDialogClose,
   MorphingDialogContent,
   MorphingDialogTrigger,
-} from "@godui/extras";
+} from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**

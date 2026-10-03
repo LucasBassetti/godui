@@ -1,6 +1,6 @@
 "use client";
 
-import { OTPInput } from "@godui/extras";
+import { OTPInput } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**

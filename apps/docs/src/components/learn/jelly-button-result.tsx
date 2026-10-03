@@ -1,6 +1,6 @@
 "use client";
 
-import { JellyButton } from "@godui/extras";
+import { JellyButton } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**

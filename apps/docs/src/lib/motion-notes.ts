@@ -1,4 +1,4 @@
-import { GPU_REPORT } from "@godui/extras";
+import { GPU_REPORT } from "@godui/lab";
 
 /**
  * Components that don't 100% follow the Motion Performance guideline (animate
@@ -6,7 +6,7 @@ import { GPU_REPORT } from "@godui/extras";
  * property by design, so it can't run purely on the compositor.
  *
  * The machine source of truth is the generated strict scan, `GPU_REPORT`
- * (`packages/extras/src/motion/gpu-report.json`). This map adds the
+ * (`packages/lab/src/motion/gpu-report.json`). This map adds the
  * human-facing "why", plus effects the scanner can't see (canvas/WebGL
  * compute). Keyed by component name — the last segment of a
  * `/docs/extras/<category>/<name>` slug. Read through {@link perfNote}, which

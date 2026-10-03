@@ -46,7 +46,7 @@ describe("buildGpuReport", () => {
     expect(report.marquee).toEqual({ nonCompositor: [], gated: [] });
   });
 
-  it("matches the committed gpu-report.json (run `pnpm --filter @godui/extras motion:report`)", () => {
+  it("matches the committed gpu-report.json (run `pnpm --filter @godui/lab motion:report`)", () => {
     const fresh = buildGpuReport(SRC, styles());
     if (process.env.GODUI_WRITE_REPORT) {
       writeFileSync(REPORT, `${JSON.stringify(fresh, null, 2)}\n`);

@@ -1,4 +1,4 @@
-import { Dock, DockItem } from "@godui/extras";
+import { Dock, DockItem } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import type { ReactNode } from "react";
 import { range } from "../playground/argtypes";

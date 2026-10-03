@@ -1,6 +1,6 @@
 "use client";
 
-import { BentoCard, BentoGrid } from "@godui/extras";
+import { BentoCard, BentoGrid } from "@godui/lab";
 import { Activity, Globe2, ShieldCheck, Sparkles } from "lucide-react";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 

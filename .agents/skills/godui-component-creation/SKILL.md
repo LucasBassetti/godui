@@ -8,7 +8,7 @@ description: Create new core components for GodUI (@godui/components) — animat
 GodUI core (`@godui/components`) is **shadcn/ui, animated**: every component is a
 drop-in replacement for its shadcn new-york-v4 counterpart (same file, exports,
 props, `data-slot`s, Radix primitives) with motion that runs only on the
-compositor. Pre-pivot components live in `@godui/extras` (`packages/extras`) and
+compositor. Pre-pivot components live in `@godui/lab` (`packages/lab`) and
 are frozen — don't add new components there.
 
 ## Quick reference
@@ -106,8 +106,8 @@ expectSlotParity(slotTree(), expected);
 
 Consuming apps also scan explicitly:
 
-- `apps/storybook/src/tailwind.css` → `@source "../node_modules/@godui/components/src"` (and `…/@godui/extras/src`)
-- `apps/docs/src/app/globals.css` → `@source "../../../../packages/components/src"` (and `…/packages/extras/src`)
+- `apps/storybook/src/tailwind.css` → `@source "../node_modules/@godui/components/src"` (and `…/@godui/lab/src`)
+- `apps/docs/src/app/globals.css` → `@source "../../../../packages/components/src"` (and `…/packages/lab/src`)
 
 If utilities like `bg-primary` render unstyled, verify `@source "./src"` exists and restart the dev server. Both apps already depend on `@godui/components` via `workspace:*` and it is in the docs `transpilePackages` — no `pnpm install` needed for a new component in the shared package.
 
@@ -335,7 +335,7 @@ shows in `docs:dev`. Same trap applies to any block tag with multi-line bare tex
 
 **Parameterized installs (Extras backgrounds only).** A component
 whose install should bake a choice is served by the dynamic route
-`apps/docs/src/app/r/extras/[item]/route.ts` (wrapping `@godui/extras/registry`) via a
+`apps/docs/src/app/r/extras/[item]/route.ts` (wrapping `@godui/lab/registry`) via a
 `?variant=` query param — **not** by `shadcn build`. Such items are removed from
 `registry.json` so the route owns `/r/{name}.json`, the generated component carries its
 overridable defaults inside `// @default-props:start/end` markers (the route swaps that

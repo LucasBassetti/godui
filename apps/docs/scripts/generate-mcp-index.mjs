@@ -33,7 +33,7 @@ const extrasRegistry = JSON.parse(
 );
 const backgroundCatalog = JSON.parse(
   readFileSync(
-    resolve(repoRoot, "packages/extras/src/lib/background-catalog.json"),
+    resolve(repoRoot, "packages/lab/src/lib/background-catalog.json"),
     "utf8",
   ),
 );

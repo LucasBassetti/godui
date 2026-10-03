@@ -1,6 +1,6 @@
 "use client";
 
-import { MagneticButton } from "@godui/extras";
+import { MagneticButton } from "@godui/lab";
 import { ArrowRight, Star } from "lucide-react";
 
 /** Default stage — one primary + one secondary product CTA. */

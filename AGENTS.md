@@ -1,6 +1,6 @@
 # GodUI — Agent Rules
 
-GodUI is a design system monorepo (**pnpm + Turbo**): `@godui/components` (`packages/components`, core — animated shadcn/ui drop-ins), `@godui/extras` (`packages/extras`, pre-pivot components, maintained as-is), docs (`apps/docs`, Next.js + Fumadocs), and Storybook (`apps/storybook`).
+GodUI is a design system monorepo (**pnpm + Turbo**): `@godui/components` (`packages/components`, core — animated shadcn/ui drop-ins), `@godui/lab` (`packages/lab`, pre-pivot components, maintained as-is), docs (`apps/docs`, Next.js + Fumadocs), and Storybook (`apps/storybook`).
 
 Skills live in `.agents/skills/` (`.claude/skills` and `.cursor/skills` symlink to it). Read the relevant SKILL.md **before** starting the matching task.
 
@@ -14,7 +14,7 @@ Use **pnpm** — never npm or yarn.
 | `pnpm test` | Vitest |
 | `pnpm build:registry` | Build both registries → `apps/docs/public/r` (+ `/r/extras`) |
 | `pnpm --filter storybook test:motion-trace` | Runtime GPU-only trace (Playwright + Chrome tracing) |
-| `pnpm --filter @godui/extras motion:report` | Regenerate the Extras GPU report |
+| `pnpm --filter @godui/lab motion:report` | Regenerate the Extras GPU report |
 | `pnpm dev` | Turbo dev (all apps) |
 | `pnpm storybook` | Storybook |
 
@@ -37,7 +37,7 @@ Use **pnpm** — never npm or yarn.
 
 - **GPU-only, strict, no allowlist.** Core may animate only `transform`/`translate`/`scale`/`rotate`, `opacity`, `filter`. No `transition`, `transition-colors`, `transition-shadow`, `transition-all`, no animated `height`/`width`/`box-shadow`/`background-position`/`color`. Sizes snap; moved siblings FLIP with `useFlipGroup`. Hover color changes snap or fade an overlay's `opacity`. `pnpm --filter @godui/components test` gates it (`src/motion-gate/`).
 - **Motion tokens come from `godui-motion`** (core `styles.css` + the `godui-motion` registry item): `animate-godui-*` keyframes on Radix `data-[state=open|closed]`, `ease-spring-snappy|smooth|bouncy` (CSS `linear()`), `--godui-duration-*`. Reduced motion is built into the `animate-godui-*` keyframes (root-only `--godui-motion` multiplier) and `useFlipGroup`; component-level **transform transitions** (switch thumb, tab indicator, hover lifts) still need `motion-reduce:` handling.
-- **Extras live in `packages/extras`** (registry `registry-extras.json` → `/r/extras/`, docs `/docs/extras/<category>/<name>`, stories `Extras/<Category>/<Name>`). Core shadcn drop-ins go in `packages/components`. Don't add new components to Extras.
+- **Extras live in `packages/lab`** (registry `registry-extras.json` → `/r/extras/`, docs `/docs/extras/<category>/<name>`, stories `Extras/<Category>/<Name>`). Core shadcn drop-ins go in `packages/components`. Don't add new components to Extras.
 - **No new CSS files; no `@layer components` blocks.** Author component styles as **inline Tailwind utilities** in the `.tsx` (`group`/`peer` + `data-[…]` variants + arbitrary properties for masks/3D/gradients). `styles.css` is the Tailwind **entry only** — `@import`, `@theme`, `@custom-variant`, `@keyframes`. Reference animations with `animate-<name>` utilities, never a `${var}` nested inside an arbitrary value (the scanner can't resolve it — write the class literal).
 - **Keyframes are per-component, not in the shared theme** (shared enter/exit keyframes live in `godui-motion`). A component's `@keyframes` + its `--animate-*` token live in **two** places: `styles.css` (so Storybook/docs render) **and** that component's own `registry.json` entry (`cssVars.theme` for the token + `css` for the `@keyframes`). Keep them **out** of the `godui-theme` entry — the theme is pure design tokens, so installing one component pulls only its own animations. Shared keyframes (e.g. `magic-rainbow` on button/tab/input) are repeated in each entry; the shadcn CLI dedupes them on install. No per-component `@layer components` block.
 - **`registry.json` is hand-maintained.** Add the new entry, run `pnpm build:registry`; do **not** reformat existing entries.

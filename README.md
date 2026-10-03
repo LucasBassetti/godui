@@ -147,7 +147,7 @@ godui/
 │   └── storybook/     # Component showcase (Storybook)
 ├── packages/
 │   ├── components/    # @godui/components — animated shadcn/ui drop-ins (core)
-│   └── extras/        # @godui/extras — pre-pivot components (maintained as-is)
+│   └── extras/        # @godui/lab — pre-pivot components (maintained as-is)
 ├── registry.json      # core shadcn registry definition (source of truth)
 └── registry-extras.json  # extras registry, served from /r/extras
 ```

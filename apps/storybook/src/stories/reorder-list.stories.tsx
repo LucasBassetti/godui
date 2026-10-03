@@ -1,4 +1,4 @@
-import { ReorderItem, ReorderList } from "@godui/extras";
+import { ReorderItem, ReorderList } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import * as React from "react";
 

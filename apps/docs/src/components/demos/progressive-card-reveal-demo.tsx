@@ -1,6 +1,6 @@
 "use client";
 
-import { ProgressiveCardReveal } from "@godui/extras";
+import { ProgressiveCardReveal } from "@godui/lab";
 import * as React from "react";
 
 type Leg = {

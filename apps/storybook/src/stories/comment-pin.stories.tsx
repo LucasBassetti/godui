@@ -1,4 +1,4 @@
-import { CommentPin } from "@godui/extras";
+import { CommentPin } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "storybook/test";
 import { action, hidden, range, text, toggle } from "../playground/argtypes";

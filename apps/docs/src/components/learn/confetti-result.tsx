@@ -1,6 +1,6 @@
 "use client";
 
-import { ConfettiButton } from "@godui/extras";
+import { ConfettiButton } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 const Demo = () => (

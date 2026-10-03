@@ -13,7 +13,7 @@ import {
   geometricBackgroundVariants,
   gradientBackgroundPresets,
   gradientBackgroundVariants,
-} from "@godui/extras";
+} from "@godui/lab";
 import {
   type ComponentType,
   type CSSProperties,

@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatedBeam } from "@godui/extras";
+import { AnimatedBeam } from "@godui/lab";
 import { Box, Cloud, Database, Sparkles } from "lucide-react";
 import * as React from "react";
 

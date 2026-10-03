@@ -1,6 +1,6 @@
 "use client";
 
-import { SegmentedControl, type SegmentedOption } from "@godui/extras";
+import { SegmentedControl, type SegmentedOption } from "@godui/lab";
 import { CalendarDays, CalendarRange, Sun } from "lucide-react";
 import { useState } from "react";
 import { useBareScene } from "@/components/learn/bare-scene-context";

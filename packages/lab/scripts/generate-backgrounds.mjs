@@ -1,5 +1,5 @@
 // Generates the four PatternCraft background components from the vendored
-// `gridPatterns` data. Re-run with `pnpm --filter @godui/extras generate:backgrounds`.
+// `gridPatterns` data. Re-run with `pnpm --filter @godui/lab generate:backgrounds`.
 //
 // Per category it emits:
 //   {dir}/{dir}.tsx          generic component, default variant's full style baked

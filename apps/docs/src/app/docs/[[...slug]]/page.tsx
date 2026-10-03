@@ -1,4 +1,4 @@
-import { MOTION_TIER_META } from "@godui/extras";
+import { MOTION_TIER_META } from "@godui/lab";
 import {
   DocsBody,
   DocsDescription,

@@ -1,6 +1,6 @@
 "use client";
 
-import { FloatingToolbar, type ToolbarAction } from "@godui/extras";
+import { FloatingToolbar, type ToolbarAction } from "@godui/lab";
 import { AlignLeft, Bold, Italic, Link2 } from "lucide-react";
 import { useState } from "react";
 import { useBareScene } from "@/components/learn/bare-scene-context";

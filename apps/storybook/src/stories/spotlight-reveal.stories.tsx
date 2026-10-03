@@ -1,4 +1,4 @@
-import { SpotlightReveal, type SpotlightRevealProps } from "@godui/extras";
+import { SpotlightReveal, type SpotlightRevealProps } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { range } from "../playground/argtypes";
 

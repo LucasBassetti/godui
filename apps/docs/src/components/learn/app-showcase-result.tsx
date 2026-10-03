@@ -1,6 +1,6 @@
 "use client";
 
-import { AppShowcase } from "@godui/extras";
+import { AppShowcase } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 const demo = (

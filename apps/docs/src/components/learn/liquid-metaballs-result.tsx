@@ -1,6 +1,6 @@
 "use client";
 
-import { LiquidMetaballs } from "@godui/extras";
+import { LiquidMetaballs } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 export function LiquidMetaballsResult() {

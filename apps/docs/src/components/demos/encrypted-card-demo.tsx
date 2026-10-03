@@ -1,6 +1,6 @@
 "use client";
 
-import { EncryptedCard } from "@godui/extras";
+import { EncryptedCard } from "@godui/lab";
 
 export function EncryptedCardDemo() {
   return (
