@@ -67,6 +67,29 @@ test("a component page keeps the same main sidebar", () => {
   assert.match(sidebar, /href="\/docs\/components\/accordion"/);
 });
 
+test("a Lab Learn page keeps the Lab sidebar, with no Learn rows", () => {
+  const sidebar = sidebarOf(
+    readFileSync(page("docs/lab/buttons/magic-button/learn.html"), "utf8"),
+  );
+  const links = treeLinks(sidebar);
+  assert.ok(links.includes("/docs/lab/buttons/gooey-fab"), links.join(" "));
+  assert.ok(links.includes("/docs/lab/buttons/magic-button"));
+  assert.doesNotMatch(sidebar, /Getting Started/);
+  assert.doesNotMatch(sidebar, /href="\/docs\/installation"/);
+  assert.ok(!links.some((href) => href.startsWith("/docs/components")));
+});
+
+test("a core Learn page keeps the main sidebar", () => {
+  const sidebar = sidebarOf(
+    readFileSync(page("docs/components/button/learn.html"), "utf8"),
+  );
+  const links = treeLinks(sidebar);
+  assert.match(sidebar, /Getting Started/);
+  assert.ok(links.includes("/docs/installation"), links.join(" "));
+  assert.ok(links.includes("/docs/components/accordion"));
+  assert.ok(!links.some((href) => href.startsWith("/docs/lab")));
+});
+
 test("the components index shows a preview for every component", () => {
   const html = readFileSync(page("docs/components.html"), "utf8");
   const previews = html.match(/class="preview-zone /g) ?? [];
