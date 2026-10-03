@@ -26,7 +26,7 @@ const CSS = `
 const LEGEND = [
   {
     name: "Without",
-    desc: "no inner transform — content tumbles with the ring",
+    desc: "no inner transform, so content tumbles with the ring",
     kind: "without" as const,
   },
   {
@@ -108,8 +108,8 @@ export function OrbitingCirclesCounter() {
           <style dangerouslySetInnerHTML={{ __html: CSS }} />
 
           <div className="flex items-center gap-10">
-            <Panel caption="without — tumbles" counter={false} delay="0ms" />
-            <Panel caption="with — stays upright" counter={true} delay="0ms" />
+            <Panel caption="without: tumbles" counter={false} delay="0ms" />
+            <Panel caption="with: stays upright" counter={true} delay="0ms" />
           </div>
 
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">

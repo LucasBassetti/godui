@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatedTestimonials } from "@godui/components";
+import { AnimatedTestimonials } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
@@ -40,7 +40,7 @@ export function AnimatedTestimonialsResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — wait, or use the arrows
+          the real component: wait, or use the arrows
         </span>
       </div>
       <div className="flex min-h-[280px] items-center justify-center p-10">

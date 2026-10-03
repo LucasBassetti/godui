@@ -1,0 +1,86 @@
+---
+title: Anatomy of the GodUI Input OTP
+description: Keying an element by its content to replay an entrance, and a caret that blinks without repainting anything.
+learnPlayer: true
+---
+
+import { InputOTPDemo } from "@/components/demos/core/input-otp-demo";
+
+<LearnPlayer>
+
+<LearnChapter
+  label="Each digit arrives"
+  scene={
+    <KeyframeScene
+      label="Each digit arrives"
+      motion="slide-bottom"
+      subject="radio"
+      tracks={[
+        { property: "translate", from: "0 0.5rem", to: "0 0" },
+        { property: "opacity", from: "0", to: "1" },
+      ]}
+    />
+  }
+  code={`{char ? (
+  // Keyed by the character, so each newly typed digit rises in.
+  <span key={char} className="animate-godui-slide-in-from-bottom">
+    {char}
+  </span>
+) : null}`}
+>
+
+shadcn renders each slot's character as bare text. GodUI wraps it in a
+`<span>` keyed by the character itself. When a slot goes from empty to "4",
+the span mounts and its keyframe plays. Typing a different digit over it
+changes the key, so React mounts a fresh span and the entrance plays again.
+
+The digit rises half a rem into place and fades in on the snappy spring. It
+moves only `translate` and `opacity`, so a fast typist never triggers layout
+work beyond the text itself.
+
+</LearnChapter>
+
+<LearnChapter
+  label="A caret that only fades"
+  scene={<SpringCurveScene label="A caret that only fades" easing="expo" />}
+  code={`@keyframes godui-caret-blink {
+  0%, 70%, 100% { opacity: 1; }
+  20%, 50% { opacity: 0; }
+}
+
+<div className="h-4 w-px animate-godui-caret-blink bg-foreground" />`}
+>
+
+The real input is invisible, so input-otp draws a fake caret in the active
+slot. It blinks forever, which makes it the one animation on the page that
+never stops, so it must stay off the main thread.
+
+The `godui-caret-blink` keyframe animates only `opacity`, which the
+compositor can blend on its own. It ships in the component's own registry
+entry, not the shared theme, so installing Input OTP brings exactly this one
+keyframe.
+
+</LearnChapter>
+
+<LearnChapter
+  label="The result"
+  scene={<LiveResult hint="type a code"><InputOTPDemo /></LiveResult>}
+  isResult
+>
+
+Click the input and type six digits, or paste a code.
+
+</LearnChapter>
+
+</LearnPlayer>
+
+## Why GPU-only
+
+Digits animate `translate` and `opacity`; the caret animates `opacity`.
+shadcn's slots use `transition-all`, which also animates the active ring's
+`box-shadow` and border color. GodUI's snap.
+
+## Reduced motion
+
+`--godui-motion: 0` cancels the rise, so digits only fade in. The caret keeps
+blinking, as a native text caret does under the same setting.

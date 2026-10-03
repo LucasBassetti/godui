@@ -42,7 +42,7 @@ const LEGEND: {
   },
   {
     name: "Active underline",
-    desc: "separate layoutId — tracks the clicked link only",
+    desc: "separate layoutId; tracks the clicked link only",
     kind: "underline",
   },
 ];

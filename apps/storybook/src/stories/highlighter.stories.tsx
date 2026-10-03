@@ -1,4 +1,4 @@
-import { Highlighter } from "@godui/components";
+import { Highlighter } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
   color,
@@ -11,7 +11,7 @@ import {
 import { centered } from "../playground/stage";
 
 const meta = {
-  title: "Text/Highlighter",
+  title: "Lab/Text/Highlighter",
   component: Highlighter,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

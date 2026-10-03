@@ -76,7 +76,7 @@ export function WarpStarfieldAnatomy() {
 
           <p className="max-w-[40ch] text-center text-[13px] text-fd-muted-foreground">
             Stars surge out from the center as{" "}
-            <span className="font-mono text-[12px]">z</span> shrinks — then
+            <span className="font-mono text-[12px]">z</span> shrinks, then
             recycle at the far plane. Count clamps to{" "}
             <span className="font-mono text-[12px]">area / 2200</span>.
           </p>

@@ -1,11 +1,11 @@
-import { MagicButton } from "@godui/components";
+import { MagicButton } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "storybook/test";
 import { action, select, text, toggle } from "../playground/argtypes";
 import { centered } from "../playground/stage";
 
 const meta = {
-  title: "Buttons/Magic Button",
+  title: "Lab/Buttons/Magic Button",
   component: MagicButton,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

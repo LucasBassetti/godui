@@ -1,6 +1,6 @@
 "use client";
 
-import { MegaMenu, type MegaMenuItem } from "@godui/components";
+import { MegaMenu, type MegaMenuItem } from "@godui/lab";
 import {
   BarChart3,
   BookOpen,
@@ -103,7 +103,7 @@ export function MegaMenuResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          hover Product ↔ Resources — panel morphs between them
+          hover Product ↔ Resources; the panel morphs between them
         </span>
       </div>
       <div className="flex min-h-[380px] items-start justify-center px-6 pt-8 pb-6">

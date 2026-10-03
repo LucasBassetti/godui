@@ -1,0 +1,166 @@
+---
+title: Sheet
+description: Extends the Dialog component to display content that complements the main content of the screen. Slides its full width in on a spring.
+workbench: true
+---
+
+import {
+  Button,
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@godui/components";
+import { SheetDemo } from "@/components/demos/core/sheet-demo";
+
+<Workbench>
+
+The shadcn/ui sheet, sliding in on a spring. The panel travels its full width
+(or height) from its edge using the shared `godui-motion` slide keyframes, and
+the overlay fades. Only `translate` and `opacity` animate.
+
+<Example label="Default" story="ui-sheet" code={`import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+
+export function SheetDemo() {
+  return (
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button variant="outline">Open</Button>
+      </SheetTrigger>
+      <SheetContent>
+        <SheetHeader>
+          <SheetTitle>Edit profile</SheetTitle>
+          <SheetDescription>
+            Make changes to your profile here. Click save when you&apos;re
+            done.
+          </SheetDescription>
+        </SheetHeader>
+        <div className="grid gap-4 px-4">
+          <label className="grid gap-2 font-medium text-sm">
+            Name
+            <input
+              className="h-9 rounded-md border border-input bg-transparent px-3 font-normal"
+              defaultValue="Pedro Duarte"
+            />
+          </label>
+        </div>
+        <SheetFooter>
+          <Button type="submit">Save changes</Button>
+          <SheetClose asChild>
+            <Button variant="outline">Close</Button>
+          </SheetClose>
+        </SheetFooter>
+      </SheetContent>
+    </Sheet>
+  );
+}`}>
+  <SheetDemo />
+</Example>
+
+<Example
+  label="Side"
+  code={`<div className="grid grid-cols-2 gap-2">
+  {(["top", "right", "bottom", "left"] as const).map((side) => (
+    <Sheet key={side}>
+      <SheetTrigger asChild>
+        <Button variant="outline" className="capitalize">{side}</Button>
+      </SheetTrigger>
+      <SheetContent side={side}>
+        <SheetHeader>
+          <SheetTitle>Edit profile</SheetTitle>
+          <SheetDescription>Slides in from the {side}.</SheetDescription>
+        </SheetHeader>
+      </SheetContent>
+    </Sheet>
+  ))}
+</div>`}
+>
+  <div className="grid grid-cols-2 gap-2">
+    {["top", "right", "bottom", "left"].map((side) => (
+      <Sheet key={side}>
+        <SheetTrigger asChild>
+          <Button variant="outline" className="capitalize">{side}</Button>
+        </SheetTrigger>
+        <SheetContent side={side}>
+          <SheetHeader>
+            <SheetTitle>Edit profile</SheetTitle>
+            <SheetDescription>Slides in from the {side}.</SheetDescription>
+          </SheetHeader>
+        </SheetContent>
+      </Sheet>
+    ))}
+  </div>
+</Example>
+
+## Installation
+
+<ComponentInstall name="sheet" />
+
+## Replacing shadcn
+
+`npx shadcn add @godui/sheet` overwrites `components/ui/sheet.tsx`. Exports,
+props and `data-slot` attributes match shadcn/ui new-york-v4, so existing
+imports keep working. It also installs `godui-motion` (easings, keyframes, the
+FLIP hook) into your project.
+
+## Usage
+
+```tsx
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+```
+
+```tsx
+<Sheet>
+  <SheetTrigger>Open</SheetTrigger>
+  <SheetContent>
+    <SheetHeader>
+      <SheetTitle>Are you absolutely sure?</SheetTitle>
+      <SheetDescription>
+        This action cannot be undone. This will permanently delete your account
+        and remove your data from our servers.
+      </SheetDescription>
+    </SheetHeader>
+  </SheetContent>
+</Sheet>
+```
+
+## What's animated
+
+| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
+| --- | --- | --- | --- | --- |
+| Open (left, right) | `godui-slide-in-from-*` | `translate` 100% → 0, `opacity` | `ease-spring-smooth` | 380ms |
+| Open (top, bottom) | `godui-slide-in-from-*` | `translate` 100% → 0, `opacity` | `ease-spring-snappy` | 260ms |
+| Close | `godui-slide-out-to-*` | `translate`, `opacity` | `ease-out-expo` | 260 / 150ms |
+| Overlay | `godui-fade-in` / `godui-fade-out` | `opacity` | snappy / expo | 260 / 150ms |
+
+shadcn's sheet also sets a bare `transition` class, which would animate color,
+border and shadow changes. GodUI drops it.
+
+Under `prefers-reduced-motion` the panel fades in place for 150ms; it doesn't
+slide.
+
+## API
+
+Built on [Radix Dialog](https://www.radix-ui.com/primitives/docs/components/dialog).
+Props are identical to [shadcn/ui Sheet](https://ui.shadcn.com/docs/components/sheet).
+
+</Workbench>

@@ -1,8 +1,8 @@
 # @godui/mcp
 
 Model Context Protocol server for [GodUI](https://godui.design). Add it to your
-AI IDE and ask for any GodUI component by description — the agent discovers it,
-gets the install command, and writes the source for you.
+AI IDE and ask for any GodUI component by description. The agent finds it, gets
+the install command, and writes the source for you.
 
 ## Install
 
@@ -23,10 +23,10 @@ Add this to your MCP config file:
 
 Then **restart your IDE**.
 
-- **Cursor** — `~/.cursor/mcp.json` (or `.cursor/mcp.json` in a project)
-- **Windsurf** — `~/.codeium/windsurf/mcp_config.json`
-- **Claude Desktop** — `claude_desktop_config.json`
-- **Cline / Roo-Cline** — the MCP settings JSON in the extension
+- **Cursor**: `~/.cursor/mcp.json` (or `.cursor/mcp.json` in a project)
+- **Windsurf**: `~/.codeium/windsurf/mcp_config.json`
+- **Claude Desktop**: `claude_desktop_config.json`
+- **Cline / Roo-Cline**: the MCP settings JSON in the extension
 
 ## Usage
 
@@ -39,9 +39,9 @@ Ask your IDE to use any GodUI component:
 
 ## Tools
 
-- **`list_components`** — list the full catalog, optionally filtered by category.
-- **`search_components`** — find components by what they do (natural language).
-- **`get_component`** — fetch one component's install command + full source.
+- **`list_components`**: list the full catalog, optionally filtered by category.
+- **`search_components`**: find components by what they do (natural language).
+- **`get_component`**: fetch one component's install command + full source.
 
 ## How it works
 

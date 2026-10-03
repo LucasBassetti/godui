@@ -1,4 +1,4 @@
-import { type Step, Stepper } from "@godui/components";
+import { type Step, Stepper } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { hidden, range, select } from "../playground/argtypes";
 import { padded } from "../playground/stage";
@@ -11,7 +11,7 @@ const steps: Step[] = [
 ];
 
 const meta = {
-  title: "Layout/Stepper",
+  title: "Lab/Layout/Stepper",
   component: Stepper,
   tags: ["autodocs"],
   parameters: { layout: "padded" },

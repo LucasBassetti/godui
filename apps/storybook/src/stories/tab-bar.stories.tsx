@@ -1,4 +1,4 @@
-import { TabBar, type TabBarTab } from "@godui/components";
+import { TabBar, type TabBarTab } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "storybook/test";
 import { action, hidden, select, toggle } from "../playground/argtypes";
@@ -46,7 +46,7 @@ const tabs: TabBarTab[] = [
 ];
 
 const meta = {
-  title: "Navigation/Tab Bar",
+  title: "Lab/Navigation/Tab Bar",
   component: TabBar,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

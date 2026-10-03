@@ -1,43 +1,63 @@
 ---
 title: Introduction
-description: An open-source collection of beautifully crafted motion components built with React, TypeScript, Tailwind CSS, Motion, and shadcn/ui.
+description: Open-source animated shadcn/ui components. Same files and API, with motion that runs entirely on the GPU.
 ---
 
 import { Cards, Card } from "fumadocs-ui/components/card";
-import { MagicButton } from "@godui/components";
+import { TabsDemo } from "@/components/demos/core/tabs-demo";
 
-**GodUI** is a collection of open-source, animated UI components for Design
-Engineers. Built with **React**, **TypeScript**, **Tailwind CSS v4**, and
-**Motion**, and distributed as a [shadcn](https://ui.shadcn.com) registry — so
-the components are copied straight into your project and you own every line.
+**GodUI** is shadcn/ui, animated. Every component is a drop-in replacement for
+its [shadcn/ui](https://ui.shadcn.com) counterpart: the same file, the same
+exports and props, the same Radix primitives, so you can install it over a
+component you already use and every call site keeps working. Only the motion
+changes.
 
-<ComponentPreview code={`import { MagicButton } from "@godui/components";
+<ComponentPreview code={`import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-export function Demo() {
-  return <MagicButton size="lg">Get Started</MagicButton>;
+export function TabsDemo() {
+  return (
+    <Tabs defaultValue="account" className="w-full max-w-sm">
+      <TabsList>
+        <TabsTrigger value="account">Account</TabsTrigger>
+        <TabsTrigger value="password">Password</TabsTrigger>
+        <TabsTrigger value="notifications">Notifications</TabsTrigger>
+      </TabsList>
+      <TabsContent value="account">Make changes to your account here.</TabsContent>
+      <TabsContent value="password">Change your password here.</TabsContent>
+      <TabsContent value="notifications">Choose what you want to be notified about.</TabsContent>
+    </Tabs>
+  );
 }`}>
-  <MagicButton size="lg">Get Started</MagicButton>
+  <TabsDemo />
 </ComponentPreview>
 
 ## What you get
 
-- **You own the code.** Components are installed into your codebase via the
-  shadcn CLI — not hidden behind a versioned dependency.
-- **Motion-first.** Every component ships with polished, performant animation
-  out of the box.
-- **shadcn-native.** Same install flow as shadcn/ui. If you already use shadcn,
-  just add the `@godui` registry.
-- **Tailwind v4 tokens.** Themed with CSS variables — light and dark modes work
-  with zero extra config.
-- **Type-safe.** Full TypeScript types for every component and its props.
+- **A drop-in for shadcn/ui.** `npx shadcn add @godui/dialog` overwrites
+  `components/ui/dialog.tsx`. Imports, props and `data-slot`s don't change.
+- **GPU-only motion.** Every animation moves only `transform`, `opacity` or
+  `filter`, so it runs on the compositor and stays smooth under load. A lint
+  and a Chrome trace test enforce it in CI.
+- **Springs in plain CSS.** Enter animations use spring curves written as CSS
+  `linear()`. There's no animation runtime to ship.
+- **Reduced motion built in.** Under `prefers-reduced-motion`, movement turns
+  into short fades.
+- **You own the code.** Components are copied into your project by the shadcn
+  CLI. There's no versioned dependency to upgrade.
+
+Looking for effects, backgrounds and showpieces beyond the shadcn catalog? They
+live in [Lab](/docs/lab), GodUI's expressive, experimental set.
 
 ## Next steps
 
 <Cards>
   <Card href="/docs/installation" title="Installation">
-    Add the `@godui` registry and pull your first component in minutes.
+    Add the `@godui` registry and install your first component.
   </Card>
   <Card href="/docs/components" title="Components">
-    Browse the full collection of animated components.
+    Browse every animated shadcn/ui component.
+  </Card>
+  <Card href="/docs/guidelines/motion" title="GPU-only Motion">
+    The motion contract every component follows.
   </Card>
 </Cards>

@@ -1,4 +1,4 @@
-import { SwipeDeck, type SwipeDeckProps } from "@godui/components";
+import { SwipeDeck, type SwipeDeckProps } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { range, toggle } from "../playground/argtypes";
 
@@ -35,7 +35,7 @@ function ProfileCard({
 }
 
 const meta = {
-  title: "Layout/SwipeDeck",
+  title: "Lab/Layout/SwipeDeck",
   component: SwipeDeck,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

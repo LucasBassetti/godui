@@ -1,6 +1,6 @@
 "use client";
 
-import { ReorderItem, ReorderList } from "@godui/components";
+import { ReorderItem, ReorderList } from "@godui/lab";
 import * as React from "react";
 
 const INITIAL = [

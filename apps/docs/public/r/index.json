@@ -1,25 +1,27 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "revision": "26391f1ae2bc4c7e7e5082762e2663199de84d21",
+  "revision": "d68bfb3575c767ab1ef7a7b392ee2a702d73291f",
   "components": [
     {
       "name": "accordion",
       "title": "Accordion",
-      "description": "A disclosure list with spring height animation, rotating chevrons, and single or multiple open modes.",
-      "category": "Layout",
-      "dependencies": ["framer-motion"],
-      "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/accordion"
+      "description": "A vertically stacked set of interactive headings that each reveal a section of content. A height animation faked on the compositor: the panel's clip edge sweeps while its text holds still, and the rows below glide with the edge. GPU-only.",
+      "category": "Components",
+      "dependencies": ["radix-ui", "lucide-react"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "install": "npx shadcn@latest add @godui/accordion",
+      "registry": "core"
     },
     {
       "name": "agent-flow",
       "title": "Agent Flow",
-      "description": "A draggable, pannable node-graph that visualizes an agent workflow — labelled nodes with live run status and data packets that flow along the edges between them.",
+      "description": "A draggable, pannable node-graph that visualizes an agent workflow: labelled nodes with live run status and data packets that flow along the edges between them.",
       "category": "AI",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/agent-flow"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/agent-flow.json\"",
+      "registry": "lab"
     },
     {
       "name": "agent-timeline",
@@ -28,7 +30,18 @@
       "category": "AI",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/agent-timeline"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/agent-timeline.json\"",
+      "registry": "lab"
+    },
+    {
+      "name": "alert-dialog",
+      "title": "Alert Dialog",
+      "description": "A modal dialog that interrupts the user with important content and expects a response. Scales in on a spring; GPU-only.",
+      "category": "Components",
+      "dependencies": ["radix-ui"],
+      "registryDependencies": ["utils", "@godui/godui-motion", "@godui/button"],
+      "install": "npx shadcn@latest add @godui/alert-dialog",
+      "registry": "core"
     },
     {
       "name": "animated-beam",
@@ -37,7 +50,8 @@
       "category": "Visualizations",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/animated-beam"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/animated-beam.json\"",
+      "registry": "lab"
     },
     {
       "name": "animated-testimonials",
@@ -46,7 +60,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/animated-testimonials"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/animated-testimonials.json\"",
+      "registry": "lab"
     },
     {
       "name": "animated-tooltip",
@@ -55,7 +70,8 @@
       "category": "Overlays",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/animated-tooltip"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/animated-tooltip.json\"",
+      "registry": "lab"
     },
     {
       "name": "app-showcase",
@@ -64,7 +80,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/app-showcase"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/app-showcase.json\"",
+      "registry": "lab"
     },
     {
       "name": "ascii-dither",
@@ -73,7 +90,8 @@
       "category": "Effects",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/ascii-dither"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/ascii-dither.json\"",
+      "registry": "lab"
     },
     {
       "name": "aurora-text",
@@ -82,7 +100,8 @@
       "category": "Text",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/aurora-text"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/aurora-text.json\"",
+      "registry": "lab"
     },
     {
       "name": "avatar-group",
@@ -91,7 +110,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/avatar-group"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/avatar-group.json\"",
+      "registry": "lab"
     },
     {
       "name": "beam-draw",
@@ -100,7 +120,8 @@
       "category": "Effects",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/beam-draw"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/beam-draw.json\"",
+      "registry": "lab"
     },
     {
       "name": "bento-grid",
@@ -109,16 +130,18 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/bento-grid"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/bento-grid.json\"",
+      "registry": "lab"
     },
     {
       "name": "blueprint-grid",
       "title": "Blueprint Grid",
-      "description": "A technical blueprint lattice — ruled lines, a dot matrix, or a perspective floor — with a diagonal light sweep and a cursor spotlight. Pure CSS.",
+      "description": "A technical blueprint lattice (ruled lines, a dot matrix, or a perspective floor) with a diagonal light sweep and a cursor spotlight. Pure CSS.",
       "category": "Backgrounds",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/blueprint-grid"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/blueprint-grid.json\"",
+      "registry": "lab"
     },
     {
       "name": "border-beam",
@@ -127,7 +150,8 @@
       "category": "Effects",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/border-beam"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/border-beam.json\"",
+      "registry": "lab"
     },
     {
       "name": "breadcrumbs",
@@ -136,7 +160,28 @@
       "category": "Navigation",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/breadcrumbs"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/breadcrumbs.json\"",
+      "registry": "lab"
+    },
+    {
+      "name": "button",
+      "title": "Button",
+      "description": "Displays a button or a component that looks like a button. Presses with a spring scale; GPU-only.",
+      "category": "Components",
+      "dependencies": ["radix-ui", "class-variance-authority"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "install": "npx shadcn@latest add @godui/button",
+      "registry": "core"
+    },
+    {
+      "name": "calendar",
+      "title": "Calendar",
+      "description": "A date field component that allows users to enter and edit date. The old month drifts out as the new one drifts in a beat later, the caption on its own layer; a picked day pops, a range sweeps in, and hovering after the first day previews the range with a ghost end; hover and focus fade. GPU-only.",
+      "category": "Components",
+      "dependencies": ["react-day-picker@latest", "date-fns", "lucide-react"],
+      "registryDependencies": ["utils", "@godui/godui-motion", "@godui/button"],
+      "install": "npx shadcn@latest add @godui/calendar",
+      "registry": "core"
     },
     {
       "name": "card-swap",
@@ -145,25 +190,63 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/card-swap"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/card-swap.json\"",
+      "registry": "lab"
+    },
+    {
+      "name": "carousel",
+      "title": "Carousel",
+      "description": "A carousel with motion and swipe built using Embla. Embla already moves the track with a GPU translate; reduced motion jumps instead of scrolling.",
+      "category": "Components",
+      "dependencies": ["embla-carousel-react", "lucide-react"],
+      "registryDependencies": ["utils", "@godui/godui-motion", "@godui/button"],
+      "install": "npx shadcn@latest add @godui/carousel",
+      "registry": "core"
+    },
+    {
+      "name": "checkbox",
+      "title": "Checkbox",
+      "description": "A control that allows the user to toggle between checked and not checked. Ink floods the box from a dot and the check is drawn; unchecking drains it. GPU-only.",
+      "category": "Components",
+      "dependencies": ["radix-ui", "lucide-react"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "install": "npx shadcn@latest add @godui/checkbox",
+      "registry": "core"
+    },
+    {
+      "name": "collapsible",
+      "title": "Collapsible",
+      "description": "An interactive component which expands/collapses a panel. A height animation faked on the compositor: the panel's clip edge sweeps while its content holds still, and the content after the Collapsible rides the edge. GPU-only.",
+      "category": "Components",
+      "dependencies": ["radix-ui"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "install": "npx shadcn@latest add @godui/collapsible",
+      "registry": "core"
     },
     {
       "name": "combobox",
       "title": "Combobox",
-      "description": "A type-ahead autocomplete with staggered result reveal, highlighted matches, keyboard navigation, and an async loading state.",
-      "category": "Navigation",
-      "dependencies": ["framer-motion"],
-      "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/combobox"
+      "description": "Autocomplete input and command palette with a list of suggestions. Popup grows on a spring; chips pop in and FLIP on removal. GPU-only.",
+      "category": "Components",
+      "dependencies": ["@base-ui/react", "lucide-react"],
+      "registryDependencies": [
+        "utils",
+        "@godui/godui-motion",
+        "@godui/button",
+        "@godui/input-group"
+      ],
+      "install": "npx shadcn@latest add @godui/combobox",
+      "registry": "core"
     },
     {
-      "name": "command-palette",
-      "title": "Command Palette",
-      "description": "A ⌘K command menu with fuzzy filtering, keyboard navigation, and a spring-tracked active highlight.",
-      "category": "Overlays",
-      "dependencies": ["framer-motion"],
-      "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/command-palette"
+      "name": "command",
+      "title": "Command",
+      "description": "Fast, composable, unstyled command menu for React. One highlight slides to the selected item; GPU-only.",
+      "category": "Components",
+      "dependencies": ["cmdk", "lucide-react"],
+      "registryDependencies": ["utils", "@godui/godui-motion", "@godui/dialog"],
+      "install": "npx shadcn@latest add @godui/command",
+      "registry": "core"
     },
     {
       "name": "comment-pin",
@@ -172,7 +255,8 @@
       "category": "Collaboration",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/comment-pin"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/comment-pin.json\"",
+      "registry": "lab"
     },
     {
       "name": "confetti",
@@ -181,25 +265,28 @@
       "category": "Effects",
       "dependencies": ["canvas-confetti"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/confetti"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/confetti.json\"",
+      "registry": "lab"
     },
     {
       "name": "container-scroll",
       "title": "Container Scroll",
-      "description": "A device frame that un-tilts from a 3D perspective and scales to rest as you scroll — the classic product hero.",
+      "description": "A device frame that un-tilts from a 3D perspective and scales to rest as you scroll, for a product hero section.",
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/container-scroll"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/container-scroll.json\"",
+      "registry": "lab"
     },
     {
       "name": "context-menu",
       "title": "Context Menu",
-      "description": "A right-click menu that springs from the cursor point and flips to stay in the viewport, with shortcuts and destructive actions.",
-      "category": "Navigation",
-      "dependencies": ["framer-motion"],
-      "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/context-menu"
+      "description": "Displays a menu to the user (such as a set of actions or functions), triggered by a right click. Grows from the pointer on a spring; checks pop in. GPU-only.",
+      "category": "Components",
+      "dependencies": ["radix-ui", "lucide-react"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "install": "npx shadcn@latest add @godui/context-menu",
+      "registry": "core"
     },
     {
       "name": "conversation-thread",
@@ -208,16 +295,18 @@
       "category": "AI",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/conversation-thread"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/conversation-thread.json\"",
+      "registry": "lab"
     },
     {
       "name": "cover-flow",
       "title": "Cover Flow",
-      "description": "A physics 3D cover flow — the centered slide faces front while neighbours rotate away in perspective, with momentum drag and snap.",
+      "description": "A physics 3D cover flow: the centered slide faces front while neighbours rotate away in perspective, with momentum drag and snap.",
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/cover-flow"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/cover-flow.json\"",
+      "registry": "lab"
     },
     {
       "name": "decorative-background",
@@ -226,7 +315,18 @@
       "category": "Static Effects",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/decorative-background.json\""
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/decorative-background.json\"",
+      "registry": "lab"
+    },
+    {
+      "name": "dialog",
+      "title": "Dialog",
+      "description": "A window overlaid on the primary window, rendering the content underneath inert. Scales in on a spring; GPU-only.",
+      "category": "Components",
+      "dependencies": ["radix-ui", "lucide-react"],
+      "registryDependencies": ["utils", "@godui/godui-motion", "@godui/button"],
+      "install": "npx shadcn@latest add @godui/dialog",
+      "registry": "core"
     },
     {
       "name": "dock",
@@ -235,25 +335,28 @@
       "category": "Navigation",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/dock"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/dock.json\"",
+      "registry": "lab"
     },
     {
       "name": "drawer",
       "title": "Drawer",
-      "description": "A draggable bottom or side sheet with rubber-band physics, flick-to-dismiss, scrim, and scroll lock.",
-      "category": "Overlays",
-      "dependencies": ["framer-motion"],
-      "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/drawer"
+      "description": "A drawer component for React, built on vaul. Slides with transform; content rises in after the sheet. GPU-only.",
+      "category": "Components",
+      "dependencies": ["vaul"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "install": "npx shadcn@latest add @godui/drawer",
+      "registry": "core"
     },
     {
       "name": "dropdown-menu",
       "title": "Dropdown Menu",
-      "description": "An accessible dropdown that springs open from its trigger edge, with submenus, shortcuts, separators, and keyboard navigation.",
-      "category": "Navigation",
-      "dependencies": ["framer-motion"],
-      "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/dropdown-menu"
+      "description": "Displays a menu to the user (such as a set of actions or functions), triggered by a button. Grows from its trigger on a spring; checks pop in. GPU-only.",
+      "category": "Components",
+      "dependencies": ["radix-ui", "lucide-react"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "install": "npx shadcn@latest add @godui/dropdown-menu",
+      "registry": "core"
     },
     {
       "name": "dynamic-island",
@@ -262,7 +365,8 @@
       "category": "Overlays",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/dynamic-island"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/dynamic-island.json\"",
+      "registry": "lab"
     },
     {
       "name": "effect-background",
@@ -271,7 +375,8 @@
       "category": "Static Effects",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/effect-background.json\""
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/effect-background.json\"",
+      "registry": "lab"
     },
     {
       "name": "elastic-text",
@@ -280,7 +385,8 @@
       "category": "Text",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/elastic-text"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/elastic-text.json\"",
+      "registry": "lab"
     },
     {
       "name": "encrypted-card",
@@ -289,7 +395,8 @@
       "category": "Effects",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/encrypted-card"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/encrypted-card.json\"",
+      "registry": "lab"
     },
     {
       "name": "filter-bar",
@@ -298,7 +405,8 @@
       "category": "Navigation",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/filter-bar"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/filter-bar.json\"",
+      "registry": "lab"
     },
     {
       "name": "floating-toolbar",
@@ -307,16 +415,18 @@
       "category": "Overlays",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/floating-toolbar"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/floating-toolbar.json\"",
+      "registry": "lab"
     },
     {
       "name": "flow-field",
       "title": "Flow Field",
-      "description": "Particles streaming along an evolving noise vector field, leaving silky fading trails. Paints its own themed background.",
+      "description": "Particles streaming along an evolving noise vector field, leaving fading trails. Paints its own themed background.",
       "category": "Backgrounds",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/flow-field"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/flow-field.json\"",
+      "registry": "lab"
     },
     {
       "name": "fluid-cursor",
@@ -325,7 +435,8 @@
       "category": "Effects",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/fluid-cursor"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/fluid-cursor.json\"",
+      "registry": "lab"
     },
     {
       "name": "geometric-background",
@@ -334,7 +445,8 @@
       "category": "Static Effects",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/geometric-background.json\""
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/geometric-background.json\"",
+      "registry": "lab"
     },
     {
       "name": "globe",
@@ -343,7 +455,18 @@
       "category": "Visualizations",
       "dependencies": ["cobe"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/globe"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/globe.json\"",
+      "registry": "lab"
+    },
+    {
+      "name": "godui-motion",
+      "title": "GodUI Motion",
+      "description": "GPU-only motion foundation for GodUI components: spring easings as CSS linear(), shared enter/exit keyframes, reduced-motion fallbacks, a FLIP hook and the faked height animation engine (useReveal).",
+      "category": "Components",
+      "dependencies": [],
+      "registryDependencies": [],
+      "install": "npx shadcn@latest add @godui/godui-motion",
+      "registry": "core"
     },
     {
       "name": "gooey-fab",
@@ -352,7 +475,8 @@
       "category": "Buttons",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/gooey-fab"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/gooey-fab.json\"",
+      "registry": "lab"
     },
     {
       "name": "gooey-stack",
@@ -361,7 +485,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/gooey-stack"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/gooey-stack.json\"",
+      "registry": "lab"
     },
     {
       "name": "gradient-background",
@@ -370,7 +495,8 @@
       "category": "Static Effects",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add \"https://godui.design/r/gradient-background.json\""
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/gradient-background.json\"",
+      "registry": "lab"
     },
     {
       "name": "gravity",
@@ -379,7 +505,8 @@
       "category": "Visualizations",
       "dependencies": ["matter-js"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/gravity"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/gravity.json\"",
+      "registry": "lab"
     },
     {
       "name": "hero-parallax",
@@ -388,7 +515,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/hero-parallax"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/hero-parallax.json\"",
+      "registry": "lab"
     },
     {
       "name": "highlighter",
@@ -397,7 +525,8 @@
       "category": "Text",
       "dependencies": ["framer-motion", "rough-notation"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/highlighter"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/highlighter.json\"",
+      "registry": "lab"
     },
     {
       "name": "hold-confirm-button",
@@ -406,25 +535,38 @@
       "category": "Buttons",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/hold-confirm-button"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/hold-confirm-button.json\"",
+      "registry": "lab"
     },
     {
       "name": "holographic-card",
       "title": "Holographic Card",
-      "description": "A trading-card holo effect — iridescent foil, specular glare, and glitter that tilt and shift with the pointer or device gyroscope.",
+      "description": "A trading-card holo effect: iridescent foil, specular glare, and glitter that tilt and shift with the pointer or device gyroscope.",
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/holographic-card"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/holographic-card.json\"",
+      "registry": "lab"
+    },
+    {
+      "name": "hover-card",
+      "title": "Hover Card",
+      "description": "For sighted users to preview content available behind a link. Grows from the link on a spring; GPU-only.",
+      "category": "Components",
+      "dependencies": ["radix-ui"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "install": "npx shadcn@latest add @godui/hover-card",
+      "registry": "core"
     },
     {
       "name": "image-accordion",
       "title": "Image Accordion",
-      "description": "Horizontal image panels that expand on hover to reveal their caption — an elegant, space-efficient gallery.",
+      "description": "A space-efficient gallery of horizontal image panels that expand on hover to reveal their caption.",
       "category": "Layout",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/image-accordion"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/image-accordion.json\"",
+      "registry": "lab"
     },
     {
       "name": "image-compare",
@@ -433,25 +575,64 @@
       "category": "Layout",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/image-compare"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/image-compare.json\"",
+      "registry": "lab"
     },
     {
       "name": "image-trail",
       "title": "Image Trail",
-      "description": "Images spawn along the pointer's path, pop in, and drift away — the signature portfolio hover effect.",
+      "description": "Images spawn along the pointer's path, pop in, and drift away, as a portfolio-style hover effect.",
       "category": "Effects",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/image-trail"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/image-trail.json\"",
+      "registry": "lab"
     },
     {
       "name": "inertia-gallery",
       "title": "Inertia Gallery",
-      "description": "A horizontal gallery you throw with the pointer — momentum carries it, it rubber-bands at the ends, and slides scale, blur, and fade with distance from center.",
+      "description": "A horizontal gallery you throw with the pointer. Momentum carries it, it rubber-bands at the ends, and slides scale, blur, and fade with distance from center.",
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/inertia-gallery"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/inertia-gallery.json\"",
+      "registry": "lab"
+    },
+    {
+      "name": "input",
+      "title": "Input",
+      "description": "Displays a form input field or a component that looks like an input field. The focus ring snaps (no box-shadow transition); use Input Group for an animated ring. GPU-only.",
+      "category": "Components",
+      "dependencies": [],
+      "registryDependencies": ["utils"],
+      "install": "npx shadcn@latest add @godui/input",
+      "registry": "core"
+    },
+    {
+      "name": "input-group",
+      "title": "Input Group",
+      "description": "Display additional information or actions to an input or textarea. The focus ring fades and grows in on a ::before layer (opacity + scale); the border snaps. GPU-only.",
+      "category": "Components",
+      "dependencies": ["class-variance-authority"],
+      "registryDependencies": [
+        "utils",
+        "@godui/godui-motion",
+        "@godui/button",
+        "@godui/input",
+        "@godui/textarea"
+      ],
+      "install": "npx shadcn@latest add @godui/input-group",
+      "registry": "core"
+    },
+    {
+      "name": "input-otp",
+      "title": "Input OTP",
+      "description": "Accessible one-time password component with copy paste functionality. Digits rise in; the caret blinks with opacity only. GPU-only.",
+      "category": "Components",
+      "dependencies": ["input-otp", "lucide-react"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "install": "npx shadcn@latest add @godui/input-otp",
+      "registry": "core"
     },
     {
       "name": "jelly-button",
@@ -460,7 +641,8 @@
       "category": "Buttons",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/jelly-button"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/jelly-button.json\"",
+      "registry": "lab"
     },
     {
       "name": "lamp",
@@ -469,7 +651,8 @@
       "category": "Effects",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/lamp"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/lamp.json\"",
+      "registry": "lab"
     },
     {
       "name": "light-rays",
@@ -478,7 +661,8 @@
       "category": "Backgrounds",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/light-rays"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/light-rays.json\"",
+      "registry": "lab"
     },
     {
       "name": "liquid-glass-card",
@@ -487,7 +671,8 @@
       "category": "Glass",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/liquid-glass-card"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/liquid-glass-card.json\"",
+      "registry": "lab"
     },
     {
       "name": "liquid-glass-lens",
@@ -496,16 +681,18 @@
       "category": "Glass",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/liquid-glass-lens"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/liquid-glass-lens.json\"",
+      "registry": "lab"
     },
     {
       "name": "liquid-image",
       "title": "Liquid Image",
-      "description": "A premium hover effect that ripples and distorts an image like liquid, intensifying with cursor speed.",
+      "description": "A hover effect that ripples and distorts an image like liquid, intensifying with cursor speed.",
       "category": "Effects",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/liquid-image"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/liquid-image.json\"",
+      "registry": "lab"
     },
     {
       "name": "liquid-metaballs",
@@ -514,16 +701,18 @@
       "category": "Backgrounds",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/liquid-metaballs"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/liquid-metaballs.json\"",
+      "registry": "lab"
     },
     {
       "name": "live-cursors",
       "title": "Live Cursors",
-      "description": "Smoothly interpolated multiplayer cursors with trailing name flags and optional cursor-chat, plus a self-driving simulated-peer mode.",
+      "description": "Interpolated multiplayer cursors with trailing name flags and optional cursor-chat, plus a self-driving simulated-peer mode.",
       "category": "Collaboration",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/live-cursors"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/live-cursors.json\"",
+      "registry": "lab"
     },
     {
       "name": "magic-button",
@@ -532,7 +721,8 @@
       "category": "Buttons",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/magic-button"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/magic-button.json\"",
+      "registry": "lab"
     },
     {
       "name": "magic-input",
@@ -541,7 +731,8 @@
       "category": "Inputs",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/magic-input"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/magic-input.json\"",
+      "registry": "lab"
     },
     {
       "name": "magic-tab",
@@ -550,7 +741,8 @@
       "category": "Navigation",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/magic-tab"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/magic-tab.json\"",
+      "registry": "lab"
     },
     {
       "name": "magnetic-button",
@@ -559,16 +751,18 @@
       "category": "Buttons",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/magnetic-button"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/magnetic-button.json\"",
+      "registry": "lab"
     },
     {
       "name": "marquee",
       "title": "Marquee",
-      "description": "An infinite, seamless scrolling row or column of content that pauses on hover.",
+      "description": "An infinite scrolling row or column of content that loops without a gap and pauses on hover.",
       "category": "Effects",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/marquee"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/marquee.json\"",
+      "registry": "lab"
     },
     {
       "name": "mask-button",
@@ -577,7 +771,8 @@
       "category": "Buttons",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/mask-button"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/mask-button.json\"",
+      "registry": "lab"
     },
     {
       "name": "mega-menu",
@@ -586,7 +781,18 @@
       "category": "Navigation",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/mega-menu"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/mega-menu.json\"",
+      "registry": "lab"
+    },
+    {
+      "name": "menubar",
+      "title": "Menubar",
+      "description": "A visually persistent menu common in desktop applications that provides quick access to a consistent set of commands. Each menu grows from its trigger on a spring; hopping exits one and enters the next. GPU-only.",
+      "category": "Components",
+      "dependencies": ["radix-ui", "lucide-react"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "install": "npx shadcn@latest add @godui/menubar",
+      "registry": "core"
     },
     {
       "name": "morph-gallery",
@@ -595,7 +801,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/morph-gallery"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/morph-gallery.json\"",
+      "registry": "lab"
     },
     {
       "name": "morphing-dialog",
@@ -604,7 +811,8 @@
       "category": "Overlays",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/morphing-dialog"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/morphing-dialog.json\"",
+      "registry": "lab"
     },
     {
       "name": "multi-button",
@@ -613,16 +821,28 @@
       "category": "Buttons",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/multi-button"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/multi-button.json\"",
+      "registry": "lab"
+    },
+    {
+      "name": "navigation-menu",
+      "title": "Navigation Menu",
+      "description": "A collection of links for navigating websites. Switching items slides the old content out and the new one in from the matching side; the viewport scales in and its size snaps. GPU-only.",
+      "category": "Components",
+      "dependencies": ["radix-ui", "lucide-react", "class-variance-authority"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "install": "npx shadcn@latest add @godui/navigation-menu",
+      "registry": "core"
     },
     {
       "name": "notification-inbox",
       "title": "Notification Inbox",
-      "description": "A Linear-style notification center with time-bucketed groups, unread accent rails, swipe-to-archive, mark-all-read, and a polished empty state.",
+      "description": "A Linear-style notification center with time-bucketed groups, unread accent rails, swipe-to-archive, mark-all-read, and an empty state.",
       "category": "Collaboration",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/notification-inbox"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/notification-inbox.json\"",
+      "registry": "lab"
     },
     {
       "name": "number-ticker",
@@ -631,7 +851,8 @@
       "category": "Text",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/number-ticker"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/number-ticker.json\"",
+      "registry": "lab"
     },
     {
       "name": "orbit-carousel",
@@ -640,7 +861,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/orbit-carousel"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/orbit-carousel.json\"",
+      "registry": "lab"
     },
     {
       "name": "orbiting-circles",
@@ -649,7 +871,8 @@
       "category": "Visualizations",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/orbiting-circles"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/orbiting-circles.json\"",
+      "registry": "lab"
     },
     {
       "name": "otp-input",
@@ -658,16 +881,18 @@
       "category": "Inputs",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/otp-input"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/otp-input.json\"",
+      "registry": "lab"
     },
     {
       "name": "particle-dissolve",
       "title": "Particle Dissolve",
-      "description": "Text or an image is sampled into particles that scatter and reform — a dramatic entrance or transition.",
+      "description": "Text or an image is sampled into particles that scatter and reform, as an entrance or a transition.",
       "category": "Effects",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/particle-dissolve"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/particle-dissolve.json\"",
+      "registry": "lab"
     },
     {
       "name": "pixel-grid",
@@ -676,7 +901,18 @@
       "category": "Backgrounds",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/pixel-grid"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/pixel-grid.json\"",
+      "registry": "lab"
+    },
+    {
+      "name": "popover",
+      "title": "Popover",
+      "description": "Displays rich content in a portal, triggered by a button. Grows from its trigger on a spring; GPU-only.",
+      "category": "Components",
+      "dependencies": ["radix-ui"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "install": "npx shadcn@latest add @godui/popover",
+      "registry": "core"
     },
     {
       "name": "presence-facepile",
@@ -685,7 +921,18 @@
       "category": "Collaboration",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/presence-facepile"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/presence-facepile.json\"",
+      "registry": "lab"
+    },
+    {
+      "name": "progress",
+      "title": "Progress",
+      "description": "Displays an indicator showing the completion progress of a task, typically displayed as a progress bar. The fill glides on a spring; indeterminate bars sweep. GPU-only.",
+      "category": "Components",
+      "dependencies": ["radix-ui"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "install": "npx shadcn@latest add @godui/progress",
+      "registry": "core"
     },
     {
       "name": "progress-fold-button",
@@ -694,7 +941,8 @@
       "category": "Buttons",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/progress-fold-button"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/progress-fold-button.json\"",
+      "registry": "lab"
     },
     {
       "name": "progressive-card-reveal",
@@ -703,7 +951,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/progressive-card-reveal"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/progressive-card-reveal.json\"",
+      "registry": "lab"
     },
     {
       "name": "prompt-composer",
@@ -712,7 +961,8 @@
       "category": "AI",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/prompt-composer"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/prompt-composer.json\"",
+      "registry": "lab"
     },
     {
       "name": "prompt-suggestions",
@@ -721,7 +971,18 @@
       "category": "AI",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/prompt-suggestions"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/prompt-suggestions.json\"",
+      "registry": "lab"
+    },
+    {
+      "name": "radio-group",
+      "title": "Radio Group",
+      "description": "A set of checkable buttons (known as radio buttons) where no more than one of the buttons can be checked at a time. The dot grows in; items press on a spring. GPU-only.",
+      "category": "Components",
+      "dependencies": ["radix-ui", "lucide-react"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "install": "npx shadcn@latest add @godui/radio-group",
+      "registry": "core"
     },
     {
       "name": "reorder-list",
@@ -730,7 +991,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/reorder-list"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/reorder-list.json\"",
+      "registry": "lab"
     },
     {
       "name": "resizable-header",
@@ -739,16 +1001,18 @@
       "category": "Navigation",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/resizable-header"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/resizable-header.json\"",
+      "registry": "lab"
     },
     {
       "name": "scroll-progress",
       "title": "Scroll Progress",
-      "description": "A spring-smoothed reading indicator — a pinned top bar or a fading back-to-top ring.",
+      "description": "A spring-smoothed reading indicator: a pinned top bar or a fading back-to-top ring.",
       "category": "Effects",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/scroll-progress"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/scroll-progress.json\"",
+      "registry": "lab"
     },
     {
       "name": "scroll-reveal",
@@ -757,25 +1021,28 @@
       "category": "Effects",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/scroll-reveal"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/scroll-reveal.json\"",
+      "registry": "lab"
     },
     {
       "name": "scroll-stack",
       "title": "Scroll Stack",
-      "description": "Pinned cards that scale, recede, and stack as the page scrolls — the premium feature-reveal section.",
+      "description": "Pinned cards that scale, recede, and stack as the page scrolls, for a feature-reveal section.",
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/scroll-stack"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/scroll-stack.json\"",
+      "registry": "lab"
     },
     {
       "name": "scroll-text-reveal",
       "title": "Scroll Text Reveal",
-      "description": "Kinetic typography that scrubs each word from dim to sharp as the paragraph scrolls through view — reverses cleanly on scroll-up.",
+      "description": "Kinetic typography that scrubs each word from dim to sharp as the paragraph scrolls through view, and reverses on scroll-up.",
       "category": "Text",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/scroll-text-reveal"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/scroll-text-reveal.json\"",
+      "registry": "lab"
     },
     {
       "name": "scroll-timeline",
@@ -784,7 +1051,8 @@
       "category": "Visualizations",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/scroll-timeline"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/scroll-timeline.json\"",
+      "registry": "lab"
     },
     {
       "name": "segmented-control",
@@ -793,7 +1061,28 @@
       "category": "Navigation",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/segmented-control"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/segmented-control.json\"",
+      "registry": "lab"
+    },
+    {
+      "name": "select",
+      "title": "Select",
+      "description": "Displays a list of options for the user to pick from, triggered by a button. Grows on a spring; the check pops in. GPU-only.",
+      "category": "Components",
+      "dependencies": ["radix-ui", "lucide-react"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "install": "npx shadcn@latest add @godui/select",
+      "registry": "core"
+    },
+    {
+      "name": "sheet",
+      "title": "Sheet",
+      "description": "Extends the Dialog component to display content that complements the main content of the screen. Slides its full size in on a spring; GPU-only.",
+      "category": "Components",
+      "dependencies": ["radix-ui", "lucide-react"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "install": "npx shadcn@latest add @godui/sheet",
+      "registry": "core"
     },
     {
       "name": "shimmer-button",
@@ -802,7 +1091,38 @@
       "category": "Buttons",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/shimmer-button"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/shimmer-button.json\"",
+      "registry": "lab"
+    },
+    {
+      "name": "sidebar",
+      "title": "Sidebar",
+      "description": "A composable, themeable and customizable sidebar component. Widths snap: offcanvas slides the panel, icon mode slides its surface to the rail, and the content beside it glides along (FLIP) on the same spring. GPU-only.",
+      "category": "Components",
+      "dependencies": ["radix-ui", "class-variance-authority", "lucide-react"],
+      "registryDependencies": [
+        "utils",
+        "@godui/godui-motion",
+        "@godui/button",
+        "separator",
+        "@godui/sheet",
+        "@godui/tooltip",
+        "@godui/input",
+        "use-mobile",
+        "@godui/skeleton"
+      ],
+      "install": "npx shadcn@latest add @godui/sidebar",
+      "registry": "core"
+    },
+    {
+      "name": "skeleton",
+      "title": "Skeleton",
+      "description": "Use to show a placeholder while content is loading. A soft band sweeps across the block (GPU-only); reduced motion falls back to shadcn's pulse.",
+      "category": "Components",
+      "dependencies": [],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "install": "npx shadcn@latest add @godui/skeleton",
+      "registry": "core"
     },
     {
       "name": "slide-confirm-button",
@@ -811,7 +1131,28 @@
       "category": "Buttons",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/slide-confirm-button"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/slide-confirm-button.json\"",
+      "registry": "lab"
+    },
+    {
+      "name": "slider",
+      "title": "Slider",
+      "description": "An input where the user selects a value from within a given range. Clicks, keys and new values glide the thumb and range on one clock; a press lifts the thumb and thickens the track; overdrag stretches it like a rubber band; GPU-only.",
+      "category": "Components",
+      "dependencies": ["radix-ui"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "install": "npx shadcn@latest add @godui/slider",
+      "registry": "core"
+    },
+    {
+      "name": "sonner",
+      "title": "Sonner",
+      "description": "An opinionated toast component for React. Transform/opacity transitions on a spring; heights snap. GPU-only.",
+      "category": "Components",
+      "dependencies": ["sonner", "next-themes", "lucide-react"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "install": "npx shadcn@latest add @godui/sonner",
+      "registry": "core"
     },
     {
       "name": "source-citations",
@@ -820,25 +1161,28 @@
       "category": "AI",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/source-citations"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/source-citations.json\"",
+      "registry": "lab"
     },
     {
       "name": "spin-viewer",
       "title": "Spin Viewer",
-      "description": "A 360-degree product viewer — drag to spin an object through a sequence of frames, with optional idle auto-rotate and a touch-friendly hint.",
+      "description": "A 360-degree product viewer: drag to spin an object through a sequence of frames, with optional idle auto-rotate and a touch-friendly hint.",
       "category": "Layout",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/spin-viewer"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/spin-viewer.json\"",
+      "registry": "lab"
     },
     {
       "name": "split-flap-display",
       "title": "Split-Flap Display",
-      "description": "A Solari departure-board display: each character spins through the charset on stacked flip leaves — the old top hinges away, the new bottom rises into place — settling on the value with a staggered column wave. View-only, compositor-only motion, reveals on scroll.",
+      "description": "A Solari departure-board display. Each character spins through the charset on stacked flip leaves (the old top hinges away, the new bottom rises into place) and settles on the value with a staggered column wave. View-only, compositor-only motion, reveals on scroll.",
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/split-flap-display"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/split-flap-display.json\"",
+      "registry": "lab"
     },
     {
       "name": "spotlight-card",
@@ -847,7 +1191,8 @@
       "category": "Effects",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/spotlight-card"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/spotlight-card.json\"",
+      "registry": "lab"
     },
     {
       "name": "spotlight-reveal",
@@ -856,7 +1201,8 @@
       "category": "Effects",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/spotlight-reveal"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/spotlight-reveal.json\"",
+      "registry": "lab"
     },
     {
       "name": "stack-badge",
@@ -865,7 +1211,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/stack-badge"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/stack-badge.json\"",
+      "registry": "lab"
     },
     {
       "name": "stepper",
@@ -874,7 +1221,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/stepper"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/stepper.json\"",
+      "registry": "lab"
     },
     {
       "name": "sticky-scroll",
@@ -883,7 +1231,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/sticky-scroll"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/sticky-scroll.json\"",
+      "registry": "lab"
     },
     {
       "name": "store-badge",
@@ -892,7 +1241,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion", "uqr"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/store-badge"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/store-badge.json\"",
+      "registry": "lab"
     },
     {
       "name": "swipe-deck",
@@ -901,7 +1251,18 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/swipe-deck"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/swipe-deck.json\"",
+      "registry": "lab"
+    },
+    {
+      "name": "switch",
+      "title": "Switch",
+      "description": "A control that allows the user to toggle between checked and not checked. The thumb slides on a spring; the track color crossfades. GPU-only.",
+      "category": "Components",
+      "dependencies": ["radix-ui"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "install": "npx shadcn@latest add @godui/switch",
+      "registry": "core"
     },
     {
       "name": "tab-bar",
@@ -910,7 +1271,18 @@
       "category": "Navigation",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/tab-bar"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/tab-bar.json\"",
+      "registry": "lab"
+    },
+    {
+      "name": "tabs",
+      "title": "Tabs",
+      "description": "A set of layered sections of content (known as tab panels) that are displayed one at a time. One indicator slides between tabs with a FLIP; GPU-only.",
+      "category": "Components",
+      "dependencies": ["radix-ui", "class-variance-authority"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "install": "npx shadcn@latest add @godui/tabs",
+      "registry": "core"
     },
     {
       "name": "terminal",
@@ -919,7 +1291,8 @@
       "category": "Effects",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/terminal"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/terminal.json\"",
+      "registry": "lab"
     },
     {
       "name": "text-animate",
@@ -928,16 +1301,28 @@
       "category": "Text",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/text-animate"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/text-animate.json\"",
+      "registry": "lab"
     },
     {
       "name": "text-scramble",
       "title": "Text Scramble",
-      "description": "Characters cycle through random glyphs and resolve into the target text — a decrypt / matrix reveal.",
+      "description": "Characters cycle through random glyphs and resolve into the target text, like a decrypt / matrix reveal.",
       "category": "Text",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/text-scramble"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/text-scramble.json\"",
+      "registry": "lab"
+    },
+    {
+      "name": "textarea",
+      "title": "Textarea",
+      "description": "Displays a form textarea or a component that looks like a textarea. The focus ring snaps (no box-shadow transition); use Input Group for an animated ring. GPU-only.",
+      "category": "Components",
+      "dependencies": [],
+      "registryDependencies": ["utils"],
+      "install": "npx shadcn@latest add @godui/textarea",
+      "registry": "core"
     },
     {
       "name": "three-d-marquee",
@@ -946,7 +1331,8 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/three-d-marquee"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/three-d-marquee.json\"",
+      "registry": "lab"
     },
     {
       "name": "tilt-card",
@@ -955,25 +1341,48 @@
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/tilt-card"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/tilt-card.json\"",
+      "registry": "lab"
     },
     {
-      "name": "toast",
-      "title": "Toast",
-      "description": "Stacked, swipe-dismissible toasts with an imperative toast() API and auto-dismiss.",
-      "category": "Overlays",
-      "dependencies": ["framer-motion"],
-      "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/toast"
+      "name": "toggle",
+      "title": "Toggle",
+      "description": "A two-state button that can be either on or off. Presses on a spring; GPU-only.",
+      "category": "Components",
+      "dependencies": ["radix-ui", "class-variance-authority"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "install": "npx shadcn@latest add @godui/toggle",
+      "registry": "core"
+    },
+    {
+      "name": "toggle-group",
+      "title": "Toggle Group",
+      "description": "A set of two-state buttons that can be toggled on or off. Single-select groups slide one indicator to the pressed item; GPU-only.",
+      "category": "Components",
+      "dependencies": ["radix-ui", "class-variance-authority"],
+      "registryDependencies": ["utils", "@godui/godui-motion", "@godui/toggle"],
+      "install": "npx shadcn@latest add @godui/toggle-group",
+      "registry": "core"
+    },
+    {
+      "name": "tooltip",
+      "title": "Tooltip",
+      "description": "A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it. Grows from its trigger on a spring; GPU-only.",
+      "category": "Components",
+      "dependencies": ["radix-ui"],
+      "registryDependencies": ["utils", "@godui/godui-motion"],
+      "install": "npx shadcn@latest add @godui/tooltip",
+      "registry": "core"
     },
     {
       "name": "topographic-drift",
       "title": "Topographic Drift",
-      "description": "Slowly drifting topographic contour lines — a living elevation map drawn with marching squares on a Canvas.",
+      "description": "Slowly drifting topographic contour lines: an animated elevation map drawn with marching squares on a Canvas.",
       "category": "Backgrounds",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/topographic-drift"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/topographic-drift.json\"",
+      "registry": "lab"
     },
     {
       "name": "voice-orb",
@@ -982,16 +1391,18 @@
       "category": "AI",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/voice-orb"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/voice-orb.json\"",
+      "registry": "lab"
     },
     {
       "name": "warp-starfield",
       "title": "Warp Starfield",
-      "description": "A depth starfield you fly through — stars stream toward the viewer with cursor parallax and an optional hyperspace warp.",
+      "description": "A depth starfield you fly through. Stars stream toward the viewer with cursor parallax and an optional hyperspace warp.",
       "category": "Backgrounds",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/warp-starfield"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/warp-starfield.json\"",
+      "registry": "lab"
     },
     {
       "name": "world-map",
@@ -1000,7 +1411,8 @@
       "category": "Visualizations",
       "dependencies": ["dotted-map", "framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
-      "install": "npx shadcn@latest add @godui/world-map"
+      "install": "npx shadcn@latest add \"https://godui.design/r/lab/world-map.json\"",
+      "registry": "lab"
     }
   ]
 }

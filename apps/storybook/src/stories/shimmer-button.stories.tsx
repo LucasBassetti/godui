@@ -1,11 +1,11 @@
-import { ShimmerButton } from "@godui/components";
+import { ShimmerButton } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "storybook/test";
 import { action, select, text, toggle } from "../playground/argtypes";
 import { centered } from "../playground/stage";
 
 const meta = {
-  title: "Buttons/Shimmer Button",
+  title: "Lab/Buttons/Shimmer Button",
   component: ShimmerButton,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

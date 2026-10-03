@@ -1,10 +1,10 @@
-import { ElasticText } from "@godui/components";
+import { ElasticText } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { hidden, radio, range, text, toggle } from "../playground/argtypes";
 import { centered } from "../playground/stage";
 
 const meta = {
-  title: "Text/ElasticText",
+  title: "Lab/Text/ElasticText",
   component: ElasticText,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

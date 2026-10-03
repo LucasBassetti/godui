@@ -4,7 +4,7 @@ import {
   type DecorativeBackgroundVariant,
   decorativeBackgroundPresets,
   decorativeBackgroundVariants,
-} from "@godui/components";
+} from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { select } from "../playground/argtypes";
 import { effectStage } from "../playground/stage";
@@ -14,7 +14,7 @@ type PlaygroundArgs = DecorativeBackgroundProps & {
 };
 
 const meta: Meta<PlaygroundArgs> = {
-  title: "Backgrounds/Decorative Background",
+  title: "Lab/Backgrounds/Decorative Background",
   component: DecorativeBackground,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

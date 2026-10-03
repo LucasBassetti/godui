@@ -45,12 +45,12 @@ const CSS = `
 const LEGEND = [
   {
     name: "Canvas",
-    desc: "cobe WebGL surface — createGlobe(canvas, config)",
+    desc: "cobe WebGL surface: createGlobe(canvas, config)",
     kind: "canvas" as const,
   },
   {
     name: "Markers",
-    desc: "config.markers — location + size, glowColor tint",
+    desc: "config.markers: location + size, glowColor tint",
     kind: "marker" as const,
   },
   {

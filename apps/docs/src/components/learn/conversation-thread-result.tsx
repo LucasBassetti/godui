@@ -5,7 +5,7 @@ import {
   ConversationMessage,
   ConversationThread,
   StreamingText,
-} from "@godui/components";
+} from "@godui/lab";
 import { Copy, RotateCcw, ThumbsUp } from "lucide-react";
 import * as React from "react";
 import { useBareScene } from "@/components/learn/bare-scene-context";
@@ -17,7 +17,7 @@ import { useBareScene } from "@/components/learn/bare-scene-context";
  * its actions row.
  */
 const ANSWER =
-  "Use a grid parent with place-items-center — it centers on both axes in a single declaration.";
+  "Use a grid parent with place-items-center. It centers on both axes in a single declaration.";
 
 const ACTIONS = [
   { label: "Copy", icon: <Copy className="size-4" /> },
@@ -70,7 +70,7 @@ export function ConversationThreadResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — hover the reply for its actions
+          the real component: hover the reply for its actions
         </span>
         <button
           type="button"

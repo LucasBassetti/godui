@@ -1,6 +1,6 @@
 "use client";
 
-import { NumberTicker } from "@godui/components";
+import { NumberTicker } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
@@ -57,7 +57,7 @@ export function NumberTickerResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — scroll, wait, spring
+          the real component: scroll, wait, spring
         </span>
       </div>
       <div className="flex min-h-[240px] flex-wrap items-end justify-center gap-10 p-10">

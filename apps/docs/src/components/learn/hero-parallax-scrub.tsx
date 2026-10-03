@@ -47,7 +47,7 @@ const LEGEND: {
 }[] = [
   {
     name: "Plane",
-    desc: "rotateX 15→0 · rotateZ 14→0 · translateY, opacity .2→1 — first 20% of scroll",
+    desc: "rotateX 15→0 · rotateZ 14→0 · translateY, opacity .2→1, over the first 20% of scroll",
     kind: "plane",
   },
   {

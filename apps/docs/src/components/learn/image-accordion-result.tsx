@@ -1,6 +1,6 @@
 "use client";
 
-import { ImageAccordion } from "@godui/components";
+import { ImageAccordion } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
@@ -56,7 +56,7 @@ export function ImageAccordionResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — hover or tab across the panels
+          the real component: hover or tab across the panels
         </span>
       </div>
       <div className="relative flex min-h-[280px] items-center justify-center overflow-hidden p-6 sm:p-10">

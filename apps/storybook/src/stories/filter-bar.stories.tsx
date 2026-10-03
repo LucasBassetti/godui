@@ -1,4 +1,4 @@
-import { type Facet, FilterBar } from "@godui/components";
+import { type Facet, FilterBar } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "storybook/test";
 import { action, hidden, toggle } from "../playground/argtypes";
@@ -35,7 +35,7 @@ const facets: Facet[] = [
 ];
 
 const meta = {
-  title: "Navigation/Filter Bar",
+  title: "Lab/Navigation/Filter Bar",
   component: FilterBar,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

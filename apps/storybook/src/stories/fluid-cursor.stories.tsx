@@ -1,9 +1,9 @@
-import { FluidCursor } from "@godui/components";
+import { FluidCursor } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import * as React from "react";
 
 const meta = {
-  title: "Effects/Fluid Cursor",
+  title: "Lab/Effects/Fluid Cursor",
   component: FluidCursor,
   tags: ["autodocs"],
   parameters: { layout: "centered" },
@@ -25,7 +25,7 @@ export const Playground: Story = {
           type="button"
           className="rounded-lg bg-primary px-4 py-2 text-primary-foreground"
         >
-          Hover me — the cursor swells
+          Hover me and the cursor swells
         </button>
         <FluidCursor containerRef={ref} />
       </div>

@@ -1,0 +1,91 @@
+---
+title: Anatomy of the GodUI Input Group
+description: A focus ring that fades and grows in on a pseudo-element, lands exactly where shadcn's box-shadow ring sits, and never blocks a click.
+learnPlayer: true
+---
+
+import { InputGroupButtonDemo } from "@/components/demos/core/input-group-button-demo";
+
+<LearnPlayer>
+
+<LearnChapter
+  label="A ring that grows in"
+  scene={<AutoPlayScene label="A ring that grows in" demo="focus-ring" />}
+  code={`"before:opacity-0 before:scale-[0.99]
+ before:transition-[opacity,scale]
+ before:duration-(--godui-duration-fast) before:ease-out-expo",
+"has-[[data-slot=input-group-control]:focus-visible]:border-ring
+ has-[[data-slot=input-group-control]:focus-visible]:before:opacity-100
+ has-[[data-slot=input-group-control]:focus-visible]:before:scale-100"`}
+>
+
+When the field inside the group gets focus, the ring fades in and grows from
+99% to full size in 150ms on `ease-out-expo`, so most of the change lands in
+the first few frames. A uniform `scale` moves the long sides more than the
+short ones: on a 640px field a 98% start tucked the ring 3px inside the side
+borders on its first visible frame, while the top and bottom sat in place.
+99% halves that and still reads as growing on a default-width field. The
+border colour snaps in the same frame, which keeps the focused state readable
+before the ring has finished.
+
+The scene runs at 800ms. At the top is a plain Input, whose ring snaps
+because an `<input>` can't hold a `::before`. Below it is the Input
+Group.
+
+</LearnChapter>
+
+<LearnChapter
+  label="Box-shadow vs a pseudo-element"
+  scene={<AutoPlayScene label="Box-shadow vs a pseudo-element" demo="focus-ring-slow" />}
+  code={`// shadcn: the ring is the group's own box-shadow
+"transition-[color,box-shadow]
+ has-[…:focus-visible]:ring-[3px]
+ has-[…:focus-visible]:ring-ring/50"
+
+// GodUI: the same box-shadow, on a layer
+"before:pointer-events-none before:absolute
+ before:-inset-px before:rounded-[inherit]
+ before:ring-[3px] before:ring-ring/50"`}
+>
+
+shadcn's ring is a 3px `box-shadow` on the group, and fading a shadow means
+repainting it every frame. GodUI draws the same shadow on a `::before` and
+fades the layer instead.
+
+The layer has to line up exactly. It is `absolute`, and absolute insets are
+measured from inside the border, so `-inset-px` pushes it out by the group's
+1px border to cover the border box, the box shadcn's shadow starts from.
+`rounded-[inherit]` copies the group's radius, so the 3px spread curves
+concentrically with the border, even on a pill-shaped group. Once focused,
+the two rings match pixel for pixel.
+
+`pointer-events-none` lets clicks pass through the layer to addon buttons.
+The invalid state only swaps the layer's ring colour to `destructive`.
+
+</LearnChapter>
+
+<LearnChapter
+  label="The result"
+  scene={<LiveResult hint="click a field, then press Tab">
+    <InputGroupButtonDemo />
+  </LiveResult>}
+  isResult
+>
+
+Click a field, then Tab between them. Each ring fades in as the previous one
+fades out, and the pill-shaped group's ring keeps its curve.
+
+</LearnChapter>
+
+</LearnPlayer>
+
+## Why GPU-only
+
+Only the `::before` layer's `opacity` and `scale` change, which the
+compositor handles without repainting the shadow. The border colour snaps,
+because a colour transition repaints every frame.
+
+## Reduced motion
+
+`motion-reduce:before:transition-none` removes the transition: the ring
+appears and disappears at full size in one frame.

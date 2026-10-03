@@ -1,9 +1,9 @@
-import { AgentStep, AgentTimeline } from "@godui/components";
+import { AgentStep, AgentTimeline } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { centered } from "../playground/stage";
 
 const meta = {
-  title: "AI/AgentTimeline",
+  title: "Lab/AI/AgentTimeline",
   component: AgentTimeline,
   subcomponents: { AgentStep },
   tags: ["autodocs"],

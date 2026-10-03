@@ -5,7 +5,9 @@ description: "Use when creating a new component for the design system. Covers fi
 
 # Creating a New Component
 
-This skill documents the full process for adding a new component to the `@godui/components` design system monorepo.
+This skill documents the general process for adding a component to the `@godui/components` design system monorepo.
+
+> **GodUI core is now an animated drop-in for shadcn/ui.** The authoritative workflow is the `godui-component-creation` skill: components live at `packages/components/src/ui/{name}.tsx`, mirror shadcn new-york-v4 (React 19 `ref` as prop, no `forwardRef`), and animate only transform/opacity/filter (CI-gated, no allowlist). Lab (expressive, experimental pieces beyond the shadcn catalog) lives in `packages/lab`, maintained as-is. Where this skill disagrees, `godui-component-creation` wins.
 
 ## 1. Package Structure
 
@@ -247,9 +249,9 @@ Tailwind will not generate utility classes used in component files without it.
 
 Only add when the component uses React hooks or requires client-only APIs.
 
-### NEVER skip `forwardRef`
+### NEVER diverge from the shadcn API
 
-All components must forward refs for composition.
+Core components keep shadcn's exports, props and `data-slot`s; `ref` is a regular prop (React 19), as in shadcn v4.
 
 ### NEVER use arbitrary z-index values
 
@@ -259,7 +261,7 @@ Use the design system scale: `z-base`, `z-raised`, `z-overlay`, `z-sticky`, `z-p
 
 Before considering a component done:
 
-- [ ] Component created at `packages/components/src/{name}.tsx`
+- [ ] Component created at `packages/components/src/ui/{name}.tsx`
 - [ ] Component and prop types exported from `packages/components/src/index.ts`
 - [ ] `@source "./src"` present in `packages/components/styles.css`
 - [ ] Complex CSS (if any) added to `@layer components` in `styles.css`
@@ -267,7 +269,7 @@ Before considering a component done:
 - [ ] Docs page at `apps/docs/content/docs/components/{name}.mdx`
 - [ ] Page added to `apps/docs/content/docs/components/meta.json`
 - [ ] All Tailwind classes are static strings
-- [ ] `React.forwardRef` used
+- [ ] Public API identical to shadcn (additive changes only)
 - [ ] Variant, disabled, and size stories included where applicable
 
 ## 8. Available Theme Tokens

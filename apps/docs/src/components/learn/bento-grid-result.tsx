@@ -1,6 +1,6 @@
 "use client";
 
-import { BentoCard, BentoGrid } from "@godui/components";
+import { BentoCard, BentoGrid } from "@godui/lab";
 import { Activity, Globe2, ShieldCheck, Sparkles } from "lucide-react";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
@@ -77,7 +77,7 @@ export function BentoGridResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — hover a card
+          the real component: hover a card
         </span>
       </div>
       <div className="flex min-h-[320px] items-center justify-center p-8">

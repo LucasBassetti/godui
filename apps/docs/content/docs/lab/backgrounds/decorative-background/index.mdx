@@ -1,0 +1,45 @@
+---
+title: Decorative Background
+description: "Full-bleed decorative backgrounds: radial and corner gradient washes."
+workbench: true
+---
+
+<Workbench>
+
+A full-bleed decorative wash. Drop it as the first child of a `relative overflow-hidden`
+container and your content sits above it. Pick a look below from 44 patterns ported from
+[PatternCraft](https://patterncraft.fun). The component takes `background`,
+`backgroundImage`, and `backgroundSize`; the picker fills them in.
+
+<Example label="Default" fullWidth>
+  <BackgroundShowcase component="decorative" embedded />
+</Example>
+
+## Installation
+
+<ComponentInstall registry="lab" name="decorative-background" />
+
+## Usage
+
+```tsx
+import { DecorativeBackground } from "@/components/godui/decorative-background";
+
+<div className="relative overflow-hidden">
+  <DecorativeBackground />
+  <YourContent />
+</div>
+```
+
+## Props
+
+The component bakes the selected variant's full style. It takes no custom props,
+only the standard `div` attributes.
+
+| Prop | Type | Description |
+| ---- | ---- | ----------- |
+| `style` | `CSSProperties` | Supply your own background. Setting any background key (`background`, `backgroundImage`, `backgroundColor`, …) replaces the baked default entirely. |
+| `className` | `string` | Extra classes on the layer (it is `absolute inset-0 z-base`). |
+
+All other `div` attributes are forwarded.
+
+</Workbench>

@@ -1,6 +1,6 @@
 "use client";
 
-import { ProgressiveCardReveal } from "@godui/components";
+import { ProgressiveCardReveal } from "@godui/lab";
 import * as React from "react";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
@@ -113,7 +113,7 @@ export function ProgressiveCardRevealResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — click a collapsed pill
+          the real component: click a collapsed pill
         </span>
       </div>
       <div className="relative flex min-h-[280px] items-center justify-center p-6 sm:p-10">

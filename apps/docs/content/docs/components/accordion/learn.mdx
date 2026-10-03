@@ -1,0 +1,135 @@
+---
+title: Anatomy of the GodUI Accordion
+description: How the GodUI Accordion looks exactly like a height animation (a clip edge sweeping over still text, with the rows riding it) while animating only translate and opacity.
+learnPlayer: true
+---
+
+import { AccordionDemo } from "@/components/demos/core/accordion-demo";
+
+<LearnPlayer>
+
+<LearnChapter
+  label="Why not animate height"
+  scene={<FlipScene label="Why not animate height" variant="accordion" />}
+  code={`/* shadcn/ui */
+@keyframes accordion-down {
+  from { height: 0; }
+  to { height: var(--radix-accordion-content-height); }
+}`}
+>
+
+shadcn's accordion animates `height` from 0 to the panel's measured height.
+It looks right: the panel's bottom edge sweeps down over text that stays put,
+and everything below rides that edge. But every frame changes a size, so the
+browser recomputes layout for the panel and everything after it, then
+repaints, on the main thread. On a busy page those frames drop.
+
+GodUI changes the height in one step and rebuilds the look of that sweep with
+transforms. A plain FLIP only gets you halfway, as above: the rows glide,
+but the panel just appears.
+
+</LearnChapter>
+
+<LearnChapter
+  label="A window that slides"
+  scene={<AutoPlayScene label="A window that slides" demo="accordion-window" note="slowed to 1.2s · dashed: the panel's clip box" />}
+  code={`// The box (overflow-hidden) slides down from under the trigger…
+panel.animate(
+  [{ translate: \`0 \${from}px\` }, { translate: \`0 \${to}px\` }],
+  timing,
+);
+// …while its content slides up by exactly as much.
+content.animate(
+  [{ translate: \`0 \${-from}px\` }, { translate: \`0 \${-to}px\` }],
+  timing,
+);`}
+>
+
+The panel's height snaps open at once, but its box starts tucked under the
+trigger, at `translate: 0 -100%`, and slides down. On its own that would drag
+the text down with it. So the content inside slides up by the same amount at
+the same instant, on the same curve.
+
+The two offsets cancel, and the text never moves. What does move is the box's
+bottom edge, and since the box is `overflow-hidden`, that edge is a clip that
+uncovers the text line by line. That's the look of a height animation, made of
+two translates. Because they cancel for any curve, the spring can be anything,
+with no counter-scaling and no distortion.
+
+</LearnChapter>
+
+<LearnChapter
+  label="Rows ride the edge"
+  scene={<AutoPlayScene label="Rows ride the edge" demo="accordion" note="slowed to 1.2s" />}
+  code={`const opening = [...changed.values()].includes(true);
+const ms = opening ? base : fast;
+// FLIP the rows before the snapped layout is painted…
+flushSync(() => flip(ms));
+// …then sweep each changed panel on the same clock.
+for (const [item, open] of changed) slidePanel(panelOf(item), open, timing);`}
+>
+
+The rows below are FLIPped: measured before and after the snap, put back where
+they were with a `translate`, then played to rest. They start at the same
+offset as the panel's edge, on the same spring and duration, so at every frame
+the next row sits exactly on the clip edge. When one item opens while another
+closes, both edges and every row in between share one clock, so nothing ever
+gaps or overlaps.
+
+A `MutationObserver` on the items' `data-state` fires in the same task as the
+click. `flushSync` runs the FLIP right there, before the browser paints the
+snapped layout, so you never see a frame of the jump. The accordion's own box
+gets the same treatment: in a parent that centers it, growing moves it up by
+half the new height, so it records where it was drawn on the click and glides
+from there too.
+
+</LearnChapter>
+
+<LearnChapter
+  label="Closing doesn't wait"
+  scene={<AutoPlayScene label="Closing doesn't wait" demo="accordion" note="slowed to 1.2s" />}
+  code={`<AccordionPrimitive.Content
+  className="pointer-events-none overflow-hidden …
+    data-[state=closed]:absolute data-[state=closed]:inset-x-0
+    data-[state=closed]:animate-godui-reveal-hold"
+>`}
+>
+
+A closing panel can't shrink first and let the rows follow, because that is two
+steps. So the moment it closes it leaves the flow (`absolute`): the layout
+collapses at once, the rows below start rising, and the panel's edge sweeps
+back up with them. Radix would hide the panel immediately, so a near-silent
+`godui-reveal-hold` keyframe keeps it mounted until the sweep is done.
+
+Closing runs on `--godui-duration-fast`, and the text fades out ahead of the
+edge: exits are quicker and softer than entrances. Opening, the content's
+blocks fade in a quarter-beat apart. Reverse in the middle and every piece
+(edge, text and rows) starts from where it's drawn.
+
+</LearnChapter>
+
+<LearnChapter
+  label="The result"
+  scene={<LiveResult hint="open, close, and reverse mid-way"><AccordionDemo /></LiveResult>}
+  isResult
+>
+
+Open and close the items, and click again mid-sweep to reverse it.
+
+</LearnChapter>
+
+</LearnPlayer>
+
+## Why GPU-only
+
+The panel's box, its content and the rows below animate `translate`, the
+content's blocks animate `opacity`, and the chevron animates `transform`.
+Layout runs once per click. The chevron uses `transform: rotate(180deg)`
+rather than Tailwind's `rotate-180` because Chrome won't composite the
+individual `rotate` property on an `<svg>`.
+
+## Reduced motion
+
+Nothing moves: the height and the rows change in one step, and the panel's
+content only fades in or out (150ms). `motion-reduce:transition-none` stops the
+chevron's turn.

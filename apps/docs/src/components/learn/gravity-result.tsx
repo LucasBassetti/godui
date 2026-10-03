@@ -1,6 +1,6 @@
 "use client";
 
-import { Gravity, MatterBody } from "@godui/components";
+import { Gravity, MatterBody } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 const TAGS: { label: string; x: string; y: string; angle: number }[] = [
@@ -40,7 +40,7 @@ export function GravityResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — drag a pill and fling it
+          the real component: drag a pill and fling it
         </span>
       </div>
       <div className="p-6 md:p-10">{demo}</div>

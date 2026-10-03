@@ -5,7 +5,7 @@ import {
   MorphingDialogClose,
   MorphingDialogContent,
   MorphingDialogTrigger,
-} from "@godui/components";
+} from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
@@ -54,7 +54,7 @@ export function MorphingDialogResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — click the card, Escape to close
+          the real component: click the card, Escape to close
         </span>
       </div>
       <div className="flex min-h-[260px] w-full items-center justify-center p-10">

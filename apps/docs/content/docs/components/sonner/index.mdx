@@ -1,0 +1,122 @@
+---
+title: Sonner
+description: An opinionated toast component for React. Toasts move on a spring with transform and opacity only; heights snap.
+workbench: true
+---
+
+import { SonnerDemo } from "@/components/demos/core/sonner-demo";
+import { SonnerTypesDemo } from "@/components/demos/core/sonner-types-demo";
+
+<Workbench>
+
+The shadcn/ui wrapper around [Sonner](https://sonner.emilkowal.ski), tuned to
+be GPU-only. Sonner moves toasts with `transform` and `opacity`, but it also
+transitions `height` (when the stack expands) and `box-shadow`. GodUI's
+`Toaster` limits every toast transition to `transform` and `opacity`, puts it
+on a spring, and lets heights change in one step.
+
+<Example label="Default" story="ui-sonner" code={`"use client";
+
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Toaster } from "@/components/ui/sonner";
+
+export function SonnerDemo() {
+  return (
+    <>
+      <Toaster />
+      <Button
+        variant="outline"
+        onClick={() =>
+          toast("Event has been created", {
+            description: "Sunday, December 03, 2023 at 9:00 AM",
+            action: {
+              label: "Undo",
+              onClick: () => console.log("Undo"),
+            },
+          })
+        }
+      >
+        Show Toast
+      </Button>
+    </>
+  );
+}`}>
+  <SonnerDemo />
+</Example>
+
+<Example
+  label="Types"
+  code={`<Button variant="outline" onClick={() => toast("Event has been created")}>Default</Button>
+<Button variant="outline" onClick={() => toast.success("Event has been created")}>Success</Button>
+<Button variant="outline" onClick={() => toast.info("Be at the area 10 minutes before the event time")}>Info</Button>
+<Button variant="outline" onClick={() => toast.warning("Event start time cannot be earlier than 8am")}>Warning</Button>
+<Button variant="outline" onClick={() => toast.error("Event has not been created")}>Error</Button>
+<Button
+  variant="outline"
+  onClick={() =>
+    toast.promise<{ name: string }>(
+      () => new Promise((resolve) => setTimeout(() => resolve({ name: "Event" }), 2000)),
+      {
+        loading: "Loading...",
+        success: (data) => \`\${data.name} has been created\`,
+        error: "Error",
+      },
+    )
+  }
+>
+  Promise
+</Button>`}
+>
+  <SonnerTypesDemo />
+</Example>
+
+## Installation
+
+<ComponentInstall name="sonner" />
+
+## Replacing shadcn
+
+`npx shadcn add @godui/sonner` overwrites `components/ui/sonner.tsx`. Exports
+and props match shadcn/ui new-york-v4 (`Toaster`, with the same icons, theme
+handling and CSS variables), so existing imports keep working. Keep calling
+`toast()` from `sonner`.
+
+If you pass `toastOptions.classNames`, GodUI merges its own classes with yours
+rather than replacing them.
+
+## Usage
+
+```tsx
+import { Toaster } from "@/components/ui/sonner";
+```
+
+```tsx
+<Toaster />
+```
+
+```tsx
+import { toast } from "sonner";
+
+toast("Event has been created.");
+```
+
+## What's animated
+
+| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
+| --- | --- | --- | --- | --- |
+| Enter, exit, stack | sonner's transitions | `transform`, `opacity` | `ease-spring-snappy` | 400ms |
+| Stack expand (heights) | snaps | none | none | none |
+| Swipe to dismiss | pointer-driven `transform` | `transform` | none | live |
+| Action, cancel, close buttons | sonner's transition | `opacity` | none | sonner's |
+
+Sonner injects its stylesheet unlayered, so GodUI's overrides use
+`!important`; only `transition-property` and the easing are forced. Sonner's
+own reduced-motion styles still apply.
+
+## API
+
+Built on [Sonner](https://sonner.emilkowal.ski/toaster). Props are identical to
+[shadcn/ui Sonner](https://ui.shadcn.com/docs/components/sonner).
+
+</Workbench>

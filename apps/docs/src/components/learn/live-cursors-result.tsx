@@ -1,6 +1,6 @@
 "use client";
 
-import { SimulatedCursors } from "@godui/components";
+import { SimulatedCursors } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
@@ -28,7 +28,7 @@ export function LiveCursorsResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — self-driving peers
+          the real component: self-driving peers
         </span>
       </div>
       <div className="relative h-[280px] p-6">{demo}</div>

@@ -26,7 +26,7 @@ const LEGEND = [
   },
   {
     name: "Idle",
-    desc: "r = 0 — no leftover disc",
+    desc: "r = 0, no leftover disc",
     kind: "idle" as const,
   },
 ] as const;

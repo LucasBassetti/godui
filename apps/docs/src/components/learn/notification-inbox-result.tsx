@@ -1,6 +1,6 @@
 "use client";
 
-import { type Notification, NotificationInbox } from "@godui/components";
+import { type Notification, NotificationInbox } from "@godui/lab";
 import { GitPullRequest, MessageCircle, UserPlus } from "lucide-react";
 import { useState } from "react";
 import { useBareScene } from "@/components/learn/bare-scene-context";
@@ -88,7 +88,7 @@ export function NotificationInboxResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — drag a row, or mark all read
+          the real component: drag a row, or mark all read
         </span>
       </div>
       <div className="flex min-h-[280px] items-center justify-center p-10">

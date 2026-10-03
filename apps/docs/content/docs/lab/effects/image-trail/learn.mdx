@@ -1,0 +1,101 @@
+---
+title: Anatomy of Image Trail
+description: How a recycled DOM pool, a travel threshold, and the Web Animations API leave a trail of images without a React re-render per move.
+learnPlayer: true
+---
+
+<LearnPlayer>
+
+<LearnChapter
+  label="A pool, not a stream of mounts"
+  scene={<ImageTrailAnatomy />}
+  code={`const slots = React.useRef<(HTMLImageElement | null)[]>([]);
+const slotIndex = React.useRef(0);
+
+const img = slots.current[slotIndex.current % max];
+slotIndex.current += 1;
+img.src = images[imageIndex.current % images.length];`}
+>
+
+`ImageTrail` keeps a fixed pool of `<img>` slots instead of mounting a new one
+on every pointer move. It skips spawns until you've travelled far enough and
+drives each appearance with `element.animate()`: direct style writes, with
+zero React updates on the hot path.
+
+On render, `max` (default 12) invisible `<img>` nodes are created once and
+stored in `slots.current`. Each spawn takes `slots[slotIndex % max]`, bumps
+the index, swaps `src` from the `images` array, and animates. When the pool
+wraps, the oldest slot is reused mid-flight on purpose, and its
+previous animation is overwritten.
+
+</LearnChapter>
+
+<LearnChapter
+  label="Distance gate before spawn"
+  scene={<ImageTrailThreshold />}
+  code={`const dx = x - prev.x;
+const dy = y - prev.y;
+if (Math.hypot(dx, dy) < threshold) return;
+spawn(x, y, Math.atan2(dy, dx));
+last.current = { x, y };`}
+>
+
+`onPointerMove` converts the event to container-local coordinates and
+compares against `last`. If `Math.hypot(dx, dy)` is under `threshold`
+(default 64px), the handler returns without spawning or animating. Past the
+threshold, `atan2(dy, dx)` becomes a clamped tilt (±12°) so each image leans
+slightly into the direction of travel.
+
+</LearnChapter>
+
+<LearnChapter
+  label="WAAPI keyframes, not React state"
+  scene={<ImageTrailWaapi />}
+  code={`img.animate(
+  [
+    { opacity: 0, transform: \`translate(-50%, -50%) scale(0.4) rotate(\${tilt}deg)\` },
+    { opacity: 1, transform: \`translate(-50%, -50%) scale(1) rotate(\${tilt}deg)\`, offset: 0.18 },
+    { opacity: 0, transform: \`translate(-50%, -65%) scale(0.92) rotate(\${tilt}deg)\` },
+  ],
+  { duration, easing: "cubic-bezier(0.22,1,0.36,1)", fill: "forwards" },
+);`}
+>
+
+`spawn` sets `left`/`top`, then calls `img.animate` with three keyframes:
+fade/scale in to full size at 18%, then fade out while drifting slightly
+upward (`translate(-50%, -65%)`) and settling at `scale(0.92)`. Easing is
+`cubic-bezier(0.22, 1, 0.36, 1)` with `fill: "forwards"`. Nothing in that
+path calls `setState`.
+
+</LearnChapter>
+
+<LearnChapter label="The result" scene={<ImageTrailResult />} isResult>
+
+Move across the stage. Images spawn only after you've travelled, then drift
+away on their own timeline.
+
+One recycled pool, one distance check, and one `animate()` call make up the
+whole trail.
+
+</LearnChapter>
+
+</LearnPlayer>
+
+## Reduced motion
+
+`motion-reduce:grid` shows a static gallery of the first five images;
+`motion-reduce:hidden` hides the live pool. The user sees a row of photos with
+no trail and no WAAPI.
+
+```tsx
+<div className="… hidden place-items-center motion-reduce:grid">
+  {images.slice(0, 5).map((src, i) => (
+    <img key={i} src={src} alt="" className="size-24 rounded-lg …" />
+  ))}
+</div>
+<div className="… motion-reduce:hidden">{/* pool */}</div>
+```
+
+## Motion Score
+
+<MotionScorePanel name="image-trail" />

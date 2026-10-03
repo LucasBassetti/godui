@@ -154,7 +154,6 @@
   /* GOD UI aliases */
   --color-bg: var(--background);
   --color-fg: var(--foreground);
-  --color-muted: var(--muted-foreground);
   --color-border: var(--border);
 
   --color-primary: var(--primary);

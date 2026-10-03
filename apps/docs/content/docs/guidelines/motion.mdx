@@ -1,0 +1,100 @@
+---
+title: GPU-only Motion
+description: The motion contract every GodUI component follows.
+---
+
+## The rule
+
+GodUI components animate three things: `transform` (translate, scale,
+rotate), `opacity` and `filter`. Nothing else moves.
+
+The browser can run these on the compositor thread. A frame of a
+transform or opacity animation doesn't recalculate layout or repaint
+pixels, so it stays smooth while your app's JavaScript is busy. Animating
+`height`, `width`, `box-shadow`, `background-position` or even `color`
+forces layout or paint on the main thread every frame.
+
+## Sizes snap, positions FLIP
+
+Some motion looks like it needs layout animation: an accordion opening, a
+toast stack growing. GodUI does it in two moves:
+
+1. The size changes instantly.
+2. Elements that moved because of it play an inverse `translate` back to
+   their new position (FLIP), and the revealed content fades and slides in.
+
+The `useFlipGroup` hook handles step 2. Mark children with `data-flip` and
+pass the value that changes:
+
+```tsx
+import { useFlipGroup } from "@/hooks/use-flip-group";
+
+const ref = React.useRef<HTMLDivElement>(null);
+useFlipGroup(ref, openItem, { duration: 260 });
+
+return (
+  <div ref={ref}>
+    {items.map((item) => (
+      <div key={item.id} data-flip>
+        {/* … */}
+      </div>
+    ))}
+  </div>
+);
+```
+
+If a FLIP is interrupted, the next one starts from where the element is
+drawn, not where it was headed.
+
+## Tokens
+
+Installing any GodUI component pulls in `godui-motion`, which adds these
+to your stylesheet.
+
+| Token | Value | Use |
+| --- | --- | --- |
+| `ease-spring-snappy` | spring k=500 c=40, settles ≈374ms | menus, popovers, dialogs |
+| `ease-spring-smooth` | spring k=260 c=32, settles ≈563ms | sheets, drawers |
+| `ease-spring-bouncy` | spring k=380 c=18, ~19% overshoot | presses, pops |
+| `ease-out-expo` | `cubic-bezier(0.16, 1, 0.3, 1)` | exits |
+| `--godui-duration-fast` | 150ms | exits |
+| `--godui-duration-base` | 260ms | most enters |
+| `--godui-duration-slow` | 380ms | large surfaces |
+
+Springs are CSS `linear()` curves, so they run as plain CSS animations
+with no JavaScript per frame.
+
+Shared keyframes (use them as `animate-godui-<name>`): `fade-in`,
+`fade-out`, `fade-scale-in`, `fade-scale-out`, `popover-in`, `popover-out`,
+`slide-in-from-{top,right,bottom,left}`,
+`slide-out-to-{top,right,bottom,left}` and `pop`. Components attach them
+to Radix state, e.g.
+`data-[state=open]:animate-godui-fade-scale-in data-[state=closed]:animate-godui-fade-scale-out`.
+
+The popover keyframes also drift a few pixels out of the trigger. They read
+`--godui-enter-x` and `--godui-enter-y`, which components set per Radix side,
+e.g. `data-[side=bottom]:[--godui-enter-y:-0.25rem]`.
+
+## Reduced motion
+
+With `prefers-reduced-motion: reduce`:
+
+- `--godui-motion` becomes `0`. Every shared keyframe multiplies its
+  movement by it, so enter and exit animations only fade, even when a
+  component sets its own `--godui-enter-distance`.
+- Base and slow durations drop to 150ms.
+- `useFlipGroup` doesn't animate; elements move straight to their new
+  position.
+
+## How it's enforced
+
+- **Lint (CI).** Every core component, the stylesheet and every registry
+  `css` block are scanned. Animating anything other than transform,
+  opacity or filter fails the build, and so do Tailwind's bare
+  `transition` and `transition-colors`. There is no allowlist.
+- **Runtime trace (CI).** A Playwright suite records a Chrome trace while
+  each component animates and fails if Chrome reports layout work or an
+  animation it couldn't composite.
+- **Lab.** Components in [Lab](/docs/lab) aren't held to this contract.
+  They're scanned too (report-only), and each page shows a GPU-only badge
+  only when the scan is clean.

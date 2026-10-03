@@ -1,6 +1,6 @@
 "use client";
 
-import { ParticleDissolve } from "@godui/components";
+import { ParticleDissolve } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
@@ -40,7 +40,7 @@ export function ParticleDissolveResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — loop mode
+          the real component: loop mode
         </span>
       </div>
       <div className="flex min-h-[280px] items-center justify-center p-6 md:p-10">

@@ -1,4 +1,4 @@
-import { PromptComposer } from "@godui/components";
+import { PromptComposer } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "storybook/test";
 import {
@@ -12,7 +12,7 @@ import {
 import { padded } from "../playground/stage";
 
 const meta = {
-  title: "AI/PromptComposer",
+  title: "Lab/AI/PromptComposer",
   component: PromptComposer,
   tags: ["autodocs"],
   parameters: { layout: "padded" },

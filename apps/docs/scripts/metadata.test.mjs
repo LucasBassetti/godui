@@ -10,9 +10,9 @@ const appDir = resolve(
 );
 
 const SITE_URL = "https://godui.design";
-const SITE_TITLE = "GodUI — UI Collection for Modern Interfaces";
+const SITE_TITLE = "GodUI: UI Collection for Modern Interfaces";
 const SITE_DESCRIPTION =
-  "An open-source collection of beautifully crafted motion components built with React, TypeScript, Tailwind CSS, Motion, and shadcn/ui.";
+  "An open-source collection of animated components built with React, TypeScript, Tailwind CSS, Motion, and shadcn/ui.";
 
 const pages = [
   {
@@ -22,18 +22,18 @@ const pages = [
     description: "Install GodUI components with the shadcn CLI.",
   },
   {
-    file: "docs/components/layout/accordion.html",
-    path: "/docs/components/layout/accordion",
-    title: "Accordion",
+    file: "docs/lab/layout/tilt-card.html",
+    path: "/docs/lab/layout/tilt-card",
+    title: "Tilt Card",
     description:
-      "A disclosure list with spring height animation, rotating chevrons, and single or multiple open modes.",
+      "A card that tilts in 3D toward the pointer with parallax depth and a specular glare.",
   },
   {
-    file: "docs/components/layout/accordion/learn.html",
-    path: "/docs/components/layout/accordion/learn",
-    title: "Anatomy of the Accordion",
+    file: "docs/lab/layout/tilt-card/learn.html",
+    path: "/docs/lab/layout/tilt-card/learn",
+    title: "Anatomy of Tilt Card",
     description:
-      "How a spring-driven height animation and a flat CSS rotate can share one click without ever touching each other's timing.",
+      "How one spring-smoothed pointer value drives a card's rotation, its floating content, and a glare that chases the cursor.",
   },
   {
     file: "index.html",
@@ -109,7 +109,7 @@ for (const page of pages) {
     const expectedCanonical =
       page.path === "/" ? SITE_URL : `${SITE_URL}${page.path}`;
     const expectedTitle =
-      page.path === "/" ? page.title : `${page.title} — GodUI`;
+      page.path === "/" ? page.title : `${page.title} | GodUI`;
 
     assert.deepEqual(metadata, {
       title: expectedTitle,

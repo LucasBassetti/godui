@@ -1,10 +1,10 @@
-import { HolographicCard } from "@godui/components";
+import { HolographicCard } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { range, select, toggle } from "../playground/argtypes";
 import { centered } from "../playground/stage";
 
 const meta = {
-  title: "Layout/Holographic Card",
+  title: "Lab/Layout/Holographic Card",
   component: HolographicCard,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

@@ -1,6 +1,6 @@
 "use client";
 
-import { AppShowcase } from "@godui/components";
+import { AppShowcase } from "@godui/lab";
 
 const SCREENS = [
   "https://picsum.photos/seed/godui-a/600/1300",

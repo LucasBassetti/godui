@@ -13,6 +13,7 @@ const DOT: Record<BadgeTone, string> = {
   amber: "bg-amber-500",
   emerald: "bg-emerald-500",
   violet: "bg-violet-500",
+  neutral: "bg-fd-muted-foreground",
 };
 
 /**

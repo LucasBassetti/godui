@@ -1,0 +1,92 @@
+---
+title: Anatomy of the GodUI Button
+description: "One transform on a spring curve: why the press scales instead of recoloring, and how a CSS linear() easing stands in for spring physics."
+learnPlayer: true
+---
+
+import { ButtonDemo } from "@/components/demos/core/button-demo";
+
+<LearnPlayer>
+
+<LearnChapter
+  label="The press"
+  scene={<AutoPlayScene label="The press" demo="button" />}
+  code={`const buttonVariants = cva(
+  "… outline-none transition-[scale] duration-(--godui-duration-base) ease-spring-bouncy active:scale-[0.97] motion-reduce:transition-none …",
+  { variants: { /* unchanged from shadcn */ } },
+);`}
+>
+
+The whole effect is four utilities on the base class. `active:scale-[0.97]`
+shrinks the button while the pointer is down, `transition-[scale]` animates
+only that property, and the duration and easing come from `godui-motion`
+tokens.
+
+Tailwind v4 compiles `scale-*` to the individual CSS `scale` property, not
+`transform`, which is why the transition list names `scale`. Releasing the
+pointer runs the same transition in reverse, so the button springs back up.
+
+</LearnChapter>
+
+<LearnChapter
+  label="The spring"
+  scene={<SpringCurveScene label="The spring" easing="bouncy" />}
+  code={`--ease-spring-bouncy: linear(
+  0, 0.1642, 0.4963, 0.8272, 1.0624, 1.1772, 1.1892, 1.1415,
+  1.0741, 1.0143, 0.9772, 0.963, 0.9656, 0.9772, 0.9902, …, 1
+);`}
+>
+
+`ease-spring-bouncy` is a CSS `linear()` easing: a list of sampled points from
+a damped spring. It overshoots past the target by about 19% and settles, which
+a `cubic-bezier()` can't do more than once.
+
+Because it's plain CSS, the browser hands the whole animation to the
+compositor. There's no JavaScript per frame, and the press stays smooth even
+when the main thread is busy handling the click.
+
+</LearnChapter>
+
+<LearnChapter
+  label="Why colors snap"
+  scene={<AutoPlayScene label="Why colors snap" demo="button" />}
+  code={`// shadcn/ui
+"… transition-all …"
+
+// GodUI
+"… transition-[scale] …"`}
+>
+
+shadcn's button uses `transition-all`. On hover that animates
+`background-color`; on focus it animates the ring's `box-shadow`. Both are
+paint work: the browser redraws the button's pixels on the main thread for
+every frame of the transition.
+
+GodUI lets color and the focus ring change instantly and spends its motion
+budget on the press instead, the one moment where movement tells you the
+click registered.
+
+</LearnChapter>
+
+<LearnChapter
+  label="The result"
+  scene={<LiveResult hint="press any button"><ButtonDemo /></LiveResult>}
+  isResult
+>
+
+Press and hold any button, then release. The `link` variant opts out with
+`active:scale-100`, since a text link that squishes reads as a bug.
+
+</LearnChapter>
+
+</LearnPlayer>
+
+## Why GPU-only
+
+The press animates `scale` and nothing else. `scale` is composited, so the
+browser doesn't run layout or paint while the button moves.
+
+## Reduced motion
+
+`motion-reduce:transition-none` removes the transition. The button still
+scales while pressed, but instantly, with no spring.

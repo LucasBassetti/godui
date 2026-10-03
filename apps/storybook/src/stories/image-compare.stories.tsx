@@ -1,11 +1,11 @@
-import { ImageCompare } from "@godui/components";
+import { ImageCompare } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "storybook/test";
 import { action, hidden, range, select, text } from "../playground/argtypes";
 import { box } from "../playground/stage";
 
 const meta = {
-  title: "Layout/Image Compare",
+  title: "Lab/Layout/Image Compare",
   component: ImageCompare,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

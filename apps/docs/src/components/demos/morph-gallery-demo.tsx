@@ -1,6 +1,6 @@
 "use client";
 
-import { MorphGallery } from "@godui/components";
+import { MorphGallery } from "@godui/lab";
 import { DemoMedia } from "@/components/demos/_kit";
 
 const PHOTOS = [

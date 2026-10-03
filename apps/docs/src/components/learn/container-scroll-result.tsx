@@ -1,6 +1,6 @@
 "use client";
 
-import { ContainerScroll } from "@godui/components";
+import { ContainerScroll } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 const demo = (
@@ -42,7 +42,7 @@ export function ContainerScrollResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — scroll through it
+          the real component: scroll through it
         </span>
       </div>
       {demo}

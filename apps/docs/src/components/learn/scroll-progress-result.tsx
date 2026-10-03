@@ -1,6 +1,6 @@
 "use client";
 
-import { ScrollProgress } from "@godui/components";
+import { ScrollProgress } from "@godui/lab";
 import * as React from "react";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
@@ -29,7 +29,7 @@ export function ScrollProgressResult() {
             key={i}
             className="text-muted-foreground text-sm leading-relaxed"
           >
-            Progress springs toward the scroll position — paragraph {i + 1} of{" "}
+            Progress springs toward the scroll position. Paragraph {i + 1} of{" "}
             {FILLER.length}.
           </p>
         ))}
@@ -59,7 +59,7 @@ export function ScrollProgressResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — scroll the panel
+          the real component: scroll the panel
         </span>
       </div>
       <div className="flex min-h-[320px] items-center justify-center p-6 md:p-10">

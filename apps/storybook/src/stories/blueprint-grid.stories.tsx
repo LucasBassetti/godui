@@ -1,10 +1,10 @@
-import { BlueprintGrid, type BlueprintGridProps } from "@godui/components";
+import { BlueprintGrid, type BlueprintGridProps } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { color, range, select, toggle } from "../playground/argtypes";
 import { effectStage } from "../playground/stage";
 
 const meta = {
-  title: "Backgrounds/Blueprint Grid",
+  title: "Lab/Backgrounds/Blueprint Grid",
   component: BlueprintGrid,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

@@ -39,7 +39,7 @@ const LEGEND = [
   },
   {
     name: "Exit",
-    desc: "the mirror transition, then unmounts — no manual timer",
+    desc: "the mirror transition, then unmounts without a manual timer",
     kind: "exit" as const,
   },
 ] as const;

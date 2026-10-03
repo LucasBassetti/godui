@@ -1,4 +1,4 @@
-import { ProgressiveCardReveal } from "@godui/components";
+import { ProgressiveCardReveal } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import * as React from "react";
 import { hidden, range } from "../playground/argtypes";
@@ -122,7 +122,7 @@ function TravelDemo({
 }
 
 const meta = {
-  title: "Layout/Progressive Card Reveal",
+  title: "Lab/Layout/Progressive Card Reveal",
   component: ProgressiveCardReveal,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

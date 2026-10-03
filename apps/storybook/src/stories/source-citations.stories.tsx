@@ -1,4 +1,4 @@
-import { SourceCitation, SourceList } from "@godui/components";
+import { SourceCitation, SourceList } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { hidden, range, toggle } from "../playground/argtypes";
 import { centered } from "../playground/stage";
@@ -8,7 +8,7 @@ const sources = [
     title: "OKLCH in CSS: why we moved",
     url: "https://evilmartians.com/chronicles/oklch-in-css",
     snippet:
-      "OKLCH is a perceptual color space that keeps lightness consistent across hues — ideal for design tokens and dark mode.",
+      "OKLCH is a perceptual color space that keeps lightness consistent across hues, which suits design tokens and dark mode.",
   },
   {
     title: "Tailwind CSS v4 release notes",
@@ -27,7 +27,7 @@ const sources = [
 ];
 
 const meta = {
-  title: "AI/SourceCitations",
+  title: "Lab/AI/SourceCitations",
   component: SourceList,
   subcomponents: { SourceCitation },
   tags: ["autodocs"],

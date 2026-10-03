@@ -1,6 +1,6 @@
 "use client";
 
-import { CardSwap } from "@godui/components";
+import { CardSwap } from "@godui/lab";
 import { Activity, Globe, ScrollText, Zap } from "lucide-react";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
@@ -28,7 +28,7 @@ const FEATURES = [
   {
     icon: ScrollText,
     title: "Audit logs",
-    body: "Know who did what, and when — exportable on demand.",
+    body: "Know who did what, and when. Export it on demand.",
   },
 ];
 
@@ -73,7 +73,7 @@ export function CardSwapResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — hover to pause, sweep to tilt
+          the real component: hover to pause, sweep to tilt
         </span>
       </div>
       <div className="flex min-h-[340px] items-center justify-center p-10">

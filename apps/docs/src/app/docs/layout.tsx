@@ -26,7 +26,15 @@ export default function Layout({ children }: LayoutProps<"/docs">) {
         className: "md:[--fd-sidebar-width:260px]",
         style: docsLayoutStyle,
       }}
-      sidebar={{ collapsible: false, className: "!items-start" }}
+      sidebar={{
+        collapsible: false,
+        // Lab keeps its Learn pages in the tree (so the Lab root resolves on
+        // them, see `hideLearnPagesPlugin`) — never list them as rows.
+        className: '!items-start [&_a[href$="/learn"]]:hidden',
+      }}
+      // No root-folder switcher atop the sidebar: Lab is reached from the
+      // header, and its pages keep their own sidebar tree.
+      tabs={false}
       links={[{ type: "custom", on: "menu", children: <MobileMenu /> }]}
       slots={{
         header: DocsHeader,

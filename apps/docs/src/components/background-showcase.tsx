@@ -13,7 +13,7 @@ import {
   geometricBackgroundVariants,
   gradientBackgroundPresets,
   gradientBackgroundVariants,
-} from "@godui/components";
+} from "@godui/lab";
 import {
   type ComponentType,
   type CSSProperties,
@@ -172,7 +172,7 @@ export function BackgroundShowcase({
 
       {/* install — same tabbed pattern as every component, with the selected
           variant baked into the command + Manual source */}
-      <ComponentInstall name={set.name} variant={selected} />
+      <ComponentInstall registry="lab" name={set.name} variant={selected} />
     </div>
   );
 }

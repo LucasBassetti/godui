@@ -1,4 +1,4 @@
-import { ResizableHeader } from "@godui/components";
+import { ResizableHeader } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "storybook/test";
 import { action, hidden, range, toggle } from "../playground/argtypes";
@@ -20,7 +20,7 @@ const cta = (
 );
 
 const meta = {
-  title: "Navigation/Resizable Header",
+  title: "Lab/Navigation/Resizable Header",
   component: ResizableHeader,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },
@@ -29,7 +29,7 @@ const meta = {
       <div className="h-[150vh] bg-muted/30">
         <Story />
         <p className="px-6 pt-24 text-center text-muted-foreground text-sm">
-          Scroll down — the bar morphs into a floating pill.
+          Scroll down and the bar morphs into a floating pill.
         </p>
       </div>
     ),

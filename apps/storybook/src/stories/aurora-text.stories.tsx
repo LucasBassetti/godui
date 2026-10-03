@@ -1,10 +1,10 @@
-import { AuroraText } from "@godui/components";
+import { AuroraText } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { hidden, range, text } from "../playground/argtypes";
 import { centered } from "../playground/stage";
 
 const meta = {
-  title: "Text/AuroraText",
+  title: "Lab/Text/AuroraText",
   component: AuroraText,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

@@ -4,7 +4,7 @@ import {
   type GeometricBackgroundVariant,
   geometricBackgroundPresets,
   geometricBackgroundVariants,
-} from "@godui/components";
+} from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { select } from "../playground/argtypes";
 import { effectStage } from "../playground/stage";
@@ -14,7 +14,7 @@ type PlaygroundArgs = GeometricBackgroundProps & {
 };
 
 const meta: Meta<PlaygroundArgs> = {
-  title: "Backgrounds/Geometric Background",
+  title: "Lab/Backgrounds/Geometric Background",
   component: GeometricBackground,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

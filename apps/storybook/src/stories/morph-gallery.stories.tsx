@@ -1,4 +1,4 @@
-import { MorphGallery, type MorphGalleryProps } from "@godui/components";
+import { MorphGallery, type MorphGalleryProps } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { range } from "../playground/argtypes";
 
@@ -21,7 +21,7 @@ const ITEMS = PHOTOS.map((p) => ({
 }));
 
 const meta = {
-  title: "Layout/MorphGallery",
+  title: "Lab/Layout/MorphGallery",
   component: MorphGallery,
   tags: ["autodocs"],
   parameters: { layout: "padded" },

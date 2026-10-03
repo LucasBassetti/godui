@@ -1,6 +1,6 @@
 "use client";
 
-import { ResizableHeader } from "@godui/components";
+import { ResizableHeader } from "@godui/lab";
 import { useRef, useState } from "react";
 
 const LINKS = [
@@ -58,7 +58,7 @@ export function ResizableHeaderDemo() {
               Ship faster with Northwind
             </h2>
             <p className="max-w-md text-muted-foreground text-sm leading-relaxed">
-              Scroll this panel — the navigation springs into a compact, blurred
+              Scroll this panel. The navigation springs into a compact, blurred
               pill and the active link indicator follows along.
             </p>
           </div>

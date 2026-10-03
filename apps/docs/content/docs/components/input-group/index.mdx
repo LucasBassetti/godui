@@ -1,0 +1,366 @@
+---
+title: Input Group
+description: Display additional information or actions to an input or textarea. The focus ring fades and grows in on its own layer.
+workbench: true
+---
+
+import { InputGroupButtonDemo } from "@/components/demos/core/input-group-button-demo";
+import { InputGroupFocusDemo } from "@/components/demos/core/input-group-focus-demo";
+import { InputGroupIconDemo } from "@/components/demos/core/input-group-icon-demo";
+import { InputGroupTextDemo } from "@/components/demos/core/input-group-text-demo";
+import { InputGroupTextareaDemo } from "@/components/demos/core/input-group-textarea-demo";
+
+<Workbench>
+
+The shadcn/ui input group. Focus the field and the ring fades in while it
+grows from 99% to full size, then sits exactly where shadcn's ring sits. The
+ring is a `::before` layer, so only its `opacity` and `scale` change; the
+border colour snaps. Addon buttons stay clickable through it.
+
+<Example label="Focus ring" story="ui-input-group" code={`"use client";
+
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+  InputGroupText,
+  InputGroupTextarea,
+} from "@/components/ui/input-group";
+import { Switch } from "@/components/ui/switch";
+import { CornerDownLeftIcon, SearchIcon } from "lucide-react";
+import * as React from "react";
+
+export function InputGroupFocusDemo() {
+  const [slow, setSlow] = React.useState(false);
+
+  return (
+    <div className="grid w-full max-w-sm gap-6">
+      <div className="flex items-center justify-between gap-4">
+        <span className="text-muted-foreground text-sm">
+          Click or Tab between the fields
+        </span>
+        <div className="flex items-center gap-2">
+          <Switch
+            id="input-group-slow"
+            size="sm"
+            checked={slow}
+            onCheckedChange={setSlow}
+          />
+          <label htmlFor="input-group-slow" className="font-medium text-sm">
+            Slow motion
+          </label>
+        </div>
+      </div>
+      <div
+        data-slow={slow}
+        className="grid gap-6 data-[slow=true]:[--godui-duration-fast:900ms]"
+      >
+        <InputGroup>
+          <InputGroupInput aria-label="Search" placeholder="Search..." />
+          <InputGroupAddon>
+            <SearchIcon />
+          </InputGroupAddon>
+          <InputGroupAddon align="inline-end">
+            <kbd className="rounded border px-1.5 font-mono text-xs">⌘K</kbd>
+          </InputGroupAddon>
+        </InputGroup>
+        <InputGroup>
+          <InputGroupAddon>
+            <InputGroupText>https://</InputGroupText>
+          </InputGroupAddon>
+          <InputGroupInput
+            aria-label="Website"
+            placeholder="example.com"
+            className="pl-0.5!"
+          />
+        </InputGroup>
+        <InputGroup>
+          <InputGroupTextarea
+            aria-label="Message"
+            placeholder="Write a message..."
+          />
+          <InputGroupAddon align="block-end">
+            <InputGroupButton size="sm" className="ml-auto" variant="default">
+              Send <CornerDownLeftIcon />
+            </InputGroupButton>
+          </InputGroupAddon>
+        </InputGroup>
+      </div>
+    </div>
+  );
+}`}>
+  <InputGroupFocusDemo />
+</Example>
+
+<Example label="Icon" story="ui-input-group--icon" code={`import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group";
+import { CheckIcon, CreditCardIcon, MailIcon, SearchIcon } from "lucide-react";
+
+export function InputGroupIconDemo() {
+  return (
+    <div className="grid w-full max-w-sm gap-6">
+      <InputGroup>
+        <InputGroupInput placeholder="Search..." />
+        <InputGroupAddon>
+          <SearchIcon />
+        </InputGroupAddon>
+      </InputGroup>
+      <InputGroup>
+        <InputGroupInput type="email" placeholder="Enter your email" />
+        <InputGroupAddon>
+          <MailIcon />
+        </InputGroupAddon>
+      </InputGroup>
+      <InputGroup>
+        <InputGroupInput placeholder="Card number" />
+        <InputGroupAddon>
+          <CreditCardIcon />
+        </InputGroupAddon>
+        <InputGroupAddon align="inline-end">
+          <CheckIcon />
+        </InputGroupAddon>
+      </InputGroup>
+    </div>
+  );
+}`}>
+  <InputGroupIconDemo />
+</Example>
+
+<Example label="Button" story="ui-input-group--button" code={`"use client";
+
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from "@/components/ui/input-group";
+import { CheckIcon, CopyIcon, StarIcon } from "lucide-react";
+import * as React from "react";
+
+export function InputGroupButtonDemo() {
+  const [copied, setCopied] = React.useState(false);
+  const [favorite, setFavorite] = React.useState(false);
+
+  return (
+    <div className="grid w-full max-w-sm gap-6">
+      <InputGroup>
+        <InputGroupInput placeholder="https://x.com/shadcn" readOnly />
+        <InputGroupAddon align="inline-end">
+          <InputGroupButton
+            aria-label="Copy"
+            title="Copy"
+            size="icon-xs"
+            onClick={() => {
+              navigator.clipboard?.writeText("https://x.com/shadcn");
+              setCopied(true);
+              setTimeout(() => setCopied(false), 2000);
+            }}
+          >
+            {copied ? <CheckIcon /> : <CopyIcon />}
+          </InputGroupButton>
+        </InputGroupAddon>
+      </InputGroup>
+      <InputGroup className="[--radius:9999px]">
+        <InputGroupAddon className="text-muted-foreground">
+          https://
+        </InputGroupAddon>
+        <InputGroupInput placeholder="example.com" className="pl-0.5!" />
+        <InputGroupAddon align="inline-end">
+          <InputGroupButton
+            aria-label="Favorite"
+            aria-pressed={favorite}
+            size="icon-xs"
+            onClick={() => setFavorite(!favorite)}
+          >
+            <StarIcon
+              data-favorite={favorite}
+              className="data-[favorite=true]:fill-primary data-[favorite=true]:stroke-primary"
+            />
+          </InputGroupButton>
+        </InputGroupAddon>
+      </InputGroup>
+      <InputGroup>
+        <InputGroupInput placeholder="Type to search..." />
+        <InputGroupAddon align="inline-end">
+          <InputGroupButton variant="secondary">Search</InputGroupButton>
+        </InputGroupAddon>
+      </InputGroup>
+    </div>
+  );
+}`}>
+  <InputGroupButtonDemo />
+</Example>
+
+<Example label="Text" story="ui-input-group--text" code={`import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+  InputGroupText,
+  InputGroupTextarea,
+} from "@/components/ui/input-group";
+
+export function InputGroupTextDemo() {
+  return (
+    <div className="grid w-full max-w-sm gap-6">
+      <InputGroup>
+        <InputGroupAddon>
+          <InputGroupText>$</InputGroupText>
+        </InputGroupAddon>
+        <InputGroupInput placeholder="0.00" />
+        <InputGroupAddon align="inline-end">
+          <InputGroupText>USD</InputGroupText>
+        </InputGroupAddon>
+      </InputGroup>
+      <InputGroup>
+        <InputGroupAddon>
+          <InputGroupText>https://</InputGroupText>
+        </InputGroupAddon>
+        <InputGroupInput placeholder="example.com" className="pl-0.5!" />
+        <InputGroupAddon align="inline-end">
+          <InputGroupText>.com</InputGroupText>
+        </InputGroupAddon>
+      </InputGroup>
+      <InputGroup>
+        <InputGroupInput placeholder="Enter your username" />
+        <InputGroupAddon align="inline-end">
+          <InputGroupText>@company.com</InputGroupText>
+        </InputGroupAddon>
+      </InputGroup>
+      <InputGroup>
+        <InputGroupTextarea placeholder="Enter your message" />
+        <InputGroupAddon align="block-end">
+          <InputGroupText className="text-muted-foreground text-xs">
+            120 characters left
+          </InputGroupText>
+        </InputGroupAddon>
+      </InputGroup>
+    </div>
+  );
+}`}>
+  <InputGroupTextDemo />
+</Example>
+
+<Example label="Textarea" story="ui-input-group--textarea" code={`import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupText,
+  InputGroupTextarea,
+} from "@/components/ui/input-group";
+import {
+  CopyIcon,
+  CornerDownLeftIcon,
+  FileCodeIcon,
+  RefreshCwIcon,
+} from "lucide-react";
+
+export function InputGroupTextareaDemo() {
+  return (
+    <div className="grid w-full max-w-md gap-4">
+      <InputGroup>
+        <InputGroupTextarea
+          id="textarea-code"
+          placeholder="console.log('Hello, world!');"
+          className="min-h-[200px]"
+        />
+        <InputGroupAddon align="block-end" className="border-t">
+          <InputGroupText>Line 1, Column 1</InputGroupText>
+          <InputGroupButton size="sm" className="ml-auto" variant="default">
+            Run <CornerDownLeftIcon />
+          </InputGroupButton>
+        </InputGroupAddon>
+        <InputGroupAddon align="block-start" className="border-b">
+          <InputGroupText className="font-medium font-mono">
+            <FileCodeIcon />
+            script.js
+          </InputGroupText>
+          <InputGroupButton
+            className="ml-auto"
+            size="icon-xs"
+            aria-label="Refresh"
+          >
+            <RefreshCwIcon />
+          </InputGroupButton>
+          <InputGroupButton variant="ghost" size="icon-xs" aria-label="Copy">
+            <CopyIcon />
+          </InputGroupButton>
+        </InputGroupAddon>
+      </InputGroup>
+    </div>
+  );
+}`}>
+  <InputGroupTextareaDemo />
+</Example>
+
+## Installation
+
+<ComponentInstall name="input-group" />
+
+## Replacing shadcn
+
+`npx shadcn add @godui/input-group` overwrites `components/ui/input-group.tsx`
+(and installs GodUI's `button`, `input` and `textarea`). Exports, props and
+`data-slot` attributes match shadcn/ui new-york-v4, so existing imports keep
+working. It also installs `godui-motion` for the easing and duration tokens.
+
+The group's focus and invalid ring classes move to its `::before`
+(`before:ring-[3px]` instead of `ring-[3px]`). If a call site set a ring
+colour on the group, prefix it with `before:`. Don't put `overflow-hidden` on
+the group: the ring sits outside its border, like shadcn's. The layer reaches
+that border box with `before:-inset-px`, which assumes shadcn's 1px `border`;
+if you give the group a thicker one, match it (`border-2` with
+`before:-inset-0.5`), or the ring starts inside the border.
+
+## Usage
+
+```tsx
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group";
+```
+
+```tsx
+<InputGroup>
+  <InputGroupInput placeholder="Search..." />
+  <InputGroupAddon>
+    <SearchIcon />
+  </InputGroupAddon>
+</InputGroup>
+```
+
+## What's animated
+
+Turn on Slow motion in the Focus ring example to watch the ring grow on a 900ms clock.
+
+| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
+| --- | --- | --- | --- | --- |
+| Focus ring | `::before` transition | `opacity`, `scale` | `ease-out-expo` | 150ms |
+| Border colour, invalid colour | snap | none | none | none |
+
+Blur fades it out the same way. The ring is shadcn's: 3px of `ring/50`, or of
+`destructive/20` on an invalid control (`destructive/40` in dark). A layer
+that covers the group's border box with the same radius draws it.
+
+Under `prefers-reduced-motion` the ring appears and disappears without a
+transition.
+
+## API
+
+Props are identical to [shadcn/ui Input Group](https://ui.shadcn.com/docs/components/input-group).
+
+| Component | Props |
+| --- | --- |
+| `InputGroup` | `div` props |
+| `InputGroupAddon` | `align`: `"inline-start" \| "inline-end" \| "block-start" \| "block-end"` (default `"inline-start"`) |
+| `InputGroupButton` | `Button` props; `size`: `"xs" \| "sm" \| "icon-xs" \| "icon-sm"` (default `"xs"`), `variant` (default `"ghost"`) |
+| `InputGroupText` | `span` props |
+| `InputGroupInput` | `input` props |
+| `InputGroupTextarea` | `textarea` props |
+
+</Workbench>

@@ -1,4 +1,4 @@
-import { StickyScroll, type StickyScrollItem } from "@godui/components";
+import { StickyScroll, type StickyScrollItem } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 const ITEMS: StickyScrollItem[] = [
@@ -33,7 +33,7 @@ const ITEMS: StickyScrollItem[] = [
 ];
 
 const meta = {
-  title: "Layout/Sticky Scroll",
+  title: "Lab/Layout/Sticky Scroll",
   component: StickyScroll,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

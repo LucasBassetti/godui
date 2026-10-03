@@ -1,0 +1,71 @@
+---
+title: Scroll Progress
+description: A spring-smoothed reading indicator, shown as a pinned top bar or a fading back-to-top ring.
+workbench: true
+---
+
+import { ScrollProgressCircleDemo, ScrollProgressDemo } from "@/components/demos/scroll-progress-demo";
+
+<Workbench>
+
+The `bar` variant pins a progress line to the top of the page and fills as the
+reader scrolls. Leave `container` unset to track the whole page, or pass a ref
+to track a scrollable element (as the preview below does).
+
+<Example
+  label="Default"
+  story="lab-effects-scroll-progress"
+  code={`import { ScrollProgress } from "@/components/godui/scroll-progress";
+
+// Whole-page reading bar
+export function ScrollProgressDemo() {
+  return <ScrollProgress />;
+}`}
+>
+  <ScrollProgressDemo />
+</Example>
+
+<Example
+  label="Circle Variant"
+  code={`import { ScrollProgress } from "@/components/godui/scroll-progress";
+
+export function ScrollProgressCircle() {
+  return <ScrollProgress variant="circle" showAfter={0.05} />;
+}`}
+>
+  <ScrollProgressCircleDemo />
+</Example>
+
+## Installation
+
+<ComponentInstall registry="lab" name="scroll-progress" />
+
+## Usage
+
+```tsx
+import { ScrollProgress } from "@godui/lab";
+
+// Whole-page reading bar
+<ScrollProgress />;
+
+// Circular ring that fades in past showAfter and scrolls back to top on click
+<ScrollProgress variant="circle" showAfter={0.05} />;
+
+// Track a specific section
+const ref = useRef<HTMLElement>(null);
+<ScrollProgress target={ref} />;
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `variant` | `"bar" \| "circle"` | `"bar"` | Progress style. |
+| `container` | `RefObject<HTMLElement>` | none | Track a scrollable element and pin within it. |
+| `target` | `RefObject<HTMLElement>` | none | Track a target's progress through the viewport. |
+| `height` | `number` | `3` | Bar thickness in px. |
+| `size` | `number` | `44` | Ring diameter in px. |
+| `showAfter` | `number` | `0.05` | Reveal the ring past this fraction. |
+| `position` | `"bottom-right" \| "bottom-left"` | `"bottom-right"` | Corner the ring docks to. |
+
+</Workbench>

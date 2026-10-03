@@ -1,7 +1,4 @@
-import {
-  TopographicDrift,
-  type TopographicDriftProps,
-} from "@godui/components";
+import { TopographicDrift, type TopographicDriftProps } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
   type PresetMap,
@@ -26,7 +23,7 @@ const presets = {
 type PlaygroundArgs = TopographicDriftProps & { preset: keyof typeof presets };
 
 const meta: Meta<PlaygroundArgs> = {
-  title: "Backgrounds/Topographic Drift",
+  title: "Lab/Backgrounds/Topographic Drift",
   component: TopographicDrift,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

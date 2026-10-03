@@ -1,4 +1,4 @@
-import { LiquidMetaballs, type LiquidMetaballsProps } from "@godui/components";
+import { LiquidMetaballs, type LiquidMetaballsProps } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { toggle } from "../playground/argtypes";
 import {
@@ -38,7 +38,7 @@ const presets = {
 type PlaygroundArgs = LiquidMetaballsProps & { preset: keyof typeof presets };
 
 const meta: Meta<PlaygroundArgs> = {
-  title: "Backgrounds/Liquid Metaballs",
+  title: "Lab/Backgrounds/Liquid Metaballs",
   component: LiquidMetaballs,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

@@ -1,0 +1,119 @@
+import { readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+import { render, screen } from "@testing-library/react";
+import { expectSlotParity, slotTree } from "../../test/parity";
+import * as Shadcn from "../../test/shadcn/skeleton";
+import * as Godui from "./skeleton";
+
+function Usage({ ui }: { ui: typeof Shadcn }) {
+  const { Skeleton } = ui;
+  return (
+    <div className="flex items-center space-x-4">
+      <Skeleton className="h-12 w-12 rounded-full" />
+      <div className="space-y-2">
+        <Skeleton className="h-4 w-[250px]" />
+        <Skeleton className="h-4 w-[200px]" />
+      </div>
+    </div>
+  );
+}
+
+const skeleton = () => screen.getByTestId("skeleton");
+
+describe("Skeleton", () => {
+  it("matches shadcn's data-slot tree and exports", () => {
+    const { unmount } = render(<Usage ui={Shadcn} />);
+    const expected = slotTree();
+    unmount();
+    render(<Usage ui={Godui} />);
+    expectSlotParity(slotTree(), expected);
+    expect(Object.keys(Godui)).toEqual(
+      expect.arrayContaining(Object.keys(Shadcn)),
+    );
+  });
+
+  it("forwards props and keeps the call site's classes", () => {
+    render(<Godui.Skeleton data-testid="skeleton" className="h-4 w-[250px]" />);
+    expect(skeleton()).toHaveAttribute("data-slot", "skeleton");
+    expect(skeleton()).toHaveClass(
+      "h-4",
+      "w-[250px]",
+      "bg-accent",
+      "rounded-md",
+    );
+  });
+
+  it("shimmers with a transform-only band", () => {
+    render(<Godui.Skeleton data-testid="skeleton" />);
+    const cls = skeleton().className;
+    expect(cls).toContain("after:animate-godui-shimmer");
+    expect(cls).toContain("after:-translate-x-full");
+    expect(cls).toContain("overflow-hidden");
+    expect(cls).not.toContain("transition");
+    // shadcn's pulse only returns under reduced motion.
+    expect(cls.split(/\s+/)).not.toContain("animate-pulse");
+  });
+
+  it("RTL: the band sweeps right to left (the same loop, played in reverse)", () => {
+    render(<Godui.Skeleton data-testid="skeleton" />);
+    expect(skeleton().className.split(/\s+/)).toContain(
+      "rtl:after:[animation-direction:reverse]",
+    );
+    // Reversed, the loop starts off the right edge (the keyframe's 100%) and
+    // ends off the left (the -100% resting translate). The curve is
+    // symmetric, so the reversed sweep eases exactly like the forward one.
+    const css = readFileSync(
+      join(dirname(fileURLToPath(import.meta.url)), "../../styles.css"),
+      "utf8",
+    );
+    const curve = css.match(
+      /--animate-godui-shimmer:[^;]*cubic-bezier\(([^)]*)\)/,
+    )?.[1];
+    const [x1, y1, x2, y2] = (curve ?? "").split(",").map(Number);
+    expect(x1 + x2).toBeCloseTo(1);
+    expect(y1 + y2).toBeCloseTo(1);
+  });
+
+  it("reduced motion: the band is hidden and the block pulses instead", () => {
+    render(<Godui.Skeleton data-testid="skeleton" />);
+    const cls = skeleton().className.split(/\s+/);
+    expect(cls).toContain("motion-reduce:animate-pulse");
+    expect(cls).toContain("motion-reduce:after:hidden");
+  });
+
+  it("a call site's \"animate-none\" stops it, like shadcn's pulse", () => {
+    // shadcn: animate-none replaces animate-pulse. Here it also hides the
+    // band and keeps the reduced-motion pulse off (both keyed on the class,
+    // which out-specifies the variants that would otherwise win).
+    render(<Godui.Skeleton data-testid="skeleton" className="animate-none" />);
+    const cls = skeleton().className.split(/\s+/);
+    expect(cls).toContain("animate-none");
+    expect(cls).toContain("[&.animate-none]:after:hidden");
+    // The reduced-motion pulse stays in the list; [&.animate-none]:animate-none
+    // (a higher specificity) is what keeps it off.
+    expect(cls).toContain("[&.animate-none]:animate-none");
+  });
+
+  it('a call site\'s "motion-reduce:animate-none" replaces the reduced-motion pulse', () => {
+    // Same variant set, so tailwind-merge drops the base pulse (as it drops
+    // shadcn's animate-pulse); the band stays hidden.
+    render(
+      <Godui.Skeleton
+        data-testid="skeleton"
+        className="motion-reduce:animate-none"
+      />,
+    );
+    const cls = skeleton().className.split(/\s+/);
+    expect(cls).toContain("motion-reduce:animate-none");
+    expect(cls).not.toContain("motion-reduce:animate-pulse");
+    expect(cls).toContain("motion-reduce:after:hidden");
+  });
+
+  it("lets a call site's absolute replace relative", () => {
+    render(<Godui.Skeleton data-testid="skeleton" className="absolute" />);
+    const cls = skeleton().className.split(/\s+/);
+    expect(cls).toContain("absolute");
+    expect(cls).not.toContain("relative");
+  });
+});

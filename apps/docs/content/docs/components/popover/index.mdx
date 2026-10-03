@@ -1,0 +1,149 @@
+---
+title: Popover
+description: Displays rich content in a portal, triggered by a button. Grows out of its trigger on a spring.
+workbench: true
+---
+
+import {
+  Button,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@godui/components";
+import { PopoverDemo } from "@/components/demos/core/popover-demo";
+
+<Workbench>
+
+The shadcn/ui popover with a directional entrance. It scales up from the
+point where it touches the trigger and drifts 4px away from it on a spring,
+so it reads as coming out of the button. The exit runs the same path
+backwards in 150ms. Only `scale`, `translate` and `opacity` animate.
+
+<Example label="Default" story="ui-popover" code={`import { Button } from "@/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverDescription,
+  PopoverHeader,
+  PopoverTitle,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+
+const FIELDS = [
+  { label: "Width", value: "100%" },
+  { label: "Max. width", value: "300px" },
+  { label: "Height", value: "25px" },
+];
+
+export function PopoverDemo() {
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button variant="outline">Open popover</Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-80">
+        <div className="grid gap-4">
+          <PopoverHeader>
+            <PopoverTitle>Dimensions</PopoverTitle>
+            <PopoverDescription>
+              Set the dimensions for the layer.
+            </PopoverDescription>
+          </PopoverHeader>
+          <div className="grid gap-2">
+            {FIELDS.map((field) => (
+              <label
+                key={field.label}
+                className="grid grid-cols-3 items-center gap-4 text-sm"
+              >
+                {field.label}
+                <input
+                  className="col-span-2 h-8 rounded-md border border-input bg-transparent px-2"
+                  defaultValue={field.value}
+                />
+              </label>
+            ))}
+          </div>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+}`}>
+  <PopoverDemo />
+</Example>
+
+<Example
+  label="Sides"
+  code={`<div className="flex flex-wrap items-center justify-center gap-3">
+  {(["top", "right", "bottom", "left"] as const).map((side) => (
+    <Popover key={side}>
+      <PopoverTrigger asChild>
+        <Button variant="outline" className="capitalize">{side}</Button>
+      </PopoverTrigger>
+      <PopoverContent side={side} className="w-48 text-sm">
+        Opens to the {side}.
+      </PopoverContent>
+    </Popover>
+  ))}
+</div>`}
+>
+  <div className="flex flex-wrap items-center justify-center gap-3">
+    {["top", "right", "bottom", "left"].map((side) => (
+      <Popover key={side}>
+        <PopoverTrigger asChild>
+          <Button variant="outline" className="capitalize">{side}</Button>
+        </PopoverTrigger>
+        <PopoverContent side={side} className="w-48 text-sm">
+          Opens to the {side}.
+        </PopoverContent>
+      </Popover>
+    ))}
+  </div>
+</Example>
+
+## Installation
+
+<ComponentInstall name="popover" />
+
+## Replacing shadcn
+
+`npx shadcn add @godui/popover` overwrites `components/ui/popover.tsx`. Exports,
+props and `data-slot` attributes match shadcn/ui new-york-v4, so existing
+imports keep working. It also installs `godui-motion` (easings, keyframes, the
+FLIP hook) into your project.
+
+## Usage
+
+```tsx
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+```
+
+```tsx
+<Popover>
+  <PopoverTrigger>Open</PopoverTrigger>
+  <PopoverContent>Place content for the popover here.</PopoverContent>
+</Popover>
+```
+
+## What's animated
+
+| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
+| --- | --- | --- | --- | --- |
+| Open | `godui-popover-in` | `opacity`, `scale` 0.96 → 1 from the trigger, `translate` 4px toward the trigger → 0 | `ease-spring-snappy` | 260ms |
+| Close | `godui-popover-out` | the same, reversed | `ease-out-expo` | 150ms |
+
+The scale origin is Radix's `--radix-popover-content-transform-origin`, the
+point of the content nearest the trigger. The drift direction comes from
+`--godui-enter-x` / `--godui-enter-y`, set per `data-side`.
+
+Under `prefers-reduced-motion` the popover only fades (150ms).
+
+## API
+
+Built on [Radix Popover](https://www.radix-ui.com/primitives/docs/components/popover).
+Props are identical to [shadcn/ui Popover](https://ui.shadcn.com/docs/components/popover).
+
+</Workbench>

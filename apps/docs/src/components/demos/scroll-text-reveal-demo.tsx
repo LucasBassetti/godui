@@ -1,6 +1,6 @@
 "use client";
 
-import { ScrollTextReveal } from "@godui/components";
+import { ScrollTextReveal } from "@godui/lab";
 import { useRef } from "react";
 import { DemoScrollPort, DemoScrollRunway } from "@/components/demos/_kit";
 
@@ -22,7 +22,7 @@ export function ScrollTextRevealDemo() {
           as="p"
           className="text-balance text-center font-semibold text-2xl text-foreground leading-relaxed sm:text-3xl"
         >
-          Great interfaces read like a sentence — one idea resolving into the
+          Great interfaces read like a sentence, one idea resolving into the
           next. As you scroll, each word settles into focus, pacing attention
           exactly where it belongs.
         </ScrollTextReveal>
@@ -49,7 +49,7 @@ export function ScrollTextRevealKeepDemo() {
           keepRevealed
           className="text-balance text-center font-semibold text-2xl text-foreground leading-relaxed sm:text-3xl"
         >
-          With keepRevealed, each word latches at full presence once it lands —
+          With keepRevealed, each word latches at full presence once it lands,
           so the paragraph stays lit as you scroll back up instead of dimming
           again.
         </ScrollTextReveal>

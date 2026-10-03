@@ -1,6 +1,6 @@
 "use client";
 
-import { PromptComposer } from "@godui/components";
+import { PromptComposer } from "@godui/lab";
 import { useState } from "react";
 
 export function PromptComposerDemo() {

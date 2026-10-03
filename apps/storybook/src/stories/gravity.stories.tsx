@@ -1,4 +1,4 @@
-import { Gravity, MatterBody } from "@godui/components";
+import { Gravity, MatterBody } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { padded } from "../playground/stage";
 
@@ -19,7 +19,7 @@ const COLORS = [
 ];
 
 const meta = {
-  title: "Visualizations/Gravity",
+  title: "Lab/Visualizations/Gravity",
   component: Gravity,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

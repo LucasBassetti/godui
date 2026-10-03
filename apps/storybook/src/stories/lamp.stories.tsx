@@ -1,4 +1,4 @@
-import { Lamp } from "@godui/components";
+import { Lamp } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { color, text } from "../playground/argtypes";
 
@@ -10,7 +10,7 @@ type PlaygroundArgs = {
 };
 
 const meta: Meta<PlaygroundArgs> = {
-  title: "Effects/Lamp",
+  title: "Lab/Effects/Lamp",
   component: Lamp,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

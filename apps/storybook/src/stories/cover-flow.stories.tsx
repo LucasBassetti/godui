@@ -1,4 +1,4 @@
-import { CoverFlow, type CoverFlowProps } from "@godui/components";
+import { CoverFlow, type CoverFlowProps } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { range, toggle } from "../playground/argtypes";
 
@@ -28,7 +28,7 @@ function Cover({ title, artist, img }: (typeof COVERS)[number]) {
 }
 
 const meta = {
-  title: "Layout/CoverFlow",
+  title: "Lab/Layout/CoverFlow",
   component: CoverFlow,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

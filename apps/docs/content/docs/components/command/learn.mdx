@@ -1,0 +1,76 @@
+---
+title: Anatomy of the GodUI Command
+description: One highlight that glides with your arrow keys but snaps while you type, and why those two cases need different motion.
+learnPlayer: true
+---
+
+import { CommandDemo } from "@/components/demos/core/command-demo";
+
+<LearnPlayer>
+
+<LearnChapter
+  label="One highlight"
+  scene={<AutoPlayScene label="One highlight" demo="command" />}
+  code={`useActiveIndicator(listRef, indicatorRef, {
+  active: '[cmdk-item][data-selected="true"]',
+  items: "[cmdk-item]",
+  attributes: ["data-selected"],
+});`}
+>
+
+cmdk marks the selected item with `data-selected="true"` and moves it on
+arrow keys and pointer moves. GodUI watches that attribute and moves one
+highlight element to the new item with a FLIP. Its box snaps to the new
+item, then `translate` and `scale` animate back from the old one.
+
+The highlight lives inside the scrolling list, so it scrolls with the items.
+When cmdk scrolls a selected item into view, the highlight is already
+there.
+
+</LearnChapter>
+
+<LearnChapter
+  label="Snap while filtering"
+  scene={<FlipScene label="Snap while filtering" variant="tabs" />}
+  code={`const mutations = new MutationObserver((records) => {
+  // Selection moved → slide. Items added/removed (filtering) → snap.
+  if (records.some((record) => record.type === "childList")) {
+    observeItems();
+    place(false);
+  } else {
+    place(true);
+  }
+});`}
+>
+
+Typing re-filters the list on every keystroke: items disappear, the rest
+shift up, and the selection jumps to the first match. If the highlight slid
+each time, it would chase the list around while you type.
+
+So the shared `useActiveIndicator` hook slides only when the selection moves
+between existing items (an attribute change), and snaps when items are added
+or removed. Arrow keys glide; typing doesn't.
+
+</LearnChapter>
+
+<LearnChapter
+  label="The result"
+  scene={<LiveResult hint="use the arrow keys, then type"><CommandDemo /></LiveResult>}
+  isResult
+>
+
+Arrow through the items, move the pointer over them, then type to filter.
+
+</LearnChapter>
+
+</LearnPlayer>
+
+## Why GPU-only
+
+The highlight animates `translate` and `scale`. Items no longer repaint their
+own background on selection.
+
+## Reduced motion
+
+The highlight jumps to the selected item without sliding. `CommandDialog`
+fades without scaling.

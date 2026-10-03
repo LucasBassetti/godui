@@ -1,4 +1,4 @@
-import { GooeyStack, type GooeyStackProps } from "@godui/components";
+import { GooeyStack, type GooeyStackProps } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { range, toggle } from "../playground/argtypes";
 
@@ -79,7 +79,7 @@ function PromptCard() {
 }
 
 const meta = {
-  title: "Layout/GooeyStack",
+  title: "Lab/Layout/GooeyStack",
   component: GooeyStack,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

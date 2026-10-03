@@ -1,10 +1,10 @@
-import { NumberTicker } from "@godui/components";
+import { NumberTicker } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { hidden, number, radio, range } from "../playground/argtypes";
 import { centered } from "../playground/stage";
 
 const meta = {
-  title: "Text/NumberTicker",
+  title: "Lab/Text/NumberTicker",
   component: NumberTicker,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

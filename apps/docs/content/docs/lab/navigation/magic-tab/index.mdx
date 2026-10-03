@@ -1,0 +1,215 @@
+---
+title: Magic Tab
+description: A segmented tab bar where the selected option lifts into a 3D button with an optional rainbow edge.
+workbench: true
+---
+
+import { MagicTab } from "@godui/lab";
+
+<Workbench>
+
+A segmented tab bar where the selected option lifts into a 3D button with an optional rainbow edge.
+
+<Example
+  label="Default"
+  story="lab-navigation-magic-tab"
+  code={`import { MagicTab } from "@/components/godui/magic-tab";
+
+const items = [
+  { value: "overview", label: "Overview" },
+  { value: "analytics", label: "Analytics" },
+  { value: "reports", label: "Reports" },
+];
+
+export function MagicTabDemo() {
+  return <MagicTab items={items} defaultValue="overview" />;
+}`}
+>
+  <MagicTab
+    items={[
+      { value: "overview", label: "Overview" },
+      { value: "analytics", label: "Analytics" },
+      { value: "reports", label: "Reports" },
+    ]}
+    defaultValue="overview"
+  />
+</Example>
+
+## Installation
+
+<ComponentInstall registry="lab" name="magic-tab" />
+
+## Usage
+
+```tsx
+import { MagicTab } from "@/components/godui/magic-tab";
+```
+
+```tsx
+const items = [
+  { value: "overview", label: "Overview" },
+  { value: "analytics", label: "Analytics" },
+  { value: "reports", label: "Reports" },
+];
+
+<MagicTab items={items} defaultValue="overview" />;
+```
+
+Use it controlled by passing `value` and `onValueChange`:
+
+```tsx
+const [value, setValue] = useState("overview");
+
+<MagicTab items={items} value={value} onValueChange={setValue} />;
+```
+
+## Examples
+
+### Secondary
+
+<Example
+  label="Secondary"
+  code={`import { MagicTab } from "@/components/godui/magic-tab";
+
+const items = [
+  { value: "overview", label: "Overview" },
+  { value: "analytics", label: "Analytics" },
+  { value: "reports", label: "Reports" },
+];
+
+export function MagicTabSecondary() {
+  return <MagicTab items={items} defaultValue="overview" variant="secondary" />;
+}`}
+>
+  <MagicTab
+    items={[
+      { value: "overview", label: "Overview" },
+      { value: "analytics", label: "Analytics" },
+      { value: "reports", label: "Reports" },
+    ]}
+    defaultValue="overview"
+    variant="secondary"
+  />
+</Example>
+
+### Without rainbow
+
+<Example
+  label="Without Rainbow"
+  code={`import { MagicTab } from "@/components/godui/magic-tab";
+
+const items = [
+  { value: "overview", label: "Overview" },
+  { value: "analytics", label: "Analytics" },
+  { value: "reports", label: "Reports" },
+];
+
+export function MagicTabPlain() {
+  return <MagicTab items={items} defaultValue="overview" rainbow={false} />;
+}`}
+>
+  <MagicTab
+    items={[
+      { value: "overview", label: "Overview" },
+      { value: "analytics", label: "Analytics" },
+      { value: "reports", label: "Reports" },
+    ]}
+    defaultValue="overview"
+    rainbow={false}
+  />
+</Example>
+
+### Disabled tab
+
+Mark any item `disabled` to skip it.
+
+<Example
+  label="Disabled Tab"
+  code={`import { MagicTab } from "@/components/godui/magic-tab";
+
+const items = [
+  { value: "overview", label: "Overview" },
+  { value: "analytics", label: "Analytics", disabled: true },
+  { value: "reports", label: "Reports" },
+];
+
+export function MagicTabDisabled() {
+  return <MagicTab items={items} defaultValue="overview" />;
+}`}
+>
+  <MagicTab
+    items={[
+      { value: "overview", label: "Overview" },
+      { value: "analytics", label: "Analytics", disabled: true },
+      { value: "reports", label: "Reports" },
+    ]}
+    defaultValue="overview"
+  />
+</Example>
+
+### Sizes
+
+<Example
+  label="Sizes"
+  code={`import { MagicTab } from "@/components/godui/magic-tab";
+
+const items = [
+  { value: "overview", label: "Overview" },
+  { value: "analytics", label: "Analytics" },
+  { value: "reports", label: "Reports" },
+];
+
+export function MagicTabSizes() {
+  return (
+    <div className="flex flex-col items-center gap-4">
+      <MagicTab items={items} defaultValue="overview" size="sm" />
+      <MagicTab items={items} defaultValue="overview" size="md" />
+      <MagicTab items={items} defaultValue="overview" size="lg" />
+    </div>
+  );
+}`}
+>
+  <div className="flex flex-col items-center gap-4">
+    <MagicTab
+      items={[
+        { value: "overview", label: "Overview" },
+        { value: "analytics", label: "Analytics" },
+        { value: "reports", label: "Reports" },
+      ]}
+      defaultValue="overview"
+      size="sm"
+    />
+    <MagicTab
+      items={[
+        { value: "overview", label: "Overview" },
+        { value: "analytics", label: "Analytics" },
+        { value: "reports", label: "Reports" },
+      ]}
+      defaultValue="overview"
+      size="md"
+    />
+    <MagicTab
+      items={[
+        { value: "overview", label: "Overview" },
+        { value: "analytics", label: "Analytics" },
+        { value: "reports", label: "Reports" },
+      ]}
+      defaultValue="overview"
+      size="lg"
+    />
+  </div>
+</Example>
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `items` | `MagicTabItem[]` | none | Tabs to render: `{ value, label, disabled? }` |
+| `value` | `string` | none | Controlled selected value |
+| `defaultValue` | `string` | first enabled item | Uncontrolled initial value |
+| `onValueChange` | `(value: string) => void` | none | Called when the selected tab changes |
+| `variant` | `"default" \| "secondary"` | `"default"` | Selected-tab color scheme |
+| `size` | `"sm" \| "md" \| "lg"` | `"md"` | Tab padding and text size |
+| `rainbow` | `boolean` | `true` | Animate the selected tab's 3D edge and shadow with a rainbow gradient |
+
+</Workbench>

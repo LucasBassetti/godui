@@ -1,0 +1,108 @@
+---
+title: Anatomy of the GodUI Drawer
+description: When the library underneath is already GPU-only, the job is to prove it and stay out of its way. GodUI adds one stagger so the content looks carried by the sheet.
+learnPlayer: true
+---
+
+import { DrawerDemo } from "@/components/demos/core/drawer-demo";
+
+<LearnPlayer>
+
+<LearnChapter
+  label="vaul is already GPU-only"
+  scene={
+    <KeyframeScene
+      label="vaul is already GPU-only"
+      motion="slide-bottom"
+      subject="drawer"
+      tracks={[
+        { property: "transform", from: "translate3d(0, 100%, 0)", to: "none" },
+        { property: "opacity (overlay)", from: "0", to: "1" },
+      ]}
+    />
+  }
+  code={`/* vaul's injected stylesheet */
+[data-vaul-drawer] {
+  transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1);
+}
+@keyframes slideFromBottom {
+  from { transform: translate3d(0, var(--initial-transform, 100%), 0); }
+  to { transform: translate3d(0, 0, 0); }
+}`}
+>
+
+Vaul slides the sheet with `transform` keyframes, fades the overlay with
+`opacity`, and follows your finger while dragging by writing `transform`
+inline. All of it is composited.
+
+So GodUI doesn't replace any of it. A unit test reads vaul's stylesheet and
+fails if any transition or keyframe touches something other than `transform`
+or `opacity`, so a vaul upgrade can't quietly change that. shadcn's overlay
+also adds `tw-animate-css` fade classes on top of vaul's own fade; GodUI
+drops them so only one fade runs.
+
+</LearnChapter>
+
+<LearnChapter
+  label="Content settles after the sheet"
+  scene={
+    <KeyframeScene
+      label="Content settles after the sheet"
+      motion="slide-bottom"
+      subject="drawer"
+      tracks={[
+        { property: "translate", from: "0 0.5rem", to: "0 0" },
+        { property: "opacity", from: "0", to: "1" },
+        { property: "delay", from: "header 60ms", to: "footer 120ms" },
+      ]}
+    />
+  }
+  code={`function DrawerHeader({ className, ...props }) {
+  return (
+    <div
+      data-slot="drawer-header"
+      className={cn(
+        "flex flex-col gap-0.5 p-4
+         group-data-[state=open]/drawer-content:animate-godui-slide-in-from-bottom
+         group-data-[state=open]/drawer-content:[animation-delay:60ms] …",
+        className,
+      )}
+      {...props}
+    />
+  );
+}`}
+>
+
+The header and footer play `godui-slide-in-from-bottom`, a 0.5rem rise with
+a fade, when the drawer content is `data-state="open"`. The header starts
+60ms after the sheet and the footer 120ms after it.
+
+The sheet arrives first and the content lands in it a moment later, so the
+content looks carried up by the sheet. The keyframe
+uses `both` fill, so during the delay the content waits in its starting
+position instead of flashing at rest.
+
+</LearnChapter>
+
+<LearnChapter
+  label="The result"
+  scene={<LiveResult hint="open the drawer, then drag it down"><DrawerDemo /></LiveResult>}
+  isResult
+>
+
+Open the drawer, change the goal, then drag the sheet down to dismiss it.
+
+</LearnChapter>
+
+</LearnPlayer>
+
+## Why GPU-only
+
+The sheet animates `transform`, the overlay `opacity`, and the content
+`translate` and `opacity`. The only paint-heavy option in vaul,
+`shouldScaleBackground` (which animates `border-radius`), is off by default.
+
+## Reduced motion
+
+GodUI's content stagger multiplies its distance by `--godui-motion`, so it only
+fades under `prefers-reduced-motion`. Vaul's sheet slide is vaul's own.

@@ -8,7 +8,40 @@ export type CardPreviewProps = { play?: boolean };
 
 type Preview = ComponentType<CardPreviewProps>;
 
-import Accordion from "./previews/accordion";
+import CoreAccordion from "./core/accordion";
+import CoreAlertDialog from "./core/alert-dialog";
+import CoreButton from "./core/button";
+import CoreCalendar from "./core/calendar";
+import CoreCarousel from "./core/carousel";
+import CoreCheckbox from "./core/checkbox";
+import CoreCollapsible from "./core/collapsible";
+import CoreCombobox from "./core/combobox";
+import CoreCommand from "./core/command";
+import CoreContextMenu from "./core/context-menu";
+import CoreDialog from "./core/dialog";
+import CoreDrawer from "./core/drawer";
+import CoreDropdownMenu from "./core/dropdown-menu";
+import CoreHoverCard from "./core/hover-card";
+import CoreInput from "./core/input";
+import CoreInputGroup from "./core/input-group";
+import CoreInputOtp from "./core/input-otp";
+import CoreMenubar from "./core/menubar";
+import CoreNavigationMenu from "./core/navigation-menu";
+import CorePopover from "./core/popover";
+import CoreProgress from "./core/progress";
+import CoreRadioGroup from "./core/radio-group";
+import CoreSelect from "./core/select";
+import CoreSheet from "./core/sheet";
+import CoreSidebar from "./core/sidebar";
+import CoreSkeleton from "./core/skeleton";
+import CoreSlider from "./core/slider";
+import CoreSonner from "./core/sonner";
+import CoreSwitch from "./core/switch";
+import CoreTabs from "./core/tabs";
+import CoreTextarea from "./core/textarea";
+import CoreToggle from "./core/toggle";
+import CoreToggleGroup from "./core/toggle-group";
+import CoreTooltip from "./core/tooltip";
 import AgentFlow from "./previews/agent-flow";
 import AgentTimeline from "./previews/agent-timeline";
 import AnimatedBeam from "./previews/animated-beam";
@@ -24,18 +57,13 @@ import BlueprintGrid from "./previews/blueprint-grid";
 import BorderBeam from "./previews/border-beam";
 import Breadcrumbs from "./previews/breadcrumbs";
 import CardSwap from "./previews/card-swap";
-import Combobox from "./previews/combobox";
-import CommandPalette from "./previews/command-palette";
 import CommentPin from "./previews/comment-pin";
 import Confetti from "./previews/confetti";
 import ContainerScroll from "./previews/container-scroll";
-import ContextMenu from "./previews/context-menu";
 import ConversationThread from "./previews/conversation-thread";
 import CoverFlow from "./previews/cover-flow";
 import DecorativeBackground from "./previews/decorative-background";
 import Dock from "./previews/dock";
-import Drawer from "./previews/drawer";
-import DropdownMenu from "./previews/dropdown-menu";
 import DynamicIsland from "./previews/dynamic-island";
 import EffectBackground from "./previews/effect-background";
 import ElasticText from "./previews/elastic-text";
@@ -113,7 +141,6 @@ import TextAnimate from "./previews/text-animate";
 import TextScramble from "./previews/text-scramble";
 import ThreeDMarquee from "./previews/three-d-marquee";
 import TiltCard from "./previews/tilt-card";
-import Toast from "./previews/toast";
 import TopographicDrift from "./previews/topographic-drift";
 import VoiceOrb from "./previews/voice-orb";
 import WarpStarfield from "./previews/warp-starfield";
@@ -127,6 +154,41 @@ import WorldMap from "./previews/world-map";
  * empty preview zone.
  */
 export const cardPreviews: Record<string, Preview> = {
+  // Core (animated shadcn/ui drop-ins)
+  accordion: CoreAccordion,
+  "alert-dialog": CoreAlertDialog,
+  button: CoreButton,
+  calendar: CoreCalendar,
+  carousel: CoreCarousel,
+  checkbox: CoreCheckbox,
+  collapsible: CoreCollapsible,
+  combobox: CoreCombobox,
+  command: CoreCommand,
+  "context-menu": CoreContextMenu,
+  dialog: CoreDialog,
+  drawer: CoreDrawer,
+  "dropdown-menu": CoreDropdownMenu,
+  "hover-card": CoreHoverCard,
+  input: CoreInput,
+  "input-group": CoreInputGroup,
+  "input-otp": CoreInputOtp,
+  menubar: CoreMenubar,
+  "navigation-menu": CoreNavigationMenu,
+  popover: CorePopover,
+  progress: CoreProgress,
+  "radio-group": CoreRadioGroup,
+  select: CoreSelect,
+  sheet: CoreSheet,
+  sidebar: CoreSidebar,
+  skeleton: CoreSkeleton,
+  slider: CoreSlider,
+  sonner: CoreSonner,
+  switch: CoreSwitch,
+  tabs: CoreTabs,
+  textarea: CoreTextarea,
+  toggle: CoreToggle,
+  "toggle-group": CoreToggleGroup,
+  tooltip: CoreTooltip,
   "gooey-fab": GooeyFab,
   "gooey-stack": GooeyStack,
   "hold-confirm-button": HoldConfirmButton,
@@ -141,10 +203,7 @@ export const cardPreviews: Record<string, Preview> = {
   "magic-input": MagicInput,
   "otp-input": OtpInput,
   breadcrumbs: Breadcrumbs,
-  combobox: Combobox,
-  "context-menu": ContextMenu,
   dock: Dock,
-  "dropdown-menu": DropdownMenu,
   "filter-bar": FilterBar,
   "magic-tab": MagicTab,
   "mega-menu": MegaMenu,
@@ -152,13 +211,9 @@ export const cardPreviews: Record<string, Preview> = {
   "segmented-control": SegmentedControl,
   "tab-bar": TabBar,
   "animated-tooltip": AnimatedTooltip,
-  "command-palette": CommandPalette,
-  drawer: Drawer,
   "dynamic-island": DynamicIsland,
   "floating-toolbar": FloatingToolbar,
   "morphing-dialog": MorphingDialog,
-  toast: Toast,
-  accordion: Accordion,
   "animated-testimonials": AnimatedTestimonials,
   "app-showcase": AppShowcase,
   "avatar-group": AvatarGroup,

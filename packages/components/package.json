@@ -9,10 +9,6 @@
       "types": "./src/index.ts",
       "default": "./src/index.ts"
     },
-    "./registry": {
-      "types": "./src/lib/background-registry.ts",
-      "default": "./src/lib/background-registry.ts"
-    },
     "./styles.css": "./styles.css",
     "./fonts/vite.css": "./fonts/vite.css",
     "./fonts/next": {
@@ -30,24 +26,29 @@
   ],
   "scripts": {
     "build": "echo 'skip'",
-    "generate:backgrounds": "node scripts/generate-backgrounds.mjs",
     "lint": "tsc -p tsconfig.json --noEmit",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:motion": "vitest run src/motion/motion-lint.test.ts"
+    "test": "vitest run"
   },
   "peerDependencies": {
-    "framer-motion": ">=11.0.0",
     "geist": ">=1.3.0",
-    "react": "^18 || ^19"
+    "react": "^19",
+    "react-dom": "^19"
   },
   "dependencies": {
-    "canvas-confetti": "^1.9.4",
-    "cobe": "^2.0.1",
-    "dotted-map": "^3.1.0",
-    "matter-js": "^0.20.0",
-    "rough-notation": "^0.5.1",
-    "uqr": "^0.1.3"
+    "@base-ui/react": "^1.8.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "cmdk": "^1.1.1",
+    "date-fns": "^4.4.0",
+    "embla-carousel-react": "^8.6.0",
+    "input-otp": "^1.5.0",
+    "lucide-react": "^1.21.0",
+    "next-themes": "^0.4.6",
+    "radix-ui": "^1.6.7",
+    "react-day-picker": "^10.0.2",
+    "sonner": "^2.0.8",
+    "tailwind-merge": "^3.7.0",
+    "vaul": "^1.1.2"
   },
   "peerDependenciesMeta": {
     "geist": {
@@ -55,17 +56,14 @@
     }
   },
   "devDependencies": {
+    "@godui/motion-lint": "workspace:*",
     "@tailwindcss/postcss": "^4.1.6",
-    "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.1.0",
-    "@testing-library/user-event": "^14.5.2",
-    "@types/canvas-confetti": "^1.9.0",
-    "@types/matter-js": "^0.20.2",
+    "@testing-library/user-event": "^14.6.1",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.0",
     "@vitejs/plugin-react": "^4.3.4",
-    "framer-motion": "^12.40.0",
     "geist": "^1.7.0",
     "jsdom": "^25.0.1",
     "postcss": "^8.5.3",

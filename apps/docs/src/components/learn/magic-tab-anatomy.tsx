@@ -33,7 +33,7 @@ const LEGEND: {
 }[] = [
   {
     name: "Front",
-    desc: "label face — lifts −4px when selected",
+    desc: "label face, lifts −4px when selected",
     kind: "front",
   },
   {

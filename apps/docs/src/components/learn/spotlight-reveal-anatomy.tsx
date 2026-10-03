@@ -22,7 +22,7 @@ const CSS = `
 const LEGEND = [
   {
     name: "Reveal",
-    desc: "absolute inset-0 underneath — the hidden layer",
+    desc: "absolute inset-0 underneath: the hidden layer",
     swatch:
       "h-3 w-8 rounded-md bg-[var(--foreground)]/80 ring-1 ring-fd-border ring-inset",
   },

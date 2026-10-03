@@ -28,7 +28,7 @@ const LEGEND: {
 }[] = [
   {
     name: "Body (physics)",
-    desc: "Matter.Body position + angle — never rendered",
+    desc: "Matter.Body position + angle, never rendered",
     kind: "body",
   },
   {

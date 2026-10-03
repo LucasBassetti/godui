@@ -1,0 +1,97 @@
+---
+title: Anatomy of the GodUI Select
+description: Two positioning modes share one keyframe, and the check mark pops each time the list reopens on your choice.
+learnPlayer: true
+---
+
+import { SelectDemo } from "@/components/demos/core/select-demo";
+
+<LearnPlayer>
+
+<LearnChapter
+  label="Item-aligned vs popper"
+  scene={
+    <KeyframeScene
+      label="Item-aligned vs popper"
+      motion="popover-bottom"
+      subject="menu"
+      tracks={[
+        { property: "opacity", from: "0", to: "1" },
+        { property: "scale", from: "0.96", to: "1" },
+        { property: "translate (popper)", from: "0 -4px", to: "0 0" },
+      ]}
+    />
+  }
+  code={`<SelectPrimitive.Content
+  data-slot="select-content"
+  className={cn(
+    "relative z-50 … origin-(--radix-select-content-transform-origin) …
+     data-[side=bottom]:[--godui-enter-y:-0.25rem] …
+     data-[state=open]:animate-godui-popover-in data-[state=closed]:animate-godui-popover-out",
+    position === "popper" && "data-[side=bottom]:translate-y-1 …",
+    className,
+  )}
+  position={position}
+/>`}
+>
+
+By default (`position="item-aligned"`) Radix places the list so the selected
+option sits right over the trigger, like a native macOS menu. In that mode
+Radix sets no `data-side`, so the drift variables stay at `0` and the list
+only scales and fades into place.
+
+With `position="popper"` the list opens below or above the trigger like a
+popover. Radix sets `data-side`, the drift variables kick in, and the list
+slides 4px out of the trigger as it grows: the same `godui-popover-in`
+keyframe, with the extra drift only in popper mode.
+
+</LearnChapter>
+
+<LearnChapter
+  label="The check"
+  scene={
+    <KeyframeScene
+      label="The check"
+      motion="pop-half"
+      subject="check"
+      tracks={[
+        { property: "scale", from: "0.5", to: "1" },
+        { property: "opacity", from: "0", to: "1" },
+      ]}
+    />
+  }
+  code={`<span data-slot="select-item-indicator" className="absolute right-2 flex size-3.5 items-center justify-center">
+  <SelectPrimitive.ItemIndicator className="[--godui-enter-scale:0.5] animate-godui-fade-scale-in">
+    <CheckIcon className="size-4" />
+  </SelectPrimitive.ItemIndicator>
+</span>`}
+>
+
+Radix renders the selected item's indicator only for that item. Every time
+the list opens, the check next to your current value pops in from half size,
+a small confirmation of what's selected as the list appears.
+
+</LearnChapter>
+
+<LearnChapter
+  label="The result"
+  scene={<LiveResult hint="open the select and pick a fruit"><SelectDemo /></LiveResult>}
+  isResult
+>
+
+Open the select, pick a fruit, then reopen it to see the check on your choice.
+
+</LearnChapter>
+
+</LearnPlayer>
+
+## Why GPU-only
+
+The list animates `opacity`, `scale` and `translate`; the check animates
+`scale` and `opacity`. shadcn's trigger transitions `color` and `box-shadow`;
+GodUI's snaps.
+
+## Reduced motion
+
+`--godui-motion: 0` removes scale and drift, so the list and the check only
+fade, in 150ms.

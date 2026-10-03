@@ -116,7 +116,7 @@ export function TopographicDriftDrift() {
           </div>
 
           <p className="max-w-[40ch] text-center text-[13px] text-fd-muted-foreground">
-            No path morphing — the tick advances{" "}
+            There is no path morphing. The tick advances{" "}
             <span className="font-mono text-[12px]">z</span>,{" "}
             <span className="font-mono text-[12px]">sampleField()</span> runs
             again, and marching squares redraw. Offscreen / hidden / reduced

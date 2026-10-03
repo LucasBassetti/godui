@@ -1,6 +1,6 @@
 "use client";
 
-import { StoreBadge, StoreBadgeGroup } from "@godui/components";
+import { StoreBadge, StoreBadgeGroup } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
@@ -39,7 +39,7 @@ export function StoreBadgeResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — hover for the QR
+          the real component: hover for the QR
         </span>
       </div>
       <div className="flex min-h-[220px] flex-wrap items-center justify-center gap-4 p-10">

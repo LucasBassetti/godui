@@ -1,4 +1,4 @@
-import { PixelGrid, type PixelGridProps } from "@godui/components";
+import { PixelGrid, type PixelGridProps } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { radio, toggle } from "../playground/argtypes";
 import {
@@ -24,7 +24,7 @@ const presets = {
 type PlaygroundArgs = PixelGridProps & { preset: keyof typeof presets };
 
 const meta: Meta<PlaygroundArgs> = {
-  title: "Backgrounds/Pixel Grid",
+  title: "Lab/Backgrounds/Pixel Grid",
   component: PixelGrid,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

@@ -1,4 +1,4 @@
-import { AnimatedTestimonials } from "@godui/components";
+import { AnimatedTestimonials } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { hidden, range, toggle } from "../playground/argtypes";
 import { centered } from "../playground/stage";
@@ -26,7 +26,7 @@ const testimonials = [
 ];
 
 const meta = {
-  title: "Layout/AnimatedTestimonials",
+  title: "Lab/Layout/AnimatedTestimonials",
   component: AnimatedTestimonials,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

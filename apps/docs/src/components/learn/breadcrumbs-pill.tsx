@@ -52,7 +52,7 @@ export function BreadcrumbsPill() {
           </div>
 
           <p className="text-center font-mono text-[11px] text-fd-muted-foreground">
-            layoutId spring — stiffness 520, damping 32
+            layoutId spring: stiffness 520, damping 32
           </p>
         </div>
       )}

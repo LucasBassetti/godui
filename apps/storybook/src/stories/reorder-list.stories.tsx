@@ -1,9 +1,9 @@
-import { ReorderItem, ReorderList } from "@godui/components";
+import { ReorderItem, ReorderList } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import * as React from "react";
 
 const meta = {
-  title: "Layout/Reorder List",
+  title: "Lab/Layout/Reorder List",
   component: ReorderList,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

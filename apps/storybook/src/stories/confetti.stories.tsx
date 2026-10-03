@@ -1,4 +1,4 @@
-import { ConfettiButton } from "@godui/components";
+import { ConfettiButton } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "storybook/test";
 import { action, range, text } from "../playground/argtypes";
@@ -15,7 +15,7 @@ type PlaygroundArgs = {
 };
 
 const meta: Meta<PlaygroundArgs> = {
-  title: "Effects/Confetti",
+  title: "Lab/Effects/Confetti",
   component: ConfettiButton,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

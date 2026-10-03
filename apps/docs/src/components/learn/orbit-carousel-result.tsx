@@ -1,6 +1,6 @@
 "use client";
 
-import { OrbitCarousel } from "@godui/components";
+import { OrbitCarousel } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
@@ -56,7 +56,7 @@ export function OrbitCarouselResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — drag, click a side slide, or the arrow keys
+          the real component: drag, click a side slide, or the arrow keys
         </span>
       </div>
       <div className="relative flex min-h-[360px] items-center justify-center p-6 md:min-h-[420px] md:p-10">

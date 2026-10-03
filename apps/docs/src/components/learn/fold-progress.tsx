@@ -43,7 +43,7 @@ export function FoldProgress() {
               <span className="fp-fill absolute inset-y-0 left-0 w-full origin-left rounded-full bg-[var(--foreground)]/70" />
             </div>
             <p className="font-mono text-[11px] text-fd-muted-foreground">
-              determinate — scaleX(progress / 100)
+              determinate: scaleX(progress / 100)
             </p>
           </div>
 
@@ -52,7 +52,7 @@ export function FoldProgress() {
               <span className="fp-fill absolute inset-y-0 left-0 w-2/5 rounded-full bg-[var(--foreground)]/70" />
             </div>
             <p className="font-mono text-[11px] text-fd-muted-foreground">
-              indeterminate — translateX(-100% → 250%)
+              indeterminate: translateX(-100% → 250%)
             </p>
           </div>
 
@@ -77,8 +77,8 @@ export function FoldProgress() {
                 no{" "}
                 <code className="rounded bg-[var(--muted)] px-1 py-0.5 font-mono text-[11px] text-fd-foreground">
                   progress
-                </code>{" "}
-                — fixed segment sweeps
+                </code>
+                ; a fixed segment sweeps
               </dd>
             </div>
           </dl>

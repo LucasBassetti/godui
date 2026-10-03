@@ -3,11 +3,11 @@ import {
   MorphingDialogClose,
   MorphingDialogContent,
   MorphingDialogTrigger,
-} from "@godui/components";
+} from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 const meta = {
-  title: "Overlays/Morphing Dialog",
+  title: "Lab/Overlays/Morphing Dialog",
   component: MorphingDialog,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

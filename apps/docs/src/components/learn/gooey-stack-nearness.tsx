@@ -90,7 +90,7 @@ export function GooeyStackNearness() {
   return (
     <ScrollScene
       label="The motion"
-      note="slow band-pass — goo only while necking"
+      note="slow band-pass: goo only while necking"
     >
       {({ cycle, reduced }) => (
         <div className="flex w-full max-w-[520px] flex-col items-center gap-9">
@@ -174,7 +174,7 @@ export function GooeyStackNearness() {
           </ol>
 
           <p className="text-center font-mono text-[11px] text-fd-muted-foreground">
-            nearness peaks mid-gap — zero when fully apart or fully merged
+            nearness peaks mid-gap and is zero when fully apart or fully merged
           </p>
         </div>
       )}

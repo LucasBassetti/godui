@@ -1,6 +1,6 @@
 "use client";
 
-import { SpinViewer } from "@godui/components";
+import { SpinViewer } from "@godui/lab";
 import { useMemo } from "react";
 import { makeCubeFrames } from "@/components/demos/spin-viewer-frames";
 import { useBareScene } from "@/components/learn/bare-scene-context";
@@ -34,7 +34,7 @@ export function SpinViewerResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — drag it, or let it auto-rotate
+          the real component: drag it, or let it auto-rotate
         </span>
       </div>
       <div className="relative flex min-h-[300px] items-center justify-center p-10">

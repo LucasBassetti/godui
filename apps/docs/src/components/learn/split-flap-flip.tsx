@@ -73,7 +73,7 @@ function Swatch({ kind }: { kind: "fall" | "rise" }) {
 
 export function SplitFlapFlip() {
   return (
-    <ScrollScene label="The flip" note="fall, then rise — one flap on a loop">
+    <ScrollScene label="The flip" note="fall, then rise: one flap on a loop">
       {({ cycle, reduced }) => (
         <div
           className={`flex w-full max-w-[420px] flex-col items-center gap-9 ${reduced ? "sff-static" : ""}`}

@@ -34,12 +34,12 @@ const LEGEND: {
 }[] = [
   {
     name: "Pin spring",
-    desc: "stiffness: 520, damping: 32 — snaps in first",
+    desc: "stiffness: 520, damping: 32; snaps in first",
     kind: "pin",
   },
   {
     name: "Panel spring",
-    desc: "stiffness: 320, damping: 32, mass: 0.9 — softer, follows",
+    desc: "stiffness: 320, damping: 32, mass: 0.9; softer, follows",
     kind: "panel",
   },
 ];

@@ -51,7 +51,7 @@ const CSS = `
 const LEGEND = [
   {
     name: "Raw map",
-    desc: "useTransform alone — hard edges at 0.1 / 0.8",
+    desc: "useTransform alone: hard edges at 0.1 / 0.8",
     kind: "raw",
   },
   {

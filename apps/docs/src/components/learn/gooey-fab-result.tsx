@@ -1,6 +1,6 @@
 "use client";
 
-import { GooeyFab } from "@godui/components";
+import { GooeyFab } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 const Icon = ({ d }: { d: string }) => (
@@ -63,7 +63,7 @@ export function GooeyFabResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — open, pick an action
+          the real component: open, pick an action
         </span>
       </div>
       <div className="flex min-h-[280px] items-end justify-center p-10 pb-14">

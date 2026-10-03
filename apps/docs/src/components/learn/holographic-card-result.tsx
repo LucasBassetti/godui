@@ -1,6 +1,6 @@
 "use client";
 
-import { HolographicCard } from "@godui/components";
+import { HolographicCard } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
@@ -42,7 +42,7 @@ export function HolographicCardResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — move your pointer across each card
+          the real component: move your pointer across each card
         </span>
       </div>
       <div className="flex min-h-[340px] flex-wrap items-center justify-center gap-8 p-10">

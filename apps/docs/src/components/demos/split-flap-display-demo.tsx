@@ -1,6 +1,6 @@
 "use client";
 
-import { SplitFlapDisplay } from "@godui/components";
+import { SplitFlapDisplay } from "@godui/lab";
 import * as React from "react";
 import { DemoCenter } from "./_kit";
 

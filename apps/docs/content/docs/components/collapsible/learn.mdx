@@ -1,0 +1,143 @@
+---
+title: Anatomy of the GodUI Collapsible
+description: How the GodUI Collapsible gets the look of a height animation without a wrapper of its own, and why the content that rides its edge lives outside it.
+learnPlayer: true
+---
+
+import { CollapsibleDemo } from "@/components/demos/core/collapsible-demo";
+
+<LearnPlayer>
+
+<LearnChapter
+  label="A window with no frame"
+  scene={<AutoPlayScene label="A window with no frame" demo="collapsible-window" note="slowed to 1.2s · dashed: the panel's box" />}
+  code={`// The box slides out from under the row above…
+box.animate(
+  [{ translate: \`0 \${from}px\` }, { translate: \`0 \${to}px\` }],
+  timing,
+);
+// …while each of its children slides back by exactly as much.
+for (const child of box.children)
+  child.animate(
+    [{ translate: \`0 \${-from}px\` }, { translate: \`0 \${-to}px\` }],
+    timing,
+  );`}
+>
+
+The trick is the [Accordion's](/docs/components/accordion/learn): the panel's
+height snaps open in one step, its box starts tucked up and slides down, and
+the content inside slides up by the same amount, so it never moves. The box
+clips, so its bottom edge uncovers the content like a height animation would.
+
+An Accordion owns a wrapper inside its panel to counter-move. A Collapsible
+doesn't: shadcn's `CollapsibleContent` is the box you style, often a flex
+column. Adding a wrapper would break that layout, so each direct child of the
+box gets the counter-move instead, on the same clock. The box clips only while
+it sweeps (`overflow: clip`, which adds no formatting context), so the
+content's focus rings and shadows aren't cut off at rest.
+
+</LearnChapter>
+
+<LearnChapter
+  label="The room, not the height"
+  scene={<AutoPlayScene label="The room, not the height" demo="collapsible" note="slowed to 1.2s" />}
+  code={`const room = root.offsetHeight; // panel in the flow
+box.style.position = "absolute";
+const without = root.offsetHeight; // panel out of it
+box.style.position = "";
+const distance = room - without; // its height + the gap before it`}
+>
+
+What follows the Collapsible is FLIPped: measured before and after the snap,
+put back with a `translate`, then played to rest on the same spring and
+duration as the edge. For the two to stay glued, they must travel the same
+distance. In a `flex flex-col gap-2` root the panel takes its height plus the
+gap before it, so the edge travels the room the panel takes in the root, not
+its height.
+
+The followers are the Collapsible's later siblings in its parent and the
+root's own children after the panel. A `MutationObserver` on the root's
+`data-state` fires in the same task as the click, and `flushSync` runs the
+FLIP before the browser paints the snapped layout, so no frame shows the jump.
+When a stage centers the Collapsible's parent, the parent moves by half the
+new height: it glides there too, from where it was drawn at the click.
+
+</LearnChapter>
+
+<LearnChapter
+  label="Leaving the flow"
+  scene={<AutoPlayScene label="Leaving the flow" demo="collapsible" note="slowed to 1.2s" />}
+  code={`const was = anchor.getBoundingClientRect();
+const rect = box.getBoundingClientRect();
+box.style.position = "absolute";
+box.style.top = "0px";
+const origin = box.getBoundingClientRect();
+const is = anchor.getBoundingClientRect(); // a centering parent moved it
+box.style.top = \`\${rect.top - was.top - (origin.top - is.top)}px\`;`}
+>
+
+Closing can't shrink first and let the content below follow; that's two
+steps. The moment it closes, the panel leaves the flow: it goes `absolute`,
+pinned where it's drawn at its measured width, and the layout collapses at
+once. The content below starts rising and the edge sweeps up with it. A
+near-silent hold keyframe keeps Radix from hiding the panel until the sweep is
+done.
+
+The root is `relative` so the pinned panel has a containing block that never
+changes mid-sweep (a parent's glide would otherwise become one). Offsets are
+measured against it before and after, because leaving the flow can move it:
+in a centered stage, the shorter parent re-centers in that same step.
+
+</LearnChapter>
+
+<LearnChapter
+  label="Nesting"
+  scene={<AutoPlayScene label="Nesting" demo="collapsible-nested" note="slowed to 1.2s · the inner one toggles" />}
+  code={`// A nested root's glider moves by its own displacement minus the
+// nearest outer root's: the outer one is put back (glided or FLIPped)
+// and carries it that far.
+let dy = before.own.top - now.top;
+if (outer) dy -= before.outer.top - outerNow.top;`}
+>
+
+Every Collapsible and Accordion watches the open states beneath it, so an
+inner panel's change also glides the outer one's followers, on one clock. An
+inner one that just rides along with its outer one mustn't glide again, or it
+would move twice as far. One that its own stage re-centers still has to glide
+by that move. So a nested one glides by its own displacement minus the nearest
+outer root's. Whatever moved the outer root (its own glide or its parent's
+FLIP) also puts it back. That leaves zero in the first case and the relative
+move in the second.
+
+A FLIP group measures where things sit before a change. An inner Collapsible
+that mounts while the outer panel is still sweeping would measure its content
+mid-sweep, so the baseline waits until the sweep is done.
+
+</LearnChapter>
+
+<LearnChapter
+  label="The result"
+  scene={<LiveResult hint="open, close, and reverse mid-way"><CollapsibleDemo /></LiveResult>}
+  isResult
+>
+
+Toggle the list, and click again mid-sweep to reverse it.
+
+</LearnChapter>
+
+</LearnPlayer>
+
+## Why GPU-only
+
+The panel box, its children, the content after it and a centered parent
+animate `translate`; the children animate `opacity`. Layout runs once per
+click. A panel that can't be split into a box and still children (loose text,
+or a box that paints its own background, border or shadow) fades with
+`filter: opacity()`, because its `opacity` belongs to the hold keyframe and
+Chrome won't composite two opacity animations on one element.
+
+## Reduced motion
+
+Nothing moves: the height and the content after it change in one step, and
+the panel's content only fades in or out, over `--godui-duration-base` opening
+and `--godui-duration-fast` closing (both 150ms under reduced motion).

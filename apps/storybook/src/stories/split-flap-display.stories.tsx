@@ -1,10 +1,10 @@
-import { SplitFlapDisplay } from "@godui/components";
+import { SplitFlapDisplay } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { hidden, radio, range, select, text } from "../playground/argtypes";
 import { centered } from "../playground/stage";
 
 const meta = {
-  title: "Layout/Split Flap Display",
+  title: "Lab/Layout/Split Flap Display",
   component: SplitFlapDisplay,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

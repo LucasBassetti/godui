@@ -1,4 +1,4 @@
-import { HeroParallax } from "@godui/components";
+import { HeroParallax } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 const PRODUCTS = [
@@ -24,7 +24,7 @@ const PRODUCTS = [
 }));
 
 const meta = {
-  title: "Layout/Hero Parallax",
+  title: "Lab/Layout/Hero Parallax",
   component: HeroParallax,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

@@ -28,7 +28,7 @@ const LEGEND: {
 }[] = [
   {
     name: "Track 0",
-    desc: "live copy — readable to AT",
+    desc: "live copy, readable to AT",
     kind: "track0",
   },
   {

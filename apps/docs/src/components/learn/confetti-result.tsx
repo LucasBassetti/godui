@@ -1,6 +1,6 @@
 "use client";
 
-import { ConfettiButton } from "@godui/components";
+import { ConfettiButton } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 const Demo = () => (
@@ -32,7 +32,7 @@ export function ConfettiResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — click to fire
+          the real component: click to fire
         </span>
       </div>
       <div className="flex min-h-[240px] items-center justify-center p-10">

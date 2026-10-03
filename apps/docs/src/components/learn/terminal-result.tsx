@@ -1,10 +1,10 @@
 "use client";
 
-import { Terminal, type TerminalLine } from "@godui/components";
+import { Terminal, type TerminalLine } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 const LINES: TerminalLine[] = [
-  { text: "npx shadcn@latest add @godui/terminal", type: "command" },
+  { text: "npx shadcn@latest add @godui-lab/terminal", type: "command" },
   { text: "✔ Installing dependencies.", type: "output", delay: 450 },
   { text: "✔ Created 1 file.", type: "output", delay: 280 },
   { text: "", type: "output", delay: 80 },
@@ -23,7 +23,7 @@ export function TerminalResult() {
       <div className="flex min-h-[280px] w-full items-center justify-center p-6">
         <Terminal
           lines={LINES}
-          title="zsh — godui"
+          title="zsh: godui"
           loop
           className="w-full max-w-[26rem]"
         />
@@ -36,13 +36,13 @@ export function TerminalResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — types in view, loops after 2s
+          the real component: types in view, loops after 2s
         </span>
       </div>
       <div className="flex min-h-[300px] items-center justify-center p-6 md:p-10">
         <Terminal
           lines={LINES}
-          title="zsh — godui"
+          title="zsh: godui"
           loop
           className="w-full max-w-[26rem]"
         />

@@ -1,0 +1,138 @@
+---
+title: Tabs
+description: A set of layered sections of content, known as tab panels, that are displayed one at a time. One indicator slides between tabs.
+workbench: true
+---
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@godui/components";
+import { TabsDemo } from "@/components/demos/core/tabs-demo";
+
+<Workbench>
+
+The shadcn/ui tabs with a single sliding indicator. Instead of each trigger
+switching its own background on and off, one indicator moves to the active
+tab: its box snaps to the new tab, then a FLIP animates `translate` and
+`scale` from where it was, on a spring. Panels fade in. Works for the `line`
+variant and vertical tabs too.
+
+<Example label="Default" story="ui-tabs" code={`import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+export function TabsDemo() {
+  return (
+    <Tabs defaultValue="account" className="w-full max-w-sm">
+      <TabsList>
+        <TabsTrigger value="account">Account</TabsTrigger>
+        <TabsTrigger value="password">Password</TabsTrigger>
+        <TabsTrigger value="notifications">Notifications</TabsTrigger>
+      </TabsList>
+      <TabsContent value="account" className="rounded-lg border p-4 text-sm">
+        Make changes to your account here.
+      </TabsContent>
+      <TabsContent value="password" className="rounded-lg border p-4 text-sm">
+        Change your password here.
+      </TabsContent>
+      <TabsContent
+        value="notifications"
+        className="rounded-lg border p-4 text-sm"
+      >
+        Choose what you want to be notified about.
+      </TabsContent>
+    </Tabs>
+  );
+}`}>
+  <TabsDemo />
+</Example>
+
+<Example
+  label="Line"
+  code={`<Tabs defaultValue="overview" className="w-full max-w-sm">
+  <TabsList variant="line">
+    <TabsTrigger value="overview">Overview</TabsTrigger>
+    <TabsTrigger value="analytics">Analytics</TabsTrigger>
+    <TabsTrigger value="reports">Reports</TabsTrigger>
+  </TabsList>
+</Tabs>`}
+>
+  <Tabs defaultValue="overview" className="w-full max-w-sm">
+    <TabsList variant="line">
+      <TabsTrigger value="overview">Overview</TabsTrigger>
+      <TabsTrigger value="analytics">Analytics</TabsTrigger>
+      <TabsTrigger value="reports">Reports</TabsTrigger>
+    </TabsList>
+  </Tabs>
+</Example>
+
+<Example
+  label="Vertical"
+  code={`<Tabs defaultValue="general" orientation="vertical">
+  <TabsList>
+    <TabsTrigger value="general">General</TabsTrigger>
+    <TabsTrigger value="security">Security</TabsTrigger>
+    <TabsTrigger value="billing">Billing</TabsTrigger>
+  </TabsList>
+</Tabs>`}
+>
+  <Tabs defaultValue="general" orientation="vertical">
+    <TabsList>
+      <TabsTrigger value="general">General</TabsTrigger>
+      <TabsTrigger value="security">Security</TabsTrigger>
+      <TabsTrigger value="billing">Billing</TabsTrigger>
+    </TabsList>
+  </Tabs>
+</Example>
+
+## Installation
+
+<ComponentInstall name="tabs" />
+
+## Replacing shadcn
+
+`npx shadcn add @godui/tabs` overwrites `components/ui/tabs.tsx`. Exports,
+props and `data-slot` attributes match shadcn/ui new-york-v4, so existing
+imports keep working. `TabsList` renders one extra element, an `aria-hidden`
+`<span data-slot="tabs-indicator">`. It also installs `godui-motion` (easings,
+keyframes, the FLIP hook) into your project.
+
+## Usage
+
+```tsx
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+```
+
+```tsx
+<Tabs defaultValue="account" className="w-[400px]">
+  <TabsList>
+    <TabsTrigger value="account">Account</TabsTrigger>
+    <TabsTrigger value="password">Password</TabsTrigger>
+  </TabsList>
+  <TabsContent value="account">Make changes to your account here.</TabsContent>
+  <TabsContent value="password">Change your password here.</TabsContent>
+</Tabs>
+```
+
+## What's animated
+
+| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
+| --- | --- | --- | --- | --- |
+| Switch tab | FLIP (WAAPI) on the indicator | `translate`, `scale` | `ease-spring-snappy` | 260ms |
+| Panel enter | `godui-fade-in` | `opacity` | `ease-spring-snappy` | 260ms |
+| Trigger text color | snaps | none | none | none |
+
+The indicator moves whenever the active tab changes: clicks, keyboard arrows,
+or a controlled `value` set from outside. Before JavaScript runs (server
+render, first paint) the active trigger keeps shadcn's own background, so
+nothing flashes.
+
+If a call site styles the active trigger itself (for example
+`data-[state=active]:bg-primary`), that styling still wins: it paints over the
+indicator, so the tab looks exactly as before and switches without the slide.
+
+Under `prefers-reduced-motion` the indicator jumps to the new tab and panels
+fade for 150ms.
+
+## API
+
+Built on [Radix Tabs](https://www.radix-ui.com/primitives/docs/components/tabs).
+Props are identical to [shadcn/ui Tabs](https://ui.shadcn.com/docs/components/tabs).
+
+</Workbench>

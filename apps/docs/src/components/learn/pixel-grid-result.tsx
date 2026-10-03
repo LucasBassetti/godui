@@ -1,6 +1,6 @@
 "use client";
 
-import { PixelGrid } from "@godui/components";
+import { PixelGrid } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
@@ -42,7 +42,7 @@ export function PixelGridResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — move to reveal
+          the real component: move to reveal
         </span>
       </div>
       <PixelGridResultBody />

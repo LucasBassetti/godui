@@ -36,7 +36,7 @@ const LEGEND: {
   },
   {
     name: "Links",
-    desc: "nav row — carries the hover pill + active underline",
+    desc: "nav row: carries the hover pill + active underline",
     kind: "links",
   },
   {

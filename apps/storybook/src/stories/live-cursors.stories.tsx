@@ -1,4 +1,4 @@
-import { LiveCursors, SimulatedCursors } from "@godui/components";
+import { LiveCursors, SimulatedCursors } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { hidden, toggle } from "../playground/argtypes";
 
@@ -21,7 +21,7 @@ const cursors = [
 ];
 
 const meta = {
-  title: "Collaboration/LiveCursors",
+  title: "Lab/Collaboration/LiveCursors",
   component: LiveCursors,
   subcomponents: { SimulatedCursors },
   tags: ["autodocs"],

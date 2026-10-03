@@ -1,4 +1,4 @@
-import { OrbitingCircles, type OrbitingCirclesProps } from "@godui/components";
+import { OrbitingCircles, type OrbitingCirclesProps } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { range, toggle } from "../playground/argtypes";
 
@@ -11,7 +11,7 @@ function Chip({ children }: { children: string }) {
 }
 
 const meta = {
-  title: "Effects/Orbiting Circles",
+  title: "Lab/Effects/Orbiting Circles",
   component: OrbitingCircles,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

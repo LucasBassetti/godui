@@ -1,6 +1,6 @@
 "use client";
 
-import { WorldMap } from "@godui/components";
+import { WorldMap } from "@godui/lab";
 
 export function WorldMapDemo() {
   return (
@@ -10,7 +10,7 @@ export function WorldMapDemo() {
           Ship to every region
         </h2>
         <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
-          Traffic routes to the nearest edge — visualized live across the globe.
+          Traffic routes to the nearest edge, shown live across the globe.
         </p>
       </div>
       <div className="mx-auto mt-6 max-w-4xl">

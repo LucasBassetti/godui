@@ -1,6 +1,6 @@
 "use client";
 
-import { AvatarGroup } from "@godui/components";
+import { AvatarGroup } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
@@ -33,7 +33,7 @@ export function AvatarGroupResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — hover the row, then one avatar
+          the real component: hover the row, then one avatar
         </span>
       </div>
       <div className="flex min-h-[220px] items-center justify-center p-10">

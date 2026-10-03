@@ -1,10 +1,10 @@
-import { TextAnimate } from "@godui/components";
+import { TextAnimate } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { hidden, range, select, text, toggle } from "../playground/argtypes";
 import { centered } from "../playground/stage";
 
 const meta = {
-  title: "Text/TextAnimate",
+  title: "Lab/Text/TextAnimate",
   component: TextAnimate,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

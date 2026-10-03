@@ -1,0 +1,94 @@
+---
+title: Anatomy of the GodUI Combobox
+description: A Base UI popup animated with the same keyframe as every Radix popover, and chips that make room for each other with FLIP.
+learnPlayer: true
+---
+
+import { ComboboxMultipleDemo } from "@/components/demos/core/combobox-multiple-demo";
+
+<LearnPlayer>
+
+<LearnChapter
+  label="Base UI, not Radix"
+  scene={
+    <KeyframeScene
+      label="Base UI, not Radix"
+      motion="popover-bottom"
+      subject="menu"
+      tracks={[
+        { property: "opacity", from: "0", to: "1" },
+        { property: "scale", from: "0.96", to: "1" },
+        { property: "translate", from: "0 -4px", to: "0 0" },
+      ]}
+    />
+  }
+  code={`<ComboboxPrimitive.Popup
+  data-slot="combobox-content"
+  className={cn(
+    "… origin-(--transform-origin) …
+     data-[side=bottom]:[--godui-enter-y:-0.25rem] …
+     data-open:animate-godui-popover-in data-closed:animate-godui-popover-out",
+    className,
+  )}
+/>`}
+>
+
+shadcn/ui builds its combobox on Base UI, so GodUI does too: replacing the
+file mustn't change which library your call sites talk to.
+
+Base UI names things differently from Radix. The popup gets `data-open` and
+`data-closed` instead of `data-state`, and publishes its transform origin as
+`--transform-origin`. The motion is the same `godui-popover-in` keyframe
+every Radix popover uses, though. Base UI waits for running CSS animations
+before it unmounts the popup, so the exit keyframe plays out.
+
+</LearnChapter>
+
+<LearnChapter
+  label="Chips that make room"
+  scene={<FlipScene label="Chips that make room" variant="accordion" />}
+  code={`function ComboboxChips({ className, ref, ...props }) {
+  const chipsRef = React.useRef<HTMLDivElement | null>(null);
+  const [version, bump] = React.useReducer((n: number) => n + 1, 0);
+  useFlipGroup(chipsRef, version, {
+    selector: '[data-slot="combobox-chip"], [data-slot="combobox-chip-input"]',
+  });
+  // … <ComboboxChip> bumps on mount and unmount
+}`}
+>
+
+Removing a chip changes the flex-wrap layout: every chip after it moves left,
+and some may jump up a line. GodUI lets that layout happen in one step, then
+plays each moved chip's old position back to its new one with `translate`,
+using the same `useFlipGroup` hook as Accordion.
+
+Each chip renders a tiny signal that bumps a counter on mount and unmount,
+the exact commit where the layout changed. Chips added after the container
+mounted pop in with `godui-fade-scale-in`; the chips of the initial value are
+part of the first paint and don't. If you remove chips quickly, a chip that's still
+sliding starts its next slide from where it's drawn.
+
+</LearnChapter>
+
+<LearnChapter
+  label="The result"
+  scene={<LiveResult hint="remove and add chips"><ComboboxMultipleDemo /></LiveResult>}
+  isResult
+>
+
+Remove a chip with its ×, then type in the input and add one back.
+
+</LearnChapter>
+
+</LearnPlayer>
+
+## Why GPU-only
+
+The popup animates `opacity`, `scale` and `translate`; chips animate `scale`,
+`opacity` and `translate`. shadcn's chips container transitions `color` and
+`box-shadow`; GodUI's doesn't.
+
+## Reduced motion
+
+`--godui-motion: 0` turns the popup and chip entrances into fades, and
+`useFlipGroup` moves chips into place without sliding.

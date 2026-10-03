@@ -1,0 +1,163 @@
+---
+title: Anatomy of the GodUI Sidebar
+description: How the GodUI Sidebar collapses without animating a single width. The panel slides, a surface glides to the icon rail, labels fade ahead of its edge, sub-menus sweep open and shut, and the page content rides the panel's edge, all with translate and opacity.
+learnPlayer: true
+---
+
+import { SidebarIconDemo } from "@/components/demos/core/sidebar-icon-demo";
+
+<LearnPlayer>
+
+<LearnChapter
+  label="The panel slides, the width snaps"
+  scene={<AutoPlayScene label="The panel slides, the width snaps" demo="sidebar" note="slowed to 900ms" />}
+  code={`/* shadcn/ui */
+"transition-[width] duration-200 ease-linear"      // the gap
+"transition-[left,right,width] duration-200 …"     // the panel
+
+/* GodUI: a class sets where the panel rests… */
+"group-data-[collapsible=offcanvas]:group-data-[side=left]:-translate-x-full",
+// …and the panel glides there with the same FLIP as the page beside it.
+useFlipGroup(wrapperRef, state, { selector: panelSelector(side, variant, collapsible) });`}
+>
+
+shadcn's sidebar collapses by animating widths. An in-flow gap shrinks from
+16rem to 0 while the fixed panel animates its `left` off-screen. Every frame
+changes a size, so the browser lays out the whole page again, then repaints it.
+
+GodUI gives the gap its new width in one step, so the layout changes once. The
+panel itself never resizes. Offcanvas, a class moves it off-screen with
+`translate`, and a Web Animations FLIP glides it there on a spring, the same
+clock the page beside it uses (see below). A CSS transition would run on its
+own clock, and turning it around mid-way would leave the page behind.
+
+</LearnChapter>
+
+<LearnChapter
+  label="A surface behind a snapped box"
+  scene={<AutoPlayScene label="A surface behind a snapped box" demo="sidebar-surface" note="slowed to 900ms · dashed: the panel's box" />}
+  code={`<div data-slot="sidebar-container" /* width snaps to 3rem */>
+  <div
+    data-slot="sidebar-surface"
+    className="w-(--sidebar-width) bg-sidebar …
+      group-data-[collapsible=icon]:-translate-x-[calc(
+        var(--sidebar-width)-var(--sidebar-width-icon))]"
+  />
+  <div data-slot="sidebar-inner" /* transparent */>{children}</div>
+</div>`}
+>
+
+Icon mode can't slide the whole panel away, because the icons have to stay
+on screen. So the panel's box (dashed) snaps to the icon rail at once. The
+background and border moved off that box onto a new layer behind it,
+`sidebar-surface`, which is always full width. Collapsing, the surface
+slides left by the width difference, so its right edge travels from 16rem
+to 3rem.
+
+The floating card can't slide as one piece, because its rounded left side
+would leave the screen. It's cut into three: a left cap that stays put, a
+middle that scales on x from its left edge, and a right cap that slides.
+The middle's end and the cap move by the same amount every frame, so the
+corners, border and shadow are never stretched.
+
+</LearnChapter>
+
+<LearnChapter
+  label="Labels fade ahead of the edge"
+  scene={<AutoPlayScene label="Labels fade ahead of the edge" demo="sidebar-labels" note="slowed to 900ms" />}
+  code={`// While it collapses, the content keeps its full width (the rows still
+// take their icon-layout heights): no box snaps and cuts a label.
+"motion-safe:in-data-[moving=collapsing]:w-[calc(var(--sidebar-width)-…)]",
+"motion-safe:[[data-moving=collapsing]_&_[data-sidebar=menu-button]]:w-full!",
+
+// Labels: out on the fast token, in once the edge reaches them,
+// both on the panel's spring, from whatever is drawn.
+el.animate(
+  [{ opacity: from, translate: "0px 0px" }, { opacity: 0, translate: "-4px 0px" }],
+  { duration: fast, easing: spring, fill: "forwards" },
+);
+
+// Sub-menus: the box's clip edge rides the row below,
+// its items hold still with their own row.
+const boxFrom = row - room * shut; // px; shut: 1 closed, 0 open
+sub.animate([{ translate: "0 " + boxFrom + "px" }, { translate: "0 0" }], clock);
+item.animate([{ translate: "0 " + room * shut + "px" }, { translate: "0 0" }], clock);`}
+>
+
+shadcn's icon layout hides a lot: menu text, group labels, badges, actions
+and sub-menus. Snapped at the click, all of it vanishes in one frame and
+the rest is cut mid-word by a 3rem box. So while the panel collapses, its
+content keeps its full width. Only the rows' heights take the icon layout
+(and glide there with FLIP). Badges, actions and sub-menus stay drawn so
+they can leave smoothly. The edge wipes past the labels while they fade out
+and tuck 4px toward their icons, on the fast token and the panel's own
+spring, so they're mostly gone before the edge reaches them. The horizontal
+snap lands in the commit that ends the move, when nothing it hides is drawn.
+
+Expanding, each label starts to fade in once the surface's edge reaches it,
+read off the same spring, with a small top-first cascade. A sub-menu uses
+the Accordion's clip window. Its box slides with its bottom edge glued to
+the row below while its items counter-move and hold still with their own
+row, so the edge sweeps over them instead of the items popping in at the
+end. Every fade and sweep starts from what's drawn, so toggling mid-way, or
+holding <kbd>Ctrl</kbd>/<kbd>⌘</kbd>+<kbd>B</kbd>, never jumps.
+
+</LearnChapter>
+
+<LearnChapter
+  label="The content FLIPs"
+  scene={<AutoPlayScene label="The content FLIPs" demo="sidebar-flip" note="slowed to 900ms · dashed: the gap, laid out at once" />}
+  code={`// SidebarProvider: everything after the sidebar glides from where it was,
+// on the wrapper's spring (ease-spring-smooth) and --godui-duration-base.
+useFlipGroup(wrapperRef, state, {
+  selector: ':scope > [data-slot="sidebar"] ~ *',
+});`}
+>
+
+The page next to the sidebar is laid out right after the gap, so when the gap
+snaps (dashed) the content jumps to its new spot. `useFlipGroup` measures it
+before and after, puts it back where it was with a `translate`, and plays
+that back to rest on the surface's spring and clock. The two start in the
+same frame and share a curve, so the content's edge stays glued to the
+panel's on every frame, in both directions. Reverse mid-way and every piece
+restarts from where it's drawn: the FLIP reads the running offset before it
+cancels it, and accounts for the panel's own resting `translate` having
+changed underneath.
+
+While it glides, the content is drawn partly past the right edge of the page.
+For the length of the move the wrapper clips that (`overflow-x-clip`), so no
+scrollbar flashes; at rest it clips nothing. The content is also lifted above
+the panel while it moves: the panel's content is laid out at full width
+before the surface's edge gets there, and the content riding the edge covers
+it until the edge passes.
+
+</LearnChapter>
+
+<LearnChapter
+  label="The result"
+  scene={<LiveResult hint="toggle, press Ctrl/⌘+B, hover an icon"><SidebarIconDemo /></LiveResult>}
+  isResult
+>
+
+Collapse it to icons and back, press <kbd>Ctrl</kbd>/<kbd>⌘</kbd>+<kbd>B</kbd>,
+and toggle again mid-way to reverse. Collapsed, hover an icon for its tooltip.
+
+</LearnChapter>
+
+</LearnPlayer>
+
+## Why GPU-only
+
+The panel, its surface, the content beside it and the sub-menus animate
+`translate`, the floating card's middle animates `scale`, and the labels
+animate `opacity` (and a 4px `translate`). Widths, padding and button sizes
+change once at the click and once at the end of a collapse. Every frame in
+between is composited.
+
+## Reduced motion
+
+Nothing slides, glides or fades: the panel, its surface and the content take
+their new places in one step, and labels and sub-menus appear and disappear
+at once. `useFlipGroup`, the floating card's stretch and the label and
+sub-menu moves skip their animations. The full-width hold is `motion-safe:`
+only, and the rail turns its transition off with `motion-reduce:transition-none`.

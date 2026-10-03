@@ -1,10 +1,10 @@
-import { BorderBeam } from "@godui/components";
+import { BorderBeam } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import type * as React from "react";
 import { color, range, toggle } from "../playground/argtypes";
 
 const meta = {
-  title: "Effects/Border Beam",
+  title: "Lab/Effects/Border Beam",
   component: BorderBeam,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

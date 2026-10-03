@@ -31,12 +31,12 @@ const LEGEND: {
 }[] = [
   {
     name: "Idle",
-    desc: "not intersecting — index unchanged",
+    desc: "not intersecting: index unchanged",
     kind: "idle",
   },
   {
     name: "Crossing",
-    desc: "intersecting — setActive(index) fires",
+    desc: "intersecting: setActive(index) fires",
     kind: "crossing",
   },
 ];

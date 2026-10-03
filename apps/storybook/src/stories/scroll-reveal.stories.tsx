@@ -1,4 +1,4 @@
-import { ScrollReveal, type ScrollRevealProps } from "@godui/components";
+import { ScrollReveal, type ScrollRevealProps } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { range, select, toggle } from "../playground/argtypes";
 
@@ -15,7 +15,7 @@ const Filler = () => (
 );
 
 const meta = {
-  title: "Effects/ScrollReveal",
+  title: "Lab/Effects/ScrollReveal",
   component: ScrollReveal,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

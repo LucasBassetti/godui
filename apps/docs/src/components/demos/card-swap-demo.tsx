@@ -1,6 +1,6 @@
 "use client";
 
-import { CardSwap } from "@godui/components";
+import { CardSwap } from "@godui/lab";
 import { Activity, Globe, ScrollText, Zap } from "lucide-react";
 
 const FEATURES = [
@@ -22,7 +22,7 @@ const FEATURES = [
   {
     icon: ScrollText,
     title: "Audit logs",
-    body: "Know who did what, and when — exportable on demand.",
+    body: "Know who did what, and when. Export it on demand.",
   },
 ];
 

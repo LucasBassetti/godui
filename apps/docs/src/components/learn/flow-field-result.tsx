@@ -1,6 +1,6 @@
 "use client";
 
-import { FlowField } from "@godui/components";
+import { FlowField } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 export function FlowFieldResult() {
@@ -26,7 +26,7 @@ export function FlowFieldResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — calm field
+          the real component: calm field
         </span>
       </div>
       {demo}

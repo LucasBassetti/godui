@@ -1,4 +1,4 @@
-import { CardSwap, type CardSwapProps } from "@godui/components";
+import { CardSwap, type CardSwapProps } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { range, toggle } from "../playground/argtypes";
 
@@ -17,12 +17,12 @@ const FEATURES = [
   },
   {
     title: "Audit logs",
-    body: "Know who did what, and when — exportable on demand.",
+    body: "Know who did what, and when. Export it on demand.",
   },
 ];
 
 const meta = {
-  title: "Layout/CardSwap",
+  title: "Lab/Layout/CardSwap",
   component: CardSwap,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

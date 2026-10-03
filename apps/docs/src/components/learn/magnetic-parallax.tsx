@@ -39,7 +39,7 @@ const LEGEND: {
   },
   {
     name: "Label",
-    desc: "nested inside — adds its own ×0.4 (0 if staticLabel)",
+    desc: "nested inside; adds its own ×0.4 (0 if staticLabel)",
     kind: "label",
   },
 ];

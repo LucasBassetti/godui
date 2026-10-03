@@ -1,0 +1,124 @@
+---
+title: Anatomy of the GodUI Dialog
+description: Two keyframes on Radix state, a spring written as CSS linear(), and why the scale never fights the centering translate.
+learnPlayer: true
+---
+
+import { DialogDemo } from "@/components/demos/core/dialog-demo";
+
+<LearnPlayer>
+
+<LearnChapter
+  label="The entrance"
+  scene={
+    <KeyframeScene
+      label="The entrance"
+      motion="fade-scale"
+      subject="dialog"
+      tracks={[
+        { property: "opacity", from: "0", to: "1" },
+        { property: "scale", from: "0.96", to: "1" },
+      ]}
+    />
+  }
+  code={`<DialogPrimitive.Content
+  data-slot="dialog-content"
+  className={cn(
+    "fixed top-[50%] left-[50%] z-50 … translate-x-[-50%] translate-y-[-50%] …
+     data-[state=open]:animate-godui-fade-scale-in
+     data-[state=closed]:animate-godui-fade-scale-out …",
+    className,
+  )}
+/>`}
+>
+
+Radix sets `data-state="open"` on the content when the dialog opens and
+`"closed"` when it starts closing. GodUI hangs one keyframe on each state.
+
+`godui-fade-scale-in` only defines a `from` frame: `opacity: 0` and
+`scale: 0.96`. The browser animates from there to the element's own values,
+so the dialog lands exactly where its classes put it.
+
+The dialog is centered with `translate-x-[-50%] translate-y-[-50%]`, which
+Tailwind v4 compiles to the individual `translate` property. The keyframe
+animates `scale`, a different property, so the two compose instead of the
+animation overwriting the centering offset.
+
+</LearnChapter>
+
+<LearnChapter
+  label="The spring"
+  scene={<SpringCurveScene label="The spring" easing="snappy" />}
+  code={`--animate-godui-fade-scale-in: godui-fade-scale-in
+  var(--godui-duration-base) var(--ease-spring-snappy) both;
+
+@keyframes godui-fade-scale-in {
+  from {
+    opacity: 0;
+    scale: calc(1 - (1 - var(--godui-enter-scale)) * var(--godui-motion));
+  }
+}`}
+>
+
+The entrance runs for 260ms on `ease-spring-snappy`, a critically damped
+spring sampled into a CSS `linear()` curve. It accelerates hard and eases into
+place with a barely visible settle.
+
+The exit is shorter: 150ms on `ease-out-expo`, because nobody waits for a
+dialog to finish closing.
+
+</LearnChapter>
+
+<LearnChapter
+  label="Waiting for the exit"
+  scene={
+    <KeyframeScene
+      label="Waiting for the exit"
+      motion="fade-scale"
+      subject="dialog"
+      tracks={[
+        { property: "opacity", from: "1", to: "0" },
+        { property: "scale", from: "1", to: "0.96" },
+      ]}
+    />
+  }
+  code={`// Radix Presence, simplified
+if (!present && getAnimationName(node) !== "none") {
+  // keep the node mounted until 'animationend'
+}`}
+>
+
+A closing dialog has to stay in the DOM long enough to animate out. Radix's
+`Presence` handles that: when `open` becomes false it checks whether the
+content has a CSS animation running, and if so it waits for `animationend`
+before unmounting.
+
+That's why the exit is a keyframe on `data-[state=closed]` rather than a
+transition: Presence watches animations, not transitions.
+
+</LearnChapter>
+
+<LearnChapter
+  label="The result"
+  scene={<LiveResult hint="open the dialog"><DialogDemo /></LiveResult>}
+  isResult
+>
+
+Open the dialog, then close it with Escape, the Cancel button or a click on
+the overlay. All three paths run the same exit keyframe.
+
+</LearnChapter>
+
+</LearnPlayer>
+
+## Why GPU-only
+
+The dialog animates `scale` and `opacity`; the overlay animates `opacity`.
+shadcn's version does the same through `tw-animate-css`, so GodUI changes only
+the curve: a spring in, a fast exit out.
+
+## Reduced motion
+
+Under `prefers-reduced-motion` the root sets `--godui-motion: 0`. The keyframe
+multiplies its scale offset by it, so the dialog fades without scaling, and
+the duration drops to 150ms.

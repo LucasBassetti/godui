@@ -1,4 +1,4 @@
-import { ScrollTimeline } from "@godui/components";
+import { ScrollTimeline } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { padded } from "../playground/stage";
 
@@ -8,7 +8,7 @@ const DATA = [
     title: "The first commit",
     content: (
       <p className="text-sm text-muted-foreground md:text-base">
-        A single component and a big idea — a design system that feels alive.
+        A single component and a big idea: a design system that feels alive.
       </p>
     ),
   },
@@ -33,7 +33,7 @@ const DATA = [
 ];
 
 const meta = {
-  title: "Visualizations/Scroll Timeline",
+  title: "Lab/Visualizations/Scroll Timeline",
   component: ScrollTimeline,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

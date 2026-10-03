@@ -1,0 +1,108 @@
+---
+title: Anatomy of Blueprint Grid
+description: How CSS lattices, a perspective floor, an 8s light sweep, and a parent-owned spotlight build a technical backdrop without canvas.
+learnPlayer: true
+---
+
+<LearnPlayer>
+
+<LearnChapter
+  label="Lines and dots"
+  scene={<BlueprintGridAnatomy />}
+  code={`const buildGrid = (c: string) =>
+  variant === "dots"
+    ? \`radial-gradient(\${c} 1px, transparent 1.5px)\`
+    : \`linear-gradient(to right, \${c} 1px, transparent 1px), linear-gradient(to bottom, \${c} 1px, transparent 1px)\`;
+
+backgroundSize:
+  variant === "dots"
+    ? \`\${cellSize}px \${cellSize}px\`
+    : \`\${cellSize}px \${cellSize}px, \${cellSize}px \${cellSize}px\`;`}
+>
+
+`BlueprintGrid` is pure CSS: layered backgrounds, one keyframed sweep, and
+CSS variables for a cursor spotlight. No canvas, no rAF. Drop it first in a
+`relative overflow-hidden` container; your content sits above at `z-raised`.
+
+Two recipes share the same `cellSize` (default `32`):
+
+Color defaults to `var(--border)` so the lattice tracks the theme. The base
+layer sits at `opacity-50` so content above stays readable.
+
+</LearnChapter>
+
+<LearnChapter
+  label="Perspective floor"
+  scene={<BlueprintGridPerspective />}
+  code={`<div className="absolute inset-0 [perspective:600px] [perspective-origin:50%_0%]">
+  <div
+    className="absolute right-[-50%] bottom-0 left-[-50%] h-[160%] origin-bottom
+      opacity-50 [transform:rotateX(72deg)]
+      [mask-image:linear-gradient(to_top,#000,transparent)]"
+    style={baseGrid}
+  />
+</div>`}
+>
+
+`variant="perspective"` wraps the grid in a 3D stage:
+
+The floor is oversized horizontally, tilted `72deg`, and faded toward the
+horizon. This variant skips the spotlight: the foreshortening carries the
+effect, and a radial mask would fight the perspective mask.
+
+When `sweep` is on (default), a blurred diagonal band runs
+`animate-blueprint-sweep`:
+
+```css
+@keyframes blueprint-sweep {
+  0%   { transform: translate(-50%, -50%) rotate(var(--blueprint-angle, 25deg)); opacity: 0; }
+  15%, 85% { opacity: 1; }
+  100% { transform: translate(150%, 150%) rotate(var(--blueprint-angle, 25deg)); opacity: 0; }
+}
+/* --animate-blueprint-sweep: blueprint-sweep var(--blueprint-speed, 8s) linear infinite */
+```
+
+The layer is `w-[55%] h-[140%]` with `blur(14px)` and
+`motion-reduce:hidden`. Reduced-motion users keep the lattice and lose the
+traveling light.
+
+</LearnChapter>
+
+<LearnChapter
+  label="Parent-owned spotlight"
+  scene={<BlueprintGridSweep />}
+  code={`const target = root.offsetParent ?? root;
+root.style.setProperty("--bx", \`\${ev.clientX - rect.left}px\`);
+root.style.setProperty("--by", \`\${ev.clientY - rect.top}px\`);
+root.style.setProperty("--bo", "0.55");
+// leave → --bo = 0`}
+>
+
+Spotlight listeners attach to `offsetParent` (the nearest positioned
+ancestor) instead of the grid root, so moving over content stacked above
+still drives the disc:
+
+The accent layer is an accent-colored copy of the grid plus a soft glow,
+both clipped with:
+
+```tsx
+maskImage: `radial-gradient(circle ${spotlightRadius}px at var(--bx) var(--by), #000 0%, #000 35%, transparent 75%)`
+opacity: "var(--bo)" // transition 300ms ease-out
+```
+
+</LearnChapter>
+
+<LearnChapter label="The result" scene={<BlueprintGridResult />} isResult>
+
+Move across the stage. The spotlight follows through the content layer.
+
+That is a lattice, an optional floor, one keyframe, and one pointer listener
+on the parent. No canvas.
+
+</LearnChapter>
+
+</LearnPlayer>
+
+## Motion Score
+
+<MotionScorePanel name="blueprint-grid" />

@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatedBeam } from "@godui/components";
+import { AnimatedBeam } from "@godui/lab";
 import { Box, Cloud, Database, Sparkles } from "lucide-react";
 import * as React from "react";
 import { useBareScene } from "@/components/learn/bare-scene-context";
@@ -87,7 +87,7 @@ export function AnimatedBeamResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — three beams, one hub
+          the real component: three beams, one hub
         </span>
       </div>
       <div className="flex min-h-[320px] items-center justify-center p-6 md:p-10">

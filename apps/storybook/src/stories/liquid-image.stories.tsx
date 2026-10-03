@@ -1,9 +1,9 @@
-import { LiquidImage, type LiquidImageProps } from "@godui/components";
+import { LiquidImage, type LiquidImageProps } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { radio, range } from "../playground/argtypes";
 
 const meta = {
-  title: "Effects/LiquidImage",
+  title: "Lab/Effects/LiquidImage",
   component: LiquidImage,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

@@ -1,11 +1,11 @@
-import { SlideConfirmButton } from "@godui/components";
+import { SlideConfirmButton } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "storybook/test";
 import { action, range, select, text, toggle } from "../playground/argtypes";
 import { centered } from "../playground/stage";
 
 const meta = {
-  title: "Buttons/Slide Confirm Button",
+  title: "Lab/Buttons/Slide Confirm Button",
   component: SlideConfirmButton,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

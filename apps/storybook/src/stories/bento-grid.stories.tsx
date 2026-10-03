@@ -1,4 +1,4 @@
-import { BentoCard, BentoGrid } from "@godui/components";
+import { BentoCard, BentoGrid } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import type { ReactNode } from "react";
 import { select } from "../playground/argtypes";
@@ -53,7 +53,7 @@ function MiniBars() {
 }
 
 const meta = {
-  title: "Layout/BentoGrid",
+  title: "Lab/Layout/BentoGrid",
   component: BentoGrid,
   subcomponents: { BentoCard },
   tags: ["autodocs"],
@@ -71,7 +71,7 @@ const meta = {
         colSpan={2}
         icon={<Icon>{sparkles}</Icon>}
         title="Interfaces that feel alive"
-        description="Spring-driven motion, pointer-aware surfaces, and pixel-tuned details — ready to drop in."
+        description="Spring-driven motion, pointer-aware surfaces, and pixel-tuned details, ready to drop in."
       >
         <div className="mt-5 flex flex-wrap gap-2">
           {["60fps", "Reduced-motion safe", "Themed tokens"].map((tag) => (

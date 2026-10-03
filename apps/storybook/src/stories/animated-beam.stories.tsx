@@ -1,4 +1,4 @@
-import { AnimatedBeam, type AnimatedBeamProps } from "@godui/components";
+import { AnimatedBeam, type AnimatedBeamProps } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import * as React from "react";
 import { color, range, toggle } from "../playground/argtypes";
@@ -20,7 +20,7 @@ type PlaygroundArgs = Pick<
 >;
 
 const meta: Meta<PlaygroundArgs> = {
-  title: "Effects/Animated Beam",
+  title: "Lab/Effects/Animated Beam",
   // Cast: the refs are required props but supplied inside `render`, never via
   // Controls, so the Playground args only cover the scalar props.
   component: AnimatedBeam as unknown as React.ComponentType<PlaygroundArgs>,

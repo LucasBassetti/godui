@@ -1,6 +1,6 @@
 "use client";
 
-import { TextScramble } from "@godui/components";
+import { TextScramble } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
@@ -39,7 +39,7 @@ export function TextScrambleResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — hover to re-scramble
+          the real component: hover to re-scramble
         </span>
       </div>
       <div className="flex min-h-[240px] flex-col items-center justify-center gap-8 p-10">

@@ -1,4 +1,4 @@
-import { ScrollStack, type ScrollStackProps } from "@godui/components";
+import { ScrollStack, type ScrollStackProps } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { range, toggle } from "../playground/argtypes";
 
@@ -13,7 +13,7 @@ const cards = [
   {
     eyebrow: "Track",
     title: "Progress you can see",
-    body: "Live insight into velocity and scope — no spreadsheets, no status meetings.",
+    body: "Live insight into velocity and scope, without spreadsheets or status meetings.",
     stat: "98.2%",
     statLabel: "on-time delivery",
   },
@@ -27,7 +27,7 @@ const cards = [
 ];
 
 const meta = {
-  title: "Layout/ScrollStack",
+  title: "Lab/Layout/ScrollStack",
   component: ScrollStack,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

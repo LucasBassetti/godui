@@ -4,7 +4,7 @@ import {
   type EffectBackgroundVariant,
   effectBackgroundPresets,
   effectBackgroundVariants,
-} from "@godui/components";
+} from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { select } from "../playground/argtypes";
 import { effectStage } from "../playground/stage";
@@ -14,7 +14,7 @@ type PlaygroundArgs = EffectBackgroundProps & {
 };
 
 const meta: Meta<PlaygroundArgs> = {
-  title: "Backgrounds/Effect Background",
+  title: "Lab/Backgrounds/Effect Background",
   component: EffectBackground,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

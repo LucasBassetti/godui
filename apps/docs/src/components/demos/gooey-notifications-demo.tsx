@@ -1,6 +1,6 @@
 "use client";
 
-import { GooeyStack } from "@godui/components";
+import { GooeyStack } from "@godui/lab";
 import * as React from "react";
 
 function Mark({

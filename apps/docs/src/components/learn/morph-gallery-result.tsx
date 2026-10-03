@@ -1,6 +1,6 @@
 "use client";
 
-import { MorphGallery } from "@godui/components";
+import { MorphGallery } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
@@ -46,7 +46,7 @@ export function MorphGalleryResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — click a tile
+          the real component: click a tile
         </span>
       </div>
       <div className="relative flex min-h-[280px] items-center justify-center p-6 sm:p-10">

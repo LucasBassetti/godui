@@ -1,6 +1,6 @@
 "use client";
 
-import { ScrollTimeline } from "@godui/components";
+import { ScrollTimeline } from "@godui/lab";
 import { useRef } from "react";
 import { DemoScrollPort, DemoScrollRunway } from "@/components/demos/_kit";
 
@@ -26,8 +26,7 @@ export function ScrollTimelineDemo() {
               title: "The first commit",
               content: (
                 <p className="text-muted-foreground text-sm md:text-base">
-                  A single component and a big idea — a design system that feels
-                  alive, not templated.
+                  A single component and a big idea.
                 </p>
               ),
             },

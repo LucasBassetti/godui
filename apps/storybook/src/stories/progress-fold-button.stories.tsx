@@ -1,11 +1,11 @@
-import { ProgressFoldButton } from "@godui/components";
+import { ProgressFoldButton } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "storybook/test";
 import { action, range, select, text, toggle } from "../playground/argtypes";
 import { centered } from "../playground/stage";
 
 const meta = {
-  title: "Buttons/Progress Fold Button",
+  title: "Lab/Buttons/Progress Fold Button",
   component: ProgressFoldButton,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

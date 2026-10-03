@@ -44,7 +44,7 @@ export function TabBarPop() {
           </div>
 
           <p className="text-center font-mono text-[11px] text-fd-muted-foreground">
-            real label uses width: 0 → auto (layout) — faked here as scaleX
+            real label uses width: 0 → auto (layout); faked here as scaleX
             (transform)
           </p>
         </div>

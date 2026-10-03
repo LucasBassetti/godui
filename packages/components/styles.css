@@ -89,265 +89,629 @@
   --z-index-popover: var(--z-popover);
   --z-index-modal: var(--z-modal);
   --z-index-toast: var(--z-toast);
-
-  --animate-shimmer-slide: shimmer-slide var(--speed) ease-in-out infinite
-    alternate;
-  --animate-spin-around: spin-around calc(var(--speed) * 2) infinite linear;
-
-  --animate-aurora-text: aurora-text var(--aurora-text-speed, 10s) infinite
-    linear;
-
-  --animate-magic-rainbow: magic-rainbow var(--rainbow-speed, 2s) infinite
-    linear;
-  --animate-magic-input-indeterminate: magic-input-indeterminate 1.2s
-    ease-in-out infinite alternate;
-  --animate-magic-input-sweep: magic-input-sweep 220ms ease-out;
-  --animate-magic-input-spin: magic-input-spin 0.8s linear infinite;
-  --animate-progress-fold-indeterminate: progress-fold-indeterminate 1.2s
-    ease-in-out infinite;
-
-  /* Blueprint grid: a light band sweeps across the lattice */
-  --animate-blueprint-sweep: blueprint-sweep var(--blueprint-speed, 8s) linear
-    infinite;
-
-  /* Light rays: god-rays rotate and breathe */
-  --animate-light-rays-sweep: light-rays-sweep var(--rays-speed, 14s)
-    ease-in-out infinite alternate;
-
-  /* Marquee: seamless track scroll (duration driven by the `--duration` var) */
-  --animate-marquee: marquee var(--duration, 40s) linear infinite;
-  --animate-marquee-vertical: marquee-vertical var(--duration, 40s) linear
-    infinite;
-
-  /* App showcase: the phone screen auto-scrolls its screenshot on a loop */
-  --animate-app-showcase-scroll: app-showcase-scroll var(--as-loop, 24s) linear
-    infinite;
-
-  /* Mask flipbook — one token per sprite (step counts differ) */
-  --animate-mask-nature-in: mask-button-in 0.7s steps(22) forwards;
-  --animate-mask-nature-out: mask-button-out 0.7s steps(22) forwards;
-  --animate-mask-urban-in: mask-button-in 0.7s steps(29) forwards;
-  --animate-mask-urban-out: mask-button-out 0.7s steps(29) forwards;
-  --animate-mask-forest-in: mask-button-in 0.7s steps(70) forwards;
-  --animate-mask-forest-out: mask-button-out 0.7s steps(70) forwards;
-
-  /* Voice orb: corona rotation, idle breathing, and the listening ring pulse */
-  --animate-voice-orb-spin: voice-orb-spin 8s linear infinite;
-  --animate-voice-orb-breathe: voice-orb-breathe 4s ease-in-out infinite;
-  --animate-voice-orb-ring: voice-orb-ring 1.6s ease-out infinite;
-
-  /* Split-flap: the old top leaf falls away, then the new bottom leaf rises */
-  --animate-split-flap-fall: split-flap-fall 0.12s
-    cubic-bezier(0.3, 0.7, 0.4, 1) forwards;
-  --animate-split-flap-rise: split-flap-rise 0.12s
-    cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-@keyframes voice-orb-spin {
+/* ── godui-motion ─────────────────────────────────────────────────────────────
+ * Shared motion tokens for core components. GPU-only: every keyframe animates
+ * opacity / scale / translate. Mirrored in the `godui-motion` registry entry.
+ * Springs are CSS linear() approximations (stiffness k / damping c noted). */
+@theme inline {
+  /* k=500 c=40, settles ≈374ms */
+  --ease-spring-snappy: linear(
+    0,
+    0.0536,
+    0.1667,
+    0.3015,
+    0.436,
+    0.5582,
+    0.663,
+    0.7491,
+    0.8194,
+    0.8719,
+    0.9113,
+    0.9403,
+    0.9612,
+    0.9758,
+    0.9857,
+    0.9923,
+    0.9967,
+    0.9992,
+    1.0006,
+    1.0013,
+    1.0016,
+    1.0016,
+    1.0014,
+    1.0012,
+    1
+  );
+  /* k=260 c=32, settles ≈563ms */
+  --ease-spring-smooth: linear(
+    0,
+    0.0575,
+    0.1789,
+    0.3182,
+    0.4518,
+    0.5693,
+    0.6676,
+    0.747,
+    0.8095,
+    0.8579,
+    0.8949,
+    0.9227,
+    0.9431,
+    0.9586,
+    0.9701,
+    0.9784,
+    0.9845,
+    0.9889,
+    0.9921,
+    0.9943,
+    0.996,
+    0.9972,
+    0.998,
+    0.9986,
+    1
+  );
+  /* k=380 c=18, settles ≈771ms, ~19% overshoot */
+  --ease-spring-bouncy: linear(
+    0,
+    0.1642,
+    0.4963,
+    0.8272,
+    1.0624,
+    1.1772,
+    1.1892,
+    1.1415,
+    1.0741,
+    1.0143,
+    0.9772,
+    0.963,
+    0.9656,
+    0.9772,
+    0.9902,
+    1.0003,
+    1.0058,
+    1.0073,
+    1.006,
+    1.0035,
+    1.0011,
+    0.9995,
+    0.9987,
+    0.9986,
+    1
+  );
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --animate-godui-fade-scale-in: godui-fade-scale-in var(--godui-duration-base)
+    var(--ease-spring-snappy) backwards;
+  --animate-godui-fade-scale-out: godui-fade-scale-out
+    var(--godui-duration-fast) var(--ease-out-expo) both;
+  --animate-godui-slide-in-from-top: godui-slide-in-from-top
+    var(--godui-duration-base) var(--ease-spring-snappy) backwards;
+  --animate-godui-slide-in-from-right: godui-slide-in-from-right
+    var(--godui-duration-slow) var(--ease-spring-smooth) backwards;
+  --animate-godui-slide-in-from-bottom: godui-slide-in-from-bottom
+    var(--godui-duration-base) var(--ease-spring-snappy) backwards;
+  --animate-godui-slide-in-from-left: godui-slide-in-from-left
+    var(--godui-duration-slow) var(--ease-spring-smooth) backwards;
+  --animate-godui-slide-out-to-top: godui-slide-out-to-top
+    var(--godui-duration-fast) var(--ease-out-expo) both;
+  --animate-godui-slide-out-to-right: godui-slide-out-to-right
+    var(--godui-duration-base) var(--ease-out-expo) both;
+  --animate-godui-slide-out-to-bottom: godui-slide-out-to-bottom
+    var(--godui-duration-fast) var(--ease-out-expo) both;
+  --animate-godui-slide-out-to-left: godui-slide-out-to-left
+    var(--godui-duration-base) var(--ease-out-expo) both;
+  --animate-godui-pop: godui-pop var(--godui-duration-base)
+    var(--ease-spring-bouncy);
+  --animate-godui-fade-in: godui-fade-in var(--godui-duration-base)
+    var(--ease-spring-snappy) backwards;
+  --animate-godui-fade-out: godui-fade-out var(--godui-duration-fast)
+    var(--ease-out-expo) both;
+  --animate-godui-popover-in: godui-popover-in var(--godui-duration-base)
+    var(--ease-spring-snappy) backwards;
+  --animate-godui-popover-out: godui-popover-out var(--godui-duration-fast)
+    var(--ease-out-expo) both;
+  /* Holds a closing Accordion / Collapsible panel (see godui-reveal-hold). */
+  --animate-godui-reveal-hold: godui-reveal-hold var(--godui-duration-base)
+    linear;
+}
+
+:root {
+  --godui-duration-fast: 150ms;
+  --godui-duration-base: 260ms;
+  --godui-duration-slow: 380ms;
+  --godui-enter-scale: 0.96;
+  --godui-enter-distance: 0.5rem;
+  --godui-pop-scale: 0.96;
+  /* Popover drift toward the trigger; components set these per Radix side. */
+  --godui-enter-x: 0px;
+  --godui-enter-y: 0px;
+  /* Movement multiplier: 1 normally, 0 under reduced motion. Set only here, so
+   * a component's local --godui-enter-distance can't outrank reduced motion. */
+  --godui-motion: 1;
+}
+
+/* Reduced motion: nothing moves or scales; animations become short fades. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --godui-enter-scale: 1;
+    --godui-enter-distance: 0px;
+    --godui-pop-scale: 1;
+    --godui-motion: 0;
+    --godui-duration-base: 150ms;
+    --godui-duration-slow: 150ms;
+  }
+}
+
+@keyframes godui-fade-scale-in {
+  from {
+    opacity: 0;
+    scale: calc(1 - (1 - var(--godui-enter-scale)) * var(--godui-motion));
+  }
+}
+@keyframes godui-fade-scale-out {
   to {
-    transform: rotate(360deg);
+    opacity: 0;
+    scale: calc(1 - (1 - var(--godui-enter-scale)) * var(--godui-motion));
+  }
+}
+@keyframes godui-slide-in-from-top {
+  from {
+    opacity: 0;
+    translate: 0 calc(var(--godui-enter-distance) * -1 * var(--godui-motion));
+  }
+}
+@keyframes godui-slide-in-from-right {
+  from {
+    opacity: 0;
+    translate: calc(var(--godui-enter-distance) * var(--godui-motion)) 0;
+  }
+}
+@keyframes godui-slide-in-from-bottom {
+  from {
+    opacity: 0;
+    translate: 0 calc(var(--godui-enter-distance) * var(--godui-motion));
+  }
+}
+@keyframes godui-slide-in-from-left {
+  from {
+    opacity: 0;
+    translate: calc(var(--godui-enter-distance) * -1 * var(--godui-motion)) 0;
+  }
+}
+@keyframes godui-slide-out-to-top {
+  to {
+    opacity: 0;
+    translate: 0 calc(var(--godui-enter-distance) * -1 * var(--godui-motion));
+  }
+}
+@keyframes godui-slide-out-to-right {
+  to {
+    opacity: 0;
+    translate: calc(var(--godui-enter-distance) * var(--godui-motion)) 0;
+  }
+}
+@keyframes godui-slide-out-to-bottom {
+  to {
+    opacity: 0;
+    translate: 0 calc(var(--godui-enter-distance) * var(--godui-motion));
+  }
+}
+@keyframes godui-slide-out-to-left {
+  to {
+    opacity: 0;
+    translate: calc(var(--godui-enter-distance) * -1 * var(--godui-motion)) 0;
+  }
+}
+@keyframes godui-pop {
+  40% {
+    scale: calc(1 - (1 - var(--godui-pop-scale)) * var(--godui-motion));
+  }
+}
+@keyframes godui-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes godui-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes godui-popover-in {
+  from {
+    opacity: 0;
+    scale: calc(1 - (1 - var(--godui-enter-scale)) * var(--godui-motion));
+    translate: calc(var(--godui-enter-x) * var(--godui-motion))
+      calc(var(--godui-enter-y) * var(--godui-motion));
+  }
+}
+@keyframes godui-popover-out {
+  to {
+    opacity: 0;
+    scale: calc(1 - (1 - var(--godui-enter-scale)) * var(--godui-motion));
+    translate: calc(var(--godui-enter-x) * var(--godui-motion))
+      calc(var(--godui-enter-y) * var(--godui-motion));
+  }
+}
+/* Keeps Radix Presence from hiding a closing Accordion / Collapsible panel
+ * until its clip edge (animated in JS by useReveal, on translate) has swept
+ * up. 0.99, not 1: Chrome won't composite an animation with no visible
+ * change; the panel is hidden when it ends. */
+@keyframes godui-reveal-hold {
+  to {
+    opacity: 0.99;
   }
 }
 
-@keyframes voice-orb-breathe {
-  0%,
-  100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.04);
+/* ── calendar ────────────────────────────────────────────────────────────────
+ * Component keyframes (also in the calendar registry entry). The --godui-
+ * calendar-* tuning variables are set on the Calendar root; every distance
+ * and delay is multiplied by --godui-motion. No blur: Chrome won't composite
+ * a filter that moves pixels, so a blurred month change runs on the main
+ * thread. Month change: the old weeks leave fast and short, the new ones
+ * arrive a beat later from further away. The exit fades on
+ * --godui-calendar-ease-out (an ease-out quad), not expo: expo empties the
+ * old month before the new one shows (both together dip to 16% opacity, a
+ * blink); quad keeps them above 65%. react-day-picker drops the old month on the old
+ * caption's animationend, so the caption's exit (and the dropdown caption's
+ * hide) last delay + base, the moment the new weeks land. The caption is
+ * text on text, so it doesn't cross-fade like the grid: the old one is gone
+ * by 30% of that, the new one starts --godui-calendar-caption-lag after the
+ * weeks and ends with them. */
+@theme inline {
+  --animate-godui-calendar-in-from-end: godui-calendar-in-from-end
+    var(--godui-duration-base) var(--ease-spring-snappy)
+    calc(var(--godui-calendar-delay) * var(--godui-motion)) backwards;
+  --animate-godui-calendar-in-from-start: godui-calendar-in-from-start
+    var(--godui-duration-base) var(--ease-spring-snappy)
+    calc(var(--godui-calendar-delay) * var(--godui-motion)) backwards;
+  --animate-godui-calendar-out-to-start: godui-calendar-out-to-start
+    var(--godui-duration-fast) var(--godui-calendar-ease-out) both;
+  --animate-godui-calendar-out-to-end: godui-calendar-out-to-end
+    var(--godui-duration-fast) var(--godui-calendar-ease-out) both;
+  --animate-godui-calendar-caption-in-from-end: godui-calendar-caption-in-from-end
+    calc(
+      var(--godui-duration-base) -
+      var(--godui-calendar-caption-lag) *
+      var(--godui-motion)
+    )
+    var(--ease-spring-snappy)
+    calc(
+      (var(--godui-calendar-delay) + var(--godui-calendar-caption-lag)) *
+      var(--godui-motion)
+    )
+    backwards;
+  --animate-godui-calendar-caption-in-from-start: godui-calendar-caption-in-from-start
+    calc(
+      var(--godui-duration-base) -
+      var(--godui-calendar-caption-lag) *
+      var(--godui-motion)
+    )
+    var(--ease-spring-snappy)
+    calc(
+      (var(--godui-calendar-delay) + var(--godui-calendar-caption-lag)) *
+      var(--godui-motion)
+    )
+    backwards;
+  --animate-godui-calendar-caption-out-to-start: godui-calendar-caption-out-to-start
+    calc(
+      var(--godui-duration-base) +
+      var(--godui-calendar-delay) *
+      var(--godui-motion)
+    )
+    linear both;
+  --animate-godui-calendar-caption-out-to-end: godui-calendar-caption-out-to-end
+    calc(
+      var(--godui-duration-base) +
+      var(--godui-calendar-delay) *
+      var(--godui-motion)
+    )
+    linear both;
+  --animate-godui-calendar-caption-hide: godui-calendar-caption-hide
+    calc(
+      var(--godui-duration-base) +
+      var(--godui-calendar-delay) *
+      var(--godui-motion)
+    )
+    linear both;
+  --animate-godui-calendar-fill-in: godui-calendar-fill-in
+    var(--godui-duration-base) var(--ease-spring-bouncy) backwards;
+  --animate-godui-calendar-fade-out: godui-calendar-fade-out
+    var(--godui-duration-fast) var(--ease-out-expo) both;
+  --animate-godui-calendar-fill-shrink: godui-calendar-fill-shrink
+    var(--godui-duration-fast) var(--ease-out-expo) both;
+  --animate-godui-calendar-track-in: godui-calendar-track-in
+    calc(
+      var(--godui-calendar-track-span, 1) *
+      var(--godui-calendar-sweep) *
+      var(--godui-motion) +
+      var(--godui-duration-fast) *
+      (1 - var(--godui-motion))
+    )
+    linear
+    calc(
+      var(--godui-calendar-track-at, 0) *
+      var(--godui-calendar-sweep) *
+      var(--godui-motion)
+    )
+    backwards;
+  --animate-godui-calendar-ghost-glide: godui-calendar-ghost-glide
+    calc(var(--godui-calendar-preview-sweep) * var(--godui-motion))
+    cubic-bezier(0.33, 1, 0.68, 1) backwards;
+}
+@keyframes godui-calendar-in-from-end {
+  from {
+    opacity: 0;
+    translate: calc(
+        var(--godui-calendar-drift) *
+        var(--godui-calendar-dir) *
+        var(--godui-motion)
+      )
+      0;
   }
 }
-
-@keyframes voice-orb-ring {
+@keyframes godui-calendar-in-from-start {
+  from {
+    opacity: 0;
+    translate: calc(
+        var(--godui-calendar-drift) *
+        var(--godui-calendar-dir) *
+        -1 *
+        var(--godui-motion)
+      )
+      0;
+  }
+}
+@keyframes godui-calendar-out-to-start {
+  to {
+    opacity: 0;
+    translate: calc(
+        var(--godui-calendar-drift-out) *
+        var(--godui-calendar-dir) *
+        -1 *
+        var(--godui-motion)
+      )
+      0;
+  }
+}
+@keyframes godui-calendar-out-to-end {
+  to {
+    opacity: 0;
+    translate: calc(
+        var(--godui-calendar-drift-out) *
+        var(--godui-calendar-dir) *
+        var(--godui-motion)
+      )
+      0;
+  }
+}
+@keyframes godui-calendar-caption-in-from-end {
+  from {
+    opacity: 0;
+    translate: calc(
+        var(--godui-calendar-caption-drift) *
+        var(--godui-calendar-dir) *
+        var(--godui-motion)
+      )
+      0;
+  }
+}
+@keyframes godui-calendar-caption-in-from-start {
+  from {
+    opacity: 0;
+    translate: calc(
+        var(--godui-calendar-caption-drift) *
+        var(--godui-calendar-dir) *
+        -1 *
+        var(--godui-motion)
+      )
+      0;
+  }
+}
+/* The caption exits' curve is --godui-calendar-ease-out written out: Chrome
+ * doesn't resolve var() in a keyframe's animation-timing-function (it falls
+ * back to linear). */
+@keyframes godui-calendar-caption-out-to-start {
   0% {
-    transform: scale(0.85);
-    opacity: 0.6;
+    opacity: 1;
+    translate: 0 0;
+    animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
+  30%,
   100% {
-    transform: scale(1.4);
+    opacity: 0;
+    translate: calc(
+        var(--godui-calendar-caption-drift) *
+        var(--godui-calendar-dir) *
+        -0.5 *
+        var(--godui-motion)
+      )
+      0;
+  }
+}
+@keyframes godui-calendar-caption-out-to-end {
+  0% {
+    opacity: 1;
+    translate: 0 0;
+    animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  30%,
+  100% {
+    opacity: 0;
+    translate: calc(
+        var(--godui-calendar-caption-drift) *
+        var(--godui-calendar-dir) *
+        0.5 *
+        var(--godui-motion)
+      )
+      0;
+  }
+}
+/* The old dropdown caption, hidden for the whole change: 0 → 0.01, not 0
+ * throughout — Chrome won't composite an animation with no visible change. */
+@keyframes godui-calendar-caption-hide {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.01;
+  }
+}
+/* A picked day's fill (and its copy of the number) grows from 60% while it
+ * fades in over the first third; the spring overshoots to ≈108%. */
+@keyframes godui-calendar-fill-in {
+  0% {
+    opacity: 0;
+    scale: calc(1 - 0.4 * var(--godui-motion));
+  }
+  35% {
+    opacity: 1;
+  }
+}
+/* A layer leaving (a deselected day's fill, a range track half): from 1,
+ * explicitly — its resting style is already opacity 0, so it stays hidden
+ * once the fade ends and inside rdp's clone of the old month. */
+@keyframes godui-calendar-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+/* …while a deselected day's fill (the layer's ::before) shrinks. */
+@keyframes godui-calendar-fill-shrink {
+  to {
+    scale: calc(1 - 0.15 * var(--godui-motion));
+  }
+}
+/* A range track half grows across from the side its sweep comes from, in its
+ * slice of the sweep (linear: the halves run back to back, one continuous
+ * front); under reduced motion every half fades in at once, in fast. */
+@keyframes godui-calendar-track-in {
+  from {
+    opacity: var(--godui-motion);
+    scale: calc(1 - var(--godui-motion)) 1;
+  }
+}
+/* A range preview's ghost end moving along a row slides in from the previous
+ * end (--godui-calendar-ghost-from days away; a column is the pill's own
+ * width) on the ease-out cubic the track's front follows, over the same
+ * --godui-calendar-preview-sweep: the pill rides the front. Under reduced
+ * motion it takes no time: it snaps. */
+@keyframes godui-calendar-ghost-glide {
+  from {
+    translate: calc(
+        var(--godui-calendar-ghost-from, 0) *
+        100% *
+        var(--godui-calendar-dir) *
+        var(--godui-motion)
+      )
+      0;
+  }
+}
+
+/* ── checkbox ────────────────────────────────────────────────────────────────
+ * Component keyframes (also in the checkbox registry entry). Scale, translate
+ * and opacity. The disc rests at scale 1.42 (a circle the box's diagonal
+ * wide), so it grows from and drains to 1.42 × (1 - motion): a dot, or under
+ * reduced motion no scale and a fade instead. The check's window slides in
+ * from -100% while the mark slides back from +100% on the same clock, so the
+ * stroke holds still; it starts 70ms in and ends with the disc and the
+ * box's pop (staggered ends would each cost a layout frame). The hold keeps Presence from removing the indicator
+ * until the ink has drained (godui-reveal-hold, from godui-motion). */
+@theme inline {
+  --animate-godui-checkbox-fill-in: godui-checkbox-fill-in
+    var(--godui-duration-base) var(--ease-spring-smooth) backwards;
+  --animate-godui-checkbox-fill-out: godui-checkbox-fill-out
+    var(--godui-duration-fast) var(--ease-spring-smooth) both;
+  --animate-godui-checkbox-draw: godui-checkbox-draw
+    calc(var(--godui-duration-base) - 70ms * var(--godui-motion))
+    var(--ease-spring-smooth) calc(70ms * var(--godui-motion)) backwards;
+  --animate-godui-checkbox-ink: godui-checkbox-ink
+    calc(var(--godui-duration-base) - 70ms * var(--godui-motion))
+    var(--ease-spring-smooth) calc(70ms * var(--godui-motion)) backwards;
+  --animate-godui-checkbox-check-out: godui-checkbox-check-out
+    var(--godui-duration-fast) var(--ease-out-expo) both;
+  --animate-godui-checkbox-hold: godui-reveal-hold var(--godui-duration-fast)
+    linear;
+}
+@keyframes godui-checkbox-fill-in {
+  from {
+    opacity: var(--godui-motion);
+    scale: calc(1.42 * (1 - var(--godui-motion)));
+  }
+}
+@keyframes godui-checkbox-fill-out {
+  to {
+    opacity: var(--godui-motion);
+    scale: calc(1.42 * (1 - var(--godui-motion)));
+  }
+}
+@keyframes godui-checkbox-draw {
+  from {
+    translate: calc(-100% * var(--godui-motion)) 0;
+  }
+}
+@keyframes godui-checkbox-ink {
+  from {
+    opacity: var(--godui-motion);
+    translate: calc(100% * var(--godui-motion)) 0;
+  }
+}
+@keyframes godui-checkbox-check-out {
+  to {
+    opacity: 0;
+    scale: calc(1 - 0.3 * var(--godui-motion));
+  }
+}
+
+/* ── input-otp ───────────────────────────────────────────────────────────────
+ * Component keyframe (also in the input-otp registry entry). Opacity only. */
+@theme inline {
+  --animate-godui-caret-blink: godui-caret-blink 1.25s ease-out infinite;
+}
+@keyframes godui-caret-blink {
+  0%,
+  70%,
+  100% {
+    opacity: 1;
+  }
+  20%,
+  50% {
     opacity: 0;
   }
 }
 
-/* Split-flap: top leaf hinges down and away (front carries the old glyph top) */
-@keyframes split-flap-fall {
+/* ── progress ────────────────────────────────────────────────────────────────
+ * Component keyframe (also in the progress registry entry). Transform only:
+ * the indeterminate bar sweeps across the track on a symmetric ease-in-out.
+ * An animation beats the indicator's inline transform. */
+@theme inline {
+  --animate-godui-progress-indeterminate: godui-progress-indeterminate 1.4s
+    cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+@keyframes godui-progress-indeterminate {
   from {
-    transform: rotateX(0deg);
-  }
-  to {
-    transform: rotateX(-90deg);
-  }
-}
-
-/* Split-flap: bottom leaf hinges up into place (front carries the new glyph bottom) */
-@keyframes split-flap-rise {
-  from {
-    transform: rotateX(90deg);
-  }
-  to {
-    transform: rotateX(0deg);
-  }
-}
-
-@keyframes shimmer-slide {
-  to {
-    transform: translate(calc(100cqw - 100%), 0);
-  }
-}
-
-@keyframes spin-around {
-  0% {
-    transform: translateZ(0) rotate(0);
-  }
-  15%,
-  35% {
-    transform: translateZ(0) rotate(90deg);
-  }
-  65%,
-  85% {
-    transform: translateZ(0) rotate(270deg);
-  }
-  100% {
-    transform: translateZ(0) rotate(360deg);
-  }
-}
-
-/* Aurora text: gradient drifts back and forth across the clipped text */
-@keyframes aurora-text {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-@keyframes magic-rainbow {
-  0% {
-    background-position: 0% 50%;
-  }
-  100% {
-    background-position: 200% 50%;
-  }
-}
-
-/* Magic input: indeterminate fill segment bouncing end to end (right→left) */
-@keyframes magic-input-indeterminate {
-  from {
-    background-position: 110% center;
-  }
-  to {
-    background-position: -10% center;
-  }
-}
-
-/* Magic input: success / error fill sweeping in from the left */
-@keyframes magic-input-sweep {
-  from {
-    background-size: 0% 100%;
-  }
-  to {
-    background-size: 100% 100%;
-  }
-}
-
-/* Magic input: spinner rotation */
-@keyframes magic-input-spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* Mask button: flipbook reveal driven by a sprite-sheet mask-position */
-@keyframes mask-button-in {
-  from {
-    -webkit-mask-position: 0 0;
-    mask-position: 0 0;
-  }
-  to {
-    -webkit-mask-position: 100% 0;
-    mask-position: 100% 0;
-  }
-}
-
-@keyframes mask-button-out {
-  from {
-    -webkit-mask-position: 100% 0;
-    mask-position: 100% 0;
-  }
-  to {
-    -webkit-mask-position: 0 0;
-    mask-position: 0 0;
-  }
-}
-
-/* Marquee: track scrolls one full copy (plus the gap) then loops seamlessly */
-@keyframes marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(calc(-100% - var(--gap)));
-  }
-}
-
-@keyframes marquee-vertical {
-  from {
-    transform: translateY(0);
-  }
-  to {
-    transform: translateY(calc(-100% - var(--gap)));
-  }
-}
-
-/* App showcase: track holds two stacked copies; scroll one full copy up */
-@keyframes app-showcase-scroll {
-  from {
-    transform: translateY(0);
-  }
-  to {
-    transform: translateY(-50%);
-  }
-}
-
-/* Progress fold button: indeterminate segment sweeping left→right */
-@keyframes progress-fold-indeterminate {
-  0% {
     transform: translateX(-100%);
   }
-  100% {
+  to {
     transform: translateX(250%);
   }
 }
 
-/* Blueprint grid: a diagonal light band travels across the lattice */
-@keyframes blueprint-sweep {
-  0% {
-    transform: translate(-50%, -50%) rotate(var(--blueprint-angle, 25deg));
-    opacity: 0;
-  }
-  15%,
-  85% {
-    opacity: 1;
-  }
-  100% {
-    transform: translate(150%, 150%) rotate(var(--blueprint-angle, 25deg));
-    opacity: 0;
-  }
+/* ── skeleton ────────────────────────────────────────────────────────────────
+ * Component keyframe (also in the skeleton registry entry). Transform only:
+ * the ::after band starts fully outside the block on the left
+ * (-translate-x-full) and the animation moves it fully outside on the right. */
+@theme inline {
+  --animate-godui-shimmer: godui-shimmer 1.6s cubic-bezier(0.65, 0, 0.35, 1)
+    infinite;
 }
-
-/* Light rays: the ray fan slowly rotates and breathes in intensity */
-@keyframes light-rays-sweep {
-  0% {
-    transform: rotate(calc(var(--rays-angle, 0deg) - 6deg)) scale(1);
-    opacity: calc(var(--rays-intensity, 0.6) * 0.7);
-  }
-  100% {
-    transform: rotate(calc(var(--rays-angle, 0deg) + 6deg)) scale(1.08);
-    opacity: var(--rays-intensity, 0.6);
+@keyframes godui-shimmer {
+  to {
+    translate: 100% 0;
   }
 }

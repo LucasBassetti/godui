@@ -1,6 +1,6 @@
 "use client";
 
-import { OrbitingCircles } from "@godui/components";
+import { OrbitingCircles } from "@godui/lab";
 import { Box, Cloud, Cpu, Hexagon, Layers, Zap } from "lucide-react";
 
 function Chip({ children }: { children: React.ReactNode }) {

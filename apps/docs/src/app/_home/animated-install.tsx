@@ -7,14 +7,14 @@ import { CopyButton } from "@/components/copy-button";
 // Real registry slugs (public/r/<slug>.json) — the command stays runnable
 // whichever name is on screen when someone copies it.
 const SLUGS = [
-  "jelly-button",
-  "aurora-text",
-  "globe",
-  "dynamic-island",
-  "dock",
-  "world-map",
-  "orbiting-circles",
-  "text-scramble",
+  "dialog",
+  "tabs",
+  "accordion",
+  "dropdown-menu",
+  "sonner",
+  "switch",
+  "command",
+  "toggle-group",
 ];
 
 const PREFIX = 'npx shadcn@latest add "https://godui.design/r/';

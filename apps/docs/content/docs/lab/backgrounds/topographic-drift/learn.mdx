@@ -1,0 +1,93 @@
+---
+title: Anatomy of Topographic Drift
+description: How an 18px noise grid, a 16-case marching-squares switch, and a creeping z-offset redraw contour lines every frame and freeze under reduced motion.
+learnPlayer: true
+---
+
+<LearnPlayer>
+
+<LearnChapter
+  label="Sample the field"
+  scene={<TopographicDriftAnatomy />}
+  code={`field[j * stride + i] = valueNoise(
+  i * cell * noiseScale,       // default noiseScale = 0.004
+  j * cell * noiseScale + z,
+);`}
+>
+
+`TopographicDrift` draws on a canvas. Every frame it **samples** a
+value-noise field onto a coarse grid, **connects** isolines with marching
+squares, and **nudges** the noise's z-offset so the terrain slowly drifts.
+The canvas clears and redraws; it keeps no path geometry between frames.
+
+Corners sit on an ~`18px` lattice. Each corner stores one noise value:
+
+`lineCount` (default `9`) is the number of elevation levels you stroke
+afterward, not the number of grid cells.
+
+The dots in the diagram are those sample corners. Their shade shows
+noise amplitude so you can see the field before any lines are drawn.
+
+</LearnChapter>
+
+<LearnChapter
+  label="Marching squares → isolines"
+  scene={<TopographicDriftMarch />}
+  code={`let id = 0;
+if (tl > level) id |= 8;
+if (tr > level) id |= 4;
+if (br > level) id |= 2;
+if (bl > level) id |= 1;
+if (id === 0 || id === 15) continue;
+
+const top = x + cell * ((level - tl) / (tr - tl || 1e-6));
+// …right, bottom, left — then switch (id) { case 1: seg(…); … }`}
+>
+
+For every cell and every level `l / (lineCount + 1)`, the four corners
+become a 4-bit mask (`tl|tr|br|bl`). Mask `0` and `15` skip (all below /
+all above). Everything else picks edge midpoints by linear interpolation and
+strokes one or two segments, following the classic 16-case table.
+
+Stroke alpha peaks on mid-levels and falls off toward the extremes:
+
+```tsx
+0.1 + 0.25 * (1 - Math.abs(0.5 - level) * 2)
+```
+
+</LearnChapter>
+
+<LearnChapter
+  label="Drift is just z"
+  scene={<TopographicDriftDrift />}
+  code={`const tick = () => {
+  z += 0.0015 * speed;
+  draw(); // sampleField() + marching squares again
+  rafId = requestAnimationFrame(tick);
+};`}
+>
+
+The "living map" feeling is one line in the tick:
+
+Same lifecycle as the other canvas backgrounds: `ResizeObserver` rebuilds the
+grid, `IntersectionObserver` and `visibilitychange` pause offscreen / when the
+tab hides, and `prefers-reduced-motion` stops the loop on a still frame.
+
+Color comes from `--foreground` (or a `color` prop), re-probed when the
+document theme mutates, so light and dark both stay legible without a baked
+palette.
+
+</LearnChapter>
+
+<LearnChapter label="The result" scene={<TopographicDriftResult />} isResult>
+
+Sample → march → nudge `z`, every frame. The canvas holds no mesh and morphs
+no paths.
+
+</LearnChapter>
+
+</LearnPlayer>
+
+## Motion Score
+
+<MotionScorePanel name="topographic-drift" />

@@ -1,0 +1,178 @@
+---
+title: Dropdown Menu
+description: Displays a menu to the user, such as a set of actions or functions, triggered by a button. Grows out of its trigger; checks pop in.
+workbench: true
+---
+
+import { DropdownMenuCheckboxesDemo } from "@/components/demos/core/dropdown-menu-checkboxes-demo";
+import { DropdownMenuDemo } from "@/components/demos/core/dropdown-menu-demo";
+
+<Workbench>
+
+The shadcn/ui dropdown menu with the same entrance as
+[Popover](/docs/components/popover): it scales up from the trigger and drifts
+out of it on a spring, and sub-menus do the same from their parent item.
+Check and radio indicators pop in from 50% when you toggle them, not when the
+menu opens. Item highlights change instantly.
+
+<Example label="Default" story="ui-dropdown-menu" code={`import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
+export function DropdownMenuDemo() {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline">Open</Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-56" align="start">
+        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuGroup>
+          <DropdownMenuItem>
+            Profile
+            <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            Billing
+            <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            Settings
+            <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+          <DropdownMenuItem>Team</DropdownMenuItem>
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger>Invite users</DropdownMenuSubTrigger>
+            <DropdownMenuSubContent>
+              <DropdownMenuItem>Email</DropdownMenuItem>
+              <DropdownMenuItem>Message</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>More...</DropdownMenuItem>
+            </DropdownMenuSubContent>
+          </DropdownMenuSub>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem variant="destructive">
+          Log out
+          <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}`}>
+  <DropdownMenuDemo />
+</Example>
+
+<Example
+  label="Checkboxes and radio"
+  code={`const keepOpen = (event: Event) => event.preventDefault();
+
+export function DropdownMenuCheckboxesDemo() {
+  const [statusBar, setStatusBar] = useState(true);
+  const [panel, setPanel] = useState(false);
+  const [position, setPosition] = useState("bottom");
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline">View options</Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-56">
+        <DropdownMenuLabel>Appearance</DropdownMenuLabel>
+        <DropdownMenuCheckboxItem
+          checked={statusBar}
+          onCheckedChange={setStatusBar}
+          onSelect={keepOpen}
+        >
+          Status Bar
+        </DropdownMenuCheckboxItem>
+        <DropdownMenuCheckboxItem
+          checked={panel}
+          onCheckedChange={setPanel}
+          onSelect={keepOpen}
+        >
+          Panel
+        </DropdownMenuCheckboxItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuLabel>Panel position</DropdownMenuLabel>
+        <DropdownMenuRadioGroup value={position} onValueChange={setPosition}>
+          <DropdownMenuRadioItem value="top" onSelect={keepOpen}>Top</DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="bottom" onSelect={keepOpen}>Bottom</DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="right" onSelect={keepOpen}>Right</DropdownMenuRadioItem>
+        </DropdownMenuRadioGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}`}
+>
+  <DropdownMenuCheckboxesDemo />
+</Example>
+
+## Installation
+
+<ComponentInstall name="dropdown-menu" />
+
+## Replacing shadcn
+
+`npx shadcn add @godui/dropdown-menu` overwrites `components/ui/dropdown-menu.tsx`.
+Exports, props and `data-slot` attributes match shadcn/ui new-york-v4, so
+existing imports keep working. It also installs `godui-motion` (easings,
+keyframes, the FLIP hook) into your project.
+
+## Usage
+
+```tsx
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+```
+
+```tsx
+<DropdownMenu>
+  <DropdownMenuTrigger>Open</DropdownMenuTrigger>
+  <DropdownMenuContent>
+    <DropdownMenuLabel>My Account</DropdownMenuLabel>
+    <DropdownMenuSeparator />
+    <DropdownMenuItem>Profile</DropdownMenuItem>
+    <DropdownMenuItem>Billing</DropdownMenuItem>
+    <DropdownMenuItem>Team</DropdownMenuItem>
+    <DropdownMenuItem>Subscription</DropdownMenuItem>
+  </DropdownMenuContent>
+</DropdownMenu>
+```
+
+## What's animated
+
+| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
+| --- | --- | --- | --- | --- |
+| Open (menu, sub-menu) | `godui-popover-in` | `opacity`, `scale` 0.96 → 1 from the trigger, `translate` 4px → 0 | `ease-spring-snappy` | 260ms |
+| Close | `godui-popover-out` | the same, reversed | `ease-out-expo` | 150ms |
+| Check / radio appears | `godui-fade-scale-in` from 50% | `opacity`, `scale` | `ease-spring-snappy` | 260ms |
+| Item highlight | snaps | none | none | none |
+
+Under `prefers-reduced-motion` the menu and indicators only fade (150ms).
+
+## API
+
+Built on [Radix Dropdown Menu](https://www.radix-ui.com/primitives/docs/components/dropdown-menu).
+Props are identical to [shadcn/ui Dropdown Menu](https://ui.shadcn.com/docs/components/dropdown-menu).
+
+</Workbench>

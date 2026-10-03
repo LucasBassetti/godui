@@ -18,7 +18,7 @@ const CSS = `
 `;
 
 const PHASES: { label: string; dur: string; delta: string }[] = [
-  { label: "rest", dur: "—", delta: "scale 1 · 1" },
+  { label: "rest", dur: "none", delta: "scale 1 · 1" },
   { label: "press", dur: "120ms", delta: "scale 1.13 · 0.87" },
   { label: "release", dur: "300ms", delta: "overshoot → settle" },
 ];

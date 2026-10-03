@@ -1,0 +1,155 @@
+---
+title: Drawer
+description: A drawer component for React, built on vaul. Slides with transforms; its content rises in just after the sheet.
+workbench: true
+---
+
+import { DrawerDemo } from "@/components/demos/core/drawer-demo";
+
+<Workbench>
+
+The shadcn/ui drawer, built on [vaul](https://vaul.emilkowal.ski). Vaul
+already moves the sheet with `transform` and fades the overlay with
+`opacity`: GodUI tests that it stays that way. GodUI adds one detail: the
+header and footer rise in 60ms and 120ms after the sheet starts moving, so
+the content settles into a sheet that's already arriving.
+
+<Example label="Default" story="ui-drawer" code={`"use client";
+
+import { Button } from "@/components/ui/button";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+import { Minus, Plus } from "lucide-react";
+import { useState } from "react";
+
+export function DrawerDemo() {
+  const [goal, setGoal] = useState(350);
+  const adjust = (delta: number) =>
+    setGoal((value) => Math.max(200, Math.min(400, value + delta)));
+
+  return (
+    <Drawer>
+      <DrawerTrigger asChild>
+        <Button variant="outline">Open Drawer</Button>
+      </DrawerTrigger>
+      <DrawerContent>
+        <div className="mx-auto w-full max-w-sm">
+          <DrawerHeader>
+            <DrawerTitle>Move Goal</DrawerTitle>
+            <DrawerDescription>Set your daily activity goal.</DrawerDescription>
+          </DrawerHeader>
+          <div className="flex items-center justify-center gap-4 p-4">
+            <Button
+              variant="outline"
+              size="icon"
+              className="rounded-full"
+              onClick={() => adjust(-10)}
+              disabled={goal <= 200}
+              aria-label="Decrease"
+            >
+              <Minus />
+            </Button>
+            <div className="text-center">
+              <div className="font-bold text-7xl tracking-tighter tabular-nums">
+                {goal}
+              </div>
+              <div className="text-[0.70rem] text-muted-foreground uppercase">
+                Calories/day
+              </div>
+            </div>
+            <Button
+              variant="outline"
+              size="icon"
+              className="rounded-full"
+              onClick={() => adjust(10)}
+              disabled={goal >= 400}
+              aria-label="Increase"
+            >
+              <Plus />
+            </Button>
+          </div>
+          <DrawerFooter>
+            <Button>Submit</Button>
+            <DrawerClose asChild>
+              <Button variant="outline">Cancel</Button>
+            </DrawerClose>
+          </DrawerFooter>
+        </div>
+      </DrawerContent>
+    </Drawer>
+  );
+}`}>
+  <DrawerDemo />
+</Example>
+
+## Installation
+
+<ComponentInstall name="drawer" />
+
+## Replacing shadcn
+
+`npx shadcn add @godui/drawer` overwrites `components/ui/drawer.tsx`. Exports,
+props and `data-slot` attributes match shadcn/ui new-york-v4, so existing
+imports keep working. It also installs `godui-motion` (easings, keyframes, the
+FLIP hook) into your project.
+
+## Usage
+
+```tsx
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+```
+
+```tsx
+<Drawer>
+  <DrawerTrigger>Open</DrawerTrigger>
+  <DrawerContent>
+    <DrawerHeader>
+      <DrawerTitle>Are you absolutely sure?</DrawerTitle>
+      <DrawerDescription>This action cannot be undone.</DrawerDescription>
+    </DrawerHeader>
+    <DrawerFooter>
+      <Button>Submit</Button>
+      <DrawerClose>Cancel</DrawerClose>
+    </DrawerFooter>
+  </DrawerContent>
+</Drawer>
+```
+
+## What's animated
+
+| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
+| --- | --- | --- | --- | --- |
+| Open, close | vaul `slideFromBottom` / `slideToBottom` | `transform` | `cubic-bezier(0.32, 0.72, 0, 1)` | 500ms |
+| Overlay | vaul `fadeIn` / `fadeOut` | `opacity` | the same | 500ms |
+| Header, footer | `godui-slide-in-from-bottom`, delayed 60 / 120ms | `translate`, `opacity` | `ease-spring-snappy` | 260ms |
+| Drag | pointer-driven `transform` | `transform` | none | live |
+
+Vaul's `shouldScaleBackground` option also animates the page wrapper's
+`border-radius`, which is paint work. It's off by default; leave it off to stay
+GPU-only.
+
+Under `prefers-reduced-motion` the header and footer only fade.
+
+## API
+
+Built on [vaul](https://vaul.emilkowal.ski/api). Props are identical to
+[shadcn/ui Drawer](https://ui.shadcn.com/docs/components/drawer).
+
+</Workbench>

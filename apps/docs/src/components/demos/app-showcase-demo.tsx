@@ -1,6 +1,6 @@
 "use client";
 
-import { AppShowcase } from "@godui/components";
+import { AppShowcase } from "@godui/lab";
 
 export function AppShowcaseDemo() {
   return (

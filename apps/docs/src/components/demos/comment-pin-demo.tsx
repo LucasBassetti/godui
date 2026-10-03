@@ -1,6 +1,6 @@
 "use client";
 
-import { type Comment, CommentPin } from "@godui/components";
+import { type Comment, CommentPin } from "@godui/lab";
 import { useState } from "react";
 
 type Pin = {
@@ -26,7 +26,7 @@ const INITIAL: Pin[] = [
       {
         id: "c2",
         author: "Marco Bell",
-        body: "Agreed — bumping to 8px.",
+        body: "Agreed, bumping to 8px.",
         time: "1m",
       },
     ],

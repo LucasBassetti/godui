@@ -1,10 +1,10 @@
-import { VoiceOrb } from "@godui/components";
+import { VoiceOrb } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import * as React from "react";
 import { radio, range } from "../playground/argtypes";
 
 const meta = {
-  title: "AI/Voice Orb",
+  title: "Lab/AI/Voice Orb",
   component: VoiceOrb,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

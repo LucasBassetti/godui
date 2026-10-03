@@ -1,0 +1,71 @@
+---
+title: Anatomy of the GodUI Toggle
+description: A press on a spring, a background that snaps, and a scoped selector that lets the same toggle hand its background to a group's sliding indicator.
+learnPlayer: true
+---
+
+import { ToggleDemo } from "@/components/demos/core/toggle-demo";
+
+<LearnPlayer>
+
+<LearnChapter
+  label="The press"
+  scene={<AutoPlayScene label="The press" demo="toggle" />}
+  code={`const toggleVariants = cva(
+  "… whitespace-nowrap outline-none transition-[scale] duration-(--godui-duration-base)
+   ease-spring-bouncy active:scale-[0.96] motion-reduce:transition-none …",
+  { variants: { /* unchanged from shadcn */ } },
+);`}
+>
+
+The toggle shares Button's press: `active:scale-[0.96]` on the bouncy
+spring, with `transition-[scale]` so nothing else animates. shadcn's
+`transition-[color,box-shadow]` is gone, so hover, focus ring and the on/off
+background change instantly.
+
+</LearnChapter>
+
+<LearnChapter
+  label="A background that can step aside"
+  scene={<AutoPlayScene label="A background that can step aside" demo="toggle-group" />}
+  code={`// toggle.tsx: unchanged from shadcn, so call-site overrides merge as before
+"data-[state=on]:bg-accent"
+
+// toggle-group.tsx, on each item: once the group's indicator is measured
+"in-[[data-slot=toggle-group][data-indicator=ready]]:data-[state=on]:bg-transparent"`}
+>
+
+A single-select [Toggle Group](/docs/components/toggle-group/learn) draws its
+selection with one sliding indicator, so its pressed item must not paint its
+own background on top. A standalone toggle has no indicator and must keep
+its background.
+
+So the toggle keeps shadcn's `data-[state=on]:bg-accent` exactly. A call site's
+own `data-[state=on]:bg-*` still replaces it through `cn()`, as with shadcn.
+The group item, not the toggle, adds the override: once the group reports
+`data-indicator="ready"`, its pressed item turns transparent and the indicator
+shows through. Before that, on the server and at first paint, the item looks
+exactly like shadcn's.
+
+</LearnChapter>
+
+<LearnChapter
+  label="The result"
+  scene={<LiveResult hint="press the toggles"><ToggleDemo /></LiveResult>}
+  isResult
+>
+
+Press and hold a toggle, then release to switch it.
+
+</LearnChapter>
+
+</LearnPlayer>
+
+## Why GPU-only
+
+The press animates `scale`. The on background, hover background and focus
+ring change instantly instead of transitioning color and `box-shadow`.
+
+## Reduced motion
+
+`motion-reduce:transition-none` makes the press instant.

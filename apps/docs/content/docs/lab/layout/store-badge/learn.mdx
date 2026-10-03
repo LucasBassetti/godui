@@ -1,0 +1,118 @@
+---
+title: Anatomy of the Store Badge
+description: An inline-SVG lockup that scales off one height prop, a sheen that crosses once instead of looping, and a QR popover that only exists for fine pointers.
+learnPlayer: true
+---
+
+<LearnPlayer>
+
+<LearnChapter
+  label="The lockup, not a logo image"
+  scene={<StoreBadgeAnatomy />}
+  code={`const iconSize = Math.round(height * 0.52);
+const topSize = Math.max(9, Math.round(height * 0.17));
+const nameSize = Math.max(13, Math.round(height * 0.3));
+
+<a
+  className="group/badge relative isolate inline-flex select-none items-center overflow-hidden ..."
+  style={{
+    height: \`\${height}px\`,
+    gap: \`\${Math.round(height * 0.17)}px\`,
+    paddingInline: \`\${Math.round(height * 0.3)}px\`,
+    borderRadius: \`\${Math.round(height * 0.18)}px\`,
+  }}
+>
+  {store === "app-store" ? <AppleLogo size={iconSize} /> : <GooglePlayLogo size={iconSize} />}
+  <span className="flex flex-col items-start leading-none">
+    <span style={{ fontSize: \`\${topSize}px\` }}>{copy.top}</span>
+    <span style={{ fontSize: \`\${nameSize}px\` }}>{copy.name}</span>
+  </span>
+</a>`}
+>
+
+Download badges are usually a `<img src="app-store-badge.svg">`: a fixed
+bitmap you can't restyle or resize cleanly. `StoreBadge` draws the lockup
+itself: one `height` prop drives the icon, the two lines of text, and the
+padding, so the badge scales like a font instead of an image.
+
+Every dimension (icon, gap, padding, corner radius, both text sizes) is a
+ratio of `height`, floored with `Math.max` so the caption never drops below a
+legible 9px. Pass `height={72}` for a hero and `height={40}` for a footer;
+nothing else changes, because nothing else is a hardcoded pixel value.
+
+</LearnChapter>
+
+<LearnChapter
+  label="The sheen, once per hover"
+  scene={<StoreBadgeSheen />}
+  code={`<span
+  aria-hidden
+  className="pointer-events-none absolute inset-0 -translate-x-[130%] skew-x-[-12deg] transition-transform duration-700 ease-out group-hover/badge:translate-x-[130%] motion-reduce:hidden"
+  style={{ background: "linear-gradient(105deg, transparent 20%, rgba(255,255,255,0.28) 50%, transparent 80%)" }}
+/>`}
+>
+
+The sheen does not loop on an interval. It is a single `translate-x`
+transition parked off-screen left (`-130%`) that eases to off-screen right
+(`130%`) the moment `group-hover` is true, and snaps back to `-130%` the
+instant the pointer leaves (no exit transition is defined, so it resets
+instantly, ready for the next hover). The `-12deg` skew makes it read
+as a light streak crossing a curved badge edge instead of a rectangular bar
+sliding across a rectangular one.
+
+The QR is a popover. `matchMedia("(pointer: coarse)")` gates the
+whole feature: on touch, `show` is a no-op and the badge links normally,
+so there's no tap-to-reveal state to get stuck in on a phone. On a fine pointer,
+hover *or* focus (so keyboard users get it too) mounts the `AnimatePresence`
+child, which pops in on the same `{ stiffness: 520, damping: 32 }` spring used
+everywhere else in the library for menus and popovers. The QR itself is
+generated client-side from the badge's `href` (or an explicit `qrUrl`), with no
+image asset or server round trip.
+
+```tsx
+const mq = window.matchMedia("(pointer: coarse)");
+const show = () => !coarse && setOpen(true);
+
+<span onMouseEnter={show} onMouseLeave={hide} onFocusCapture={show} onBlurCapture={hide}>
+  {children}
+  <AnimatePresence>
+    {open ? (
+      <motion.span
+        initial={{ opacity: 0, y: 8, scale: 0.96 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 8, scale: 0.96 }}
+        transition={{ type: "spring", stiffness: 520, damping: 32 }}
+        role="dialog"
+        aria-label={label}
+      >
+        <QrCode value={url} size={size} logo={logo} label={label} />
+      </motion.span>
+    ) : null}
+  </AnimatePresence>
+</span>
+```
+
+</LearnChapter>
+
+<LearnChapter label="The result" scene={<StoreBadgeResult />} isResult>
+
+One `height` prop drives the scalable lockup. The sheen crosses once per hover
+instead of looping, and the QR popover appears only where a phone camera
+could use it. Hover either badge below to see all three.
+
+</LearnChapter>
+
+</LearnPlayer>
+
+## Accessibility
+
+The badge is a real `<a>` the whole way through: `target`/`rel` pass through
+normally, and the sheen has `motion-reduce:hidden` so it does not render at all
+under reduced motion instead of only skipping its transition. The QR popover is
+`role="dialog"` with an `aria-label`, and because it opens on `onFocusCapture`
+as well as `onMouseEnter`, tabbing to the badge reveals the same panel a mouse
+hover would.
+
+## Motion Score
+
+<MotionScorePanel name="store-badge" />

@@ -89,7 +89,7 @@ export function TopographicDriftAnatomy() {
             <span className="font-mono text-[12px]">
               valueNoise(i·cell·scale, j·cell·scale + z)
             </span>
-            . Contour count is separate —{" "}
+            . Contour count is separate:{" "}
             <span className="font-mono text-[12px]">lineCount</span> levels get
             stroked later.
           </p>

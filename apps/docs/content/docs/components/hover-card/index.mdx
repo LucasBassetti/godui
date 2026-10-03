@@ -1,0 +1,96 @@
+---
+title: Hover Card
+description: For sighted users to preview content available behind a link. Grows out of the link on a spring.
+workbench: true
+---
+
+import { HoverCardDemo } from "@/components/demos/core/hover-card-demo";
+
+<Workbench>
+
+The shadcn/ui hover card, with the same directional entrance as
+[Popover](/docs/components/popover): it scales up from the edge touching the
+link and drifts 4px away from it on a spring, then leaves the same way in
+150ms. Only `scale`, `translate` and `opacity` animate.
+
+<Example label="Default" story="ui-hover-card" code={`import { Button } from "@/components/ui/button";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
+import { CalendarDays } from "lucide-react";
+
+export function HoverCardDemo() {
+  return (
+    <HoverCard>
+      <HoverCardTrigger asChild>
+        <Button variant="link">@nextjs</Button>
+      </HoverCardTrigger>
+      <HoverCardContent className="w-80">
+        <div className="flex justify-between gap-4">
+          <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-foreground font-semibold text-background text-sm">
+            N
+          </span>
+          <div className="flex flex-col gap-1">
+            <h4 className="font-semibold text-sm">@nextjs</h4>
+            <p className="text-sm">
+              The React Framework, created and maintained by @vercel.
+            </p>
+            <div className="flex items-center gap-1 text-muted-foreground text-xs">
+              <CalendarDays className="size-3.5" /> Joined December 2021
+            </div>
+          </div>
+        </div>
+      </HoverCardContent>
+    </HoverCard>
+  );
+}`}>
+  <HoverCardDemo />
+</Example>
+
+## Installation
+
+<ComponentInstall name="hover-card" />
+
+## Replacing shadcn
+
+`npx shadcn add @godui/hover-card` overwrites `components/ui/hover-card.tsx`.
+Exports, props and `data-slot` attributes match shadcn/ui new-york-v4, so
+existing imports keep working. It also installs `godui-motion` (easings,
+keyframes, the FLIP hook) into your project.
+
+## Usage
+
+```tsx
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
+```
+
+```tsx
+<HoverCard>
+  <HoverCardTrigger>Hover</HoverCardTrigger>
+  <HoverCardContent>
+    The React Framework, created and maintained by @vercel.
+  </HoverCardContent>
+</HoverCard>
+```
+
+## What's animated
+
+| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
+| --- | --- | --- | --- | --- |
+| Open (after `openDelay`) | `godui-popover-in` | `opacity`, `scale` 0.96 → 1 from the link, `translate` 4px → 0 | `ease-spring-snappy` | 260ms |
+| Close (after `closeDelay`) | `godui-popover-out` | the same, reversed | `ease-out-expo` | 150ms |
+
+Under `prefers-reduced-motion` the card only fades (150ms).
+
+## API
+
+Built on [Radix Hover Card](https://www.radix-ui.com/primitives/docs/components/hover-card).
+Props are identical to [shadcn/ui Hover Card](https://ui.shadcn.com/docs/components/hover-card).
+
+</Workbench>

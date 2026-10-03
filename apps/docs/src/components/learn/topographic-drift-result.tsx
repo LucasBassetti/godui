@@ -1,6 +1,6 @@
 "use client";
 
-import { TopographicDrift } from "@godui/components";
+import { TopographicDrift } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 const demo = (
@@ -25,7 +25,7 @@ export function TopographicDriftResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — drifting contours
+          the real component: drifting contours
         </span>
       </div>
       {demo}

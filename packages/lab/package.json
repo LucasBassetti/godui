@@ -1,0 +1,65 @@
+{
+  "name": "@godui/lab",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./registry": {
+      "types": "./src/lib/background-registry.ts",
+      "default": "./src/lib/background-registry.ts"
+    },
+    "./styles.css": "./styles.css"
+  },
+  "files": [
+    "src",
+    "styles.css"
+  ],
+  "scripts": {
+    "build": "echo 'skip'",
+    "generate:backgrounds": "node scripts/generate-backgrounds.mjs",
+    "lint": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:motion": "vitest run src/motion",
+    "motion:report": "GODUI_WRITE_REPORT=1 vitest run src/motion/gpu-report.test.ts"
+  },
+  "peerDependencies": {
+    "framer-motion": ">=11.0.0",
+    "react": "^18 || ^19"
+  },
+  "dependencies": {
+    "canvas-confetti": "^1.9.4",
+    "cobe": "^2.0.1",
+    "dotted-map": "^3.1.0",
+    "matter-js": "^0.20.0",
+    "rough-notation": "^0.5.1",
+    "uqr": "^0.1.3"
+  },
+  "devDependencies": {
+    "@godui/motion-lint": "workspace:*",
+    "@tailwindcss/postcss": "^4.1.6",
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.1.0",
+    "@testing-library/user-event": "^14.5.2",
+    "@types/canvas-confetti": "^1.9.0",
+    "@types/matter-js": "^0.20.2",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "framer-motion": "^12.40.0",
+    "geist": "^1.7.0",
+    "jsdom": "^25.0.1",
+    "postcss": "^8.5.3",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "tailwindcss": "^4.1.6",
+    "typescript": "^5.9.3",
+    "vitest": "^3.0.0"
+  }
+}

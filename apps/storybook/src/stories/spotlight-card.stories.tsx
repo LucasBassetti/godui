@@ -1,9 +1,9 @@
-import { SpotlightCard, type SpotlightCardProps } from "@godui/components";
+import { SpotlightCard, type SpotlightCardProps } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { color, range, toggle } from "../playground/argtypes";
 
 const meta = {
-  title: "Effects/SpotlightCard",
+  title: "Lab/Effects/SpotlightCard",
   component: SpotlightCard,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

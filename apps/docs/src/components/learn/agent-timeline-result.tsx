@@ -1,6 +1,6 @@
 "use client";
 
-import { AgentStep, AgentTimeline, type StepStatus } from "@godui/components";
+import { AgentStep, AgentTimeline, type StepStatus } from "@godui/lab";
 import * as React from "react";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
@@ -91,7 +91,7 @@ export function AgentTimelineResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — advancing on its own
+          the real component: advancing on its own
         </span>
         <button
           type="button"

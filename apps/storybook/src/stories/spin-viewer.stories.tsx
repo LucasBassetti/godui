@@ -1,11 +1,11 @@
-import { SpinViewer, type SpinViewerProps } from "@godui/components";
+import { SpinViewer, type SpinViewerProps } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { makeCubeFrames } from "./spin-viewer-frames";
 
 const FRAMES = makeCubeFrames(48);
 
 const meta = {
-  title: "Layout/Spin Viewer",
+  title: "Lab/Layout/Spin Viewer",
   component: SpinViewer,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

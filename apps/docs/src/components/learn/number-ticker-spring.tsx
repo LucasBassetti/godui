@@ -40,12 +40,12 @@ const LEGEND: {
 }[] = [
   {
     name: "overshoot",
-    desc: "scaleY past 1, then settle — spring feel",
+    desc: "scaleY past 1, then settle: spring feel",
     kind: "overshoot",
   },
   {
     name: "stagger",
-    desc: "each slot delayed 90ms — digits cascade in",
+    desc: "each slot delayed 90ms, so digits cascade in",
     kind: "stagger",
   },
   {

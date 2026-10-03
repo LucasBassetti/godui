@@ -1,4 +1,4 @@
-import { FlowField, type FlowFieldProps } from "@godui/components";
+import { FlowField, type FlowFieldProps } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
   type PresetMap,
@@ -17,7 +17,7 @@ const presets = {
 type PlaygroundArgs = FlowFieldProps & { preset: keyof typeof presets };
 
 const meta: Meta<PlaygroundArgs> = {
-  title: "Backgrounds/Flow Field",
+  title: "Lab/Backgrounds/Flow Field",
   component: FlowField,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

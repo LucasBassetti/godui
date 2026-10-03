@@ -107,7 +107,7 @@ export function LiquidGlassCardDispersion() {
 
           <p className="max-w-[38ch] text-center text-[13px] text-fd-muted-foreground">
             Three grayscale ghosts at different offsets stand in for the R/G/B
-            displaces — hue is not required to teach the fringe. Then{" "}
+            displaces. Hue isn&apos;t needed to show the fringe. Then{" "}
             <span className="font-mono text-[12px]">
               feBlend mode=&quot;screen&quot;
             </span>

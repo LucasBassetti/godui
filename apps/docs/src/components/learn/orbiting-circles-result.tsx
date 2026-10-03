@@ -1,6 +1,6 @@
 "use client";
 
-import { OrbitingCircles } from "@godui/components";
+import { OrbitingCircles } from "@godui/lab";
 import { Box, Cloud, Cpu, Hexagon, Layers, Zap } from "lucide-react";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
@@ -77,7 +77,7 @@ export function OrbitingCirclesResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — two rings, opposite directions
+          the real component: two rings, opposite directions
         </span>
       </div>
       <div className="relative flex h-[360px] w-full items-center justify-center">

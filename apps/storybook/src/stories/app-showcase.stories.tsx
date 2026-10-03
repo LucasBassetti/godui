@@ -1,4 +1,4 @@
-import { AppShowcase } from "@godui/components";
+import { AppShowcase } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 const TALL = "https://picsum.photos/seed/godui-app/600/1300";
@@ -9,7 +9,7 @@ const SCREENS = [
 ];
 
 const meta = {
-  title: "Layout/App Showcase",
+  title: "Lab/Layout/App Showcase",
   component: AppShowcase,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

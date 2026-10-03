@@ -1,15 +1,17 @@
+import { GPU_REPORT } from "@godui/lab";
+
 /**
  * Components that don't 100% follow the Motion Performance guideline (animate
  * transform / opacity / filter only). Each one animates a layout- or paint-heavy
  * property by design, so it can't run purely on the compositor.
  *
- * The machine-enforced source of truth is
- * `packages/components/src/motion/motion-allowlist.ts` (a CI test gates it). This
- * map adds the human-facing "why", plus the ambient background-position/size
- * keyframe loops that the scanner doesn't yet see. Keyed by component name — the
- * last segment of a `/docs/components/<category>/<name>` slug. Surfaced as an
- * amber badge + tooltip below the page description via <ComponentBadges>;
- * components absent from this map get the green "GPU-only" badge instead.
+ * The machine source of truth is the generated strict scan, `GPU_REPORT`
+ * (`packages/lab/src/motion/gpu-report.json`). This map adds the
+ * human-facing "why", plus effects the scanner can't see (canvas/WebGL
+ * compute). Keyed by component name — the last segment of a
+ * `/docs/lab/<category>/<name>` slug. Read through {@link perfNote}, which
+ * falls back to a note derived from the report; only components with neither
+ * get the green "GPU-only" badge.
  */
 
 export type MotionNoteKind = "layout" | "paint" | "compute";
@@ -22,27 +24,24 @@ export interface MotionNote {
 
 export const MOTION_NOTES: Record<string, MotionNote> = {
   // ── Height / width / flex reveals & shared-layout morphs ──────────────────
-  accordion: {
-    kind: "layout",
-    reason:
-      "Panels expand by animating height to auto — the sanctioned collapse pattern, but a layout property, not GPU-composited.",
-  },
   "agent-timeline": {
     kind: "layout",
-    reason: "Rows reveal by animating height to auto — a layout property.",
+    reason:
+      "Rows reveal by animating height to auto. Height is a layout property.",
   },
   "notification-inbox": {
     kind: "layout",
-    reason: "Items collapse by animating height to auto — a layout property.",
+    reason:
+      "Items collapse by animating height to auto. Height is a layout property.",
   },
   "prompt-composer": {
     kind: "layout",
-    reason: "The composer auto-grows by animating height — a layout property.",
+    reason: "The composer auto-grows by animating height, a layout property.",
   },
   "tab-bar": {
     kind: "layout",
     reason:
-      "The active tab reveals its label by animating width to auto — a layout property.",
+      "The active tab reveals its label by animating width to auto. Width is a layout property.",
   },
   "multi-button": {
     kind: "layout",
@@ -52,17 +51,12 @@ export const MOTION_NOTES: Record<string, MotionNote> = {
   "dynamic-island": {
     kind: "layout",
     reason:
-      "The island morphs its width, height and radius between states — a shared-layout animation on the main thread.",
+      "The island morphs its width, height and radius between states with a shared-layout animation on the main thread.",
   },
   "mega-menu": {
     kind: "layout",
     reason:
-      "Panels morph their width and height on open — a shared-layout animation on the main thread.",
-  },
-  toast: {
-    kind: "layout",
-    reason:
-      "The stack expands and collapses by animating height — a layout property.",
+      "Panels morph their width and height on open with a shared-layout animation on the main thread.",
   },
   "image-accordion": {
     kind: "layout",
@@ -72,28 +66,28 @@ export const MOTION_NOTES: Record<string, MotionNote> = {
   "app-showcase": {
     kind: "layout",
     reason:
-      "The pagination pill animates its width (8→24px) — a layout property, though tiny and only on click.",
+      "The pagination pill animates its width (8→24px), a layout property. The change is tiny and only runs on click.",
   },
   // ── Paint: box-shadow, clip-path, SVG geometry, background loops ───────────
   "image-compare": {
     kind: "paint",
     reason:
-      "The reveal animates clip-path on release — a paint/geometry property (one-shot, 120ms).",
+      "The reveal animates clip-path on release, a paint/geometry property (one-shot, 120ms).",
   },
   "animated-beam": {
     kind: "paint",
     reason:
-      "The beam animates its SVG endpoint coordinates — length-driven geometry, redrawn on the main thread rather than composited.",
+      "The beam animates its SVG endpoint coordinates. This length-driven geometry is redrawn on the main thread rather than composited.",
   },
   "agent-flow": {
     kind: "paint",
     reason:
-      "Node status changes animate box-shadow alongside colors — main-thread paint.",
+      "Node status changes animate box-shadow alongside colors (main-thread paint).",
   },
   stepper: {
     kind: "paint",
     reason:
-      "Step-state changes animate box-shadow alongside colors — main-thread paint.",
+      "Step-state changes animate box-shadow alongside colors (main-thread paint).",
   },
   "bento-grid": {
     kind: "paint",
@@ -103,7 +97,7 @@ export const MOTION_NOTES: Record<string, MotionNote> = {
   "magic-input": {
     kind: "paint",
     reason:
-      "The determinate progress fills via animated background-size, and the focused rainbow edge runs a background-position loop — main-thread paint.",
+      "The determinate progress fills via animated background-size, and the focused rainbow edge runs a background-position loop. Both are main-thread paint.",
   },
   // ── Continuous background-position paint loops (paused when off screen) ────
   "aurora-text": {
@@ -124,7 +118,7 @@ export const MOTION_NOTES: Record<string, MotionNote> = {
   "holographic-card": {
     kind: "paint",
     reason:
-      "The holographic sheen repaints a masked gradient as the pointer moves — main-thread paint during interaction.",
+      "The holographic sheen repaints a masked gradient as the pointer moves (main-thread paint during interaction).",
   },
   // ── SVG filters, displacement maps, masks, font-variation (main-thread paint) ─
   "elastic-text": {
@@ -135,73 +129,73 @@ export const MOTION_NOTES: Record<string, MotionNote> = {
   "gooey-fab": {
     kind: "paint",
     reason:
-      "Blends the menu blobs through an SVG goo filter (feGaussianBlur + feColorMatrix) — main-thread paint while opening.",
+      "Blends the menu blobs through an SVG goo filter (feGaussianBlur + feColorMatrix), which is main-thread paint while opening.",
   },
   "gooey-stack": {
     kind: "paint",
     reason:
-      "Merges the cards through an SVG goo filter plus an animated blur — main-thread paint.",
+      "Merges the cards through an SVG goo filter plus an animated blur (main-thread paint).",
   },
   "liquid-image": {
     kind: "paint",
     reason:
-      "Drives an SVG displacement map each frame for the liquid ripple — main-thread paint.",
+      "Drives an SVG displacement map each frame for the liquid ripple (main-thread paint).",
   },
   "spotlight-reveal": {
     kind: "paint",
     reason:
-      "Moves a radial mask/gradient spotlight via CSS variables — main-thread paint as the pointer moves.",
+      "Moves a radial mask/gradient spotlight via CSS variables (main-thread paint as the pointer moves).",
   },
   // ── Canvas / WebGL / physics render loops (main-thread or GPU compute) ────
   globe: {
     kind: "compute",
     reason:
-      "Renders and auto-rotates a WebGL globe (cobe) every frame — GPU compute driven by JS, not a compositor-only animation. Runs continuously while mounted.",
+      "Renders and auto-rotates a WebGL globe (cobe) every frame: GPU compute driven by JS rather than a compositor-only animation. Runs continuously while mounted.",
   },
   gravity: {
     kind: "compute",
     reason:
-      "Runs a matter-js physics simulation each frame — main-thread compute. Pauses automatically when off screen or the tab is hidden.",
+      "Runs a matter-js physics simulation each frame (main-thread compute). Pauses automatically when off screen or the tab is hidden.",
   },
   "flow-field": {
     kind: "compute",
     reason:
-      "Draws particle trails to a 2D canvas every frame — main-thread paint. Pauses automatically when off screen or the tab is hidden.",
+      "Draws particle trails to a 2D canvas every frame (main-thread paint). Pauses automatically when off screen or the tab is hidden.",
   },
   "particle-dissolve": {
     kind: "compute",
     reason:
-      "Renders dissolving particles on a 2D canvas — main-thread paint, only during the dissolve. Pauses when off screen.",
+      "Renders dissolving particles on a 2D canvas (main-thread paint, only during the dissolve). Pauses when off screen.",
   },
   "pixel-grid": {
     kind: "compute",
     reason:
-      "Flickers a grid of cells on a 2D canvas each frame — main-thread paint. Pauses automatically when off screen or the tab is hidden.",
+      "Flickers a grid of cells on a 2D canvas each frame (main-thread paint). Pauses automatically when off screen or the tab is hidden.",
   },
   "topographic-drift": {
     kind: "compute",
     reason:
-      "Draws marching-squares contours on a 2D canvas each frame — main-thread paint. Pauses when off screen or the tab is hidden.",
+      "Draws marching-squares contours on a 2D canvas each frame (main-thread paint). Pauses when off screen or the tab is hidden.",
   },
   "warp-starfield": {
     kind: "compute",
     reason:
-      "Renders a moving starfield on a 2D canvas each frame — main-thread paint. Pauses when off screen or the tab is hidden.",
+      "Renders a moving starfield on a 2D canvas each frame (main-thread paint). Pauses when off screen or the tab is hidden.",
   },
   "liquid-metaballs": {
     kind: "compute",
     reason:
-      "Animates SVG circle positions through a goo filter each frame — main-thread paint. Pauses when off screen or the tab is hidden.",
+      "Animates SVG circle positions through a goo filter each frame (main-thread paint). Pauses when off screen or the tab is hidden.",
   },
   confetti: {
     kind: "compute",
     reason:
-      "Bursts particles onto a <canvas> via canvas-confetti each time it fires — main-thread paint for ~2s, then it stops on its own.",
+      "Bursts particles onto a <canvas> via canvas-confetti each time it fires. That is main-thread paint for ~2s, then it stops on its own.",
   },
   "ascii-dither": {
     kind: "compute",
     reason:
-      "Samples the source and redraws every cell as a glyph or dot on a 2D canvas — main-thread paint. A static image draws once; video, glitch and the pointer lens run a capped loop that pauses when off screen.",
+      "Samples the source and redraws every cell as a glyph or dot on a 2D canvas (main-thread paint). A static image draws once; video, glitch and the pointer lens run a capped loop that pauses when off screen.",
   },
 };
 
@@ -217,3 +211,25 @@ export const STATIC_COMPONENTS = new Set<string>([
   "geometric-background",
   "gradient-background",
 ]);
+
+const LAYOUT_PROP =
+  /^(width|height|min|max|top|left|right|bottom|inset|margin|padding|flex|gap|grid|fontsize|lineheight|letterspacing|wordspacing|all$)/;
+
+/**
+ * The perf note the docs badge shows: the curated `MOTION_NOTES` entry when one
+ * exists, otherwise one derived from the generated GPU report. `undefined`
+ * means the strict scan found nothing — the only case that earns "GPU-only".
+ */
+export function perfNote(name: string): MotionNote | undefined {
+  const curated = MOTION_NOTES[name];
+  if (curated) return curated;
+  const props = GPU_REPORT[name]?.nonCompositor ?? [];
+  if (props.length === 0) return undefined;
+  const kind: MotionNoteKind = props.some((p) => LAYOUT_PROP.test(p))
+    ? "layout"
+    : "paint";
+  return {
+    kind,
+    reason: `Animates ${props.join(", ")}. That is ${kind} work on the main thread, not compositor-only.`,
+  };
+}

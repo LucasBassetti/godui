@@ -1,4 +1,4 @@
-import { AvatarGroup } from "@godui/components";
+import { AvatarGroup } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { hidden, range, select, toggle } from "../playground/argtypes";
 import { centered } from "../playground/stage";
@@ -13,7 +13,7 @@ const avatars = [
 ];
 
 const meta = {
-  title: "Layout/Avatar Group",
+  title: "Lab/Layout/Avatar Group",
   component: AvatarGroup,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

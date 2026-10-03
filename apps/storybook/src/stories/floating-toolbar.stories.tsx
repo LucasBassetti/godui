@@ -1,4 +1,4 @@
-import { FloatingToolbar } from "@godui/components";
+import { FloatingToolbar } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { hidden, toggle } from "../playground/argtypes";
 
@@ -25,7 +25,7 @@ const actions = [
 ];
 
 const meta = {
-  title: "Overlays/Floating Toolbar",
+  title: "Lab/Overlays/Floating Toolbar",
   component: FloatingToolbar,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

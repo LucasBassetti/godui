@@ -1,4 +1,4 @@
-import { Marquee, type MarqueeProps } from "@godui/components";
+import { Marquee, type MarqueeProps } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import type { ReactNode } from "react";
 import { range, select, toggle } from "../playground/argtypes";
@@ -34,7 +34,7 @@ function LogoCloud() {
 }
 
 const meta = {
-  title: "Effects/Marquee",
+  title: "Lab/Effects/Marquee",
   component: Marquee,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

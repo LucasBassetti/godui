@@ -1,0 +1,87 @@
+---
+title: Liquid Image
+description: A hover effect that ripples and distorts an image like liquid, intensifying with cursor speed.
+workbench: true
+---
+
+import { LiquidImage } from "@godui/lab";
+import { LiquidImageDemo } from "@/components/demos/liquid-image-demo";
+
+<Workbench>
+
+Hover an image and it distorts like the surface of water. The ripple ramps in, follows your cursor speed, and settles with a damped wave when you leave. Hover the images below.
+
+<Example
+  label="Default"
+  story="lab-effects-liquidimage"
+  code={`import { LiquidImage } from "@/components/godui/liquid-image";
+
+export function Gallery() {
+  return (
+    <div className="grid grid-cols-3 gap-5">
+      <LiquidImage src="/photos/1.jpg" alt="Mountain" className="aspect-square shadow-lg" />
+      <LiquidImage src="/photos/2.jpg" alt="Valley" className="aspect-square shadow-lg" />
+      <LiquidImage src="/photos/3.jpg" alt="Waterfall" className="aspect-square shadow-lg" />
+    </div>
+  );
+}`}
+>
+  <LiquidImageDemo />
+</Example>
+
+## Installation
+
+<ComponentInstall registry="lab" componentName="LiquidImage" />
+
+`LiquidImage` distorts the image with an SVG `feTurbulence` + `feDisplacementMap`
+filter, which every modern browser supports. The displacement scale is eased
+toward its target in a single `requestAnimationFrame` loop and written straight
+to the filter, so the image itself never re-renders. Cursor velocity intensifies
+the ripple; leaving the image lets it settle back with a damped wave.
+
+## Usage
+
+```tsx
+import { LiquidImage } from "@/components/godui/liquid-image";
+```
+
+```tsx
+<LiquidImage src="/photo.jpg" alt="Mountain" className="aspect-square" />
+```
+
+### Always on
+
+Set `trigger="always"` for a continuously breathing ripple, independent of hover.
+
+```tsx
+<LiquidImage src="/photo.jpg" alt="Mountain" trigger="always" />
+```
+
+### Tuning the ripple
+
+`strength` is the peak displacement in pixels; `frequency` controls the ripple
+scale. Smaller values give larger, smoother ripples.
+
+```tsx
+<LiquidImage src="/photo.jpg" alt="Mountain" strength={40} frequency={0.008} />
+```
+
+## Accessibility & fallback
+
+When `prefers-reduced-motion` is set, or SVG `filter: url()` is unavailable,
+`LiquidImage` falls back to a gentle CSS scale-and-brighten on hover. Always pass a meaningful `alt`.
+
+## Props
+
+| Prop          | Type                   | Default   | Description                                                   |
+| ------------- | ---------------------- | --------- | ------------------------------------------------------------ |
+| `src`         | `string`               | none         | Image source.                                                |
+| `alt`         | `string`               | none         | Accessible description of the image.                         |
+| `strength`    | `number`               | `28`      | Peak ripple displacement on interaction, in px.              |
+| `frequency`   | `number`               | `0.012`   | Turbulence frequency. Smaller gives larger, smoother ripples. |
+| `trigger`     | `"hover" \| "always"`  | `"hover"` | When the ripple is active.                                   |
+| `imgClassName`| `string`               | none         | Classes for the inner `<img>` (sizing, aspect, object-fit).  |
+
+`LiquidImage` also forwards every standard `<div>` attribute to the root element.
+
+</Workbench>

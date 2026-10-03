@@ -1,0 +1,116 @@
+---
+title: Anatomy of Breadcrumbs
+description: How a flat items array becomes a trail of pills with one shared hover highlight, a spring-loaded overflow popover, and a mobile collapse that never touches JavaScript.
+learnPlayer: true
+---
+
+<LearnPlayer>
+
+<LearnChapter
+  label="Pills and chevrons"
+  scene={<BreadcrumbsAnatomy />}
+  code={`<motion.li
+  layout
+  initial={reduceMotion ? false : { opacity: 0, x: -6 }}
+  animate={{ opacity: 1, x: 0 }}
+  exit={reduceMotion ? { opacity: 0 } : { opacity: 0, x: -6 }}
+  transition={spring}
+>
+  {isLast || !item.href ? (
+    <span aria-current={isLast ? "page" : undefined} className="... bg-muted text-foreground">
+      {item.label}
+    </span>
+  ) : (
+    <a href={item.href} className="... text-muted-foreground hover:text-foreground">
+      {item.label}
+    </a>
+  )}
+</motion.li>`}
+>
+
+A breadcrumb trail looks like the simplest nav in the system: links and a
+separator. The work is at the edges: what happens when the pointer moves
+along the row, and what happens when the trail is longer than the screen.
+Breadcrumbs handles both without adding an extra DOM node per crumb.
+
+Every crumb but the last is an `<a>` tinted `text-muted-foreground`; the
+last is a plain `<span>` filled `bg-muted` and marked `aria-current="page"`.
+An `aria-hidden` chevron sits between each pair. The whole row is a
+`motion.ol` so `AnimatePresence` can cross-fade crumbs in and out when the
+`items` array changes:
+
+</LearnChapter>
+
+<LearnChapter
+  label="One hover pill"
+  scene={<BreadcrumbsPill />}
+  code={`const HoverPill = ({ active }: { active: boolean }) =>
+  active ? (
+    <motion.span
+      layoutId={hoverId}
+      transition={{ type: "spring", stiffness: 520, damping: 32 }}
+      className="absolute inset-0 rounded-lg bg-accent"
+    />
+  ) : null;`}
+>
+
+Every link shares a single `motion.span` bound by one `layoutId`; hovering a
+crumb does not toggle a background of its own. It only renders
+under whichever crumb is currently hovered, so moving the pointer along the
+trail springs that one element from box to box:
+
+`stiffness: 520, damping: 32` is the same snap used across GodUI's small
+UI springs. It is fast enough to keep up with a quick mouse sweep and damped
+enough that it doesn't wobble on arrival. `onMouseEnter` sets `hovered` to
+the crumb's key; leaving the `<nav>` entirely clears it in one
+`onMouseLeave` at the root instead of per-crumb listeners.
+
+</LearnChapter>
+
+<LearnChapter
+  label="Collapsing the middle"
+  scene={<BreadcrumbsCollapse />}
+  code={`const tailCount = maxItems - 1;
+const head = items.slice(0, 1).map(toEntry);
+const hidden = items.slice(1, items.length - tailCount);
+const tail = items.slice(items.length - tailCount).map(toEntry);
+return [...head, { kind: "ellipsis", hidden }, ...tail];`}
+>
+
+Pass `maxItems`, and once `items.length` exceeds it the middle crumbs fold
+into a single ellipsis button: head crumb, `…`, then the last
+`maxItems − 1` crumbs. Clicking the ellipsis doesn't navigate; it opens a
+popover listing the crumbs it hides:
+
+The popover springs in on `scale: 0.92 → 1, y: -4 → 0`, the same overlay
+entrance used by every other panel in the system, and a `mousedown`
+listener outside `popRef` closes it. Below `maxItems`, a second, CSS-only
+collapse kicks in on narrow viewports: crumbs past the first hide under
+`max-sm:hidden` and a static `…` takes their place. This collapse uses CSS
+instead of a `useEffect` viewport check because in the docs preview the
+component runs inside a portaled iframe but in the parent's JS realm, so only
+a media query sees the iframe's width.
+
+</LearnChapter>
+
+<LearnChapter label="The result" scene={<BreadcrumbsResult />} isResult>
+
+One `items` array, one shared hover pill, and a collapse that steps down
+from `maxItems` to a CSS ellipsis on narrow screens. The trail needs no
+markup beyond the pieces above.
+
+</LearnChapter>
+
+</LearnPlayer>
+
+## Accessibility
+
+The last crumb's `aria-current="page"` is the only signal for the current
+page, which is how a native breadcrumb should read to a screen reader.
+Separators are `aria-hidden` so they're invisible to assistive tech, and
+every link gets the standard `focus-visible:ring-2`. Crumbs are plain
+anchors, so they need no custom keyboard handling.
+
+## Motion Score
+
+<MotionScorePanel name="breadcrumbs" />

@@ -1,0 +1,83 @@
+---
+title: Anatomy of the GodUI Hover Card
+description: A preview that grows out of the link it describes, and why its delays matter more than its curve.
+learnPlayer: true
+---
+
+import { HoverCardDemo } from "@/components/demos/core/hover-card-demo";
+
+<LearnPlayer>
+
+<LearnChapter
+  label="Grows from the link"
+  scene={
+    <KeyframeScene
+      label="Grows from the link"
+      motion="popover-bottom"
+      subject="menu"
+      tracks={[
+        { property: "opacity", from: "0", to: "1" },
+        { property: "scale", from: "0.96", to: "1" },
+        { property: "translate", from: "0 -4px", to: "0 0" },
+      ]}
+    />
+  }
+  code={`<HoverCardPrimitive.Content
+  data-slot="hover-card-content"
+  className={cn(
+    "z-50 w-64 origin-(--radix-hover-card-content-transform-origin) …
+     data-[side=bottom]:[--godui-enter-y:-0.25rem] data-[side=top]:[--godui-enter-y:0.25rem] …
+     data-[state=open]:animate-godui-popover-in data-[state=closed]:animate-godui-popover-out",
+    className,
+  )}
+/>`}
+>
+
+The card uses the shared `godui-popover-in` keyframe. Radix publishes the
+point of the card nearest the link as
+`--radix-hover-card-content-transform-origin`, so the 0.96 → 1 scale grows
+from there, and the per-side variables add a 4px drift away from the link.
+
+</LearnChapter>
+
+<LearnChapter
+  label="Delays do the heavy lifting"
+  scene={<SpringCurveScene label="Delays do the heavy lifting" easing="snappy" />}
+  code={`<HoverCard openDelay={700} closeDelay={300}>
+  …
+</HoverCard>`}
+>
+
+A hover card shouldn't appear because the pointer passed over a link on the
+way somewhere else. Radix waits `openDelay` (700ms by default) before
+opening and `closeDelay` (300ms) before closing, so you can move from the
+link into the card without it vanishing.
+
+The animation only runs once those delays are over. It's 260ms on a snappy
+spring in, 150ms on `ease-out-expo` out.
+
+</LearnChapter>
+
+<LearnChapter
+  label="The result"
+  scene={<LiveResult hint="hover the link and wait"><HoverCardDemo /></LiveResult>}
+  isResult
+>
+
+Hover the link and wait for the card, then move into it, or Tab to the link
+to open it with the keyboard.
+
+</LearnChapter>
+
+</LearnPlayer>
+
+## Why GPU-only
+
+The card animates `opacity`, `scale` and `translate`, all composited. It uses
+the same keyframe as Popover, so every floating surface in the library moves
+alike.
+
+## Reduced motion
+
+`--godui-motion: 0` cancels the scale and drift, so the card only fades, in
+150ms.

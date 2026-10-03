@@ -100,7 +100,7 @@ export function BreadcrumbsCollapse() {
           <div aria-hidden="true" className="h-20" />
 
           <p className="text-center font-mono text-[11px] text-fd-muted-foreground">
-            popover spring — scale 0.92 → 1, y -4 → 0
+            popover spring: scale 0.92 → 1, y -4 → 0
           </p>
         </div>
       )}

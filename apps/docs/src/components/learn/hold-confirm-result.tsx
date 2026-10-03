@@ -1,6 +1,6 @@
 "use client";
 
-import { HoldConfirmButton } from "@godui/components";
+import { HoldConfirmButton } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
@@ -36,7 +36,7 @@ export function HoldConfirmResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — press and hold, or release early
+          the real component: press and hold, or release early
         </span>
       </div>
       <div className="flex min-h-[240px] flex-wrap items-center justify-center gap-6 p-10">

@@ -1,0 +1,93 @@
+---
+title: Shimmer Button
+description: A button with an animated shimmering border light effect.
+workbench: true
+---
+
+import { ShimmerButton } from "@godui/lab";
+
+<Workbench>
+
+A button with an animated shimmering border light effect.
+
+<Example
+  label="Default"
+  story="lab-buttons-shimmer-button"
+  code={`import { ShimmerButton } from "@/components/godui/shimmer-button";
+
+export function ShimmerButtonDemo() {
+  return <ShimmerButton variant="primary">Get started</ShimmerButton>;
+}`}
+>
+  <ShimmerButton variant="primary">Get started</ShimmerButton>
+</Example>
+
+<Example
+  label="Variants"
+  code={`<div className="flex flex-wrap items-center justify-center gap-4">
+  <ShimmerButton variant="primary">Continue</ShimmerButton>
+  <ShimmerButton variant="secondary">Learn more</ShimmerButton>
+  <ShimmerButton variant="outline">View pricing</ShimmerButton>
+</div>`}
+>
+  <div className="flex flex-wrap items-center justify-center gap-4">
+    <ShimmerButton variant="primary">Continue</ShimmerButton>
+    <ShimmerButton variant="secondary">Learn more</ShimmerButton>
+    <ShimmerButton variant="outline">View pricing</ShimmerButton>
+  </div>
+</Example>
+
+<Example
+  label="Sizes"
+  code={`<div className="flex flex-wrap items-center justify-center gap-4">
+  <ShimmerButton size="sm">Small</ShimmerButton>
+  <ShimmerButton size="md">Medium</ShimmerButton>
+  <ShimmerButton size="lg">Large</ShimmerButton>
+</div>`}
+>
+  <div className="flex flex-wrap items-center justify-center gap-4">
+    <ShimmerButton size="sm">Small</ShimmerButton>
+    <ShimmerButton size="md">Medium</ShimmerButton>
+    <ShimmerButton size="lg">Large</ShimmerButton>
+  </div>
+</Example>
+
+<Example
+  label="Static"
+  code={`<ShimmerButton shimmer={false}>Get started</ShimmerButton>`}
+>
+  <ShimmerButton shimmer={false}>Get started</ShimmerButton>
+</Example>
+
+<Example
+  label="Disabled"
+  code={`<ShimmerButton disabled>Get started</ShimmerButton>`}
+>
+  <ShimmerButton disabled>Get started</ShimmerButton>
+</Example>
+
+## Installation
+
+<ComponentInstall registry="lab" name="shimmer-button" />
+
+## Usage
+
+```tsx
+import { ShimmerButton } from "@/components/godui/shimmer-button";
+```
+
+```tsx
+<ShimmerButton variant="primary">Get started</ShimmerButton>
+```
+
+Set `shimmer={false}` to keep the button styling without the animated border light.
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `variant` | `"primary" \| "secondary" \| "outline"` | `"primary"` | Visual style of the button |
+| `size` | `"sm" \| "md" \| "lg"` | `"md"` | Button padding and text size |
+| `shimmer` | `boolean` | `true` | Animate the button with a shimmering border light effect |
+
+</Workbench>

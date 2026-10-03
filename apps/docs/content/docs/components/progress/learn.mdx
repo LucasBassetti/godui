@@ -1,0 +1,95 @@
+---
+title: Anatomy of the GodUI Progress
+description: Why the fill is always full width, how a new value glides there on a spring, and how the indeterminate bar sweeps without touching layout.
+learnPlayer: true
+---
+
+import { ProgressStepsDemo } from "@/components/demos/core/progress-steps-demo";
+import { ProgressIndeterminateDemo } from "@/components/demos/core/progress-indeterminate-demo";
+
+<LearnPlayer>
+
+<LearnChapter
+  label="The bar never resizes"
+  scene={<AutoPlayScene label="The bar never resizes" demo="progress" />}
+  code={`<ProgressPrimitive.Indicator
+  data-slot="progress-indicator"
+  className="h-full w-full flex-1 bg-primary
+    transition-[transform] duration-(--godui-duration-slow) ease-spring-smooth
+    motion-reduce:transition-none …"
+  style={{ transform: \`translateX(-\${100 - (value || 0)}%)\` }}
+/>`}
+>
+
+The obvious way to draw progress is a bar whose `width` is the percentage.
+Animate that and the browser runs layout on every frame of the tween.
+
+shadcn already avoids it: the indicator is always the full width of the track
+and slides left by whatever is left to do, `translateX(-(100 - value)%)`. The
+track is `overflow-hidden`, so the part that's slid out is clipped. At 66% the
+bar sits 34% to the left.
+
+shadcn then transitions it with `transition-all`, which also tweens any color
+or size that happens to change. GodUI names `transform` only and moves it on
+`ease-spring-smooth` over 380ms, so each new value lands with a soft settle
+instead of a linear crawl.
+
+</LearnChapter>
+
+<LearnChapter
+  label="Indeterminate"
+  scene={<AutoPlayScene label="Indeterminate" demo="progress-indeterminate" />}
+  code={`"… data-[state=indeterminate]:w-2/5
+   data-[state=indeterminate]:animate-godui-progress-indeterminate …"
+
+@keyframes godui-progress-indeterminate {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(250%); }
+}
+/* 1.4s, cubic-bezier(0.65, 0, 0.35, 1), infinite */`}
+>
+
+When there's nothing to measure yet, leave out `value`. Radix then marks the
+indicator `data-state="indeterminate"`, and GodUI turns it into a sweep.
+
+The indicator snaps to 40% of the track, once, when it becomes indeterminate.
+The keyframe then moves it from one full bar-width left of the track
+(`-100%`) to two and a half bar-widths right (`250%`, which is exactly the
+track's far edge, since 2.5 × 40% = 100%). A CSS animation outranks the inline
+`transform`, so the value-driven slide stays out of the way. The easing is a
+symmetric ease-in-out, `cubic-bezier(0.65, 0, 0.35, 1)`: the bar eases in from
+off the left edge, is at full speed while it crosses the track, and eases out
+past the right edge. Some of the bar is on the track for almost 90% of each
+loop; it's empty for under 200ms between one sweep and the next.
+
+</LearnChapter>
+
+<LearnChapter
+  label="The result"
+  scene={
+    <LiveResult hint="step through the setup; the lower bar is indeterminate">
+      <ProgressStepsDemo />
+      <ProgressIndeterminateDemo />
+    </LiveResult>
+  }
+  isResult
+>
+
+Press Next step and Back to move the fill. The lower bar has no value, so it
+keeps sweeping.
+
+</LearnChapter>
+
+</LearnPlayer>
+
+## Why GPU-only
+
+Both animations move `transform`. The fill never changes size; the
+indeterminate bar changes its width once, as a snap, and then only slides.
+shadcn's `transition-all` is gone, so nothing else on the bar can tween.
+
+## Reduced motion
+
+`motion-reduce:transition-none` makes a new value snap into place. An
+indeterminate bar stops sweeping: it fills the whole track and pulses its
+opacity, so it still reads as busy without moving.

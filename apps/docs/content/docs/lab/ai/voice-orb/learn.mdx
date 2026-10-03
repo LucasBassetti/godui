@@ -1,0 +1,111 @@
+---
+title: Anatomy of the Voice Orb
+description: How a Siri-style orb is three absolute layers, an amp-shaped curve, and a wrapper/child split so scale never fights spin.
+learnPlayer: true
+---
+
+<LearnPlayer>
+
+<LearnChapter
+  label="Three layers, one box"
+  scene={<VoiceOrbAnatomy />}
+  code={`<div data-state={state} style={{ "--amp": level } as CSSProperties}>
+  <div style={{ transform: \`scale(\${0.92 + level * 0.35})\` }}>
+    <div className="… animate-voice-orb-spin …" />   {/* corona */}
+  </div>
+  <div className="… animate-voice-orb-breathe …">
+    <div style={{ transform: \`scale(\${1 + level * 0.22})\` }} />  {/* core */}
+  </div>
+  <div data-on={state === "listening"} className="… animate-voice-orb-ring" />
+</div>`}
+>
+
+The orb uses no shader. It is a corona, a core, and a ring, all reading the
+same `--amp` CSS variable.
+
+`VoiceOrb` is a square grid with three absolutely positioned children. The
+**corona** is a blurred conic gradient that spins forever. The **core** is a
+radial sphere with a specular highlight. The **listening ring** is a border
+that only exists while `state="listening"`.
+
+Everything shares the same box. State changes only which layer is visible
+and how hard `--amp` pushes it.
+
+</LearnChapter>
+
+<LearnChapter
+  label="Why scale and spin live on separate nodes"
+  scene={<VoiceOrbAmpSplit />}
+  code={`{/* Corona — amplitude swells the wrapper; the inner layer spins. */}
+<div style={{ transform: \`scale(\${0.92 + level * 0.35})\` }}>
+  <div className="animate-voice-orb-spin …" />
+</div>`}
+>
+
+A CSS keyframe that sets `transform: rotate(…)` will overwrite any inline
+`transform: scale(…)`. The fix is structural: put amplitude scale on a
+**wrapper**, put the spin keyframe on the **child**. They compose instead of
+clobbering each other.
+
+The core uses the same pattern: `animate-voice-orb-breathe` on the outer
+shell, inline amplitude scale on the painted sphere inside.
+
+Raw analyser levels jitter. Before they touch CSS, they're clamped and
+eased through `c ** 0.6`, so quiet speech still moves the orb and loud peaks
+don't blow it out:
+
+```tsx
+const shape = (a: number) => {
+  const c = Math.min(1, Math.max(0, a));
+  return c ** 0.6;
+};
+const level = state === "idle" ? 0 : shape(amplitude);
+```
+
+Idle hard-zeros the level so the breathe keyframe is the only motion. The
+listening ring also shortens its duration as level rises
+(`1.6 - level * 0.7`s), so louder input pulses faster.
+
+</LearnChapter>
+
+<LearnChapter label="The three states" scene={<VoiceOrbStates />}>
+
+| State | What moves |
+| --- | --- |
+| `idle` | Core breathe only; `--amp` forced to `0` |
+| `listening` | Ring expands/fades; duration tracks amp |
+| `speaking` | Corona + core swell with amp |
+
+`useAudioAmplitude` turns a `MediaStream` into that `0` to `1` level via RMS of
+the time-domain waveform, cleaned up with `cancelAnimationFrame` +
+`ctx.close()` when the stream drops.
+
+</LearnChapter>
+
+<LearnChapter label="The result" scene={<VoiceOrbResult />} isResult>
+
+Toggle states and watch the same three layers reconfigure around a live
+`--amp`.
+
+Three layers, one shaped number, and a wrapper/child split so transforms
+compose.
+
+</LearnChapter>
+
+</LearnPlayer>
+
+## Accessibility
+
+Every infinite keyframe carries `motion-reduce:animate-none`. Under reduced
+motion the orb holds its resolved silhouette. It still reads as a lit
+sphere, without breathing or spinning.
+
+```tsx
+"animate-voice-orb-spin motion-reduce:animate-none"
+"animate-voice-orb-breathe motion-reduce:animate-none"
+"data-[on=true]:animate-voice-orb-ring motion-reduce:animate-none"
+```
+
+## Motion Score
+
+<MotionScorePanel name="voice-orb" />

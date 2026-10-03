@@ -1,6 +1,6 @@
 "use client";
 
-import { SourceCitation, SourceList } from "@godui/components";
+import { SourceCitation, SourceList } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
@@ -11,10 +11,10 @@ import { useBareScene } from "@/components/learn/bare-scene-context";
  */
 const sources = [
   {
-    title: "GodUI — motion components for modern interfaces",
+    title: "GodUI | Motion components for modern interfaces",
     url: "https://github.com/LucasBassetti/godui",
     snippet:
-      "Beautifully crafted motion components with OKLCH theming, built for perceptually uniform design tokens and dark mode.",
+      "Motion components with OKLCH theming, built for perceptually uniform design tokens and dark mode.",
   },
   {
     title: "Tailwind CSS v4 release notes",
@@ -23,17 +23,17 @@ const sources = [
       "A ground-up rewrite with a CSS-first config, native cascade layers, and faster builds.",
   },
   {
-    title: "Great animations — Emil Kowalski",
+    title: "Great animations | Emil Kowalski",
     url: "https://emilkowal.ski/ui/great-animations",
     snippet: "What separates polished motion from distracting motion.",
   },
   {
-    title: "Framer Motion — AnimatePresence",
+    title: "Framer Motion | AnimatePresence",
     url: "https://motion.dev/docs/react-animate-presence",
     snippet: "Animating components as they mount and unmount.",
   },
   {
-    title: "MDN — prefers-reduced-motion",
+    title: "MDN | prefers-reduced-motion",
     url: "https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion",
     snippet: "Detecting a user's request for less motion on the web.",
   },

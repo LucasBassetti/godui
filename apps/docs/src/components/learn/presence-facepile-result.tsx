@@ -1,6 +1,6 @@
 "use client";
 
-import { PresenceFacepile } from "@godui/components";
+import { PresenceFacepile } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
@@ -34,7 +34,7 @@ export function PresenceFacepileResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — hover an avatar, or open the +N chip
+          the real component: hover an avatar, or open the +N chip
         </span>
       </div>
       <div className="flex min-h-[220px] items-center justify-center p-10">

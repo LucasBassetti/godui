@@ -41,7 +41,7 @@ export function CommunitySection() {
       </h2>
       <p className="max-w-xl text-pretty text-fd-muted-foreground text-lg">
         The collection is still growing, and new components land regularly.
-        Follow the journey on X and star the project on GitHub to keep up.
+        Follow along on X and star the project on GitHub for updates.
       </p>
       <div className="mt-2 flex flex-col items-center gap-3 sm:flex-row sm:gap-4">
         <a
@@ -51,7 +51,7 @@ export function CommunitySection() {
           className={pillButton}
         >
           <XIcon />
-          Follow the journey
+          Follow on X
         </a>
         <a
           href={siteConfig.github}

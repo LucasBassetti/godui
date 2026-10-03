@@ -1,4 +1,4 @@
-import { Globe, type GlobeProps } from "@godui/components";
+import { Globe, type GlobeProps } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
   type PresetMap,
@@ -39,7 +39,7 @@ const presets: PresetMap<GlobeProps> = {
 type PlaygroundArgs = GlobeProps & { preset: string };
 
 const meta: Meta<PlaygroundArgs> = {
-  title: "Effects/Globe",
+  title: "Lab/Effects/Globe",
   component: Globe,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

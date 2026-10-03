@@ -1,4 +1,4 @@
-import { InertiaGallery, type InertiaGalleryProps } from "@godui/components";
+import { InertiaGallery, type InertiaGalleryProps } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { range, toggle } from "../playground/argtypes";
 
@@ -28,7 +28,7 @@ function Shot({ label, img }: (typeof SHOTS)[number]) {
 }
 
 const meta = {
-  title: "Layout/InertiaGallery",
+  title: "Lab/Layout/InertiaGallery",
   component: InertiaGallery,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

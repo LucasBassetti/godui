@@ -137,7 +137,7 @@ export function LightRaysSweep() {
             The needle tracks the same keyframe as the fan: rotate ±6°, scale up
             to 1.08, opacity breathes. Duration{" "}
             <span className="font-mono text-[12px]">14s / speed</span>,
-            alternate forever — frozen under{" "}
+            alternate forever, frozen under{" "}
             <span className="font-mono text-[12px]">motion-reduce</span>.
           </p>
 

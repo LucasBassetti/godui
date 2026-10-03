@@ -1,6 +1,6 @@
 "use client";
 
-import { LiquidGlassLens } from "@godui/components";
+import { LiquidGlassLens } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
@@ -43,7 +43,7 @@ export function LiquidGlassLensResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — hover the stage
+          the real component: hover the stage
         </span>
       </div>
       {demo}

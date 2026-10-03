@@ -1,0 +1,110 @@
+---
+title: Anatomy of the GodUI Dropdown Menu
+description: "A menu that grows out of its trigger, sub-menus that grow out of their item, and a check mark that pops: three uses of two shared keyframes."
+learnPlayer: true
+---
+
+import { DropdownMenuCheckboxesDemo } from "@/components/demos/core/dropdown-menu-checkboxes-demo";
+
+<LearnPlayer>
+
+<LearnChapter
+  label="From the trigger"
+  scene={
+    <KeyframeScene
+      label="From the trigger"
+      motion="popover-bottom"
+      subject="menu"
+      tracks={[
+        { property: "opacity", from: "0", to: "1" },
+        { property: "scale", from: "0.96", to: "1" },
+        { property: "translate", from: "0 -4px", to: "0 0" },
+      ]}
+    />
+  }
+  code={`<DropdownMenuPrimitive.Content
+  data-slot="dropdown-menu-content"
+  className={cn(
+    "z-50 … origin-(--radix-dropdown-menu-content-transform-origin) …
+     data-[side=bottom]:[--godui-enter-y:-0.25rem] …
+     data-[state=open]:animate-godui-popover-in
+     data-[state=closed]:animate-godui-popover-out",
+    className,
+  )}
+/>`}
+>
+
+The menu uses the same `godui-popover-in` keyframe as
+[Popover](/docs/components/popover/learn). Radix publishes the point nearest
+the trigger as `--radix-dropdown-menu-content-transform-origin`, so the scale
+grows from there, and the per-side `--godui-enter-x/y` variables make it
+drift 4px out of the trigger.
+
+`DropdownMenuSubContent` carries the same classes. A sub-menu opening to the
+right has `data-side="right"`, so it grows out of its parent item, leftmost
+edge first.
+
+</LearnChapter>
+
+<LearnChapter
+  label="The check pop"
+  scene={
+    <KeyframeScene
+      label="The check pop"
+      motion="fade-scale"
+      subject="menu"
+      tracks={[
+        { property: "scale", from: "0.5", to: "1" },
+        { property: "opacity", from: "0", to: "1" },
+      ]}
+    />
+  }
+  code={`<span className="pointer-events-none absolute left-2 flex size-3.5 items-center justify-center">
+  <DropdownMenuPrimitive.ItemIndicator className="[--godui-enter-scale:0.5]
+    group-data-[animate=true]/dropdown-menu-checkbox-item:data-[state=checked]:animate-godui-fade-scale-in">
+    <CheckIcon className="size-4" />
+  </DropdownMenuPrimitive.ItemIndicator>
+</span>`}
+>
+
+Radix mounts `ItemIndicator` only while its item is checked, so a keyframe on
+the indicator plays when the check appears. But the menu's items mount every
+time it opens, and an already-checked item would pop on each open. So the
+keyframe is gated on the item's `data-animate`, which the item sets only once
+its `checked` value changes: opening the menu shows the checks still, and a
+toggle while it's open pops. The keyframe also requires the indicator's own
+`data-state="checked"`. Radix's Presence keeps an unchecked indicator mounted
+while it has an animation to finish, so a keyframe that appeared in the same
+commit as the uncheck would re-pop the check before it vanished.
+
+The indicator reuses `godui-fade-scale-in` and overrides the start scale
+locally with `--godui-enter-scale: 0.5`, so the check grows from half size
+instead of the 96% a dialog uses. The keyframe still multiplies by the
+root-only `--godui-motion`, so reduced motion turns it back into a fade.
+
+</LearnChapter>
+
+<LearnChapter
+  label="The result"
+  scene={<LiveResult hint="open the menu and toggle items"><DropdownMenuCheckboxesDemo /></LiveResult>}
+  isResult
+>
+
+Open the menu and toggle the checkboxes and radio items. These items call
+`event.preventDefault()` in `onSelect`, so the menu stays open and you can
+watch each indicator pop.
+
+</LearnChapter>
+
+</LearnPlayer>
+
+## Why GPU-only
+
+Menus, sub-menus and indicators animate `opacity`, `scale` and `translate`.
+Item highlights are a background change, so GodUI lets them snap instead of
+animating paint.
+
+## Reduced motion
+
+`--godui-motion: 0` removes the scale and drift from both keyframes. The
+menu and its indicators fade, in 150ms.

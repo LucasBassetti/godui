@@ -1,0 +1,87 @@
+---
+title: Anatomy of the GodUI Radio Group
+description: A dot that grows into its ring when the selection lands on it, and a press that makes a 16px target feel physical.
+learnPlayer: true
+---
+
+import { RadioGroupDemo } from "@/components/demos/core/radio-group-demo";
+
+<LearnPlayer>
+
+<LearnChapter
+  label="The dot grows"
+  scene={
+    <KeyframeScene
+      label="The dot grows"
+      motion="pop-dot"
+      subject="radio"
+      tracks={[
+        { property: "scale", from: "0.3", to: "1" },
+        { property: "opacity", from: "0", to: "1" },
+      ]}
+    />
+  }
+  code={`<RadioGroupPrimitive.Indicator
+  data-slot="radio-group-indicator"
+  className="relative flex items-center justify-center [--godui-enter-scale:0.3]
+    group-data-[animate=true]/radio-group-item:data-[state=checked]:animate-godui-fade-scale-in"
+>
+  <CircleIcon className="absolute top-1/2 left-1/2 size-2 -translate-x-1/2 -translate-y-1/2 fill-primary" />
+</RadioGroupPrimitive.Indicator>`}
+>
+
+Radix mounts a radio's indicator only while that radio is selected, so a
+keyframe on it runs exactly when the selection lands there. The keyframe is
+gated on the item's `data-animate`, which is set only once its checked state
+changes, so the option that's selected on first paint shows its dot without
+popping (the same rule as Checkbox). It also requires the dot's own
+`data-state="checked"`, so the dot being deselected leaves at once instead of
+re-popping on its way out.
+
+The dot starts at 30% of its size, deeper than the checkbox's 50%, because
+it has more room to grow inside the ring before it reads as "filled". The
+animation sits on the indicator `<span>`, not the `<svg>`, so Chrome can
+composite it.
+
+</LearnChapter>
+
+<LearnChapter
+  label="Keyboard moves it"
+  scene={<AutoPlayScene label="Keyboard moves it" demo="radio" />}
+  code={`"aspect-square size-4 shrink-0 rounded-full border border-input text-primary shadow-xs outline-none
+ transition-[scale] duration-(--godui-duration-base) ease-spring-bouncy
+ active:scale-[0.9] motion-reduce:transition-none …"`}
+>
+
+With the keyboard, arrow keys move both focus and selection, so each
+newly selected dot grows in while the previous one disappears. Nothing has
+to coordinate the two: each radio's indicator mounts and unmounts on its
+own.
+
+With a pointer, the ring presses to 90% on the bouncy spring while it's held.
+shadcn's `transition-[color,box-shadow]` is gone, so border and focus-ring
+changes snap instead of repainting over 150ms.
+
+</LearnChapter>
+
+<LearnChapter
+  label="The result"
+  scene={<LiveResult hint="click an option or use the arrow keys"><RadioGroupDemo /></LiveResult>}
+  isResult
+>
+
+Click an option, or Tab into the group and use the arrow keys.
+
+</LearnChapter>
+
+</LearnPlayer>
+
+## Why GPU-only
+
+The dot animates `scale` and `opacity` on its wrapper, and the press animates
+`scale`. Nothing repaints while it moves.
+
+## Reduced motion
+
+`--godui-motion: 0` turns the grow into a 150ms fade, and
+`motion-reduce:transition-none` makes the press instant.

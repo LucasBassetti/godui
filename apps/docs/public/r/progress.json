@@ -1,0 +1,31 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "progress",
+  "title": "Progress",
+  "description": "Displays an indicator showing the completion progress of a task, typically displayed as a progress bar. The fill glides on a spring; indeterminate bars sweep. GPU-only.",
+  "dependencies": ["radix-ui"],
+  "registryDependencies": ["utils", "@godui/godui-motion"],
+  "files": [
+    {
+      "path": "packages/components/src/ui/progress.tsx",
+      "content": "\"use client\";\n\n// GodUI Progress — mirrors shadcn/ui new-york-v4 components/ui/progress.tsx (registry snapshot 2026-10-01).\n// Motion: the fill keeps shadcn's inline translateX and glides to each new\n// value on the smooth spring — the bar never resizes. With no value it is\n// indeterminate: a 40%-wide bar sweeps across the track on a loop. The fill\n// is rounded like the track, so its leading end is a pill, not a cut. GPU-only.\n// Additive fix: `value` is also passed to Radix (shadcn drops it), so\n// aria-valuenow and data-state are correct and only a null/undefined value\n// reads as indeterminate.\n\nimport { Progress as ProgressPrimitive } from \"radix-ui\";\nimport type * as React from \"react\";\nimport { cn } from \"@/lib/utils\";\n\nfunction Progress({\n  className,\n  value,\n  ...props\n}: React.ComponentProps<typeof ProgressPrimitive.Root>) {\n  return (\n    <ProgressPrimitive.Root\n      data-slot=\"progress\"\n      className={cn(\n        \"relative h-2 w-full overflow-hidden rounded-full bg-primary/20\",\n        className,\n      )}\n      value={value}\n      {...props}\n    >\n      <ProgressPrimitive.Indicator\n        data-slot=\"progress-indicator\"\n        className=\"h-full w-full flex-1 rounded-full bg-primary transition-[transform] duration-(--godui-duration-slow) ease-spring-smooth motion-reduce:transition-none data-[state=indeterminate]:w-2/5 data-[state=indeterminate]:animate-godui-progress-indeterminate motion-reduce:data-[state=indeterminate]:w-full motion-reduce:data-[state=indeterminate]:transform-none! motion-reduce:data-[state=indeterminate]:animate-pulse\"\n        style={{ transform: `translateX(-${100 - (value || 0)}%)` }}\n      />\n    </ProgressPrimitive.Root>\n  );\n}\n\nexport { Progress };\n",
+      "type": "registry:ui"
+    }
+  ],
+  "cssVars": {
+    "theme": {
+      "animate-godui-progress-indeterminate": "godui-progress-indeterminate 1.4s cubic-bezier(0.65, 0, 0.35, 1) infinite"
+    }
+  },
+  "css": {
+    "@keyframes godui-progress-indeterminate": {
+      "from": {
+        "transform": "translateX(-100%)"
+      },
+      "to": {
+        "transform": "translateX(250%)"
+      }
+    }
+  },
+  "type": "registry:ui"
+}

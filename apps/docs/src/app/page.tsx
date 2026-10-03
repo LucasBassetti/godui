@@ -1,4 +1,4 @@
-import { MagicButton } from "@godui/components";
+import { Button } from "@godui/components";
 import { DocsLayout } from "fumadocs-ui/layouts/docs";
 import { ChevronDown } from "lucide-react";
 import Link from "next/link";
@@ -8,6 +8,7 @@ import { siteConfig } from "@/lib/site-config";
 import { source } from "@/lib/source";
 import { AnimatedInstall } from "./_home/animated-install";
 import { CommunitySection } from "./_home/community-section";
+import { ComponentsShowcase } from "./_home/components-showcase";
 import { FeaturesSection } from "./_home/features-section";
 import { Footer } from "./_home/footer";
 import { McpSection } from "./_home/mcp-section";
@@ -23,7 +24,7 @@ const structuredData = {
       "@type": "WebPage",
       "@id": `${siteConfig.url}/#webpage`,
       url: siteConfig.url,
-      name: "GodUI — UI Collection for Modern Interfaces",
+      name: "GodUI: UI Collection for Modern Interfaces",
       description: siteConfig.description,
       isPartOf: { "@id": `${siteConfig.url}/#website` },
       about: { "@id": `${siteConfig.url}/#organization` },
@@ -67,77 +68,49 @@ export default function Home() {
               absolute backdrop is scoped to the hero, not the sections below. */}
           <section className="relative flex min-h-[calc(100svh-3.5rem)] flex-col items-center justify-center gap-8 overflow-hidden px-4 text-center">
             <HeroGrid />
-            <Link
-              href="/docs/components/effects/ascii-dither"
-              className="group relative z-10 inline-flex items-center gap-2 rounded-full border bg-fd-card px-3 py-1 font-medium text-fd-muted-foreground text-xs transition-colors hover:bg-fd-accent hover:text-fd-accent-foreground"
-            >
-              <span className="relative flex size-2">
-                <span className="absolute inline-flex size-full animate-ping rounded-full bg-fd-primary opacity-75" />
-                <span className="relative inline-flex size-2 rounded-full bg-fd-primary" />
-              </span>
-              Introducing the ASCII Dither component
-              <span
-                aria-hidden="true"
-                className="transition-transform group-hover:translate-x-0.5"
-              >
-                →
-              </span>
-            </Link>
             <h1 className="relative z-10 max-w-3xl text-balance font-semibold text-4xl text-fd-foreground tracking-tight sm:text-5xl md:text-6xl">
               UI Collection for Modern Interfaces
             </h1>
-            <p className="relative z-10 max-w-md text-balance text-fd-muted-foreground text-sm sm:text-base">
-              An open-source collection of beautifully crafted motion components
-              built with{" "}
+            <p className="relative z-10 max-w-lg text-balance text-fd-muted-foreground text-sm sm:text-base">
+              An open-source collection of animated{" "}
+              <span className="font-semibold text-fd-foreground">
+                shadcn/ui
+              </span>{" "}
+              components with the same files and API, and motion that runs
+              entirely on the GPU. Built with{" "}
               <span className="font-semibold text-fd-foreground">React</span>,{" "}
               <span className="font-semibold text-fd-foreground">
                 TypeScript
-              </span>
-              ,{" "}
+              </span>{" "}
+              and{" "}
               <span className="font-semibold text-fd-foreground">
                 Tailwind CSS
-              </span>
-              , <span className="font-semibold text-fd-foreground">Motion</span>
-              , and{" "}
-              <span className="font-semibold text-fd-foreground">
-                shadcn/ui
               </span>
               .
             </p>
             <div className="relative z-10 flex w-full justify-center">
               <AnimatedInstall />
             </div>
-            <div className="relative z-10 flex flex-col items-center gap-4 sm:flex-row sm:gap-5">
-              <Link href="/docs/components" className="inline-block">
-                <MagicButton size="lg" tabIndex={-1}>
-                  Browse Components
-                </MagicButton>
-              </Link>
-              <a
-                href={siteConfig.github}
-                target="_blank"
-                rel="noreferrer noopener"
-                className="inline-block"
-              >
-                <MagicButton
-                  size="lg"
-                  variant="secondary"
-                  rainbow={false}
-                  tabIndex={-1}
+            <div className="relative z-10 flex flex-col items-center gap-3 sm:flex-row">
+              <Button size="lg" asChild>
+                <Link href="/docs/components">Browse Components</Link>
+              </Button>
+              <Button size="lg" variant="outline" asChild>
+                <a
+                  href={siteConfig.github}
+                  target="_blank"
+                  rel="noreferrer noopener"
                 >
-                  <span className="inline-flex items-center gap-2">
-                    <svg
-                      viewBox="0 0 24 24"
-                      className="size-4"
-                      fill="currentColor"
-                      aria-hidden="true"
-                    >
-                      <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
-                    </svg>
-                    Star on GitHub
-                  </span>
-                </MagicButton>
-              </a>
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
+                  </svg>
+                  Star on GitHub
+                </a>
+              </Button>
             </div>
             {/* Scroll cue — content continues below the fold now. */}
             <span
@@ -148,6 +121,7 @@ export default function Home() {
             </span>
           </section>
 
+          <ComponentsShowcase />
           <McpSection />
           <FeaturesSection />
           <CommunitySection />

@@ -21,17 +21,17 @@ const CSS = `
 const LEGEND = [
   {
     name: "Noise drift",
-    desc: "SMIL animates baseFrequency over ~16s — field never freezes",
+    desc: "SMIL animates baseFrequency over ~16s, so the field never freezes",
     kind: "noise" as const,
   },
   {
     name: "Scale",
-    desc: "feDisplacementMap scale — how hard pixels are pushed",
+    desc: "feDisplacementMap scale: how hard pixels are pushed",
     kind: "scale" as const,
   },
   {
     name: "Padded filter",
-    desc: "x/y −20%, 140% size — edge pixels can spill past the rect",
+    desc: "x/y −20%, 140% size, so edge pixels can spill past the rect",
     kind: "filter" as const,
   },
 ] as const;
@@ -169,9 +169,9 @@ export function LiquidImageEdge() {
           </div>
 
           <p className="max-w-[36ch] text-center text-[13px] text-fd-muted-foreground">
-            That irregular silhouette isn&apos;t a clip-path — it&apos;s the
-            photo&apos;s own pixels pushed past the rect by the noise field.
-            Higher scale → wilder border.
+            That irregular silhouette is the photo&apos;s own pixels pushed past
+            the rect by the noise field, not a clip-path. Higher scale → wilder
+            border.
           </p>
 
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">

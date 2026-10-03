@@ -1,0 +1,209 @@
+---
+title: Text Animate
+description: Staggered entrance animations for headlines and copy, split by word, character, or line.
+workbench: true
+---
+
+import { TextAnimate } from "@godui/lab";
+
+<Workbench>
+
+`TextAnimate` splits text into words, characters, or lines and staggers each fragment through an entrance animation.
+
+<Example
+  label="Default"
+  story="lab-text-textanimate"
+  code={`import { TextAnimate } from "@/components/godui/text-animate";
+
+export function TextAnimateDemo() {
+  return (
+    <TextAnimate
+      animation="blurInUp"
+      by="word"
+      className="text-4xl font-semibold tracking-tight"
+    >
+      Animate your ideas into reality
+    </TextAnimate>
+  );
+}`}
+>
+  <TextAnimate
+    animation="blurInUp"
+    by="word"
+    className="text-4xl font-semibold tracking-tight"
+  >
+    Animate your ideas into reality
+  </TextAnimate>
+</Example>
+
+## Installation
+
+<ComponentInstall registry="lab" componentName="TextAnimate" />
+
+`TextAnimate` requires `framer-motion` as a peer dependency:
+
+```bash
+npm install framer-motion
+```
+
+## Usage
+
+```tsx
+import { TextAnimate } from "@/components/godui/text-animate";
+```
+
+### Word fade in
+
+```tsx
+<TextAnimate animation="fadeIn" by="word" className="text-4xl">
+  Animate your ideas into reality
+</TextAnimate>
+```
+
+### Character stagger
+
+```tsx
+<TextAnimate animation="slideUp" by="character" stagger={0.03} className="text-3xl">
+  Character by character
+</TextAnimate>
+```
+
+### Scroll into view
+
+```tsx
+<TextAnimate animation="blurInUp" startOnView once className="text-5xl font-bold">
+  Scroll to reveal
+</TextAnimate>
+```
+
+### Semantic heading
+
+```tsx
+<TextAnimate as="h1" animation="scaleUp" by="word" className="text-5xl font-bold">
+  Hero headline
+</TextAnimate>
+```
+
+## Examples
+
+Hit the replay button on any preview to play the animation again.
+
+### Word fade in
+
+<Example
+  label="Word Fade In"
+  code={`import { TextAnimate } from "@/components/godui/text-animate";
+
+export function TextAnimateFade() {
+  return (
+    <TextAnimate animation="fadeIn" by="word" className="text-4xl font-semibold tracking-tight">
+      Animate your ideas into reality
+    </TextAnimate>
+  );
+}`}
+>
+  <TextAnimate animation="fadeIn" by="word" className="text-4xl font-semibold tracking-tight">
+    Animate your ideas into reality
+  </TextAnimate>
+</Example>
+
+### Character stagger
+
+<Example
+  label="Character Stagger"
+  code={`import { TextAnimate } from "@/components/godui/text-animate";
+
+export function TextAnimateChars() {
+  return (
+    <TextAnimate animation="slideUp" by="character" stagger={0.03} className="text-3xl font-medium">
+      Character by character
+    </TextAnimate>
+  );
+}`}
+>
+  <TextAnimate animation="slideUp" by="character" stagger={0.03} className="text-3xl font-medium">
+    Character by character
+  </TextAnimate>
+</Example>
+
+### Scale up
+
+<Example
+  label="Scale Up"
+  code={`import { TextAnimate } from "@/components/godui/text-animate";
+
+export function TextAnimateScale() {
+  return (
+    <TextAnimate animation="scaleUp" by="word" className="text-4xl font-semibold tracking-tight">
+      Scale up with spring
+    </TextAnimate>
+  );
+}`}
+>
+  <TextAnimate animation="scaleUp" by="word" className="text-4xl font-semibold tracking-tight">
+    Scale up with spring
+  </TextAnimate>
+</Example>
+
+### Slide from the right
+
+<Example
+  label="Slide from the Right"
+  code={`import { TextAnimate } from "@/components/godui/text-animate";
+
+export function TextAnimateSlide() {
+  return (
+    <TextAnimate animation="slideLeft" by="word" className="text-4xl font-semibold tracking-tight">
+      Slide from the right
+    </TextAnimate>
+  );
+}`}
+>
+  <TextAnimate animation="slideLeft" by="word" className="text-4xl font-semibold tracking-tight">
+    Slide from the right
+  </TextAnimate>
+</Example>
+
+### Semantic heading
+
+Render a real `h1` with `as` while keeping the staggered entrance.
+
+<Example
+  label="Semantic Heading"
+  code={`import { TextAnimate } from "@/components/godui/text-animate";
+
+export function TextAnimateHeading() {
+  return (
+    <TextAnimate as="h1" animation="blurInUp" by="word" className="text-5xl font-bold tracking-tight">
+      Hero headline
+    </TextAnimate>
+  );
+}`}
+>
+  <TextAnimate as="h1" animation="blurInUp" by="word" className="text-5xl font-bold tracking-tight">
+    Hero headline
+  </TextAnimate>
+</Example>
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `children` | `string` | none | Text content to animate |
+| `animation` | `"fadeIn" \| "blurIn" \| "blurInUp" \| "blurInDown" \| "slideUp" \| "slideDown" \| "slideLeft" \| "slideRight" \| "scaleUp" \| "scaleDown"` | `"fadeIn"` | Entrance animation preset |
+| `by` | `"text" \| "word" \| "character" \| "line"` | `"word"` | How to split text for staggering |
+| `as` | `"p" \| "h1" … "h6" \| "span" \| "div" \| …` | `"p"` | Root element to render |
+| `delay` | `number` | `0` | Delay before animation starts (seconds) |
+| `duration` | `number` | `0.3` | Total animation duration; also drives default stagger when `stagger` is omitted |
+| `stagger` | `number` | derived | Delay between each segment |
+| `startOnView` | `boolean` | `true` | Animate when the element enters the viewport |
+| `once` | `boolean` | `true` | Animate only the first time it enters view, then never again |
+| `viewportAmount` | `number \| "some" \| "all"` | `0.3` | How much of the element must be visible to trigger |
+| `accessible` | `boolean` | `true` | Screen-reader text with `aria-hidden` on animated segments |
+| `className` | `string` | none | Classes on the root element |
+| `segmentClassName` | `string` | none | Classes on each animated segment |
+| `variants` | `Variants` | none | Custom Framer Motion item variants |
+
+Respects `prefers-reduced-motion`: text renders immediately without animation when the user has reduced motion enabled.
+
+</Workbench>

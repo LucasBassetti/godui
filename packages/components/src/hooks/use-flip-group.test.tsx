@@ -1,0 +1,440 @@
+import { act, render } from "@testing-library/react";
+import * as React from "react";
+import { vi } from "vitest";
+import { useFlipGroup } from "./use-flip-group";
+
+type Pt = { left: number; top: number };
+const layout = new Map<string, Pt>();
+const offset = new Map<string, Pt>();
+
+function Group({ trigger, order }: { trigger: number; order: string[] }) {
+  const ref = React.useRef<HTMLDivElement>(null);
+  useFlipGroup(ref, trigger, { duration: 200 });
+  return (
+    <div ref={ref}>
+      {order.map((id) => (
+        <div key={id} data-flip data-id={id} />
+      ))}
+    </div>
+  );
+}
+
+let animate: ReturnType<typeof vi.fn>;
+beforeEach(() => {
+  layout.clear();
+  offset.clear();
+  vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockImplementation(
+    function (this: HTMLElement) {
+      const id = this.dataset.id;
+      const base = (id && layout.get(id)) || { left: 0, top: 0 };
+      const off = (id && offset.get(id)) || { left: 0, top: 0 };
+      const left = base.left + off.left;
+      const top = base.top + off.top;
+      return {
+        left,
+        top,
+        x: left,
+        y: top,
+        width: 10,
+        height: 10,
+        right: left + 10,
+        bottom: top + 10,
+        toJSON() {},
+      } as DOMRect;
+    },
+  );
+  animate = vi.fn(function (this: HTMLElement) {
+    const id = this.dataset.id as string;
+    return { cancel: () => offset.delete(id) };
+  });
+  (HTMLElement.prototype as unknown as { animate: unknown }).animate = animate;
+  window.matchMedia = vi
+    .fn()
+    .mockReturnValue({ matches: false }) as unknown as typeof window.matchMedia;
+});
+afterEach(() => {
+  vi.restoreAllMocks();
+  delete (HTMLElement.prototype as unknown as { animate?: unknown }).animate;
+});
+
+describe("useFlipGroup", () => {
+  it("does not animate on first mount", () => {
+    layout.set("a", { left: 0, top: 0 });
+    render(<Group trigger={0} order={["a"]} />);
+    expect(animate).not.toHaveBeenCalled();
+  });
+
+  it("plays the inverse translate for children that moved when the trigger changes", () => {
+    layout.set("a", { left: 0, top: 0 });
+    layout.set("b", { left: 0, top: 40 });
+    const { rerender } = render(<Group trigger={0} order={["a", "b"]} />);
+    layout.set("b", { left: 0, top: 100 });
+    rerender(<Group trigger={1} order={["a", "b"]} />);
+    expect(animate).toHaveBeenCalledTimes(1);
+    // The individual `translate` property, replace-composited: Chrome runs it
+    // on the compositor (composite:"add" falls back to the main thread), and it
+    // sits outside the element's own scale/rotate.
+    expect(animate.mock.calls[0][0]).toEqual([
+      { translate: "0px -60px" },
+      { translate: "0px 0px" },
+    ]);
+    expect(animate.mock.calls[0][1]).toMatchObject({ duration: 200 });
+    expect(animate.mock.calls[0][1].composite ?? "replace").toBe("replace");
+  });
+
+  it("measures from the current visual position (interrupted FLIP)", () => {
+    layout.set("b", { left: 0, top: 40 });
+    const { rerender } = render(<Group trigger={0} order={["b"]} />);
+    layout.set("b", { left: 0, top: 100 });
+    rerender(<Group trigger={1} order={["b"]} />);
+    // Halfway through: the running FLIP draws b 30px above its slot (visually at 70).
+    offset.set("b", { left: 0, top: -30 });
+    // Layout jumps back to 40 before the animation finishes.
+    layout.set("b", { left: 0, top: 40 });
+    rerender(<Group trigger={2} order={["b"]} />);
+    // Visual 70 → layout 40: start 30px below rest, not from the stale 100.
+    expect(animate.mock.calls[1][0][0]).toEqual({ translate: "0px 30px" });
+  });
+
+  it("does nothing under prefers-reduced-motion", () => {
+    window.matchMedia = vi.fn().mockReturnValue({
+      matches: true,
+    }) as unknown as typeof window.matchMedia;
+    layout.set("a", { left: 0, top: 0 });
+    const { rerender } = render(<Group trigger={0} order={["a"]} />);
+    layout.set("a", { left: 0, top: 50 });
+    rerender(<Group trigger={1} order={["a"]} />);
+    expect(animate).not.toHaveBeenCalled();
+  });
+
+  it("adds the FLIP offset on top of the element's own translate", () => {
+    layout.set("c", { left: 0, top: 0 });
+    const { rerender, container } = render(<Group trigger={0} order={["c"]} />);
+    const el = container.querySelector<HTMLElement>('[data-id="c"]');
+    if (!el) throw new Error("missing");
+    el.style.translate = "4px 8px";
+    layout.set("c", { left: 0, top: 20 });
+    rerender(<Group trigger={1} order={["c"]} />);
+    expect(animate.mock.calls[0][0]).toEqual([
+      { translate: "4px -12px" },
+      { translate: "4px 8px" },
+    ]);
+  });
+
+  it("is a no-op when element.animate is unavailable", () => {
+    delete (HTMLElement.prototype as unknown as { animate?: unknown }).animate;
+    layout.set("a", { left: 0, top: 0 });
+    const { rerender } = render(<Group trigger={0} order={["a"]} />);
+    layout.set("a", { left: 0, top: 50 });
+    expect(() => rerender(<Group trigger={1} order={["a"]} />)).not.toThrow();
+  });
+});
+
+describe("useFlipGroup baseline and tokens", () => {
+  // ResizeObserver stand-in; tests fire it to simulate a layout change that
+  // no trigger accounts for (an image loading in an open panel, a reflow).
+  let fire: () => void;
+  const Original = globalThis.ResizeObserver;
+  beforeEach(() => {
+    const callbacks: Array<() => void> = [];
+    fire = () => {
+      for (const cb of callbacks) cb();
+    };
+    globalThis.ResizeObserver = class {
+      constructor(cb: () => void) {
+        callbacks.push(cb);
+      }
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+    } as unknown as typeof ResizeObserver;
+  });
+  afterEach(() => {
+    globalThis.ResizeObserver = Original;
+  });
+
+  it("re-baselines without animating when layout changes between triggers", () => {
+    layout.set("a", { left: 0, top: 0 });
+    layout.set("b", { left: 0, top: 40 });
+    const { rerender } = render(<Group trigger={0} order={["a", "b"]} />);
+    layout.set("b", { left: 0, top: 240 });
+    fire();
+    expect(animate).not.toHaveBeenCalled();
+    rerender(<Group trigger={1} order={["a", "b"]} />);
+    expect(animate).not.toHaveBeenCalled();
+  });
+
+  it("applies a resize that lands mid-FLIP once the FLIP finishes", () => {
+    const handles: Array<{ onfinish: (() => void) | null }> = [];
+    animate.mockImplementation(() => {
+      const handle = { cancel: () => {}, onfinish: null };
+      handles.push(handle);
+      return handle;
+    });
+    layout.set("a", { left: 0, top: 0 });
+    layout.set("b", { left: 0, top: 40 });
+    const { rerender } = render(<Group trigger={0} order={["a", "b"]} />);
+    layout.set("b", { left: 0, top: 100 });
+    rerender(<Group trigger={1} order={["a", "b"]} />);
+    expect(animate).toHaveBeenCalledTimes(1);
+    layout.set("b", { left: 0, top: 150 });
+    fire();
+    handles[0].onfinish?.();
+    rerender(<Group trigger={2} order={["a", "b"]} />);
+    expect(animate).toHaveBeenCalledTimes(1);
+  });
+
+  it("waits for another animation moving a candidate (a reveal's sweep) before re-baselining", async () => {
+    // Mounted mid-sweep: b is drawn 100px off its layout spot by an animation
+    // that isn't a FLIP. Baselining there would FLIP b by 100px on the next
+    // trigger, though it never moved.
+    layout.set("a", { left: 0, top: 0 });
+    layout.set("b", { left: 0, top: 40 });
+    offset.set("b", { left: 0, top: 100 });
+    let end = () => {};
+    const sweep = {
+      playState: "running",
+      effect: {
+        getComputedTiming: () => ({ endTime: 260 }),
+        getKeyframes: () => [{ translate: "0 100px" }, { translate: "0 0" }],
+      },
+      finished: new Promise<void>((resolve) => {
+        end = resolve;
+      }),
+    };
+    const getAnimations = vi
+      .spyOn(HTMLElement.prototype, "getAnimations")
+      .mockImplementation(function (this: HTMLElement) {
+        return this.dataset.id === "b" && sweep.playState === "running"
+          ? ([sweep] as unknown as Animation[])
+          : [];
+      });
+    const { rerender } = render(<Group trigger={0} order={["a", "b"]} />);
+    fire();
+    offset.delete("b");
+    sweep.playState = "finished";
+    await act(async () => {
+      end();
+      await sweep.finished;
+    });
+    rerender(<Group trigger={1} order={["a", "b"]} />);
+    expect(animate).not.toHaveBeenCalled();
+    getAnimations.mockRestore();
+  });
+
+  it("defaults the duration to --godui-duration-base (ms or s)", () => {
+    function Tokened({ trigger }: { trigger: number }) {
+      const ref = React.useRef<HTMLDivElement>(null);
+      useFlipGroup(ref, trigger);
+      return (
+        <div
+          ref={ref}
+          style={{ "--godui-duration-base": "0.4s" } as React.CSSProperties}
+        >
+          <div data-flip data-id="b" />
+        </div>
+      );
+    }
+    layout.set("b", { left: 0, top: 40 });
+    const { rerender } = render(<Tokened trigger={0} />);
+    layout.set("b", { left: 0, top: 100 });
+    rerender(<Tokened trigger={1} />);
+    expect(animate.mock.calls[0][1]).toMatchObject({ duration: 400 });
+  });
+});
+
+describe("useFlipGroup settling", () => {
+  it("re-baselines when `finished` resolves before onfinish runs (no re-wait loop)", async () => {
+    let fire = () => {};
+    const Original = globalThis.ResizeObserver;
+    globalThis.ResizeObserver = class {
+      constructor(cb: () => void) {
+        fire = cb;
+      }
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+    } as unknown as typeof ResizeObserver;
+    let resolve = () => {};
+    animate.mockImplementation(() => ({
+      cancel: () => {},
+      onfinish: null,
+      finished: new Promise<void>((r) => {
+        resolve = r;
+      }),
+    }));
+    try {
+      layout.set("a", { left: 0, top: 0 });
+      layout.set("b", { left: 0, top: 40 });
+      const { rerender } = render(<Group trigger={0} order={["a", "b"]} />);
+      layout.set("b", { left: 0, top: 100 });
+      rerender(<Group trigger={1} order={["a", "b"]} />);
+      expect(animate).toHaveBeenCalledTimes(1);
+      layout.set("b", { left: 0, top: 150 });
+      fire(); // mid-FLIP resize: deferred
+      resolve(); // `finished` settles; onfinish never runs in this mock
+      await new Promise((r) => setTimeout(r, 0));
+      rerender(<Group trigger={2} order={["a", "b"]} />);
+      expect(animate).toHaveBeenCalledTimes(1);
+    } finally {
+      globalThis.ResizeObserver = Original;
+    }
+  });
+});
+
+describe("useFlipGroup rapid triggers", () => {
+  it("waits on each animation once, so toggling mid-move can't multiply the waits (Ctrl+B spam)", async () => {
+    let fire = () => {};
+    const Original = globalThis.ResizeObserver;
+    globalThis.ResizeObserver = class {
+      constructor(cb: () => void) {
+        fire = cb;
+      }
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+    } as unknown as typeof ResizeObserver;
+    // Like a browser: cancelling rejects `finished` (a microtask later).
+    let waits = 0;
+    animate.mockImplementation(() => {
+      const rejects: Array<() => void> = [];
+      return {
+        onfinish: null,
+        cancel: () => {
+          for (const reject of rejects) queueMicrotask(reject);
+        },
+        finished: {
+          // biome-ignore lint/suspicious/noThenProperty: a thenable stand-in for `finished`.
+          then(_: () => void, reject: () => void) {
+            waits++;
+            rejects.push(reject);
+          },
+        },
+      };
+    });
+    const ids = ["a", "b", "c", "d", "e", "f"];
+    const place = (step: number) =>
+      ids.forEach((id, i) => {
+        layout.set(id, { left: 0, top: i * 40 + (step % 2) * 20 });
+      });
+    try {
+      place(0);
+      const { rerender } = render(<Group trigger={0} order={ids} />);
+      for (let step = 1; step <= 5; step++) {
+        place(step);
+        rerender(<Group trigger={step} order={ids} />);
+        // A resize mid-move: the group waits on the running FLIPs.
+        fire();
+        await act(async () => {
+          await new Promise((r) => setTimeout(r, 0));
+        });
+      }
+      // One wait per FLIP (6 per toggle), not 6, 36, 216, ...
+      expect(waits).toBeLessThanOrEqual(ids.length * 5);
+    } finally {
+      globalThis.ResizeObserver = Original;
+    }
+  });
+});
+
+describe("useFlipGroup easing", () => {
+  it("defaults to the container's own transition-timing-function (e.g. an ease-spring-* class)", () => {
+    function Eased({ trigger }: { trigger: number }) {
+      const ref = React.useRef<HTMLDivElement>(null);
+      useFlipGroup(ref, trigger);
+      return (
+        <div
+          ref={ref}
+          style={{ transitionTimingFunction: "linear(0, 0.6, 1)" }}
+        >
+          <div data-flip data-id="b" />
+        </div>
+      );
+    }
+    layout.set("b", { left: 0, top: 40 });
+    const { rerender } = render(<Eased trigger={0} />);
+    layout.set("b", { left: 0, top: 100 });
+    rerender(<Eased trigger={1} />);
+    expect(animate.mock.calls[0][1]).toMatchObject({
+      easing: "linear(0, 0.6, 1)",
+    });
+  });
+});
+
+describe("useFlipGroup measure", () => {
+  it("tracks another element's position but moves the candidate", () => {
+    function Boxes({ trigger }: { trigger: number }) {
+      const ref = React.useRef<HTMLDivElement>(null);
+      useFlipGroup(ref, trigger, {
+        measure: (el) => el.firstElementChild ?? el,
+      });
+      return (
+        <div ref={ref}>
+          <div data-flip data-id="box">
+            <span data-id="icon" />
+          </div>
+        </div>
+      );
+    }
+    layout.set("box", { left: 8, top: 0 });
+    layout.set("icon", { left: 16, top: 8 });
+    const { rerender, container } = render(<Boxes trigger={0} />);
+    // The box stays; its padding snaps, so the icon lands 8px up and left.
+    layout.set("icon", { left: 8, top: 0 });
+    rerender(<Boxes trigger={1} />);
+    expect(animate).toHaveBeenCalledTimes(1);
+    expect(animate.mock.contexts[0]).toBe(
+      container.querySelector('[data-id="box"]'),
+    );
+    expect(animate.mock.calls[0][0]).toEqual([
+      { translate: "8px 8px" },
+      { translate: "0px 0px" },
+    ]);
+  });
+});
+
+describe("useFlipGroup own translate", () => {
+  it("reversing a FLIP whose element's own translate changed starts from what's drawn", () => {
+    // A plain object, not a KeyframeEffect: effects from another realm (an
+    // iframe driven by the parent window's JS) fail `instanceof`, so the hook
+    // duck-types `getKeyframes`. jsdom has no KeyframeEffect at all.
+    animate.mockImplementation(function (
+      this: HTMLElement,
+      frames: Keyframe[],
+    ) {
+      const id = this.dataset.id as string;
+      return {
+        effect: { getKeyframes: () => frames },
+        cancel: () => offset.delete(id),
+      };
+    });
+    try {
+      layout.set("s", { left: 0, top: 0 });
+      const { rerender, container } = render(
+        <Group trigger={0} order={["s"]} />,
+      );
+      const el = container.querySelector<HTMLElement>('[data-id="s"]');
+      if (!el) throw new Error("missing");
+      // A class slides it 200px left: the FLIP holds it, then lets it go.
+      el.style.translate = "-200px 0px";
+      layout.set("s", { left: -200, top: 0 });
+      rerender(<Group trigger={1} order={["s"]} />);
+      expect(animate.mock.calls[0][0]).toEqual([
+        { translate: "0px 0px" },
+        { translate: "-200px 0px" },
+      ]);
+      // Reversed when it's drawn at -60: the class goes back to 0, but the
+      // running FLIP (which replaces translate) still draws it at -60.
+      el.style.translate = "0px 0px";
+      layout.set("s", { left: 0, top: 0 });
+      offset.set("s", { left: -60, top: 0 });
+      rerender(<Group trigger={2} order={["s"]} />);
+      expect(animate.mock.calls[1][0]).toEqual([
+        { translate: "-60px 0px" },
+        { translate: "0px 0px" },
+      ]);
+    } finally {
+      animate.mockReset();
+    }
+  });
+});

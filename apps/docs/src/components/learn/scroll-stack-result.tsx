@@ -1,6 +1,6 @@
 "use client";
 
-import { ScrollStack } from "@godui/components";
+import { ScrollStack } from "@godui/lab";
 import { BarChart3, GitBranch, Rocket } from "lucide-react";
 import type { ComponentType } from "react";
 import { useBareScene } from "@/components/learn/bare-scene-context";
@@ -21,19 +21,19 @@ type Card = {
 const CARDS: Card[] = [
   {
     Icon: GitBranch,
-    eyebrow: "01 — Plan",
+    eyebrow: "01 · Plan",
     title: "One source of truth",
     body: "Issues, docs, and roadmaps live on a single surface the team trusts.",
   },
   {
     Icon: BarChart3,
-    eyebrow: "02 — Track",
+    eyebrow: "02 · Track",
     title: "Progress you can see",
-    body: "Live insight into velocity and scope — no status meetings required.",
+    body: "Live insight into velocity and scope, without status meetings.",
   },
   {
     Icon: Rocket,
-    eyebrow: "03 — Ship",
+    eyebrow: "03 · Ship",
     title: "From plan to production",
     body: "Move work from idea to release without losing the thread.",
   },
@@ -86,7 +86,7 @@ export function ScrollStackResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — scroll inside this panel
+          the real component: scroll inside this panel
         </span>
       </div>
       <div className="relative flex min-h-[300px] items-center justify-center p-6 md:p-10">

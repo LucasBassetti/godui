@@ -56,7 +56,7 @@ export function InertiaGalleryDrag() {
             <dt className="text-fd-foreground">settle</dt>
             <dd>0%</dd>
             <dd>32%</dd>
-            <dd>55–74%</dd>
+            <dd>55 to 74%</dd>
             <dd>100%</dd>
           </dl>
         </div>

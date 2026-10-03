@@ -1,6 +1,6 @@
 "use client";
 
-import { Dock, DockItem } from "@godui/components";
+import { Dock, DockItem } from "@godui/lab";
 import { Calendar, Folder, Home, Mail, Search, Settings } from "lucide-react";
 import type { ComponentType } from "react";
 import { useBareScene } from "@/components/learn/bare-scene-context";
@@ -55,7 +55,7 @@ export function DockResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — sweep the pointer across the row
+          the real component: sweep the pointer across the row
         </span>
       </div>
       <div className="relative flex min-h-[260px] items-end justify-center overflow-hidden p-10">

@@ -1,0 +1,287 @@
+---
+title: Menubar
+description: A visually persistent menu common in desktop applications that provides quick access to a consistent set of commands. Each menu grows out of its trigger; hopping swaps menus with an exit and an enter.
+workbench: true
+---
+
+import { MenubarCheckboxesDemo } from "@/components/demos/core/menubar-checkboxes-demo";
+import { MenubarDemo } from "@/components/demos/core/menubar-demo";
+import { MenubarSubDemo } from "@/components/demos/core/menubar-sub-demo";
+
+<Workbench>
+
+The shadcn/ui menubar: a row of [Dropdown Menus](/docs/components/dropdown-menu)
+with the same motion. Each menu scales up from its trigger and drifts out of it
+on a spring, and sub-menus grow from their parent item. Open one menu and move
+to the next with the pointer or the arrow keys: the old menu exits while the
+new one enters. Check and radio indicators pop in from 50% when toggled, not
+when a menu opens.
+
+<Example label="Default" story="ui-menubar" code={`import {
+  Menubar,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarSeparator,
+  MenubarShortcut,
+  MenubarTrigger,
+} from "@/components/ui/menubar";
+
+export function MenubarDemo() {
+  return (
+    <Menubar>
+      <MenubarMenu>
+        <MenubarTrigger>File</MenubarTrigger>
+        <MenubarContent>
+          <MenubarItem>
+            New Tab <MenubarShortcut>⌘T</MenubarShortcut>
+          </MenubarItem>
+          <MenubarItem>
+            New Window <MenubarShortcut>⌘N</MenubarShortcut>
+          </MenubarItem>
+          <MenubarItem disabled>New Incognito Window</MenubarItem>
+          <MenubarSeparator />
+          <MenubarItem>
+            Print... <MenubarShortcut>⌘P</MenubarShortcut>
+          </MenubarItem>
+        </MenubarContent>
+      </MenubarMenu>
+      <MenubarMenu>
+        <MenubarTrigger>Edit</MenubarTrigger>
+        <MenubarContent>
+          <MenubarItem>
+            Undo <MenubarShortcut>⌘Z</MenubarShortcut>
+          </MenubarItem>
+          <MenubarItem>
+            Redo <MenubarShortcut>⇧⌘Z</MenubarShortcut>
+          </MenubarItem>
+          <MenubarSeparator />
+          <MenubarItem>Cut</MenubarItem>
+          <MenubarItem>Copy</MenubarItem>
+          <MenubarItem>Paste</MenubarItem>
+        </MenubarContent>
+      </MenubarMenu>
+      <MenubarMenu>
+        <MenubarTrigger>View</MenubarTrigger>
+        <MenubarContent>
+          <MenubarItem>
+            Reload <MenubarShortcut>⌘R</MenubarShortcut>
+          </MenubarItem>
+          <MenubarItem>Toggle Fullscreen</MenubarItem>
+          <MenubarSeparator />
+          <MenubarItem>Hide Sidebar</MenubarItem>
+        </MenubarContent>
+      </MenubarMenu>
+    </Menubar>
+  );
+}`}>
+  <MenubarDemo />
+</Example>
+
+<Example label="With sub-menu" code={`import {
+  Menubar,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarSeparator,
+  MenubarShortcut,
+  MenubarSub,
+  MenubarSubContent,
+  MenubarSubTrigger,
+  MenubarTrigger,
+} from "@/components/ui/menubar";
+
+export function MenubarSubDemo() {
+  return (
+    <Menubar>
+      <MenubarMenu>
+        <MenubarTrigger>File</MenubarTrigger>
+        <MenubarContent>
+          <MenubarItem>
+            New Tab <MenubarShortcut>⌘T</MenubarShortcut>
+          </MenubarItem>
+          <MenubarSeparator />
+          <MenubarSub>
+            <MenubarSubTrigger>Share</MenubarSubTrigger>
+            <MenubarSubContent>
+              <MenubarItem>Email link</MenubarItem>
+              <MenubarItem>Messages</MenubarItem>
+              <MenubarItem>Notes</MenubarItem>
+            </MenubarSubContent>
+          </MenubarSub>
+          <MenubarSeparator />
+          <MenubarItem>
+            Print... <MenubarShortcut>⌘P</MenubarShortcut>
+          </MenubarItem>
+        </MenubarContent>
+      </MenubarMenu>
+      <MenubarMenu>
+        <MenubarTrigger>Edit</MenubarTrigger>
+        <MenubarContent>
+          <MenubarItem>
+            Undo <MenubarShortcut>⌘Z</MenubarShortcut>
+          </MenubarItem>
+          <MenubarItem>
+            Redo <MenubarShortcut>⇧⌘Z</MenubarShortcut>
+          </MenubarItem>
+          <MenubarSeparator />
+          <MenubarSub>
+            <MenubarSubTrigger>Find</MenubarSubTrigger>
+            <MenubarSubContent>
+              <MenubarItem>Search the web</MenubarItem>
+              <MenubarSeparator />
+              <MenubarItem>Find...</MenubarItem>
+              <MenubarItem>Find Next</MenubarItem>
+              <MenubarItem>Find Previous</MenubarItem>
+            </MenubarSubContent>
+          </MenubarSub>
+          <MenubarSeparator />
+          <MenubarItem>Cut</MenubarItem>
+          <MenubarItem>Copy</MenubarItem>
+          <MenubarItem>Paste</MenubarItem>
+        </MenubarContent>
+      </MenubarMenu>
+    </Menubar>
+  );
+}`}>
+  <MenubarSubDemo />
+</Example>
+
+<Example label="Checkbox & radio" code={`"use client";
+
+import {
+  Menubar,
+  MenubarCheckboxItem,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarRadioGroup,
+  MenubarRadioItem,
+  MenubarSeparator,
+  MenubarTrigger,
+} from "@/components/ui/menubar";
+import { useState } from "react";
+
+const keepOpen = (event: Event) => event.preventDefault();
+
+export function MenubarCheckboxesDemo() {
+  const [bookmarks, setBookmarks] = useState(false);
+  const [fullUrls, setFullUrls] = useState(true);
+  const [profile, setProfile] = useState("benoit");
+  return (
+    <Menubar>
+      <MenubarMenu>
+        <MenubarTrigger>View</MenubarTrigger>
+        <MenubarContent>
+          <MenubarCheckboxItem
+            checked={bookmarks}
+            onCheckedChange={setBookmarks}
+            onSelect={keepOpen}
+          >
+            Always Show Bookmarks Bar
+          </MenubarCheckboxItem>
+          <MenubarCheckboxItem
+            checked={fullUrls}
+            onCheckedChange={setFullUrls}
+            onSelect={keepOpen}
+          >
+            Always Show Full URLs
+          </MenubarCheckboxItem>
+          <MenubarSeparator />
+          <MenubarItem inset>Toggle Fullscreen</MenubarItem>
+        </MenubarContent>
+      </MenubarMenu>
+      <MenubarMenu>
+        <MenubarTrigger>Profiles</MenubarTrigger>
+        <MenubarContent>
+          <MenubarRadioGroup value={profile} onValueChange={setProfile}>
+            <MenubarRadioItem value="andy" onSelect={keepOpen}>
+              Andy
+            </MenubarRadioItem>
+            <MenubarRadioItem value="benoit" onSelect={keepOpen}>
+              Benoit
+            </MenubarRadioItem>
+            <MenubarRadioItem value="luis" onSelect={keepOpen}>
+              Luis
+            </MenubarRadioItem>
+          </MenubarRadioGroup>
+          <MenubarSeparator />
+          <MenubarItem inset>Add Profile...</MenubarItem>
+        </MenubarContent>
+      </MenubarMenu>
+    </Menubar>
+  );
+}`}>
+  <MenubarCheckboxesDemo />
+</Example>
+
+## Installation
+
+<ComponentInstall name="menubar" />
+
+## Replacing shadcn
+
+`npx shadcn add @godui/menubar` overwrites `components/ui/menubar.tsx`.
+Exports, props and `data-slot` attributes match shadcn/ui new-york-v4, so
+existing imports keep working. It also installs `godui-motion` (easings,
+keyframes, the FLIP hook) into your project.
+
+shadcn's `MenubarContent` has no exit animation, so a menu vanishes the moment
+you leave it. GodUI adds one, which means the old menu is still mounted while
+the next one opens. `MenubarContent` therefore ignores outside focus and presses
+while it is closing (`data-state="closed"`); without that, the exiting menu
+would treat the next menu as "outside" and close the whole menubar. An open
+menu dismisses as before, and your own `onInteractOutside`,
+`onFocusOutside` and `onPointerDownOutside` still run. `MenubarSubContent`
+does the same while a sub-menu animates out.
+
+## Usage
+
+```tsx
+import {
+  Menubar,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarSeparator,
+  MenubarShortcut,
+  MenubarTrigger,
+} from "@/components/ui/menubar";
+```
+
+```tsx
+<Menubar>
+  <MenubarMenu>
+    <MenubarTrigger>File</MenubarTrigger>
+    <MenubarContent>
+      <MenubarItem>
+        New Tab <MenubarShortcut>⌘T</MenubarShortcut>
+      </MenubarItem>
+      <MenubarItem>New Window</MenubarItem>
+      <MenubarSeparator />
+      <MenubarItem>Share</MenubarItem>
+      <MenubarSeparator />
+      <MenubarItem>Print</MenubarItem>
+    </MenubarContent>
+  </MenubarMenu>
+</Menubar>
+```
+
+## What's animated
+
+| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
+| --- | --- | --- | --- | --- |
+| Open (menu, sub-menu) | `godui-popover-in` | `opacity`, `scale` 0.96 → 1 from the trigger, `translate` 4px → 0 | `ease-spring-snappy` | 260ms |
+| Close | `godui-popover-out` | the same, reversed | `ease-out-expo` | 150ms |
+| Hop to the next menu | old menu `godui-popover-out`, new menu `godui-popover-in` | as above, both at once | as above | 150ms / 260ms |
+| Check / radio appears | `godui-fade-scale-in` from 50% | `opacity`, `scale` | `ease-spring-snappy` | 260ms |
+| Trigger and item highlight | snaps | none | none | none |
+
+Under `prefers-reduced-motion` the menus and indicators only fade (150ms).
+
+## API
+
+Built on [Radix Menubar](https://www.radix-ui.com/primitives/docs/components/menubar).
+Props are identical to [shadcn/ui Menubar](https://ui.shadcn.com/docs/components/menubar).
+
+</Workbench>

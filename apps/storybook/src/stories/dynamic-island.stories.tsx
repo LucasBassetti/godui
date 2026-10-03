@@ -1,9 +1,9 @@
-import { DynamicIsland } from "@godui/components";
+import { DynamicIsland } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { hidden, select } from "../playground/argtypes";
 
 const meta = {
-  title: "Overlays/Dynamic Island",
+  title: "Lab/Overlays/Dynamic Island",
   component: DynamicIsland,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

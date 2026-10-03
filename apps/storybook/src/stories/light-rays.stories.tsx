@@ -1,4 +1,4 @@
-import { LightRays, type LightRaysProps } from "@godui/components";
+import { LightRays, type LightRaysProps } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
   type PresetMap,
@@ -23,7 +23,7 @@ const presets = {
 type PlaygroundArgs = LightRaysProps & { preset: keyof typeof presets };
 
 const meta: Meta<PlaygroundArgs> = {
-  title: "Backgrounds/Light Rays",
+  title: "Lab/Backgrounds/Light Rays",
   component: LightRays,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

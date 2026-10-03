@@ -26,7 +26,7 @@ const LEGEND: {
 }[] = [
   {
     name: "Avatar",
-    desc: 'flex row, "-space-x-2" — DOM order, no z-index',
+    desc: 'flex row, "-space-x-2": DOM order, no z-index',
     kind: "avatar",
   },
   {

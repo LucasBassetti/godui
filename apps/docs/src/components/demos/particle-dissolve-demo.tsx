@@ -1,6 +1,6 @@
 "use client";
 
-import { ParticleDissolve } from "@godui/components";
+import { ParticleDissolve } from "@godui/lab";
 
 export function ParticleDissolveDemo() {
   return (

@@ -1,6 +1,6 @@
 "use client";
 
-import { TextScramble } from "@godui/components";
+import { TextScramble } from "@godui/lab";
 import * as React from "react";
 
 const WORDS = ["Encrypted.", "Decrypted.", "Authentic.", "Verified."];

@@ -1,6 +1,6 @@
 "use client";
 
-import { SpotlightReveal } from "@godui/components";
+import { SpotlightReveal } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 const Demo = (
@@ -49,7 +49,7 @@ export function SpotlightRevealResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — hover to follow, click to pin
+          the real component: hover to follow, click to pin
         </span>
       </div>
       <div className="flex min-h-[320px] items-center justify-center p-6 md:p-10">

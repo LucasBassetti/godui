@@ -1,4 +1,4 @@
-import { ImageAccordion, type ImageAccordionProps } from "@godui/components";
+import { ImageAccordion, type ImageAccordionProps } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { range } from "../playground/argtypes";
 
@@ -31,7 +31,7 @@ const PANELS = [
 ];
 
 const meta = {
-  title: "Layout/ImageAccordion",
+  title: "Lab/Layout/ImageAccordion",
   component: ImageAccordion,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

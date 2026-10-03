@@ -1,4 +1,4 @@
-import { type Notification, NotificationInbox } from "@godui/components";
+import { type Notification, NotificationInbox } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "storybook/test";
 import { action, hidden, text } from "../playground/argtypes";
@@ -51,7 +51,7 @@ const notifications: Notification[] = [
 ];
 
 const meta = {
-  title: "Collaboration/NotificationInbox",
+  title: "Lab/Collaboration/NotificationInbox",
   component: NotificationInbox,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

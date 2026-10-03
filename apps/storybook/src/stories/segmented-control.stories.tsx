@@ -1,4 +1,4 @@
-import { SegmentedControl } from "@godui/components";
+import { SegmentedControl } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "storybook/test";
 import { action, hidden, select } from "../playground/argtypes";
@@ -11,7 +11,7 @@ const options = [
 ];
 
 const meta = {
-  title: "Navigation/Segmented Control",
+  title: "Lab/Navigation/Segmented Control",
   component: SegmentedControl,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

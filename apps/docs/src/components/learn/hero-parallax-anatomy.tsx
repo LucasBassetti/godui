@@ -24,12 +24,12 @@ const CSS = `
 const LEGEND: { name: string; desc: string; swatch: string }[] = [
   {
     name: "translateX",
-    desc: "rows 1 & 3 — scrollYProgress [0,1] → [0, 1000]",
+    desc: "rows 1 & 3: scrollYProgress [0,1] → [0, 1000]",
     swatch: "bg-[var(--muted)]",
   },
   {
     name: "translateXReverse",
-    desc: "row 2 — scrollYProgress [0,1] → [0, -1000]",
+    desc: "row 2: scrollYProgress [0,1] → [0, -1000]",
     swatch: "bg-[var(--muted)]",
   },
 ];

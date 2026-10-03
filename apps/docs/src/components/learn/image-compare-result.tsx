@@ -1,6 +1,6 @@
 "use client";
 
-import { ImageCompare } from "@godui/components";
+import { ImageCompare } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
@@ -37,7 +37,7 @@ export function ImageCompareResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — drag the handle, or focus + arrow keys
+          the real component: drag the handle, or focus + arrow keys
         </span>
       </div>
       <div className="relative flex min-h-[280px] items-center justify-center overflow-hidden p-6 sm:p-10">

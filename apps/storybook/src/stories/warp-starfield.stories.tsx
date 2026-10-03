@@ -1,4 +1,4 @@
-import { WarpStarfield, type WarpStarfieldProps } from "@godui/components";
+import { WarpStarfield, type WarpStarfieldProps } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { toggle } from "../playground/argtypes";
 import {
@@ -18,7 +18,7 @@ const presets = {
 type PlaygroundArgs = WarpStarfieldProps & { preset: keyof typeof presets };
 
 const meta: Meta<PlaygroundArgs> = {
-  title: "Backgrounds/Warp Starfield",
+  title: "Lab/Backgrounds/Warp Starfield",
   component: WarpStarfield,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

@@ -1,6 +1,6 @@
 "use client";
 
-import { StickyScroll, type StickyScrollItem } from "@godui/components";
+import { StickyScroll, type StickyScrollItem } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
@@ -61,7 +61,7 @@ export function StickyScrollResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — scroll inside this panel
+          the real component: scroll inside this panel
         </span>
       </div>
       <div className="flex justify-center p-6 md:p-10">{demo}</div>

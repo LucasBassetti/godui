@@ -1,4 +1,4 @@
-import { ThreeDMarquee } from "@godui/components";
+import { ThreeDMarquee } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 const IMAGES = [
@@ -21,7 +21,7 @@ const IMAGES = [
 ].map((id) => `https://picsum.photos/id/${id}/400/400`);
 
 const meta = {
-  title: "Layout/Three D Marquee",
+  title: "Lab/Layout/Three D Marquee",
   component: ThreeDMarquee,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

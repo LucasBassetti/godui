@@ -1,6 +1,6 @@
 "use client";
 
-import { ScrollReveal } from "@godui/components";
+import { ScrollReveal } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
@@ -38,7 +38,7 @@ export function ScrollRevealResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — scroll into view
+          the real component: scroll into view
         </span>
       </div>
       <div className="flex min-h-[280px] flex-col items-center justify-center gap-4 p-8 md:p-12">

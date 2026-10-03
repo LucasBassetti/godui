@@ -169,7 +169,7 @@ function NoiseField({
 const LEGEND = [
   {
     name: "Source",
-    desc: "the img — SourceGraphic into the filter",
+    desc: "the img: SourceGraphic into the filter",
     kind: "source" as const,
   },
   {
@@ -179,7 +179,7 @@ const LEGEND = [
   },
   {
     name: "Displaced",
-    desc: "scale pushes pixels — edges fray into the liquid border",
+    desc: "scale pushes pixels, so edges fray into the liquid border",
     kind: "displaced" as const,
   },
 ] as const;
@@ -252,7 +252,7 @@ export function LiquidImageAnatomy() {
 
           <p className="max-w-[34ch] text-center text-[13px] text-fd-muted-foreground">
             Watch the third plate: as scale rises, the same bands fray at the
-            edge — that&apos;s the liquid border.
+            edge. That&apos;s the liquid border.
           </p>
 
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">

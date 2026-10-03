@@ -1,4 +1,4 @@
-import { MagicTab } from "@godui/components";
+import { MagicTab } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "storybook/test";
 import { action, hidden, select, toggle } from "../playground/argtypes";
@@ -12,7 +12,7 @@ const items = [
 ];
 
 const meta = {
-  title: "Navigation/Magic Tab",
+  title: "Lab/Navigation/Magic Tab",
   component: MagicTab,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

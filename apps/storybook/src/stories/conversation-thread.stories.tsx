@@ -1,5 +1,5 @@
 // biome-ignore-all lint/a11y/useValidAriaRole: "role" is a chat-message domain prop, not an ARIA role
-import { ConversationMessage, ConversationThread } from "@godui/components";
+import { ConversationMessage, ConversationThread } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { hidden, select, toggle } from "../playground/argtypes";
 
@@ -21,7 +21,7 @@ const copyAction = {
 };
 
 const meta = {
-  title: "AI/ConversationThread",
+  title: "Lab/AI/ConversationThread",
   component: ConversationThread,
   subcomponents: { ConversationMessage },
   tags: ["autodocs"],

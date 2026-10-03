@@ -1,0 +1,57 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "checkbox",
+  "title": "Checkbox",
+  "description": "A control that allows the user to toggle between checked and not checked. Ink floods the box from a dot and the check is drawn; unchecking drains it. GPU-only.",
+  "dependencies": ["radix-ui", "lucide-react"],
+  "registryDependencies": ["utils", "@godui/godui-motion"],
+  "files": [
+    {
+      "path": "packages/components/src/ui/checkbox.tsx",
+      "content": "\"use client\";\n\n// GodUI Checkbox — mirrors shadcn/ui new-york-v4 components/ui/checkbox.tsx (registry snapshot 2026-10-01).\n// Motion: checking floods the box with ink. The border snaps to the checked\n// color, then a disc of the fill color grows from the center (scale) until the\n// box's rounded clip squares it off: a dot that morphs into the filled box.\n// The check is then drawn left to right: a clip window slides over it while\n// the mark slides back by the same amount, so the stroke holds still and only\n// its leading edge moves. The box dips on a spring. Unchecking drains it: the\n// mark fades and the disc shrinks back to a dot. Fill and check colors come\n// from the root's own (shadcn or caller) classes: the root's checked\n// background isn't painted (background-clip: text, and it has no text), the\n// indicator and disc inherit it. Every keyframe is gated on data-animate: it runs only after a change; a\n// pre-checked box never animates on first paint. GPU-only.\n\nimport { CheckIcon } from \"lucide-react\";\nimport { Checkbox as CheckboxPrimitive } from \"radix-ui\";\nimport * as React from \"react\";\nimport { cn } from \"@/lib/utils\";\n\nfunction Checkbox({\n  className,\n  checked,\n  defaultChecked,\n  onCheckedChange,\n  onClickCapture,\n  ...props\n}: React.ComponentProps<typeof CheckboxPrimitive.Root>) {\n  // Animate only state changes, not the initial render. User toggles flip it\n  // in onCheckedChange; controlled changes are caught during render.\n  const [animate, setAnimate] = React.useState(false);\n  const [lastChecked, setLastChecked] = React.useState(checked);\n  if (checked !== lastChecked) {\n    setLastChecked(checked);\n    setAnimate(true);\n  }\n  // Mirrors Radix's controllable state (controlled when `checked` is not\n  // undefined) so the ink below knows when the box empties.\n  const [uncontrolled, setUncontrolled] = React.useState(\n    defaultChecked ?? false,\n  );\n  const on = (checked !== undefined ? checked : uncontrolled) !== false;\n\n  // Once unchecked, the root's colors are the unchecked ones, so the draining\n  // disc and fading mark would turn transparent at once. Keep the last checked\n  // colors on the exiting indicator: read once checked, and again in the\n  // capture phase of the click that unchecks, before Radix toggles (its\n  // onCheckedChange runs after the commit, too late).\n  const indicatorRef = React.useRef<HTMLSpanElement>(null);\n  const ink = React.useRef<{ color: string; background: string } | null>(null);\n  const readInk = React.useCallback(() => {\n    const el = indicatorRef.current;\n    if (!el || el.dataset.state === \"unchecked\") return;\n    const style = getComputedStyle(el);\n    ink.current = { color: style.color, background: style.backgroundColor };\n  }, []);\n  React.useLayoutEffect(() => {\n    const el = indicatorRef.current;\n    if (!el) return;\n    if (on) {\n      el.style.color = \"\";\n      el.style.backgroundColor = \"\";\n      readInk();\n    } else if (ink.current) {\n      el.style.color = ink.current.color;\n      el.style.backgroundColor = ink.current.background;\n    }\n  }, [on, readInk]);\n\n  return (\n    <CheckboxPrimitive.Root\n      data-slot=\"checkbox\"\n      data-animate={animate || undefined}\n      checked={checked}\n      defaultChecked={defaultChecked}\n      onClickCapture={(event) => {\n        readInk();\n        onClickCapture?.(event);\n      }}\n      onCheckedChange={(value) => {\n        setAnimate(true);\n        setUncontrolled(value);\n        onCheckedChange?.(value);\n      }}\n      className={cn(\n        // not-unchecked: the root's fill is carried by the indicator.\n        \"peer group/checkbox size-4 shrink-0 rounded-[4px] border border-input shadow-xs outline-none [--godui-pop-scale:0.9] not-data-[state=unchecked]:bg-clip-text focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 data-[animate=true]:data-[state=checked]:animate-godui-pop data-[state=checked]:border-primary data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground dark:bg-input/30 dark:aria-invalid:ring-destructive/40 dark:data-[state=checked]:bg-primary\",\n        className,\n      )}\n      {...props}\n    >\n      {/* Inherits the root's fill without painting it (background-clip:\n          text), so the disc can inherit it in turn. It covers the border box\n          (-m-px) with the root's radius and clips the disc there: clipped at\n          the border's inner edge instead, the two antialias into a hairline\n          seam. The hold keyframe keeps\n          Presence from removing it until the ink has drained; isolate keeps\n          its 1 → 0.99 opacity from adding a paint layer mid-way. */}\n      <CheckboxPrimitive.Indicator\n        ref={indicatorRef}\n        data-slot=\"checkbox-indicator\"\n        className=\"isolate -m-px grid size-[calc(100%+2px)] place-items-center overflow-hidden rounded-[inherit] bg-inherit bg-clip-text text-current group-data-[animate=true]/checkbox:data-[state=unchecked]:animate-godui-checkbox-hold\"\n      >\n        {/* The disc: a circle the box's diagonal wide (scale 1.42) at rest,\n            squared off by the indicator's clip; it grows from a dot. */}\n        <span className=\"size-full scale-[1.42] rounded-full bg-inherit [grid-area:1/1] group-data-[animate=true]/checkbox:group-data-[state=checked]/checkbox:animate-godui-checkbox-fill-in group-data-[animate=true]/checkbox:group-data-[state=unchecked]/checkbox:animate-godui-checkbox-fill-out\" />\n        {/* The window slides in from the left, the mark slides back: the\n            stroke stays put and is uncovered left to right, the way a check\n            is drawn. Spans, because Chrome won't composite translate on an\n            <svg>. `relative`: the disc's scale gives it its own layer, which\n            would otherwise paint over an in-flow mark at rest. */}\n        <span className=\"relative flex overflow-hidden [grid-area:1/1] group-data-[animate=true]/checkbox:group-data-[state=checked]/checkbox:animate-godui-checkbox-draw group-data-[animate=true]/checkbox:group-data-[state=unchecked]/checkbox:animate-godui-checkbox-check-out\">\n          <span className=\"flex group-data-[animate=true]/checkbox:group-data-[state=checked]/checkbox:animate-godui-checkbox-ink\">\n            <CheckIcon className=\"size-3.5\" />\n          </span>\n        </span>\n      </CheckboxPrimitive.Indicator>\n    </CheckboxPrimitive.Root>\n  );\n}\n\nexport { Checkbox };\n",
+      "type": "registry:ui"
+    }
+  ],
+  "cssVars": {
+    "theme": {
+      "animate-godui-checkbox-fill-in": "godui-checkbox-fill-in var(--godui-duration-base) var(--ease-spring-smooth) backwards",
+      "animate-godui-checkbox-fill-out": "godui-checkbox-fill-out var(--godui-duration-fast) var(--ease-spring-smooth) both",
+      "animate-godui-checkbox-draw": "godui-checkbox-draw calc(var(--godui-duration-base) - 70ms * var(--godui-motion)) var(--ease-spring-smooth) calc(70ms * var(--godui-motion)) backwards",
+      "animate-godui-checkbox-ink": "godui-checkbox-ink calc(var(--godui-duration-base) - 70ms * var(--godui-motion)) var(--ease-spring-smooth) calc(70ms * var(--godui-motion)) backwards",
+      "animate-godui-checkbox-check-out": "godui-checkbox-check-out var(--godui-duration-fast) var(--ease-out-expo) both",
+      "animate-godui-checkbox-hold": "godui-reveal-hold var(--godui-duration-fast) linear"
+    }
+  },
+  "css": {
+    "@keyframes godui-checkbox-fill-in": {
+      "from": {
+        "opacity": "var(--godui-motion)",
+        "scale": "calc(1.42 * (1 - var(--godui-motion)))"
+      }
+    },
+    "@keyframes godui-checkbox-fill-out": {
+      "to": {
+        "opacity": "var(--godui-motion)",
+        "scale": "calc(1.42 * (1 - var(--godui-motion)))"
+      }
+    },
+    "@keyframes godui-checkbox-draw": {
+      "from": {
+        "translate": "calc(-100% * var(--godui-motion)) 0"
+      }
+    },
+    "@keyframes godui-checkbox-ink": {
+      "from": {
+        "opacity": "var(--godui-motion)",
+        "translate": "calc(100% * var(--godui-motion)) 0"
+      }
+    },
+    "@keyframes godui-checkbox-check-out": {
+      "to": {
+        "opacity": "0",
+        "scale": "calc(1 - 0.3 * var(--godui-motion))"
+      }
+    }
+  },
+  "type": "registry:ui"
+}

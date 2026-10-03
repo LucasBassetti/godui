@@ -9,12 +9,19 @@
     "skipLibCheck": true,
     "noEmit": true,
     "isolatedModules": true,
-    "types": ["vite/client"]
+    "types": ["vite/client"],
+    "paths": {
+      "@/lib/utils": ["../../packages/components/src/lib/utils.ts"],
+      "@/hooks/*": ["../../packages/components/src/hooks/*"],
+      "@/components/ui/*": ["../../packages/components/src/ui/*"]
+    }
   },
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx",
     ".storybook/**/*.ts",
-    ".storybook/**/*.tsx"
+    ".storybook/**/*.tsx",
+    "motion-trace/**/*.ts",
+    "playwright.config.ts"
   ]
 }

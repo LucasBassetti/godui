@@ -1,0 +1,285 @@
+"use client";
+
+import * as React from "react";
+
+export interface FlipGroupOptions {
+  /** Children to animate, matched inside the container. */
+  selector?: string;
+  /** Milliseconds. Defaults to the `--godui-duration-base` token (260ms). */
+  duration?: number;
+  /**
+   * Any CSS easing, incl. linear() springs. Defaults to the container's own
+   * `transition-timing-function` (give it an `ease-spring-*` class), else an
+   * ease-out-expo curve.
+   */
+  easing?: string;
+  /**
+   * The element whose position is tracked for a candidate (default: the
+   * candidate itself). The offset still animates the candidate, so a box can
+   * glide by the distance its content moved, e.g. a button whose padding
+   * snapped: moving the box keeps its icon from being clipped by it.
+   */
+  measure?: (el: HTMLElement) => Element;
+}
+
+const useIsoLayoutEffect =
+  typeof window === "undefined" ? React.useEffect : React.useLayoutEffect;
+
+type Point = { x: number; y: number };
+
+/** The element's own `translate` as [x, y] CSS lengths ("0px" when unset). */
+function ownTranslate(el: HTMLElement): [string, string] {
+  const value =
+    el.ownerDocument.defaultView?.getComputedStyle(el).translate ||
+    el.style.translate ||
+    "none";
+  if (value === "none") return ["0px", "0px"];
+  const [x = "0px", y = "0px"] = value.trim().split(/\s+/);
+  return [x, y];
+}
+
+/** `length + offset px`, folded to a plain px value when possible. */
+function plus(length: string, offset: number): string {
+  const px = /^(-?[\d.]+)px$/.exec(length);
+  if (px) return `${Number(px[1]) + offset}px`;
+  return `calc(${length} + ${offset}px)`;
+}
+
+/** One translate length (`8px`, `-100%`, `calc(-100% + 8px)`) in px. */
+function lengthPx(length: string, size: number): number | null {
+  const inner = /^calc\((.*)\)$/.exec(length.trim())?.[1] ?? length;
+  let total = 0;
+  for (const term of inner.replace(/\s-\s/g, " + -").split(/\s\+\s/)) {
+    const match = /^(-?[\d.]+(?:e-?\d+)?)(px|%)$/.exec(term.trim());
+    if (!match) return null;
+    const n = Number(match[1]);
+    total += match[2] === "%" ? (n * size) / 100 : n;
+  }
+  return total;
+}
+
+/** A translate value (`"8px 0px"`, `"-100%"`) as px for `el`, or null. */
+function translatePx(value: string, el: HTMLElement): Point | null {
+  if (!value || value === "none") return { x: 0, y: 0 };
+  const parts = value.trim().match(/(?:calc\([^)]*\)|[^\s]+)/g) ?? [];
+  const x = lengthPx(parts[0] ?? "0px", el.offsetWidth);
+  const y = lengthPx(parts[1] ?? "0px", el.offsetHeight);
+  return x === null || y === null ? null : { x, y };
+}
+
+/** A CSS time (`260ms`, `0.3s`) in milliseconds; 260 when unset or invalid. */
+function toMs(value: string | undefined): number {
+  const n = Number.parseFloat(value ?? "");
+  if (!Number.isFinite(n)) return 260;
+  return /\ds\s*$/.test(value ?? "") ? n * 1000 : n;
+}
+
+/**
+ * Running FLIPs by element, shared by every group: an element moved by one
+ * group (e.g. a Collapsible) can be a candidate of another (its sibling
+ * Collapsible). Any group cancels and carries it; nobody baselines it mid-flight.
+ */
+const RUNNING = new WeakMap<Element, Animation>();
+
+const self = (el: HTMLElement): Element => el;
+
+/**
+ * Finite animations moving `el` that aren't a FLIP of this hook's (e.g. a
+ * Collapsible panel's clip-edge sweep moving its box and children): a
+ * baseline taken mid-way would include their offsets.
+ */
+function foreignMoves(el: Element): Animation[] {
+  if (typeof el.getAnimations !== "function") return [];
+  return el.getAnimations().filter((animation) => {
+    if (animation === RUNNING.get(el) || animation.playState !== "running") {
+      return false;
+    }
+    const effect = animation.effect as Partial<KeyframeEffect> | null;
+    const end = Number(effect?.getComputedTiming?.().endTime);
+    if (!Number.isFinite(end)) return false;
+    const frames =
+      typeof effect?.getKeyframes === "function" ? effect.getKeyframes() : [];
+    return frames.some((f) => "translate" in f || "transform" in f);
+  });
+}
+
+/** Each matched child's position relative to the container. */
+function measure(
+  container: HTMLElement,
+  selector: string,
+  track: (el: HTMLElement) => Element,
+) {
+  const origin = container.getBoundingClientRect();
+  const positions = new Map<Element, Point>();
+  for (const el of container.querySelectorAll<HTMLElement>(selector)) {
+    const rect = track(el).getBoundingClientRect();
+    positions.set(el, { x: rect.left - origin.left, y: rect.top - origin.top });
+  }
+  return positions;
+}
+
+/**
+ * FLIP for layout changes without animating layout: when `trigger` changes,
+ * children (default `[data-flip]`) whose position moved play an inverse offset
+ * back to rest via WAAPI on the individual `translate` property, added to the
+ * element's own translate. Replace-composited `translate` runs on the
+ * compositor (Chrome won't composite `composite: "add"`) and sits outside the
+ * element's `scale`/`rotate`, so scaled children don't distort the distance.
+ * Sizes snap; only translate animates.
+ *
+ * Positions are relative to the container (scrolling between triggers is
+ * ignored). If a previous FLIP is still running, its current visual offset is
+ * read before cancelling it and carried into the new animation, so an
+ * interruption starts from where the element is drawn instead of jumping.
+ * Layout changes that no trigger accounts for (content loading, reflow) are
+ * picked up by a ResizeObserver and become the new baseline without
+ * animating — once no FLIP (from this group or another) and no other finite
+ * translate animation (a reveal's sweep) is running on the container or the
+ * candidates, so a baseline never includes an in-flight offset.
+ */
+export function useFlipGroup(
+  containerRef: React.RefObject<HTMLElement | null>,
+  trigger: unknown,
+  {
+    selector = "[data-flip]",
+    duration,
+    easing,
+    measure: track = self,
+  }: FlipGroupOptions = {},
+): void {
+  const last = React.useRef(new Map<Element, Point>());
+  const dirty = React.useRef(false);
+  const resizes = React.useRef<ResizeObserver | null>(null);
+  const settle = React.useRef<() => void>(() => {});
+  // Read through a ref: an inline `measure` needn't re-run the effects.
+  const tracker = React.useRef(track);
+  tracker.current = track;
+
+  // Re-baseline on resizes no trigger caused, once nothing is mid-FLIP.
+  React.useEffect(() => {
+    const container = containerRef.current;
+    if (!container || typeof ResizeObserver === "undefined") return;
+    // What this group already waits on. Each animation is waited on once:
+    // re-attaching on every settle would let each cancelled FLIP (a toggle
+    // mid-move) re-wait on every new one, multiplying the waits per toggle
+    // until rapid toggling (Ctrl+B spam) hangs the page.
+    const waiting = new WeakSet<Animation>();
+    settle.current = () => {
+      const busy: Array<[Element, Animation]> = [];
+      const candidates = [...container.querySelectorAll(selector)];
+      for (const el of candidates) {
+        const animation = RUNNING.get(el);
+        if (animation) busy.push([el, animation]);
+      }
+      const foreign = [container, ...candidates].flatMap(foreignMoves);
+      if (busy.length === 0 && foreign.length === 0) {
+        dirty.current = false;
+        last.current = measure(container, selector, tracker.current);
+        return;
+      }
+      dirty.current = true;
+      for (const [el, animation] of busy) {
+        if (waiting.has(animation)) continue;
+        waiting.add(animation);
+        // `finished` can settle before `onfinish` runs; clear the entry here
+        // too, or settle() would keep re-waiting on a resolved promise.
+        const done = () => {
+          if (RUNNING.get(el) === animation) RUNNING.delete(el);
+          settle.current();
+        };
+        animation.finished?.then(done, done);
+      }
+      const again = () => settle.current();
+      for (const animation of foreign) {
+        if (waiting.has(animation)) continue;
+        waiting.add(animation);
+        animation.finished?.then(again, again);
+      }
+    };
+    const observer = new ResizeObserver(() => settle.current());
+    resizes.current = observer;
+    observer.observe(container);
+    for (const el of container.querySelectorAll(selector)) observer.observe(el);
+    return () => {
+      observer.disconnect();
+      resizes.current = null;
+    };
+  }, [containerRef, selector]);
+
+  // `trigger` is in the deps purely as the signal to re-measure.
+  useIsoLayoutEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    const view = container.ownerDocument.defaultView;
+    const origin = container.getBoundingClientRect();
+    const reduce =
+      view?.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
+    const containerEase =
+      view?.getComputedStyle(container).transitionTimingFunction;
+    const ease =
+      easing ??
+      (containerEase && containerEase !== "ease"
+        ? containerEase
+        : "cubic-bezier(0.16, 1, 0.3, 1)");
+    const ms =
+      duration ??
+      toMs(
+        view
+          ?.getComputedStyle(container)
+          .getPropertyValue("--godui-duration-base"),
+      );
+    const next = new Map<Element, Point>();
+    for (const el of container.querySelectorAll<HTMLElement>(selector)) {
+      resizes.current?.observe(el);
+      const tracked = tracker.current(el);
+      let rect = tracked.getBoundingClientRect();
+      let carry: Point = { x: 0, y: 0 };
+      const active = RUNNING.get(el);
+      if (active) {
+        // The rest it was gliding to: if the element's own translate changed
+        // since (a class moved it), the running FLIP still holds the old one.
+        // Duck-typed: `instanceof` fails across realms (an iframe whose DOM
+        // is driven from the parent window's JS).
+        const effect = active.effect as Partial<KeyframeEffect> | null;
+        const frames =
+          typeof effect?.getKeyframes === "function"
+            ? effect.getKeyframes()
+            : [];
+        const target = frames[frames.length - 1]?.translate;
+        active.cancel();
+        RUNNING.delete(el);
+        const settled = tracked.getBoundingClientRect();
+        carry = { x: rect.left - settled.left, y: rect.top - settled.top };
+        rect = settled;
+        const before =
+          typeof target === "string" ? translatePx(target, el) : null;
+        const after = translatePx(ownTranslate(el).join(" "), el);
+        if (before && after) {
+          carry.x += after.x - before.x;
+          carry.y += after.y - before.y;
+        }
+      }
+      const now = { x: rect.left - origin.left, y: rect.top - origin.top };
+      next.set(el, now);
+      const prev = last.current.get(el);
+      if (!prev || reduce || typeof el.animate !== "function") continue;
+      const dx = prev.x - now.x + carry.x;
+      const dy = prev.y - now.y + carry.y;
+      if (dx === 0 && dy === 0) continue;
+      const [ownX, ownY] = ownTranslate(el);
+      const animation = el.animate(
+        [
+          { translate: `${plus(ownX, dx)} ${plus(ownY, dy)}` },
+          { translate: `${ownX} ${ownY}` },
+        ],
+        { duration: ms, easing: ease },
+      );
+      RUNNING.set(el, animation);
+      animation.onfinish = () => {
+        if (RUNNING.get(el) === animation) RUNNING.delete(el);
+        if (dirty.current) settle.current();
+      };
+    }
+    last.current = next;
+  }, [trigger, selector, duration, easing]);
+}

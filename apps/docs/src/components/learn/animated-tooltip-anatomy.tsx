@@ -28,7 +28,7 @@ const LEGEND: {
     name: "trigger",
     desc: (
       <>
-        always mounted — hover/focus flips{" "}
+        always mounted; hover/focus flips{" "}
         <code className="rounded bg-[var(--muted)] px-1 py-0.5 font-mono text-[0.9em] text-fd-foreground">
           open
         </code>

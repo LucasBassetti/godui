@@ -1,0 +1,510 @@
+{
+  "agent-flow": {
+    "nonCompositor": [
+      "backgroundcolor",
+      "bordercolor",
+      "boxshadow",
+      "color",
+      "pathlength"
+    ],
+    "gated": ["boxshadow"]
+  },
+  "agent-timeline": {
+    "nonCompositor": [
+      "backgroundcolor",
+      "bordercolor",
+      "color",
+      "fill",
+      "height",
+      "outlinecolor",
+      "stroke",
+      "textdecorationcolor"
+    ],
+    "gated": ["height"]
+  },
+  "animated-beam": {
+    "nonCompositor": ["x1", "x2", "y1", "y2"],
+    "gated": ["x1", "x2", "y1", "y2"]
+  },
+  "animated-testimonials": {
+    "nonCompositor": ["background"],
+    "gated": []
+  },
+  "animated-tooltip": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "app-showcase": {
+    "nonCompositor": ["backgroundcolor", "width"],
+    "gated": ["width"]
+  },
+  "ascii-dither": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "aurora-text": {
+    "nonCompositor": ["backgroundposition"],
+    "gated": []
+  },
+  "avatar-group": {
+    "nonCompositor": ["marginleft"],
+    "gated": ["marginleft"]
+  },
+  "beam-draw": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "bento-grid": {
+    "nonCompositor": ["boxshadow"],
+    "gated": ["boxshadow"]
+  },
+  "blueprint-grid": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "border-beam": {
+    "nonCompositor": ["offsetdistance"],
+    "gated": []
+  },
+  "breadcrumbs": {
+    "nonCompositor": ["backgroundcolor", "color"],
+    "gated": []
+  },
+  "card-swap": {
+    "nonCompositor": ["background"],
+    "gated": []
+  },
+  "comment-pin": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "confetti": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "container-scroll": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "conversation-thread": {
+    "nonCompositor": [
+      "backgroundcolor",
+      "bordercolor",
+      "color",
+      "fill",
+      "outlinecolor",
+      "stroke",
+      "textdecorationcolor"
+    ],
+    "gated": []
+  },
+  "cover-flow": {
+    "nonCompositor": ["background"],
+    "gated": []
+  },
+  "decorative-background": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "dock": {
+    "nonCompositor": ["height", "width"],
+    "gated": ["height", "width"]
+  },
+  "dynamic-island": {
+    "nonCompositor": ["borderradius", "height", "width"],
+    "gated": ["borderradius", "height", "width"]
+  },
+  "effect-background": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "elastic-text": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "encrypted-card": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "filter-bar": {
+    "nonCompositor": ["backgroundcolor", "bordercolor", "color"],
+    "gated": []
+  },
+  "floating-toolbar": {
+    "nonCompositor": ["backgroundcolor", "color"],
+    "gated": []
+  },
+  "flow-field": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "fluid-cursor": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "geometric-background": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "globe": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "gooey-fab": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "gooey-stack": {
+    "nonCompositor": [
+      "backgroundcolor",
+      "bordercolor",
+      "boxshadow",
+      "color",
+      "fill",
+      "outlinecolor",
+      "stroke",
+      "textdecorationcolor"
+    ],
+    "gated": ["boxshadow"]
+  },
+  "gradient-background": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "gravity": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "hero-parallax": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "highlighter": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "hold-confirm-button": {
+    "nonCompositor": ["pathlength"],
+    "gated": []
+  },
+  "holographic-card": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "image-accordion": {
+    "nonCompositor": ["flexgrow"],
+    "gated": ["flexgrow"]
+  },
+  "image-compare": {
+    "nonCompositor": [
+      "backgroundcolor",
+      "bordercolor",
+      "boxshadow",
+      "clippath",
+      "color",
+      "fill",
+      "outlinecolor",
+      "stroke",
+      "textdecorationcolor"
+    ],
+    "gated": ["boxshadow", "clippath"]
+  },
+  "image-trail": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "inertia-gallery": {
+    "nonCompositor": ["background"],
+    "gated": []
+  },
+  "jelly-button": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "lamp": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "light-rays": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "liquid-glass": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "liquid-image": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "liquid-metaballs": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "live-cursors": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "magic-button": {
+    "nonCompositor": ["backgroundposition"],
+    "gated": []
+  },
+  "magic-input": {
+    "nonCompositor": [
+      "backgroundposition",
+      "backgroundsize",
+      "strokedashoffset"
+    ],
+    "gated": ["backgroundsize"]
+  },
+  "magic-tab": {
+    "nonCompositor": ["background", "backgroundposition", "color"],
+    "gated": []
+  },
+  "magnetic-button": {
+    "nonCompositor": ["background", "color"],
+    "gated": []
+  },
+  "marquee": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "mask-button": {
+    "nonCompositor": ["maskposition"],
+    "gated": ["maskposition"]
+  },
+  "mega-menu": {
+    "nonCompositor": ["backgroundcolor", "color", "height", "width"],
+    "gated": ["height", "width"]
+  },
+  "morph-gallery": {
+    "nonCompositor": ["background"],
+    "gated": []
+  },
+  "morphing-dialog": {
+    "nonCompositor": ["background", "color"],
+    "gated": []
+  },
+  "multi-button": {
+    "nonCompositor": ["backgroundcolor", "color", "width"],
+    "gated": ["width"]
+  },
+  "notification-inbox": {
+    "nonCompositor": [
+      "backgroundcolor",
+      "bordercolor",
+      "color",
+      "fill",
+      "height",
+      "outlinecolor",
+      "stroke",
+      "textdecorationcolor"
+    ],
+    "gated": ["height"]
+  },
+  "number-ticker": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "orbit-carousel": {
+    "nonCompositor": ["background"],
+    "gated": []
+  },
+  "orbiting-circles": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "otp-input": {
+    "nonCompositor": ["bordercolor"],
+    "gated": []
+  },
+  "particle-dissolve": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "pixel-grid": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "presence-facepile": {
+    "nonCompositor": [
+      "backgroundcolor",
+      "bordercolor",
+      "color",
+      "fill",
+      "outlinecolor",
+      "stroke",
+      "textdecorationcolor"
+    ],
+    "gated": []
+  },
+  "progress-fold-button": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "progressive-card-reveal": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "prompt-composer": {
+    "nonCompositor": [
+      "backgroundcolor",
+      "bordercolor",
+      "boxshadow",
+      "color",
+      "fill",
+      "height",
+      "outlinecolor",
+      "stroke",
+      "textdecorationcolor"
+    ],
+    "gated": ["boxshadow", "height"]
+  },
+  "prompt-suggestions": {
+    "nonCompositor": [
+      "backgroundcolor",
+      "bordercolor",
+      "boxshadow",
+      "color",
+      "fill",
+      "outlinecolor",
+      "stroke",
+      "textdecorationcolor"
+    ],
+    "gated": ["boxshadow"]
+  },
+  "reorder-list": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "resizable-header": {
+    "nonCompositor": ["backgroundcolor", "color"],
+    "gated": []
+  },
+  "scroll-progress": {
+    "nonCompositor": ["strokedashoffset"],
+    "gated": []
+  },
+  "scroll-reveal": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "scroll-stack": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "scroll-text-reveal": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "scroll-timeline": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "segmented-control": {
+    "nonCompositor": ["color"],
+    "gated": []
+  },
+  "shimmer-button": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "slide-confirm-button": {
+    "nonCompositor": ["pathlength", "width"],
+    "gated": ["width"]
+  },
+  "source-citations": {
+    "nonCompositor": [
+      "backgroundcolor",
+      "bordercolor",
+      "color",
+      "fill",
+      "outlinecolor",
+      "stroke",
+      "textdecorationcolor"
+    ],
+    "gated": []
+  },
+  "spin-viewer": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "split-flap-display": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "spotlight-card": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "spotlight-reveal": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "stack-badge": {
+    "nonCompositor": ["color"],
+    "gated": []
+  },
+  "stepper": {
+    "nonCompositor": [
+      "backgroundcolor",
+      "bordercolor",
+      "boxshadow",
+      "color",
+      "pathlength"
+    ],
+    "gated": ["boxshadow"]
+  },
+  "sticky-scroll": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "store-badge": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "swipe-deck": {
+    "nonCompositor": ["background"],
+    "gated": []
+  },
+  "tab-bar": {
+    "nonCompositor": ["width"],
+    "gated": ["width"]
+  },
+  "terminal": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "text-animate": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "text-scramble": {
+    "nonCompositor": ["color"],
+    "gated": []
+  },
+  "three-d-marquee": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "tilt-card": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "topographic-drift": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "voice-orb": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "warp-starfield": {
+    "nonCompositor": [],
+    "gated": []
+  },
+  "world-map": {
+    "nonCompositor": ["pathlength"],
+    "gated": []
+  }
+}

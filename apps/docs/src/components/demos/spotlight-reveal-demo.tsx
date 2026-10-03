@@ -1,6 +1,6 @@
 "use client";
 
-import { SpotlightReveal } from "@godui/components";
+import { SpotlightReveal } from "@godui/lab";
 
 export function SpotlightRevealDemo() {
   return (

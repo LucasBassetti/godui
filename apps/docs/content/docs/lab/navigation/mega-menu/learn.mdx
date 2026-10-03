@@ -1,0 +1,126 @@
+---
+title: Anatomy of the Mega Menu
+description: How a trigger row shares one sliding highlight, measures its own panel content, and morphs its footprint from a one-column list to a two-column spread.
+learnPlayer: true
+---
+
+<LearnPlayer>
+
+<LearnChapter
+  label="Triggers, pill, and panel"
+  scene={<MegaMenuAnatomy />}
+  code={`{isHot && (
+  <motion.span
+    layoutId={highlightId}
+    transition={spring}
+    className="absolute inset-0 rounded-lg bg-accent"
+  />
+)}
+<span className="relative">{item.label}</span>`}
+>
+
+A mega menu is two small components stapled together: a trigger row
+that behaves like a segmented control, and a panel that has to resize
+itself for whatever content the hot trigger carries. Neither part is hard
+alone. The work is making them agree on timing so hovering across
+triggers never fights the panel underneath.
+
+The trigger row is plain buttons and links, with no wrapper markup per item.
+A single highlight `motion.span` renders only under whichever trigger is
+"hot" (`hovered ?? active`), and triggers that carry a `sections` array
+open a panel of link columns below them:
+
+`hasPanel` triggers get `aria-haspopup="true"` and `aria-expanded`; plain
+links skip both, so not every top-level item has to be a dropdown.
+
+</LearnChapter>
+
+<LearnChapter
+  label="One sliding highlight"
+  scene={<MegaMenuHighlight />}
+  code={`const spring = reduceMotion
+  ? { duration: 0 }
+  : ({ type: "spring", stiffness: 320, damping: 32, mass: 0.9 } as const);`}
+>
+
+Because the pill is one `motion.span` with a shared `layoutId`, moving the
+pointer from trigger to trigger springs a single element between them
+instead of cross-fading two backgrounds. Framer diffs the old box against
+the new one, so the slide is direction-aware for free:
+
+The extra `mass: 0.9` (versus the `520/32` pill used elsewhere in the
+system) is deliberate. A mega menu's trigger row is wider and the highlight
+travels further per hop, so a touch more inertia keeps the slide from
+feeling twitchy over that distance.
+
+</LearnChapter>
+
+<LearnChapter
+  label="Panel footprint morph"
+  scene={<MegaMenuMorph />}
+  code={`useIsoLayoutEffect(() => {
+  if (active === null) return;
+  const el = contentRef.current;
+  if (el) setBounds({ width: el.offsetWidth, height: el.offsetHeight });
+}, [active]);
+
+<motion.div
+  animate={{ width: bounds?.width ?? "auto", height: bounds?.height ?? "auto" }}
+  transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+  className="relative overflow-hidden"
+/>`}
+>
+
+This is the one place in GodUI navigation that intentionally animates a
+layout property. Hover from Product (two columns) to Resources (one) and
+the open panel stays mounted. It keeps the shell, measures the incoming
+content, and morphs `width`/`height` so the footprint flows around it while
+the links cross-fade:
+
+Faking that with `scale` would distort the text inside the panel. Reading
+`offsetWidth`/`offsetHeight` and animating layout is the trade-off: it is
+the only way to resize a box around different content without crushing
+it. The inner content still cross-fades with `AnimatePresence
+mode="popLayout"` keyed on `active`, so the outgoing column set never
+overlaps the incoming one mid-morph. In the Result below, hover Product
+then Resources to feel both the sliding highlight and the panel flow at
+once.
+
+Hovering a trigger doesn't open its panel instantly: `scheduleOpen` waits
+`openDelay` (default `80ms`) before committing, so a fast sweep across
+several triggers doesn't flash every panel along the way. Leaving waits
+longer, `closeDelay` (`140ms`), and hovering into the open panel itself
+cancels that timer:
+
+```tsx
+const scheduleOpen = (index: number) => {
+  clearTimeout(closeTimer.current);
+  setHovered(index);
+  openTimer.current = setTimeout(() => setActive(index), openDelay);
+};
+// panel:
+onMouseEnter={() => clearTimeout(closeTimer.current)}
+```
+
+The asymmetry (a short wait to open, a longer grace period to close)
+makes the menu feel deliberate on the way in and forgiving on the way out.
+Keyboard users get the same open path through `onFocus={() =>
+scheduleOpen(index)}`, and on touch, hover panels don't work at all, so
+`md:hidden` swaps the whole thing for an accordion drawer instead of trying
+to simulate hover.
+
+</LearnChapter>
+
+<LearnChapter label="The result" scene={<MegaMenuResult />} isResult>
+
+The whole mega menu is one shared highlight, one measured panel and two
+independently tuned timers, whether it shows a single link or a two-column
+spread.
+
+</LearnChapter>
+
+</LearnPlayer>
+
+## Motion Score
+
+<MotionScorePanel name="mega-menu" />

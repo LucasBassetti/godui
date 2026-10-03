@@ -1,6 +1,6 @@
 "use client";
 
-import { LiquidMetaballs } from "@godui/components";
+import { LiquidMetaballs } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 export function LiquidMetaballsResult() {
@@ -26,7 +26,7 @@ export function LiquidMetaballsResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — move to merge
+          the real component: move to merge
         </span>
       </div>
       {demo}

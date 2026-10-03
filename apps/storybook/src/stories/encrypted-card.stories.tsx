@@ -1,4 +1,4 @@
-import { EncryptedCard, type EncryptedCardProps } from "@godui/components";
+import { EncryptedCard, type EncryptedCardProps } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 function CardBody() {
@@ -18,7 +18,7 @@ function CardBody() {
 }
 
 const meta = {
-  title: "Effects/Encrypted Card",
+  title: "Lab/Effects/Encrypted Card",
   component: EncryptedCard,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

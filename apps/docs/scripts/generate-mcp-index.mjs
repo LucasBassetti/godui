@@ -1,13 +1,14 @@
 // Generates apps/docs/public/r/index.json — a lightweight catalog the GodUI MCP
 // server (@godui/mcp) fetches to power list/search. Static items come from the
-// root registry.json; dynamic background items come from the shared background
-// catalog. Categories come from the docs sidebar config (meta.json). Run via
+// root registry.json + registry-lab.json; dynamic background items come from the shared background
+// catalog. Categories come from the Lab sidebar config (lab/meta.json). Run via
 // `pnpm build:registry`.
 
 import { createHash } from "node:crypto";
 import { readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { assertNoCollisions } from "./registry-names.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(__dirname, "../../..");
@@ -27,18 +28,24 @@ function computeRevision(payload) {
 const registry = JSON.parse(
   readFileSync(resolve(repoRoot, "registry.json"), "utf8"),
 );
+const labRegistry = JSON.parse(
+  readFileSync(resolve(repoRoot, "registry-lab.json"), "utf8"),
+);
 const backgroundCatalog = JSON.parse(
   readFileSync(
-    resolve(repoRoot, "packages/components/src/lib/background-catalog.json"),
+    resolve(repoRoot, "packages/lab/src/lib/background-catalog.json"),
     "utf8",
   ),
 );
 const meta = JSON.parse(
-  readFileSync(resolve(repoRoot, "apps/docs/content/docs/meta.json"), "utf8"),
+  readFileSync(
+    resolve(repoRoot, "apps/docs/content/docs/lab/meta.json"),
+    "utf8",
+  ),
 );
 
 // Build component-name -> category from the meta.json sidebar. Entries look like
-// "---Buttons---" (a group header) followed by "components/buttons/magic-button".
+// "---Buttons---" (a group header) followed by "buttons/magic-button".
 const categoryByName = {};
 let currentCategory = null;
 for (const entry of meta.pages) {
@@ -47,7 +54,7 @@ for (const entry of meta.pages) {
     currentCategory = header[1].trim();
     continue;
   }
-  const match = /^components\/[^/]+\/(.+)$/.exec(entry);
+  const match = /^[^/]+\/(.+)$/.exec(entry);
   if (match && currentCategory) {
     categoryByName[match[1]] = currentCategory;
   }
@@ -66,16 +73,29 @@ const toCatalogItem = (
   install,
 });
 
-const staticComponents = registry.items
-  .filter((item) => item.type !== "registry:theme")
-  .map((item) => toCatalogItem(item));
+assertNoCollisions(registry.items, labRegistry.items);
+
+// Lab components build to public/r/lab and install by URL.
+const labInstall = (name) =>
+  `npx shadcn@latest add "https://godui.design/r/lab/${name}.json"`;
+
+const staticComponents = [
+  ...registry.items
+    .filter((item) => item.type !== "registry:theme")
+    .map((item) => ({ ...toCatalogItem(item), registry: "core" })),
+  ...labRegistry.items
+    .filter((item) => item.type !== "registry:theme")
+    .map((item) => ({
+      ...toCatalogItem(item, labInstall(item.name)),
+      registry: "lab",
+    })),
+];
 
 const dynamicBackgroundComponents = Object.entries(backgroundCatalog).map(
-  ([name, item]) =>
-    toCatalogItem(
-      { name, ...item },
-      `npx shadcn@latest add "https://godui.design/r/${name}.json"`,
-    ),
+  ([name, item]) => ({
+    ...toCatalogItem({ name, ...item }, labInstall(name)),
+    registry: "lab",
+  }),
 );
 
 // Keep one entry per name if a dynamic item is later promoted into the static

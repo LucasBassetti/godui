@@ -1,4 +1,4 @@
-import { PromptSuggestions } from "@godui/components";
+import { PromptSuggestions } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "storybook/test";
 import { action, hidden, range, select, toggle } from "../playground/argtypes";
@@ -53,7 +53,7 @@ const suggestions = [
 ];
 
 const meta = {
-  title: "AI/PromptSuggestions",
+  title: "Lab/AI/PromptSuggestions",
   component: PromptSuggestions,
   tags: ["autodocs"],
   parameters: { layout: "padded" },

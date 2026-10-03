@@ -1,6 +1,6 @@
 "use client";
 
-import { Highlighter } from "@godui/components";
+import { Highlighter } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
@@ -49,7 +49,7 @@ export function HighlighterResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — scroll and resize
+          the real component: scroll and resize
         </span>
       </div>
       <div className="flex min-h-[240px] flex-col items-center justify-center gap-8 p-10">

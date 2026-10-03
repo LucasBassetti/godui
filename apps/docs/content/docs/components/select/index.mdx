@@ -1,0 +1,132 @@
+---
+title: Select
+description: Displays a list of options for the user to pick from, triggered by a button. Grows on a spring; the selected check pops in.
+workbench: true
+---
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@godui/components";
+import { SelectDemo } from "@/components/demos/core/select-demo";
+
+<Workbench>
+
+The shadcn/ui select. Its list scales up on a spring from Radix's transform
+origin. With `position="popper"` it also drifts out of the trigger, like
+[Popover](/docs/components/popover). The selected item's check pops in from
+50%. The trigger's colors and focus ring change instantly.
+
+<Example label="Default" story="ui-select" code={`import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+export function SelectDemo() {
+  return (
+    <Select>
+      <SelectTrigger className="w-[180px]">
+        <SelectValue placeholder="Select a fruit" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectGroup>
+          <SelectLabel>Fruits</SelectLabel>
+          <SelectItem value="apple">Apple</SelectItem>
+          <SelectItem value="banana">Banana</SelectItem>
+          <SelectItem value="blueberry">Blueberry</SelectItem>
+          <SelectItem value="grapes">Grapes</SelectItem>
+          <SelectItem value="pineapple">Pineapple</SelectItem>
+        </SelectGroup>
+      </SelectContent>
+    </Select>
+  );
+}`}>
+  <SelectDemo />
+</Example>
+
+<Example
+  label="Popper"
+  code={`<Select>
+  <SelectTrigger className="w-[180px]">
+    <SelectValue placeholder="Theme" />
+  </SelectTrigger>
+  <SelectContent position="popper">
+    <SelectItem value="light">Light</SelectItem>
+    <SelectItem value="dark">Dark</SelectItem>
+    <SelectItem value="system">System</SelectItem>
+  </SelectContent>
+</Select>`}
+>
+  <Select>
+    <SelectTrigger className="w-[180px]">
+      <SelectValue placeholder="Theme" />
+    </SelectTrigger>
+    <SelectContent position="popper">
+      <SelectItem value="light">Light</SelectItem>
+      <SelectItem value="dark">Dark</SelectItem>
+      <SelectItem value="system">System</SelectItem>
+    </SelectContent>
+  </Select>
+</Example>
+
+## Installation
+
+<ComponentInstall name="select" />
+
+## Replacing shadcn
+
+`npx shadcn add @godui/select` overwrites `components/ui/select.tsx`. Exports,
+props and `data-slot` attributes match shadcn/ui new-york-v4, so existing
+imports keep working. It also installs `godui-motion` (easings, keyframes, the
+FLIP hook) into your project.
+
+## Usage
+
+```tsx
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+```
+
+```tsx
+<Select>
+  <SelectTrigger className="w-[180px]">
+    <SelectValue placeholder="Theme" />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectItem value="light">Light</SelectItem>
+    <SelectItem value="dark">Dark</SelectItem>
+    <SelectItem value="system">System</SelectItem>
+  </SelectContent>
+</Select>
+```
+
+## What's animated
+
+| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
+| --- | --- | --- | --- | --- |
+| Open | `godui-popover-in` | `opacity`, `scale` 0.96 → 1; `translate` toward the trigger in popper mode | `ease-spring-snappy` | 260ms |
+| Close | `godui-popover-out` | the same, reversed | `ease-out-expo` | 150ms |
+| Selected check | `godui-fade-scale-in` from 50% | `scale`, `opacity` | `ease-spring-snappy` | 260ms |
+| Trigger hover / focus | snaps | none | none | none |
+
+Under `prefers-reduced-motion` the list and the check only fade (150ms).
+
+## API
+
+Built on [Radix Select](https://www.radix-ui.com/primitives/docs/components/select).
+Props are identical to [shadcn/ui Select](https://ui.shadcn.com/docs/components/select).
+
+</Workbench>

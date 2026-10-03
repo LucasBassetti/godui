@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  AgentFlow,
-  type AgentFlowEdge,
-  type AgentFlowNode,
-} from "@godui/components";
+import { AgentFlow, type AgentFlowEdge, type AgentFlowNode } from "@godui/lab";
 import * as React from "react";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
@@ -86,7 +82,7 @@ export function AgentFlowResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — autoPlay, one continuous light
+          the real component: autoPlay, one continuous light
         </span>
         <button
           type="button"

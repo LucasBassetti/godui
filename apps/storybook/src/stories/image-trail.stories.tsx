@@ -1,4 +1,4 @@
-import { ImageTrail, type ImageTrailProps } from "@godui/components";
+import { ImageTrail, type ImageTrailProps } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { range } from "../playground/argtypes";
 
@@ -12,7 +12,7 @@ const IMAGES = [
 ];
 
 const meta = {
-  title: "Effects/ImageTrail",
+  title: "Lab/Effects/ImageTrail",
   component: ImageTrail,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

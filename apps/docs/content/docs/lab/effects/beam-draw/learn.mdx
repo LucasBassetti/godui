@@ -1,0 +1,93 @@
+---
+title: Anatomy of Beam Draw
+description: How scroll progress becomes a spring-smoothed SVG pathLength, and why four fan paths share one motion value.
+learnPlayer: true
+---
+
+<LearnPlayer>
+
+<LearnChapter
+  label="Four paths, one origin"
+  scene={<BeamDrawAnatomy />}
+  code={`const DEFAULT_PATHS = [
+  "M0 200 C 250 200, 350 60, 600 60 S 900 40, 1000 40",
+  "M0 200 C 250 200, 350 140, 600 140 S 900 150, 1000 150",
+  "M0 200 C 250 200, 350 260, 600 260 S 900 250, 1000 250",
+  "M0 200 C 250 200, 350 340, 600 340 S 900 360, 1000 360",
+];`}
+>
+
+`BeamDraw` maps the SVG's own scroll progress through a spring, then hands the
+result to every path as `pathLength`. The geometry is static; only how much of
+each path is revealed changes.
+
+The default set lives on a `1000×400` viewBox. All four cubics start at
+`(0, 200)` and fan to the right edge at `y = 40 / 150 / 250 / 360`: a left
+core feeding four destinations. Pass your own `paths` array to replace them;
+the motion code stays the same.
+
+Each `<motion.path>` gets the same `pathLength` MotionValue. The component has
+no per-path stagger. The fan reads as one simultaneous draw because the curves
+diverge in space, not in time.
+
+</LearnChapter>
+
+<LearnChapter
+  label="Scroll window → pathLength"
+  scene={<BeamDrawScroll />}
+  code={`const { scrollYProgress } = useScroll({
+  target: containerRef as unknown as React.RefObject<HTMLElement>,
+  offset: ["start end", "end start"],
+});
+const pathLength = useSpring(
+  useTransform(scrollYProgress, [0.1, 0.8], [0, 1]),
+  SPRING,
+);`}
+>
+
+`useScroll` tracks the SVG with `offset: ["start end", "end start"]`: the
+full travel from entering the viewport bottom to leaving the top.
+`useTransform` then squeezes that into a narrower active band:
+
+Below `0.1` the beams stay empty; above `0.8` they're fully drawn. The dead
+zones keep the stroke from flickering on the first and last pixels of scroll:
+ink starts a little after the element enters and finishes before it exits.
+
+</LearnChapter>
+
+<LearnChapter
+  label="Spring first, then glow"
+  scene={<BeamDrawSpring />}
+  code={`const SPRING = { stiffness: 320, damping: 32, mass: 0.9 } as const;
+
+// …
+className={\`w-full [filter:drop-shadow(0_0_8px_color-mix(in_oklch,var(--primary)_50%,transparent))] \${className ?? ""}\`}
+style={{ pathLength: reduce ? 1 : pathLength }}`}
+>
+
+Raw scroll progress is jerky. The mapped value feeds
+`useSpring({ stiffness: 320, damping: 32, mass: 0.9 })` (`SPRING.smooth`),
+so pathLength eases instead of tracking the wheel 1:1. The SVG itself carries
+a primary-tinted drop-shadow; color-mix keeps the glow on-theme without a
+second paint layer.
+
+</LearnChapter>
+
+<LearnChapter label="The result" scene={<BeamDrawResult />} isResult>
+
+One MotionValue, four static paths, and a spring between scroll and stroke.
+That is the whole component.
+
+</LearnChapter>
+
+</LearnPlayer>
+
+## Reduced motion
+
+`useReducedMotion()` short-circuits the spring entirely: every path renders
+at `pathLength: 1`. The glow stays, the draw-on-scroll is skipped, and
+the fan appears already complete.
+
+## Motion Score
+
+<MotionScorePanel name="beam-draw" />

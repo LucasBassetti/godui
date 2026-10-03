@@ -1,0 +1,106 @@
+---
+title: Anatomy of Hero Parallax
+description: How one scroll progress value drives a tilting 3D plane and three rows drifting in alternating directions, all through spring-smoothed transforms.
+learnPlayer: true
+---
+
+<LearnPlayer>
+
+<LearnChapter
+  label="Two motion values, three rows"
+  scene={<HeroParallaxAnatomy />}
+  code={`const translateX = useSpring(useTransform(scrollYProgress, [0, 1], [0, 1000]), SPRING);
+const translateXReverse = useSpring(useTransform(scrollYProgress, [0, 1], [0, -1000]), SPRING);`}
+>
+
+Hero Parallax reads one number off the page, `scrollYProgress`, and feeds
+it into five `useTransform` mappings. There are no per-row scroll listeners
+and no manual rAF loop.
+
+Rows don't each get their own scroll math. There are only two: `translateX`
+(scroll `[0,1]` → `[0, 1000]`) and `translateXReverse` (`[0,1]` →
+`[0, -1000]`). Rows 1 and 3 read the first and lay out `flex-row-reverse`;
+row 2 reads the second and lays out plain `flex-row`. The opposite signs
+make neighbouring rows drift in opposite directions.
+
+```tsx
+<motion.div className="flex flex-row-reverse ...">   {/* row 1 & 3 */}
+  {firstRow.map((p) => <ProductCard translate={translateX} ... />)}
+</motion.div>
+<motion.div className="flex flex-row ...">           {/* row 2 */}
+  {secondRow.map((p) => <ProductCard translate={translateXReverse} ... />)}
+</motion.div>
+```
+
+</LearnChapter>
+
+<LearnChapter
+  label="The plane settles fast; the rows keep drifting"
+  scene={<HeroParallaxScrub />}
+  code={`const rotateX = useSpring(useTransform(scrollYProgress, [0, 0.2], [15, 0]), SPRING);
+const rotateZ = useSpring(useTransform(scrollYProgress, [0, 0.2], [20, 0]), SPRING);
+const translateY = useSpring(useTransform(scrollYProgress, [0, 0.2], [-700, 200]), SPRING);
+const opacity = useSpring(useTransform(scrollYProgress, [0, 0.2], [0.2, 1]), SPRING);`}
+>
+
+The whole plane's `rotateX`, `rotateZ`, `translateY`, and `opacity` all map
+from `scrollYProgress` over `[0, 0.2]`, so the tilt is gone and the
+plane is fully visible after the first fifth of the scroll. The row
+`translateX` values map over the *full* `[0, 1]` and keep
+spreading the cards apart for the entire 300vh. Two different scroll
+windows on the same signal, composited together.
+
+Every one of those runs through the same `useSpring({ stiffness: 320,
+damping: 32, mass: 0.9 })` before it reaches the DOM, so a fast scroll or a
+scrollbar drag never snaps the plane. It eases toward wherever
+`scrollYProgress` currently points.
+
+`rotateX`/`rotateZ`/`translateY`/`translateX`/`opacity` are the only
+properties in motion. The container's `[perspective:1000px]
+[transform-style:preserve-3d]` sets up the 3D stage once; every row and the
+plane itself then transform inside it. Nothing re-measures layout on
+scroll. A 300vh page costs one `useScroll` subscription instead of N
+per-row listeners.
+
+```tsx
+className="relative flex h-[300vh] flex-col ... [perspective:1000px] [transform-style:preserve-3d]"
+```
+
+</LearnChapter>
+
+<LearnChapter label="The result" scene={<HeroParallaxResult />} isResult>
+
+All the pieces together. Scroll inside the panel below and the plane
+un-tilts while the rows drift apart. It starts mid-reveal so the cards
+are visible right away.
+
+The hero is one scroll progress value and five spring-smoothed mappings. Two
+of them are mirror images, so the rows drift in opposite directions.
+
+</LearnChapter>
+
+</LearnPlayer>
+
+## Accessibility and reduced motion
+
+Each `ProductCard` is a real `<a>` when `href` is set, so the grid is
+keyboard-reachable without any custom focus handling. Under
+`prefers-reduced-motion`, the scroll-driven transforms are skipped
+entirely. `HeroParallax` renders a calm static grid of the first nine
+products instead of mounting the 300vh scroll stage at all.
+
+```tsx
+if (reduce) {
+  return (
+    <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
+      {products.slice(0, 9).map((product) => (
+        <img key={product.title} src={product.thumbnail} alt={product.title} />
+      ))}
+    </div>
+  );
+}
+```
+
+## Motion Score
+
+<MotionScorePanel name="hero-parallax" />

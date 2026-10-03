@@ -1,6 +1,6 @@
 "use client";
 
-import { LightRays } from "@godui/components";
+import { LightRays } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
@@ -46,7 +46,7 @@ export function LightRaysResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — watch the fan breathe
+          the real component: watch the fan breathe
         </span>
       </div>
       <LightRaysResultBody />

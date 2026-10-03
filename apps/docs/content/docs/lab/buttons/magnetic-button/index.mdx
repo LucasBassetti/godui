@@ -1,0 +1,136 @@
+---
+title: Magnetic Button
+description: A button whose content is magnetically pulled toward the cursor within a sensor range, springing back on exit.
+workbench: true
+---
+
+import { MagneticButton } from "@godui/lab";
+import { MagneticButtonDemo } from "@/components/demos/magnetic-button-demo";
+
+<Workbench>
+
+A button whose content is magnetically pulled toward the cursor within a sensor range, springing back on exit.
+
+<Example
+  label="Default"
+  story="lab-buttons-magnetic-button"
+  code={`import { MagneticButton } from "@/components/godui/magnetic-button";
+import { ArrowRight, Star } from "lucide-react";
+
+export function MagneticButtonDemo() {
+  return (
+    <div className="flex flex-wrap items-center justify-center gap-5">
+      <MagneticButton size="lg" range={36}>
+        Get started
+        <ArrowRight className="size-4" strokeWidth={2.5} />
+      </MagneticButton>
+      <MagneticButton variant="outline" size="lg" range={36}>
+        <Star className="size-4" strokeWidth={2.5} />
+        Star on GitHub
+      </MagneticButton>
+    </div>
+  );
+}`}
+>
+  <MagneticButtonDemo />
+</Example>
+
+<Example
+  label="Variants"
+  code={`<div className="flex flex-wrap items-center justify-center gap-4">
+  <MagneticButton variant="default">Continue</MagneticButton>
+  <MagneticButton variant="secondary">Save draft</MagneticButton>
+  <MagneticButton variant="outline">View docs</MagneticButton>
+</div>`}
+>
+  <div className="flex flex-wrap items-center justify-center gap-4">
+    <MagneticButton variant="default">Continue</MagneticButton>
+    <MagneticButton variant="secondary">Save draft</MagneticButton>
+    <MagneticButton variant="outline">View docs</MagneticButton>
+  </div>
+</Example>
+
+<Example
+  label="Sizes"
+  code={`<div className="flex flex-wrap items-center justify-center gap-4">
+  <MagneticButton size="sm">Small</MagneticButton>
+  <MagneticButton size="md">Medium</MagneticButton>
+  <MagneticButton size="lg">Large</MagneticButton>
+</div>`}
+>
+  <div className="flex flex-wrap items-center justify-center gap-4">
+    <MagneticButton size="sm">Small</MagneticButton>
+    <MagneticButton size="md">Medium</MagneticButton>
+    <MagneticButton size="lg">Large</MagneticButton>
+  </div>
+</Example>
+
+<Example
+  label="Stronger Pull"
+  code={`<MagneticButton strength={0.8} range={48} size="lg">
+  Explore docs
+</MagneticButton>`}
+>
+  <MagneticButton strength={0.8} range={48} size="lg">
+    Explore docs
+  </MagneticButton>
+</Example>
+
+<Example
+  label="Static Label"
+  code={`<div className="flex flex-wrap items-center justify-center gap-4">
+  <MagneticButton size="lg" range={44}>Parallax label</MagneticButton>
+  <MagneticButton variant="secondary" size="lg" range={44} staticLabel>
+    Centered label
+  </MagneticButton>
+</div>`}
+>
+  <div className="flex flex-wrap items-center justify-center gap-4">
+    <MagneticButton size="lg" range={44}>
+      Parallax label
+    </MagneticButton>
+    <MagneticButton variant="secondary" size="lg" range={44} staticLabel>
+      Centered label
+    </MagneticButton>
+  </div>
+</Example>
+
+## Installation
+
+<ComponentInstall registry="lab" name="magnetic-button" />
+
+`MagneticButton` wraps the button in an invisible sensor. As the pointer moves
+inside that area, the button spring-translates toward the cursor by `strength`,
+and the label drifts a little further for a layered, parallax feel. On exit both
+spring back to rest. The pull is disabled under `prefers-reduced-motion`.
+
+## Usage
+
+```tsx
+import { MagneticButton } from "@/components/godui/magnetic-button";
+```
+
+```tsx
+<MagneticButton>Get started</MagneticButton>
+```
+
+`strength` controls how far the button follows the cursor (0 to 1); `range` adds
+invisible padding so the pull engages before the pointer reaches the edge.
+
+By default the label drifts a little further than the shell for parallax. Set
+`staticLabel` so the label rides with the button and stays centered. The whole
+button then moves as one piece, with no drift.
+
+## Props
+
+| Prop          | Type                                      | Default     | Description                                                       |
+| ------------- | ----------------------------------------- | ----------- | ---------------------------------------------------------------- |
+| `variant`     | `"default" \| "secondary" \| "outline"`   | `"default"` | Visual style.                                                    |
+| `size`        | `"sm" \| "md" \| "lg"`                     | `"md"`      | Padding and text size.                                           |
+| `strength`    | `number`                                  | `0.4`       | How strongly the button follows the cursor (0 to 1).                |
+| `range`       | `number`                                  | `0`         | Invisible sensor padding in px around the button.                |
+| `staticLabel` | `boolean`                                 | `false`     | Keep the label centered in the button (rides with the shell, no drift). |
+
+`MagneticButton` also forwards every standard `<button>` attribute to the element.
+
+</Workbench>

@@ -1,9 +1,9 @@
-import { AsciiDither, type AsciiDitherProps } from "@godui/components";
+import { AsciiDither, type AsciiDitherProps } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { radio, range, select, toggle } from "../playground/argtypes";
 
 const meta = {
-  title: "Effects/AsciiDither",
+  title: "Lab/Effects/AsciiDither",
   component: AsciiDither,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

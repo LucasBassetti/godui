@@ -1,6 +1,6 @@
 "use client";
 
-import { BorderBeam } from "@godui/components";
+import { BorderBeam } from "@godui/lab";
 
 export function BorderBeamDemo() {
   return (

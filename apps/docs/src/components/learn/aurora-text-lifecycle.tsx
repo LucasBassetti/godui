@@ -85,8 +85,8 @@ export function AuroraTextLifecycle() {
           </div>
 
           <p className="text-center font-mono text-[11px] text-fd-muted-foreground">
-            animationPlayState flips to “paused” outside rootMargin 128px —
-            resumes seamlessly on scroll-in
+            animationPlayState flips to “paused” outside rootMargin 128px and
+            resumes where it left off on scroll-in
           </p>
 
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">
@@ -96,7 +96,7 @@ export function AuroraTextLifecycle() {
                 Playing
               </dt>
               <dd className="text-[12px] text-fd-muted-foreground">
-                intersecting — animationPlayState empty
+                intersecting: animationPlayState empty
               </dd>
             </div>
             <div className="flex flex-col gap-1.5">
@@ -105,7 +105,7 @@ export function AuroraTextLifecycle() {
                 Paused
               </dt>
               <dd className="text-[12px] text-fd-muted-foreground">
-                off-screen — animationPlayState paused
+                off-screen: animationPlayState paused
               </dd>
             </div>
           </dl>

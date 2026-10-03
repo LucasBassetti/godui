@@ -1,4 +1,4 @@
-import { CommentPin } from "@godui/components";
+import { CommentPin } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "storybook/test";
 import { action, hidden, range, text, toggle } from "../playground/argtypes";
@@ -22,13 +22,13 @@ const comments = [
   {
     id: "c2",
     author: "Marco Bell",
-    body: "Agreed — bumping to 8px.",
+    body: "Agreed, bumping to 8px.",
     time: "1m",
   },
 ];
 
 const meta = {
-  title: "Collaboration/CommentPin",
+  title: "Lab/Collaboration/CommentPin",
   component: CommentPin,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

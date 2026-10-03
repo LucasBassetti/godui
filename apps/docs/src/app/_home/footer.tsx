@@ -12,6 +12,7 @@ const columns: { heading: string; links: FooterLink[] }[] = [
     heading: "Product",
     links: [
       { label: "Components", href: "/docs/components" },
+      { label: "Lab", href: "/docs/lab" },
       { label: "Installation", href: "/docs/installation" },
       { label: "Animated Icons", href: ANIMATED_ICONS_URL, external: true },
     ],
@@ -80,7 +81,9 @@ export function Footer() {
 
   return (
     <footer className="relative z-10 mt-10 w-full border-fd-border/70 border-t bg-fd-card">
-      <div className="mx-auto flex w-full max-w-[90rem] flex-col gap-10 px-4 py-16 lg:flex-row lg:justify-between lg:gap-16">
+      {/* 96rem = the layout's --layout-max (globals.css), so the footer's
+          content lines up with the header above it on every page. */}
+      <div className="mx-auto flex w-full max-w-[96rem] flex-col gap-10 px-4 py-16 lg:flex-row lg:justify-between lg:gap-16">
         <div className="flex flex-col gap-4">
           <Link
             href="/"
@@ -90,8 +93,8 @@ export function Footer() {
             {siteConfig.name}
           </Link>
           <p className="max-w-xs text-fd-muted-foreground text-sm leading-relaxed">
-            An open-source collection of beautifully crafted motion components
-            for modern React interfaces.
+            An open-source collection of animated React components, including
+            shadcn/ui drop-ins with GPU-only motion.
           </p>
           <div className="flex items-center gap-2">
             <a
@@ -128,7 +131,7 @@ export function Footer() {
         </div>
       </div>
       <div className="border-fd-border/60 border-t">
-        <div className="mx-auto flex w-full max-w-[90rem] flex-col items-center justify-between gap-2 px-4 py-6 text-fd-muted-foreground text-xs sm:flex-row">
+        <div className="mx-auto flex w-full max-w-[96rem] flex-col items-center justify-between gap-2 px-4 py-6 text-fd-muted-foreground text-xs sm:flex-row">
           <p>
             © {year} {siteConfig.name}. MIT Licensed.
           </p>

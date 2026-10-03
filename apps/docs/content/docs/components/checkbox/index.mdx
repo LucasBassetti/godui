@@ -1,0 +1,95 @@
+---
+title: Checkbox
+description: A control that allows the user to toggle between checked and not checked. Ink floods the box from a dot, the check is drawn, and unchecking drains it.
+workbench: true
+---
+
+import { CheckboxDemo } from "@/components/demos/core/checkbox-demo";
+
+<Workbench>
+
+The shadcn/ui checkbox. When you check it, the fill grows from a dot in the
+middle until it fills the box, and the check mark is drawn in from left to
+right. Unchecking drains it back to a dot. It all runs only when the state
+changes, so a form that loads with boxes already checked doesn't animate. The
+fill keeps your own checked colors. Only `scale`, `translate` and `opacity`
+animate.
+
+<Example label="Default" story="ui-checkbox" code={`import { Checkbox } from "@/components/ui/checkbox";
+
+export function CheckboxDemo() {
+  return (
+    <div className="flex flex-col gap-6">
+      <div className="flex items-center gap-3">
+        <Checkbox id="terms" />
+        <label htmlFor="terms" className="font-medium text-sm">
+          Accept terms and conditions
+        </label>
+      </div>
+      <div className="flex items-start gap-3">
+        <Checkbox id="terms-2" defaultChecked />
+        <div className="grid gap-2">
+          <label htmlFor="terms-2" className="font-medium text-sm">
+            Accept terms and conditions
+          </label>
+          <p className="text-muted-foreground text-sm">
+            By clicking this checkbox, you agree to the terms and conditions.
+          </p>
+        </div>
+      </div>
+      <div className="flex items-start gap-3">
+        <Checkbox id="toggle" disabled />
+        <label htmlFor="toggle" className="font-medium text-sm opacity-50">
+          Enable notifications
+        </label>
+      </div>
+    </div>
+  );
+}`}>
+  <CheckboxDemo />
+</Example>
+
+## Installation
+
+<ComponentInstall name="checkbox" />
+
+## Replacing shadcn
+
+`npx shadcn add @godui/checkbox` overwrites `components/ui/checkbox.tsx`.
+Exports, props and `data-slot` attributes match shadcn/ui new-york-v4, so
+existing imports keep working. It also installs `godui-motion` (easings,
+keyframes, the FLIP hook) into your project.
+
+## Usage
+
+```tsx
+import { Checkbox } from "@/components/ui/checkbox";
+```
+
+```tsx
+<Checkbox />
+```
+
+## What's animated
+
+| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
+| --- | --- | --- | --- | --- |
+| Check (fill) | `godui-checkbox-fill-in`: a disc grows from a dot, squared off by the box's clip | `scale` 0 → 1.42 | `ease-spring-smooth` | 260ms |
+| Check (mark) | `godui-checkbox-draw` + `godui-checkbox-ink`: a clip window slides in while the mark slides back | `translate` | `ease-spring-smooth` | 190ms, after 70ms |
+| Check (box) | `godui-pop` | `scale` 1 → 0.9 → 1 | `ease-spring-bouncy` | 260ms |
+| Uncheck (mark) | `godui-checkbox-check-out` | `opacity`, `scale` 1 → 0.7 | `ease-out-expo` | 150ms |
+| Uncheck (fill) | `godui-checkbox-fill-out`: the disc shrinks back to a dot, in the checked colors | `scale` 1.42 → 0 | `ease-spring-smooth` | 150ms |
+| Border | snap | none | none | none |
+
+Animations run only after the checked state changes, by a click, the keyboard
+or a controlled `checked` prop, never on the first render.
+
+Under `prefers-reduced-motion` nothing grows, slides or dips: the fill and the
+check fade in and out.
+
+## API
+
+Built on [Radix Checkbox](https://www.radix-ui.com/primitives/docs/components/checkbox).
+Props are identical to [shadcn/ui Checkbox](https://ui.shadcn.com/docs/components/checkbox).
+
+</Workbench>

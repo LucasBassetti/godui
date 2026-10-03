@@ -13,7 +13,7 @@ export function McpSection() {
       <SectionHeading
         eyebrow="AI-native"
         title="Install components with your agent"
-        description="GodUI ships an MCP server, so Cursor, Claude, Windsurf and friends can browse the library and drop components straight into your project — no copy-paste round trips."
+        description="GodUI ships an MCP server, so Cursor, Claude, Windsurf and other MCP clients can browse the library and add components to your project without copying and pasting."
       />
       <MCPInstall />
       <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm">

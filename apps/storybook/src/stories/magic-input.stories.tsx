@@ -1,11 +1,11 @@
-import { MagicInput } from "@godui/components";
+import { MagicInput } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "storybook/test";
 import { action, range, select, text, toggle } from "../playground/argtypes";
 import { centered } from "../playground/stage";
 
 const meta = {
-  title: "Inputs/Magic Input",
+  title: "Lab/Inputs/Magic Input",
   component: MagicInput,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

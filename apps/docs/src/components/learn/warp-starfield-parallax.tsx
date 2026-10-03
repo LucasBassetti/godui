@@ -99,8 +99,8 @@ export function WarpStarfieldParallax() {
 
           <p className="max-w-[40ch] text-center text-[13px] text-fd-muted-foreground">
             The ring is the pointer target; the field lags behind at{" "}
-            <span className="font-mono text-[12px]">× 0.06</span> per frame —
-            never a hard snap. Leave and targets ease back to center.
+            <span className="font-mono text-[12px]">× 0.06</span> per frame and
+            never snaps. Leave and targets ease back to center.
           </p>
 
           <dl className="grid w-full grid-cols-2 gap-4 border-fd-border border-t pt-5">

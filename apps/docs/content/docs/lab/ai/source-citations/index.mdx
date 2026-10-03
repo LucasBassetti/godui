@@ -1,0 +1,84 @@
+---
+title: Source Citations
+description: Inline numbered citation pills that spring out a rich preview card on hover, plus a collapsible source list for AI answers.
+workbench: true
+---
+
+import { SourceCitationsDemo } from "@/components/demos/source-citations-demo";
+
+<Workbench>
+
+Inline numbered citation pills that spring out a rich preview card on hover, plus a collapsible source list for AI answers.
+
+<Example
+  label="Default"
+  story="lab-ai-sourcecitations"
+  code={`import {
+  SourceCitation,
+  SourceList,
+} from "@/components/godui/source-citations";
+
+const sources = [
+  { title: "GodUI", url: "https://github.com/LucasBassetti/godui", snippet: "Motion components for modern interfaces." },
+  { title: "Tailwind v4", url: "https://tailwindcss.com/blog/tailwindcss-v4" },
+];
+
+export function SourceCitationsDemo() {
+  return (
+    <div>
+      <p>
+        Design systems standardize on OKLCH
+        <SourceCitation index={1} source={sources[0]} /> and Tailwind v4
+        <SourceCitation index={2} source={sources[1]} />.
+      </p>
+      <SourceList sources={sources} />
+    </div>
+  );
+}`}
+>
+  <SourceCitationsDemo />
+</Example>
+
+## Installation
+
+<ComponentInstall registry="lab" componentName="SourceCitations" />
+
+`SourceCitation` renders a compact numbered pill inline with text; on hover or
+focus it springs out a preview card with the hostname, title, and snippet.
+`SourceList` renders the full source set as a footer, optionally collapsed
+behind a **+N more** toggle.
+
+## Usage
+
+```tsx
+import {
+  SourceCitation,
+  SourceList,
+} from "@/components/godui/source-citations";
+```
+
+```tsx
+<p>
+  Answer text<SourceCitation index={1} source={source} />.
+</p>
+<SourceList sources={sources} previewCount={3} />
+```
+
+## Props
+
+### SourceCitation
+
+| Prop     | Type             | Default | Description                  |
+| -------- | ---------------- | ------- | ---------------------------- |
+| `index`  | `number`         | none       | Number rendered in the pill. |
+| `source` | `CitationSource` | none       | Title, url, snippet, favicon.|
+
+### SourceList
+
+| Prop           | Type               | Default | Description                          |
+| -------------- | ------------------ | ------- | ------------------------------------ |
+| `sources`      | `CitationSource[]` | none       | Sources to list.                     |
+| `collapsible`  | `boolean`          | `true`  | Collapse extras behind a toggle.     |
+| `previewCount` | `number`           | `3`     | Shown before **+N more**.            |
+
+</Workbench>

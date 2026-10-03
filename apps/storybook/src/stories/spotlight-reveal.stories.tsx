@@ -1,9 +1,9 @@
-import { SpotlightReveal, type SpotlightRevealProps } from "@godui/components";
+import { SpotlightReveal, type SpotlightRevealProps } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { range } from "../playground/argtypes";
 
 const meta = {
-  title: "Effects/SpotlightReveal",
+  title: "Lab/Effects/SpotlightReveal",
   component: SpotlightReveal,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

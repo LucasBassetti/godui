@@ -1,10 +1,10 @@
-import { TiltCard } from "@godui/components";
+import { TiltCard } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { range, toggle } from "../playground/argtypes";
 import { centered } from "../playground/stage";
 
 const meta = {
-  title: "Layout/Tilt Card",
+  title: "Lab/Layout/Tilt Card",
   component: TiltCard,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

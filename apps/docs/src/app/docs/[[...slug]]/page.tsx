@@ -1,4 +1,4 @@
-import { MOTION_TIER_META } from "@godui/components";
+import { MOTION_TIER_META } from "@godui/lab";
 import {
   DocsBody,
   DocsDescription,
@@ -8,6 +8,7 @@ import {
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ComponentBadges } from "@/components/component-badges";
+import { LabNotice } from "@/components/lab-notice";
 import { LearnPlayerProvider } from "@/components/learn/learn-player-context";
 import { getMDXComponents } from "@/components/mdx";
 import {
@@ -15,7 +16,7 @@ import {
   WorkbenchProvider,
 } from "@/components/workbench/workbench-context";
 import { DEPENDENCY_NOTES } from "@/lib/dependency-notes";
-import { MOTION_NOTES, STATIC_COMPONENTS } from "@/lib/motion-notes";
+import { perfNote, STATIC_COMPONENTS } from "@/lib/motion-notes";
 import { motionScore } from "@/lib/motion-score";
 import { source } from "@/lib/source";
 import { Breadcrumbs, type Crumb } from "../_components/breadcrumbs";
@@ -32,28 +33,39 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
   const MDX = page.data.body;
 
   const slug = params.slug ?? [];
-  const inComponents = slug[0] === "components";
-  // Component base = `components/<category>/<name>` (depth 3). The Learn page is
-  // that base + `learn` (depth 4). Badges + tabs hang off the base.
-  const base = inComponents && slug.length >= 3 ? slug.slice(0, 3) : undefined;
-  const isLearnPage = base != null && slug.length === 4 && slug[3] === "learn";
-  const isComponentDocsPage = base != null && slug.length === 3;
+  const section =
+    slug[0] === "components" || slug[0] === "lab" ? slug[0] : undefined;
+  const inComponents = section != null;
+  const isCore = section === "components";
+  // Component base: core = `components/<name>` (depth 2); Lab =
+  // `lab/<category>/<name>` (depth 3). The Learn page is that base +
+  // `learn`. Badges + tabs hang off the base.
+  const baseDepth = isCore ? 2 : 3;
+  const base =
+    inComponents && slug.length >= baseDepth
+      ? slug.slice(0, baseDepth)
+      : undefined;
+  const isLearnPage =
+    base != null &&
+    slug.length === baseDepth + 1 &&
+    slug[baseDepth] === "learn";
+  const isComponentDocsPage = base != null && slug.length === baseDepth;
 
   // The Learn tab only appears when a learn page actually exists for this
   // component. `source.getPage` returns null when it doesn't.
   const learnPage = base ? source.getPage([...base, "learn"]) : null;
   const hasLearn = learnPage != null;
 
-  const componentName = base ? base[2] : undefined;
-  const motionNote = componentName ? MOTION_NOTES[componentName] : undefined;
-  const dependencyNote = componentName
-    ? DEPENDENCY_NOTES[componentName]
-    : undefined;
-  const isStatic = componentName ? STATIC_COMPONENTS.has(componentName) : false;
+  const componentName = base?.at(-1);
+  // Lab-only signals. Core components are CI-gated GPU-only, so they carry
+  // no perf note, grade or dependency note — just the GPU-only + shadcn badges.
+  const labName = isCore ? undefined : componentName;
+  const motionNote = labName ? perfNote(labName) : undefined;
+  const dependencyNote = labName ? DEPENDENCY_NOTES[labName] : undefined;
+  const isStatic = labName ? STATIC_COMPONENTS.has(labName) : false;
   // Static components (the `*-background` effects) never animate — no grade to show;
   // they keep only the green "Static" badge.
-  const score =
-    componentName && !isStatic ? motionScore(componentName) : undefined;
+  const score = labName && !isStatic ? motionScore(labName) : undefined;
 
   // On the Learn page, `page.data.title` is the article title — but the
   // breadcrumb should still read the component's name (pulled from the base
@@ -70,8 +82,8 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
   if (inComponents) {
     const atComponentsRoot = slug.length === 1;
     crumbs.push({
-      name: "Components",
-      url: atComponentsRoot ? undefined : "/docs/components",
+      name: section === "lab" ? "Lab" : "Components",
+      url: atComponentsRoot ? undefined : `/docs/${section}`,
     });
     if (!atComponentsRoot) {
       // On the Learn page the component crumb links back to its docs page, and a
@@ -128,7 +140,7 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
       badges.push({
         tone: "sky",
         label: `Motion ${score.grade}`,
-        title: `${score.grade} — ${meta.name}`,
+        title: `${score.grade}: ${meta.name}`,
         detail: `${meta.summary} ${score.reason}`,
         href:
           hasLearn && docsHref ? `${docsHref}/learn#motion-score` : undefined,
@@ -148,7 +160,7 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
         label: "Static",
         title: "No animation",
         detail:
-          "Renders with plain CSS and never animates — nothing for the browser to keep composing or repainting.",
+          "Renders with plain CSS and never animates, so the browser has nothing to composite or repaint.",
       });
     } else {
       badges.push({
@@ -156,7 +168,29 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
         label: "GPU-only",
         title: "Runs on the GPU compositor",
         detail:
-          "Animates only transform, opacity and filter — no main-thread layout or paint, so it stays smooth even under load.",
+          "Animates only transform, opacity and filter. There is no main-thread layout or paint, so it stays smooth under load.",
+      });
+    }
+    if (isCore && componentName) {
+      badges.push({
+        tone: "neutral",
+        label: "shadcn/ui",
+        title: "Drop-in for shadcn/ui",
+        detail:
+          "Same file, exports, props and data-slots as shadcn/ui new-york-v4. Swap it in and existing call sites keep working.",
+        href: `https://ui.shadcn.com/docs/components/${componentName}`,
+        hrefLabel: "shadcn docs",
+      });
+    }
+    if (section === "lab") {
+      badges.push({
+        tone: "neutral",
+        label: "Lab",
+        title: "GodUI Lab",
+        detail:
+          "An expressive, experimental piece beyond the shadcn catalog, maintained as-is. Animated shadcn/ui drop-ins live under Components.",
+        href: "/docs/lab",
+        hrefLabel: "All of Lab",
       });
     }
     if (dependencyNote) {
@@ -275,6 +309,7 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
           <DocsDescription className="docs-lead">
             {page.data.description}
           </DocsDescription>
+          {section === "lab" && isComponentDocsPage ? <LabNotice /> : null}
           <DocsBody>
             <MDX components={getMDXComponents()} />
           </DocsBody>

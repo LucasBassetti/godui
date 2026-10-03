@@ -1,11 +1,11 @@
-import { HoldConfirmButton } from "@godui/components";
+import { HoldConfirmButton } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "storybook/test";
 import { action, range, select, text } from "../playground/argtypes";
 import { centered } from "../playground/stage";
 
 const meta = {
-  title: "Buttons/Hold Confirm Button",
+  title: "Lab/Buttons/Hold Confirm Button",
   component: HoldConfirmButton,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

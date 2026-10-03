@@ -1,8 +1,4 @@
-import {
-  Terminal,
-  type TerminalLine,
-  type TerminalProps,
-} from "@godui/components";
+import { Terminal, type TerminalLine, type TerminalProps } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 const LINES: TerminalLine[] = [
@@ -15,13 +11,13 @@ const LINES: TerminalLine[] = [
 ];
 
 const meta = {
-  title: "Effects/Terminal",
+  title: "Lab/Effects/Terminal",
   component: Terminal,
   tags: ["autodocs"],
   parameters: { layout: "centered" },
   args: {
     lines: LINES,
-    title: "zsh — godui",
+    title: "zsh: godui",
     typingSpeed: 38,
     startOnView: false,
     loop: false,

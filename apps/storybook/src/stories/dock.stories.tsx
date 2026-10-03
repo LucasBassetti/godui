@@ -1,4 +1,4 @@
-import { Dock, DockItem } from "@godui/components";
+import { Dock, DockItem } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import type { ReactNode } from "react";
 import { range } from "../playground/argtypes";
@@ -84,7 +84,7 @@ const items: { label: string; color: string; icon: ReactNode }[] = [
 ];
 
 const meta = {
-  title: "Navigation/Dock",
+  title: "Lab/Navigation/Dock",
   component: Dock,
   subcomponents: { DockItem },
   tags: ["autodocs"],

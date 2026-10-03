@@ -11,7 +11,7 @@ export function TocCta() {
         Built with GodUI
       </p>
       <p className="mt-1 text-[12.5px] text-fd-muted-foreground leading-relaxed">
-        Beautifully crafted motion components for modern interfaces.
+        Animated shadcn/ui components with GPU-only motion.
       </p>
       <a
         href={REPO}

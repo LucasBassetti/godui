@@ -39,24 +39,41 @@ function newBadgePlugin(): LoaderPlugin {
   };
 }
 
+const LAB_PREFIX = "/docs/lab/";
+
+const isLearn = (node: Node) =>
+  node.type === "page" && node.url.endsWith("/learn");
+
 /**
  * Component "Learn" articles live at `<component>/learn` so they get their own
  * route + TOC, but they must not appear in the sidebar — they're reached only
- * via the Docs|Learn tab. The `<component>.mdx` file + `<component>/learn.mdx`
+ * via the Docs|Learn tab. The `<component>/index.mdx` + `<component>/learn.mdx`
  * folder make fumadocs render the component as an expandable group; this plugin
  * drops the learn nodes and collapses the now-empty folder back to its index
  * leaf so the component stays a plain sidebar link. Routing is unaffected —
  * `source.getPage` still resolves the learn page.
+ *
+ * Lab is the exception: Lab is its own sidebar root, and fumadocs picks the
+ * root by finding the current URL in the tree — a Learn page absent from it
+ * falls back to the main tree. So Lab keeps its Learn nodes as flat siblings of
+ * the component leaf, marked `external` (so the prev/next footer skips them)
+ * and hidden with CSS (see the docs layout's sidebar className).
  */
 function hideLearnPagesPlugin(): LoaderPlugin {
   const prune = (nodes: Node[]): Node[] => {
     const out: Node[] = [];
     for (const node of nodes) {
-      if (node.type === "page" && node.url.endsWith("/learn")) continue;
+      if (isLearn(node)) continue;
       if (node.type === "folder") {
         const children = prune(node.children);
         if (children.length === 0 && node.index) {
           out.push(node.index);
+          // Lab only: keep the (hidden) Learn nodes so the Lab root resolves.
+          for (const child of node.children) {
+            if (child.type === "page" && child.url.startsWith(LAB_PREFIX)) {
+              out.push({ ...child, external: true });
+            }
+          }
         } else {
           out.push({ ...node, children });
         }

@@ -1,9 +1,9 @@
-import { TextScramble, type TextScrambleProps } from "@godui/components";
+import { TextScramble, type TextScrambleProps } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { range, select } from "../playground/argtypes";
 
 const meta = {
-  title: "Text/TextScramble",
+  title: "Lab/Text/TextScramble",
   component: TextScramble,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

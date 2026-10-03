@@ -1,0 +1,100 @@
+---
+title: Anatomy of the GodUI Popover
+description: How Radix's transform origin and four side variables make one keyframe directional, so the popover scales from the trigger and drifts out of it.
+learnPlayer: true
+---
+
+import { PopoverDemo } from "@/components/demos/core/popover-demo";
+
+<LearnPlayer>
+
+<LearnChapter
+  label="Grows from the trigger"
+  scene={
+    <KeyframeScene
+      label="Grows from the trigger"
+      motion="popover-bottom"
+      subject="menu"
+      tracks={[
+        { property: "opacity", from: "0", to: "1" },
+        { property: "scale", from: "0.96", to: "1" },
+        { property: "translate", from: "0 -4px", to: "0 0" },
+      ]}
+    />
+  }
+  code={`<PopoverPrimitive.Content
+  data-slot="popover-content"
+  className={cn(
+    "z-50 w-72 origin-(--radix-popover-content-transform-origin) …
+     data-[state=open]:animate-godui-popover-in
+     data-[state=closed]:animate-godui-popover-out",
+    className,
+  )}
+/>`}
+>
+
+Radix measures where the content sits relative to its trigger and publishes
+that point as `--radix-popover-content-transform-origin`. Using it as the
+`transform-origin` means the 0.96 → 1 scale grows out of the edge touching
+the button, not out of the content's center.
+
+If the popover flips to the other side because there's no room below, the
+origin flips with it.
+
+</LearnChapter>
+
+<LearnChapter
+  label="Side-aware drift"
+  scene={<SpringCurveScene label="Side-aware drift" easing="snappy" />}
+  code={`"data-[side=bottom]:[--godui-enter-y:-0.25rem]
+ data-[side=top]:[--godui-enter-y:0.25rem]
+ data-[side=left]:[--godui-enter-x:0.25rem]
+ data-[side=right]:[--godui-enter-x:-0.25rem]"
+
+@keyframes godui-popover-in {
+  from {
+    opacity: 0;
+    scale: calc(1 - (1 - var(--godui-enter-scale)) * var(--godui-motion));
+    translate: calc(var(--godui-enter-x) * var(--godui-motion))
+      calc(var(--godui-enter-y) * var(--godui-motion));
+  }
+}`}
+>
+
+Scale alone looks like a zoom. Adding a short drift away from the trigger
+makes it look like the content slid out of the button.
+
+One keyframe handles all four sides. Radix sets `data-side` on the content,
+and each side sets `--godui-enter-x` or `--godui-enter-y` to a 4px offset
+pointing back at the trigger. The keyframe starts from that offset, so a
+popover below its trigger starts 4px higher, one to the left starts 4px
+further right, and so on.
+
+The entrance runs on `ease-spring-snappy` for 260ms; the exit reverses the
+path in 150ms on `ease-out-expo`.
+
+</LearnChapter>
+
+<LearnChapter
+  label="The result"
+  scene={<LiveResult hint="open the popover"><PopoverDemo /></LiveResult>}
+  isResult
+>
+
+Open the popover, then press Escape or click outside it to close.
+
+</LearnChapter>
+
+</LearnPlayer>
+
+## Why GPU-only
+
+`opacity`, `scale` and `translate` are all composited. shadcn's popover uses
+`tw-animate-css` keyframes (`zoom-in-95`, `slide-in-from-top-2`), which are
+also transform-based. GodUI's version merges them into a single keyframe on a
+spring and drives the direction from Radix's side.
+
+## Reduced motion
+
+`--godui-motion: 0` cancels both the scale and the drift, so the popover only
+fades, in 150ms.

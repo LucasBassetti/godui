@@ -1,10 +1,10 @@
-import { AnimatedTooltip } from "@godui/components";
+import { AnimatedTooltip } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { hidden, select, text } from "../playground/argtypes";
 import { box } from "../playground/stage";
 
 const meta = {
-  title: "Overlays/AnimatedTooltip",
+  title: "Lab/Overlays/AnimatedTooltip",
   component: AnimatedTooltip,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

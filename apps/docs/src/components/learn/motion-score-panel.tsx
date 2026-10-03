@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  MOTION_TIER_META,
-  type MotionGrade,
-  propTier,
-} from "@godui/components";
+import { MOTION_TIER_META, type MotionGrade, propTier } from "@godui/lab";
 import type { ReactNode } from "react";
 import { motionScore } from "@/lib/motion-score";
 import {
@@ -76,7 +72,7 @@ export function MotionScorePanel({ name }: { name: string }) {
         <span className="inline-flex items-center gap-2.5">
           <TierChip grade={final.grade} size="md" />
           <span className="font-semibold text-foreground text-sm">
-            {final.grade} — {meta.name}
+            {final.grade}: {meta.name}
           </span>
         </span>
       </div>

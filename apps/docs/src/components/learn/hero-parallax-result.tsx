@@ -1,6 +1,6 @@
 "use client";
 
-import { HeroParallax } from "@godui/components";
+import { HeroParallax } from "@godui/lab";
 import * as React from "react";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
@@ -89,7 +89,7 @@ export function HeroParallaxResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — scroll inside this panel
+          the real component: scroll inside this panel
         </span>
       </div>
       <div

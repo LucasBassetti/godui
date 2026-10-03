@@ -1,0 +1,73 @@
+---
+title: Floating Toolbar
+description: A context toolbar that springs into view with magnetic, morphing action buttons.
+workbench: true
+---
+
+import { FloatingToolbar } from "@godui/lab";
+
+export const icon = (d) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="size-[18px]" aria-hidden="true"><path d={d} /></svg>
+);
+
+export const toolbarActions = [
+  { icon: icon("M6 4h8a4 4 0 0 1 0 8H6zM6 12h9a4 4 0 0 1 0 8H6z"), label: "Bold", active: true },
+  { icon: icon("M19 4h-9M14 20H5M15 4 9 20"), label: "Italic" },
+  { icon: icon("M6 4v6a6 6 0 0 0 12 0V4M4 20h16"), label: "Underline" },
+  { icon: icon("M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"), label: "Link" },
+];
+
+<Workbench>
+
+A context toolbar that springs into view with magnetic, morphing action buttons.
+
+<Example
+  label="Default"
+  story="lab-overlays-floating-toolbar"
+  code={`import { FloatingToolbar } from "@/components/godui/floating-toolbar";
+
+export function FloatingToolbarDemo() {
+  return (
+    <FloatingToolbar
+      open
+      actions={[
+        { icon: <BoldIcon />, label: "Bold", active: true },
+        { icon: <ItalicIcon />, label: "Italic" },
+        { icon: <UnderlineIcon />, label: "Underline" },
+        { icon: <LinkIcon />, label: "Link" },
+      ]}
+    />
+  );
+}`}
+>
+  <FloatingToolbar open actions={toolbarActions} />
+</Example>
+
+## Installation
+
+<ComponentInstall registry="lab" name="floating-toolbar" />
+
+## Usage
+
+Drive `open` from a selection or hover state to spring the toolbar in and out.
+
+```tsx
+import { FloatingToolbar } from "@godui/lab";
+
+const [open, setOpen] = useState(false);
+
+<FloatingToolbar
+  open={open}
+  actions={[{ icon: <BoldIcon />, label: "Bold", onClick: bold }]}
+/>;
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `actions` | `ToolbarAction[]` | none | `{ icon, label, onClick?, active?, disabled? }`. |
+| `open` | `boolean` | `true` | Mount/unmount with a spring entrance. |
+| `children` | `ReactNode` | none | Trailing content (dividers, extra controls). |
+
+</Workbench>

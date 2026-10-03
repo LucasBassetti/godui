@@ -1,4 +1,4 @@
-import { Breadcrumbs } from "@godui/components";
+import { Breadcrumbs } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "storybook/test";
 import { action, hidden, range, toggle } from "../playground/argtypes";
@@ -14,7 +14,7 @@ const items = [
 ];
 
 const meta = {
-  title: "Navigation/Breadcrumbs",
+  title: "Lab/Navigation/Breadcrumbs",
   component: Breadcrumbs,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

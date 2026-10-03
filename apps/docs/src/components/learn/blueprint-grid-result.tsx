@@ -1,6 +1,6 @@
 "use client";
 
-import { BlueprintGrid } from "@godui/components";
+import { BlueprintGrid } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 export function BlueprintGridResult() {
@@ -35,7 +35,7 @@ export function BlueprintGridResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — move for spotlight
+          the real component: move for spotlight
         </span>
       </div>
       {demo}

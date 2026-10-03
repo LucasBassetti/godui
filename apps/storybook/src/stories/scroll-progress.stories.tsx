@@ -1,4 +1,4 @@
-import { ScrollProgress, type ScrollProgressProps } from "@godui/components";
+import { ScrollProgress, type ScrollProgressProps } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import * as React from "react";
 import { range, select } from "../playground/argtypes";
@@ -23,7 +23,7 @@ function ScrollBox(args: ScrollProgressProps) {
         {Array.from({ length: 16 }).map((_, i) => (
           // biome-ignore lint/suspicious/noArrayIndexKey: static filler
           <p key={i} style={{ margin: 0 }}>
-            Scroll this panel to drive the indicator — line {i + 1} of 16.
+            Scroll this panel to drive the indicator. Line {i + 1} of 16.
           </p>
         ))}
       </div>
@@ -32,7 +32,7 @@ function ScrollBox(args: ScrollProgressProps) {
 }
 
 const meta = {
-  title: "Effects/Scroll Progress",
+  title: "Lab/Effects/Scroll Progress",
   component: ScrollProgress,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

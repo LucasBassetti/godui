@@ -109,10 +109,7 @@ export function AsciiDitherLens() {
                   <Swatch kind={l.kind} />
                   <span className="text-[13px] text-[var(--foreground)]">
                     <span className="font-medium">{l.name}</span>
-                    <span className="text-fd-muted-foreground">
-                      {" "}
-                      — {l.desc}
-                    </span>
+                    <span className="text-fd-muted-foreground">: {l.desc}</span>
                   </span>
                 </div>
               ))}

@@ -1,10 +1,10 @@
-import { LiquidGlassCard, type LiquidGlassCardProps } from "@godui/components";
+import { LiquidGlassCard, type LiquidGlassCardProps } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import type { ReactNode } from "react";
 import { color, range } from "../playground/argtypes";
 
 const meta: Meta<LiquidGlassCardProps> = {
-  title: "Effects/Liquid Glass Card",
+  title: "Lab/Effects/Liquid Glass Card",
   component: LiquidGlassCard,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },
@@ -32,7 +32,7 @@ const meta: Meta<LiquidGlassCardProps> = {
           Liquid Glass
         </h3>
         <p className="mt-2 text-sm text-white/80">
-          Move your cursor across the panel — the light tracks the pointer while
+          Move your cursor across the panel. The light tracks the pointer while
           the backdrop bends through the lens.
         </p>
       </LiquidGlassCard>

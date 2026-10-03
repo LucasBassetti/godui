@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "input",
+  "title": "Input",
+  "description": "Displays a form input field or a component that looks like an input field. The focus ring snaps (no box-shadow transition); use Input Group for an animated ring. GPU-only.",
+  "dependencies": [],
+  "registryDependencies": ["utils"],
+  "files": [
+    {
+      "path": "packages/components/src/ui/input.tsx",
+      "content": "// GodUI Input — mirrors shadcn/ui new-york-v4 components/ui/input.tsx (registry snapshot 2026-10-01).\n// Motion: none — the focus ring snaps. shadcn transitions its box-shadow (paint); a replaced\n// <input> can't host a ::before ring and a wrapper would break the drop-in, so the\n// transition is dropped. For an animated ring, use Input Group. GPU-only.\nimport type * as React from \"react\";\nimport { cn } from \"@/lib/utils\";\n\nfunction Input({ className, type, ...props }: React.ComponentProps<\"input\">) {\n  return (\n    <input\n      type={type}\n      data-slot=\"input\"\n      className={cn(\n        \"h-9 w-full min-w-0 rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-xs outline-none selection:bg-primary selection:text-primary-foreground file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-input/30\",\n        \"focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50\",\n        \"aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40\",\n        className,\n      )}\n      {...props}\n    />\n  );\n}\n\nexport { Input };\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

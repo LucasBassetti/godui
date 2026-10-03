@@ -1,7 +1,7 @@
 # @godui/cli
 
 One command to add the [GodUI MCP server](https://www.npmjs.com/package/@godui/mcp)
-to your AI IDE. It writes the MCP config for you — no manual JSON editing.
+to your AI IDE. It writes the MCP config for you, so you don't edit JSON by hand.
 
 ## Usage
 

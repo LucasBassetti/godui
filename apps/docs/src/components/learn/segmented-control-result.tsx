@@ -1,6 +1,6 @@
 "use client";
 
-import { SegmentedControl, type SegmentedOption } from "@godui/components";
+import { SegmentedControl, type SegmentedOption } from "@godui/lab";
 import { CalendarDays, CalendarRange, Sun } from "lucide-react";
 import { useState } from "react";
 import { useBareScene } from "@/components/learn/bare-scene-context";
@@ -46,7 +46,7 @@ export function SegmentedControlResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — click between options
+          the real component: click between options
         </span>
       </div>
       <div className="flex min-h-[220px] flex-col items-center justify-center gap-4 p-10">

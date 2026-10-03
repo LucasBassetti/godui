@@ -1,6 +1,6 @@
 "use client";
 
-import { Globe } from "@godui/components";
+import { Globe } from "@godui/lab";
 
 // Tuned for a dark hero band: subtle landmasses with small, refined icy-blue
 // markers — closer to the understated telemetry dots on premium product pages.

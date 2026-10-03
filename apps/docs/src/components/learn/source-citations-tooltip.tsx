@@ -89,7 +89,8 @@ export function SourceCitationsTooltip() {
               {'{ type: "spring", stiffness: 320, damping: 32, mass: 0.9 }'}
             </p>
             <p className="text-center font-mono text-[11px] text-fd-muted-foreground">
-              show delay 80ms · hide delay 120ms — bridges pointer to the card
+              show delay 80ms · hide delay 120ms, which bridges the pointer to
+              the card
             </p>
           </div>
 

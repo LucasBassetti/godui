@@ -1,0 +1,45 @@
+---
+title: Effect Background
+description: "Full-bleed effect backgrounds: radial glows, aurora dreams, and soft pastel washes."
+workbench: true
+---
+
+<Workbench>
+
+A full-bleed atmospheric layer. Drop it as the first child of a `relative overflow-hidden`
+container and your content sits above it. Pick a look below from 66 patterns ported from
+[PatternCraft](https://patterncraft.fun). The component takes `background`,
+`backgroundImage`, and `backgroundSize`; the picker fills them in.
+
+<Example label="Default" fullWidth>
+  <BackgroundShowcase component="effect" embedded />
+</Example>
+
+## Installation
+
+<ComponentInstall registry="lab" name="effect-background" />
+
+## Usage
+
+```tsx
+import { EffectBackground } from "@/components/godui/effect-background";
+
+<div className="relative overflow-hidden">
+  <EffectBackground />
+  <YourContent />
+</div>
+```
+
+## Props
+
+The component bakes the selected variant's full style. It takes no custom props,
+only the standard `div` attributes.
+
+| Prop | Type | Description |
+| ---- | ---- | ----------- |
+| `style` | `CSSProperties` | Supply your own background. Setting any background key (`background`, `backgroundImage`, `backgroundColor`, …) replaces the baked default entirely. |
+| `className` | `string` | Extra classes on the layer (it is `absolute inset-0 z-base`). |
+
+All other `div` attributes are forwarded.
+
+</Workbench>

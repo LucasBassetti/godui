@@ -156,7 +156,7 @@ export function LightRaysGrain() {
           <p className="max-w-[38ch] text-center text-[13px] text-fd-muted-foreground">
             Default{" "}
             <span className="font-mono text-[12px]">grain={"{0.05}"}</span> is
-            subtle on purpose — bump it in the Result to feel the film grit. Set{" "}
+            subtle on purpose. Raise it in the Result to see the film grain. Set{" "}
             <span className="font-mono text-[12px]">0</span> to drop the SVG
             layer entirely.
           </p>

@@ -40,7 +40,7 @@ const CSS = `
 const LEGEND = [
   {
     name: "Rainbow",
-    desc: "RAINBOW_BEAM — same hue order as MagicButton, trails to transparent",
+    desc: "RAINBOW_BEAM: same hue order as MagicButton, trails to transparent",
     kind: "rainbow",
   },
   {

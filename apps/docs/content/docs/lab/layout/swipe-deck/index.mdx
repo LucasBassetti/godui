@@ -1,0 +1,87 @@
+---
+title: Swipe Deck
+description: A physics, Tinder-style swipeable card deck with throw-to-dismiss, directional intent, and keyboard controls.
+workbench: true
+---
+
+import { SwipeDeck } from "@godui/lab";
+import { SwipeDeckDemo } from "@/components/demos/swipe-deck-demo";
+
+<Workbench>
+
+Page through profiles, testimonials, or onboarding screens by throwing cards. Drag the top card and it rotates with the throw and tints toward your intent. Release past the threshold and it flies off while the next card springs forward. Drag, use the buttons, or press the arrow keys.
+
+<Example
+  label="Default"
+  story="lab-layout-swipedeck"
+  code={`import { SwipeDeck } from "@/components/godui/swipe-deck";
+
+export function People() {
+  return (
+    <SwipeDeck loop actions={{ left: "Pass", right: "Connect" }} onSwipe={(i, dir) => console.log(i, dir)}>
+      <ProfileCard name="Aria Wells" role="Product Designer" />
+      <ProfileCard name="Mateo Cruz" role="Staff Engineer" />
+      <ProfileCard name="Noah Kim" role="Founder" />
+    </SwipeDeck>
+  );
+}`}
+>
+  <SwipeDeckDemo />
+</Example>
+
+## Installation
+
+<ComponentInstall registry="lab" componentName="SwipeDeck" />
+
+The front card is a draggable spring; its rotation is mapped from the drag
+distance and the intent badges fade in as you pass a small offset. A release
+past `threshold` (or a fast enough flick) dismisses it with momentum, and the
+deck behind springs up a rank.
+
+## Usage
+
+```tsx
+import { SwipeDeck } from "@/components/godui/swipe-deck";
+```
+
+```tsx
+<SwipeDeck onSwipe={(index, direction) => save(index, direction)}>
+  <Card>One</Card>
+  <Card>Two</Card>
+  <Card>Three</Card>
+</SwipeDeck>
+```
+
+### Looping
+
+With `loop`, swiped cards are re-appended so the deck never empties. Use it for
+testimonial reels.
+
+```tsx
+<SwipeDeck loop>{/* cards */}</SwipeDeck>
+```
+
+### Custom action labels
+
+```tsx
+<SwipeDeck actions={{ left: "Pass", right: "Connect" }}>{/* cards */}</SwipeDeck>
+```
+
+## Accessibility
+
+The deck is a focusable group: <kbd>←</kbd> and <kbd>→</kbd> swipe, and the
+labelled buttons below do the same. When `prefers-reduced-motion` is set, the
+spring settling is removed.
+
+## Props
+
+| Prop        | Type                                        | Default | Description                                              |
+| ----------- | ------------------------------------------- | ------- | -------------------------------------------------------- |
+| `onSwipe`   | `(index: number, dir: SwipeDirection) => void` | none    | Fired when the front card is swiped away.                |
+| `loop`      | `boolean`                                   | `false` | Re-append swiped cards so the deck never empties.        |
+| `threshold` | `number`                                    | `110`   | Drag distance (px) past which a release dismisses.       |
+| `actions`   | `{ left: string; right: string }`           | none       | Labels for the left/right actions and intent badges.     |
+
+`SwipeDeck` also forwards every standard `<div>` attribute to the root element.
+
+</Workbench>

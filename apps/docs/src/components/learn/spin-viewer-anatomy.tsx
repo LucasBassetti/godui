@@ -40,13 +40,13 @@ const LEGEND: { name: string; desc: string; swatch: string }[] = [
   },
   {
     name: "index",
-    desc: "React state — which frame is current",
+    desc: "React state: which frame is current",
     swatch:
       "size-2 rounded-full bg-[var(--foreground)]/50 ring-1 ring-fd-border ring-inset",
   },
   {
     name: "img src",
-    desc: "frames[index], swapped — never interpolated",
+    desc: "frames[index], swapped, never interpolated",
     swatch:
       "size-2.5 rounded-full bg-[var(--foreground)] ring-1 ring-fd-border ring-inset",
   },
@@ -92,7 +92,7 @@ export function SpinViewerAnatomy() {
               <span className="sva-track absolute top-0 left-0 size-2 rounded-full bg-[var(--foreground)]" />
             </div>
             <p className="font-mono text-[11px] text-fd-muted-foreground">
-              frames[index] — 8 of 48
+              frames[index]: 8 of 48
             </p>
           </div>
 

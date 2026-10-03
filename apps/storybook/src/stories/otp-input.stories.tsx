@@ -1,11 +1,11 @@
-import { OTPInput } from "@godui/components";
+import { OTPInput } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "storybook/test";
 import { action, range, select, toggle } from "../playground/argtypes";
 import { centered } from "../playground/stage";
 
 const meta = {
-  title: "Inputs/OTP Input",
+  title: "Lab/Inputs/OTP Input",
   component: OTPInput,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

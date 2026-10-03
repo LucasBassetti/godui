@@ -1,0 +1,16 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "sonner",
+  "title": "Sonner",
+  "description": "An opinionated toast component for React. Transform/opacity transitions on a spring; heights snap. GPU-only.",
+  "dependencies": ["sonner", "next-themes", "lucide-react"],
+  "registryDependencies": ["utils", "@godui/godui-motion"],
+  "files": [
+    {
+      "path": "packages/components/src/ui/sonner.tsx",
+      "content": "\"use client\";\n\n// GodUI Sonner — mirrors shadcn/ui new-york-v4 components/ui/sonner.tsx (registry snapshot 2026-10-01).\n// Motion: sonner's own transform/opacity transitions on a spring; its height\n// and box-shadow/background transitions are overridden, so toast heights snap\n// and buttons only fade. User toastOptions are merged, not replaced. GPU-only.\n\nimport {\n  CircleCheckIcon,\n  InfoIcon,\n  Loader2Icon,\n  OctagonXIcon,\n  TriangleAlertIcon,\n} from \"lucide-react\";\nimport { useTheme } from \"next-themes\";\nimport { Toaster as Sonner, type ToasterProps } from \"sonner\";\n\nimport { cn } from \"@/lib/utils\";\n\n// Sonner transitions `transform, opacity, height, box-shadow` on every toast\n// and injects its CSS unlayered, which beats anything in Tailwind's\n// @layer utilities whatever the specificity — so the overrides are !important.\n// Only transition-property and the easing are forced; sonner's swipe rule\n// still zeroes the duration, so dragging stays 1:1. Heights snap.\nconst GODUI_TOAST =\n  \"[transition-property:transform,opacity]! ease-spring-snappy!\";\n// Buttons transition box-shadow / background; keep only opacity.\nconst GODUI_BUTTON = \"[transition-property:opacity]!\";\n\nconst Toaster = ({ toastOptions, ...props }: ToasterProps) => {\n  const { theme = \"system\" } = useTheme();\n\n  return (\n    <Sonner\n      theme={theme as ToasterProps[\"theme\"]}\n      className=\"toaster group\"\n      icons={{\n        success: <CircleCheckIcon className=\"size-4\" />,\n        info: <InfoIcon className=\"size-4\" />,\n        warning: <TriangleAlertIcon className=\"size-4\" />,\n        error: <OctagonXIcon className=\"size-4\" />,\n        loading: <Loader2Icon className=\"size-4 animate-spin\" />,\n      }}\n      style={\n        {\n          \"--normal-bg\": \"var(--popover)\",\n          \"--normal-text\": \"var(--popover-foreground)\",\n          \"--normal-border\": \"var(--border)\",\n          \"--border-radius\": \"var(--radius)\",\n        } as React.CSSProperties\n      }\n      toastOptions={{\n        ...toastOptions,\n        classNames: {\n          ...toastOptions?.classNames,\n          toast: cn(GODUI_TOAST, toastOptions?.classNames?.toast),\n          actionButton: cn(\n            GODUI_BUTTON,\n            toastOptions?.classNames?.actionButton,\n          ),\n          cancelButton: cn(\n            GODUI_BUTTON,\n            toastOptions?.classNames?.cancelButton,\n          ),\n          closeButton: cn(GODUI_BUTTON, toastOptions?.classNames?.closeButton),\n        },\n      }}\n      {...props}\n    />\n  );\n};\n\nexport { Toaster };\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

@@ -1,9 +1,9 @@
-import { LiquidGlassLens, type LiquidGlassLensProps } from "@godui/components";
+import { LiquidGlassLens, type LiquidGlassLensProps } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { color, range } from "../playground/argtypes";
 
 const meta: Meta<LiquidGlassLensProps> = {
-  title: "Effects/Liquid Glass Lens",
+  title: "Lab/Effects/Liquid Glass Lens",
   component: LiquidGlassLens,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

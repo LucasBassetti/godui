@@ -28,7 +28,7 @@ const LEGEND = [
   },
   {
     name: "Content",
-    desc: "relative z-raised — children always on top",
+    desc: "relative z-raised, so children stay on top",
     kind: "content" as const,
   },
 ] as const;

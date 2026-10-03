@@ -2,7 +2,7 @@ import {
   CompactMultiButton,
   MultiButton,
   type MultiButtonItem,
-} from "@godui/components";
+} from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import type { ReactNode } from "react";
 import { fn } from "storybook/test";
@@ -71,7 +71,7 @@ const disabledItems: MultiButtonItem[] = items.map((item) =>
 );
 
 const meta = {
-  title: "Buttons/Multi Button",
+  title: "Lab/Buttons/Multi Button",
   component: MultiButton,
   tags: ["autodocs"],
   parameters: { layout: "centered" },
@@ -135,7 +135,7 @@ export const Gooey: Story = {
 };
 
 export const CompactOriginal: Story = {
-  name: "Compact — Original",
+  name: "Compact: Original",
   render: () => (
     <CompactMultiButton
       items={items}
@@ -149,7 +149,7 @@ export const CompactOriginal: Story = {
 };
 
 export const CompactGooey: Story = {
-  name: "Compact — Gooey",
+  name: "Compact: Gooey",
   render: () => (
     <CompactMultiButton
       items={items}

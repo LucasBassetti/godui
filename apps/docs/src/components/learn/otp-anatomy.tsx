@@ -33,7 +33,7 @@ const LEGEND: {
 }[] = [
   {
     name: "Display cells",
-    desc: "what you see — driven by value[i]",
+    desc: "what you see, driven by value[i]",
     kind: "cells",
   },
   {

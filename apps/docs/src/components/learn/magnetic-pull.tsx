@@ -47,7 +47,7 @@ const LEGEND: {
   },
   {
     name: "Spring shell",
-    desc: "170 / 12 / 0.1 — lags, then overshoots",
+    desc: "170 / 12 / 0.1: lags, then overshoots",
     kind: "shell",
   },
 ];

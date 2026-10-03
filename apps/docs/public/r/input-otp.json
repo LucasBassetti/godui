@@ -1,0 +1,31 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "input-otp",
+  "title": "Input OTP",
+  "description": "Accessible one-time password component with copy paste functionality. Digits rise in; the caret blinks with opacity only. GPU-only.",
+  "dependencies": ["input-otp", "lucide-react"],
+  "registryDependencies": ["utils", "@godui/godui-motion"],
+  "files": [
+    {
+      "path": "packages/components/src/ui/input-otp.tsx",
+      "content": "\"use client\";\n\n// GodUI Input OTP — mirrors shadcn/ui new-york-v4 components/ui/input-otp.tsx (registry snapshot 2026-10-01).\n// Motion: each typed digit rises in (godui-slide-in-from-bottom); the caret blinks with opacity only (godui-caret-blink); the active ring snaps. GPU-only.\n\nimport { OTPInput, OTPInputContext } from \"input-otp\";\nimport { MinusIcon } from \"lucide-react\";\nimport * as React from \"react\";\nimport { cn } from \"@/lib/utils\";\n\nfunction InputOTP({\n  className,\n  containerClassName,\n  ...props\n}: React.ComponentProps<typeof OTPInput> & {\n  containerClassName?: string;\n}) {\n  return (\n    <OTPInput\n      data-slot=\"input-otp\"\n      containerClassName={cn(\n        \"flex items-center gap-2 has-disabled:opacity-50\",\n        containerClassName,\n      )}\n      className={cn(\"disabled:cursor-not-allowed\", className)}\n      {...props}\n    />\n  );\n}\n\nfunction InputOTPGroup({ className, ...props }: React.ComponentProps<\"div\">) {\n  return (\n    <div\n      data-slot=\"input-otp-group\"\n      className={cn(\"flex items-center\", className)}\n      {...props}\n    />\n  );\n}\n\nfunction InputOTPSlot({\n  index,\n  className,\n  ...props\n}: React.ComponentProps<\"div\"> & {\n  index: number;\n}) {\n  const inputOTPContext = React.useContext(OTPInputContext);\n  const { char, hasFakeCaret, isActive } = inputOTPContext?.slots[index] ?? {};\n\n  return (\n    <div\n      data-slot=\"input-otp-slot\"\n      data-active={isActive}\n      className={cn(\n        \"relative flex h-9 w-9 items-center justify-center border-y border-r border-input text-sm shadow-xs outline-none first:rounded-l-md first:border-l last:rounded-r-md aria-invalid:border-destructive data-[active=true]:z-10 data-[active=true]:border-ring data-[active=true]:ring-[3px] data-[active=true]:ring-ring/50 data-[active=true]:aria-invalid:border-destructive data-[active=true]:aria-invalid:ring-destructive/20 dark:bg-input/30 dark:data-[active=true]:aria-invalid:ring-destructive/40\",\n        className,\n      )}\n      {...props}\n    >\n      {char ? (\n        // Keyed by the character, so each newly typed digit rises in.\n        <span key={char} className=\"animate-godui-slide-in-from-bottom\">\n          {char}\n        </span>\n      ) : null}\n      {hasFakeCaret && (\n        <div className=\"pointer-events-none absolute inset-0 flex items-center justify-center\">\n          <div className=\"h-4 w-px animate-godui-caret-blink bg-foreground\" />\n        </div>\n      )}\n    </div>\n  );\n}\n\nfunction InputOTPSeparator({ ...props }: React.ComponentProps<\"div\">) {\n  return (\n    // biome-ignore lint/a11y/useFocusableInteractive lint/a11y/useSemanticElements lint/a11y/useAriaPropsForRole: shadcn parity — a decorative div role=\"separator\"\n    <div data-slot=\"input-otp-separator\" role=\"separator\" {...props}>\n      <MinusIcon />\n    </div>\n  );\n}\n\nexport { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot };\n",
+      "type": "registry:ui"
+    }
+  ],
+  "cssVars": {
+    "theme": {
+      "animate-godui-caret-blink": "godui-caret-blink 1.25s ease-out infinite"
+    }
+  },
+  "css": {
+    "@keyframes godui-caret-blink": {
+      "0%, 70%, 100%": {
+        "opacity": "1"
+      },
+      "20%, 50%": {
+        "opacity": "0"
+      }
+    }
+  },
+  "type": "registry:ui"
+}

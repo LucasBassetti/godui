@@ -1,8 +1,4 @@
-import {
-  AgentFlow,
-  type AgentFlowEdge,
-  type AgentFlowNode,
-} from "@godui/components";
+import { AgentFlow, type AgentFlowEdge, type AgentFlowNode } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 const NODES: AgentFlowNode[] = [
@@ -59,7 +55,7 @@ const EDGES: AgentFlowEdge[] = [
 ];
 
 const meta = {
-  title: "AI/AgentFlow",
+  title: "Lab/AI/AgentFlow",
   component: AgentFlow,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

@@ -82,12 +82,12 @@ const LEGEND: {
 }[] = [
   {
     name: "Scrub",
-    desc: "reveal tracks raw progress — dims on scroll-up",
+    desc: "reveal tracks raw progress, so it dims on scroll-up",
     kind: "dim",
   },
   {
     name: "Latch",
-    desc: "Math.max(prev, v) — stays lit once revealed",
+    desc: "Math.max(prev, v): stays lit once revealed",
     kind: "lit",
   },
 ];

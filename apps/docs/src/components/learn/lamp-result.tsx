@@ -1,6 +1,6 @@
 "use client";
 
-import { Lamp } from "@godui/components";
+import { Lamp } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 const LampDemo = (
@@ -33,7 +33,7 @@ export function LampResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — scroll it into view
+          the real component: scroll it into view
         </span>
       </div>
       <div className="flex min-h-[320px] items-center justify-center p-4 md:p-6">

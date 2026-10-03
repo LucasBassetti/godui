@@ -1,6 +1,6 @@
 "use client";
 
-import { type Facet, FilterBar, type FilterValue } from "@godui/components";
+import { type Facet, FilterBar, type FilterValue } from "@godui/lab";
 import { useState } from "react";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
@@ -152,7 +152,7 @@ export function FilterBarResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — toggle a facet, watch the list narrow
+          the real component: toggle a facet, watch the list narrow
         </span>
       </div>
       <div className="flex w-full flex-col items-center p-10">{demo}</div>

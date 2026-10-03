@@ -1,6 +1,6 @@
 "use client";
 
-import { TextAnimate } from "@godui/components";
+import { TextAnimate } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
@@ -65,7 +65,7 @@ export function TextAnimateResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — scroll, wait, stagger
+          the real component: scroll, wait, stagger
         </span>
       </div>
       <div className="flex min-h-[280px] flex-col items-center justify-center gap-10 p-10">

@@ -1,0 +1,96 @@
+---
+title: Light Rays
+description: Volumetric god-rays that slowly sweep and breathe, with optional film grain. Pure CSS.
+workbench: true
+---
+
+import { LightRays } from "@godui/lab";
+
+<Workbench>
+
+A soft fan of volumetric light rays beams down from above, slowly sweeping and
+breathing in intensity, finished with a layer of film grain. Pure CSS. Drop it as the first child of a
+`relative overflow-hidden` container.
+
+<Example
+  label="Default"
+  fullWidth
+  story="lab-backgrounds-light-rays"
+  code={`import { LightRays } from "@/components/godui/light-rays";
+
+export function LightRaysDemo() {
+  return (
+    <div className="relative flex h-[360px] w-full items-center justify-center overflow-hidden rounded-xl border border-border bg-background">
+      <LightRays />
+      <div className="relative z-raised text-center">
+        <h2 className="font-semibold text-3xl tracking-tight">Step into the light</h2>
+        <p className="mt-2 text-muted-foreground">God-rays that gently breathe.</p>
+      </div>
+    </div>
+  );
+}`}
+>
+  <div className="relative flex w-full flex-1 items-center justify-center overflow-hidden bg-background">
+    <LightRays />
+    <div className="relative z-raised text-center">
+      <h2 className="font-semibold text-3xl tracking-tight">Step into the light</h2>
+      <p className="mt-2 text-muted-foreground">God-rays that gently breathe.</p>
+    </div>
+  </div>
+</Example>
+
+## Installation
+
+<ComponentInstall registry="lab" name="light-rays" />
+
+## Usage
+
+```tsx
+import { LightRays } from "@/components/godui/light-rays";
+
+<div className="relative overflow-hidden">
+  <LightRays />
+  <YourContent />
+</div>
+```
+
+The layer is `absolute inset-0 z-base`; parent must be `relative overflow-hidden`,
+content at `z-raised`+. Color defaults to `--color-primary`. The sweep stops under
+`prefers-reduced-motion`; the static fan remains.
+
+## Examples
+
+### Warm
+
+<Example
+  label="Warm"
+  fullWidth
+  code={`import { LightRays } from "@/components/godui/light-rays";
+
+export function LightRaysWarm() {
+  return (
+    <div className="relative h-[320px] w-full overflow-hidden rounded-xl border border-border bg-background">
+      <LightRays color="#f59e0b" rayCount={18} intensity={0.7} />
+    </div>
+  );
+}`}
+>
+  <div className="relative w-full flex-1 overflow-hidden bg-background">
+    <LightRays color="#f59e0b" rayCount={18} intensity={0.7} />
+  </div>
+</Example>
+
+## Props
+
+| Prop | Type | Default | Description |
+| ---- | ---- | ------- | ----------- |
+| `rayCount` | `number` | `14` | Number of rays in the fan. |
+| `color` | `string` | `--color-primary` | Ray color. |
+| `speed` | `number` | `1` | Sweep speed multiplier. |
+| `angle` | `number` | `0` | Base angle (deg) the fan points from. |
+| `intensity` | `number` | `0.6` | Overall ray opacity, `0` to `1`. |
+| `grain` | `number` | `0.05` | Film-grain amount, `0` to `1` (`0` disables it). |
+
+Also accepts standard `div` attributes (e.g. `className`, `style`).
+
+</Workbench>

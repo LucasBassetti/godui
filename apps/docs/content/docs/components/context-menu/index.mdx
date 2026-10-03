@@ -1,0 +1,136 @@
+---
+title: Context Menu
+description: Displays a menu to the user, such as a set of actions or functions, triggered by a right click. Grows out of the pointer; checks pop in.
+workbench: true
+---
+
+import { ContextMenuDemo } from "@/components/demos/core/context-menu-demo";
+
+<Workbench>
+
+The shadcn/ui context menu with the same motion as
+[Dropdown Menu](/docs/components/dropdown-menu). It scales up from where you
+clicked and drifts out on a spring, sub-menus grow from their parent item,
+and check and radio indicators pop in from 50% when toggled (not when the menu
+opens). Item highlights change instantly.
+
+<Example label="Default" story="ui-context-menu" code={`"use client";
+
+import {
+  ContextMenu,
+  ContextMenuCheckboxItem,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuLabel,
+  ContextMenuRadioGroup,
+  ContextMenuRadioItem,
+  ContextMenuSeparator,
+  ContextMenuShortcut,
+  ContextMenuSub,
+  ContextMenuSubContent,
+  ContextMenuSubTrigger,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
+import { useState } from "react";
+
+export function ContextMenuDemo() {
+  const [bookmarks, setBookmarks] = useState(true);
+  const [person, setPerson] = useState("pedro");
+  return (
+    <ContextMenu>
+      <ContextMenuTrigger className="flex h-[150px] w-[300px] items-center justify-center rounded-md border border-dashed text-sm">
+        Right click here
+      </ContextMenuTrigger>
+      <ContextMenuContent className="w-52">
+        <ContextMenuItem inset>
+          Back
+          <ContextMenuShortcut>⌘[</ContextMenuShortcut>
+        </ContextMenuItem>
+        <ContextMenuItem inset disabled>
+          Forward
+          <ContextMenuShortcut>⌘]</ContextMenuShortcut>
+        </ContextMenuItem>
+        <ContextMenuItem inset>
+          Reload
+          <ContextMenuShortcut>⌘R</ContextMenuShortcut>
+        </ContextMenuItem>
+        <ContextMenuSub>
+          <ContextMenuSubTrigger inset>More Tools</ContextMenuSubTrigger>
+          <ContextMenuSubContent className="w-44">
+            <ContextMenuItem>Save Page...</ContextMenuItem>
+            <ContextMenuItem>Create Shortcut...</ContextMenuItem>
+            <ContextMenuSeparator />
+            <ContextMenuItem>Developer Tools</ContextMenuItem>
+          </ContextMenuSubContent>
+        </ContextMenuSub>
+        <ContextMenuSeparator />
+        <ContextMenuCheckboxItem
+          checked={bookmarks}
+          onCheckedChange={setBookmarks}
+        >
+          Show Bookmarks
+        </ContextMenuCheckboxItem>
+        <ContextMenuSeparator />
+        <ContextMenuRadioGroup value={person} onValueChange={setPerson}>
+          <ContextMenuLabel inset>People</ContextMenuLabel>
+          <ContextMenuRadioItem value="pedro">Pedro Duarte</ContextMenuRadioItem>
+          <ContextMenuRadioItem value="colm">Colm Tuite</ContextMenuRadioItem>
+        </ContextMenuRadioGroup>
+      </ContextMenuContent>
+    </ContextMenu>
+  );
+}`}>
+  <ContextMenuDemo />
+</Example>
+
+## Installation
+
+<ComponentInstall name="context-menu" />
+
+## Replacing shadcn
+
+`npx shadcn add @godui/context-menu` overwrites `components/ui/context-menu.tsx`.
+Exports, props and `data-slot` attributes match shadcn/ui new-york-v4, so
+existing imports keep working. It also installs `godui-motion` (easings,
+keyframes, the FLIP hook) into your project.
+
+## Usage
+
+```tsx
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
+```
+
+```tsx
+<ContextMenu>
+  <ContextMenuTrigger>Right click</ContextMenuTrigger>
+  <ContextMenuContent>
+    <ContextMenuItem>Profile</ContextMenuItem>
+    <ContextMenuItem>Billing</ContextMenuItem>
+    <ContextMenuItem>Team</ContextMenuItem>
+    <ContextMenuItem>Subscription</ContextMenuItem>
+  </ContextMenuContent>
+</ContextMenu>
+```
+
+## What's animated
+
+| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
+| --- | --- | --- | --- | --- |
+| Open (menu, sub-menu) | `godui-popover-in` | `opacity`, `scale` 0.96 → 1 from the pointer, `translate` 4px → 0 | `ease-spring-snappy` | 260ms |
+| Close | `godui-popover-out` | the same, reversed | `ease-out-expo` | 150ms |
+| Check / radio appears | `godui-fade-scale-in` from 50% | `opacity`, `scale` | `ease-spring-snappy` | 260ms |
+| Item highlight | snaps | none | none | none |
+
+Under `prefers-reduced-motion` the menu and indicators only fade (150ms).
+
+## API
+
+Built on [Radix Context Menu](https://www.radix-ui.com/primitives/docs/components/context-menu).
+Props are identical to [shadcn/ui Context Menu](https://ui.shadcn.com/docs/components/context-menu).
+
+</Workbench>

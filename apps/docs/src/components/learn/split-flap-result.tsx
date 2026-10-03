@@ -1,6 +1,6 @@
 "use client";
 
-import { SplitFlapDisplay } from "@godui/components";
+import { SplitFlapDisplay } from "@godui/lab";
 import { useEffect, useState } from "react";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
@@ -36,7 +36,7 @@ export function SplitFlapResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — it re-flips whenever the value changes
+          the real component: it re-flips whenever the value changes
         </span>
       </div>
       <div className="flex min-h-[240px] w-full items-center justify-center p-10">

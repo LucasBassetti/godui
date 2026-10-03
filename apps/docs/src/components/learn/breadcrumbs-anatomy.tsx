@@ -29,7 +29,7 @@ const CSS = `
 const LEGEND: { name: string; desc: string; swatch: string }[] = [
   {
     name: "Link crumb",
-    desc: "navigable — text-muted-foreground",
+    desc: "navigable: text-muted-foreground",
     swatch: "bg-[var(--foreground)]/10",
   },
   {

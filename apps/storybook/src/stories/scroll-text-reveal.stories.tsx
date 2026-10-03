@@ -1,12 +1,12 @@
-import { ScrollTextReveal } from "@godui/components";
+import { ScrollTextReveal } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { radio, range, text, toggle } from "../playground/argtypes";
 
 const COPY =
-  "Great interfaces read like a sentence — one idea resolving into the next. As you scroll, each word settles into focus, pacing attention exactly where it belongs.";
+  "Great interfaces read like a sentence, one idea resolving into the next. As you scroll, each word settles into focus, pacing attention exactly where it belongs.";
 
 const meta = {
-  title: "Text/Scroll Text Reveal",
+  title: "Lab/Text/Scroll Text Reveal",
   component: ScrollTextReveal,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

@@ -1,0 +1,120 @@
+---
+title: Input
+description: Displays a form input field or a component that looks like an input field. The focus ring snaps; for an animated ring, use Input Group.
+workbench: true
+---
+
+import { InputDemo } from "@/components/demos/core/input-demo";
+import { InputDisabledDemo } from "@/components/demos/core/input-disabled-demo";
+import { InputFileDemo } from "@/components/demos/core/input-file-demo";
+import { InputWithButtonDemo } from "@/components/demos/core/input-with-button-demo";
+
+<Workbench>
+
+The shadcn/ui input, unchanged except for one thing: shadcn fades the focus
+ring in by transitioning `box-shadow`, which repaints the field on every
+frame. GodUI drops that transition, so the ring snaps on. An `<input>` can't
+hold a `::before` layer, and wrapping it would break the drop-in, so the
+animated ring lives on [Input Group](/docs/components/input-group).
+
+<Example label="Default" story="ui-input--default" code={`import { Input } from "@/components/ui/input";
+
+export function InputDemo() {
+  return (
+    <div className="w-full max-w-sm">
+      <Input type="email" placeholder="Email" />
+    </div>
+  );
+}`}>
+  <InputDemo />
+</Example>
+
+<Example label="File" story="ui-input--file" code={`import { Input } from "@/components/ui/input";
+
+export function InputFileDemo() {
+  return (
+    <div className="grid w-full max-w-sm items-center gap-3">
+      <label htmlFor="picture" className="font-medium text-sm">
+        Picture
+      </label>
+      <Input id="picture" type="file" />
+    </div>
+  );
+}`}>
+  <InputFileDemo />
+</Example>
+
+<Example label="Disabled" story="ui-input--disabled" code={`import { Input } from "@/components/ui/input";
+
+export function InputDisabledDemo() {
+  return (
+    <div className="w-full max-w-sm">
+      <Input disabled type="email" placeholder="Email" />
+    </div>
+  );
+}`}>
+  <InputDisabledDemo />
+</Example>
+
+<Example label="With button" story="ui-input--with-button" code={`import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+
+export function InputWithButtonDemo() {
+  return (
+    <div className="grid w-full max-w-sm gap-3">
+      <label htmlFor="newsletter-email" className="font-medium text-sm">
+        Email
+      </label>
+      <div className="flex items-center gap-2">
+        <Input id="newsletter-email" type="email" placeholder="Email" />
+        <Button type="submit" variant="outline">
+          Subscribe
+        </Button>
+      </div>
+    </div>
+  );
+}`}>
+  <InputWithButtonDemo />
+</Example>
+
+## Installation
+
+<ComponentInstall name="input" />
+
+## Replacing shadcn
+
+`npx shadcn add @godui/input` overwrites `components/ui/input.tsx`. Exports,
+props and the `data-slot` attribute match shadcn/ui new-york-v4, so existing
+imports keep working. The only class removed is `transition-[color,box-shadow]`.
+
+## Usage
+
+```tsx
+import { Input } from "@/components/ui/input";
+```
+
+```tsx
+<Input type="email" placeholder="Email" />
+```
+
+## What's animated
+
+| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
+| --- | --- | --- | --- | --- |
+| Focus ring | snaps (`box-shadow`, no transition) | none | none | none |
+| Border, invalid ring | snap | none | none | none |
+
+Why it snaps: the ring is a `box-shadow` on the input itself, and
+`box-shadow` can only be animated by repainting. A GPU fade needs a separate
+layer whose `opacity` changes, and `<input>` is a replaced element, so it
+can't have a `::before`. A wrapper `<div>` would give it one, but then
+`className`, `ref` and every layout class at your call sites would land on the
+wrong element. The snap keeps the input a drop-in replacement. When you want the ring
+to fade in, wrap the field in [Input Group](/docs/components/input-group).
+
+## API
+
+Props are identical to [shadcn/ui Input](https://ui.shadcn.com/docs/components/input):
+every native `input` prop, plus `className`.
+
+</Workbench>

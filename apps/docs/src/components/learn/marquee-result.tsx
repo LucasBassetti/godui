@@ -1,6 +1,6 @@
 "use client";
 
-import { Marquee } from "@godui/components";
+import { Marquee } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
@@ -41,7 +41,7 @@ export function MarqueeResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — hover to pause
+          the real component: hover to pause
         </span>
       </div>
       <div className="flex min-h-[200px] items-center justify-center py-10">

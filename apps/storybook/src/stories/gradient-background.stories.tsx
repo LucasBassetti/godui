@@ -4,7 +4,7 @@ import {
   type GradientBackgroundVariant,
   gradientBackgroundPresets,
   gradientBackgroundVariants,
-} from "@godui/components";
+} from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { select } from "../playground/argtypes";
 import { effectStage } from "../playground/stage";
@@ -14,7 +14,7 @@ type PlaygroundArgs = GradientBackgroundProps & {
 };
 
 const meta: Meta<PlaygroundArgs> = {
-  title: "Backgrounds/Gradient Background",
+  title: "Lab/Backgrounds/Gradient Background",
   component: GradientBackground,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

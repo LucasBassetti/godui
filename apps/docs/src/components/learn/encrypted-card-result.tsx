@@ -23,7 +23,7 @@ export function EncryptedCardResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — hover to decrypt
+          the real component: hover to decrypt
         </span>
       </div>
       <div className="flex min-h-[280px] items-center justify-center p-6 md:p-10">

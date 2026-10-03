@@ -1,6 +1,6 @@
 "use client";
 
-import { AsciiDither } from "@godui/components";
+import { AsciiDither } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 const PORTRAIT =
@@ -42,7 +42,7 @@ export function AsciiDitherResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — hover the ASCII to sweep the lens
+          the real component: hover the ASCII to sweep the lens
         </span>
       </div>
       <div className="flex min-h-[240px] w-full items-center justify-center p-10">

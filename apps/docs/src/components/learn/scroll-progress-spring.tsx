@@ -36,7 +36,7 @@ const LEGEND: {
 }[] = [
   {
     name: "Raw",
-    desc: "scrollYProgress — jumps with scroll",
+    desc: "scrollYProgress: jumps with scroll",
     kind: "raw",
   },
   {

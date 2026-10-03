@@ -30,7 +30,7 @@ const LEGEND: {
   },
   {
     name: "Name flag",
-    desc: "mt-3 -ml-1, rounded-tl-sm — the tail points at the pointer",
+    desc: "mt-3 -ml-1, rounded-tl-sm, so the tail points at the pointer",
     kind: "flag",
   },
 ];

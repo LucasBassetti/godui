@@ -1,0 +1,855 @@
+---
+title: Sidebar
+description: A composable, themeable and customizable sidebar component. Widths snap; the panel slides, its surface glides to the icon rail, and the content beside it rides the edge.
+workbench: true
+---
+
+import { SidebarDemo } from "@/components/demos/core/sidebar-demo";
+import { SidebarFloatingDemo } from "@/components/demos/core/sidebar-floating-demo";
+import { SidebarIconDemo } from "@/components/demos/core/sidebar-icon-demo";
+import { SidebarInsetDemo } from "@/components/demos/core/sidebar-inset-demo";
+
+<Workbench>
+
+The shadcn/ui sidebar, without a width animation. Collapsing offcanvas, the
+whole panel slides out with `translate`. In icon mode the panel's box snaps to
+the rail at once, and a surface layer behind it (its background and border)
+slides its edge there. The content beside the sidebar glides along on the same
+spring, so its edge never parts from the panel's. Press the trigger, or
+<kbd>Ctrl</kbd>/<kbd>⌘</kbd>+<kbd>B</kbd>.
+
+<Example label="Offcanvas" story="ui-sidebar" code={`import {
+  BookOpenIcon,
+  BotIcon,
+  ChevronRightIcon,
+  FrameIcon,
+  GalleryVerticalEndIcon,
+  MapIcon,
+  PieChartIcon,
+  Settings2Icon,
+  SquareTerminalIcon,
+} from "lucide-react";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { Separator } from "@/components/ui/separator";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuBadge,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
+  SidebarProvider,
+  SidebarRail,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
+
+const platform = [
+  {
+    title: "Playground",
+    icon: SquareTerminalIcon,
+    isActive: true,
+    items: ["History", "Starred", "Settings"],
+  },
+  { title: "Models", icon: BotIcon, items: ["Genesis", "Explorer", "Quantum"] },
+  {
+    title: "Documentation",
+    icon: BookOpenIcon,
+    items: ["Introduction", "Get Started", "Tutorials"],
+  },
+  { title: "Settings", icon: Settings2Icon, items: ["General", "Team"] },
+];
+
+const projects = [
+  { name: "Design Engineering", icon: FrameIcon, badge: "12" },
+  { name: "Sales & Marketing", icon: PieChartIcon, badge: "3" },
+  { name: "Travel", icon: MapIcon },
+];
+
+export function SidebarDemo() {
+  return (
+    // The preview keeps the sidebar inside this frame (relative and the frame
+    // classes here, absolute h-full on <Sidebar>). In an app, drop them.
+    <SidebarProvider className="relative h-[36rem] min-h-0 overflow-hidden rounded-xl border">
+      <Sidebar className="absolute h-full">
+        <SidebarHeader>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton size="lg" tooltip="Acme Inc">
+                <div className="flex aspect-square size-8 shrink-0 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                  <GalleryVerticalEndIcon className="size-4" />
+                </div>
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-medium">Acme Inc</span>
+                  <span className="truncate text-xs">Enterprise</span>
+                </div>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarHeader>
+        <SidebarContent>
+          <SidebarGroup>
+            <SidebarGroupLabel>Platform</SidebarGroupLabel>
+            <SidebarMenu>
+              {platform.map((item) => (
+                <Collapsible
+                  key={item.title}
+                  asChild
+                  defaultOpen={item.isActive}
+                  className="group/collapsible"
+                >
+                  <SidebarMenuItem>
+                    <CollapsibleTrigger asChild>
+                      <SidebarMenuButton
+                        tooltip={item.title}
+                        isActive={item.isActive}
+                      >
+                        <item.icon />
+                        <span>{item.title}</span>
+                        <ChevronRightIcon className="ml-auto transition-[transform] duration-(--godui-duration-base) ease-spring-smooth group-data-[state=open]/collapsible:[transform:rotate(90deg)]" />
+                      </SidebarMenuButton>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                      <SidebarMenuSub>
+                        {item.items.map((sub) => (
+                          <SidebarMenuSubItem key={sub}>
+                            <SidebarMenuSubButton href="#">
+                              <span>{sub}</span>
+                            </SidebarMenuSubButton>
+                          </SidebarMenuSubItem>
+                        ))}
+                      </SidebarMenuSub>
+                    </CollapsibleContent>
+                  </SidebarMenuItem>
+                </Collapsible>
+              ))}
+            </SidebarMenu>
+          </SidebarGroup>
+          <SidebarGroup>
+            <SidebarGroupLabel>Projects</SidebarGroupLabel>
+            <SidebarMenu>
+              {projects.map((project) => (
+                <SidebarMenuItem key={project.name}>
+                  <SidebarMenuButton tooltip={project.name}>
+                    <project.icon />
+                    <span>{project.name}</span>
+                  </SidebarMenuButton>
+                  {project.badge ? (
+                    <SidebarMenuBadge>{project.badge}</SidebarMenuBadge>
+                  ) : null}
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroup>
+        </SidebarContent>
+        <SidebarFooter>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton size="lg" tooltip="shadcn">
+                <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-sidebar-accent text-xs font-medium">
+                  CN
+                </div>
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-medium">shadcn</span>
+                  <span className="truncate text-xs">m@example.com</span>
+                </div>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarFooter>
+        <SidebarRail />
+      </Sidebar>
+      <SidebarInset>
+        <header className="flex h-14 shrink-0 items-center gap-2 px-4">
+          <SidebarTrigger className="-ml-1" />
+          <Separator
+            orientation="vertical"
+            className="mr-2 data-[orientation=vertical]:h-4"
+          />
+          <span className="text-sm text-muted-foreground">
+            Building Your App
+          </span>
+          <span className="text-sm text-muted-foreground">/</span>
+          <span className="text-sm">Data Fetching</span>
+        </header>
+        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+          <div className="grid auto-rows-min gap-4 md:grid-cols-3">
+            <div className="aspect-video rounded-xl bg-muted/50" />
+            <div className="aspect-video rounded-xl bg-muted/50" />
+            <div className="aspect-video rounded-xl bg-muted/50" />
+          </div>
+          <div className="flex-1 rounded-xl bg-muted/50" />
+        </div>
+      </SidebarInset>
+    </SidebarProvider>
+  );
+}`}>
+  <SidebarDemo />
+</Example>
+
+<Example label="Icon" story="ui-sidebar" code={`import {
+  BookOpenIcon,
+  BotIcon,
+  ChevronRightIcon,
+  FrameIcon,
+  GalleryVerticalEndIcon,
+  MapIcon,
+  PieChartIcon,
+  Settings2Icon,
+  SquareTerminalIcon,
+} from "lucide-react";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { Separator } from "@/components/ui/separator";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuBadge,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
+  SidebarProvider,
+  SidebarRail,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
+
+const platform = [
+  {
+    title: "Playground",
+    icon: SquareTerminalIcon,
+    isActive: true,
+    items: ["History", "Starred", "Settings"],
+  },
+  { title: "Models", icon: BotIcon, items: ["Genesis", "Explorer", "Quantum"] },
+  {
+    title: "Documentation",
+    icon: BookOpenIcon,
+    items: ["Introduction", "Get Started", "Tutorials"],
+  },
+  { title: "Settings", icon: Settings2Icon, items: ["General", "Team"] },
+];
+
+const projects = [
+  { name: "Design Engineering", icon: FrameIcon, badge: "12" },
+  { name: "Sales & Marketing", icon: PieChartIcon, badge: "3" },
+  { name: "Travel", icon: MapIcon },
+];
+
+export function SidebarIconDemo() {
+  return (
+    // The preview keeps the sidebar inside this frame (relative and the frame
+    // classes here, absolute h-full on <Sidebar>). In an app, drop them.
+    <SidebarProvider className="relative h-[36rem] min-h-0 overflow-hidden rounded-xl border">
+      <Sidebar className="absolute h-full" collapsible="icon">
+        <SidebarHeader>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton size="lg" tooltip="Acme Inc">
+                <div className="flex aspect-square size-8 shrink-0 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                  <GalleryVerticalEndIcon className="size-4" />
+                </div>
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-medium">Acme Inc</span>
+                  <span className="truncate text-xs">Enterprise</span>
+                </div>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarHeader>
+        <SidebarContent>
+          <SidebarGroup>
+            <SidebarGroupLabel>Platform</SidebarGroupLabel>
+            <SidebarMenu>
+              {platform.map((item) => (
+                <Collapsible
+                  key={item.title}
+                  asChild
+                  defaultOpen={item.isActive}
+                  className="group/collapsible"
+                >
+                  <SidebarMenuItem>
+                    <CollapsibleTrigger asChild>
+                      <SidebarMenuButton
+                        tooltip={item.title}
+                        isActive={item.isActive}
+                      >
+                        <item.icon />
+                        <span>{item.title}</span>
+                        <ChevronRightIcon className="ml-auto transition-[transform] duration-(--godui-duration-base) ease-spring-smooth group-data-[state=open]/collapsible:[transform:rotate(90deg)]" />
+                      </SidebarMenuButton>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                      <SidebarMenuSub>
+                        {item.items.map((sub) => (
+                          <SidebarMenuSubItem key={sub}>
+                            <SidebarMenuSubButton href="#">
+                              <span>{sub}</span>
+                            </SidebarMenuSubButton>
+                          </SidebarMenuSubItem>
+                        ))}
+                      </SidebarMenuSub>
+                    </CollapsibleContent>
+                  </SidebarMenuItem>
+                </Collapsible>
+              ))}
+            </SidebarMenu>
+          </SidebarGroup>
+          <SidebarGroup>
+            <SidebarGroupLabel>Projects</SidebarGroupLabel>
+            <SidebarMenu>
+              {projects.map((project) => (
+                <SidebarMenuItem key={project.name}>
+                  <SidebarMenuButton tooltip={project.name}>
+                    <project.icon />
+                    <span>{project.name}</span>
+                  </SidebarMenuButton>
+                  {project.badge ? (
+                    <SidebarMenuBadge>{project.badge}</SidebarMenuBadge>
+                  ) : null}
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroup>
+        </SidebarContent>
+        <SidebarFooter>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton size="lg" tooltip="shadcn">
+                <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-sidebar-accent text-xs font-medium">
+                  CN
+                </div>
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-medium">shadcn</span>
+                  <span className="truncate text-xs">m@example.com</span>
+                </div>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarFooter>
+        <SidebarRail />
+      </Sidebar>
+      <SidebarInset>
+        <header className="flex h-14 shrink-0 items-center gap-2 px-4">
+          <SidebarTrigger className="-ml-1" />
+          <Separator
+            orientation="vertical"
+            className="mr-2 data-[orientation=vertical]:h-4"
+          />
+          <span className="text-sm text-muted-foreground">
+            Building Your App
+          </span>
+          <span className="text-sm text-muted-foreground">/</span>
+          <span className="text-sm">Data Fetching</span>
+        </header>
+        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+          <div className="grid auto-rows-min gap-4 md:grid-cols-3">
+            <div className="aspect-video rounded-xl bg-muted/50" />
+            <div className="aspect-video rounded-xl bg-muted/50" />
+            <div className="aspect-video rounded-xl bg-muted/50" />
+          </div>
+          <div className="flex-1 rounded-xl bg-muted/50" />
+        </div>
+      </SidebarInset>
+    </SidebarProvider>
+  );
+}`}>
+  <SidebarIconDemo />
+</Example>
+
+<Example label="Floating" story="ui-sidebar" code={`import {
+  BookOpenIcon,
+  BotIcon,
+  ChevronRightIcon,
+  FrameIcon,
+  GalleryVerticalEndIcon,
+  MapIcon,
+  PieChartIcon,
+  Settings2Icon,
+  SquareTerminalIcon,
+} from "lucide-react";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { Separator } from "@/components/ui/separator";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuBadge,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
+  SidebarProvider,
+  SidebarRail,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
+
+const platform = [
+  {
+    title: "Playground",
+    icon: SquareTerminalIcon,
+    isActive: true,
+    items: ["History", "Starred", "Settings"],
+  },
+  { title: "Models", icon: BotIcon, items: ["Genesis", "Explorer", "Quantum"] },
+  {
+    title: "Documentation",
+    icon: BookOpenIcon,
+    items: ["Introduction", "Get Started", "Tutorials"],
+  },
+  { title: "Settings", icon: Settings2Icon, items: ["General", "Team"] },
+];
+
+const projects = [
+  { name: "Design Engineering", icon: FrameIcon, badge: "12" },
+  { name: "Sales & Marketing", icon: PieChartIcon, badge: "3" },
+  { name: "Travel", icon: MapIcon },
+];
+
+export function SidebarFloatingDemo() {
+  return (
+    // The preview keeps the sidebar inside this frame (relative and the frame
+    // classes here, absolute h-full on <Sidebar>). In an app, drop them.
+    <SidebarProvider className="relative h-[36rem] min-h-0 overflow-hidden rounded-xl border">
+      <Sidebar
+        className="absolute h-full"
+        variant="floating"
+        collapsible="icon"
+      >
+        <SidebarHeader>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton size="lg" tooltip="Acme Inc">
+                <div className="flex aspect-square size-8 shrink-0 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                  <GalleryVerticalEndIcon className="size-4" />
+                </div>
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-medium">Acme Inc</span>
+                  <span className="truncate text-xs">Enterprise</span>
+                </div>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarHeader>
+        <SidebarContent>
+          <SidebarGroup>
+            <SidebarGroupLabel>Platform</SidebarGroupLabel>
+            <SidebarMenu>
+              {platform.map((item) => (
+                <Collapsible
+                  key={item.title}
+                  asChild
+                  defaultOpen={item.isActive}
+                  className="group/collapsible"
+                >
+                  <SidebarMenuItem>
+                    <CollapsibleTrigger asChild>
+                      <SidebarMenuButton
+                        tooltip={item.title}
+                        isActive={item.isActive}
+                      >
+                        <item.icon />
+                        <span>{item.title}</span>
+                        <ChevronRightIcon className="ml-auto transition-[transform] duration-(--godui-duration-base) ease-spring-smooth group-data-[state=open]/collapsible:[transform:rotate(90deg)]" />
+                      </SidebarMenuButton>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                      <SidebarMenuSub>
+                        {item.items.map((sub) => (
+                          <SidebarMenuSubItem key={sub}>
+                            <SidebarMenuSubButton href="#">
+                              <span>{sub}</span>
+                            </SidebarMenuSubButton>
+                          </SidebarMenuSubItem>
+                        ))}
+                      </SidebarMenuSub>
+                    </CollapsibleContent>
+                  </SidebarMenuItem>
+                </Collapsible>
+              ))}
+            </SidebarMenu>
+          </SidebarGroup>
+          <SidebarGroup>
+            <SidebarGroupLabel>Projects</SidebarGroupLabel>
+            <SidebarMenu>
+              {projects.map((project) => (
+                <SidebarMenuItem key={project.name}>
+                  <SidebarMenuButton tooltip={project.name}>
+                    <project.icon />
+                    <span>{project.name}</span>
+                  </SidebarMenuButton>
+                  {project.badge ? (
+                    <SidebarMenuBadge>{project.badge}</SidebarMenuBadge>
+                  ) : null}
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroup>
+        </SidebarContent>
+        <SidebarFooter>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton size="lg" tooltip="shadcn">
+                <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-sidebar-accent text-xs font-medium">
+                  CN
+                </div>
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-medium">shadcn</span>
+                  <span className="truncate text-xs">m@example.com</span>
+                </div>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarFooter>
+        <SidebarRail />
+      </Sidebar>
+      <SidebarInset>
+        <header className="flex h-14 shrink-0 items-center gap-2 px-4">
+          <SidebarTrigger className="-ml-1" />
+          <Separator
+            orientation="vertical"
+            className="mr-2 data-[orientation=vertical]:h-4"
+          />
+          <span className="text-sm text-muted-foreground">
+            Building Your App
+          </span>
+          <span className="text-sm text-muted-foreground">/</span>
+          <span className="text-sm">Data Fetching</span>
+        </header>
+        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+          <div className="grid auto-rows-min gap-4 md:grid-cols-3">
+            <div className="aspect-video rounded-xl bg-muted/50" />
+            <div className="aspect-video rounded-xl bg-muted/50" />
+            <div className="aspect-video rounded-xl bg-muted/50" />
+          </div>
+          <div className="flex-1 rounded-xl bg-muted/50" />
+        </div>
+      </SidebarInset>
+    </SidebarProvider>
+  );
+}`}>
+  <SidebarFloatingDemo />
+</Example>
+
+<Example label="Inset" story="ui-sidebar" code={`import {
+  BookOpenIcon,
+  BotIcon,
+  ChevronRightIcon,
+  FrameIcon,
+  GalleryVerticalEndIcon,
+  MapIcon,
+  PieChartIcon,
+  Settings2Icon,
+  SquareTerminalIcon,
+} from "lucide-react";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { Separator } from "@/components/ui/separator";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuBadge,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
+  SidebarProvider,
+  SidebarRail,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
+
+const platform = [
+  {
+    title: "Playground",
+    icon: SquareTerminalIcon,
+    isActive: true,
+    items: ["History", "Starred", "Settings"],
+  },
+  { title: "Models", icon: BotIcon, items: ["Genesis", "Explorer", "Quantum"] },
+  {
+    title: "Documentation",
+    icon: BookOpenIcon,
+    items: ["Introduction", "Get Started", "Tutorials"],
+  },
+  { title: "Settings", icon: Settings2Icon, items: ["General", "Team"] },
+];
+
+const projects = [
+  { name: "Design Engineering", icon: FrameIcon, badge: "12" },
+  { name: "Sales & Marketing", icon: PieChartIcon, badge: "3" },
+  { name: "Travel", icon: MapIcon },
+];
+
+export function SidebarInsetDemo() {
+  return (
+    // The preview keeps the sidebar inside this frame (relative and the frame
+    // classes here, absolute h-full on <Sidebar>). In an app, drop them.
+    <SidebarProvider className="relative h-[36rem] min-h-0 overflow-hidden rounded-xl border">
+      <Sidebar className="absolute h-full" variant="inset" collapsible="icon">
+        <SidebarHeader>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton size="lg" tooltip="Acme Inc">
+                <div className="flex aspect-square size-8 shrink-0 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                  <GalleryVerticalEndIcon className="size-4" />
+                </div>
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-medium">Acme Inc</span>
+                  <span className="truncate text-xs">Enterprise</span>
+                </div>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarHeader>
+        <SidebarContent>
+          <SidebarGroup>
+            <SidebarGroupLabel>Platform</SidebarGroupLabel>
+            <SidebarMenu>
+              {platform.map((item) => (
+                <Collapsible
+                  key={item.title}
+                  asChild
+                  defaultOpen={item.isActive}
+                  className="group/collapsible"
+                >
+                  <SidebarMenuItem>
+                    <CollapsibleTrigger asChild>
+                      <SidebarMenuButton
+                        tooltip={item.title}
+                        isActive={item.isActive}
+                      >
+                        <item.icon />
+                        <span>{item.title}</span>
+                        <ChevronRightIcon className="ml-auto transition-[transform] duration-(--godui-duration-base) ease-spring-smooth group-data-[state=open]/collapsible:[transform:rotate(90deg)]" />
+                      </SidebarMenuButton>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                      <SidebarMenuSub>
+                        {item.items.map((sub) => (
+                          <SidebarMenuSubItem key={sub}>
+                            <SidebarMenuSubButton href="#">
+                              <span>{sub}</span>
+                            </SidebarMenuSubButton>
+                          </SidebarMenuSubItem>
+                        ))}
+                      </SidebarMenuSub>
+                    </CollapsibleContent>
+                  </SidebarMenuItem>
+                </Collapsible>
+              ))}
+            </SidebarMenu>
+          </SidebarGroup>
+          <SidebarGroup>
+            <SidebarGroupLabel>Projects</SidebarGroupLabel>
+            <SidebarMenu>
+              {projects.map((project) => (
+                <SidebarMenuItem key={project.name}>
+                  <SidebarMenuButton tooltip={project.name}>
+                    <project.icon />
+                    <span>{project.name}</span>
+                  </SidebarMenuButton>
+                  {project.badge ? (
+                    <SidebarMenuBadge>{project.badge}</SidebarMenuBadge>
+                  ) : null}
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroup>
+        </SidebarContent>
+        <SidebarFooter>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton size="lg" tooltip="shadcn">
+                <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-sidebar-accent text-xs font-medium">
+                  CN
+                </div>
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-medium">shadcn</span>
+                  <span className="truncate text-xs">m@example.com</span>
+                </div>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarFooter>
+        <SidebarRail />
+      </Sidebar>
+      <SidebarInset>
+        <header className="flex h-14 shrink-0 items-center gap-2 px-4">
+          <SidebarTrigger className="-ml-1" />
+          <Separator
+            orientation="vertical"
+            className="mr-2 data-[orientation=vertical]:h-4"
+          />
+          <span className="text-sm text-muted-foreground">
+            Building Your App
+          </span>
+          <span className="text-sm text-muted-foreground">/</span>
+          <span className="text-sm">Data Fetching</span>
+        </header>
+        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+          <div className="grid auto-rows-min gap-4 md:grid-cols-3">
+            <div className="aspect-video rounded-xl bg-muted/50" />
+            <div className="aspect-video rounded-xl bg-muted/50" />
+            <div className="aspect-video rounded-xl bg-muted/50" />
+          </div>
+          <div className="flex-1 rounded-xl bg-muted/50" />
+        </div>
+      </SidebarInset>
+    </SidebarProvider>
+  );
+}`}>
+  <SidebarInsetDemo />
+</Example>
+
+## Installation
+
+<ComponentInstall name="sidebar" />
+
+## Replacing shadcn
+
+`npx shadcn add @godui/sidebar` overwrites `components/ui/sidebar.tsx`.
+Exports, props and `data-slot` attributes match shadcn/ui new-york-v4, so
+existing imports keep working. It also installs `godui-motion` (easings,
+keyframes, the FLIP hook) and shadcn's `use-mobile` hook and `separator`.
+`useFlipGroup` gains an optional `measure` (track one element, move another)
+and now carries a running glide over a change of the element's own
+`translate`. It also waits on each running animation only once while it
+re-baselines, so toggling many times mid-move can't pile up work.
+
+A few things differ, all on desktop:
+
+- The container has one extra child, `data-slot="sidebar-surface"`, which
+  draws the panel's background and border (and the floating card's rounded
+  border and shadow). `sidebar-inner` is transparent, so put background
+  overrides on the surface, not the inner. The border is still the
+  container's (the surface inherits its width, style and color, and sits on
+  the container's border box), so border classes passed to `Sidebar` paint on
+  the box edge as they do in shadcn.
+- While the sidebar moves, the wrapper clips horizontal overflow
+  (`overflow-x-clip`): for a moment the gliding content is drawn past the
+  right edge, and that shouldn't flash a scrollbar. At rest nothing is
+  clipped, so wide content scrolls the page as it does in shadcn. On a page
+  that's wider than the window, a classic (non-overlay) horizontal scrollbar
+  therefore disappears for the length of the move and comes back when it
+  ends.
+- While the sidebar moves, the content after it is lifted above the panel.
+  That lasts as long as the move's animations (one `--godui-duration-base`).
+  If one of them is paused, it lets go one `--godui-duration-slow` after
+  that animation should have ended. The panel's content is laid out at full
+  width while the surface's edge is still on its way (expanding at once;
+  collapsing to icons until the move ends), and the content, glued to that
+  edge, covers it until the edge passes. Give that content a background
+  (`SidebarInset` has `bg-background`).
+- Collapsing to icons, the panel's content keeps its full width (and its
+  badges, actions and sub-menus stay drawn) until the move ends, so labels
+  can fade out instead of being cut by the snapped rail. The rows take their
+  icon-layout heights at once. Code that measures the panel's content in that
+  ~260ms sees the full width; the icon layout's widths apply when the move
+  ends (at once under reduced motion).
+- While collapsing to icons (about 260ms), badges, actions, group actions
+  and sub-menus are forced to `display: flex` so they can fade and sweep. A
+  call-site `className="hidden"` on one of them flashes visible during the
+  collapse; hide it with a conditional render instead.
+- A menu button's label is everything after its first child (its icon):
+  that's what fades. Wrap the label in an element (`<span>Home</span>`, as
+  shadcn's examples do). A bare text label (`<Home /> Home`) can't be faded
+  on the compositor, so that button skips the full-width hold and its label
+  is clipped by the rail on the click, as in shadcn. A button whose first
+  child is text keeps it, clipped by the rail, as in shadcn.
+- While the content glides (about 260ms), `position: fixed` descendants of
+  `SidebarInset` move with it (the FLIP's `translate` makes it their
+  containing block), and the lift keeps their `z-index` inside it.
+- A right-side sidebar's content glides with its edge too. The page content
+  before it changes width at once: its left edge doesn't move, so there is
+  nothing to glide.
+
+## Usage
+
+```tsx
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/app-sidebar";
+
+export default function Layout({ children }: { children: React.ReactNode }) {
+  return (
+    <SidebarProvider>
+      <AppSidebar />
+      <main>
+        <SidebarTrigger />
+        {children}
+      </main>
+    </SidebarProvider>
+  );
+}
+```
+
+## What's animated
+
+| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
+| --- | --- | --- | --- | --- |
+| Offcanvas collapse / expand | the container's class translate, glided there by FLIP | `translate` 0 ↔ ∓100% | `ease-spring-smooth` | 260ms |
+| Icon collapse / expand | `sidebar-surface`'s class translate, glided there by FLIP | `translate` by the width difference | `ease-spring-smooth` | 260ms |
+| Floating card, icon mode | left cap still, middle scales from its left, right cap slides with it | `scale`, `translate` | `ease-spring-smooth` | 260ms |
+| Content beside the sidebar | FLIP (`useFlipGroup` on the wrapper) | `translate` | `ease-spring-smooth` | 260ms |
+| Rows in icon mode (group labels tuck up, header and footer buttons shrink, badges and actions ride their row) | FLIP inside the panel | `translate` | `ease-spring-smooth` | 260ms |
+| Labels collapsing to icons (menu text and chevrons, group labels, badges, actions) | WAAPI fade, from what's drawn; menu text tucks 4px toward its icon | `opacity`, `translate` | `ease-spring-smooth` | 150ms |
+| Labels expanding from icons | WAAPI fade, starting when the panel's edge reaches each one (a small top-first cascade), ending with the move | `opacity`, `translate` | `ease-spring-smooth` | ≤ 260ms |
+| Sub-menus, icon collapse / expand | the Accordion's clip window: the box's edge rides the row below, its items hold still with their own row and fade as the edge passes them | `translate`, `opacity` | `ease-spring-smooth` | 260ms |
+| Rail | `transition` | `translate` | `ease-spring-smooth` | 260ms |
+| Gap and container width, button size and padding | snap (collapsing to icons, the panel's content keeps its width until the move ends, when everything it hides has faded) | none | none | none |
+| Mobile (below 768px) | GodUI Sheet | `translate`, `opacity` | `ease-spring-smooth` | 380ms |
+
+The panel, its surface, the content, the rows, the labels and the sub-menus
+all move on one clock: Web Animations on the same spring, started in the same
+frame. Toggle again mid-way (or hold <kbd>Ctrl</kbd>/<kbd>⌘</kbd>+<kbd>B</kbd>)
+and each piece turns around from where it's drawn, still glued.
+
+Under `prefers-reduced-motion` everything snaps: no slide, no glide, and the
+labels and sub-menus appear and disappear at once.
+
+## API
+
+Props are identical to [shadcn/ui Sidebar](https://ui.shadcn.com/docs/components/sidebar).
+`useSidebar()` returns the same state and setters.
+
+</Workbench>

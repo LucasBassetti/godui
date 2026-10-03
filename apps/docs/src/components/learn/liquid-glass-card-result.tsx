@@ -1,6 +1,6 @@
 "use client";
 
-import { LiquidGlassCard } from "@godui/components";
+import { LiquidGlassCard } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 /**
@@ -51,7 +51,7 @@ export function LiquidGlassCardResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — move across the panel
+          the real component: move across the panel
         </span>
       </div>
       <LiquidGlassCardDemo />

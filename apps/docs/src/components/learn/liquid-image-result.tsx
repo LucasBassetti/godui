@@ -1,6 +1,6 @@
 "use client";
 
-import { LiquidImage } from "@godui/components";
+import { LiquidImage } from "@godui/lab";
 import { useBareScene } from "@/components/learn/bare-scene-context";
 
 const Demo = () => (
@@ -43,7 +43,7 @@ export function LiquidImageResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — hover to ripple
+          the real component: hover to ripple
         </span>
       </div>
       <div className="flex min-h-[280px] items-center justify-center p-6 md:p-10">

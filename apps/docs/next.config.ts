@@ -7,10 +7,64 @@ const storybookDevOrigin = "http://127.0.0.1:6006";
 
 const nextConfig: NextConfig = {
   allowedDevOrigins: ["127.0.0.1"],
-  transpilePackages: ["@godui/components"],
+  transpilePackages: ["@godui/components", "@godui/lab"],
+  async redirects() {
+    const superseded = [
+      "layout/accordion",
+      "navigation/combobox",
+      "navigation/context-menu",
+      "navigation/dropdown-menu",
+      "overlays/command-palette",
+      "overlays/drawer",
+      "overlays/toast",
+    ];
+    return [
+      // Superseded by core shadcn drop-ins; temporary until wave 1 ships them.
+      ...superseded.flatMap((p) => [
+        {
+          source: `/docs/components/${p}`,
+          destination: "/docs/components",
+          permanent: false,
+        },
+        {
+          source: `/docs/components/${p}/learn`,
+          destination: "/docs/components",
+          permanent: false,
+        },
+      ]),
+      // Pre-pivot component docs moved to /docs/lab (straight there: no hop
+      // through the old /docs/extras).
+      {
+        source:
+          "/docs/components/:category(ai|backgrounds|buttons|collaboration|effects|glass|inputs|layout|navigation|overlays|text|visualizations)/:path*",
+        destination: "/docs/lab/:category/:path*",
+        permanent: true,
+      },
+      // The Lab was called Extras; its old URLs keep working.
+      { source: "/docs/extras", destination: "/docs/lab", permanent: true },
+      {
+        source: "/docs/extras/:path*",
+        destination: "/docs/lab/:path*",
+        permanent: true,
+      },
+    ];
+  },
   async rewrites() {
+    // Pre-split install URLs (README, @godui/mcp@0.1.0) keep working. These run
+    // after public/ files, so core items and index.json are served directly;
+    // anything else falls through to the Lab registry (static file or the
+    // dynamic background route). `:item` is one segment, so /r/lab/* is never
+    // rewritten.
+    // The Lab registry was called Extras: components.json files that still map
+    // "@godui-extras" to /r/extras/{name}.json get the same JSON. A rewrite,
+    // not a redirect, so clients that don't follow redirects keep installing.
+    const registryCompat = [
+      { source: "/r/extras/:item", destination: "/r/lab/:item" },
+      { source: "/r/:item", destination: "/r/lab/:item" },
+    ];
     if (process.env.NODE_ENV === "development") {
       return [
+        ...registryCompat,
         {
           source: "/design-system",
           destination: `${storybookDevOrigin}/design-system/`,
@@ -25,7 +79,7 @@ const nextConfig: NextConfig = {
         },
       ];
     }
-    return [];
+    return registryCompat;
   },
 };
 
