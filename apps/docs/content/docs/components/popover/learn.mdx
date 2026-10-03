@@ -87,6 +87,17 @@ Open the popover, then press Escape or click outside it to close.
 
 </LearnPlayer>
 
+## What's animated
+
+| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
+| --- | --- | --- | --- | --- |
+| Open | `godui-popover-in` | `opacity`, `scale` 0.96 → 1 from the trigger, `translate` 4px toward the trigger → 0 | `ease-spring-snappy` | 260ms |
+| Close | `godui-popover-out` | the same, reversed | `ease-out-expo` | 150ms |
+
+The scale origin is Radix's `--radix-popover-content-transform-origin`, the
+point of the content nearest the trigger. The drift direction comes from
+`--godui-enter-x` / `--godui-enter-y`, set per `data-side`.
+
 ## Why GPU-only
 
 `opacity`, `scale` and `translate` are all composited. shadcn's popover uses
@@ -98,3 +109,10 @@ spring and drives the direction from Radix's side.
 
 `--godui-motion: 0` cancels both the scale and the drift, so the popover only
 fades, in 150ms.
+
+## Replacing shadcn
+
+`npx shadcn add @godui/popover` overwrites `components/ui/popover.tsx`. Exports,
+props and `data-slot` attributes match shadcn/ui new-york-v4, so existing
+imports keep working. It also installs `godui-motion` (easings, keyframes, the
+FLIP hook) into your project.

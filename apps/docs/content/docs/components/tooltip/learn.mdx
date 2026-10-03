@@ -72,6 +72,14 @@ the toolbar: each next tooltip fades in place while the previous one leaves.
 
 </LearnPlayer>
 
+## What's animated
+
+| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
+| --- | --- | --- | --- | --- |
+| Open after the delay (`delayed-open`) | `godui-popover-in` | `opacity`, `scale` 0.96 → 1 from the trigger, `translate` 4px → 0 | `ease-spring-snappy` | 260ms |
+| Focus, or hop within skip delay (`instant-open`) | `godui-fade-in` | `opacity` | `ease-spring-snappy` | 260ms |
+| Close | `godui-popover-out` | the same as open, reversed | `ease-out-expo` | 150ms |
+
 ## Why GPU-only
 
 Every state animates `opacity`, plus `scale` and `translate` for delayed opens.
@@ -81,3 +89,10 @@ All of them are composited.
 
 `--godui-motion: 0` removes the scale and drift, so every state only fades,
 in 150ms.
+
+## Replacing shadcn
+
+`npx shadcn add @godui/tooltip` overwrites `components/ui/tooltip.tsx`. Exports,
+props and `data-slot` attributes match shadcn/ui new-york-v4, so existing
+imports keep working. It also installs `godui-motion` (easings, keyframes, the
+FLIP hook) into your project.

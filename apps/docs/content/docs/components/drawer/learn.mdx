@@ -96,6 +96,19 @@ Open the drawer, change the goal, then drag the sheet down to dismiss it.
 
 </LearnPlayer>
 
+## What's animated
+
+| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
+| --- | --- | --- | --- | --- |
+| Open, close | vaul `slideFromBottom` / `slideToBottom` | `transform` | `cubic-bezier(0.32, 0.72, 0, 1)` | 500ms |
+| Overlay | vaul `fadeIn` / `fadeOut` | `opacity` | the same | 500ms |
+| Header, footer | `godui-slide-in-from-bottom`, delayed 60 / 120ms | `translate`, `opacity` | `ease-spring-snappy` | 260ms |
+| Drag | pointer-driven `transform` | `transform` | none | live |
+
+Vaul's `shouldScaleBackground` option also animates the page wrapper's
+`border-radius`, which is paint work. It's off by default; leave it off to stay
+GPU-only.
+
 ## Why GPU-only
 
 The sheet animates `transform`, the overlay `opacity`, and the content
@@ -106,3 +119,10 @@ The sheet animates `transform`, the overlay `opacity`, and the content
 
 GodUI's content stagger multiplies its distance by `--godui-motion`, so it only
 fades under `prefers-reduced-motion`. Vaul's sheet slide is vaul's own.
+
+## Replacing shadcn
+
+`npx shadcn add @godui/drawer` overwrites `components/ui/drawer.tsx`. Exports,
+props and `data-slot` attributes match shadcn/ui new-york-v4, so existing
+imports keep working. It also installs `godui-motion` (easings, keyframes, the
+FLIP hook) into your project.

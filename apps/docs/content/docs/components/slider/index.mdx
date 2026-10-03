@@ -9,12 +9,6 @@ import { SliderDemo } from "@/components/demos/core/slider-demo";
 
 <Workbench>
 
-The shadcn/ui slider. Click the track, press a key or set a new `value` and
-the thumb glides there with the range on the same clock. Pressing anywhere
-lifts the thumb and thickens the track; hover and focus fade a halo in. A
-drag follows the pointer exactly, and pulling past either end stretches the
-track like a rubber band that springs back when you let go.
-
 <Example label="Default" story="ui-slider" code={`import { Slider } from "@/components/ui/slider";
 
 export function SliderDemo() {
@@ -46,13 +40,6 @@ export function SliderDemo() {
 
 <ComponentInstall name="slider" />
 
-## Replacing shadcn
-
-`npx shadcn add @godui/slider` overwrites `components/ui/slider.tsx`. Exports,
-props and `data-slot` attributes match shadcn/ui new-york-v4, so existing
-imports keep working. It also installs `godui-motion` (easings, keyframes, the
-FLIP hook) into your project.
-
 ## Usage
 
 ```tsx
@@ -63,30 +50,25 @@ import { Slider } from "@/components/ui/slider";
 <Slider defaultValue={[33]} max={100} step={1} />
 ```
 
-## What's animated
-
-| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
-| --- | --- | --- | --- | --- |
-| Press (thumb or track) | `data-pressed` on the root, `data-active` on the thumb it moves | thumb `scale` 1 → 1.15 | `ease-spring-bouncy` | 260ms |
-| Press, the track | same attribute | track `scale` (Y) 1 → 1.5 | `ease-spring-snappy` | 150ms |
-| Hover / focus | a hollow `::before` ring around the thumb, sized like shadcn's `ring-4` | `opacity` 0 → 1, `scale` 0.6 → 1 | `ease-out-expo` | 150ms |
-| Click on the track, Home / End / Page keys, new `value` | WAAPI glide from where the thumb is drawn; the full-length range glides on the same clock | thumb `translate`, range `translate` + `scale` | `ease-spring-snappy` | 260ms |
-| Arrow key | same glide, retargeted on key repeat | thumb `translate`, range `translate` + `scale` | `ease-out-expo` | 150ms |
-| Drag | follows the pointer 1:1, however fast (Radix's position, no animation); only a `step` that spans 12px or more of track glides from step to step | thumb `translate` (coarse steps only) | `ease-out-expo` | 150ms |
-| Pull past an end | track stretches toward the pointer (max 24px, sigmoid), thins, the end thumb rides it | track `transform`, thumb `transform` | live; release `ease-spring-bouncy` | release 380ms |
-
-The range is always the full length of the track: Radix's inline `left` /
-`right` are overridden, and the range is placed with `translate` and `scale`
-read from them, so it never lays out while it glides. The first paint never
-animates.
-
-Under `prefers-reduced-motion` values snap instead of gliding, the press
-doesn't scale the thumb or thicken the track, there's no rubber band, and the
-halo only fades.
-
 ## API
 
-Built on [Radix Slider](https://www.radix-ui.com/primitives/docs/components/slider).
-Props are identical to [shadcn/ui Slider](https://ui.shadcn.com/docs/components/slider).
+### Slider
+
+Built on [Radix Slider Root](https://www.radix-ui.com/primitives/docs/components/slider#root); accepts all its props. Renders the track, range and one thumb per value.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `defaultValue` | `number[]` | none | Initial values when uncontrolled. One thumb per entry. |
+| `value` | `number[]` | none | Controlled values. A new value glides the thumb there. |
+| `onValueChange` | `(value: number[]) => void` | none | Called on every value change, including while dragging. |
+| `onValueCommit` | `(value: number[]) => void` | none | Called when the user ends an interaction (pointer up, key press). |
+| `min` | `number` | `0` | Minimum value. |
+| `max` | `number` | `100` | Maximum value. |
+| `step` | `number` | `1` | Stepping interval. |
+| `minStepsBetweenThumbs` | `number` | `0` | Minimum number of steps between thumbs in a range. |
+| `orientation` | `"horizontal" \| "vertical"` | `"horizontal"` | Layout axis. Vertical sliders take the parent's height (min 11rem). |
+| `inverted` | `boolean` | `false` | Flip the direction the value increases. |
+| `disabled` | `boolean` | `false` | Prevent interaction. |
+| `name` | `string` | none | Form field name for the hidden inputs. |
 
 </Workbench>

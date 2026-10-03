@@ -156,7 +156,7 @@ export function DocsPane({
         tabIndex={-1}
         className="min-h-0 flex-1 overflow-y-auto overscroll-contain focus-visible:outline-none"
       >
-        <DocsBody className="px-5 pt-1 pb-8">{docs}</DocsBody>
+        <DocsBody className="px-5 pt-5 pb-8">{docs}</DocsBody>
       </div>
     </aside>
   );

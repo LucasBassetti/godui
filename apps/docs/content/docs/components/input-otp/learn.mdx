@@ -74,6 +74,14 @@ Click the input and type six digits, or paste a code.
 
 </LearnPlayer>
 
+## What's animated
+
+| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
+| --- | --- | --- | --- | --- |
+| Type a digit | `godui-slide-in-from-bottom` | `translate` 0.5rem → 0, `opacity` | `ease-spring-snappy` | 260ms |
+| Caret | `godui-caret-blink` | `opacity` | `ease-out`, infinite | 1.25s |
+| Active slot ring | snaps | none | none | none |
+
 ## Why GPU-only
 
 Digits animate `translate` and `opacity`; the caret animates `opacity`.
@@ -84,3 +92,10 @@ shadcn's slots use `transition-all`, which also animates the active ring's
 
 `--godui-motion: 0` cancels the rise, so digits only fade in. The caret keeps
 blinking, as a native text caret does under the same setting.
+
+## Replacing shadcn
+
+`npx shadcn add @godui/input-otp` overwrites `components/ui/input-otp.tsx`.
+Exports, props and `data-slot` attributes match shadcn/ui new-york-v4, so
+existing imports keep working. It adds a `godui-caret-blink` keyframe to your
+CSS; shadcn's `caret-blink` keyframe is no longer used.

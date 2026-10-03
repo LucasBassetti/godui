@@ -17,10 +17,6 @@ import { SheetDemo } from "@/components/demos/core/sheet-demo";
 
 <Workbench>
 
-The shadcn/ui sheet, sliding in on a spring. The panel travels its full width
-(or height) from its edge using the shared `godui-motion` slide keyframes, and
-the overlay fades. Only `translate` and `opacity` animate.
-
 <Example label="Default" story="ui-sheet" code={`import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -108,13 +104,6 @@ export function SheetDemo() {
 
 <ComponentInstall name="sheet" />
 
-## Replacing shadcn
-
-`npx shadcn add @godui/sheet` overwrites `components/ui/sheet.tsx`. Exports,
-props and `data-slot` attributes match shadcn/ui new-york-v4, so existing
-imports keep working. It also installs `godui-motion` (easings, keyframes, the
-FLIP hook) into your project.
-
 ## Usage
 
 ```tsx
@@ -143,24 +132,53 @@ import {
 </Sheet>
 ```
 
-## What's animated
-
-| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
-| --- | --- | --- | --- | --- |
-| Open (left, right) | `godui-slide-in-from-*` | `translate` 100% → 0, `opacity` | `ease-spring-smooth` | 380ms |
-| Open (top, bottom) | `godui-slide-in-from-*` | `translate` 100% → 0, `opacity` | `ease-spring-snappy` | 260ms |
-| Close | `godui-slide-out-to-*` | `translate`, `opacity` | `ease-out-expo` | 260 / 150ms |
-| Overlay | `godui-fade-in` / `godui-fade-out` | `opacity` | snappy / expo | 260 / 150ms |
-
-shadcn's sheet also sets a bare `transition` class, which would animate color,
-border and shadow changes. GodUI drops it.
-
-Under `prefers-reduced-motion` the panel fades in place for 150ms; it doesn't
-slide.
-
 ## API
 
-Built on [Radix Dialog](https://www.radix-ui.com/primitives/docs/components/dialog).
-Props are identical to [shadcn/ui Sheet](https://ui.shadcn.com/docs/components/sheet).
+### Sheet
+
+Built on [Radix Dialog Root](https://www.radix-ui.com/primitives/docs/components/dialog#root); accepts all its props.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `open` | `boolean` | none | Controlled open state. |
+| `defaultOpen` | `boolean` | none | Open state on first render, when uncontrolled. |
+| `onOpenChange` | `(open: boolean) => void` | none | Called when the sheet opens or closes. |
+| `modal` | `boolean` | `true` | When `true`, outside elements can't be interacted with and focus is trapped inside. |
+
+### SheetTrigger, SheetClose
+
+Built on [Radix Dialog Trigger](https://www.radix-ui.com/primitives/docs/components/dialog#trigger) and [Close](https://www.radix-ui.com/primitives/docs/components/dialog#close); accept all their props. The trigger opens the sheet, the close button closes it.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `asChild` | `boolean` | `false` | Render the child element instead, merging props via [Radix Slot](https://www.radix-ui.com/primitives/docs/utilities/slot). |
+
+### SheetContent
+
+Built on [Radix Dialog Content](https://www.radix-ui.com/primitives/docs/components/dialog#content); accepts all its props. Renders in a portal with an overlay behind it.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `side` | `"top" \| "right" \| "bottom" \| "left"` | `"right"` | Edge the sheet slides in from. |
+| `showCloseButton` | `boolean` | `true` | Renders the close (X) button in the top-right corner. |
+| `onEscapeKeyDown` | `(event: KeyboardEvent) => void` | none | Called when Escape is pressed. Prevent it to keep the sheet open. |
+| `onInteractOutside` | `(event: PointerDownOutsideEvent \| FocusOutsideEvent) => void` | none | Called on a pointer down or focus outside the sheet. Prevent it to keep the sheet open. |
+| `onOpenAutoFocus` | `(event: Event) => void` | none | Called when focus moves into the sheet on open. Prevent it to focus something else. |
+| `onCloseAutoFocus` | `(event: Event) => void` | none | Called when focus returns to the trigger on close. |
+| `forceMount` | `true` | none | Keep the content mounted while closed. |
+
+### SheetHeader, SheetFooter
+
+Render a native `<div>` and accept all of its props. The header stacks the title and description; the footer sits at the bottom of the sheet.
+
+### SheetTitle
+
+Built on [Radix Dialog Title](https://www.radix-ui.com/primitives/docs/components/dialog#title); accepts all its props. Announced as the sheet's accessible name.
+
+### SheetDescription
+
+Built on [Radix Dialog Description](https://www.radix-ui.com/primitives/docs/components/dialog#description); accepts all its props. Announced as the sheet's description.
+
+Props match [shadcn/ui Sheet](https://ui.shadcn.com/docs/components/sheet).
 
 </Workbench>

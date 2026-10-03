@@ -9,13 +9,6 @@ import { ComboboxMultipleDemo } from "@/components/demos/core/combobox-multiple-
 
 <Workbench>
 
-The shadcn/ui combobox, built on Base UI like shadcn's own. The popup grows
-from the input and drifts out of it on a spring, and the check pops in on
-the item you select. In multiple mode, each chip you add pops in; chips and
-checks already there when the combobox or popup mounts stay still. When you
-remove a chip, the chips after it slide over instead of jumping (FLIP). Only
-`scale`, `translate` and `opacity` animate.
-
 <Example label="Default" story="ui-combobox" code={`"use client";
 
 import {
@@ -86,13 +79,6 @@ export function ComboboxDemo() {
 
 <ComponentInstall name="combobox" />
 
-## Replacing shadcn
-
-`npx shadcn add @godui/combobox` overwrites `components/ui/combobox.tsx` and
-installs the GodUI `button` and `input-group` it uses. Exports, props and
-`data-slot` attributes match shadcn/ui new-york-v4, so existing imports keep
-working.
-
 ## Usage
 
 ```tsx
@@ -122,23 +108,101 @@ import {
 </Combobox>
 ```
 
-## What's animated
-
-| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
-| --- | --- | --- | --- | --- |
-| Open | `godui-popover-in` | `opacity`, `scale` 0.96 → 1 from the anchor, `translate` 4px → 0 | `ease-spring-snappy` | 260ms |
-| Close | `godui-popover-out` | the same, reversed | `ease-out-expo` | 150ms |
-| Selected check | `godui-fade-scale-in` from 50% | `scale`, `opacity` | `ease-spring-snappy` | 260ms |
-| Chip added | `godui-fade-scale-in` | `scale`, `opacity` | `ease-spring-snappy` | 260ms |
-| Chip removed | the chips after it FLIP | `translate` | `ease-out-expo` | 260ms |
-| Item highlight | snaps | none | none | none |
-
-Under `prefers-reduced-motion` the popup, check and chips only fade, and
-chips move into place in one step.
-
 ## API
 
-Built on [Base UI Combobox](https://base-ui.com/react/components/combobox).
-Props are identical to [shadcn/ui Combobox](https://ui.shadcn.com/docs/components/combobox).
+### Combobox
+
+Built on [Base UI Combobox Root](https://base-ui.com/react/components/combobox#root); accepts all its props. Renders no element of its own.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `items` | `readonly any[] \| readonly Group<any>[] \| ComboboxItemCollection` | none | Items to filter and render. `ComboboxList` and `ComboboxCollection` take a render function that receives each one. |
+| `value` | `Value \| Value[] \| null` | none | Selected value (an array when `multiple`). Use when controlled. |
+| `defaultValue` | `Value \| Value[] \| null` | none | Initial selected value when uncontrolled. |
+| `onValueChange` | `(value, eventDetails) => void` | none | Called when the selection changes. |
+| `multiple` | `boolean` | `false` | Allow selecting several items. Pair with `ComboboxChips`. |
+| `inputValue` | `string \| number \| readonly string[]` | none | Input text. Use when controlled. |
+| `defaultInputValue` | `string \| number \| readonly string[]` | none | Initial input text when uncontrolled. |
+| `onInputValueChange` | `(inputValue: string, eventDetails) => void` | none | Called when the input text changes. |
+| `open` | `boolean` | none | Whether the popup is open. Use when controlled. |
+| `defaultOpen` | `boolean` | `false` | Whether the popup starts open. |
+| `onOpenChange` | `(open: boolean, eventDetails) => void` | none | Called when the popup opens or closes. |
+| `filter` | `((item, query: string, itemToString?) => boolean) \| null` | none | Custom match function. `null` turns filtering off. |
+| `itemToStringLabel` | `(itemValue: Value) => string` | none | Label shown in the input for object values. |
+| `autoHighlight` | `boolean` | `false` | Highlight the first match while filtering. |
+| `limit` | `number` | `-1` | Maximum number of items to show. `-1` means no limit. |
+| `disabled` | `boolean` | `false` | Ignore user interaction. |
+| `readOnly` | `boolean` | `false` | Prevent choosing a different option. |
+| `required` | `boolean` | `false` | Require a value before the form submits. |
+| `name` | `string` | none | Field name for form submission. |
+
+### ComboboxInput
+
+The text input, rendered inside an `InputGroup` with an optional trigger and clear button. Built on [Base UI Combobox Input](https://base-ui.com/react/components/combobox#input); accepts all its props. Extra children render inside the input group.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `showTrigger` | `boolean` | `true` | Show the chevron button that toggles the popup. |
+| `showClear` | `boolean` | `false` | Show a button that clears the value. Hides the trigger when present. |
+| `disabled` | `boolean` | `false` | Disable the input, trigger and clear button. |
+
+### ComboboxContent
+
+The animated popup, portaled and positioned against the input. Built on [Base UI Combobox Popup](https://base-ui.com/react/components/combobox#popup); accepts all its props, plus these [Positioner](https://base-ui.com/react/components/combobox#positioner) props.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `side` | `"top" \| "bottom" \| "left" \| "right" \| "inline-start" \| "inline-end"` | `"bottom"` | Side of the anchor to open on. |
+| `sideOffset` | `number` | `6` | Distance from the anchor in pixels. |
+| `align` | `"start" \| "center" \| "end"` | `"start"` | Alignment against the anchor. |
+| `alignOffset` | `number` | `0` | Offset from the alignment edge in pixels. |
+| `anchor` | `Element \| VirtualElement \| RefObject<Element \| null> \| (() => Element \| VirtualElement \| null) \| null` | none | Element to position against. Pass the `useComboboxAnchor()` ref from `ComboboxChips` in multiple mode. |
+
+### ComboboxList
+
+The scrollable list. Built on [Base UI Combobox List](https://base-ui.com/react/components/combobox#list); accepts all its props. Children can be a render function `(item, index) => ReactNode` called for each filtered item.
+
+### ComboboxItem
+
+An option with a check that pops in when it's selected. Built on [Base UI Combobox Item](https://base-ui.com/react/components/combobox#item); accepts all its props.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `value` | `any` | `null` | The value this item selects. |
+| `disabled` | `boolean` | `false` | Make the item unselectable. |
+
+### ComboboxGroup, ComboboxLabel, ComboboxCollection
+
+Group items under a label. Built on Base UI [Group](https://base-ui.com/react/components/combobox#group), [GroupLabel](https://base-ui.com/react/components/combobox#grouplabel) and [Collection](https://base-ui.com/react/components/combobox#collection); each accepts all its props. `ComboboxCollection` renders a group's items with a render function.
+
+### ComboboxEmpty, ComboboxSeparator
+
+`ComboboxEmpty` shows its content when no item matches. `ComboboxSeparator` draws a line between groups. Built on Base UI [Empty](https://base-ui.com/react/components/combobox#empty) and [Separator](https://base-ui.com/react/components/combobox#separator); each accepts all its props.
+
+### ComboboxChips
+
+The container for chips in multiple mode. Chips after a removed one slide into place. Built on [Base UI Combobox Chips](https://base-ui.com/react/components/combobox#chips); accepts all its props.
+
+### ComboboxChip
+
+A selected value shown as a chip. It pops in when added after the container mounted. Built on [Base UI Combobox Chip](https://base-ui.com/react/components/combobox#chip); accepts all its props.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `showRemove` | `boolean` | `true` | Show the × button that removes the chip. |
+
+### ComboboxChipsInput
+
+The text input placed inside `ComboboxChips`. Built on [Base UI Combobox Input](https://base-ui.com/react/components/combobox#input); accepts all its props.
+
+### ComboboxTrigger, ComboboxValue
+
+`ComboboxTrigger` is a button that toggles the popup and appends a chevron. `ComboboxValue` renders the selected value. Built on Base UI [Trigger](https://base-ui.com/react/components/combobox#trigger) and [Value](https://base-ui.com/react/components/combobox#value); each accepts all its props.
+
+### useComboboxAnchor
+
+Returns a `RefObject<HTMLDivElement | null>`. Attach it to `ComboboxChips` and pass it to `ComboboxContent`'s `anchor` so the popup lines up with the chips.
+
+Props match [shadcn/ui Combobox](https://ui.shadcn.com/docs/components/combobox).
 
 </Workbench>

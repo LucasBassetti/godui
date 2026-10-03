@@ -8,12 +8,6 @@ import { ContextMenuDemo } from "@/components/demos/core/context-menu-demo";
 
 <Workbench>
 
-The shadcn/ui context menu with the same motion as
-[Dropdown Menu](/docs/components/dropdown-menu). It scales up from where you
-clicked and drifts out on a spring, sub-menus grow from their parent item,
-and check and radio indicators pop in from 50% when toggled (not when the menu
-opens). Item highlights change instantly.
-
 <Example label="Default" story="ui-context-menu" code={`"use client";
 
 import {
@@ -87,13 +81,6 @@ export function ContextMenuDemo() {
 
 <ComponentInstall name="context-menu" />
 
-## Replacing shadcn
-
-`npx shadcn add @godui/context-menu` overwrites `components/ui/context-menu.tsx`.
-Exports, props and `data-slot` attributes match shadcn/ui new-york-v4, so
-existing imports keep working. It also installs `godui-motion` (easings,
-keyframes, the FLIP hook) into your project.
-
 ## Usage
 
 ```tsx
@@ -117,20 +104,117 @@ import {
 </ContextMenu>
 ```
 
-## What's animated
-
-| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
-| --- | --- | --- | --- | --- |
-| Open (menu, sub-menu) | `godui-popover-in` | `opacity`, `scale` 0.96 → 1 from the pointer, `translate` 4px → 0 | `ease-spring-snappy` | 260ms |
-| Close | `godui-popover-out` | the same, reversed | `ease-out-expo` | 150ms |
-| Check / radio appears | `godui-fade-scale-in` from 50% | `opacity`, `scale` | `ease-spring-snappy` | 260ms |
-| Item highlight | snaps | none | none | none |
-
-Under `prefers-reduced-motion` the menu and indicators only fade (150ms).
-
 ## API
 
-Built on [Radix Context Menu](https://www.radix-ui.com/primitives/docs/components/context-menu).
-Props are identical to [shadcn/ui Context Menu](https://ui.shadcn.com/docs/components/context-menu).
+### ContextMenu
+
+Built on [Radix Context Menu Root](https://www.radix-ui.com/primitives/docs/components/context-menu#root); accepts all its props.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `onOpenChange` | `(open: boolean) => void` | none | Called when the menu opens or closes. |
+| `modal` | `boolean` | `true` | Block interaction with the rest of the page while open. |
+| `dir` | `"ltr" \| "rtl"` | none | Reading direction. Inherits from `DirectionProvider` when unset. |
+
+### ContextMenuTrigger
+
+The area that opens the menu on right click or long-press. Built on [Radix Context Menu Trigger](https://www.radix-ui.com/primitives/docs/components/context-menu#trigger); accepts all its props.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `disabled` | `boolean` | `false` | Let the browser's own context menu open instead. |
+| `asChild` | `boolean` | `false` | Render the child element instead, merging props. |
+
+### ContextMenuContent
+
+The animated menu, portaled and anchored to the pointer. Built on [Radix Context Menu Content](https://www.radix-ui.com/primitives/docs/components/context-menu#content); accepts all its props.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `alignOffset` | `number` | `0` | Offset from the pointer along the alignment axis, in pixels. |
+| `avoidCollisions` | `boolean` | `true` | Flip and shift to stay inside the viewport. |
+| `collisionPadding` | `number \| Partial<Record<"top" \| "right" \| "bottom" \| "left", number>>` | `0` | Distance from the viewport edges for collision detection. |
+| `loop` | `boolean` | `false` | Wrap keyboard focus at the ends. |
+
+### ContextMenuItem
+
+Built on [Radix Context Menu Item](https://www.radix-ui.com/primitives/docs/components/context-menu#item); accepts all its props.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `variant` | `"default" \| "destructive"` | `"default"` | `destructive` colors the item for dangerous actions. |
+| `inset` | `boolean` | none | Add left padding to line up with items that have an indicator. |
+| `onSelect` | `(event: Event) => void` | none | Called when the item is chosen. Call `event.preventDefault()` to keep the menu open. |
+| `disabled` | `boolean` | `false` | Make the item unselectable. |
+| `textValue` | `string` | none | Text used for typeahead when the content isn't plain text. |
+
+### ContextMenuCheckboxItem
+
+An item with a check that pops in when it's toggled. Built on [Radix Context Menu CheckboxItem](https://www.radix-ui.com/primitives/docs/components/context-menu#checkboxitem); accepts all its props.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `checked` | `boolean \| "indeterminate"` | none | Checked state. |
+| `onCheckedChange` | `(checked: boolean) => void` | none | Called when the item is toggled. |
+| `disabled` | `boolean` | `false` | Make the item unselectable. |
+
+### ContextMenuRadioGroup
+
+Built on [Radix Context Menu RadioGroup](https://www.radix-ui.com/primitives/docs/components/context-menu#radiogroup); accepts all its props.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `value` | `string` | none | Value of the selected item. |
+| `onValueChange` | `(value: string) => void` | none | Called when the selection changes. |
+
+### ContextMenuRadioItem
+
+An item with a dot that pops in when it's selected. Built on [Radix Context Menu RadioItem](https://www.radix-ui.com/primitives/docs/components/context-menu#radioitem); accepts all its props.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `value` | `string` | none | Value this item selects. Required. |
+| `disabled` | `boolean` | `false` | Make the item unselectable. |
+
+### ContextMenuLabel
+
+Built on [Radix Context Menu Label](https://www.radix-ui.com/primitives/docs/components/context-menu#label); accepts all its props.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `inset` | `boolean` | none | Add left padding to line up with items that have an indicator. |
+
+### ContextMenuSub
+
+Built on [Radix Context Menu Sub](https://www.radix-ui.com/primitives/docs/components/context-menu#sub); accepts all its props.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `open` | `boolean` | none | Whether the sub-menu is open. Use when controlled. |
+| `defaultOpen` | `boolean` | none | Whether the sub-menu starts open. |
+| `onOpenChange` | `(open: boolean) => void` | none | Called when the sub-menu opens or closes. |
+
+### ContextMenuSubTrigger
+
+The item that opens a sub-menu, with a chevron. Built on [Radix Context Menu SubTrigger](https://www.radix-ui.com/primitives/docs/components/context-menu#subtrigger); accepts all its props.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `inset` | `boolean` | none | Add left padding to line up with items that have an indicator. |
+| `disabled` | `boolean` | `false` | Make the trigger unselectable. |
+
+### ContextMenuSubContent
+
+The animated sub-menu. It grows from its trigger item. Built on [Radix Context Menu SubContent](https://www.radix-ui.com/primitives/docs/components/context-menu#subcontent); accepts all its props (`sideOffset`, `alignOffset`, `avoidCollisions`, `loop`).
+
+### ContextMenuGroup, ContextMenuPortal
+
+Built on Radix [Group](https://www.radix-ui.com/primitives/docs/components/context-menu#group) and [Portal](https://www.radix-ui.com/primitives/docs/components/context-menu#portal); each accepts all its props. `ContextMenuContent` already renders its own portal.
+
+### ContextMenuSeparator, ContextMenuShortcut
+
+`ContextMenuSeparator` is built on [Radix Context Menu Separator](https://www.radix-ui.com/primitives/docs/components/context-menu#separator). `ContextMenuShortcut` renders a native `<span>` for a keyboard hint. Both accept all their props.
+
+Props match [shadcn/ui Context Menu](https://ui.shadcn.com/docs/components/context-menu).
 
 </Workbench>

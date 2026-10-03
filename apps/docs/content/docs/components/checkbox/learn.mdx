@@ -143,6 +143,20 @@ loads checked stays still until you change it.
 
 </LearnPlayer>
 
+## What's animated
+
+| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
+| --- | --- | --- | --- | --- |
+| Check (fill) | `godui-checkbox-fill-in`: a disc grows from a dot, squared off by the box's clip | `scale` 0 → 1.42 | `ease-spring-smooth` | 260ms |
+| Check (mark) | `godui-checkbox-draw` + `godui-checkbox-ink`: a clip window slides in while the mark slides back | `translate` | `ease-spring-smooth` | 190ms, after 70ms |
+| Check (box) | `godui-pop` | `scale` 1 → 0.9 → 1 | `ease-spring-bouncy` | 260ms |
+| Uncheck (mark) | `godui-checkbox-check-out` | `opacity`, `scale` 1 → 0.7 | `ease-out-expo` | 150ms |
+| Uncheck (fill) | `godui-checkbox-fill-out`: the disc shrinks back to a dot, in the checked colors | `scale` 1.42 → 0 | `ease-spring-smooth` | 150ms |
+| Border | snap | none | none | none |
+
+Animations run only after the checked state changes, by a click, the keyboard
+or a controlled `checked` prop, never on the first render.
+
 ## Why GPU-only
 
 The disc animates `scale`, the check `translate`, `scale` and `opacity`, and
@@ -154,3 +168,10 @@ transitions the focus ring's `box-shadow`; GodUI's doesn't.
 
 `--godui-motion: 0` cancels the growth, the slide and the dip: the disc and the
 check fade in, and fade out again (150ms).
+
+## Replacing shadcn
+
+`npx shadcn add @godui/checkbox` overwrites `components/ui/checkbox.tsx`.
+Exports, props and `data-slot` attributes match shadcn/ui new-york-v4, so
+existing imports keep working. It also installs `godui-motion` (easings,
+keyframes, the FLIP hook) into your project.

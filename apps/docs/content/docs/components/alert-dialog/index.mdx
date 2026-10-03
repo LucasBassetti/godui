@@ -22,11 +22,6 @@ import { AlertDialogDemo } from "@/components/demos/core/alert-dialog-demo";
 
 <Workbench>
 
-The shadcn/ui alert dialog with the same motion as [Dialog](/docs/components/dialog):
-the content scales up from 96% on a spring and fades, the overlay fades, and
-the exit is a quick 150ms. Its Cancel and Action buttons are GodUI
-[Buttons](/docs/components/button), so they press on a spring too.
-
 <Example label="Default" story="ui-alert-dialog" code={`import {
   AlertDialog,
   AlertDialogAction,
@@ -114,13 +109,6 @@ export function AlertDialogDemo() {
 
 <ComponentInstall name="alert-dialog" />
 
-## Replacing shadcn
-
-`npx shadcn add @godui/alert-dialog` overwrites `components/ui/alert-dialog.tsx`.
-Exports, props and `data-slot` attributes match shadcn/ui new-york-v4, so
-existing imports keep working. It also installs `godui-motion` (easings,
-keyframes, the FLIP hook) and the GodUI `button` its actions render.
-
 ## Usage
 
 ```tsx
@@ -156,21 +144,67 @@ import {
 </AlertDialog>
 ```
 
-## What's animated
-
-| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
-| --- | --- | --- | --- | --- |
-| Open | `godui-fade-scale-in` | `opacity`, `scale` 0.96 → 1 | `ease-spring-snappy` | 260ms |
-| Close | `godui-fade-scale-out` | `opacity`, `scale` 1 → 0.96 | `ease-out-expo` | 150ms |
-| Overlay | `godui-fade-in` / `godui-fade-out` | `opacity` | snappy / expo | 260 / 150ms |
-| Action, Cancel press | `transition` on `active:scale-[0.97]` | `scale` | `ease-spring-bouncy` | 260ms |
-
-Under `prefers-reduced-motion` the dialog only fades (150ms), and the buttons
-press without a spring.
-
 ## API
 
-Built on [Radix Alert Dialog](https://www.radix-ui.com/primitives/docs/components/alert-dialog).
-Props are identical to [shadcn/ui Alert Dialog](https://ui.shadcn.com/docs/components/alert-dialog).
+### AlertDialog
+
+Built on [Radix Alert Dialog Root](https://www.radix-ui.com/primitives/docs/components/alert-dialog#root); accepts all its props. Always modal.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `open` | `boolean` | none | Controlled open state. |
+| `defaultOpen` | `boolean` | none | Open state on first render, when uncontrolled. |
+| `onOpenChange` | `(open: boolean) => void` | none | Called when the dialog opens or closes. |
+
+### AlertDialogTrigger
+
+Built on [Radix Alert Dialog Trigger](https://www.radix-ui.com/primitives/docs/components/alert-dialog#trigger); accepts all its props.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `asChild` | `boolean` | `false` | Render the child element instead, merging props via [Radix Slot](https://www.radix-ui.com/primitives/docs/utilities/slot). |
+
+### AlertDialogContent
+
+Built on [Radix Alert Dialog Content](https://www.radix-ui.com/primitives/docs/components/alert-dialog#content); accepts all its props. Renders inside `AlertDialogPortal` with an `AlertDialogOverlay` behind it. Clicking outside doesn't close it.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `size` | `"default" \| "sm"` | `"default"` | `sm` narrows the dialog, centers the header and puts the footer buttons in two columns. |
+| `onEscapeKeyDown` | `(event: KeyboardEvent) => void` | none | Called when Escape is pressed. Call `event.preventDefault()` to keep the dialog open. |
+| `onOpenAutoFocus` | `(event: Event) => void` | none | Called when focus moves into the dialog on open. Prevent it to focus something else. |
+| `onCloseAutoFocus` | `(event: Event) => void` | none | Called when focus returns to the trigger on close. |
+| `forceMount` | `true` | none | Keep the content mounted while closed. |
+
+### AlertDialogHeader, AlertDialogFooter
+
+Render a native `<div>` and accept all of its props. The header stacks the media, title and description; the footer lays out the buttons, stacked on small screens and in a row from `sm` up.
+
+### AlertDialogMedia
+
+Renders a native `<div>` and accepts all of its props. A square tile for an icon or image above the title.
+
+### AlertDialogTitle
+
+Built on [Radix Alert Dialog Title](https://www.radix-ui.com/primitives/docs/components/alert-dialog#title); accepts all its props. Announced as the dialog's accessible name.
+
+### AlertDialogDescription
+
+Built on [Radix Alert Dialog Description](https://www.radix-ui.com/primitives/docs/components/alert-dialog#description); accepts all its props. Announced as the dialog's description.
+
+### AlertDialogAction, AlertDialogCancel
+
+Built on [Radix Alert Dialog Action](https://www.radix-ui.com/primitives/docs/components/alert-dialog#action) and [Cancel](https://www.radix-ui.com/primitives/docs/components/alert-dialog#cancel), rendered through GodUI [Button](/docs/components/button) with `asChild`; accept all their props. Both close the dialog.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `variant` | `"default" \| "destructive" \| "outline" \| "secondary" \| "ghost" \| "link"` | `"default"` (Action), `"outline"` (Cancel) | Button style. |
+| `size` | `"default" \| "xs" \| "sm" \| "lg" \| "icon" \| "icon-xs" \| "icon-sm" \| "icon-lg"` | `"default"` | Button size. |
+
+### AlertDialogPortal, AlertDialogOverlay
+
+Built on [Radix Alert Dialog Portal](https://www.radix-ui.com/primitives/docs/components/alert-dialog#portal) and [Overlay](https://www.radix-ui.com/primitives/docs/components/alert-dialog#overlay); accept all their props. `AlertDialogContent` already renders both, so you only need them to build a custom content wrapper.
+
+Props match [shadcn/ui Alert Dialog](https://ui.shadcn.com/docs/components/alert-dialog).
 
 </Workbench>

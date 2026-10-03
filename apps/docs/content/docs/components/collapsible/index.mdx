@@ -8,14 +8,6 @@ import { CollapsibleDemo } from "@/components/demos/core/collapsible-demo";
 
 <Workbench>
 
-The shadcn/ui collapsible with the look of a height animation and none of its
-cost. shadcn's version doesn't animate at all. GodUI uses the same engine as
-[Accordion](/docs/components/accordion): the panel's height changes in one
-step, its clip edge then sweeps over content that holds still, and everything
-after the Collapsible rides that edge, all on `translate` and `opacity`.
-Closing doesn't wait: the edge sweeps up as the content below rises, and a
-click mid-way reverses from where everything is drawn.
-
 <Example label="Default" story="ui-collapsible" code={`import { Button } from "@/components/ui/button";
 import {
   Collapsible,
@@ -60,20 +52,6 @@ export function CollapsibleDemo() {
 
 <ComponentInstall name="collapsible" />
 
-## Replacing shadcn
-
-`npx shadcn add @godui/collapsible` overwrites `components/ui/collapsible.tsx`.
-Exports, props and `data-slot` attributes match shadcn/ui new-york-v4, so
-existing imports keep working. It also installs `godui-motion`, which includes
-the `useFlipGroup` and `useReveal` hooks it uses.
-
-One layout difference: the `Collapsible` root is `relative`, so a closing panel
-has a fixed anchor when it leaves the flow. Absolutely positioned descendants
-that anchored to an outer ancestor now anchor to the root. With `asChild`, the
-root adds no class (Radix's Slot concatenates classes, so a child that is
-`absolute`, `fixed` or `sticky` would get both); it sets `position: relative`
-inline only if the child is otherwise static.
-
 ## Usage
 
 ```tsx
@@ -94,39 +72,36 @@ import {
 </Collapsible>
 ```
 
-## What's animated
-
-| Interaction | Mechanism | Properties | Easing | Duration |
-| --- | --- | --- | --- | --- |
-| Open | height snaps; the panel box slides from `-room` to rest while each of its children slides the other way (the clip edge sweeps down); the content after it FLIPs on the same clock; the children fade in a beat apart | `translate`, `opacity` | `ease-spring-smooth`; fades `ease-out-expo` | 260ms |
-| Close | the panel leaves the flow at once (absolute, where it's drawn); the edge sweeps back up while the content after it rises; the children fade out ahead of the edge | `translate`, `opacity` | `ease-spring-smooth`; fades `ease-out-expo` | 150ms |
-| Parent moves | if a stage centers the Collapsible's parent, the parent glides to its new spot on the same clock | `translate` | `ease-spring-smooth` | as above |
-
-What rides the edge: the Collapsible's later siblings in its parent, and the
-root's own children after the panel. A Collapsible nested in another
-Collapsible or an Accordion moves the outer one's content too, on the same
-clock. `CollapsibleContent` with `asChild` works the same way: the child it
-renders is the box and its children hold still.
-
-The box clips only while its edge sweeps (`data-sweeping`), so focus rings and
-shadows of the content aren't cut off at rest. Two kinds of panel can't be
-split into a box and still children. One has loose text, or an inline or
-`display: contents` child, directly inside it; none of those can move on their
-own. The other has a box that paints a background, border or shadow, which
-would slide over the trigger. Those fade in and out instead, and the content
-after them still glides. Wrap loose text in a block element to get the sweep.
-
-The root gets `ease-spring-smooth`, the clock's curve. Add your own `ease-*`
-class to the root to change it.
-
-Under `prefers-reduced-motion` nothing moves: the height and the content after
-it change in one step and the panel's content only fades, over
-`--godui-duration-base` opening and `--godui-duration-fast` closing (both 150ms
-under reduced motion).
-
 ## API
 
-Built on [Radix Collapsible](https://www.radix-ui.com/primitives/docs/components/collapsible).
-Props are identical to [shadcn/ui Collapsible](https://ui.shadcn.com/docs/components/collapsible).
+### Collapsible
+
+Built on [Radix Collapsible Root](https://www.radix-ui.com/primitives/docs/components/collapsible#root); accepts all its props. The root is `relative` so a closing panel has an anchor (with `asChild`, only when the child is otherwise static).
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `open` | `boolean` | none | Controlled open state. |
+| `defaultOpen` | `boolean` | `false` | Open state on first render, when uncontrolled. |
+| `onOpenChange` | `(open: boolean) => void` | none | Called when the panel opens or closes. |
+| `disabled` | `boolean` | `false` | Prevents the trigger from toggling. |
+| `asChild` | `boolean` | `false` | Render the child element instead, merging props via [Radix Slot](https://www.radix-ui.com/primitives/docs/utilities/slot). |
+
+### CollapsibleTrigger
+
+Built on [Radix Collapsible Trigger](https://www.radix-ui.com/primitives/docs/components/collapsible#trigger); accepts all its props.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `asChild` | `boolean` | `false` | Render the child element instead, e.g. a GodUI [Button](/docs/components/button). |
+
+### CollapsibleContent
+
+Built on [Radix Collapsible Content](https://www.radix-ui.com/primitives/docs/components/collapsible#content); accepts all its props. Put its content in block elements: loose text directly inside fades instead of sweeping.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `asChild` | `boolean` | `false` | Render the child element as the panel. Its children hold still while the edge sweeps. |
+
+Props match [shadcn/ui Collapsible](https://ui.shadcn.com/docs/components/collapsible).
 
 </Workbench>

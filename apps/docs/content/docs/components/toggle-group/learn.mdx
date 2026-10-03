@@ -63,6 +63,17 @@ Space.
 
 </LearnPlayer>
 
+## What's animated
+
+| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
+| --- | --- | --- | --- | --- |
+| Select (single) | FLIP (WAAPI) on the indicator | `translate`, `scale` | `ease-spring-snappy` | 260ms |
+| Toggle (multiple) | on background snaps | none | none | none |
+| Press | `transition` on `active:scale-[0.96]` | `scale` | `ease-spring-bouncy` | 260ms |
+
+Before JavaScript runs, the pressed item paints its own background, exactly as
+in shadcn.
+
 ## Why GPU-only
 
 The indicator animates `translate` and `scale`; presses animate `scale`.
@@ -71,3 +82,11 @@ shadcn's items transition `color` and `box-shadow`; GodUI's don't.
 ## Reduced motion
 
 The indicator jumps to the new item without sliding, and presses are instant.
+
+## Replacing shadcn
+
+`npx shadcn add @godui/toggle-group` overwrites `components/ui/toggle-group.tsx`
+and installs the GodUI [Toggle](/docs/components/toggle) it styles items with.
+Exports, props and `data-slot` attributes match shadcn/ui new-york-v4, so
+existing imports keep working. A single-select group renders one extra element,
+an `aria-hidden` `<span data-slot="toggle-group-indicator">`.

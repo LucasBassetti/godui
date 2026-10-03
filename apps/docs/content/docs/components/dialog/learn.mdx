@@ -111,6 +111,17 @@ the overlay. All three paths run the same exit keyframe.
 
 </LearnPlayer>
 
+## What's animated
+
+| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
+| --- | --- | --- | --- | --- |
+| Open | `godui-fade-scale-in` | `opacity`, `scale` 0.96 → 1 | `ease-spring-snappy` | 260ms |
+| Close | `godui-fade-scale-out` | `opacity`, `scale` 1 → 0.96 | `ease-out-expo` | 150ms |
+| Overlay | `godui-fade-in` / `godui-fade-out` | `opacity` | snappy / expo | 260 / 150ms |
+
+The content's centering `translate` is untouched: the keyframes animate the
+separate `scale` property, so they can't fight the `-50%` offset.
+
 ## Why GPU-only
 
 The dialog animates `scale` and `opacity`; the overlay animates `opacity`.
@@ -122,3 +133,10 @@ the curve: a spring in, a fast exit out.
 Under `prefers-reduced-motion` the root sets `--godui-motion: 0`. The keyframe
 multiplies its scale offset by it, so the dialog fades without scaling, and
 the duration drops to 150ms.
+
+## Replacing shadcn
+
+`npx shadcn add @godui/dialog` overwrites `components/ui/dialog.tsx`. Exports,
+props and `data-slot` attributes match shadcn/ui new-york-v4, so existing
+imports keep working. It also installs `godui-motion` (easings, keyframes, the
+FLIP hook) and the GodUI `button` it uses for the footer close button.

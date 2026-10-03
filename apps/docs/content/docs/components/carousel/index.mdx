@@ -10,13 +10,6 @@ import { CarouselVerticalDemo } from "@/components/demos/core/carousel-vertical-
 
 <Workbench>
 
-The shadcn/ui carousel. [Embla](https://www.embla-carousel.com/) already moves
-the track with a `translate3d` on one container, updated each frame, so
-dragging, swiping and the buttons all run on the compositor with Embla's own
-physics. GodUI adds nothing to the movement. What it changes is
-`prefers-reduced-motion`: the previous/next buttons and the arrow keys jump
-straight to the slide instead of scrolling.
-
 <Example label="Default" story="ui-carousel--default" code={`import {
   Carousel,
   CarouselContent,
@@ -121,19 +114,6 @@ export function CarouselVerticalDemo() {
 
 <ComponentInstall name="carousel" />
 
-## Replacing shadcn
-
-`npx shadcn add @godui/carousel` overwrites `components/ui/carousel.tsx`.
-Exports, props and `data-slot` attributes match shadcn/ui new-york-v4, so
-existing imports keep working. It also installs `godui-motion` (easings,
-keyframes, the FLIP hook) into your project and the GodUI `button` the
-previous/next controls are built on.
-
-The only change in behaviour: under `prefers-reduced-motion` the buttons and
-the arrow keys call Embla with `jump`, so the carousel lands on the next slide
-without scrolling. `api` (from `setApi`) is Embla's untouched API, so your own
-`api.scrollTo(...)` calls scroll as you wrote them.
-
 ## Usage
 
 ```tsx
@@ -158,21 +138,40 @@ import {
 </Carousel>
 ```
 
-## What's animated
-
-| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
-| --- | --- | --- | --- | --- |
-| Slide | Embla | `transform` (`translate3d`) | Embla's physics | user-driven |
-| Previous / next press | `transition` | `scale` | `ease-spring-bouncy` | 260ms |
-
-Under `prefers-reduced-motion` the buttons and arrow keys jump to the slide
-instead of scrolling. Dragging stays under the user's hand either way.
-
 ## API
 
-Built on [Embla Carousel](https://www.embla-carousel.com/api/). Props are
-identical to [shadcn/ui Carousel](https://ui.shadcn.com/docs/components/carousel):
-`opts` and `plugins` go to Embla, `orientation` sets the axis, and `setApi`
-hands you the Embla API.
+### Carousel
+
+Renders a native `<div>` (`role="region"`) and accepts all of its props. Sets up [Embla Carousel](https://www.embla-carousel.com/api/) and handles the left and right arrow keys.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `opts` | `EmblaOptionsType` | none | [Embla options](https://www.embla-carousel.com/api/options/) such as `align`, `loop` and `startIndex`. |
+| `plugins` | `EmblaPluginType[]` | none | [Embla plugins](https://www.embla-carousel.com/plugins/), e.g. Autoplay. |
+| `orientation` | `"horizontal" \| "vertical"` | `"horizontal"` | Scroll axis. Sets Embla's `axis` to `x` or `y`. |
+| `setApi` | `(api: CarouselApi) => void` | none | Receives the Embla API once it's ready, for `scrollTo`, `selectedScrollSnap` and events. |
+
+### CarouselContent
+
+Renders a native `<div>` and accepts all of its props. The viewport and the track Embla moves.
+
+### CarouselItem
+
+Renders a native `<div>` (`role="group"`) and accepts all of its props. One slide. Set its width with `basis-*` classes.
+
+### CarouselPrevious, CarouselNext
+
+Render a GodUI [Button](/docs/components/button) and accept all of its props. They scroll to the previous or next slide and are disabled at either end.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `variant` | `"default" \| "destructive" \| "outline" \| "secondary" \| "ghost" \| "link"` | `"outline"` | Button style. |
+| `size` | `"default" \| "xs" \| "sm" \| "lg" \| "icon" \| "icon-xs" \| "icon-sm" \| "icon-lg"` | `"icon"` | Button size. |
+
+### CarouselApi
+
+The type of the Embla API that `setApi` receives (`UseEmblaCarouselType[1]`).
+
+Props match [shadcn/ui Carousel](https://ui.shadcn.com/docs/components/carousel).
 
 </Workbench>

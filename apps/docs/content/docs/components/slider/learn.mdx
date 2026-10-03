@@ -194,6 +194,23 @@ then pull it past the end and let go.
 
 </LearnPlayer>
 
+## What's animated
+
+| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
+| --- | --- | --- | --- | --- |
+| Press (thumb or track) | `data-pressed` on the root, `data-active` on the thumb it moves | thumb `scale` 1 → 1.15 | `ease-spring-bouncy` | 260ms |
+| Press, the track | same attribute | track `scale` (Y) 1 → 1.5 | `ease-spring-snappy` | 150ms |
+| Hover / focus | a hollow `::before` ring around the thumb, sized like shadcn's `ring-4` | `opacity` 0 → 1, `scale` 0.6 → 1 | `ease-out-expo` | 150ms |
+| Click on the track, Home / End / Page keys, new `value` | WAAPI glide from where the thumb is drawn; the full-length range glides on the same clock | thumb `translate`, range `translate` + `scale` | `ease-spring-snappy` | 260ms |
+| Arrow key | same glide, retargeted on key repeat | thumb `translate`, range `translate` + `scale` | `ease-out-expo` | 150ms |
+| Drag | follows the pointer 1:1, however fast (Radix's position, no animation); only a `step` that spans 12px or more of track glides from step to step | thumb `translate` (coarse steps only) | `ease-out-expo` | 150ms |
+| Pull past an end | track stretches toward the pointer (max 24px, sigmoid), thins, the end thumb rides it | track `transform`, thumb `transform` | live; release `ease-spring-bouncy` | release 380ms |
+
+The range is always the full length of the track: Radix's inline `left` /
+`right` are overridden, and the range is placed with `translate` and `scale`
+read from them, so it never lays out while it glides. The first paint never
+animates.
+
 ## Why GPU-only
 
 Everything that animates is `translate`, `scale`, `transform` or `opacity`,
@@ -208,3 +225,10 @@ frame of the glide.
 Values snap instead of gliding, the press doesn't lift the thumb or thicken
 the track (`motion-safe:`), there's no rubber band, and the halo only fades
 (`motion-reduce:before:scale-100`).
+
+## Replacing shadcn
+
+`npx shadcn add @godui/slider` overwrites `components/ui/slider.tsx`. Exports,
+props and `data-slot` attributes match shadcn/ui new-york-v4, so existing
+imports keep working. It also installs `godui-motion` (easings, keyframes, the
+FLIP hook) into your project.

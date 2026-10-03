@@ -85,6 +85,15 @@ Open the select, pick a fruit, then reopen it to see the check on your choice.
 
 </LearnPlayer>
 
+## What's animated
+
+| Interaction | Keyframe / mechanism | Properties | Easing | Duration |
+| --- | --- | --- | --- | --- |
+| Open | `godui-popover-in` | `opacity`, `scale` 0.96 → 1; `translate` toward the trigger in popper mode | `ease-spring-snappy` | 260ms |
+| Close | `godui-popover-out` | the same, reversed | `ease-out-expo` | 150ms |
+| Selected check | `godui-fade-scale-in` from 50% | `scale`, `opacity` | `ease-spring-snappy` | 260ms |
+| Trigger hover / focus | snaps | none | none | none |
+
 ## Why GPU-only
 
 The list animates `opacity`, `scale` and `translate`; the check animates
@@ -95,3 +104,10 @@ GodUI's snaps.
 
 `--godui-motion: 0` removes scale and drift, so the list and the check only
 fade, in 150ms.
+
+## Replacing shadcn
+
+`npx shadcn add @godui/select` overwrites `components/ui/select.tsx`. Exports,
+props and `data-slot` attributes match shadcn/ui new-york-v4, so existing
+imports keep working. It also installs `godui-motion` (easings, keyframes, the
+FLIP hook) into your project.
