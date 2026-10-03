@@ -6,20 +6,20 @@ import { test } from "node:test";
 // those, not bare text — the sidebar tree also contains "GPU-only Motion".
 const labels = (path) => {
   const html = readFileSync(
-    new URL(`../.next/server/app/docs/extras/${path}.html`, import.meta.url),
+    new URL(`../.next/server/app/docs/lab/${path}.html`, import.meta.url),
     "utf8",
   );
   return [...html.matchAll(/\\"label\\":\\"([^"\\]+)\\"/g)].map((m) => m[1]);
 };
 
-test("a paint-animating Extra does not claim GPU-only", () => {
+test("a paint-animating Lab component does not claim GPU-only", () => {
   // magnetic-button animates only paint and has no curated motion note.
   const found = labels("buttons/magnetic-button");
   assert.ok(!found.includes("GPU-only"), `labels: ${found.join(", ")}`);
   assert.ok(found.includes("Paint"), `labels: ${found.join(", ")}`);
 });
 
-test("a compositor-only Extra keeps the GPU-only badge", () => {
+test("a compositor-only Lab component keeps the GPU-only badge", () => {
   assert.ok(labels("layout/tilt-card").includes("GPU-only"));
 });
 

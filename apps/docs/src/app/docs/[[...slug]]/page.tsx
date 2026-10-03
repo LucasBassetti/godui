@@ -8,7 +8,7 @@ import {
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ComponentBadges } from "@/components/component-badges";
-import { ExtrasNotice } from "@/components/extras-notice";
+import { LabNotice } from "@/components/lab-notice";
 import { LearnPlayerProvider } from "@/components/learn/learn-player-context";
 import { getMDXComponents } from "@/components/mdx";
 import {
@@ -34,11 +34,11 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
 
   const slug = params.slug ?? [];
   const section =
-    slug[0] === "components" || slug[0] === "extras" ? slug[0] : undefined;
+    slug[0] === "components" || slug[0] === "lab" ? slug[0] : undefined;
   const inComponents = section != null;
   const isCore = section === "components";
-  // Component base: core = `components/<name>` (depth 2); Extras =
-  // `extras/<category>/<name>` (depth 3). The Learn page is that base +
+  // Component base: core = `components/<name>` (depth 2); Lab =
+  // `lab/<category>/<name>` (depth 3). The Learn page is that base +
   // `learn`. Badges + tabs hang off the base.
   const baseDepth = isCore ? 2 : 3;
   const base =
@@ -57,15 +57,15 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
   const hasLearn = learnPage != null;
 
   const componentName = base?.at(-1);
-  // Extras-only signals. Core components are CI-gated GPU-only, so they carry
+  // Lab-only signals. Core components are CI-gated GPU-only, so they carry
   // no perf note, grade or dependency note — just the GPU-only + shadcn badges.
-  const extrasName = isCore ? undefined : componentName;
-  const motionNote = extrasName ? perfNote(extrasName) : undefined;
-  const dependencyNote = extrasName ? DEPENDENCY_NOTES[extrasName] : undefined;
-  const isStatic = extrasName ? STATIC_COMPONENTS.has(extrasName) : false;
+  const labName = isCore ? undefined : componentName;
+  const motionNote = labName ? perfNote(labName) : undefined;
+  const dependencyNote = labName ? DEPENDENCY_NOTES[labName] : undefined;
+  const isStatic = labName ? STATIC_COMPONENTS.has(labName) : false;
   // Static components (the `*-background` effects) never animate — no grade to show;
   // they keep only the green "Static" badge.
-  const score = extrasName && !isStatic ? motionScore(extrasName) : undefined;
+  const score = labName && !isStatic ? motionScore(labName) : undefined;
 
   // On the Learn page, `page.data.title` is the article title — but the
   // breadcrumb should still read the component's name (pulled from the base
@@ -82,7 +82,7 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
   if (inComponents) {
     const atComponentsRoot = slug.length === 1;
     crumbs.push({
-      name: section === "extras" ? "Extras" : "Components",
+      name: section === "lab" ? "Lab" : "Components",
       url: atComponentsRoot ? undefined : `/docs/${section}`,
     });
     if (!atComponentsRoot) {
@@ -182,15 +182,15 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
         hrefLabel: "shadcn docs",
       });
     }
-    if (section === "extras") {
+    if (section === "lab") {
       badges.push({
         tone: "neutral",
-        label: "Extras",
-        title: "GodUI Extras",
+        label: "Lab",
+        title: "GodUI Lab",
         detail:
-          "A component from GodUI v1, maintained as-is. Animated shadcn/ui drop-ins live under Components.",
-        href: "/docs/extras",
-        hrefLabel: "All Extras",
+          "An expressive, experimental piece beyond the shadcn catalog, maintained as-is. Animated shadcn/ui drop-ins live under Components.",
+        href: "/docs/lab",
+        hrefLabel: "All of Lab",
       });
     }
     if (dependencyNote) {
@@ -309,9 +309,7 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
           <DocsDescription className="docs-lead">
             {page.data.description}
           </DocsDescription>
-          {section === "extras" && isComponentDocsPage ? (
-            <ExtrasNotice />
-          ) : null}
+          {section === "lab" && isComponentDocsPage ? <LabNotice /> : null}
           <DocsBody>
             <MDX components={getMDXComponents()} />
           </DocsBody>

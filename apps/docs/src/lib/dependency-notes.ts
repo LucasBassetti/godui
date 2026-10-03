@@ -4,7 +4,7 @@
  * third-party package for a job that isn't practical to hand-roll (physics,
  * WebGL globe, QR encoding, …). Surfaced as a badge + tooltip below the page
  * description via <ComponentBadges>, keyed by component name — the last segment
- * of a `/docs/extras/<category>/<name>` slug.
+ * of a `/docs/lab/<category>/<name>` slug.
  */
 
 export interface DependencyNote {

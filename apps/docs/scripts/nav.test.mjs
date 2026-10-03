@@ -4,10 +4,10 @@ import { test } from "node:test";
 
 const page = (p) => new URL(`../.next/server/app/${p}`, import.meta.url);
 
-test("Extras pages show the Extras tab's own sidebar", () => {
-  const html = readFileSync(page("docs/extras/layout/tilt-card.html"), "utf8");
-  assert.match(html, /href="\/docs\/extras\/text\/aurora-text"/);
-  // Getting-started pages live outside the Extras root folder.
+test("Lab pages show the Lab tab's own sidebar", () => {
+  const html = readFileSync(page("docs/lab/layout/tilt-card.html"), "utf8");
+  assert.match(html, /href="\/docs\/lab\/text\/aurora-text"/);
+  // Getting-started pages live outside the Lab root folder.
   assert.doesNotMatch(html, /href="\/docs\/installation"/);
 });
 
@@ -44,19 +44,19 @@ const sidebarOf = (html) => {
 };
 
 // Page-tree links only (they carry data-active); the drawer's mobile-only
-// header mirror (Components / Extras / Animated Icons) is not the nav.
+// header mirror (Components / Lab / Animated Icons) is not the nav.
 const treeLinks = (sidebar) =>
   [...sidebar.matchAll(/<a data-active="[^"]*"[^>]*href="([^"]+)"/g)].map(
     (m) => m[1],
   );
 
-test("components are listed in the main sidebar; Extras isn't", () => {
+test("components are listed in the main sidebar; Lab isn't", () => {
   const links = treeLinks(
     sidebarOf(readFileSync(page("docs/installation.html"), "utf8")),
   );
   assert.ok(links.includes("/docs/components/accordion"), links.join(" "));
   assert.ok(links.includes("/docs/components/tooltip"), links.join(" "));
-  assert.ok(!links.some((href) => href.startsWith("/docs/extras")));
+  assert.ok(!links.some((href) => href.startsWith("/docs/lab")));
 });
 
 test("a component page keeps the same main sidebar", () => {
@@ -86,4 +86,12 @@ test("core components carry no New badge", () => {
     readFileSync(page("docs/installation.html"), "utf8"),
   );
   assert.doesNotMatch(sidebar, />New<\/span>/);
+});
+
+test("the header links Components and Lab", () => {
+  const html = readFileSync(page("docs/installation.html"), "utf8");
+  const header = html.slice(0, html.indexOf('id="nd-sidebar"'));
+  assert.match(header, /<a[^>]*href="\/docs\/components"[^>]*>Components<\/a>/);
+  assert.match(header, /<a[^>]*href="\/docs\/lab"[^>]*>Lab<\/a>/);
+  assert.doesNotMatch(header, />Extras</);
 });

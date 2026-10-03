@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
 
-// The homepage's primary CTA lands on the core shadcn drop-ins; Extras stay
+// The homepage's primary CTA lands on the core shadcn drop-ins; Lab stays
 // one click away in the footer.
 const html = readFileSync(
   new URL("../.next/server/app/index.html", import.meta.url),
@@ -17,9 +17,9 @@ test("homepage Browse Components CTA links to the core catalog", () => {
   assert.equal(cta[1], "/docs/components");
 });
 
-test("footer links to Components and Extras", () => {
+test("footer links to Components and Lab", () => {
   const footer = html.match(/<footer[\s\S]*?<\/footer>/)?.[0];
   assert.ok(footer, "Could not find the footer");
   assert.match(footer, /<a[^>]*href="\/docs\/components"[^>]*>Components<\/a>/);
-  assert.match(footer, /<a[^>]*href="\/docs\/extras"[^>]*>Extras<\/a>/);
+  assert.match(footer, /<a[^>]*href="\/docs\/lab"[^>]*>Lab<\/a>/);
 });

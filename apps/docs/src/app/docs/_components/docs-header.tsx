@@ -110,10 +110,10 @@ export function DocsHeader({
             Components
           </Link>
           <Link
-            href="/docs/extras"
+            href="/docs/lab"
             className="font-medium text-fd-muted-foreground text-sm transition-colors hover:text-fd-foreground"
           >
-            Extras
+            Lab
           </Link>
           <a
             href={ANIMATED_ICONS_URL}

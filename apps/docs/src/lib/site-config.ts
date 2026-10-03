@@ -12,7 +12,7 @@ export const siteConfig = {
   xHandle: "@LucasBassetti",
   // Keep in sync with the card-previews registry
   // (apps/docs/src/components/card-previews/registry.tsx) and the component
-  // category folders under content/docs/extras/. Hardcoded so the marketing
+  // category folders under content/docs/lab/. Hardcoded so the marketing
   // sections don't pull the client-only previews bundle just to read a count.
   componentCount: 100,
   categoryCount: 12,

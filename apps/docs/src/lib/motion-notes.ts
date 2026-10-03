@@ -9,7 +9,7 @@ import { GPU_REPORT } from "@godui/lab";
  * (`packages/lab/src/motion/gpu-report.json`). This map adds the
  * human-facing "why", plus effects the scanner can't see (canvas/WebGL
  * compute). Keyed by component name — the last segment of a
- * `/docs/extras/<category>/<name>` slug. Read through {@link perfNote}, which
+ * `/docs/lab/<category>/<name>` slug. Read through {@link perfNote}, which
  * falls back to a note derived from the report; only components with neither
  * get the green "GPU-only" badge.
  */

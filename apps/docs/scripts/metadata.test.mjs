@@ -22,15 +22,15 @@ const pages = [
     description: "Install GodUI components with the shadcn CLI.",
   },
   {
-    file: "docs/extras/layout/tilt-card.html",
-    path: "/docs/extras/layout/tilt-card",
+    file: "docs/lab/layout/tilt-card.html",
+    path: "/docs/lab/layout/tilt-card",
     title: "Tilt Card",
     description:
       "A card that tilts in 3D toward the pointer with parallax depth and a specular glare.",
   },
   {
-    file: "docs/extras/layout/tilt-card/learn.html",
-    path: "/docs/extras/layout/tilt-card/learn",
+    file: "docs/lab/layout/tilt-card/learn.html",
+    path: "/docs/lab/layout/tilt-card/learn",
     title: "Anatomy of Tilt Card",
     description:
       "How one spring-smoothed pointer value drives a card's rotation, its floating content, and a glare that chases the cursor.",

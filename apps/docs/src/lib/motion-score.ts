@@ -8,7 +8,7 @@ import { perfNote, STATIC_COMPONENTS } from "./motion-notes";
  * repo already has — the `MOTION_NOTES` kind/reason, whether it's a
  * `STATIC_COMPONENTS` member, and the layout/paint-heavy props found by the
  * generated `GPU_REPORT`. Keyed by the same component name used by
- * `MOTION_NOTES` (the last segment of a `/docs/extras/<category>/<name>` slug).
+ * `MOTION_NOTES` (the last segment of a `/docs/lab/<category>/<name>` slug).
  */
 
 export interface ComponentMotionScore {
@@ -25,7 +25,7 @@ const STATIC =
 export function motionScore(componentName: string): ComponentMotionScore {
   const note = perfNote(componentName);
   const isStatic = STATIC_COMPONENTS.has(componentName);
-  // Layout/paint-heavy props from the generated strict scan of Extras.
+  // Layout/paint-heavy props from the generated strict scan of Lab.
   const allowlistProps = GPU_REPORT[componentName]?.gated ?? [];
 
   const grade = motionTier({ kind: note?.kind, isStatic, allowlistProps });

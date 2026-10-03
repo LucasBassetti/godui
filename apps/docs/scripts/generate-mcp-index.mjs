@@ -39,7 +39,7 @@ const backgroundCatalog = JSON.parse(
 );
 const meta = JSON.parse(
   readFileSync(
-    resolve(repoRoot, "apps/docs/content/docs/extras/meta.json"),
+    resolve(repoRoot, "apps/docs/content/docs/lab/meta.json"),
     "utf8",
   ),
 );

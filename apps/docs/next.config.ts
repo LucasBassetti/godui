@@ -32,11 +32,19 @@ const nextConfig: NextConfig = {
           permanent: false,
         },
       ]),
-      // Pre-pivot component docs moved to /docs/extras.
+      // Pre-pivot component docs moved to /docs/lab (straight there: no hop
+      // through the old /docs/extras).
       {
         source:
           "/docs/components/:category(ai|backgrounds|buttons|collaboration|effects|glass|inputs|layout|navigation|overlays|text|visualizations)/:path*",
-        destination: "/docs/extras/:category/:path*",
+        destination: "/docs/lab/:category/:path*",
+        permanent: true,
+      },
+      // The Lab was called Extras; its old URLs keep working.
+      { source: "/docs/extras", destination: "/docs/lab", permanent: true },
+      {
+        source: "/docs/extras/:path*",
+        destination: "/docs/lab/:path*",
         permanent: true,
       },
     ];

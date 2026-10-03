@@ -1,6 +1,6 @@
 {
-  "title": "Extras",
-  "description": "GodUI v1 components, maintained as-is",
+  "title": "Lab",
+  "description": "Expressive, experimental pieces beyond the shadcn catalog",
   "root": true,
   "pages": [
     "index",
