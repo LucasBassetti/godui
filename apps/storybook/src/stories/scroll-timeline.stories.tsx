@@ -33,7 +33,7 @@ const DATA = [
 ];
 
 const meta = {
-  title: "Extras/Visualizations/Scroll Timeline",
+  title: "Lab/Visualizations/Scroll Timeline",
   component: ScrollTimeline,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

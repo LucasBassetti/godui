@@ -4,7 +4,7 @@ import { hidden, number, radio, range } from "../playground/argtypes";
 import { centered } from "../playground/stage";
 
 const meta = {
-  title: "Extras/Text/NumberTicker",
+  title: "Lab/Text/NumberTicker",
   component: NumberTicker,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

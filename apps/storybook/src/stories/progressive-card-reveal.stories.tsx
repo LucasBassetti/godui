@@ -122,7 +122,7 @@ function TravelDemo({
 }
 
 const meta = {
-  title: "Extras/Layout/Progressive Card Reveal",
+  title: "Lab/Layout/Progressive Card Reveal",
   component: ProgressiveCardReveal,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

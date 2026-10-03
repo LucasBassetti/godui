@@ -53,7 +53,7 @@ function MiniBars() {
 }
 
 const meta = {
-  title: "Extras/Layout/BentoGrid",
+  title: "Lab/Layout/BentoGrid",
   component: BentoGrid,
   subcomponents: { BentoCard },
   tags: ["autodocs"],

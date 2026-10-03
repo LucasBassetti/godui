@@ -12,7 +12,7 @@ const items = [
 ];
 
 const meta = {
-  title: "Extras/Navigation/Magic Tab",
+  title: "Lab/Navigation/Magic Tab",
   component: MagicTab,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

@@ -5,7 +5,7 @@ import { action, range, select, text, toggle } from "../playground/argtypes";
 import { centered } from "../playground/stage";
 
 const meta = {
-  title: "Extras/Buttons/Magnetic Button",
+  title: "Lab/Buttons/Magnetic Button",
   component: MagneticButton,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

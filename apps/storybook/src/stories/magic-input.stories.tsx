@@ -5,7 +5,7 @@ import { action, range, select, text, toggle } from "../playground/argtypes";
 import { centered } from "../playground/stage";
 
 const meta = {
-  title: "Extras/Inputs/Magic Input",
+  title: "Lab/Inputs/Magic Input",
   component: MagicInput,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

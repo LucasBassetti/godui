@@ -27,7 +27,7 @@ function OrbitCard({ title, img }: (typeof CARDS)[number]) {
 }
 
 const meta = {
-  title: "Extras/Layout/OrbitCarousel",
+  title: "Lab/Layout/OrbitCarousel",
   component: OrbitCarousel,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

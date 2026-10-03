@@ -11,7 +11,7 @@ const steps: Step[] = [
 ];
 
 const meta = {
-  title: "Extras/Layout/Stepper",
+  title: "Lab/Layout/Stepper",
   component: Stepper,
   tags: ["autodocs"],
   parameters: { layout: "padded" },

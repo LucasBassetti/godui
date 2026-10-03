@@ -18,7 +18,7 @@ function CardBody() {
 }
 
 const meta = {
-  title: "Extras/Effects/Encrypted Card",
+  title: "Lab/Effects/Encrypted Card",
   component: EncryptedCard,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

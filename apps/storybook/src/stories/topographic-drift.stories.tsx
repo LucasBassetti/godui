@@ -23,7 +23,7 @@ const presets = {
 type PlaygroundArgs = TopographicDriftProps & { preset: keyof typeof presets };
 
 const meta: Meta<PlaygroundArgs> = {
-  title: "Extras/Backgrounds/Topographic Drift",
+  title: "Lab/Backgrounds/Topographic Drift",
   component: TopographicDrift,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

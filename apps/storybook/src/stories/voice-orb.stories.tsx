@@ -4,7 +4,7 @@ import * as React from "react";
 import { radio, range } from "../playground/argtypes";
 
 const meta = {
-  title: "Extras/AI/Voice Orb",
+  title: "Lab/AI/Voice Orb",
   component: VoiceOrb,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

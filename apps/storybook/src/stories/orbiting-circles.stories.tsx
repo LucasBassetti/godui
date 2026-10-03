@@ -11,7 +11,7 @@ function Chip({ children }: { children: string }) {
 }
 
 const meta = {
-  title: "Extras/Effects/Orbiting Circles",
+  title: "Lab/Effects/Orbiting Circles",
   component: OrbitingCircles,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

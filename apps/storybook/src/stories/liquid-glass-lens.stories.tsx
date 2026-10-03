@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { color, range } from "../playground/argtypes";
 
 const meta: Meta<LiquidGlassLensProps> = {
-  title: "Extras/Effects/Liquid Glass Lens",
+  title: "Lab/Effects/Liquid Glass Lens",
   component: LiquidGlassLens,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

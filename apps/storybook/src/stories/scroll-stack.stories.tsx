@@ -27,7 +27,7 @@ const cards = [
 ];
 
 const meta = {
-  title: "Extras/Layout/ScrollStack",
+  title: "Lab/Layout/ScrollStack",
   component: ScrollStack,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

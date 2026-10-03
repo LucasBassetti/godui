@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { range } from "../playground/argtypes";
 
 const meta = {
-  title: "Extras/Effects/SpotlightReveal",
+  title: "Lab/Effects/SpotlightReveal",
   component: SpotlightReveal,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

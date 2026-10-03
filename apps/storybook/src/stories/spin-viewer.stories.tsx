@@ -5,7 +5,7 @@ import { makeCubeFrames } from "./spin-viewer-frames";
 const FRAMES = makeCubeFrames(48);
 
 const meta = {
-  title: "Extras/Layout/Spin Viewer",
+  title: "Lab/Layout/Spin Viewer",
   component: SpinViewer,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

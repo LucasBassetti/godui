@@ -28,7 +28,7 @@ const actions: GooeyFabAction[] = [
 ];
 
 const meta = {
-  title: "Extras/Buttons/Gooey FAB",
+  title: "Lab/Buttons/Gooey FAB",
   component: GooeyFab,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

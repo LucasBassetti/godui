@@ -28,7 +28,7 @@ function Shot({ label, img }: (typeof SHOTS)[number]) {
 }
 
 const meta = {
-  title: "Extras/Layout/InertiaGallery",
+  title: "Lab/Layout/InertiaGallery",
   component: InertiaGallery,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

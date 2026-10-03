@@ -84,7 +84,7 @@ const items: { label: string; color: string; icon: ReactNode }[] = [
 ];
 
 const meta = {
-  title: "Extras/Navigation/Dock",
+  title: "Lab/Navigation/Dock",
   component: Dock,
   subcomponents: { DockItem },
   tags: ["autodocs"],

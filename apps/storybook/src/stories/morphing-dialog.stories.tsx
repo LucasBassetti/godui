@@ -7,7 +7,7 @@ import {
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 const meta = {
-  title: "Extras/Overlays/Morphing Dialog",
+  title: "Lab/Overlays/Morphing Dialog",
   component: MorphingDialog,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

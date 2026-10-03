@@ -35,7 +35,7 @@ function ProfileCard({
 }
 
 const meta = {
-  title: "Extras/Layout/SwipeDeck",
+  title: "Lab/Layout/SwipeDeck",
   component: SwipeDeck,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

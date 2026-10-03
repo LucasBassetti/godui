@@ -46,7 +46,7 @@ const tabs: TabBarTab[] = [
 ];
 
 const meta = {
-  title: "Extras/Navigation/Tab Bar",
+  title: "Lab/Navigation/Tab Bar",
   component: TabBar,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { radio, range, select, toggle } from "../playground/argtypes";
 
 const meta = {
-  title: "Extras/Effects/AsciiDither",
+  title: "Lab/Effects/AsciiDither",
   component: AsciiDither,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

@@ -4,7 +4,7 @@ import { hidden, radio, range, select, text } from "../playground/argtypes";
 import { centered } from "../playground/stage";
 
 const meta = {
-  title: "Extras/Layout/Split Flap Display",
+  title: "Lab/Layout/Split Flap Display",
   component: SplitFlapDisplay,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

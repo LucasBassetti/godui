@@ -11,7 +11,7 @@ const LINES: TerminalLine[] = [
 ];
 
 const meta = {
-  title: "Extras/Effects/Terminal",
+  title: "Lab/Effects/Terminal",
   component: Terminal,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

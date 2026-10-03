@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { hidden, select } from "../playground/argtypes";
 
 const meta = {
-  title: "Extras/Overlays/Dynamic Island",
+  title: "Lab/Overlays/Dynamic Island",
   component: DynamicIsland,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

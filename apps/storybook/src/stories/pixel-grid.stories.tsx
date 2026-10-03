@@ -24,7 +24,7 @@ const presets = {
 type PlaygroundArgs = PixelGridProps & { preset: keyof typeof presets };
 
 const meta: Meta<PlaygroundArgs> = {
-  title: "Extras/Backgrounds/Pixel Grid",
+  title: "Lab/Backgrounds/Pixel Grid",
   component: PixelGrid,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

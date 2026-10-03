@@ -12,7 +12,7 @@ const IMAGES = [
 ];
 
 const meta = {
-  title: "Extras/Effects/ImageTrail",
+  title: "Lab/Effects/ImageTrail",
   component: ImageTrail,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

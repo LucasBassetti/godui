@@ -4,7 +4,7 @@ import { hidden, select, text } from "../playground/argtypes";
 import { box } from "../playground/stage";
 
 const meta = {
-  title: "Extras/Overlays/AnimatedTooltip",
+  title: "Lab/Overlays/AnimatedTooltip",
   component: AnimatedTooltip,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

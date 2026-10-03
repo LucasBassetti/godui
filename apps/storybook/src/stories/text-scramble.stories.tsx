@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { range, select } from "../playground/argtypes";
 
 const meta = {
-  title: "Extras/Text/TextScramble",
+  title: "Lab/Text/TextScramble",
   component: TextScramble,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

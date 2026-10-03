@@ -11,7 +11,7 @@ const options = [
 ];
 
 const meta = {
-  title: "Extras/Navigation/Segmented Control",
+  title: "Lab/Navigation/Segmented Control",
   component: SegmentedControl,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

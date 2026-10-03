@@ -10,7 +10,7 @@ type PlaygroundArgs = {
 };
 
 const meta: Meta<PlaygroundArgs> = {
-  title: "Extras/Effects/Lamp",
+  title: "Lab/Effects/Lamp",
   component: Lamp,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

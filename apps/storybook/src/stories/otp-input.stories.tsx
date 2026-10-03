@@ -5,7 +5,7 @@ import { action, range, select, toggle } from "../playground/argtypes";
 import { centered } from "../playground/stage";
 
 const meta = {
-  title: "Extras/Inputs/OTP Input",
+  title: "Lab/Inputs/OTP Input",
   component: OTPInput,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

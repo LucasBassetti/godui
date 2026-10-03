@@ -5,7 +5,7 @@ import { action, select, text, toggle } from "../playground/argtypes";
 import { centered } from "../playground/stage";
 
 const meta = {
-  title: "Extras/Buttons/Mask Button",
+  title: "Lab/Buttons/Mask Button",
   component: MaskButton,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

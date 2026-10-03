@@ -28,7 +28,7 @@ function Cover({ title, artist, img }: (typeof COVERS)[number]) {
 }
 
 const meta = {
-  title: "Extras/Layout/CoverFlow",
+  title: "Lab/Layout/CoverFlow",
   component: CoverFlow,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

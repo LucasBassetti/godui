@@ -11,7 +11,7 @@ import {
 import { centered } from "../playground/stage";
 
 const meta = {
-  title: "Extras/Text/Highlighter",
+  title: "Lab/Text/Highlighter",
   component: Highlighter,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

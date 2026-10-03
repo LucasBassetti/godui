@@ -32,7 +32,7 @@ function ScrollBox(args: ScrollProgressProps) {
 }
 
 const meta = {
-  title: "Extras/Effects/Scroll Progress",
+  title: "Lab/Effects/Scroll Progress",
   component: ScrollProgress,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

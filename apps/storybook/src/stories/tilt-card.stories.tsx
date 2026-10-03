@@ -4,7 +4,7 @@ import { range, toggle } from "../playground/argtypes";
 import { centered } from "../playground/stage";
 
 const meta = {
-  title: "Extras/Layout/Tilt Card",
+  title: "Lab/Layout/Tilt Card",
   component: TiltCard,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

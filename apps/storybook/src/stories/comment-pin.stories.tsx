@@ -28,7 +28,7 @@ const comments = [
 ];
 
 const meta = {
-  title: "Extras/Collaboration/CommentPin",
+  title: "Lab/Collaboration/CommentPin",
   component: CommentPin,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

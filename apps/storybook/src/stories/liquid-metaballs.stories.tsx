@@ -38,7 +38,7 @@ const presets = {
 type PlaygroundArgs = LiquidMetaballsProps & { preset: keyof typeof presets };
 
 const meta: Meta<PlaygroundArgs> = {
-  title: "Extras/Backgrounds/Liquid Metaballs",
+  title: "Lab/Backgrounds/Liquid Metaballs",
   component: LiquidMetaballs,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

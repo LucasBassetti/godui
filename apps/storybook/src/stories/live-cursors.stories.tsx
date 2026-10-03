@@ -21,7 +21,7 @@ const cursors = [
 ];
 
 const meta = {
-  title: "Extras/Collaboration/LiveCursors",
+  title: "Lab/Collaboration/LiveCursors",
   component: LiveCursors,
   subcomponents: { SimulatedCursors },
   tags: ["autodocs"],

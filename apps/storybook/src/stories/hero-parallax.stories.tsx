@@ -24,7 +24,7 @@ const PRODUCTS = [
 }));
 
 const meta = {
-  title: "Extras/Layout/Hero Parallax",
+  title: "Lab/Layout/Hero Parallax",
   component: HeroParallax,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

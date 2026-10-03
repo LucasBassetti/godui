@@ -34,7 +34,7 @@ function LogoCloud() {
 }
 
 const meta = {
-  title: "Extras/Effects/Marquee",
+  title: "Lab/Effects/Marquee",
   component: Marquee,
   tags: ["autodocs"],
   parameters: { layout: "fullscreen" },

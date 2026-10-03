@@ -22,7 +22,7 @@ const FEATURES = [
 ];
 
 const meta = {
-  title: "Extras/Layout/CardSwap",
+  title: "Lab/Layout/CardSwap",
   component: CardSwap,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

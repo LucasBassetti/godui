@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { radio, range } from "../playground/argtypes";
 
 const meta = {
-  title: "Extras/Effects/ParticleDissolve",
+  title: "Lab/Effects/ParticleDissolve",
   component: ParticleDissolve,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

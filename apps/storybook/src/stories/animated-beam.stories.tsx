@@ -20,7 +20,7 @@ type PlaygroundArgs = Pick<
 >;
 
 const meta: Meta<PlaygroundArgs> = {
-  title: "Extras/Effects/Animated Beam",
+  title: "Lab/Effects/Animated Beam",
   // Cast: the refs are required props but supplied inside `render`, never via
   // Controls, so the Playground args only cover the scalar props.
   component: AnimatedBeam as unknown as React.ComponentType<PlaygroundArgs>,

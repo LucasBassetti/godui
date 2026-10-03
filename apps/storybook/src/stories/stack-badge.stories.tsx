@@ -2,7 +2,7 @@ import { StackBadge, type StackBadgeProps } from "@godui/lab";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 const meta = {
-  title: "Extras/Layout/Stack Badge",
+  title: "Lab/Layout/Stack Badge",
   component: StackBadge,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

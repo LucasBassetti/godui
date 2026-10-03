@@ -14,7 +14,7 @@ const items = [
 ];
 
 const meta = {
-  title: "Extras/Navigation/Breadcrumbs",
+  title: "Lab/Navigation/Breadcrumbs",
   component: Breadcrumbs,
   tags: ["autodocs"],
   parameters: { layout: "centered" },
