@@ -23,7 +23,7 @@ function ScrollBox(args: ScrollProgressProps) {
         {Array.from({ length: 16 }).map((_, i) => (
           // biome-ignore lint/suspicious/noArrayIndexKey: static filler
           <p key={i} style={{ margin: 0 }}>
-            Scroll this panel to drive the indicator — line {i + 1} of 16.
+            Scroll this panel to drive the indicator. Line {i + 1} of 16.
           </p>
         ))}
       </div>

@@ -20,8 +20,8 @@ on a probability clock; in interactive mode a soft spotlight reveals them
 under the cursor. Defaults favor the spotlight (`interactive={true}`,
 `cursorReveal="hidden"`).
 
-Each cell is a filled rect. Opacity is the only animated channel — no
-transforms, no layout.
+Each cell is a filled rect. Opacity is the only animated channel. There are no
+transforms and no layout work.
 
 </LearnChapter>
 
@@ -60,24 +60,24 @@ target (1 while over the surface, 0 on leave):
 
 | Mode | Baseline |
 | --- | --- |
-| `"hidden"` | `0` — pure spotlight |
-| `"dim"` | `maxOpacity * 0.18` — faint field always visible |
+| `"hidden"` | `0` (pure spotlight) |
+| `"dim"` | `maxOpacity * 0.18` (faint field, always visible) |
 
 Default radius is `120`. Reduced motion stops the rAF and paints one still
 frame.
 
 `ResizeObserver` (when width/height are unset) and `IntersectionObserver`
-gate the loop. There is no `visibilitychange` listener here — unlike Flow
-Field — so keep that in mind if you leave a tab open on a huge grid.
+gate the loop. Unlike Flow Field, there is no `visibilitychange` listener
+here, so keep that in mind if you leave a tab open on a huge grid.
 
 </LearnChapter>
 
 <LearnChapter label="The result" scene={<PixelGridResult />} isResult>
 
-Move across the stage — squares bloom under the pointer.
+Move across the stage. Squares bloom under the pointer.
 
-Probability flicker, smoothstep falloff, intensity lerp. A spotlight that
-costs almost nothing when it is off screen.
+Probability flicker, smoothstep falloff, and an intensity lerp. The
+`IntersectionObserver` gate keeps the cost near zero off screen.
 
 </LearnChapter>
 

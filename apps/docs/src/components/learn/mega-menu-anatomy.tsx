@@ -44,7 +44,7 @@ const LEGEND: {
 }[] = [
   {
     name: "Triggers",
-    desc: "plain buttons/links — one per top-level item",
+    desc: "plain buttons/links, one per top-level item",
     kind: "triggers",
   },
   {

@@ -1,6 +1,6 @@
 ---
 title: Anatomy of Spin Viewer
-description: How dragging a 360° product shot down to a rounded division and an array index — no 3D, no Framer Motion, just a discrete frame swap.
+description: How dragging a 360° product shot comes down to a rounded division and an array index. No 3D and no Framer Motion, only a discrete frame swap.
 learnPlayer: true
 ---
 
@@ -18,17 +18,17 @@ learnPlayer: true
 >
 
 `SpinViewer` doesn't simulate a 3D object at all. It's an ordered array of
-photos and a `<img src={frames[index]} />` — "rotating" the object is
-nothing but changing `index`. Every mechanism in the component exists to
+photos and a `<img src={frames[index]} />`. "Rotating" the object means
+changing `index`. Every mechanism in the component exists to
 make that one `src` swap feel physical.
 
 On mount, every frame preloads with a plain `new Image()` before the
-viewer marks itself `ready` — that's what makes the first drag instant
-instead of a flash of broken/loading images:
+viewer marks itself `ready`. That makes the first drag instant
+instead of a flash of broken/loading images.
 
-Once ready, the whole visible surface is one `<img>` whose `src` swaps —
-never a tween, never an opacity cross-fade between two frames. That's why
-the scene above steps discretely instead of easing: a real frame swap has
+Once ready, the whole visible surface is one `<img>` whose `src` swaps,
+with no tween and no opacity cross-fade between two frames. The scene above
+steps discretely instead of easing because a real frame swap has
 no in-between state to animate through.
 
 </LearnChapter>
@@ -42,17 +42,17 @@ setIndex(mod(drag.current.i + stepped, count));`}
 >
 
 `onPointerDown` snapshots the pointer's `clientX` and the current `index`.
-`onPointerMove` does the only math in the whole gesture — how many
+`onPointerMove` does the only math in the whole gesture: how many
 `sensitivity`-px ticks the pointer has crossed since then, rounded to a
-whole step:
+whole step.
 
-With the default `sensitivity={6}`, a 60px drag steps through 10 frames —
-drag slower and nothing moves until you cross the next 6px tick, which is
-exactly why a slow, deliberate drag feels more "mechanical" than a fast
-flick: the fast flick blurs past ticks the eye never resolves.
+With the default `sensitivity={6}`, a 60px drag steps through 10 frames.
+Drag slower and nothing moves until you cross the next 6px tick. That is
+why a slow, deliberate drag feels more "mechanical" than a fast
+flick: the fast flick passes ticks too quickly for the eye to resolve them.
 
 `autoRotate` runs its own tiny `requestAnimationFrame` loop, independent
-of the drag math — it accumulates `(dt / 1000) * autoRotateSpeed` frames
+of the drag math. It accumulates `(dt / 1000) * autoRotateSpeed` frames
 per tick and steps `index` whenever that accumulator crosses `1`:
 
 ```tsx
@@ -64,15 +64,15 @@ if (Math.abs(acc) >= 1) {
 }
 ```
 
-The loop bails out the moment `dragging`, `reduced`, or `!ready` is true —
-grabbing the viewer or preferring reduced motion stops it outright, it
+The loop bails out the moment `dragging`, `reduced`, or `!ready` is true.
+Grabbing the viewer or preferring reduced motion stops it outright, so it
 never fights the user's drag.
 
 </LearnChapter>
 
 <LearnChapter label="The result" scene={<SpinViewerResult />} isResult>
 
-One array, one index, one preload pass — drag above, or watch it idle.
+One array, one index, and one preload pass. Drag the viewer above, or leave it to idle.
 
 </LearnChapter>
 
@@ -83,8 +83,8 @@ One array, one index, one preload pass — drag above, or watch it idle.
 The root is `role="img"` with a descriptive `aria-label`, so screen
 readers get one coherent object instead of an unlabeled, constantly
 mutating `<img>`. `touch-action: pan-y` keeps vertical page scroll working
-over the viewer — only horizontal drags are captured. Auto-rotate checks
-`prefers-reduced-motion` and simply never starts; dragging is untouched,
+over the viewer; only horizontal drags are captured. Auto-rotate checks
+`prefers-reduced-motion` and never starts. Dragging is untouched,
 since it's a deliberate user action rather than motion the page imposed.
 
 ## Motion Score

@@ -32,7 +32,7 @@ const meta: Meta<LiquidGlassCardProps> = {
           Liquid Glass
         </h3>
         <p className="mt-2 text-sm text-white/80">
-          Move your cursor across the panel — the light tracks the pointer while
+          Move your cursor across the panel. The light tracks the pointer while
           the backdrop bends through the lens.
         </p>
       </LiquidGlassCard>

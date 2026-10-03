@@ -16,7 +16,7 @@ export function TerminalDemo() {
     <div className="flex items-center justify-center px-4 py-12 sm:px-6">
       <Terminal
         lines={LINES}
-        title="zsh — godui"
+        title="zsh: godui"
         loop
         // Desktop: fixed width so it never reflows as lines type in (the preview
         // container would otherwise let the width track content). Mobile: stay

@@ -76,7 +76,7 @@ export function MotionCard({ item }: { item: GalleryItem }) {
   const { title, description, Demo, origins, serves } = item;
 
   return (
-    <article aria-label={`${title} — motion guideline`} className={CARD}>
+    <article aria-label={`${title} motion guideline`} className={CARD}>
       <div className="relative grid aspect-[16/10] place-items-center overflow-hidden border-border border-b bg-muted/40">
         <Demo />
       </div>

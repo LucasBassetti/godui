@@ -336,7 +336,7 @@ export const PRINCIPLES: GalleryItem[] = [
     slug: "clarity",
     title: "Clarity",
     description:
-      "Every motion should clarify what changed and why. One focal change at a time, never noise.",
+      "Every motion should clarify what changed and why. Show one focal change at a time.",
     origins: ["material", "apple"],
     Demo: ClarityDemo,
   },
@@ -360,7 +360,7 @@ export const PRINCIPLES: GalleryItem[] = [
     slug: "spatial-awareness",
     title: "Spatial Awareness",
     description:
-      "Elements enter and exit from where they live, reinforcing a stable mental model of the layout.",
+      "Elements enter and exit from where they live, so the user keeps a stable picture of the layout.",
     origins: ["apple", "material"],
     Demo: SpatialAwarenessDemo,
   },
@@ -376,7 +376,7 @@ export const PRINCIPLES: GalleryItem[] = [
     slug: "timing-easing",
     title: "Timing & Easing",
     description:
-      "The curve is the character. Natural motion accelerates and settles; it rarely moves at a constant speed.",
+      "The easing curve sets how a motion feels. Natural motion accelerates and settles; it rarely moves at a constant speed.",
     origins: ["disney", "material"],
     Demo: TimingEasingDemo,
   },
@@ -384,7 +384,7 @@ export const PRINCIPLES: GalleryItem[] = [
     slug: "anticipation",
     title: "Anticipation",
     description:
-      "A subtle wind-up before a move primes the eye and makes the action feel intentional, not abrupt.",
+      "A small wind-up before a move prepares the eye, so the action reads as intentional.",
     origins: ["disney"],
     Demo: AnticipationDemo,
   },
@@ -392,7 +392,7 @@ export const PRINCIPLES: GalleryItem[] = [
     slug: "follow-through",
     title: "Follow Through",
     description:
-      "Motion doesn't stop on a dime. Trailing elements keep going and settle, giving weight and life.",
+      "Motion doesn't stop on a dime. Trailing elements keep going and then settle, which gives them weight.",
     origins: ["disney"],
     Demo: FollowThroughDemo,
   },
@@ -400,7 +400,7 @@ export const PRINCIPLES: GalleryItem[] = [
     slug: "rhythm",
     title: "Rhythm",
     description:
-      "Consistent stagger and cadence turn many moving parts into one coordinated, legible gesture.",
+      "Consistent stagger and timing make many moving parts read as one gesture.",
     origins: ["disney", "material"],
     Demo: RhythmDemo,
   },
@@ -408,7 +408,7 @@ export const PRINCIPLES: GalleryItem[] = [
     slug: "restraint",
     title: "Restraint",
     description:
-      "The best motion is felt, not noticed. When in doubt, do less — subtle beats flashy every time.",
+      "Good motion goes unnoticed. When in doubt, do less: a subtle animation beats a flashy one.",
     origins: ["apple"],
     Demo: RestraintDemo,
   },
@@ -416,7 +416,7 @@ export const PRINCIPLES: GalleryItem[] = [
     slug: "performance",
     title: "Performance",
     description:
-      "Animate only transform, opacity, and filter — the compositor-driven properties — so motion holds a buttery 60fps, and keep springs interruptible. Layout and paint props (width, box-shadow, clip-path) are gated by a CI check; intrinsic morphs like height:auto are the documented exception.",
+      "Animate only transform, opacity, and filter (the properties the compositor runs) so motion holds 60fps, and keep springs interruptible. In core components, a CI check fails any animation of layout or paint properties (width, height, box-shadow, clip-path).",
     origins: ["material"],
     Demo: PerformanceDemo,
   },

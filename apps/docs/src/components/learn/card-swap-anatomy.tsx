@@ -37,7 +37,7 @@ const LEGEND: { name: string; desc: string; kind: "front" | "back" }[] = [
     kind: "front",
   },
   {
-    name: "rank 1–3 (back)",
+    name: "rank 1 to 3 (back)",
     desc: "each step: +22px x, −28px y, −0.06 scale, −2.5°",
     kind: "back",
   },

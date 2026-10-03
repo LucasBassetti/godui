@@ -189,10 +189,10 @@ export function TextAnimateHeading() {
 
 | Prop | Type | Default | Description |
 | ---- | ---- | ------- | ----------- |
-| `children` | `string` | — | Text content to animate |
+| `children` | `string` | none | Text content to animate |
 | `animation` | `"fadeIn" \| "blurIn" \| "blurInUp" \| "blurInDown" \| "slideUp" \| "slideDown" \| "slideLeft" \| "slideRight" \| "scaleUp" \| "scaleDown"` | `"fadeIn"` | Entrance animation preset |
 | `by` | `"text" \| "word" \| "character" \| "line"` | `"word"` | How to split text for staggering |
-| `as` | `"p" \| "h1"–"h6" \| "span" \| "div" \| …` | `"p"` | Root element to render |
+| `as` | `"p" \| "h1" … "h6" \| "span" \| "div" \| …` | `"p"` | Root element to render |
 | `delay` | `number` | `0` | Delay before animation starts (seconds) |
 | `duration` | `number` | `0.3` | Total animation duration; also drives default stagger when `stagger` is omitted |
 | `stagger` | `number` | derived | Delay between each segment |
@@ -200,10 +200,10 @@ export function TextAnimateHeading() {
 | `once` | `boolean` | `true` | Animate only the first time it enters view, then never again |
 | `viewportAmount` | `number \| "some" \| "all"` | `0.3` | How much of the element must be visible to trigger |
 | `accessible` | `boolean` | `true` | Screen-reader text with `aria-hidden` on animated segments |
-| `className` | `string` | — | Classes on the root element |
-| `segmentClassName` | `string` | — | Classes on each animated segment |
-| `variants` | `Variants` | — | Custom Framer Motion item variants |
+| `className` | `string` | none | Classes on the root element |
+| `segmentClassName` | `string` | none | Classes on each animated segment |
+| `variants` | `Variants` | none | Custom Framer Motion item variants |
 
-Respects `prefers-reduced-motion` — text renders immediately without animation when the user has reduced motion enabled.
+Respects `prefers-reduced-motion`: text renders immediately without animation when the user has reduced motion enabled.
 
 </Workbench>

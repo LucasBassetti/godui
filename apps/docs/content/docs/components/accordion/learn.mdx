@@ -1,6 +1,6 @@
 ---
 title: Anatomy of the GodUI Accordion
-description: How the GodUI Accordion gets the exact look of a height animation, a clip edge sweeping over still text with the rows riding it, while animating only translate and opacity.
+description: How the GodUI Accordion looks exactly like a height animation (a clip edge sweeping over still text, with the rows riding it) while animating only translate and opacity.
 learnPlayer: true
 ---
 
@@ -72,7 +72,7 @@ for (const [item, open] of changed) slidePanel(panelOf(item), open, timing);`}
 The rows below are FLIPped: measured before and after the snap, put back where
 they were with a `translate`, then played to rest. They start at the same
 offset as the panel's edge, on the same spring and duration, so at every frame
-the next row sits exactly on the clip edge. Opening one item while another
+the next row sits exactly on the clip edge. When one item opens while another
 closes, both edges and every row in between share one clock, so nothing ever
 gaps or overlaps.
 
@@ -103,8 +103,8 @@ back up with them. Radix would hide the panel immediately, so a near-silent
 
 Closing runs on `--godui-duration-fast`, and the text fades out ahead of the
 edge: exits are quicker and softer than entrances. Opening, the content's
-blocks fade in a quarter-beat apart. Reverse in the middle and every piece,
-edge, text and rows, starts from where it's drawn.
+blocks fade in a quarter-beat apart. Reverse in the middle and every piece
+(edge, text and rows) starts from where it's drawn.
 
 </LearnChapter>
 

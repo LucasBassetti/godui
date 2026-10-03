@@ -30,14 +30,14 @@ learnPlayer: true
 >
 
 The goo only works on soft, solid shapes; icons need sharp edges and real hit
-targets. So every open satellite is drawn twice in the same place — a **blob** (a
+targets. So every open satellite is drawn twice in the same place: a **blob** (a
 filled circle under the SVG filter) and a **control** (a transparent button with
 the icon). Apply the filter to the icons and they smear into illegible mush; skip
 it on the paint and you get hard circles with no mercury bridge. Splitting the
-job keeps both the illusion and the usability: the control layer owns
+job keeps both the effect and the usability: the control layer owns
 `pointer-events`, `tabIndex`, and `aria-label`; the blob layer is `aria-hidden`.
 
-The blob layer is **native SVG** — circles inside the filtered `<g>` — not
+The blob layer is **native SVG** (circles inside the filtered `<g>`), not
 filtered HTML. Safari promotes a transform-animated HTML child onto its own
 compositing layer, which escapes an HTML `filter: url()` and breaks the merge;
 SVG shapes stay inside the filter and fuse on every engine.
@@ -59,7 +59,7 @@ SVG shapes stay inside the filter and fuse on every engine.
 
 The liquid look is two SVG filter primitives. `feGaussianBlur` softens every edge
 so nearby shapes bleed into each other; `feColorMatrix` then punches the alpha
-channel back up — multiply by 20, subtract 10 — so the soft overlap collapses
+channel back up (multiply by 20, subtract 10), so the soft overlap collapses
 into a hard metaball bridge while the rest of the shape stays crisp.
 
 That matrix only touches alpha (`0 0 0 20 -10` in the last row). The color
@@ -95,12 +95,12 @@ channels pass through untouched, so the goo is a shape effect, not a tint.
 Depth is the filter; _motion_ is a spring. Each satellite animates `x` / `y` /
 `scale` / `opacity` with `stiffness: 170`, `damping: 12`, `mass: 0.1`. On open
 they stagger out (`i × 40ms`); on close they reverse (`(n − i) × 20ms`) so the
-farthest blob snaps home first. Icons lag the blobs by an extra `30ms` on open —
-the goo bridge forms a beat before the sharp glyph lands, which sells the
-"extrude then solidify" read.
+farthest blob snaps home first. Icons lag the blobs by an extra `30ms` on open,
+so the goo bridge forms a beat before the sharp glyph lands and the satellite
+reads as "extrude, then solidify".
 
-Offsets never touch `top` / `left` or resize the parent — they come from
-`offsetFor()` and land in Framer's `x` / `y`, GPU-composited transforms. The
+Offsets never touch `top` / `left` or resize the parent. They come from
+`offsetFor()` and land in Framer's `x` / `y`, which are GPU-composited transforms. The
 wrapper stays a fixed `trigger × trigger` box, so opening the menu never reflows
 the page. Same house rule as the rest of GodUI: compositor props only.
 
@@ -108,10 +108,10 @@ the page. Same house rule as the rest of GodUI: compositor props only.
 
 <LearnChapter label="The result" scene={<GooeyFabResult />} isResult>
 
-Every piece, assembled — the real component. Open it, pick an action, watch the
-blobs fuse and split. Each motion is one of the mechanisms above doing its job:
+Every piece assembled in the real component. Open it, pick an action, and watch
+the blobs fuse and split. Each motion comes from one of the mechanisms above:
 soft circles under a blur matrix, sharp buttons on top, one spring timeline, and
-the discipline to keep the filter off anything you still need to read.
+no filter on anything you still need to read.
 
 </LearnChapter>
 
@@ -120,7 +120,7 @@ the discipline to keep the filter off anything you still need to read.
 ## Accessibility
 
 `useReducedMotion()` swaps the spring for a `150ms` fade and drops the goo filter
-entirely — no smear for anyone who's asked the OS to cut motion. Closed
+entirely, so there is no smear for anyone who's asked the OS to cut motion. Closed
 satellites get `tabIndex={-1}` and `pointerEvents: "none"` so they can't steal
 focus; open ones take `0` and become real buttons. The trigger exposes
 `aria-expanded` and a label; every satellite carries its own `aria-label`, and
@@ -145,7 +145,6 @@ aria-label={action.label}
 
 <MotionScorePanel name="gooey-fab" />
 
-The SVG goo filter is the one paint-tier cost — that's the C on the score.
+The SVG goo filter is the one paint-tier cost, which is why the score is a C.
 Everything else that moves is a transform or an opacity, and the filter drops
-out entirely under reduced motion, so the mercury illusion stays cheap enough to
-run the moment you open it.
+out entirely under reduced motion.

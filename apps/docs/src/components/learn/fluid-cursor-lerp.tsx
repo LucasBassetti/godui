@@ -41,7 +41,7 @@ const LEGEND = [
   },
   {
     name: "Trail lerp 0.12",
-    desc: "sx += (tx − sx) × 0.12 — soft lag",
+    desc: "sx += (tx − sx) × 0.12: soft lag",
     kind: "trail" as const,
   },
   {

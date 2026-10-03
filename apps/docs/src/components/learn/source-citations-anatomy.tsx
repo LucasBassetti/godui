@@ -34,7 +34,7 @@ const LEGEND = [
   },
   {
     name: "Pill",
-    desc: "numbered <a> — the anchor",
+    desc: "numbered <a>, the anchor",
     swatch:
       "size-3 rounded-[5px] bg-[var(--muted)] ring-1 ring-fd-border ring-inset",
   },
@@ -139,7 +139,7 @@ export function SourceCitationsAnatomy() {
                 <Word className="w-7" />
               </div>
               <p className="text-center text-[12px] text-fd-muted-foreground leading-snug">
-                Pill only — no card in the DOM.
+                Pill only. No card in the DOM.
               </p>
             </div>
 

@@ -19,14 +19,14 @@ learnPlayer: true
 >
 
 `SpotlightCard` never re-renders on pointer move. It writes `--x` / `--y`
-straight onto the root with `style.setProperty`, and two absolute layers —
-a fill glow and an optional border ring — read those vars from a shared
+straight onto the root with `style.setProperty`, and two absolute layers
+(a fill glow and an optional border ring) read those vars from a shared
 radial gradient. Content sits above both at `z-raised`.
 
 The root is a `group relative overflow-hidden` card. Inside: a
 pointer-events-none glow, an optional border twin, and a relative content
-wrapper. The glow defaults `--x`/`--y` to `50%` so the first paint isn't a
-hard corner flash.
+wrapper. The glow defaults `--x`/`--y` to `50%` so the first paint doesn't
+flash from a hard corner.
 
 </LearnChapter>
 
@@ -45,9 +45,9 @@ hard corner flash.
 >
 
 On every `pointermove`, the handler measures the card rect and writes
-pixel offsets. No `useState`, no context — the compositor just repaints
-the gradient at the new center. Hover fades the glow in over `400ms ease`;
-`motion-reduce` kills the transition.
+pixel offsets. There is no `useState` and no context; the compositor
+repaints the gradient at the new center. Hover fades the glow in over `400ms ease`;
+`motion-reduce` removes the transition.
 
 `glowColor` and `radius` land as `--spotlight-color` / `--spotlight-radius`
 on the root style, so the same class string works for any tint or size.
@@ -68,11 +68,11 @@ on the root style, so the same class string works for any tint or size.
 When `border` is true (the default), a second layer reuses the identical
 radial gradient, then punches out the interior with a dual-layer mask and
 `p-px`. `mask-composite: exclude` (and `-webkit-mask-composite: xor`)
-leaves only the 1px ring lit — so the edge brightens where the pointer is
+leaves only the 1px ring lit, so the edge brightens where the pointer is
 closest without a separate stroke color.
 
-Pass `border={false}` and the ring layer is omitted entirely — fill glow
-only.
+Pass `border={false}` and the ring layer is omitted, leaving only the fill
+glow.
 
 Driving `--x`/`--y` through React state would re-render the whole card
 (and its children) on every pointer frame. Writing CSS variables on the
@@ -94,8 +94,8 @@ never re-renders for the pointer. Move across either card.
 ## Reduced motion
 
 Both glow layers use `motion-reduce:[transition:none]`. The spotlight
-still tracks if the pointer moves — position isn't motion theater — but
-the 400ms fade snaps instead of easing.
+still follows the pointer, because that tracks position rather than adding
+decorative motion, but the 400ms fade snaps instead of easing.
 
 ## Motion Score
 

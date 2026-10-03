@@ -36,7 +36,7 @@ const LEGEND = [
   },
   {
     name: "Content",
-    desc: "relative z-raised — sits above both glow layers",
+    desc: "relative z-raised, above both glow layers",
     swatch:
       "h-3 w-8 rounded-md bg-[var(--muted)]/85 ring-1 ring-fd-border ring-inset",
   },

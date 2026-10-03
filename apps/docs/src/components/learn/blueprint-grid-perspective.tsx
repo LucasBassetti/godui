@@ -77,7 +77,7 @@ export function BlueprintGridPerspective() {
                 Fade
               </dt>
               <dd className="text-[12px] text-fd-muted-foreground">
-                bottom mask — floor dissolves upward
+                bottom mask; the floor dissolves upward
               </dd>
             </div>
             <div className="flex flex-col gap-1.5">

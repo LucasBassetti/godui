@@ -39,7 +39,7 @@ const components: { title: string; href: string; description: string }[] = [
     title: "Tabs",
     href: "/docs/components/tabs",
     description:
-      "A set of layered sections of content—known as tab panels—that are displayed one at a time.",
+      "A set of layered sections of content (known as tab panels) that are displayed one at a time.",
   },
   {
     title: "Tooltip",

@@ -91,7 +91,7 @@ export function MarqueeFade() {
               </div>
             </div>
             <p className="font-mono text-[11px] text-fd-muted-foreground">
-              fade=false — hard clip at overflow
+              fade=false: hard clip at overflow
             </p>
 
             <div className="mqf-mask overflow-hidden rounded-xl border border-fd-border bg-[var(--card)] p-2 [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]">
@@ -115,7 +115,7 @@ export function MarqueeFade() {
               </div>
             </div>
             <p className="font-mono text-[11px] text-fd-muted-foreground">
-              fade=true — soft edges via mask
+              fade=true: soft edges via mask
             </p>
           </div>
 

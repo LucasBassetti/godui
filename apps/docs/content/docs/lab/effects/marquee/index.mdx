@@ -1,6 +1,6 @@
 ---
 title: Marquee
-description: An infinite, seamless scrolling row or column of content that pauses on hover.
+description: An infinite scrolling row or column of content that loops without a visible seam and pauses on hover.
 workbench: true
 ---
 
@@ -9,7 +9,7 @@ import { MarqueeDemo } from "@/components/demos/marquee-demo";
 
 <Workbench>
 
-An infinite, seamless scrolling row or column of content that pauses on hover.
+An infinite scrolling row or column of content that loops without a visible seam and pauses on hover.
 
 <Example
   label="Default"
@@ -38,7 +38,7 @@ export function MarqueeDemo() {
 
 <ComponentInstall registry="lab" componentName="Marquee" />
 
-`Marquee` duplicates its children into a seamless looping track. The animation is
+`Marquee` duplicates its children into a looping track with no visible seam. The animation is
 pure CSS, so it stays smooth even with many items, and respects
 `prefers-reduced-motion`.
 
@@ -68,7 +68,7 @@ the marquee a fixed height).
 
 ### Speed
 
-`speed` is the loop duration in seconds — higher is slower.
+`speed` is the loop duration in seconds. Higher is slower.
 
 ```tsx
 <Marquee speed={15} />
@@ -121,7 +121,7 @@ Give a vertical marquee a fixed height; it scrolls along the column.
 | Prop           | Type                                     | Default  | Description                                          |
 | -------------- | ---------------------------------------- | -------- | --------------------------------------------------- |
 | `direction`    | `"left" \| "right" \| "up" \| "down"`    | `"left"` | Scroll direction.                                   |
-| `speed`        | `number`                                 | `40`     | Loop duration in seconds — higher is slower.        |
+| `speed`        | `number`                                 | `40`     | Loop duration in seconds. Higher is slower.        |
 | `pauseOnHover` | `boolean`                                | `true`   | Pause while the pointer is over the marquee.        |
 | `fade`         | `boolean`                                | `true`   | Fade the leading and trailing edges.                |
 | `repeat`       | `number`                                 | `4`      | Times the children are duplicated to fill the track.|

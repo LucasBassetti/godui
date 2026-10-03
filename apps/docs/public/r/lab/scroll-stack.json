@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "scroll-stack",
   "title": "Scroll Stack",
-  "description": "Pinned cards that scale, recede, and stack as the page scrolls — the premium feature-reveal section.",
+  "description": "Pinned cards that scale, recede, and stack as the page scrolls, for a feature-reveal section.",
   "dependencies": ["framer-motion"],
   "registryDependencies": ["@godui/godui-theme"],
   "files": [

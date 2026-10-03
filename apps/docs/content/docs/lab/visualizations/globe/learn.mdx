@@ -27,12 +27,12 @@ onPointerMove={(e) => {
 }}`}
 >
 
-`Globe` isn't a spinning image — it's a single WebGL surface that
+`Globe` is a single WebGL surface that
 [cobe](https://github.com/shuding/cobe) repaints every frame from one
-number: `phi`. Idle or dragged, that's the only thing changing.
+number: `phi`. Idle or dragged, `phi` is the only thing that changes.
 
 The whole component is `createGlobe(canvas, config)` handed a merged config
-— your `markers`, colors, and glow over sane defaults — plus pointer
+(your `markers`, colors, and glow over the defaults), plus pointer
 handlers that never touch the globe directly. They only record how far the
 pointer has moved.
 
@@ -55,20 +55,20 @@ pointer has moved.
 >
 
 Every frame, the `requestAnimationFrame` loop decides where `phi` comes
-from. Nobody's holding the pointer: it drifts by a fixed `0.005`. Somebody
-is: the drift stops and `pointerMovement.current / 200` takes over instead
-— the same `phi` variable, read from a different place, fed into the exact
-same `globe.update()` call.
+from. When nobody holds the pointer, it drifts by a fixed `0.005`. During a
+drag, the drift stops and `pointerMovement.current / 200` takes over. It is
+the same `phi` variable, read from a different place, fed into the same
+`globe.update()` call.
 
-There's no mode switch, no branch that swaps animation systems — `phi` is
-one accumulator, and the pointer's offset is just added on top of it, so
-letting go resumes the drift from wherever the drag left it.
+No branch swaps animation systems. `phi` is one accumulator and the
+pointer's offset is added on top of it, so letting go resumes the drift
+from wherever the drag left it.
 
 `phi`, pointer state, and canvas width are all refs, not `useState`. If they
 were state, every one of those ~60 updates a second would trigger a React
-re-render for a value React never actually renders — `globe.update()` mutates
+re-render for a value React never renders, because `globe.update()` mutates
 the WebGL buffer directly. Refs let the tick run at full frame rate without
-ever touching the component tree.
+touching the component tree.
 
 ```tsx
 const phiRef = React.useRef(0);
@@ -96,8 +96,8 @@ const pointerMovement = React.useRef(0);
 >
 
 Mounting starts the tick and reveals the canvas on the next frame (so it
-never flashes an unpainted state). Unmounting doesn't just stop rendering —
-the effect's cleanup cancels the frame **and** calls `globe.destroy()`,
+never flashes an unpainted state). On unmount, the effect's cleanup
+cancels the frame **and** calls `globe.destroy()`,
 which frees the WebGL context cobe allocated. Leaving it running after the
 canvas is gone would leak a context per mount/unmount cycle.
 
@@ -105,7 +105,7 @@ canvas is gone would leak a context per mount/unmount cycle.
 
 <LearnChapter label="The result" scene={<GlobeResult />} isResult>
 
-Same tick, same `phi`, same `globe.update()` — whether it's drifting on its
+Same tick, same `phi`, same `globe.update()`, whether it's drifting on its
 own or following your cursor.
 
 </LearnChapter>
@@ -114,11 +114,10 @@ own or following your cursor.
 
 ## Accessibility
 
-The canvas is `aria-hidden` in spirit — it's a decorative globe, not
-content, so `Globe` doesn't force a `role` or label on you; wrap it with
-your own if the globe conveys information (say, active regions) rather than
-atmosphere. `prefers-reduced-motion` is read once at mount and skips the
-`phi += 0.005` drift entirely — the globe holds still until you drag it.
+The globe is decorative, so `Globe` doesn't force a `role` or label on
+you. Wrap it with your own if the globe conveys information (say, active
+regions). `prefers-reduced-motion` is read once at mount and skips the
+`phi += 0.005` drift entirely. The globe holds still until you drag it.
 
 ```tsx
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;

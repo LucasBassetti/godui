@@ -29,7 +29,7 @@ const meta = {
       <div className="h-[150vh] bg-muted/30">
         <Story />
         <p className="px-6 pt-24 text-center text-muted-foreground text-sm">
-          Scroll down — the bar morphs into a floating pill.
+          Scroll down and the bar morphs into a floating pill.
         </p>
       </div>
     ),

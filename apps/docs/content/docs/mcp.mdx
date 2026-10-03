@@ -1,11 +1,11 @@
 ---
 title: MCP Server
-description: Use GodUI from your AI IDE — discover and install components by description.
+description: Use GodUI from your AI IDE. Find and install components by describing them.
 ---
 
 GodUI ships an [MCP](https://modelcontextprotocol.io) server so AI coding agents
 (Cursor, Windsurf, Claude, Cline, Roo-Cline, …) can browse the GodUI catalog and
-install components straight into your project. Add it once, then just ask for the
+install components straight into your project. Add it once, then ask for the
 component you want in plain language.
 
 ## Installation
@@ -14,7 +14,7 @@ Use the **CLI** to write the config automatically, or add it **Manually**.
 
 <MCPInstall />
 
-The server runs locally over `stdio` via `npx` — no API key, no account. The CLI
+The server runs locally over `stdio` via `npx`. It needs no API key or account. The CLI
 installs into your editor's MCP config; with Manual you paste the block into it
 yourself.
 
@@ -28,8 +28,8 @@ Ask your IDE to use any GodUI component:
 - "Add a number ticker that counts to 1000"
 
 The agent finds the right component, then installs it with the
-[shadcn CLI](/docs/installation) — copying the source into your project so you
-own it.
+[shadcn CLI](/docs/installation), which copies the source into your project so
+you own it.
 
 ## Tools
 
@@ -44,8 +44,8 @@ The server exposes three tools:
 ## How it works
 
 The server fetches the live registry at `https://godui.design/r`, so a new
-process serves the latest components — no MCP package upgrade is needed when
-GodUI ships something new. Each process caches the catalog only for its own
+process serves the latest components. You don't need to upgrade the MCP
+package when GodUI ships something new. Each process caches the catalog only for its own
 lifetime and fails closed on invalid data; it does not silently fall back to a
 stale catalog. Point it at a local registry for development by setting
 `GODUI_REGISTRY_URL`:
@@ -54,7 +54,7 @@ stale catalog. Point it at a local registry for development by setting
 GODUI_REGISTRY_URL=http://localhost:3000/r npx @godui/mcp@0.1.0
 ```
 
-The live endpoint is intentionally freshness-first and is not an immutable
+The live endpoint always serves the latest registry, not an immutable
 snapshot. For reproducible installs or rollback, use a commit-addressed
 registry snapshot and require its source revision:
 

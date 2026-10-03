@@ -1,6 +1,6 @@
 ---
 title: Anatomy of Elastic Text
-description: How a variable-font weight spotlight sweeps across characters on a spring — auto or pointer-driven — without layout thrash.
+description: How a variable-font weight spotlight sweeps across characters on a spring, driven automatically or by the pointer, without triggering layout.
 learnPlayer: true
 ---
 
@@ -21,9 +21,8 @@ const segments = textContent ? [...textContent] : null;
 </span>`}
 >
 
-ElasticText doesn't animate font-size or scale. It animates the `wght` axis
-of a variable font — one CSS custom property per character — chased by a
-spring. The "elastic" feel is that spring settling as a spotlight (or your
+ElasticText animates the `wght` axis of a variable font, with one CSS custom
+property per character chased by a spring. Font size and scale never change. The "elastic" feel is that spring settling as a spotlight (or your
 pointer) moves across the string.
 
 `getTextContent(children)` flattens the tree to a string, then
@@ -73,7 +72,7 @@ const autoWeight = useTransform(spotlight, (position) => {
 });
 ```
 
-`AUTO_SPREAD = 2.5` means roughly five characters feel the bump at once —
+`AUTO_SPREAD = 2.5` means roughly five characters feel the bump at once:
 full weight under the spotlight, falling off over ±2.5 indices. The
 spotlight itself animates with Framer's `animate`.
 
@@ -101,7 +100,7 @@ const hoverWeight = useTransform([pointerX, pointerActive], (latest) => {
 
 `pointerActive` is `0` until `mouseenter` and back to `0` on leave, so
 leaving the text relaxes every character to `minWeight` through the same
-spring — no separate exit timeline.
+spring, with no separate exit timeline.
 
 </LearnChapter>
 
@@ -114,7 +113,7 @@ const weight = useSpring(rawWeight, SPRING);`}
 
 Raw influence is the *target*. What you see is a spring chasing it.
 
-Stiffness 150 / damping 18 / mass 1 is deliberately a bit underdamped —
+Stiffness 150 / damping 18 / mass 1 is deliberately a bit underdamped:
 weight overshoots the target slightly and settles, which is why characters
 feel rubbery instead of rigidly locked to the spotlight. Because
 `--et-wght` is a CSS variable on `font-variation-settings`, the browser
@@ -136,8 +135,7 @@ drivers.
 `useReducedMotion()` short-circuits the whole motion path: no springs, no
 spotlight animation, every segment pinned to `minWeight` as a static
 `--et-wght`. Hover listeners aren't attached either. The text remains
-readable as ordinary variable-font (or fallback) weight — not a faded or
-stripped-out version of itself.
+readable at an ordinary variable-font (or fallback) weight.
 
 ```tsx
 if (reducedMotion) {

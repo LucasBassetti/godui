@@ -69,7 +69,7 @@ export function VoiceOrbResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — switch states
+          the real component: switch states
         </span>
       </div>
       <div className="flex min-h-[280px] flex-col items-center justify-center gap-6 p-10">

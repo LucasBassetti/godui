@@ -6,7 +6,7 @@ export const siteConfig = {
   name: "GodUI",
   url: "https://godui.design",
   description:
-    "An open-source collection of beautifully crafted motion components built with React, TypeScript, Tailwind CSS, Motion, and shadcn/ui.",
+    "An open-source collection of animated components built with React, TypeScript, Tailwind CSS, Motion, and shadcn/ui.",
   github: "https://github.com/LucasBassetti/godui",
   x: "https://x.com/LucasBassetti",
   xHandle: "@LucasBassetti",

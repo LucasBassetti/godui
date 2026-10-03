@@ -17,12 +17,12 @@ On Next and Previous the old month drifts a short way out and fades while the
 new one drifts in from a quarter width a beat later; the caption moves less
 than the grid, like a layer further back. Picking a day pops its fill, and the
 day you leave shrinks away. In a range, the track sweeps out from the part
-already drawn to the day you picked, in the same time however long the range.
+already drawn to the day you picked, taking the same time for any range length.
 Once a range's first day is picked, hovering a day (or moving the focus with
 the arrow keys) previews the range a click would make: a lighter track sweeps
 out to a ghost end that glides along the row with the sweep's front. Clicking
 commits it where it is: the track deepens to the range's tint and the end
-pops, nothing sweeps again. Leaving the grid fades the preview out.
+pops. Nothing sweeps again. Leaving the grid fades the preview out.
 Hover fades in, and the focus ring fades in when you enter the grid and jumps
 from day to day on the arrow keys. Nothing animates on first paint or when you
 page back to a month. Only `translate`, `scale` and `opacity` animate.
@@ -250,7 +250,7 @@ return (
 | Next / Previous: old weeks | `godui-calendar-out-to-start` / `-end` on React DayPicker's clone, to 12% | `translate`, `opacity` | ease-out quad | 150ms |
 | Next / Previous: new weeks | `godui-calendar-in-from-end` / `-start`, from 25%, after 20ms | `translate`, `opacity` | `ease-spring-snappy` | 260ms |
 | Next / Previous: caption | `godui-calendar-caption-out-*` (gone by 30%), then `godui-calendar-caption-in-*` from 14px | `translate`, `opacity` | ease-out quad / `ease-spring-snappy` | 280ms / 220ms |
-| Next / Previous: dropdown caption | the old one hidden (`godui-calendar-caption-hide`), the new one shown at once | `opacity` | — | 280ms |
+| Next / Previous: dropdown caption | the old one hidden (`godui-calendar-caption-hide`), the new one shown at once | `opacity` | none | 280ms |
 | Pick a day | `godui-calendar-fill-in` on the fill layer, from 60% | `scale`, `opacity` | `ease-spring-bouncy` | 260ms |
 | The day you leave | `godui-calendar-fill-shrink` on its fill, `godui-calendar-fade-out` on the layer | `scale` to 85%, `opacity` | `ease-out-expo` | 150ms |
 | Range track | `godui-calendar-track-in`, per half-cell, back to back from the part already drawn | `scale` (x) | linear slices of an ease-out cubic | 240ms in all |
@@ -262,7 +262,7 @@ return (
 | Range preview: commit | the range's tint (`::after`) fades in over the preview's; the end pops; the ghost fades | `opacity`, `scale` | ease-out / `ease-spring-bouncy` | 150ms / 260ms |
 | Hover | `::after` overlay | `opacity` | ease-out | 100ms |
 | Focus ring | `::before` ring, fades in entering the grid, jumps on arrow keys | `opacity`, `scale` from 98% | `ease-out-expo` | 150ms |
-| Weekdays, nav buttons, month height | static / snap | — | — | — |
+| Weekdays, nav buttons, month height | static / snap | none | none | none |
 
 React DayPicker removes the old month on its caption's `animationend`, so the
 old caption's exit lasts until the new weeks land (delay + 260ms), with its

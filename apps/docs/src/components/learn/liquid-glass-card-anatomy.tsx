@@ -29,7 +29,7 @@ const LEGEND = [
   },
   {
     name: "Rim map",
-    desc: "band=0.3 — neutral mid, bend only at edges",
+    desc: "band=0.3: neutral mid, bend only at edges",
     kind: "rim" as const,
   },
 ] as const;
@@ -129,8 +129,8 @@ export function LiquidGlassCardAnatomy() {
 
           <p className="max-w-[40ch] text-center text-[13px] text-fd-muted-foreground">
             Same rounded box, three jobs. The dashed mid on the map is the
-            neutral band — no bend under your content. (Real maps encode X in R
-            and Y in G; diagrams stay grayscale.)
+            neutral band, with no bend under your content. (Real maps encode X
+            in R and Y in G; diagrams stay grayscale.)
           </p>
 
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">

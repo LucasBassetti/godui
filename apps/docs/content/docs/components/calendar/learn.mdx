@@ -29,8 +29,8 @@ weeks_before_exit: "animate-godui-calendar-out-to-start",
  rtl:[--godui-calendar-dir:-1]"`}
 >
 
-React DayPicker already knows how to animate a month change, it just ships
-without a look. When the month changes it clones the old month, pins the clone
+React DayPicker already animates a month change; it just ships without a
+look. When the month changes it clones the old month, pins the clone
 over the new one with `position: absolute`, clips both with `overflow: hidden`
 and adds a class to each: an *exit* class on the clone's weeks and caption, an
 *enter* class on the new ones. GodUI fills those class names with its own
@@ -195,11 +195,11 @@ Once a range's first day is picked, the day under the pointer (or the focus)
 draws the range a click there would make. It asks React DayPicker's own range
 rules, so with `min`, `max` or `excludeDisabled` a day that would start the
 range over previews nothing. It's drawn with the same track halves and the
-same sweep as a picked range, on a quicker clock, outlined with hairline edges
-in the ghost pill's colour over a lighter tint (in light mode the tint alone
-is too close to the range's accent to tell apart): as the pointer moves on,
-only the halves newly covered sweep out from the part already drawn, and the
-ones it leaves fade.
+same sweep as a picked range, on a quicker clock. Hairline edges in the ghost
+pill's colour outline a lighter tint, because in light mode the tint alone is
+too close to the range's accent to tell apart. As the pointer moves on, only
+the halves newly covered sweep out from the part already drawn, and the ones
+it leaves fade.
 
 The end is a ghost pill. It pops in when the preview starts; along a row it
 glides from the previous end with the same duration and ease-out curve as the

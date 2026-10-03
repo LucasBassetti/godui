@@ -100,7 +100,7 @@ export function DynamicIslandResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — switch views to feel the spring
+          the real component: switch views to feel the spring
         </span>
       </div>
       <div className="flex min-h-[280px] w-full flex-col items-center gap-8 p-10">

@@ -8,7 +8,7 @@ import { GravityDemo } from "@/components/demos/gravity-demo";
 
 <Workbench>
 
-Drop any elements into a `Gravity` canvas and they become real physics bodies — they fall, stack, collide, and fling when you grab them. Powered by [matter-js](https://brm.io/matter-js/). Grab a pill and throw it.
+Drop any elements into a `Gravity` canvas and they become physics bodies that fall, stack, collide, and fling when you grab them. Powered by [matter-js](https://brm.io/matter-js/). Grab a pill and throw it.
 
 <Example
   label="Default"
@@ -73,7 +73,7 @@ Set `gravity` to `{ x: 0, y: 0 }` for a floating, bumper-car feel.
 | `gravity`     | `{ x: number; y: number }` | `{ x: 0, y: 1 }` | World gravity vector.                          |
 | `autoStart`   | `boolean`              | `true`           | Start the simulation immediately.                  |
 | `addTopWall`  | `boolean`              | `true`           | Close the top so flung bodies can't escape upward. |
-| `restitution` | `number`               | `0.4`            | Bounciness of the walls and bodies (0–1).          |
+| `restitution` | `number`               | `0.4`            | Bounciness of the walls and bodies (0 to 1).       |
 
 ### `MatterBody`
 
@@ -83,6 +83,6 @@ Set `gravity` to `{ x: 0, y: 0 }` for a floating, bumper-car feel.
 | `angle`             | `number`                      | `0`           | Initial rotation in degrees.                        |
 | `bodyType`          | `"rectangle" \| "circle"`     | `"rectangle"` | Collision shape.                                    |
 | `isDraggable`       | `boolean`                     | `true`        | Whether the pointer can grab and fling this body.   |
-| `matterBodyOptions` | `Matter.IChamferableBodyDefinition` | —       | Escape hatch for raw Matter body options.           |
+| `matterBodyOptions` | `Matter.IChamferableBodyDefinition` | none       | Escape hatch for raw Matter body options.           |
 
 </Workbench>

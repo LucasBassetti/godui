@@ -24,20 +24,20 @@ const CSS = `
 const LEGEND: { name: string; desc: ReactNode; swatch: string }[] = [
   {
     name: "From",
-    desc: "frame < start — previous glyph, done",
+    desc: "frame < start: previous glyph, done",
     swatch:
       "size-2.5 rounded-sm bg-[var(--foreground)]/25 ring-1 ring-fd-border ring-inset",
   },
   {
     name: "Scrambling",
-    desc: "start ≤ frame < end — random from pool",
+    desc: "start ≤ frame < end: random from pool",
     swatch: "size-2.5 rounded-sm bg-primary ring-1 ring-fd-border ring-inset",
   },
   {
     name: "Resolved",
     desc: (
       <>
-        frame ≥ end — locked to{" "}
+        frame ≥ end: locked to{" "}
         <code className="rounded bg-[var(--muted)] px-1 py-0.5 font-mono text-[0.9em] text-fd-foreground">
           to
         </code>

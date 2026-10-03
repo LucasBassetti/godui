@@ -53,7 +53,7 @@ export function BeamDrawResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — scroll to draw
+          the real component: scroll to draw
         </span>
       </div>
       <BeamDrawResultBody />

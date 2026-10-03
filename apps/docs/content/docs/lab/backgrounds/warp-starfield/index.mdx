@@ -1,6 +1,6 @@
 ---
 title: Warp Starfield
-description: A depth starfield you fly through — cursor parallax and an optional hyperspace warp.
+description: A depth starfield you fly through, with cursor parallax and an optional hyperspace warp.
 workbench: true
 ---
 
@@ -55,7 +55,7 @@ import { WarpStarfield } from "@/components/godui/warp-starfield";
 ```
 
 The layer is `absolute inset-0 z-base`; parent must be `relative`, content at
-`z-raised`+. Star color defaults to `--color-foreground` (tracks light/dark — it
+`z-raised`+. Star color defaults to `--color-foreground` (tracks light/dark, so it
 reads on light surfaces too). Caps DPR at 2, pauses off-screen and on hidden
 tabs, and renders a static frame under `prefers-reduced-motion`.
 
@@ -87,9 +87,9 @@ export function WarpStarfieldHyperspace() {
 | ---- | ---- | ------- | ----------- |
 | `starCount` | `number` | `400` | Number of stars (auto-scaled to area). |
 | `speed` | `number` | `1` | Forward speed multiplier. |
-| `depth` | `number` | `1.5` | Field depth — larger is deeper. |
+| `depth` | `number` | `1.5` | Field depth. Larger is deeper. |
 | `color` | `string` | `--color-foreground` | Star color. |
-| `warp` | `boolean` | `false` | Hyperspace mode — stars become streaks. |
+| `warp` | `boolean` | `false` | Hyperspace mode: stars become streaks. |
 | `parallax` | `number` | `30` | Cursor parallax strength (px). |
 
 Also accepts standard `div` attributes (e.g. `className`, `style`).

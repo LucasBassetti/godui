@@ -57,7 +57,7 @@ export function NumberTickerResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — scroll, wait, spring
+          the real component: scroll, wait, spring
         </span>
       </div>
       <div className="flex min-h-[240px] flex-wrap items-end justify-center gap-10 p-10">

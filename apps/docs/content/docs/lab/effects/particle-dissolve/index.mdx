@@ -1,6 +1,6 @@
 ---
 title: Particle Dissolve
-description: Text or an image is sampled into particles that scatter and reform — a dramatic entrance or transition.
+description: Text or an image is sampled into particles that scatter and reform, for an entrance or a transition.
 workbench: true
 ---
 
@@ -9,7 +9,7 @@ import { ParticleDissolveDemo } from "@/components/demos/particle-dissolve-demo"
 
 <Workbench>
 
-The source — a headline, a logo, or an image — is sampled into thousands of particles that fly in from scatter to form the shape, hold with a subtle shimmer, then disperse and reform. A strong second-read moment for a hero.
+The source (a headline, a logo, or an image) is sampled into thousands of particles. They fly in from a scatter to form the shape, hold with a subtle shimmer, then disperse and reform. It fits a hero section.
 
 <Example
   label="Default"
@@ -45,7 +45,7 @@ import { ParticleDissolve } from "@/components/godui/particle-dissolve";
 ```
 
 The particle colour follows the canvas's CSS `color`, so a Tailwind text utility
-(`text-primary`) just works — or pass an explicit `color`.
+(`text-primary`) works as is. You can also pass an explicit `color`.
 
 ### Image
 
@@ -74,11 +74,11 @@ animation.
 
 | Prop           | Type                                    | Default        | Description                                          |
 | -------------- | --------------------------------------- | -------------- | ---------------------------------------------------- |
-| `text`         | `string`                                | —              | Text to render as particles (ignored when `src` set).|
-| `src`          | `string`                                | —              | Image URL to sample into particles.                  |
+| `text`         | `string`                                | none              | Text to render as particles (ignored when `src` set).|
+| `src`          | `string`                                | none              | Image URL to sample into particles.                  |
 | `mode`         | `"assemble" \| "disperse" \| "loop"`    | `"assemble"`   | Resting behaviour once triggered.                    |
 | `trigger`      | `"mount" \| "in-view" \| "hover"`       | `"in-view"`    | When the animation starts.                           |
-| `density`      | `number`                                | `4`            | Pixel sampling step — smaller is denser.             |
+| `density`      | `number`                                | `4`            | Pixel sampling step. Smaller is denser.             |
 | `particleSize` | `number`                                | `2`            | Particle dot size in px.                             |
 | `color`        | `string`                                | text color     | Fill colour for text particles.                      |
 | `width` / `height` | `number`                            | `640` / `240`  | Canvas size in CSS px.                               |

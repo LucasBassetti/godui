@@ -32,7 +32,7 @@ const PINS: Pin[] = [
       {
         id: "c2",
         author: "Marco Bell",
-        body: "Agreed — bumping to 8px.",
+        body: "Agreed, bumping to 8px.",
         time: "1m",
       },
     ],
@@ -89,7 +89,7 @@ export function CommentPinResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — click a pin
+          the real component: click a pin
         </span>
       </div>
       <div className="relative h-[280px] p-6">

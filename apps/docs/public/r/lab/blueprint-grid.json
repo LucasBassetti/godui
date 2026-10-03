@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "blueprint-grid",
   "title": "Blueprint Grid",
-  "description": "A technical blueprint lattice — ruled lines, a dot matrix, or a perspective floor — with a diagonal light sweep and a cursor spotlight. Pure CSS.",
+  "description": "A technical blueprint lattice (ruled lines, a dot matrix, or a perspective floor) with a diagonal light sweep and a cursor spotlight. Pure CSS.",
   "registryDependencies": ["@godui/godui-theme"],
   "files": [
     {

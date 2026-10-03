@@ -12,8 +12,8 @@ export function LabNotice() {
       Part of{" "}
       <Link href="/docs/lab" className={LINK}>
         GodUI Lab
-      </Link>{" "}
-      — expressive, experimental pieces beyond the shadcn catalog, maintained
+      </Link>
+      : expressive, experimental pieces beyond the shadcn catalog, maintained
       as-is and not held to the core GPU-only contract. For animated shadcn/ui
       drop-ins, see{" "}
       <Link href="/docs/components" className={LINK}>

@@ -42,7 +42,7 @@ export function ContainerScrollResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — scroll through it
+          the real component: scroll through it
         </span>
       </div>
       {demo}

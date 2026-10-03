@@ -68,17 +68,17 @@ export const Nested: Story = {
           <Button variant="outline">Outer</Button>
         </CollapsibleTrigger>
         <CollapsibleContent className="flex flex-col gap-2">
-          <div className={repo}>Outer — first</div>
+          <div className={repo}>Outer: first</div>
           <Collapsible className="flex flex-col gap-2">
             <CollapsibleTrigger asChild>
               <Button variant="outline">Inner</Button>
             </CollapsibleTrigger>
             <CollapsibleContent className="flex flex-col gap-2">
-              <div className={repo}>Inner — first</div>
-              <div className={repo}>Inner — second</div>
+              <div className={repo}>Inner: first</div>
+              <div className={repo}>Inner: second</div>
             </CollapsibleContent>
           </Collapsible>
-          <div className={repo}>Outer — last</div>
+          <div className={repo}>Outer: last</div>
         </CollapsibleContent>
       </Collapsible>
       <p className="px-4 text-sm text-muted-foreground">After both</p>
@@ -98,17 +98,17 @@ export const NestedInStage: Story = {
           <Button variant="outline">Outer</Button>
         </CollapsibleTrigger>
         <CollapsibleContent className="flex flex-col gap-2">
-          <div className={repo}>Outer — first</div>
+          <div className={repo}>Outer: first</div>
           <Collapsible className="flex flex-col gap-2">
             <CollapsibleTrigger asChild>
               <Button variant="outline">Inner</Button>
             </CollapsibleTrigger>
             <CollapsibleContent className="flex flex-col gap-2">
-              <div className={repo}>Inner — first</div>
-              <div className={repo}>Inner — second</div>
+              <div className={repo}>Inner: first</div>
+              <div className={repo}>Inner: second</div>
             </CollapsibleContent>
           </Collapsible>
-          <div className={repo}>Outer — last</div>
+          <div className={repo}>Outer: last</div>
         </CollapsibleContent>
       </Collapsible>
     </div>
@@ -143,8 +143,8 @@ export const Siblings: Story = {
             <Button variant="outline">Section {name}</Button>
           </CollapsibleTrigger>
           <CollapsibleContent className="flex flex-col gap-2">
-            <div className={repo}>{name} — first</div>
-            <div className={repo}>{name} — second</div>
+            <div className={repo}>{name}: first</div>
+            <div className={repo}>{name}: second</div>
           </CollapsibleContent>
         </Collapsible>
       ))}

@@ -74,7 +74,7 @@ function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
 
 export function SpinViewerDrag() {
   return (
-    <ScrollScene label="The drag" note="dx ÷ sensitivity, rounded — that's it">
+    <ScrollScene label="The drag" note="dx ÷ sensitivity, rounded">
       {({ cycle, reduced }) => (
         <div className="flex w-full max-w-[420px] flex-col items-center gap-8">
           {/* biome-ignore lint/security/noDangerouslySetInnerHtml: static keyframes, no user input */}

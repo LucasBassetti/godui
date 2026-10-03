@@ -17,12 +17,11 @@ const z = -Math.min(abs, 3) * 130;
 const scale = 1 - Math.min(abs, 3) * 0.08;`}
 >
 
-Cover Flow doesn't animate five slides — it animates one number, `active`,
-and lets every slide read its own distance from it. Here's how that single
-signal becomes a 3D fan you can throw.
+Cover Flow animates one number, `active`, and every slide reads its own
+distance from it. That single signal becomes a 3D fan you can throw.
 
-Each slide's `offset` is just `index - active`. Everything else — position,
-rotation, depth, scale, fade — is a pure function of that one signed number.
+Each slide's `offset` is `index - active`. Everything else (position,
+rotation, depth, scale, fade) is a pure function of that one signed number.
 The center slide (`offset === 0`) sits flat and full-scale; neighbours peel
 away in perspective the farther their offset runs.
 
@@ -47,13 +46,13 @@ const handlePanEnd = (_e, info: PanInfo) => {
 
 There's no per-slide drag handler. A single `motion.div` wraps the whole
 stage and reads one pan gesture; every frame it rewrites `active` from the
-drag offset, and the slides above just re-render off their new `offset`.
-Release fast enough — `|velocity.x| > 600` — and the index nudges one extra
+drag offset, and the slides above re-render off their new `offset`.
+Release fast enough (`|velocity.x| > 600`) and the index nudges one extra
 slide in the throw direction, so a flick keeps going past where your finger
 stopped.
 
-Every slide animates under the same spring — `stiffness: 320, damping: 32,
-mass: 0.9` — so a drag, a click, or an arrow key all resolve with the same
+Every slide animates under the same spring (`stiffness: 320, damping: 32,
+mass: 0.9`), so a drag, a click, or an arrow key all resolve with the same
 settle. There's no per-slide timing to keep in sync; changing `active`
 changes the target `offset` for all five slides at once, and Motion
 interpolates each one from wherever it currently sits.
@@ -66,7 +65,7 @@ transition={MORPH_SPRING}
 ```
 
 `x`, `rotateY`, `z`, `scale`, and `opacity` are the only properties that
-ever change. All five compose onto one GPU layer per slide — the browser
+ever change. All five compose onto one GPU layer per slide, so the browser
 never re-measures or re-paints the stage while it drags or settles, no
 matter how many slides are stacked in depth.
 
@@ -74,11 +73,11 @@ matter how many slides are stacked in depth.
 
 <LearnChapter label="The result" scene={<CoverFlowResult />} isResult>
 
-Every piece, assembled — drag it, click a side slide, or tab in and use the
+All the pieces together. Drag it, click a side slide, or tab in and use the
 arrow keys.
 
-One signed distance, one spring, and a drag gesture that never touches a
-slide directly — that's the whole carousel.
+The carousel is one signed distance, one spring, and a drag gesture that
+never touches a slide directly.
 
 </LearnChapter>
 
@@ -89,8 +88,8 @@ slide directly — that's the whole carousel.
 The stage carries `role="group"` and `aria-roledescription="carousel"`, and
 `←`/`→` step `active` the same way a drag does. When
 `prefers-reduced-motion` is set, `rotateY` and `z` are zeroed for every
-slide — the 3D fan flattens into a plain cross-fade, same index logic, no
-rotation.
+slide. The 3D fan flattens into a plain cross-fade with the same index logic
+and no rotation.
 
 ```tsx
 const rotateY = reduce ? 0 : -Math.max(-1, Math.min(1, offset)) * 52;

@@ -20,16 +20,16 @@ learnPlayer: true
 </div>`}
 >
 
-An orb that "hears" you isn't a shader — it's a corona, a core, and a ring,
-all reading the same `--amp` CSS variable. Here's every piece.
+The orb uses no shader. It is a corona, a core, and a ring, all reading the
+same `--amp` CSS variable.
 
 `VoiceOrb` is a square grid with three absolutely positioned children. The
 **corona** is a blurred conic gradient that spins forever. The **core** is a
 radial sphere with a specular highlight. The **listening ring** is a border
 that only exists while `state="listening"`.
 
-Everything shares the same box. Only which layer is visible — and how hard
-`--amp` pushes it — changes with state.
+Everything shares the same box. State changes only which layer is visible
+and how hard `--amp` pushes it.
 
 </LearnChapter>
 
@@ -51,8 +51,8 @@ The core uses the same pattern: `animate-voice-orb-breathe` on the outer
 shell, inline amplitude scale on the painted sphere inside.
 
 Raw analyser levels jitter. Before they touch CSS, they're clamped and
-eased through `c ** 0.6` — quiet speech gets visible life without loud peaks
-blowing the orb out:
+eased through `c ** 0.6`, so quiet speech still moves the orb and loud peaks
+don't blow it out:
 
 ```tsx
 const shape = (a: number) => {
@@ -76,7 +76,7 @@ listening ring also shortens its duration as level rises
 | `listening` | Ring expands/fades; duration tracks amp |
 | `speaking` | Corona + core swell with amp |
 
-`useAudioAmplitude` turns a `MediaStream` into that `0`–`1` level via RMS of
+`useAudioAmplitude` turns a `MediaStream` into that `0` to `1` level via RMS of
 the time-domain waveform, cleaned up with `cancelAnimationFrame` +
 `ctx.close()` when the stream drops.
 
@@ -88,7 +88,7 @@ Toggle states and watch the same three layers reconfigure around a live
 `--amp`.
 
 Three layers, one shaped number, and a wrapper/child split so transforms
-compose — that's the whole orb.
+compose.
 
 </LearnChapter>
 
@@ -97,8 +97,8 @@ compose — that's the whole orb.
 ## Accessibility
 
 Every infinite keyframe carries `motion-reduce:animate-none`. Under reduced
-motion the orb holds its resolved silhouette — still readable as a lit
-sphere, just not breathing or spinning.
+motion the orb holds its resolved silhouette. It still reads as a lit
+sphere, without breathing or spinning.
 
 ```tsx
 "animate-voice-orb-spin motion-reduce:animate-none"

@@ -26,7 +26,7 @@ export function FlowFieldResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — calm field
+          the real component: calm field
         </span>
       </div>
       {demo}

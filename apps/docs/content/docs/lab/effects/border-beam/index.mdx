@@ -10,8 +10,8 @@ import { BorderBeamDemo } from "@/components/demos/border-beam-demo";
 <Workbench>
 
 A streak of light rides the border of whatever you put it in. Drop it inside a
-`relative overflow-hidden` element — most often a [shadcn
-`Card`](https://ui.shadcn.com/docs/components/card) — and it traces the rounded
+`relative overflow-hidden` element (most often a [shadcn
+`Card`](https://ui.shadcn.com/docs/components/card)) and it traces the rounded
 corners on a loop.
 
 <Example
@@ -51,7 +51,7 @@ import { BorderBeam } from "@/components/godui/border-beam";
 import { Card } from "@/components/ui/card";
 ```
 
-`Card` is shadcn's own component — add it with `npx shadcn@latest add card`.
+`Card` is shadcn's own component. Add it with `npx shadcn@latest add card`.
 `BorderBeam` works inside any `relative overflow-hidden` element.
 
 ```tsx
@@ -60,7 +60,7 @@ import { Card } from "@/components/ui/card";
 </Card>
 ```
 
-Keep `size` no larger than half the card's shortest side — a beam wider than the
+Keep `size` no larger than half the card's shortest side. A beam wider than the
 card has no straight edge to travel and the corners look pinched. The beam is
 absolutely positioned and fills its nearest positioned ancestor, so
 that parent must be `relative`. Add `overflow-hidden` to keep the corners clean.
@@ -77,7 +77,7 @@ set `glow` for a neon echo.
 ## Examples
 
 The previews below use a plain `relative overflow-hidden` card so the example is
-self-contained — drop `BorderBeam` into your own `Card` the same way.
+self-contained. Drop `BorderBeam` into your own `Card` the same way.
 
 ### Reverse
 
@@ -190,7 +190,7 @@ export function BorderBeamDual() {
 
 | Prop | Type | Default | Description |
 | ---- | ---- | ------- | ----------- |
-| `size` | `number` | `60` | Side length (px) of the beam — larger reads as a longer streak. |
+| `size` | `number` | `60` | Side length (px) of the beam. Larger reads as a longer streak. |
 | `duration` | `number` | `6` | Seconds for one full loop around the border. |
 | `delay` | `number` | `0` | Seconds to delay the start of the loop. |
 | `rainbow` | `boolean` | `true` | Use the flowing rainbow gradient (shared with MagicButton). Overrides `colorFrom`/`colorTo`. |
@@ -198,7 +198,7 @@ export function BorderBeamDual() {
 | `colorTo` | `string` | `var(--chart-5)` | Mid color when `rainbow` is off. |
 | `borderWidth` | `number` | `1` | Border thickness (px) the beam rides along. |
 | `reverse` | `boolean` | `false` | Travel counter-clockwise. |
-| `initialOffset` | `number` | `0` | Starting position along the border (0–100%). |
+| `initialOffset` | `number` | `0` | Starting position along the border (0 to 100%). |
 | `glow` | `boolean` | `false` | Render a soft blurred echo behind the beam. |
 
 Also accepts standard `div` attributes (e.g. `className`, `style`).

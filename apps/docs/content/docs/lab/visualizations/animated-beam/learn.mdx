@@ -19,10 +19,9 @@ const controlY = (startY + endY) / 2 - curvature;
 setPath(\`M \${startX},\${startY} Q \${controlX},\${controlY} \${endX},\${endY}\`);`}
 >
 
-`AnimatedBeam` doesn't animate a line between two elements — it draws one
-static path and slides a gradient across it. Two completely separate
-problems, solved independently: geometry (where the path goes) and motion
-(what appears to travel along it).
+`AnimatedBeam` draws one static path between two elements and slides a
+gradient across it. That splits the work into two separate problems:
+geometry (where the path goes) and motion (what appears to travel along it).
 
 Everything starts from two refs. `AnimatedBeam` reads both elements'
 `getBoundingClientRect()` relative to the container, takes their centers
@@ -32,7 +31,7 @@ midpoint, pushed up or down by `curvature`.
 
 One `<path>` renders that string twice: once as a faint resting line
 (`pathColor`, `pathOpacity`), once with a gradient stroke on top. The second
-copy is the one that actually moves.
+copy is the one that animates.
 
 </LearnChapter>
 
@@ -55,13 +54,13 @@ window.addEventListener("resize", update);`}
 
 Refs don't dispatch events when their layout changes, so `AnimatedBeam`
 watches instead. A `ResizeObserver` on the container plus a window `resize`
-listener both call the same `update()` — recomputing every rect and
-rewriting `d` from scratch. Nothing is interpolated between measurements;
-each tick is a fresh, correct snapshot.
+listener both call the same `update()`, which recomputes every rect and
+rewrites `d` from scratch. Nothing is interpolated between measurements;
+each call takes a fresh snapshot.
 
 Sizing the `<svg>` from the same container rect (`box.width`/`box.height`)
-keeps the overlay pixel-aligned with whatever just resized it — there's no
-separate "layout" pass to fall out of sync with.
+keeps the overlay pixel-aligned with whatever just resized it. There is no
+separate "layout" pass to fall out of sync.
 
 </LearnChapter>
 
@@ -81,21 +80,21 @@ separate "layout" pass to fall out of sync with.
 >
 
 The animated part is a `motion.linearGradient` living inside the path's
-`<defs>`. Its `x1`/`x2` tween from one edge to past the other — `["10%",
-"110%"]` — on an infinite, linear-eased loop. The path underneath never
+`<defs>`. Its `x1`/`x2` tween from one edge to past the other (`["10%",
+"110%"]`) on an infinite, linear-eased loop. The path underneath never
 changes; only where the gradient's stops fall along it does.
 
-`reverse` doesn't reverse an animation direction flag — it swaps the
-tween's own start/end percentages (`["90%", "-10%"]`), so the gradient
-still animates forward through the same linear timeline, just mapped onto
-the opposite travel.
+`reverse` swaps the tween's own start/end percentages (`["90%", "-10%"]`)
+instead of flipping an animation direction flag. The gradient still
+animates forward through the same linear timeline, mapped onto the
+opposite travel.
 
-The only thing animating every frame is two SVG attributes on a `<stop>`'s
-parent — `x1`/`x2` on a `linearGradient`. That's a paint-level change
-scoped to the gradient fill, not a layout or geometry recalculation of the
-`<path>` itself, and definitely not a JS-driven `requestAnimationFrame`
-loop. The expensive part — remeasuring rects and rebuilding `d` — only runs
-on an actual resize, not every animation frame.
+Each frame animates only two SVG attributes on a `<stop>`'s parent:
+`x1`/`x2` on a `linearGradient`. That is a paint-level change scoped to the
+gradient fill. It causes no layout or geometry recalculation of the
+`<path>` itself and needs no JS-driven `requestAnimationFrame` loop. The
+expensive part (remeasuring rects and rebuilding `d`) runs only on a
+resize, not every animation frame.
 
 </LearnChapter>
 
@@ -110,9 +109,9 @@ sure the first never drifts out from under the second.
 
 ## Reduced motion
 
-`useReducedMotion()` swaps the animated gradient tween for a static one —
-`{ x1: "0%", x2: "100%" }` with `duration: 0` — so the beam still reads as a
-gradient-colored connection, it just never travels.
+`useReducedMotion()` swaps the animated gradient tween for a static one
+(`{ x1: "0%", x2: "100%" }` with `duration: 0`). The beam still reads as a
+gradient-colored connection but never travels.
 
 ```tsx
 const reduceMotion = useReducedMotion();

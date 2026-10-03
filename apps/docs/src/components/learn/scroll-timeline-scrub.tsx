@@ -57,7 +57,7 @@ function LegendSwatch({ kind }: { kind: (typeof LEGEND)[number]["kind"] }) {
 
 export function ScrollTimelineScrub() {
   return (
-    <ScrollScene label="The motion" note="scaleY, origin-top — not height">
+    <ScrollScene label="The motion" note="scaleY from origin-top, not height">
       {({ cycle, reduced }) => (
         <div className="flex w-full max-w-[380px] flex-col items-center gap-9">
           {/* biome-ignore lint/security/noDangerouslySetInnerHtml: static keyframes, no user input */}

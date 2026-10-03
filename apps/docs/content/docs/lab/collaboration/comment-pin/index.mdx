@@ -25,7 +25,7 @@ export function CommentPinDemo() {
         defaultOpen
         comments={[
           { id: "c1", author: "Ana Reyes", body: "Can we tighten this spacing?", time: "2m" },
-          { id: "c2", author: "Marco Bell", body: "Agreed — bumping to 8px.", time: "1m" },
+          { id: "c2", author: "Marco Bell", body: "Agreed, bumping to 8px.", time: "1m" },
         ]}
         onReply={(text) => console.log(text)}
       />
@@ -60,12 +60,12 @@ import { CommentPin } from "@/components/godui/comment-pin";
 
 | Prop           | Type                      | Default | Description                              |
 | -------------- | ------------------------- | ------- | ---------------------------------------- |
-| `x` / `y`      | `number`                  | —       | Position as a percentage of container.   |
+| `x` / `y`      | `number`                  | none       | Position as a percentage of container.   |
 | `comments`     | `Comment[]`               | `[]`    | Thread comments.                         |
-| `label`        | `ReactNode`               | —       | Pin face (defaults to author initials).  |
+| `label`        | `ReactNode`               | none       | Pin face (defaults to author initials).  |
 | `resolved`     | `boolean`                 | `false` | Shrink + desaturate the pin.             |
-| `open`         | `boolean`                 | —       | Controlled open state.                   |
-| `onOpenChange` | `(open: boolean) => void` | —       | Fired when the thread toggles.           |
-| `onReply`      | `(text: string) => void`  | —       | Enables and handles the reply field.     |
+| `open`         | `boolean`                 | none       | Controlled open state.                   |
+| `onOpenChange` | `(open: boolean) => void` | none       | Fired when the thread toggles.           |
+| `onReply`      | `(text: string) => void`  | none       | Enables and handles the reply field.     |
 
 </Workbench>

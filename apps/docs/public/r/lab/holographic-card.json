@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "holographic-card",
   "title": "Holographic Card",
-  "description": "A trading-card holo effect — iridescent foil, specular glare, and glitter that tilt and shift with the pointer or device gyroscope.",
+  "description": "A trading-card holo effect: iridescent foil, specular glare, and glitter that tilt and shift with the pointer or device gyroscope.",
   "dependencies": ["framer-motion"],
   "registryDependencies": ["@godui/godui-theme"],
   "files": [

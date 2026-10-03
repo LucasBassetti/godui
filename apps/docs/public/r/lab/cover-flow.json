@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "cover-flow",
   "title": "Cover Flow",
-  "description": "A physics 3D cover flow — the centered slide faces front while neighbours rotate away in perspective, with momentum drag and snap.",
+  "description": "A physics 3D cover flow: the centered slide faces front while neighbours rotate away in perspective, with momentum drag and snap.",
   "dependencies": ["framer-motion"],
   "registryDependencies": ["@godui/godui-theme"],
   "files": [

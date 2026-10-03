@@ -1,6 +1,6 @@
 ---
 title: Anatomy of the Mask Button
-description: How a button's face wipes away on hover — two stacked labels, a sprite-sheet mask, and a steps() flipbook instead of an eased transition.
+description: "How a button's face wipes away on hover: two stacked labels, a sprite-sheet mask, and a steps() flipbook instead of an eased transition."
 learnPlayer: true
 ---
 
@@ -19,9 +19,8 @@ learnPlayer: true
 </span>`}
 >
 
-The wipe isn't a gradient or a clip-path animating smoothly — it's two copies
-of the same label and a sprite sheet scrubbed frame by frame. Here's every
-piece, pulled apart.
+The wipe is two copies of the same label and a sprite sheet scrubbed frame by
+frame. No gradient or clip-path animates.
 
 Every `MaskButton` renders its children twice. The first span is plain and
 always there. The second is an `aria-hidden` twin, absolutely positioned on
@@ -33,9 +32,9 @@ the mask hides it almost entirely, so you see the plain base label
 underneath; the hover animation slides the mask across, and wherever it's
 opaque, the colored twin shows through instead.
 
-Same label, twice — a plain span underneath, a colored one clipped by the
+Same label, twice: a plain span underneath, a colored one clipped by the
 mask on top. The third panel loops the boundary sweeping across, which is
-exactly what a hover-then-leave cycle looks like on the real button.
+what a hover-then-leave cycle looks like on the real button.
 
 </LearnChapter>
 
@@ -46,7 +45,7 @@ exactly what a hover-then-leave cycle looks like on the real button.
 >
 
 The mask asset is a horizontal sprite sheet, not a single image, and the
-reveal is a `mask-position` animation with a `steps()` timing function — not
+reveal is a `mask-position` animation with a `steps()` timing function, not
 an eased slide. Each mask gets its own step count, because the sprites have
 different frame counts:
 
@@ -65,17 +64,17 @@ different frame counts:
 ```
 
 `mask-size` stretches the whole sprite strip to a multiple of the button's
-own width — `2300%` for nature's 22-ish frames, `3000%` for urban, `7100%`
-for forest — so each `steps()` tick lands exactly on the next frame instead
+own width (`2300%` for nature's 22-ish frames, `3000%` for urban, `7100%`
+for forest), so each `steps()` tick lands exactly on the next frame instead
 of somewhere between two.
 
 The playhead jumps across illustrative frames in discrete steps, and the
-reveal underneath jumps with it — `steps(n)` on a `mask-position` animation
-never interpolates between frames, it holds each one and cuts to the next.
+reveal underneath jumps with it. `steps(n)` on a `mask-position` animation
+never interpolates between frames: it holds each one and cuts to the next.
 
-Keyboard focus gets the identical `*-in` class as a mouse hover — same
-sprite, same duration, same steps. A keyboard user sees precisely the
-transition a mouse user would, instead of a cheaper fallback. Mouse-leave (or
+Keyboard focus gets the same `*-in` class as a mouse hover: same
+sprite, same duration, same steps. A keyboard user sees the same
+transition a mouse user would. Mouse-leave (or
 losing focus) plays `*-out`, the same keyframes run backward, so the wipe
 always resolves in the direction it started.
 
@@ -94,18 +93,18 @@ const handleKeyDown = (event) => {
 enabled:active:scale-[0.96] enabled:data-[pressed=true]:scale-[0.96]
 ```
 
-Both paths land on the same `scale-[0.96]` — one state, two triggers.
+Both paths land on the same `scale-[0.96]`: one state, two triggers.
 
 </LearnChapter>
 
 <LearnChapter label="The result" scene={<MaskResult />} isResult>
 
-Every piece, assembled — three real buttons, three sprites. Hover, tab to,
+Every piece assembled: three real buttons, three sprites. Hover, tab to,
 or press each one.
 
-That's the whole illusion: a plain label always in the DOM, a colored twin
-clipped by a sprite mask, and a `steps()` timing function doing the one thing
-an eased transition can't — holding each frame instead of blending it.
+A plain label always in the DOM, a colored twin clipped by a sprite mask, and
+a `steps()` timing function that holds each frame instead of blending it,
+which an eased transition can't do.
 
 </LearnChapter>
 
@@ -125,7 +124,7 @@ motion-reduce:group-focus-visible:[mask-position:100%_0]
 
 The button still keeps a real `focus-visible` outline
 (`[outline:2px_solid_var(--ring)]`, `4px` offset) and forwards every native
-`<button>` attribute — the masked span is decorative and `aria-hidden`, so
+`<button>` attribute. The masked span is decorative and `aria-hidden`, so
 assistive tech only ever sees the one real label.
 
 ## Motion Score

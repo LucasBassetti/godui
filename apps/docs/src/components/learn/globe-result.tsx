@@ -46,7 +46,7 @@ export function GlobeResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — drag it
+          the real component: drag it
         </span>
       </div>
       <div className="relative flex min-h-[360px] items-center justify-center overflow-hidden bg-[#04060f] p-6 md:min-h-[420px] md:p-10">

@@ -16,7 +16,7 @@ function Usage({
     <HoverCard defaultOpen={defaultOpen} openDelay={0}>
       <HoverCardTrigger href="#nextjs">@nextjs</HoverCardTrigger>
       <HoverCardContent>
-        The React Framework – created and maintained by @vercel.
+        The React Framework, created and maintained by @vercel.
       </HoverCardContent>
     </HoverCard>
   );

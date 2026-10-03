@@ -40,12 +40,12 @@ const LEGEND: {
 }[] = [
   {
     name: "Center slide",
-    desc: "offset 0 — flat, full scale, faces the camera",
+    desc: "offset 0: flat, full scale, faces the camera",
     kind: "center",
   },
   {
     name: "Neighbours",
-    desc: "offset ±1, ±2 — rotateY, translateZ, and scale by distance",
+    desc: "offset ±1, ±2: rotateY, translateZ, and scale by distance",
     kind: "neighbour",
   },
 ];

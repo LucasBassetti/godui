@@ -63,7 +63,7 @@ export function GooeyFabResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — open, pick an action
+          the real component: open, pick an action
         </span>
       </div>
       <div className="flex min-h-[280px] items-end justify-center p-10 pb-14">

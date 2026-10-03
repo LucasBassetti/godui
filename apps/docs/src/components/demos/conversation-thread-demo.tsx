@@ -19,7 +19,7 @@ type Msg = {
 
 const ANSWERS = [
   "Center it with a grid parent: `grid place-items-center`. One line, no flex juggling.",
-  "Sure — wrap your content and add `min-h-dvh` so it centers in the viewport.",
+  "Sure. Wrap your content and add `min-h-dvh` so it centers in the viewport.",
   "Use `place-items-center` on a grid, or `items-center justify-center` on a flex row.",
 ];
 
@@ -29,7 +29,7 @@ export function ConversationThreadDemo() {
     {
       id: 2,
       role: "assistant",
-      text: "Use a grid parent with `place-items-center` — it centers on both axes in a single declaration.",
+      text: "Use a grid parent with `place-items-center`. It centers on both axes in a single declaration.",
     },
   ]);
 

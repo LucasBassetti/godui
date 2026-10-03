@@ -38,7 +38,7 @@ export function AgentTimelineDemo() {
 
 Each `AgentStep` reflects a `status` (`pending`, `running`, `success`,
 `error`). Running steps pulse and the connector below fills as the step
-completes. Steps with children become collapsible — click to morph the body
+completes. Steps with children are collapsible: click to morph the body
 open.
 
 ## Usage
@@ -63,9 +63,9 @@ import { AgentTimeline, AgentStep } from "@/components/godui/agent-timeline";
 | Prop          | Type                                              | Default   | Description                               |
 | ------------- | ------------------------------------------------- | --------- | ----------------------------------------- |
 | `status`      | `"pending" \| "running" \| "success" \| "error"`  | `"pending"` | Drives the node icon and connector fill. |
-| `title`       | `ReactNode`                                       | —         | Step label.                               |
-| `meta`        | `ReactNode`                                       | —         | Secondary label (duration, tool name).    |
-| `children`    | `ReactNode`                                       | —         | Collapsible body. Omit for a leaf step.   |
+| `title`       | `ReactNode`                                       | none         | Step label.                               |
+| `meta`        | `ReactNode`                                       | none         | Secondary label (duration, tool name).    |
+| `children`    | `ReactNode`                                       | none         | Collapsible body. Omit for a leaf step.   |
 | `defaultOpen` | `boolean`                                         | `false`   | Start expanded.                           |
 | `last`        | `boolean`                                         | `false`   | Hides the connector below the step.       |
 

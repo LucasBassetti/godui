@@ -87,7 +87,7 @@ export function AnimatedBeamResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — three beams, one hub
+          the real component: three beams, one hub
         </span>
       </div>
       <div className="flex min-h-[320px] items-center justify-center p-6 md:p-10">

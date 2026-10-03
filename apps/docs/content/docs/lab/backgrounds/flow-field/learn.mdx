@@ -17,13 +17,13 @@ z += 0.0008 * speed; // field evolves slowly`}
 >
 
 `FlowField` paints particles on a canvas that stream along an evolving noise
-field. There is no SVG path and no retained trail geometry — each frame
-samples noise for an angle, steps the particle, then fades the whole buffer
-a hair so yesterday's stroke lingers as silk.
+field. It keeps no SVG path and no trail geometry. Each frame samples
+noise for an angle, steps the particle, then fades the whole buffer
+slightly so earlier strokes linger as trails.
 
 Per particle, every frame:
 
-`noiseScale` defaults to `0.0016` — smaller means broader, smoother
+`noiseScale` defaults to `0.0016`. Smaller values give broader, smoother
 currents. `speed` scales both the step and the z drift.
 
 Particle count defaults to `900`, then clamps so dense viewports don't melt
@@ -46,7 +46,7 @@ ctx.fillRect(0, 0, w, h);
 Instead of storing polylines, every frame fills the canvas with a translucent
 rect in the background color:
 
-Lower `fade` → longer, silkier wakes. Higher → crisp, short ticks. Theme
+Lower `fade` gives longer, silkier wakes. Higher gives short ticks. Theme
 colors re-resolve via a `MutationObserver` on `<html>` (`class` /
 `data-theme` / `style`) so light and dark both stay correct.
 
@@ -68,7 +68,7 @@ Three gates stop the loop when work would be wasted:
 
 <LearnChapter label="The result" scene={<FlowFieldResult />} isResult>
 
-Sample → step → wipe. A living field that refuses to burn frames when nobody
+Sample → step → wipe. The loop stops drawing frames when nobody
 is looking.
 
 </LearnChapter>

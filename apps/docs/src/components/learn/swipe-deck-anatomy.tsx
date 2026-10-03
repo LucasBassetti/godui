@@ -37,7 +37,7 @@ const LEGEND: {
 }[] = [
   {
     name: "Front card",
-    desc: "rank 0 — the only one that's draggable",
+    desc: "rank 0, the only draggable card",
     kind: "front",
   },
   {

@@ -140,7 +140,7 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
       badges.push({
         tone: "sky",
         label: `Motion ${score.grade}`,
-        title: `${score.grade} — ${meta.name}`,
+        title: `${score.grade}: ${meta.name}`,
         detail: `${meta.summary} ${score.reason}`,
         href:
           hasLearn && docsHref ? `${docsHref}/learn#motion-score` : undefined,
@@ -160,7 +160,7 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
         label: "Static",
         title: "No animation",
         detail:
-          "Renders with plain CSS and never animates — nothing for the browser to keep composing or repainting.",
+          "Renders with plain CSS and never animates, so the browser has nothing to composite or repaint.",
       });
     } else {
       badges.push({
@@ -168,7 +168,7 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
         label: "GPU-only",
         title: "Runs on the GPU compositor",
         detail:
-          "Animates only transform, opacity and filter — no main-thread layout or paint, so it stays smooth even under load.",
+          "Animates only transform, opacity and filter. There is no main-thread layout or paint, so it stays smooth under load.",
       });
     }
     if (isCore && componentName) {
@@ -177,7 +177,7 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
         label: "shadcn/ui",
         title: "Drop-in for shadcn/ui",
         detail:
-          "Same file, exports, props and data-slots as shadcn/ui new-york-v4 — swap it in and existing call sites keep working.",
+          "Same file, exports, props and data-slots as shadcn/ui new-york-v4. Swap it in and existing call sites keep working.",
         href: `https://ui.shadcn.com/docs/components/${componentName}`,
         hrefLabel: "shadcn docs",
       });

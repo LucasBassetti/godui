@@ -21,18 +21,17 @@ learnPlayer: true
 };`}
 >
 
-The Dynamic Island's shell and its content are animated by two entirely
-different systems that happen to sit inside the same element: the shell's
-box model is driven by `layout` + explicit `animate`, and the content inside
-it is a nested `AnimatePresence` that doesn't know or care what shape it's
-sitting in.
+The Dynamic Island's shell and its content are animated by two separate
+systems inside the same element: the shell's box model is driven by
+`layout` + explicit `animate`, and the content inside it is a nested
+`AnimatePresence` that is unaware of the shape it sits in.
 
-There's no formula deriving a size from content — `SIZES` is a lookup table,
-and every shape the shell can take is one of exactly five entries.
+`SIZES` is a lookup table rather than a formula deriving a size from
+content, and every shape the shell can take is one of exactly five entries.
 
-Passing a size you haven't defined isn't possible — `DynamicIslandSize` is a
+You can't pass a size you haven't defined: `DynamicIslandSize` is a
 union of these five keys, so the shell only ever animates between known,
-designed states, never an arbitrary in-between.
+designed states.
 
 </LearnChapter>
 
@@ -62,12 +61,12 @@ const SHELL_SPRING = {
 Changing `size` triggers one `animate` call across all three box properties
 at once.
 
-`stiffness: 520` is considerably stiffer than the morph dialog's `320` —
-the island snaps toward its target almost immediately and only overshoots by
+`stiffness: 520` is much stiffer than the morph dialog's `320`.
+The island snaps toward its target almost immediately and only overshoots by
 a touch, which is what makes it feel rubbery rather than soft. `layout` is
 set too, so if the island sits inside a flex or grid parent, siblings
-reflow smoothly around the resize instead of jumping. Tall and large aren't
-capsules anymore — their radius is much smaller than half the height — so the
+reflow around the resize instead of jumping. Tall and large aren't
+capsules anymore (their radius is much smaller than half the height), so the
 scene above springs the same three box properties the component does, rather
 than faking the morph with `scale` (which would warp the corners).
 
@@ -94,8 +93,8 @@ than faking the morph with `scale` (which would warp the corners).
 The shell's `animate` only touches the box. What's inside crossfades through
 its own, independent `AnimatePresence`.
 
-`presenceKey` defaults to `size`, so simply switching shapes is enough to
-trigger a crossfade — but it's a separate prop precisely so you can keep the
+`presenceKey` defaults to `size`, so switching shapes is enough to
+trigger a crossfade. It is a separate prop so you can keep the
 *same* size and still crossfade to new content (a timer ticking inside a
 `tall` island, say) by changing `presenceKey` on its own. `mode="popLayout"`
 means the exiting and entering views animate concurrently rather than
@@ -106,7 +105,7 @@ the next instead of two sequential fades.
 
 <LearnChapter label="The result" scene={<DynamicIslandResult />} isResult>
 
-Two systems, cleanly separated: a five-preset shell spring for the box, and
+Two separate systems: a five-preset shell spring for the box, and
 an independent crossfade for whatever you put inside it.
 
 </LearnChapter>
@@ -115,9 +114,9 @@ an independent crossfade for whatever you put inside it.
 
 ## Cheap when idle
 
-There's no observer, no interval, no subscription running behind the scenes
-— `DynamicIsland` only re-renders (and only animates) when its `size` or
-`presenceKey` prop actually changes. An island sitting at `compact` with a
+No observer, interval or subscription runs in the background.
+`DynamicIsland` only re-renders (and only animates) when its `size` or
+`presenceKey` prop changes. An island sitting at `compact` with a
 static dot inside costs nothing beyond the one style calculation React
 skips on every render where nothing changed.
 
@@ -128,7 +127,7 @@ shell's `transition` collapses to `{ duration: 0 }`, and the content's
 `initial`/`exit` become `false`/`undefined` so `AnimatePresence` swaps
 content instantly instead of interpolating opacity, scale, or blur. Either
 way the island still lands at the correct final size with the correct final
-content — motion is what's skipped, not state.
+content; only the motion is skipped.
 
 ## Motion Score
 

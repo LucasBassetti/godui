@@ -39,7 +39,7 @@ const LEGEND = [
   },
   {
     name: "Reverse",
-    desc: "swaps to [100 − initial%, −initial%] — still linear forward",
+    desc: "swaps to [100 − initial%, −initial%], still linear forward",
     kind: "ccw",
   },
   {

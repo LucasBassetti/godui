@@ -326,7 +326,7 @@ export const PATTERNS: GalleryItem[] = [
     slug: "exit",
     title: "Exit",
     description:
-      "Send it out the way it came, but faster — exits should never linger.",
+      "Send it out the way it came, but faster. Exits should never linger.",
     serves: "Continuity",
     Demo: ExitDemo,
   },
@@ -388,7 +388,7 @@ export const PATTERNS: GalleryItem[] = [
     slug: "loop",
     title: "Loop",
     description:
-      "A seamless marquee: duplicate the track and translate by half.",
+      "A marquee with no visible seam: duplicate the track and translate by half.",
     serves: "Restraint",
     Demo: LoopDemo,
   },
@@ -396,7 +396,7 @@ export const PATTERNS: GalleryItem[] = [
     slug: "reduced-motion-fallback",
     title: "Reduced-Motion Fallback",
     description:
-      "Under prefers-reduced-motion, swap transforms for a plain opacity cross-fade — usability preserved.",
+      "Under prefers-reduced-motion, swap transforms for a plain opacity cross-fade so the interface stays usable.",
     serves: "Accessibility",
     Demo: ReducedMotionFallbackDemo,
   },

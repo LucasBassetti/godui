@@ -1,6 +1,6 @@
 ---
 title: Anatomy of the GodUI Tooltip
-description: Radix has three open states, not one. GodUI animates each differently so a tooltip grows on first hover and stays calm when you hop across a toolbar.
+description: Radix has three open states. GodUI animates each one differently, so a tooltip grows on first hover and stays calm when you hop across a toolbar.
 learnPlayer: true
 ---
 
@@ -27,7 +27,7 @@ import { TooltipToolbarDemo } from "@/components/demos/core/tooltip-toolbar-demo
    data-[state=closed]:animate-godui-popover-out"`}
 >
 
-A Radix tooltip doesn't just have `open` and `closed`. Its `data-state` is
+A Radix tooltip has more states than `open` and `closed`. Its `data-state` is
 `delayed-open` when it opened after the hover delay, `instant-open` when it
 skipped the delay, or `closed`.
 

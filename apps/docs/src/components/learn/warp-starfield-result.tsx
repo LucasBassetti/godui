@@ -38,7 +38,7 @@ export function WarpStarfieldResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — move for parallax
+          the real component: move for parallax
         </span>
       </div>
       <div className="relative min-h-[320px] overflow-hidden bg-[var(--card)] md:min-h-[380px]">

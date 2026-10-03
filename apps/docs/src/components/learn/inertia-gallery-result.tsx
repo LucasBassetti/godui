@@ -56,7 +56,7 @@ export function InertiaGalleryResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — throw the strip, or use the buttons
+          the real component: throw the strip, or use the buttons
         </span>
       </div>
       <div className="relative flex min-h-[300px] items-center justify-center overflow-hidden p-6 sm:p-10">

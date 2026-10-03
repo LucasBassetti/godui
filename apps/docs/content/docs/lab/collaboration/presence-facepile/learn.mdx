@@ -24,14 +24,13 @@ learnPlayer: true
 A facepile has to answer "who's here, and what are they doing" in the width
 of a few avatars. Presence Facepile gets there with plain flex overlap, one
 shared spring for every avatar entering or leaving, and status encoded
-entirely as color and motion rather than text.
+as color and motion rather than text.
 
 `-space-x-2` is Tailwind's negative-margin utility applied to every child
-but the first — the row is still ordinary flex flow, so tab order and DOM
+but the first. The row is still ordinary flex flow, so tab order and DOM
 order match what's on screen, and later avatars paint over earlier ones
-purely because they come later in the DOM, with no explicit `z-index`
-anywhere. The `+N` chip isn't a specially-positioned badge; it's the same
-flex row's last child, sharing the identical overlap and `ring-2
+because they come later in the DOM, with no explicit `z-index`. The `+N`
+chip has no special positioning: it's the same flex row's last child, sharing the identical overlap and `ring-2
 ring-background` treatment that separates every avatar from its neighbor.
 
 </LearnChapter>
@@ -55,21 +54,20 @@ ring-background` treatment that separates every avatar from its neighbor.
 </AnimatePresence>`}
 >
 
-`mode="popLayout"` is what makes a departure feel instant instead of
-laggy: the leaving avatar is pulled out of layout the moment it starts
-exiting, so its siblings begin sliding into the gap immediately rather than
-waiting for the exit animation to finish first. Every avatar — the one
-leaving, the ones reflowing to close its gap, and a brand new one joining at
-the end — resolves on the exact same `{ stiffness: 520, damping: 32 }`
-spring, so nothing in the row ever looks like it's moving at a different
-speed than anything else in it.
+`mode="popLayout"` makes a departure feel instant: the leaving avatar is
+pulled out of layout the moment it starts exiting, so its siblings begin
+sliding into the gap immediately rather than waiting for the exit animation
+to finish. Every avatar (the one leaving, the ones reflowing to close its
+gap, and a new one joining at the end) resolves on the same
+`{ stiffness: 520, damping: 32 }` spring, so everything in the row moves at
+the same speed.
 
 ```tsx
 className="transition-transform hover:z-raised hover:-translate-y-0.5"
 ```
 
-The hover lift is deliberately not part of that spring system — it's a
-plain CSS `transition` on `hover:-translate-y-0.5`, paired with
+The hover lift sits outside that spring system. It's a plain CSS
+`transition` on `hover:-translate-y-0.5`, paired with
 `hover:z-raised` so the lifted avatar clears its neighbors' overlap instead
 of disappearing behind them.
 
@@ -107,23 +105,22 @@ const STATUS_COLOR: Record<PresenceStatus, string> = {
 };
 ```
 
-`typing` is the one status that isn't a static ring — it swaps in three
-1px dots instead, each bouncing on `motion-safe:animate-bounce` with a
+`typing` is the one status without a static ring. It swaps in three 1px
+dots instead, each bouncing on `motion-safe:animate-bounce` with a
 `120ms` stagger per dot.
 
-`motion-safe:` is what pauses the bounce for anyone who's asked for reduced
-motion — the dots still render (typing is still communicated by their
-presence and position), they just stop moving. Every other status stays
-exactly what it looks like: a ring, in a fixed color, never fading or
-pulsing, because "idle" or "offline" isn't information that benefits from
-motion drawing your eye to it every few seconds.
+`motion-safe:` pauses the bounce for anyone who's asked for reduced
+motion. The dots still render (their presence and position still say
+"typing"); they stop moving. Every other status is a ring in a fixed color
+that never fades or pulses, because "idle" or "offline" doesn't need motion
+drawing your eye to it every few seconds.
 
 Beyond `max`, the rest collapse into a `+N` button that shares the row's
-`layout` animation (so it slides smoothly as the row's contents change) but
-carries none of `Avatar`'s status logic — clicking it opens a spring-in
+`layout` animation (so it slides as the row's contents change) but
+carries none of `Avatar`'s status logic. Clicking it opens a spring-in
 popover listing every collapsed user with their name and status spelled
-out in text, since a ring around a `+N` chip couldn't represent seven
-different statuses at once anyway.
+out in text, since a ring around a `+N` chip can't represent seven
+different statuses at once.
 
 ```tsx
 <motion.div
@@ -138,10 +135,9 @@ different statuses at once anyway.
 
 <LearnChapter label="The result" scene={<PresenceFacepileResult />} isResult>
 
-Flex overlap for the stack, one spring shared by every avatar that enters,
-leaves, or shifts to fill a gap, and a status system that's just a color
-lookup — except for the one status that earns its own motion because it's
-the one that's actually happening right now.
+Flex overlap builds the stack. One spring is shared by every avatar that
+enters, leaves, or shifts to fill a gap. Status is a color lookup, except
+`typing`, which gets its own motion because it's happening right now.
 
 </LearnChapter>
 
@@ -152,10 +148,10 @@ the one that's actually happening right now.
 Every avatar carries a `title` combining the user's name and status
 (`"Ana Reyes · active"`), so a mouse user gets the same information a
 screen reader gets from the overflow popover's plain-text status column.
-The `+N` chip is a real `<button>` with `aria-expanded` reflecting the
+The `+N` chip is a native `<button>` with `aria-expanded` reflecting the
 popover's open state, and `useReducedMotion()` swaps every avatar's `layout`
-and enter/exit springs to static positioning — the facepile still reflows
-correctly, it just does so without animating the transition.
+and enter/exit springs to static positioning. The facepile still reflows
+correctly, without animating the transition.
 
 ## Motion Score
 

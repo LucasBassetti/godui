@@ -82,7 +82,7 @@ with a dotted track (`"0.1 8"` with the round cap renders as dots), and staggere
 
 ### Bidirectional sync
 
-Stack two dashed beams with opposite `curvature` — and `reverse` on one — for a
+Stack two dashed beams with opposite `curvature`, and set `reverse` on one, for a
 continuous two-way connection.
 
 <Example
@@ -97,9 +97,9 @@ continuous two-way connection.
 
 | Prop                 | Type                  | Default     | Description                                  |
 | -------------------- | --------------------- | ----------- | -------------------------------------------- |
-| `containerRef`       | `RefObject<HTMLElement>` | —        | Element the SVG overlays.                    |
-| `fromRef`            | `RefObject<HTMLElement>` | —        | Element the beam starts from.                |
-| `toRef`              | `RefObject<HTMLElement>` | —        | Element the beam ends at.                    |
+| `containerRef`       | `RefObject<HTMLElement>` | none        | Element the SVG overlays.                    |
+| `fromRef`            | `RefObject<HTMLElement>` | none        | Element the beam starts from.                |
+| `toRef`              | `RefObject<HTMLElement>` | none        | Element the beam ends at.                    |
 | `curvature`          | `number`              | `0`         | Bow of the curve in pixels.                  |
 | `reverse`            | `boolean`             | `false`     | Animate from end toward start.               |
 | `duration`           | `number`              | `3`         | Seconds for one travel of the gradient.      |
@@ -107,8 +107,8 @@ continuous two-way connection.
 | `pathColor`          | `string`              | `var(--border)` | Color of the static resting path.        |
 | `pathWidth`          | `number`              | `2`         | Width of the path in pixels.                 |
 | `pathOpacity`        | `number`              | `0.2`       | Opacity of the static resting path.          |
-| `pathDashArray`      | `string`              | —           | `stroke-dasharray` for the resting path (`"4 5"` dashes, `"0.1 8"` dots). |
+| `pathDashArray`      | `string`              | none           | `stroke-dasharray` for the resting path (`"4 5"` dashes, `"0.1 8"` dots). |
 | `gradientStartColor` | `string`              | `var(--primary)` | Leading color of the travelling gradient.|
-| `gradientStopColor`  | `string`              | —           | Trailing color of the travelling gradient.   |
+| `gradientStopColor`  | `string`              | none           | Trailing color of the travelling gradient.   |
 
 </Workbench>

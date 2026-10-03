@@ -135,7 +135,7 @@ export const Gooey: Story = {
 };
 
 export const CompactOriginal: Story = {
-  name: "Compact — Original",
+  name: "Compact: Original",
   render: () => (
     <CompactMultiButton
       items={items}
@@ -149,7 +149,7 @@ export const CompactOriginal: Story = {
 };
 
 export const CompactGooey: Story = {
-  name: "Compact — Gooey",
+  name: "Compact: Gooey",
   render: () => (
     <CompactMultiButton
       items={items}

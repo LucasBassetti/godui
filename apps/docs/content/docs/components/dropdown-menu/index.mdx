@@ -1,6 +1,6 @@
 ---
 title: Dropdown Menu
-description: Displays a menu to the user — such as a set of actions or functions — triggered by a button. Grows out of its trigger; checks pop in.
+description: Displays a menu to the user, such as a set of actions or functions, triggered by a button. Grows out of its trigger; checks pop in.
 workbench: true
 ---
 
@@ -12,9 +12,8 @@ import { DropdownMenuDemo } from "@/components/demos/core/dropdown-menu-demo";
 The shadcn/ui dropdown menu with the same entrance as
 [Popover](/docs/components/popover): it scales up from the trigger and drifts
 out of it on a spring, and sub-menus do the same from their parent item.
-Check and radio indicators pop in from 50% when you toggle them (not when the
-menu opens). Item highlights
-change instantly.
+Check and radio indicators pop in from 50% when you toggle them, not when the
+menu opens. Item highlights change instantly.
 
 <Example label="Default" story="ui-dropdown-menu" code={`import { Button } from "@/components/ui/button";
 import {
@@ -167,7 +166,7 @@ import {
 | Open (menu, sub-menu) | `godui-popover-in` | `opacity`, `scale` 0.96 → 1 from the trigger, `translate` 4px → 0 | `ease-spring-snappy` | 260ms |
 | Close | `godui-popover-out` | the same, reversed | `ease-out-expo` | 150ms |
 | Check / radio appears | `godui-fade-scale-in` from 50% | `opacity`, `scale` | `ease-spring-snappy` | 260ms |
-| Item highlight | snaps | — | — | — |
+| Item highlight | snaps | none | none | none |
 
 Under `prefers-reduced-motion` the menu and indicators only fade (150ms).
 

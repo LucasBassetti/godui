@@ -41,7 +41,7 @@ export function WorldMapResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — the arcs draw and loop
+          the real component: the arcs draw and loop
         </span>
       </div>
       <div className="p-6 md:p-10">{demo}</div>

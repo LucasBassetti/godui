@@ -54,7 +54,7 @@ export function OTPInputStatus() {
 
 ## Masked
 
-Set `mask` to render entered characters as dots — useful for sensitive codes.
+Set `mask` to render entered characters as dots for sensitive codes.
 
 ## Validation status
 
@@ -78,14 +78,14 @@ import { OTPInput } from "@godui/lab";
 | Prop | Type | Default | Description |
 | ---- | ---- | ------- | ----------- |
 | `length` | `number` | `6` | Number of code cells. |
-| `value` | `string` | — | Controlled value. |
+| `value` | `string` | none | Controlled value. |
 | `defaultValue` | `string` | `""` | Uncontrolled initial value. |
 | `type` | `"numeric" \| "alphanumeric"` | `"numeric"` | Accepted characters. |
 | `mask` | `boolean` | `false` | Render characters as dots. |
 | `status` | `"idle" \| "error" \| "success"` | `"idle"` | Validation state. |
 | `disabled` | `boolean` | `false` | Disable input. |
 | `autoFocus` | `boolean` | `false` | Focus on mount. |
-| `onChange` | `(value: string) => void` | — | Fires on every change. |
-| `onComplete` | `(value: string) => void` | — | Fires when the last cell fills. |
+| `onChange` | `(value: string) => void` | none | Fires on every change. |
+| `onComplete` | `(value: string) => void` | none | Fires when the last cell fills. |
 
 </Workbench>

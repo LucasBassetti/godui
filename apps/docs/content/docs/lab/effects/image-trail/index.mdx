@@ -1,6 +1,6 @@
 ---
 title: Image Trail
-description: Images spawn along the pointer's path, pop in, and drift away — the signature portfolio hover effect.
+description: Images spawn along the pointer's path, pop in, and drift away, a hover effect common on portfolio sites.
 workbench: true
 ---
 
@@ -9,7 +9,7 @@ import { ImageTrailDemo } from "@/components/demos/image-trail-demo";
 
 <Workbench>
 
-As the pointer moves across the area, images are emitted along its path — each pops in, tilts toward the direction of travel, then drifts up and fades. Move your cursor across the frame below.
+As the pointer moves across the area, images are emitted along its path. Each pops in, tilts toward the direction of travel, then drifts up and fades. Move your cursor across the frame below.
 
 <Example
   label="Default"
@@ -38,8 +38,8 @@ export function Hero() {
 <ComponentInstall registry="lab" componentName="ImageTrail" />
 
 `ImageTrail` keeps a fixed, recycled pool of `<img>` elements and drives every
-spawn with the Web Animations API and direct style writes — no React re-render
-per pointer move, so it stays smooth even at high cursor speed. A new image is
+spawn with the Web Animations API and direct style writes. Pointer moves trigger no React
+re-render, so it stays smooth at high cursor speed. A new image is
 only emitted once the pointer has travelled `threshold` pixels from the last one,
 which gives even spacing regardless of speed.
 
@@ -69,7 +69,7 @@ import { ImageTrail } from "@/components/godui/image-trail";
 
 ## Accessibility
 
-When `prefers-reduced-motion` is set, the trail is disabled and a calm static
+When `prefers-reduced-motion` is set, the trail is disabled and a static
 gallery of the images is shown instead. Trail images are decorative
 (`aria-hidden`), so place real content as children.
 
@@ -77,7 +77,7 @@ gallery of the images is shown instead. Trail images are decorative
 
 | Prop        | Type       | Default | Description                                                  |
 | ----------- | ---------- | ------- | ------------------------------------------------------------ |
-| `images`    | `string[]` | —       | Images cycled through as the pointer moves.                  |
+| `images`    | `string[]` | none       | Images cycled through as the pointer moves.                  |
 | `threshold` | `number`   | `64`    | Minimum pointer distance (px) between two spawned images.    |
 | `duration`  | `number`   | `750`   | Lifespan of each trail image, in ms.                         |
 | `max`       | `number`   | `12`    | Maximum images alive at once (the recycled DOM pool size).   |

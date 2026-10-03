@@ -33,7 +33,7 @@ const LEGEND: {
   },
   {
     name: "exit",
-    desc: "opacity 0, y 8, scale 0.95 — a plain tween",
+    desc: "opacity 0, y 8, scale 0.95: a plain tween",
     kind: "exit",
   },
   {

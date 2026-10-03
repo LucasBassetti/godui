@@ -55,7 +55,7 @@ const LEGEND = [
   },
   {
     name: "Path",
-    desc: "static, pathOpacity 0.2 — never redrawn for this",
+    desc: "static, pathOpacity 0.2, never redrawn for this",
     kind: "path",
   },
   {

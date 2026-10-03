@@ -18,9 +18,9 @@ export interface ComponentMotionScore {
 }
 
 const GPU_ONLY =
-  "Animates only transform, opacity and filter, so the whole animation runs on the GPU compositor — no main-thread layout or paint.";
+  "Animates only transform, opacity and filter, so the whole animation runs on the GPU compositor with no main-thread layout or paint.";
 const STATIC =
-  "Renders with plain CSS and never animates — nothing for the browser to keep composing or repainting.";
+  "Renders with plain CSS and never animates, so the browser has nothing to recompose or repaint.";
 
 export function motionScore(componentName: string): ComponentMotionScore {
   const note = perfNote(componentName);

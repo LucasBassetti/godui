@@ -30,15 +30,15 @@ learnPlayer: true
 Floating Toolbar looks like a simple contextual bar, but it's built from one
 spring config reused three times: once for the whole shell mounting in,
 once for the shell leaving, and once per action button, per interaction. The
-component itself is small — the feel comes entirely from reusing that one
-number set consistently.
+component itself is small; the feel comes from reusing that one number set
+everywhere.
 
-`actions` is a flat array, same shape philosophy as Context Menu — no
-compound components, just objects the toolbar maps over. Structurally, an
+`actions` is a flat array, the same approach as Context Menu: plain objects
+the toolbar maps over instead of compound components. Structurally, an
 "active" action is identical to an idle one; only `aria-pressed` and two
 class names differ.
 
-Every button — and the shell around them — carries `layout`. Add or remove
+Every button, and the shell around them, carries `layout`. Add or remove
 an action and Framer measures the before/after boxes and animates the diff,
 so the row never jump-cuts when its contents change.
 
@@ -61,13 +61,13 @@ so the row never jump-cuts when its contents change.
 </AnimatePresence>`}
 >
 
-The shell doesn't just fade — `AnimatePresence` mounts and unmounts the
-whole `motion.div`, and the enter is a stiff, barely-overshooting spring.
+`AnimatePresence` mounts and unmounts the whole `motion.div`, and the
+enter springs opacity, `y` and `scale` on a stiff, barely-overshooting
+spring.
 
-`520/32` is a much stiffer, more critically-damped pair than the tooltip's
-`170/12/0.1` — this needs to feel *immediate*, like the toolbar was always
-there and just became visible, not like it's still settling. The exit target
-isn't the mirror of the enter (`y: 8`, not `12`; `scale: 0.95`, not `0.92`):
+`520/32` is a much stiffer, more critically damped pair than the tooltip's
+`170/12/0.1`. The toolbar should feel *immediate*, as if it was always
+there and just became visible. The exit target doesn't mirror the enter (`y: 8`, not `12`; `scale: 0.95`, not `0.92`):
 it travels a shorter distance on the way out, because a lingering overshoot
 on dismissal would read as sluggish.
 
@@ -89,20 +89,18 @@ on dismissal would read as sluggish.
 The same `520/32` spring drives every action's hover and press state,
 independent of the shell.
 
-`whileHover`/`whileTap` are declarative targets, not event handlers you wire
-up yourself — Framer owns the pointer listeners and animates toward whichever
-state is currently true. Because it's the *same* spring as the shell's
-entrance, a button lifting under the cursor feels like it's made of the same
-material as the toolbar it's floating in, not a separate hover effect
-layered on top.
+`whileHover`/`whileTap` are declarative targets rather than event handlers
+you wire up yourself. Framer owns the pointer listeners and animates toward
+whichever state is currently true. Because it's the *same* spring as the
+shell's entrance, a button lifting under the cursor moves like part of the
+toolbar it floats in instead of a separate hover effect layered on top.
 
 </LearnChapter>
 
 <LearnChapter label="The result" scene={<FloatingToolbarResult />} isResult>
 
-Two springs, one number set: `stiffness: 520, damping: 32` gets the whole
-shell in and out, and gets each button lifting and settling under the
-pointer — reused, not reinvented, for every piece that moves.
+Two springs, one number set: `stiffness: 520, damping: 32` moves the whole
+shell in and out, and lifts and settles each button under the pointer.
 
 </LearnChapter>
 
@@ -112,7 +110,7 @@ pointer — reused, not reinvented, for every piece that moves.
 
 `role="toolbar"` and `aria-label="Floating toolbar"` are hard-coded onto the
 shell, and every action gets `aria-label={action.label}` plus
-`aria-pressed={action.active}` — so a screen reader announces exactly which
+`aria-pressed={action.active}`, so a screen reader announces exactly which
 tool is active without reading any visual state. `useReducedMotion` strips
 every transform from both the shell and its actions, leaving nothing but the
 `opacity` fades: the toolbar still appears and disappears, and buttons still

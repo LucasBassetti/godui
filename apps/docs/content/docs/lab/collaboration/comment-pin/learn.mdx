@@ -1,6 +1,6 @@
 ---
 title: Anatomy of the Comment Pin
-description: A pin that springs onto a surface and a thread panel that hangs off its corner — two independent springs, one anchor, no coordinate math for the popover.
+description: A pin springs onto a surface and a thread panel hangs off its corner. Two independent springs share one anchor, and the popover needs no coordinate math.
 learnPlayer: true
 ---
 
@@ -21,21 +21,21 @@ learnPlayer: true
 </div>`}
 >
 
-Figma-style annotation pins look like they need real positioning logic for
-the popover — where does the thread go so it doesn't run off the pin? The
-answer `CommentPin` picks is to not solve that problem: the panel isn't
-positioned against the viewport or the pin's measured box, it's `absolute`
-inside the *same* relatively-positioned wrapper the pin already lives in.
+Figma-style annotation pins seem to need positioning logic for the popover:
+where does the thread go so it doesn't run off the pin? `CommentPin` sidesteps
+the question. The panel is `absolute` inside the *same* relatively-positioned
+wrapper the pin already lives in, so it never measures the viewport or the
+pin's box.
 
-The outer `div` is the only element that knows about `x`/`y` — it's placed
+The outer `div` is the only element that knows about `x`/`y`. It's placed
 with a `left`/`top` percentage inside whatever container the caller renders
 (a canvas, a screenshot, a Figma-style frame). The pin button and the panel
 are both plain children with `absolute left-0 top-*`, measured relative to
-*that* wrapper, not the page. Move the wrapper and everything inside it
-moves together; there's no separate "where should the popover go" calculation
-to keep in sync. `rounded-full rounded-bl-sm` on the button is the one
-detail that sells "pin" over "avatar" — leaving a single square corner reads
-as a speech-bubble tail pointing at the exact spot being annotated.
+*that* wrapper instead of the page. Move the wrapper and everything inside it
+moves together, with no separate "where should the popover go" calculation
+to keep in sync. `rounded-full rounded-bl-sm` on the button makes it read as
+a pin rather than an avatar: the single square corner works as a
+speech-bubble tail pointing at the annotated spot.
 
 </LearnChapter>
 
@@ -63,21 +63,20 @@ as a speech-bubble tail pointing at the exact spot being annotated.
 >
 
 The pin's own spring (`520/32`) is tuned tighter than the panel's (`320/32`,
-plus `mass: 0.9` to add a beat of inertia) — it should feel like the more
-immediate object, since it's what the pointer is actually clicking. Setting
-`origin-top-left` matters as much as the transition values: without it the
-panel would scale from its own center and visibly drift away from the pin
-on entry. Anchoring the transform origin to the same corner the panel is
-positioned from makes it read as growing *out of* the pin, not popping up
-independently beside it.
+plus `mass: 0.9` to add a beat of inertia). The pin is what the pointer
+clicks, so it should feel more immediate. Setting `origin-top-left` matters
+as much as the transition values: without it the panel would scale from its
+own center and visibly drift away from the pin on entry. With the transform
+origin on the same corner the panel is positioned from, the panel grows
+*out of* the pin instead of popping up beside it.
 
-The pin button carries a `layout` prop; the panel doesn't. That's because
-`resolved` can flip while the pin's own size only ever changes by a spring
-`scale` (a transform, cheap for Framer to interpolate with `layout`
-tracking). The panel's size is driven by its comment list growing or
-shrinking — real height changes — and it's already animating in and out via
-`AnimatePresence`'s own `initial`/`animate`/`exit`, so adding `layout` there
-would fight the mount/unmount transition instead of helping it.
+The pin button carries a `layout` prop; the panel doesn't. When `resolved`
+flips, the pin's size only changes by a spring `scale` (a transform, cheap
+for Framer to interpolate with `layout` tracking). The panel's size follows
+its comment list as it grows or shrinks, which means actual height changes.
+The panel also already animates in and out via `AnimatePresence`'s own
+`initial`/`animate`/`exit`, so adding `layout` there would fight the
+mount/unmount transition.
 
 </LearnChapter>
 
@@ -88,22 +87,22 @@ would fight the mount/unmount transition instead of helping it.
 style={{ backgroundColor: pinColor }}`}
 >
 
-`resolved` doesn't get its own spring — the `scale: 0.85` above already
-covers the size change. Desaturating the pin is a second, entirely separate
-animation system: a plain CSS `transition-[filter,opacity]` toggled by the
-`grayscale`/`opacity-60` classes. Framer never sees the color change at all.
-Splitting it this way means the grayscale fade rides the browser's own
-compositor timeline independently of whatever Framer's spring is doing to
-`scale` in the same frame — two cheap, unrelated transitions landing on one
-element instead of one animation system trying to own both.
+`resolved` has no spring of its own: the `scale: 0.85` above already
+covers the size change. Desaturating the pin uses a separate animation
+system, a plain CSS `transition-[filter,opacity]` toggled by the
+`grayscale`/`opacity-60` classes. Framer never sees the color change.
+The grayscale fade runs on the browser's compositor timeline, independent
+of whatever Framer's spring does to `scale` in the same frame. Two cheap,
+unrelated transitions land on one element, and neither animation system
+has to own both.
 
 </LearnChapter>
 
 <LearnChapter label="The result" scene={<CommentPinResult />} isResult>
 
-One relatively-positioned wrapper carrying `x`/`y`, a tighter spring on the
-pin than on the panel it anchors, and a resolved state that never touches
-the spring at all — it just lets a CSS transition run alongside it.
+One relatively-positioned wrapper carries `x`/`y`. The pin's spring is
+tighter than the panel's. The resolved state never touches the spring; a
+CSS transition runs alongside it.
 
 </LearnChapter>
 
@@ -116,12 +115,12 @@ aria-label={resolved ? "Resolved comment" : "Open comment thread"}
 aria-expanded={open}
 ```
 
-The pin is a real `<button>` with an `aria-label` that changes with
-`resolved`, so a screen reader announces the pin's state, not just its
-existence. `aria-expanded` mirrors `open` — the same boolean the spring
-above reads to decide the panel's `initial`/`exit` — so assistive tech and
-the visual animation can never disagree about whether the thread is open.
-The reply field, when present, is a real `<form>` with a labeled input and
+The pin is a native `<button>` with an `aria-label` that changes with
+`resolved`, so a screen reader announces the pin's state as well as its
+presence. `aria-expanded` mirrors `open`, the same boolean the spring above
+reads to decide the panel's `initial`/`exit`, so assistive tech and the
+visual animation always agree about whether the thread is open.
+The reply field, when present, is a `<form>` with a labeled input and
 a submit button disabled until there's text to send:
 
 ```tsx

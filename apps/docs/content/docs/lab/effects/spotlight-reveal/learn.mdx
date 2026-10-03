@@ -1,6 +1,6 @@
 ---
 title: Anatomy of Spotlight Reveal
-description: How an inverted radial mask punches a hole through a cover layer, eased toward the pointer on a single rAF loop — with idle breathing and click-to-pin.
+description: How an inverted radial mask punches a hole through a cover layer, eased toward the pointer on a single rAF loop, with idle breathing and click-to-pin.
 learnPlayer: true
 ---
 
@@ -26,11 +26,11 @@ learnPlayer: true
 
 `SpotlightReveal` stacks two full-bleed layers. The `reveal` prop sits
 underneath; `children` is the cover. An inverted radial mask on the cover
-makes a soft hole that follows the pointer — exposing whatever's beneath
+makes a soft hole that follows the pointer and exposes whatever is beneath,
 without unmounting either layer.
 
 Both layers are `absolute inset-0`. The cover owns the mask; the reveal
-is always painted and simply shows through the hole. Clicking the root
+is always painted and shows through the hole. Clicking the root
 toggles a `pinned` ref so the spotlight can freeze in place.
 
 </LearnChapter>
@@ -44,7 +44,7 @@ const maskImage =
   \`transparent 0, transparent \${inner}px, #000 \${radius}px)\`;`}
 >
 
-`softness` (0–1, default `0.55`) sets how wide the feather is.
+`softness` (0 to 1, default `0.55`) sets how wide the feather is.
 `inner = radius * (1 - softness)` is the fully transparent core; from
 there the mask ramps to opaque at `radius`. Hard edges keep the hole
 crisp; soft ones feel like a flashlight bloom.
@@ -62,14 +62,14 @@ cover.style.setProperty("--y", \`\${cur.current.y}px\`);`}
 
 A single `requestAnimationFrame` loop owns motion. Each frame:
 
-1. If idle (`!hovering && !pinned`), retarget onto a slow ellipse —
-   `cos(t·0.6)·18%w` / `sin(t·0.8)·16%h` around center.
+1. If idle (`!hovering && !pinned`), retarget onto a slow ellipse
+   (`cos(t·0.6)·18%w` / `sin(t·0.8)·16%h` around center).
 2. Ease: `cur += (target − cur) * ease` (default `0.16`).
 3. Write `--x` / `--y` on the cover with `setProperty`.
 
 Pointer enter/move updates `target` (unless pinned). Click flips
-`pinned`. No React state for position — same cheap path as
-`SpotlightCard`, plus the lag that makes the light feel liquid.
+`pinned`. Position never goes through React state. It is the same
+cheap path as `SpotlightCard`, plus a lag that makes the light trail the cursor.
 
 </LearnChapter>
 
@@ -85,8 +85,8 @@ invites the hover. Move to follow; click to pin.
 ## Reduced motion
 
 `useReducedMotion()` skips the rAF entirely. The cover drops the mask and
-sits at `opacity: 0.9` — both layers readable as a calm blend, no
-breathing, no chase.
+sits at `opacity: 0.9`, so both layers stay readable. Nothing breathes or
+chases the pointer.
 
 ```tsx
 style={

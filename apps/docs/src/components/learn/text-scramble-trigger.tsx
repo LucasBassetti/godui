@@ -59,7 +59,7 @@ const LEGEND: {
 }[] = [
   {
     name: "mount",
-    desc: "first effect — run(text) immediately",
+    desc: "first effect: run(text) immediately",
     kind: "mount",
   },
   {

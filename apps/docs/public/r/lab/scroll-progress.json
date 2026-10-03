@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "scroll-progress",
   "title": "Scroll Progress",
-  "description": "A spring-smoothed reading indicator — a pinned top bar or a fading back-to-top ring.",
+  "description": "A spring-smoothed reading indicator: a pinned top bar or a fading back-to-top ring.",
   "dependencies": ["framer-motion"],
   "registryDependencies": ["@godui/godui-theme"],
   "files": [

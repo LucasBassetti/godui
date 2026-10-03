@@ -15,16 +15,15 @@ export function ScrollTextRevealResult() {
         as="p"
         className="text-balance text-center text-2xl font-semibold leading-relaxed text-foreground sm:text-3xl"
       >
-        Great interfaces read like a sentence — one idea resolving into the
-        next. As you scroll, each word settles into focus, pacing attention
-        exactly where it belongs.
+        Great interfaces read like a sentence, one idea leading into the next.
+        As you scroll, each word settles into focus.
       </ScrollTextReveal>
       <ScrollTextReveal
         as="p"
         keepRevealed
         className="text-balance text-center text-xl font-semibold leading-relaxed text-foreground sm:text-2xl"
       >
-        With keepRevealed, each word latches at full presence once it lands — so
+        With keepRevealed, each word latches at full presence once it lands, so
         the paragraph stays lit as you scroll back up instead of dimming again.
       </ScrollTextReveal>
     </>
@@ -44,7 +43,7 @@ export function ScrollTextRevealResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — scroll the page
+          the real component: scroll the page
         </span>
       </div>
       <div className="mx-auto flex max-w-lg flex-col gap-16 px-6 py-20 md:py-28">

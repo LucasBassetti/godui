@@ -1,6 +1,6 @@
 ---
 title: Anatomy of the Number Ticker
-description: How a MotionValue, a spring, and an in-view gate turn a static span into a counting number — without re-rendering on every frame.
+description: How a MotionValue, a spring, and an in-view gate turn a static span into a counting number without re-rendering on every frame.
 learnPlayer: true
 ---
 
@@ -16,14 +16,13 @@ const springValue = useSpring(motionValue, { damping, stiffness });
 const isInView = useInView(ref, { once: true, margin: "0px" });`}
 >
 
-Number Ticker looks like a counter. Internally it's three hooks and a DOM
+Number Ticker is three hooks and a DOM
 write: a MotionValue holds the target, `useSpring` smooths the chase, and a
 change listener formats the latest value into the span's `textContent`. The
-spring never starts until the element is in view — and even then, only after
-an optional delay.
+spring starts only once the element is in view, after an optional delay.
 
-The public surface is a single `<span>`. Everything interesting lives in the
-hooks wired behind it.
+The public surface is a single `<span>`. The logic lives in the hooks
+behind it.
 
 Direction flips the endpoints. `"up"` starts at `startValue` and springs
 toward `value`; `"down"` starts at `value` and springs toward `startValue`.
@@ -49,14 +48,14 @@ isn't empty before the first spring frame lands.
 );`}
 >
 
-Defaults are deliberately calm — `damping: 60`, `stiffness: 100`. That's
-enough to feel physical without the underdamped bounce of a tooltip mount.
+The defaults are calm: `damping: 60`, `stiffness: 100`. That gives physical
+easing without the underdamped bounce of a tooltip mount.
 Each frame, the spring emits a float; the change listener snaps it to the
 requested decimal places and hands it to `Intl.NumberFormat`.
 
 Writing `textContent` keeps React out of the per-frame path. The span also
 carries `tabular-nums tracking-wider` so digit widths stay stable while the
-glyphs swap — no layout thrash as `9` becomes `1`.
+glyphs swap, so nothing reflows when `9` becomes `1`.
 
 </LearnChapter>
 
@@ -80,8 +79,8 @@ Mounting alone does nothing. `useInView` with `once: true` opens the gate
 the first time the span crosses the viewport; a `setTimeout` then waits
 `delay` seconds before calling `motionValue.set(target)`.
 
-`once: true` means scrolling away and back won't re-run the count — the
-ticker is a reveal, not a perpetual odometer. The cleanup clears the timer
+`once: true` means scrolling away and back won't re-run the count. The
+ticker plays once, as a reveal. The cleanup clears the timer
 so a fast unmount mid-delay never fires into a detached node.
 
 </LearnChapter>
@@ -97,9 +96,8 @@ Three live instances: a plain count-up, decimals, and a delayed countdown.
 ## Reduced motion
 
 When `useReducedMotion()` is true, the same gate still waits for in-view and
-delay — but instead of letting the spring chase, `springValue.jump(target)`
-lands on the final value in one frame. Users who asked for less motion get
-the number, not the journey.
+delay, but `springValue.jump(target)` lands on the final value in one frame
+instead of letting the spring chase it.
 
 ```tsx
 if (reduceMotion) springValue.jump(target);

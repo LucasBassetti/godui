@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "container-scroll",
   "title": "Container Scroll",
-  "description": "A device frame that un-tilts from a 3D perspective and scales to rest as you scroll — the classic product hero.",
+  "description": "A device frame that un-tilts from a 3D perspective and scales to rest as you scroll, for a product hero section.",
   "dependencies": ["framer-motion"],
   "registryDependencies": ["@godui/godui-theme"],
   "files": [

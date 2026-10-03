@@ -120,7 +120,7 @@ export function LiquidGlassLensMap() {
 
           <p className="max-w-[38ch] text-center text-[13px] text-fd-muted-foreground">
             Real maps pack X into red and Y into green. Here a single grayscale
-            ramp is enough — the dashed mid is the neutral &quot;no shift&quot;
+            ramp is enough. The dashed mid is the neutral &quot;no shift&quot;
             band.
           </p>
 

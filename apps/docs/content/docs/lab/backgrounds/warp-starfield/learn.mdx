@@ -21,7 +21,8 @@ const alpha = Math.min(1, t * 1.2);`}
 `WarpStarfield` keeps a cloud of stars in normalized 3D (`x, y ∈ [-1, 1]`,
 `z ∈ (0, depth]`). Each frame it projects them onto the canvas, optionally
 strokes a hyperspace trail, and eases the projection center toward the
-pointer. No textures — points (or lines) and a `requestAnimationFrame` loop.
+pointer. It uses no textures, only points (or lines) and a
+`requestAnimationFrame` loop.
 
 Stars closer to the camera (small `z`) project farther from center and draw
 larger / more opaque. The focal length is derived from the surface:
@@ -50,7 +51,7 @@ if (warp) {
 >
 
 Default cruise fills a disc. Flip `warp` and the brush strokes from the
-**previous** projected point to the current one — a streak — while `dz`
+**previous** projected point to the current one, drawing a streak, while `dz`
 doubles:
 
 </LearnChapter>
@@ -65,7 +66,7 @@ const cy = h / 2 + pointer.y * parallax;`}
 >
 
 Pointer position is normalized to `[-0.5, 0.5]` on the container. The draw
-loop never snaps — it lerps:
+loop eases toward the pointer with a lerp:
 
 Leave the surface and targets ease back to `0`. Same offscreen / hidden-tab /
 reduced-motion gates as Flow Field: stop the rAF when nothing can see it;
@@ -78,11 +79,11 @@ Star color tracks `--foreground` (or a `color` prop) via a theme
 
 <LearnChapter label="The result" scene={<WarpStarfieldResult />} isResult>
 
-Move across the stage — the vanishing point drifts. The live demo stays in
+Move across the stage and the vanishing point drifts. The live demo stays in
 cruise (`warp={false}`); set `warp` when you want streaks.
 
-Project, recycle, optionally streak, ease the center. A starfield that costs
-nothing when it is off screen.
+Project, recycle, optionally streak, ease the center. The loop stops when the
+starfield is off screen.
 
 </LearnChapter>
 

@@ -56,7 +56,7 @@ export function MagneticResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — move the cursor near each button
+          the real component: move the cursor near each button
         </span>
       </div>
       <MagneticResultBody />

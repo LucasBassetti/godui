@@ -39,7 +39,7 @@ const LEGEND = [
   },
   {
     name: "Fan paths",
-    desc: "DEFAULT_PATHS — four cubics ending at y 40 / 150 / 250 / 360",
+    desc: "DEFAULT_PATHS: four cubics ending at y 40 / 150 / 250 / 360",
     kind: "path",
   },
   {

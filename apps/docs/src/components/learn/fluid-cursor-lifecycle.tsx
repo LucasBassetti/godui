@@ -24,7 +24,7 @@ const LEGEND = [
   },
   {
     name: "Idle",
-    desc: "settled or document.hidden — raf = 0",
+    desc: "settled or document.hidden: raf = 0",
     kind: "idle" as const,
   },
 ] as const;

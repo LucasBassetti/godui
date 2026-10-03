@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "split-flap-display",
   "title": "Split-Flap Display",
-  "description": "A Solari departure-board display: each character spins through the charset on stacked flip leaves — the old top hinges away, the new bottom rises into place — settling on the value with a staggered column wave. View-only, compositor-only motion, reveals on scroll.",
+  "description": "A Solari departure-board display. Each character spins through the charset on stacked flip leaves (the old top hinges away, the new bottom rises into place) and settles on the value with a staggered column wave. View-only, compositor-only motion, reveals on scroll.",
   "dependencies": ["framer-motion"],
   "registryDependencies": ["@godui/godui-theme"],
   "files": [

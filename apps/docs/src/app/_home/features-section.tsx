@@ -20,7 +20,7 @@ const features: Feature[] = [
     icon: Clipboard,
     title: "Copy-paste, own the code",
     description:
-      "Every component lands in your codebase as plain source. No black-box dependency, no version lock-in — tweak anything.",
+      "Every component lands in your codebase as plain source, with no black-box dependency or version lock-in. Change anything.",
   },
   {
     icon: Terminal,
@@ -32,7 +32,7 @@ const features: Feature[] = [
     icon: Bot,
     title: "MCP-native",
     description:
-      "Your AI agent installs components by name through the GodUI MCP server — no context-switching.",
+      "Your AI agent installs components by name through the GodUI MCP server.",
   },
   {
     icon: Sparkles,
@@ -50,7 +50,7 @@ const features: Feature[] = [
     icon: Heart,
     title: "Open source",
     description:
-      "MIT licensed and free forever. Use it in personal and commercial work without a second thought.",
+      "MIT licensed and free to use in personal and commercial projects.",
   },
 ];
 
@@ -59,8 +59,8 @@ export function FeaturesSection() {
     <section className="relative z-10 mx-auto w-full max-w-6xl px-4 py-20 sm:py-28">
       <SectionHeading
         eyebrow="Why GodUI"
-        title="Everything you need, nothing you don't"
-        description="A component library designed for modern React stacks and the AI tools you already build with."
+        title="What you get"
+        description="React and Tailwind CSS source you own, installed with the shadcn CLI or by your AI agent."
       />
       <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {features.map(({ icon: Icon, title, description }) => (

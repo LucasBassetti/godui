@@ -81,8 +81,8 @@ export function LiquidGlassLensAnatomy() {
 
           <p className="max-w-[40ch] text-center text-[13px] text-fd-muted-foreground">
             Glint stays at{" "}
-            <span className="font-mono text-[12px]">32% / 28%</span> — a sphere
-            highlight, not a pointer sheen. The map ramps edge-to-edge (
+            <span className="font-mono text-[12px]">32% / 28%</span>, a sphere
+            highlight rather than a pointer sheen. The map ramps edge-to-edge (
             <span className="font-mono text-[12px]">band=0</span>), unlike the
             card&apos;s neutral mid.
           </p>

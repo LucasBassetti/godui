@@ -107,10 +107,10 @@ import { Button } from "@/components/ui/button";
 | Interaction | Keyframe / mechanism | Properties | Easing | Duration |
 | --- | --- | --- | --- | --- |
 | Press | `transition` on `active:scale-[0.97]` | `scale` | `ease-spring-bouncy` | 260ms |
-| Hover, focus | snaps | — | — | — |
+| Hover, focus | snaps | none | none | none |
 
 shadcn's button uses `transition-all`, which also animates background color,
-border and the focus ring's `box-shadow` — all repainted on the main thread.
+border and the focus ring's `box-shadow`. All three repaint on the main thread.
 GodUI animates only `scale`. The `link` variant doesn't scale.
 
 Under `prefers-reduced-motion` the press scales instantly, with no spring.

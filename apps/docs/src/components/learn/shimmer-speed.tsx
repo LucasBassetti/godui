@@ -20,10 +20,10 @@ const CSS = `
 `;
 
 const ROWS: { key: string; caption: string; trackCls: string }[] = [
-  { key: "rate1", caption: "leave / blur — rate 1×", trackCls: "ss-track-1" },
+  { key: "rate1", caption: "leave / blur: rate 1×", trackCls: "ss-track-1" },
   {
     key: "rate3",
-    caption: "hover / focus-visible — rate 3×",
+    caption: "hover / focus-visible: rate 3×",
     trackCls: "ss-track-3",
   },
 ];

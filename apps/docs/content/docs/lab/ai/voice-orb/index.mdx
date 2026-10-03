@@ -32,7 +32,7 @@ export function VoiceOrbDemo() {
 <ComponentInstall registry="lab" componentName="VoiceOrb" />
 
 A rotating rainbow corona blooms behind a glassy core. The core breathes on its
-own when `idle`; feed a live `amplitude` (`0`–`1`) and it swells with the voice
+own when `idle`; feed a live `amplitude` (`0` to `1`) and it swells with the voice
 while `speaking`, or pulses a ring while `listening`. All motion is paused under
 `prefers-reduced-motion`.
 
@@ -43,7 +43,7 @@ import { VoiceOrb, useAudioAmplitude } from "@/components/godui/voice-orb";
 ```
 
 The bundled `useAudioAmplitude` hook turns a `MediaStream` into a smoothed
-`0`–`1` level you can hand straight to the orb. It returns `0` on the server or
+`0` to `1` level you can hand straight to the orb. It returns `0` on the server or
 when no stream is attached, so it's safe to call unconditionally.
 
 ```tsx
@@ -61,7 +61,7 @@ output level from your TTS / realtime stream.
 | Prop        | Type                                    | Default  | Description                                            |
 | ----------- | --------------------------------------- | -------- | ----------------------------------------------------- |
 | `state`     | `"idle" \| "listening" \| "speaking"`   | `"idle"` | Conversation phase the orb visualizes.                |
-| `amplitude` | `number`                                | `0`      | Live audio level `0`–`1`; drives the swell and corona. |
+| `amplitude` | `number`                                | `0`      | Live audio level `0` to `1`; drives the swell and corona. |
 | `size`      | `number`                                | `160`    | Diameter in pixels.                                    |
 
 `VoiceOrb` also forwards every standard `<div>` attribute to the root element.

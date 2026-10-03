@@ -77,7 +77,7 @@ export function ComponentsShowcase() {
       <SectionHeading
         eyebrow="Components"
         title="shadcn/ui, animated"
-        description="Every component is a drop-in for the shadcn/ui file you already have. Same API, new motion — all of it on the GPU. Try them."
+        description="Every component is a drop-in for the shadcn/ui file you already have. The API stays the same, and all of the new motion runs on the GPU. Try them."
       />
       <div className="mt-14 grid gap-4 md:grid-cols-6">
         <Tile name="Tabs" slug="tabs" className="md:col-span-3">
@@ -131,7 +131,7 @@ export function ComponentsShowcase() {
             <AccordionItem value="b">
               <AccordionTrigger>Is it animated?</AccordionTrigger>
               <AccordionContent>
-                Yes — heights snap and the items below glide on the GPU.
+                Yes. Heights snap and the items below glide on the GPU.
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="c">

@@ -71,7 +71,7 @@ const meta = {
         colSpan={2}
         icon={<Icon>{sparkles}</Icon>}
         title="Interfaces that feel alive"
-        description="Spring-driven motion, pointer-aware surfaces, and pixel-tuned details — ready to drop in."
+        description="Spring-driven motion, pointer-aware surfaces, and pixel-tuned details, ready to drop in."
       >
         <div className="mt-5 flex flex-wrap gap-2">
           {["60fps", "Reduced-motion safe", "Themed tokens"].map((tag) => (

@@ -4,10 +4,10 @@ import { SourceCitation, SourceList } from "@godui/lab";
 
 const sources = [
   {
-    title: "GodUI — motion components for modern interfaces",
+    title: "GodUI | Motion components for modern interfaces",
     url: "https://github.com/LucasBassetti/godui",
     snippet:
-      "Beautifully crafted motion components with OKLCH theming, built for perceptually uniform design tokens and dark mode.",
+      "Motion components with OKLCH theming, built for perceptually uniform design tokens and dark mode.",
   },
   {
     title: "Tailwind CSS v4 release notes",
@@ -16,7 +16,7 @@ const sources = [
       "A ground-up rewrite with a CSS-first config, native cascade layers, and faster builds.",
   },
   {
-    title: "Great animations — Emil Kowalski",
+    title: "Great animations | Emil Kowalski",
     url: "https://emilkowal.ski/ui/great-animations",
     snippet: "What separates polished motion from distracting motion.",
   },

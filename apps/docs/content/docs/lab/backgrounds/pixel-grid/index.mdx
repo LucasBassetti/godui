@@ -1,6 +1,6 @@
 ---
 title: Pixel Grid
-description: A grid of squares that flicker their opacity — as an automatic animated background, or revealed only under the cursor.
+description: A grid of squares that flicker their opacity, either as an automatic animated background or revealed only under the cursor.
 workbench: true
 ---
 
@@ -9,7 +9,7 @@ import { PixelGrid } from "@godui/lab";
 <Workbench>
 
 A field of small squares that flicker their opacity on a loop. It has two modes.
-With `interactive={false}` the whole field flickers on its own — an automatic
+With `interactive={false}` the whole field flickers on its own as an automatic
 animated background. With `interactive`, only the squares within
 `interactionRadius` of the cursor animate; the rest are hidden or held at a
 static dim, depending on `cursorReveal`. Drop it as the first child of a
@@ -60,8 +60,8 @@ so that parent must be `relative`. Add `overflow-hidden` to keep the edges clean
 ### Cursor reveal
 
 Set `interactive` so only the squares within `interactionRadius` of the cursor
-animate. With the default `cursorReveal="hidden"`, the rest stay invisible — a
-spotlight that follows the pointer.
+animate. With the default `cursorReveal="hidden"`, the rest stay invisible, so the
+effect is a spotlight that follows the pointer.
 
 <Example
   label="Cursor"
@@ -160,13 +160,13 @@ export function PixelGridDense() {
 | `gridGap` | `number` | `6` | Gap (px) between squares. |
 | `flickerChance` | `number` | `0.3` | Per-second probability a square re-rolls its opacity. |
 | `color` | `string` | `--color-foreground` | Square color, any CSS color string. Defaults to the theme token. |
-| `maxOpacity` | `number` | `0.3` | Upper bound on square opacity (0–1). |
+| `maxOpacity` | `number` | `0.3` | Upper bound on square opacity (0 to 1). |
 | `interactive` | `boolean` | `true` | `false` flickers the whole field automatically; `true` animates only squares within the cursor radius. |
 | `interactionRadius` | `number` | `120` | Radius (px) of the cursor reveal. |
-| `interactionStrength` | `number` | `1` | How strongly the cursor reveals squares within the radius (0–1). |
-| `cursorReveal` | `"hidden" \| "dim"` | `"hidden"` | How squares outside the radius render in interactive mode — invisible, or a static dim. |
-| `width` | `number` | — | Fixed width (px). Defaults to filling the parent. |
-| `height` | `number` | — | Fixed height (px). Defaults to filling the parent. |
+| `interactionStrength` | `number` | `1` | How strongly the cursor reveals squares within the radius (0 to 1). |
+| `cursorReveal` | `"hidden" \| "dim"` | `"hidden"` | How squares outside the radius render in interactive mode: invisible, or a static dim. |
+| `width` | `number` | none | Fixed width (px). Defaults to filling the parent. |
+| `height` | `number` | none | Fixed height (px). Defaults to filling the parent. |
 
 Also accepts standard `div` attributes (e.g. `className`, `style`).
 

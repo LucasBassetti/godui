@@ -7,7 +7,7 @@
       "name": "godui-theme",
       "type": "registry:theme",
       "title": "GodUI Theme",
-      "description": "Celestial Sapphire design tokens (OKLCH) — colors, radius, fonts, shadows, button scale, and rainbow tokens shared by all GodUI components.",
+      "description": "Celestial Sapphire design tokens (OKLCH): colors, radius, fonts, shadows, button scale, and rainbow tokens shared by all GodUI components.",
       "cssVars": {
         "theme": {
           "font-sans": "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif",
@@ -412,7 +412,7 @@
       "name": "dropdown-menu",
       "type": "registry:ui",
       "title": "Dropdown Menu",
-      "description": "Displays a menu to the user — such as a set of actions or functions — triggered by a button. Grows from its trigger on a spring; checks pop in. GPU-only.",
+      "description": "Displays a menu to the user (such as a set of actions or functions), triggered by a button. Grows from its trigger on a spring; checks pop in. GPU-only.",
       "dependencies": ["radix-ui", "lucide-react"],
       "registryDependencies": ["utils", "@godui/godui-motion"],
       "files": [
@@ -440,7 +440,7 @@
       "name": "tabs",
       "type": "registry:ui",
       "title": "Tabs",
-      "description": "A set of layered sections of content — known as tab panels — that are displayed one at a time. One indicator slides between tabs with a FLIP; GPU-only.",
+      "description": "A set of layered sections of content (known as tab panels) that are displayed one at a time. One indicator slides between tabs with a FLIP; GPU-only.",
       "dependencies": ["radix-ui", "class-variance-authority"],
       "registryDependencies": ["utils", "@godui/godui-motion"],
       "files": [
@@ -613,7 +613,7 @@
       "name": "radio-group",
       "type": "registry:ui",
       "title": "Radio Group",
-      "description": "A set of checkable buttons — known as radio buttons — where no more than one of the buttons can be checked at a time. The dot grows in; items press on a spring. GPU-only.",
+      "description": "A set of checkable buttons (known as radio buttons) where no more than one of the buttons can be checked at a time. The dot grows in; items press on a spring. GPU-only.",
       "dependencies": ["radix-ui", "lucide-react"],
       "registryDependencies": ["utils", "@godui/godui-motion"],
       "files": [
@@ -697,7 +697,7 @@
       "name": "context-menu",
       "type": "registry:ui",
       "title": "Context Menu",
-      "description": "Displays a menu to the user — such as a set of actions or functions — triggered by a right click. Grows from the pointer on a spring; checks pop in. GPU-only.",
+      "description": "Displays a menu to the user (such as a set of actions or functions), triggered by a right click. Grows from the pointer on a spring; checks pop in. GPU-only.",
       "dependencies": ["radix-ui", "lucide-react"],
       "registryDependencies": ["utils", "@godui/godui-motion"],
       "files": [
@@ -711,7 +711,7 @@
       "name": "select",
       "type": "registry:ui",
       "title": "Select",
-      "description": "Displays a list of options for the user to pick from — triggered by a button. Grows on a spring; the check pops in. GPU-only.",
+      "description": "Displays a list of options for the user to pick from, triggered by a button. Grows on a spring; the check pops in. GPU-only.",
       "dependencies": ["radix-ui", "lucide-react"],
       "registryDependencies": ["utils", "@godui/godui-motion"],
       "files": [

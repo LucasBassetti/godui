@@ -41,7 +41,7 @@ const STAGES: {
 }[] = [
   {
     name: "motionValue",
-    desc: "raw target — set once in view",
+    desc: "raw target, set once in view",
     caption: "useMotionValue",
     delay: "0ms",
     swatch: "bg-[var(--foreground)]/25",

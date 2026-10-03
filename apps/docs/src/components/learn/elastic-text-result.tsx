@@ -36,7 +36,7 @@ export function ElasticTextResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — auto + hover
+          the real component: auto + hover
         </span>
       </div>
       <div className="flex min-h-[240px] flex-col items-center justify-center gap-10 p-10">

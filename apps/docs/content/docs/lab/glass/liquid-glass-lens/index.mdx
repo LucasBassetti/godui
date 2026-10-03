@@ -43,7 +43,7 @@ displacement map. It only appears while the pointer is over the parent and fades
 out on leave. It is `pointer-events-none`, so it never blocks clicks.
 
 True refraction requires `backdrop-filter: url()` (Chrome and Edge). In browsers
-without it the lens gracefully falls back to a plain frosted blur.
+without it the lens falls back to a plain frosted blur.
 
 For a static glass panel that wraps your own content, see
 [Liquid Glass Card](/docs/lab/glass/liquid-glass-card).
@@ -76,11 +76,11 @@ import { LiquidGlassLens } from "@/components/godui/liquid-glass-lens";
 | ------------ | -------- | ----------------------- | ----------------------------------------------------------- |
 | `size`       | `number` | `160`                   | Diameter of the circular lens in px.                       |
 | `blur`       | `number` | `2`                     | Frost (backdrop blur) in px.                                |
-| `strength`   | `number` | `80`                    | Refraction displacement scale — how hard the lens bends.    |
-| `dispersion` | `number` | `0.15`                  | Chromatic aberration, `0`–`1`. Splits the R/G/B refraction. |
+| `strength`   | `number` | `80`                    | Refraction displacement scale: how hard the lens bends.     |
+| `dispersion` | `number` | `0.15`                  | Chromatic aberration, `0` to `1`. Splits the R/G/B refraction. |
 | `saturation` | `number` | `1.6`                   | Backdrop saturation multiplier.                             |
 | `tint`       | `string` | `rgba(255,255,255,.08)` | Glass tint color.                                           |
-| `sheen`      | `number` | `0.5`                   | Specular highlight intensity, `0`–`1`.                      |
+| `sheen`      | `number` | `0.5`                   | Specular highlight intensity, `0` to `1`.                   |
 
 `LiquidGlassLens` also forwards every standard `<div>` attribute (`className`,
 `style`, `id`, …) to the root element.

@@ -43,7 +43,7 @@ export function MagicInputResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — focus it, then submit
+          the real component: focus it, then submit
         </span>
       </div>
       <div className="flex min-h-[240px] items-center justify-center p-10">

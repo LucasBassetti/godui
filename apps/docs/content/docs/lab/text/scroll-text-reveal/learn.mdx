@@ -25,14 +25,14 @@ segments.map(({ key, segment }, i) => (
 ))`}
 >
 
-ScrollTextReveal isn't a staggered entrance. It's a scrubbed mapping: the
+ScrollTextReveal is a scrubbed mapping: the
 paragraph's position in the viewport becomes one `scrollYProgress`, that
 number is carved into equal slices, and each slice drives a segment from
-dim to sharp. Scroll back up and — unless you latch — the sentence dims
-in reverse.
+dim to sharp. Scroll back up and the sentence dims in reverse, unless
+you latch it.
 
 `useScroll` watches the root element with offset
-`["start 0.85", "end 0.35"]` — progress starts when the top hits ~85% of
+`["start 0.85", "end 0.35"]`: progress starts when the top hits ~85% of
 the viewport and finishes when the bottom clears ~35%. The copy is split
 by `word` (default), `character`, or `line`. Segment `i` of `n` owns
 `[i/n, (i+1)/n]`.
@@ -54,7 +54,7 @@ const filter = useTransform(reveal, [0, 1], ["blur(6px)", "blur(0px)"]);`}
 Each segment maps its slice onto a 0→1 reveal factor, then onto opacity
 (`dimOpacity` → `1`) and, when `blur` is on, `blur(6px)` → `blur(0)`.
 Because those transforms read the live progress value, scrolling up
-rewinds them — no timeline to cancel, no play-once flag.
+rewinds them. There is no timeline to cancel and no play-once flag.
 
 Only compositor props move. Layout stays put; whitespace tokens keep
 `whitespace-pre` so the original spacing survives the split.
@@ -67,17 +67,17 @@ Only compositor props move. Layout stays put; whitespace tokens keep
   code={`reveal.set(keepRevealed ? Math.max(reveal.get(), v) : v);`}
 >
 
-Default scrub is honest: leave the paragraph and the words re-dim. Set
-`keepRevealed` and each segment latches at its peak — so scroll-up never
-undoes a word that already landed. Same progress driver, two exit
+By default the scrub is fully reversible: leave the paragraph and the words
+re-dim. Set `keepRevealed` and each segment latches at its peak, so scrolling
+up never undoes a word that already landed. One progress driver gives two exit
 behaviours.
 
 </LearnChapter>
 
 <LearnChapter label="The result" scene={<ScrollTextRevealResult />} isResult>
 
-One progress value, equal slices, opacity and blur scrubbed to the
-scroll — latch optional. Scroll the page through the panel below.
+One progress value, equal slices, and opacity and blur scrubbed to the
+scroll, with an optional latch. Scroll the page through the panel below.
 
 </LearnChapter>
 
@@ -89,7 +89,7 @@ Assistive tech never walks the dimmed segments. The root gets
 `aria-label` with the full string; a visually hidden `sr-only` span
 repeats the copy; every animated segment is `aria-hidden`. Under
 `prefers-reduced-motion` the component skips `useScroll` entirely and
-renders the plain string — fully legible, no scrub coupling.
+renders the plain string, fully legible and not tied to scroll.
 
 ```tsx
 if (reduceMotion) {

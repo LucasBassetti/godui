@@ -16,21 +16,21 @@ const frontState = selected
   : \`bg-transparent text-muted-foreground \${frontVariantPreview[variant]}\`;`}
 >
 
-Magic Tab is Magic Button's sibling: same three-layer illusion of a
-pushed-up surface, same springy bezier — but wearing a `role="tablist"`
-instead of a lone button. The twist is selection. A button is always
-"pressed or not"; a tab has to hold a rest state for every item it isn't,
-and only spend the 3D budget on the one it is.
+Magic Tab is Magic Button's sibling: the same three-layer illusion of a
+pushed-up surface and the same springy bezier, on a `role="tablist"`
+instead of a lone button. The difference is selection. A button is either
+pressed or not; a tab has to hold a rest state for every item it isn't,
+and spend the 3D budget only on the one it is.
 
 Every tab is a `<button>` with the same absolutely-stacked shadow, edge,
 and front-face spans as Magic Button. The difference: on an unselected tab
 the shadow and edge sit at `opacity-0` and the front is flat
-(`bg-transparent`, no lift). Only the selected tab's stack actually
-materializes — shown below as flat → the three spans → assembled lift:
+(`bg-transparent`, no lift). Only the selected tab's stack materializes.
+The scene goes flat → the three spans → assembled lift:
 
 Unselected tabs still preview the selected color flat on hover/focus
-(`frontVariantPreview`) — a hint of what clicking does — but never lift.
-Lifting is reserved for the tab that's actually selected.
+(`frontVariantPreview`) as a hint of what clicking does, but never lift.
+Only the selected tab lifts.
 
 </LearnChapter>
 
@@ -43,16 +43,16 @@ Lifting is reserved for the tab that's actually selected.
  group-focus-visible:[transition:translate_250ms_cubic-bezier(0.3,0.7,0.4,1.5)]"`}
 >
 
-A selected tab doesn't just sit at `-4px` — it goes one step further on
+A selected tab sits at `-4px` and goes one step further on
 `focus-visible`, to `-6px`, the same way Magic Button's hover lift previews
 what a press would feel like. Rest → selected uses the slower settle
 bezier; selected → focus overshoots on the snappier one:
 
 `600ms` at rest→selected is deliberately unhurried; `250ms` with a `1.5`
-overshoot control point on selected→focus is the snap that says "this is
-now interactive." Both offsets animate `translate`, never `top` — the same
-compositor-only rule Magic Button enforces, for the same reason: a moved
-layer is free, a re-laid-out one isn't.
+overshoot control point on selected→focus is the snap that marks the tab
+as interactive. Both offsets animate `translate`, never `top`. Magic Button
+follows the same compositor-only rule for the same reason: moving a layer
+is free, re-laying it out is not.
 
 </LearnChapter>
 
@@ -69,8 +69,8 @@ layer is free, a re-laid-out one isn't.
 >
 
 The selected tab's edge and shadow can run the same sliding rainbow
-gradient as Magic Button — `background-size: 200% 100%` with a
-`background-position` keyframe. It's real work on the main thread, so an
+gradient as Magic Button: `background-size: 200% 100%` with a
+`background-position` keyframe. That keyframe costs main-thread work, so an
 `IntersectionObserver` on the tablist root pauses every
 `.animate-magic-rainbow` layer the instant it scrolls out of view:
 
@@ -82,8 +82,8 @@ frame snapping back to life.
 
 <LearnChapter label="The result" scene={<MagicTabResult />} isResult>
 
-Same three spans, same bezier as Magic Button — Magic Tab just decides,
-per render, which single tab is allowed to spend them.
+Magic Tab uses the same three spans and bezier as Magic Button. On each
+render it decides which single tab may spend them.
 
 </LearnChapter>
 
@@ -93,7 +93,7 @@ per render, which single tab is allowed to spend them.
 
 The container is `role="tablist"` with `aria-orientation="horizontal"`;
 each button is `role="tab"` with `aria-selected`. Focus and selection are
-deliberately separate — arrow keys move a roving `tabIndex` between tabs
+separate: arrow keys move a roving `tabIndex` between tabs
 without selecting them, and `Enter`/`Space` commits whichever tab currently
 holds focus:
 
@@ -110,7 +110,7 @@ case " ":
 This is the WAI-ARIA "manual activation" tab pattern: you can arrow through
 every tab to read its label before committing, instead of every keypress
 switching panels. Tabbing out of the list resets the roving stop back to
-whatever's actually selected.
+the selected tab.
 
 ## Motion Score
 

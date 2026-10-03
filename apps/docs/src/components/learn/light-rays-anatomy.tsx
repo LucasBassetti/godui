@@ -139,7 +139,7 @@ export function LightRaysAnatomy() {
 
           <p className="max-w-[40ch] text-center text-[13px] text-fd-muted-foreground">
             Same top pivot in every plate. Plate 3 is plate 2 oversized,
-            blurred, and faded — that&apos;s the volumetric look.
+            blurred, and faded. That&apos;s the volumetric look.
           </p>
 
           <dl className="grid w-full grid-cols-3 gap-4 border-fd-border border-t pt-5">

@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "spin-viewer",
   "title": "Spin Viewer",
-  "description": "A 360-degree product viewer — drag to spin an object through a sequence of frames, with optional idle auto-rotate and a touch-friendly hint.",
+  "description": "A 360-degree product viewer: drag to spin an object through a sequence of frames, with optional idle auto-rotate and a touch-friendly hint.",
   "registryDependencies": ["@godui/godui-theme"],
   "files": [
     {

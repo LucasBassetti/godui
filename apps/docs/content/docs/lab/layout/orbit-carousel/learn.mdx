@@ -17,13 +17,12 @@ const scale = 1 - Math.min(Math.abs(a) / 70, 1) * 0.42;
 const opacity = Math.max(0, 1 - Math.min(Math.abs(a) / 82, 1) * 0.85);`}
 >
 
-Orbit Carousel doesn't animate five slides independently — it derives all
-five from a single number per slide (`offset = i - active`) fed through one
-arc formula. Here's that formula, and the drag that keeps rewriting it in
-real time.
+Orbit Carousel positions all five slides with a single number per slide
+(`offset = i - active`) fed through one arc formula. A drag keeps rewriting
+that number in real time.
 
 Each slide reads its own `offset` and turns it into `angle = offset *
-angleStep`. Everything else — `x`, `y`, `scale`, `opacity`, `rotate` — is a
+angleStep`. Everything else (`x`, `y`, `scale`, `opacity`, `rotate`) is a
 function of that one angle. The front slide (`offset = 0`) sits full-size and
 upright; every step away curves along the arc, shrinks, dims, and tilts.
 
@@ -35,9 +34,9 @@ upright; every step away curves along the arc, shrinks, dims, and tilts.
 ```
 
 `scale` and `opacity` fall off on their *own* curves (denominators 70 and
-82), not a shared one — opacity has more room before it starts dimming, so a
-slide is visibly smaller before it's visibly faded. That's a deliberate
-two-stage falloff, not one number reused twice.
+82). Opacity has more room before it starts dimming, so a slide is visibly
+smaller before it's visibly faded. The result is a deliberate two-stage
+falloff.
 
 </LearnChapter>
 
@@ -55,22 +54,22 @@ const handlePanEnd = (_e: unknown, info: PanInfo) => {
 >
 
 Dragging doesn't move any slide directly. `onPan` recomputes `active` on
-every pointer move — `goTo(dragFrom - offset.x / 120)` — and every slide's
-`animate` re-targets from that new offset. Framer's spring is what actually
-moves the DOM; the pointer just keeps changing where the spring is chasing.
-Release past the fling threshold and `active` gets one more nudge before the
-spring even starts settling toward it.
+every pointer move (`goTo(dragFrom - offset.x / 120)`), and every slide's
+`animate` re-targets from that new offset. Framer's spring moves the DOM;
+the pointer only changes the spring's target. Release past the fling
+threshold and `active` gets one more nudge before the spring starts
+settling toward it.
 
 Because `active` is a plain rounded integer even mid-drag, every slide is
 already animating toward its next resting angle as soon as the pointer
-crosses the halfway point to the next slot — there's no separate "commit"
-step; the drag handler and the settle spring share the exact same state.
+crosses the halfway point to the next slot. There's no separate "commit"
+step; the drag handler and the settle spring share the same state.
 
-Every property `OrbitItem` animates — `x`, `y`, `rotate`, `scale`, `opacity`
-— is a `transform`/`opacity` pair, set directly in the `style` object as
-`width`/`height`/`marginLeft` once and never touched again. Five slides
-re-animating on every pointer move never triggers a single layout
-recalculation; the browser only repaints transformed layers.
+Every property `OrbitItem` animates (`x`, `y`, `rotate`, `scale`, `opacity`)
+is a `transform` or `opacity`. `width`/`height`/`marginLeft` are set
+directly in the `style` object once and never touched again. Five slides
+re-animating on every pointer move never trigger a layout recalculation;
+the browser only repaints transformed layers.
 
 ```tsx
 <motion.div
@@ -85,8 +84,8 @@ recalculation; the browser only repaints transformed layers.
 
 <LearnChapter label="The result" scene={<OrbitCarouselResult />} isResult>
 
-One offset, one formula, one spring chasing whatever `active` the drag or
-the keyboard last set — that's the entire wheel.
+The wheel is one offset, one formula, and one spring chasing whatever
+`active` the drag or the keyboard last set.
 
 </LearnChapter>
 
@@ -96,9 +95,9 @@ the keyboard last set — that's the entire wheel.
 
 The stage is `role="group"` with `aria-roledescription="carousel"`, and the
 prev/next buttons duplicate the drag and keyboard affordances for anyone who
-can't or doesn't want to drag — <kbd>←</kbd>/<kbd>→</kbd> work whenever a
+can't or doesn't want to drag. <kbd>←</kbd>/<kbd>→</kbd> work whenever a
 control has focus. Under `prefers-reduced-motion`, `rotate` drops to `0` on
-every slide — the arc still curves in `x`/`y`, but nothing tilts.
+every slide: the arc still curves in `x`/`y`, but nothing tilts.
 
 ```tsx
 animate={{ x, y, rotate: reduce ? 0 : a * 0.5, scale, opacity }}

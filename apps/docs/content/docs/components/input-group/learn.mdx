@@ -24,8 +24,9 @@ When the field inside the group gets focus, the ring fades in and grows from
 the first few frames. A uniform `scale` moves the long sides more than the
 short ones: on a 640px field a 98% start tucked the ring 3px inside the side
 borders on its first visible frame, while the top and bottom sat in place.
-99% halves that and still reads as growing on a default-width field. The border colour snaps in the same frame, which keeps
-the focused state readable before the ring has finished.
+99% halves that and still reads as growing on a default-width field. The
+border colour snaps in the same frame, which keeps the focused state readable
+before the ring has finished.
 
 The scene runs at 800ms. At the top is a plain Input, whose ring snaps
 because an `<input>` can't hold a `::before`. Below it is the Input
@@ -81,8 +82,8 @@ fades out, and the pill-shaped group's ring keeps its curve.
 ## Why GPU-only
 
 Only the `::before` layer's `opacity` and `scale` change, which the
-compositor handles without repainting the shadow. The border colour snaps
-instead of transitioning, as it would cost a repaint for every frame.
+compositor handles without repainting the shadow. The border colour snaps,
+because a colour transition repaints every frame.
 
 ## Reduced motion
 

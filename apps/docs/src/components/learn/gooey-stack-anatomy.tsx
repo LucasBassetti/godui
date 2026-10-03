@@ -35,7 +35,7 @@ const LEGEND: {
   },
   {
     name: "Content",
-    desc: "your children — never filtered, never faded flat",
+    desc: "your children, never filtered or faded flat",
     kind: "content",
   },
 ];

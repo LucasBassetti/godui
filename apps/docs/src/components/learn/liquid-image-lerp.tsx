@@ -49,7 +49,7 @@ const LEGEND = [
   },
   {
     name: "setAttribute",
-    desc: "scale written on dispRef — no setState",
+    desc: "scale written on dispRef, no setState",
     kind: "tick" as const,
   },
 ] as const;

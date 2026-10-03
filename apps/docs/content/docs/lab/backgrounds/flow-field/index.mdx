@@ -9,7 +9,7 @@ import { FlowField } from "@godui/lab";
 <Workbench>
 
 Hundreds of particles ride an invisible, slowly-evolving current, leaving silky
-trails that fade behind them — generative, organic, hypnotic. It paints its own
+trails that fade behind them. It paints its own
 themed background, so drop it as the first child of a `relative` container and
 let your content sit above it.
 
@@ -90,10 +90,10 @@ export function FlowFieldLong() {
 | Prop | Type | Default | Description |
 | ---- | ---- | ------- | ----------- |
 | `particleCount` | `number` | `900` | Number of particles (auto-scaled to area). |
-| `noiseScale` | `number` | `0.0016` | Field scale — smaller is broader/smoother. |
+| `noiseScale` | `number` | `0.0016` | Field scale. Smaller is broader and smoother. |
 | `speed` | `number` | `1` | Flow speed multiplier. |
 | `color` | `string` | `--color-primary` | Trail color. |
-| `fade` | `number` | `0.06` | Trail fade per frame, `0`–`1` (lower = longer trails). |
+| `fade` | `number` | `0.06` | Trail fade per frame, `0` to `1` (lower = longer trails). |
 
 Also accepts standard `div` attributes (e.g. `className`, `style`).
 

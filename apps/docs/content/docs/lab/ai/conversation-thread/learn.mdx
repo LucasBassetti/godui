@@ -26,18 +26,17 @@ learnPlayer: true
 </div>`}
 >
 
-A chat thread lives or dies on one question: does it stay where the reader
-expects while new messages keep landing? `ConversationThread` answers that
-with a single boolean derived from scroll math, and hands every message's
-entrance to one repeated spring. Nothing here is a physics engine — it's a
-threshold check, a transform, and a `setInterval`.
+A chat thread has to stay where the reader expects while new messages keep
+landing. `ConversationThread` handles that with a single boolean derived from
+scroll math, and hands every message's entrance to one repeated spring. There
+is no physics engine: a threshold check, a transform, and a `setInterval`.
 
 `ConversationThread` owns the scroll container and the pinned/jump-to-latest
-state. `ConversationMessage` renders one turn — role, bubble tint, alignment,
-hover actions. `StreamingText` is unrelated to either: a standalone string
+state. `ConversationMessage` renders one turn: role, bubble tint, alignment,
+hover actions. `StreamingText` is independent of both: a standalone string
 that reveals itself over time and reports back through `onDone`.
 
-`role` decides two independent things at once — which bubble tint from
+`role` decides two things at once: which bubble tint from
 `BUBBLE_BY_ROLE`, and whether the row reverses to sit on the right. A
 `ThreadContext` provider on the outer `ConversationThread` carries one more
 input, `variant`, down to every message without prop-drilling it through
@@ -82,30 +81,29 @@ React.useEffect(() => {
 }, [autoScroll, scrollToBottom]);
 ```
 
-`childCount` alone only notices a new message — not every `StreamingText`
+`childCount` alone only notices a new message, not every `StreamingText`
 tick that grows a bubble. The ResizeObserver on the inner content wrapper
 closes that gap without a `MutationObserver` or a rAF loop.
 
-A `0`px threshold would un-pin the instant a subpixel scroll event fires —
-trackpads and momentum scrolling report fractional deltas constantly, so an
+A `0`px threshold would un-pin the instant a subpixel scroll event fires.
+Trackpads and momentum scrolling report fractional deltas constantly, so an
 exact-bottom check flickers the pill in and out on scroll noise alone. `48`
-is generous enough to absorb that jitter while still being smaller than a
-single message row, so the thread only actually lets go once the reader has
-deliberately scrolled — never on rounding error.
+absorbs that jitter and is still smaller than a single message row, so the
+thread lets go only once the reader has deliberately scrolled, never on
+rounding error.
 
 Streaming text changes height every few milliseconds. Smooth scrolling
-and Framer Motion `layout` both tween those changes — and they fight each
+and Framer Motion `layout` both tween those changes, and they fight each
 other: the viewport eases toward the bottom while every sibling message
 re-measures and slides. Result: jump up, settle down, jump again.
 
 So the thread keeps stickiness **instant** while pinned, and messages enter
-with opacity + a short `y` spring only — no `layout` prop. `scrollToBottom("smooth")`
+with opacity + a short `y` spring only, with no `layout` prop. `scrollToBottom("smooth")`
 is reserved for the intentional Jump-to-latest click.
 
-When `pinned` flips to `false`, `AnimatePresence` mounts a button —
-`sticky bottom-2`, so it rides the current scroll position instead of a fixed
-page coordinate — off the same spring used everywhere else in GodUI's AI
-components:
+When `pinned` flips to `false`, `AnimatePresence` mounts a button on the same
+spring used everywhere else in GodUI's AI components. It is `sticky bottom-2`,
+so it rides the current scroll position instead of a fixed page coordinate:
 
 ```tsx
 <AnimatePresence>
@@ -127,9 +125,9 @@ components:
 </AnimatePresence>
 ```
 
-Clicking it does two things, not one: it sets `pinned` back to `true` *and*
+Clicking it does two things: it sets `pinned` back to `true` *and*
 calls `scrollToBottom` directly. Setting `pinned` alone would only affect the
-next content change — the click needs the thread to catch up immediately,
+next content change. The click needs the thread to catch up immediately,
 so the imperative scroll and the state flip happen in the same handler.
 
 </LearnChapter>
@@ -159,15 +157,15 @@ so the imperative scroll and the state flip happen in the same handler.
 return <>{text.slice(0, count)}</>;`}
 >
 
-`StreamingText` has no dependency on the thread or the message it lives in —
-it owns one `count` of how many characters to slice off `text`, and a
+`StreamingText` has no dependency on the thread or the message it lives in.
+It owns one `count` of how many characters to slice off `text`, and a
 `setInterval` that raises it by `chunk` every `speed` milliseconds:
 
 `Math.min(current + chunk, text.length)` is the only bounds check in the
-whole component — without it the last tick could slice past the string's
-end (harmless in JS, but it's also what stops the interval from firing one
+component. Without it the last tick could slice past the string's end
+(harmless in JS, but the check also stops the interval from firing one
 extra time before `clearInterval` runs). The blinking caret isn't
-`StreamingText`'s concern at all: `ConversationMessage` renders it as a
+`StreamingText`'s concern: `ConversationMessage` renders it as a
 plain `animate-pulse` span whenever its own `streaming` prop is `true`,
 independent of how far `count` has gotten.
 
@@ -177,15 +175,15 @@ independent of how far `count` has gotten.
 ) : null}
 ```
 
-That split matters: a consumer can drive `streaming` off their own state
+The split lets a consumer drive `streaming` off their own state
 (say, "is the socket still open") independently of whether `StreamingText`
 has finished revealing the current chunk of text it already has.
 
 Every piece here is either event-driven or cleans up after itself.
-`onScroll` only runs while the user is actually scrolling. The
+`onScroll` only runs while the user is scrolling. The
 `ResizeObserver` only fires when the message stack's box changes, and it
 disconnects on unmount. `StreamingText`'s `setInterval` is cleared both on
-completion and on unmount — there's no polling loop left running once a
+completion and on unmount, so no polling loop is left running once a
 message has finished streaming or the component has left the tree.
 
 </LearnChapter>
@@ -194,9 +192,8 @@ message has finished streaming or the component has left the tree.
 
 One threshold check keeps the thread pinned, a ResizeObserver sticks through
 streaming growth, one spring brings every message in and pops the jump
-pill, and one `setInterval` — with nothing smarter than `Math.min` guarding
-it — turns a finished string into something that reads like it's still being
-written.
+pill, and one `setInterval`, guarded by nothing more than `Math.min`, turns a
+finished string into something that reads like it's still being written.
 
 </LearnChapter>
 
@@ -207,10 +204,10 @@ written.
 `ConversationMessage` reads `useReducedMotion()` and disables the spring's
 `initial` state (`initial={reduce ? false : { opacity: 0, y: 8 }}`) so a
 reduced-motion reader gets messages at rest instead of mid-flight. There is
-no `layout` animation to gate — position tweening on growing bubbles was
+no `layout` animation to gate: position tweening on growing bubbles was
 removed because it fought auto-scroll. The caret's `animate-pulse` carries
 `motion-reduce:animate-none`, and `StreamingText` skips the interval under
-reduced motion — `setCount(text.length)` and `onDone()` fire immediately.
+reduced motion: `setCount(text.length)` and `onDone()` fire immediately.
 
 ```tsx
 initial={reduce ? false : { opacity: 0, y: 8 }}

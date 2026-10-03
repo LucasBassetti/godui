@@ -42,12 +42,12 @@ const LEGEND: {
 }[] = [
   {
     name: "Dim",
-    desc: "reveal 0 — opacity dimOpacity, blur 6px",
+    desc: "reveal 0: opacity dimOpacity, blur 6px",
     kind: "dim",
   },
   {
     name: "Lit",
-    desc: "reveal 1 — opacity 1, blur 0",
+    desc: "reveal 1: opacity 1, blur 0",
     kind: "lit",
   },
   {

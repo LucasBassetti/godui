@@ -32,8 +32,8 @@ export function ConfettiDemo() {
 
 A thin wrapper over [canvas-confetti](https://github.com/catdad/canvas-confetti).
 `ConfettiButton` bursts from its own position on click. For full control, render
-`Confetti` and hold a ref, or call the imperative `confetti()` from anywhere —
-mirroring the `toast()` ergonomics used elsewhere in GodUI.
+`Confetti` and hold a ref, or call the imperative `confetti()` from anywhere,
+the same way `toast()` works elsewhere in GodUI.
 
 ## Usage
 
@@ -76,7 +76,7 @@ confetti({ particleCount: 200, spread: 120 });
 
 | Prop      | Type              | Default | Description                              |
 | --------- | ----------------- | ------- | ---------------------------------------- |
-| `options` | `ConfettiOptions` | —       | Confetti options applied on click.       |
+| `options` | `ConfettiOptions` | none       | Confetti options applied on click.       |
 
 Forwards every standard `<button>` attribute. `ConfettiOptions` is re-exported
 from `canvas-confetti`.

@@ -47,7 +47,7 @@ export function ReorderListResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — drag a row by its handle
+          the real component: drag a row by its handle
         </span>
       </div>
       <div className="relative flex min-h-[280px] items-center justify-center p-6 sm:p-10">

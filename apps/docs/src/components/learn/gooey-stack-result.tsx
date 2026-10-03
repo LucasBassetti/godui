@@ -140,7 +140,7 @@ export function GooeyStackResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — tap the plug icon
+          the real component: tap the plug icon
         </span>
       </div>
       <div className="relative flex min-h-[300px] items-center justify-center p-6 md:min-h-[360px] md:p-10">

@@ -33,7 +33,7 @@ const LEGEND: { name: string; desc: string; swatch: string }[] = [
   },
   {
     name: "Peek",
-    desc: "translateY = index × peek — the sliver that shows below",
+    desc: "translateY = index × peek: the sliver that shows below",
     swatch:
       "h-3 w-4 rounded-md bg-[var(--muted)] ring-1 ring-fd-border ring-inset",
   },

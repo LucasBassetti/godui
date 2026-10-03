@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "context-menu",
   "title": "Context Menu",
-  "description": "Displays a menu to the user — such as a set of actions or functions — triggered by a right click. Grows from the pointer on a spring; checks pop in. GPU-only.",
+  "description": "Displays a menu to the user (such as a set of actions or functions), triggered by a right click. Grows from the pointer on a spring; checks pop in. GPU-only.",
   "dependencies": ["radix-ui", "lucide-react"],
   "registryDependencies": ["utils", "@godui/godui-motion"],
   "files": [

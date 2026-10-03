@@ -26,8 +26,7 @@ export function ScrollTimelineDemo() {
               title: "The first commit",
               content: (
                 <p className="text-muted-foreground text-sm md:text-base">
-                  A single component and a big idea — a design system that feels
-                  alive, not templated.
+                  A single component and a big idea.
                 </p>
               ),
             },

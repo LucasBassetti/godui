@@ -20,7 +20,7 @@ learnPlayer: true
 );`}
 >
 
-Highlighter doesn't paint with CSS. It hands a real DOM span to
+Highlighter hands a real DOM span to
 [`rough-notation`](https://roughnotation.com/)'s `annotate()`, which injects
 an SVG sketch and animates the stroke in. The React wrapper is a thin lifecycle
 around that: when to create the annotation, when to redraw it, and when to tear
@@ -28,14 +28,14 @@ it down.
 
 The component renders a single `inline-block` span. The children are ordinary
 text. The annotation is a separate SVG layer Rough Notation attaches to that
-element — not a background, not a pseudo-element.
+element. It is not a background or a pseudo-element.
 
 `annotate(element, { type: action, color, … })` measures the span and draws
 over it. Actions map 1:1 to Rough Notation types: `highlight`, `underline`,
 `box`, `circle`, `strike-through`, `crossed-off`, `bracket`.
 
 `highlight` paints a soft marker *behind* the glyphs. On a dark theme that
-would leave light text on a light wash — unreadable. So that action alone
+would leave light text on a light wash, which is unreadable. So that action alone
 forces `text-neutral-950`, like real highlighter ink on paper. Every other
 action draws around the text and keeps the inherited color.
 
@@ -61,19 +61,19 @@ annotation = currentAnnotation;
 currentAnnotation.show();`}
 >
 
-`show()` runs Rough Notation's built-in draw animation — typically a left-to-right
+`show()` runs Rough Notation's built-in draw animation, typically a left-to-right
 stroke that lands in `animationDuration` milliseconds (default `600`). The scene
 is a compositor stand-in: `scaleX` from `transform-origin: left`, the same
 direction the sketch grows.
 
-`iterations` (default `2`) is how many sketch passes Rough Notation takes —
+`iterations` (default `2`) is how many sketch passes Rough Notation takes;
 higher looks more hand-drawn. `padding` keeps the stroke off the glyphs;
 `multiline` lets the mark wrap with the text.
 
 </LearnChapter>
 
 <LearnChapter
-  label="When it draws — and when it redraws"
+  label="When it draws, and when it redraws"
   scene={<HighlighterLifecycle />}
   code={`const isInView = useInView(elementRef, {
   once: true,
@@ -98,12 +98,12 @@ React.useLayoutEffect(() => {
 }, [shouldShow, action, color, /* … */]);`}
 >
 
-Two gates keep the sketch honest.
+Two gates decide when the sketch draws.
 
 **In-view.** With `isView`, Framer Motion's `useInView` (once, `margin: "-10%"`)
 holds off until the span crosses into the padded viewport. `shouldShow` is
-`!isView || isInView`, and the layout effect only calls `annotate` when that's
-true — so off-screen highlights don't burn animation budget on first paint.
+`!isView || isInView`, and the layout effect calls `annotate` only when that's
+true, so off-screen highlights don't spend animation work on first paint.
 
 **Resize.** A `ResizeObserver` watches the span *and* `document.body`. On any
 size change it `hide()`s then `show()`s the same annotation, so the SVG remeasures

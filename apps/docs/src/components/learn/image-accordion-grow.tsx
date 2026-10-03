@@ -96,7 +96,7 @@ const PANELS = [
 const LEGEND = [
   {
     name: "Idle panels",
-    desc: "flexGrow: 1 — share the leftover space",
+    desc: "flexGrow: 1, shares the leftover space",
     kind: "idle" as const,
   },
   {

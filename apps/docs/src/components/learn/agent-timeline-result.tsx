@@ -91,7 +91,7 @@ export function AgentTimelineResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — advancing on its own
+          the real component: advancing on its own
         </span>
         <button
           type="button"

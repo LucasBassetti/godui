@@ -836,7 +836,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 | Labels expanding from icons | WAAPI fade, starting when the panel's edge reaches each one (a small top-first cascade), ending with the move | `opacity`, `translate` | `ease-spring-smooth` | ≤ 260ms |
 | Sub-menus, icon collapse / expand | the Accordion's clip window: the box's edge rides the row below, its items hold still with their own row and fade as the edge passes them | `translate`, `opacity` | `ease-spring-smooth` | 260ms |
 | Rail | `transition` | `translate` | `ease-spring-smooth` | 260ms |
-| Gap and container width, button size and padding | snap (collapsing to icons, the panel's content keeps its width until the move ends, when everything it hides has faded) | — | — | — |
+| Gap and container width, button size and padding | snap (collapsing to icons, the panel's content keeps its width until the move ends, when everything it hides has faded) | none | none | none |
 | Mobile (below 768px) | GodUI Sheet | `translate`, `opacity` | `ease-spring-smooth` | 380ms |
 
 The panel, its surface, the content, the rows, the labels and the sub-menus

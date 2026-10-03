@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "tabs",
   "title": "Tabs",
-  "description": "A set of layered sections of content — known as tab panels — that are displayed one at a time. One indicator slides between tabs with a FLIP; GPU-only.",
+  "description": "A set of layered sections of content (known as tab panels) that are displayed one at a time. One indicator slides between tabs with a FLIP; GPU-only.",
   "dependencies": ["radix-ui", "class-variance-authority"],
   "registryDependencies": ["utils", "@godui/godui-motion"],
   "files": [

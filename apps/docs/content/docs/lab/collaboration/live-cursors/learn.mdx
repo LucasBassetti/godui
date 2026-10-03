@@ -17,14 +17,14 @@ learnPlayer: true
 </motion.div>`}
 >
 
-A cursor position arriving over a websocket is noisy by nature — batched,
-occasionally late, never perfectly smooth. Write it straight to `style.left`
-and the cursor teleports every time a message lands. `LiveCursors` never
-does that: every incoming coordinate is a *target* for a spring, not a value
-it paints directly.
+A cursor position arriving over a websocket is noisy: batched, occasionally
+late, never perfectly smooth. Write it straight to `style.left` and the
+cursor teleports every time a message lands. In `LiveCursors`, every
+incoming coordinate is a *target* for a spring, and the spring is what gets
+painted.
 
-The pointer and the name flag are siblings inside one animated `motion.div`
-— only the outer element's `x`/`y` ever moves; the pointer and flag stay in
+The pointer and the name flag are siblings inside one animated `motion.div`.
+Only the outer element's `x`/`y` ever moves, so the pointer and flag stay in
 a fixed relationship to each other. `rounded-tl-sm` on the flag is the same
 idea as the comment pin's `rounded-bl-sm`: leaving one corner square gives
 it a tail, here pointing back up at the cursor tip it's attached to.
@@ -50,21 +50,20 @@ React.useEffect(() => {
 >
 
 `useSpring` holds a motion value that *chases* whatever you `.set()` it to
-— it doesn't jump there. Every new `{ x, y }` prop just retargets the same
+instead of jumping there. Every new `{ x, y }` prop retargets the same
 spring instead of restarting an animation, so a burst of fast updates (a
-teammate scribbling quickly) doesn't queue up a pile of separate tweens;
-the spring just keeps re-aiming at the newest target. `stiffness: 700` is
-high — tuned for something that should feel almost immediate — but never
-zero, so there's always a hint of catch-up motion that reads as "this is a
-person moving," not a value snapping between fixed points.
+teammate scribbling quickly) doesn't queue up a pile of separate tweens.
+The spring keeps re-aiming at the newest target. `stiffness: 700` is high,
+tuned to feel almost immediate, but the lag never reaches zero. The small
+catch-up motion reads as a person moving rather than a value snapping
+between fixed points.
 
-Reduced motion doesn't lower the stiffness or shorten the spring — it swaps
-to `.jump()`, the same instant repositioning a raw update would have done.
-That's a deliberate branch, not the spring config's edge case: someone who
-turned off motion doesn't want a *faster* chase, they want no chase at all.
-Keeping the two paths as an explicit `if` rather than tuning one spring
-down to "fast enough" means reduced motion is guaranteed to be exactly as
-still as it claims, not just less animated.
+Reduced motion keeps the stiffness and spring as they are and swaps to
+`.jump()`, the same instant repositioning a raw update would have done.
+Someone who turned off motion wants no chase at all, and a *faster* chase
+would still move. Keeping the two paths as an explicit `if` rather than
+tuning one spring down to "fast enough" guarantees that reduced motion
+holds completely still.
 
 </LearnChapter>
 
@@ -95,22 +94,21 @@ const tick = () => {
 
 There's no `visible` prop and no manual show/hide state anywhere in this
 component. `AnimatePresence` wraps a `.map()` over `cursors`, keyed by
-`cursor.id` — when the array a caller passes in gains or loses an entry
-(a peer joins, a peer's connection drops), React's own reconciliation is
-what triggers the `initial` or `exit` transition. The component doesn't
-know or care *why* the array changed; it only reacts to the diff.
+`cursor.id`. When the array a caller passes in gains or loses an entry
+(a peer joins, a peer's connection drops), React's own reconciliation
+triggers the `initial` or `exit` transition. The component ignores *why*
+the array changed and reacts only to the diff.
 
-`SimulatedCursors` doesn't animate anything itself — it runs a plain random
+`SimulatedCursors` doesn't animate anything itself. It runs a plain random
 walk in a `requestAnimationFrame` loop (each peer eases 2% of the way
 toward a random target every frame, picking a new target once it arrives)
 and hands the result to `LiveCursors` as ordinary `cursors` prop updates.
-The spring above still does all the actual smoothing; the simulation only
-ever supplies noisy target coordinates, exactly like a real network feed
-would.
+The spring above still does all the smoothing; the simulation only
+supplies noisy target coordinates, the same way a network feed would.
 
 The rAF loop checks `reduce` once and returns immediately if motion is
-disabled — no peers ever move, so there's nothing to interpolate and no
-frames burned animating nobody. The loop itself is cleaned up with
+disabled. No peers move, so nothing gets interpolated and no frames are
+spent. The loop itself is cleaned up with
 `cancelAnimationFrame` on unmount, and each `CursorFlag`'s springs are
 owned by Framer's own lifecycle: no cursor keeps a timer running after
 `AnimatePresence` finishes its exit and removes it from the tree.
@@ -119,10 +117,10 @@ owned by Framer's own lifecycle: no cursor keeps a timer running after
 
 <LearnChapter label="The result" scene={<LiveCursorsResult />} isResult>
 
-A spring retargeted on every update instead of a value painted straight to
-`style`, a reduced-motion path that swaps to instant positioning rather
-than a faster tween, and enter/exit driven entirely by the shape of the
-`cursors` array — no cursor-specific show/hide logic anywhere.
+Each update retargets a spring instead of painting a value straight to
+`style`. Reduced motion swaps to instant positioning rather than a faster
+tween. Enter and exit follow the shape of the `cursors` array, with no
+cursor-specific show/hide logic.
 
 </LearnChapter>
 

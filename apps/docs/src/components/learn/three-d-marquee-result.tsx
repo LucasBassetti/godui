@@ -42,7 +42,7 @@ export function ThreeDMarqueeResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — ambient, no interaction needed
+          the real component: ambient, no interaction needed
         </span>
       </div>
       <div className="h-[26rem] w-full p-6">{demo}</div>

@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "flow-field",
   "title": "Flow Field",
-  "description": "Particles streaming along an evolving noise vector field, leaving silky fading trails. Paints its own themed background.",
+  "description": "Particles streaming along an evolving noise vector field, leaving fading trails. Paints its own themed background.",
   "registryDependencies": ["@godui/godui-theme"],
   "files": [
     {

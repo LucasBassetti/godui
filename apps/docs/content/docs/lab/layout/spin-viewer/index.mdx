@@ -1,6 +1,6 @@
 ---
 title: Spin Viewer
-description: A 360° product viewer — drag to spin an object through a sequence of frames, with optional idle auto-rotate and a touch-friendly hint.
+description: A 360° product viewer. Drag to spin an object through a sequence of frames, with optional idle auto-rotate and a touch-friendly hint.
 date: "2026-07-11"
 workbench: true
 ---
@@ -9,7 +9,7 @@ import { SpinViewerDemo } from "@/components/demos/spin-viewer-demo";
 
 <Workbench>
 
-The Apple-store trick for making a product feel real: let people grab it and spin it. `SpinViewer` turns an ordered sequence of frames into a draggable 360° object — mouse or touch. It preloads every frame so the spin is buttery, idles with a slow auto-rotate until the first grab, and drops a "drag to rotate" hint for first-timers. Perfect for a product hero, an app device shot, or a portfolio centerpiece.
+Let people grab a product and spin it. `SpinViewer` turns an ordered sequence of frames into a 360° object you drag with a mouse or touch. It preloads every frame so the spin never stalls on a load, idles with a slow auto-rotate until the first grab, and shows a "drag to rotate" hint for first-timers. Use it for a product hero, an app device shot, or a portfolio centerpiece.
 
 <Example
   label="Default"
@@ -34,7 +34,7 @@ export function Product() {
 import { SpinViewer } from "@/components/godui/spin-viewer";
 ```
 
-Pass an ordered array of frame URLs — typically 24–48 photos or renders taken a
+Pass an ordered array of frame URLs, typically 24 to 48 photos or renders taken a
 few degrees apart around the object:
 
 ```tsx
@@ -55,13 +55,13 @@ Idle auto-rotate until grabbed, tune the drag feel, or reverse the direction:
 ```
 
 Vertical page scroll still works over the viewer (`touch-action: pan-y`), and
-auto-rotate is disabled under `prefers-reduced-motion` — dragging always works.
+auto-rotate is disabled under `prefers-reduced-motion`. Dragging always works.
 
 ## Props
 
 | Prop | Type | Default | Description |
 | ---- | ---- | ------- | ----------- |
-| `frames` | `string[]` | — | Ordered image URLs, one per rotation frame. |
+| `frames` | `string[]` | none | Ordered image URLs, one per rotation frame. |
 | `autoRotate` | `boolean` | `false` | Spin on its own until the first interaction. |
 | `autoRotateSpeed` | `number` | `12` | Auto-rotate speed, in frames per second. |
 | `sensitivity` | `number` | `6` | Pixels of horizontal drag per frame step. |

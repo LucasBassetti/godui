@@ -27,7 +27,7 @@ const CSS = `
 const LEGEND = [
   {
     name: "Path",
-    desc: "showPath — a faint static circle at radius*2",
+    desc: "showPath: a faint static circle at radius*2",
     kind: "path" as const,
   },
   {

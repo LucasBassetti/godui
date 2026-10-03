@@ -18,23 +18,22 @@ learnPlayer: true
   "group-data-[status=loading]:[transform:rotateX(35deg)]";`}
 >
 
-The fold isn't a separate open/closed component swapped in on hover — it's
-one button whose front face is a hinged plate in 3D space. Tilt it back and
-whatever's underneath becomes visible. Here's the hinge, the three things
-that tilt it, and the bar that lives behind it.
+The fold is one button whose front face is a hinged plate in 3D space. Tilt it
+back and whatever's underneath becomes visible. This page covers the hinge, the
+three things that tilt it, and the bar behind it.
 
 The button sits in a `perspective(800px)` space. Its front face is a single
 element with `transform-origin: top center`, so rotating it on the X axis
-tips the *bottom* edge away from the viewer while the top stays pinned —
+tips the *bottom* edge away from the viewer while the top stays pinned,
 like a flap hinged at the top:
 
 Behind that face, at `-z-[1]`, sits a back layer: a tint that's always
 there, plus a progress bar that's `scaleX(0)` until loading starts.
 
-Three completely different triggers — a mouse hovering, a keyboard user
-tabbing in, a `status` prop flipping to `"loading"` — all resolve to the
-same `rotateX(35deg)`. None of them know or care which of the other two is
-also true; they're just three selectors pointed at one transform.
+Three different triggers (a mouse hovering, a keyboard user tabbing in, a
+`status` prop flipping to `"loading"`) all resolve to the same
+`rotateX(35deg)`. None of them depends on the other two; they're three
+selectors pointed at one transform.
 
 </LearnChapter>
 
@@ -49,8 +48,8 @@ also true; they're just three selectors pointed at one transform.
 >
 
 Once the face is tilted, the back layer is doing one of two things. If you
-pass a `progress` number, the bar is **determinate** — it `scaleX`s from
-the left to that fraction. If you don't, it's **indeterminate** — a fixed
+pass a `progress` number, the bar is **determinate**: it `scaleX`s from
+the left to that fraction. If you don't, it's **indeterminate**: a fixed
 `40%`-wide segment sweeps across on a loop:
 
 ```css
@@ -64,8 +63,8 @@ Both modes stay on the compositor: determinate is `scaleX` against a
 unitless CSS variable (`progress / 100`), indeterminate is a fixed-width
 segment translating left→right. No layout property moves.
 
-Determinate progress can't just start transitioning `scaleX` the instant
-`status` becomes `"loading"` — the CSS variable would already be set to the
+Determinate progress can't start transitioning `scaleX` the instant
+`status` becomes `"loading"`. The CSS variable would already be set to the
 target fraction, and the bar would jump there with no fill animation at
 all. The fix is a two-step state: snap the fill to `0` synchronously, then
 arm the transition one frame later with `requestAnimationFrame`:
@@ -88,7 +87,7 @@ React.useEffect(() => {
 ```
 
 Without `data-armed`, the transition rule is live from the first paint and
-the browser has nothing to animate *from* — the bar would render already
+the browser has nothing to animate *from*, so the bar would render already
 full. With it, the first frame paints at `scaleX(0)` untransitioned, and
 only the second frame turns the transition on, so there's always a "from"
 state to fill away from.
@@ -97,8 +96,8 @@ state to fill away from.
 
 <LearnChapter label="The result" scene={<ProgressFoldResult />} isResult>
 
-One hinge, three triggers, a bar that's either counting up or just letting
-you know it's still working. Click it.
+One hinge, three triggers, and a bar that either counts up or shows it's
+still working. Click it.
 
 </LearnChapter>
 
@@ -107,8 +106,8 @@ you know it's still working. Click it.
 ## Accessibility
 
 The button carries `aria-busy` while loading, plus a visually hidden
-`role="progressbar"` that only exists during that state — `aria-valuenow`
-when determinate, a plain `"Loading"` label when not:
+`role="progressbar"` that only exists during that state. It sets
+`aria-valuenow` when determinate and a plain `"Loading"` label when not:
 
 ```tsx
 {isLoading ? (

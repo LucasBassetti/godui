@@ -48,7 +48,7 @@ export function MorphingDialogDemo() {
 <ComponentInstall registry="lab" componentName="MorphingDialog" />
 
 The trigger and content share a `layoutId`, so opening the dialog morphs the card
-into the modal with an underdamped spring and a blurred backdrop fade — and
+into the modal with an underdamped spring and a blurred backdrop fade, then
 reverses on close. Escape and backdrop clicks dismiss it, body scroll locks while
 open, and the spring is skipped under `prefers-reduced-motion`.
 
@@ -82,8 +82,8 @@ default; pass `open` / `onOpenChange` to control it.
 
 | Prop           | Type                      | Default | Description                              |
 | -------------- | ------------------------- | ------- | ---------------------------------------- |
-| `open`         | `boolean`                 | —       | Controlled open state.                   |
-| `onOpenChange` | `(open: boolean) => void` | —       | Called whenever the open state changes.  |
+| `open`         | `boolean`                 | none       | Controlled open state.                   |
+| `onOpenChange` | `(open: boolean) => void` | none       | Called whenever the open state changes.  |
 
 `MorphingDialogTrigger`, `MorphingDialogContent`, and `MorphingDialogClose`
 forward every standard attribute to their root element. The trigger and content

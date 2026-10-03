@@ -1,6 +1,6 @@
 ---
 title: Anatomy of Light Rays
-description: How a top glow, a repeating-conic fan, a ±6° breathe, and optional film grain stack into volumetric god-rays — all pure CSS.
+description: How a top glow, a repeating-conic fan, a ±6° breathe, and optional film grain stack into volumetric god-rays in pure CSS.
 learnPlayer: true
 ---
 
@@ -20,16 +20,16 @@ repeating-conic-gradient(
 )`}
 >
 
-`LightRays` is three stacked layers and one keyframe. No canvas, no rAF —
-just paint, an oversized transform, and an optional SVG noise overlay. Drop
+`LightRays` is three stacked layers and one keyframe. No canvas and no rAF.
+It uses paint, an oversized transform, and an optional SVG noise overlay. Drop
 it first in a `relative overflow-hidden` container.
 
 Read left → right. Every plate shares the same top-center origin:
 
-1. **Source** — soft ellipse parked just above the frame (`50% -5%`).
-2. **Wedges** — sharp `repeating-conic-gradient` so you can count spokes
+1. **Source**: a soft ellipse parked just above the frame (`50% -5%`).
+2. **Wedges**: a sharp `repeating-conic-gradient` so you can count spokes
    (`step = 360 / rayCount`, default `14`).
-3. **Soft fan** — those wedges at `inset-[-50%]`, `blur(8px)`, faded with a
+3. **Soft fan**: those wedges at `inset-[-50%]`, `blur(8px)`, faded with a
    bottom mask. Oversizing is why a ±6° rotate never flashes an empty edge.
 
 Color defaults to `var(--primary)`. Intensity (`0.6` default) sets the fan
@@ -56,7 +56,7 @@ style={{ "--rays-speed": `${14 / speed}s`, "--rays-angle": `${angle}deg`, … }}
 ```
 
 The needle in the diagram tracks that same arc so the motion is not lost in
-the blur. `motion-reduce:animate-none` freezes the fan — glow and wedges
+the blur. `motion-reduce:animate-none` freezes the fan; the glow and wedges
 stay.
 
 </LearnChapter>
@@ -74,13 +74,14 @@ stay.
 >
 
 Clean fan → `feTurbulence` field → both with `mix-blend-overlay`. Default
-`grain={0.05}` is almost subliminal; set `0` to omit the SVG entirely.
+`grain={0.05}` is barely visible; set `0` to omit the SVG entirely.
 
 </LearnChapter>
 
 <LearnChapter label="The result" scene={<LightRaysResult />} isResult>
 
-Three layers, one keyframe, optional grit — compositor-only the whole way.
+Three layers, one keyframe, and optional grain. Every animated property is
+compositor-only.
 
 </LearnChapter>
 

@@ -1,6 +1,6 @@
 ---
 title: Conversation Thread
-description: A streaming AI chat surface — messages spring in, tokens reveal with a blinking caret, hover actions fade in, and the view auto-sticks to the latest message.
+description: A streaming AI chat surface. Messages spring in, tokens reveal with a blinking caret, hover actions fade in, and the view auto-sticks to the latest message.
 workbench: true
 ---
 
@@ -8,7 +8,7 @@ import { ConversationThreadDemo } from "@/components/demos/conversation-thread-d
 
 <Workbench>
 
-A streaming AI chat surface — messages spring in, tokens reveal with a blinking caret, hover actions fade in, and the view auto-sticks to the latest message.
+A streaming AI chat surface. Messages spring in, tokens reveal with a blinking caret, hover actions fade in, and the view auto-sticks to the latest message.
 
 <Example
   label="Default"
@@ -82,20 +82,20 @@ import {
 
 | Prop        | Type                              | Default | Description                              |
 | ----------- | --------------------------------- | ------- | ---------------------------------------- |
-| `role`      | `"user" \| "assistant" \| "system"` | —     | Determines alignment and tint.           |
-| `name`      | `string`                          | —       | Author label.                            |
-| `avatar`    | `ReactNode`                       | —       | Avatar node.                             |
-| `timestamp` | `string`                          | —       | Time label.                              |
-| `actions`   | `MessageAction[]`                 | —       | Hover actions (copy, regenerate, …).     |
+| `role`      | `"user" \| "assistant" \| "system"` | none     | Determines alignment and tint.           |
+| `name`      | `string`                          | none       | Author label.                            |
+| `avatar`    | `ReactNode`                       | none       | Avatar node.                             |
+| `timestamp` | `string`                          | none       | Time label.                              |
+| `actions`   | `MessageAction[]`                 | none       | Hover actions (copy, regenerate, …).     |
 | `streaming` | `boolean`                         | `false` | Shows a blinking caret while streaming.  |
 
 ### StreamingText
 
 | Prop     | Type         | Default | Description                          |
 | -------- | ------------ | ------- | ------------------------------------ |
-| `text`   | `string`     | —       | Full text to reveal.                 |
+| `text`   | `string`     | none       | Full text to reveal.                 |
 | `chunk`  | `number`     | `2`     | Characters revealed per tick.        |
 | `speed`  | `number`     | `24`    | Milliseconds between ticks.          |
-| `onDone` | `() => void` | —       | Fired when the full text is shown.   |
+| `onDone` | `() => void` | none       | Fired when the full text is shown.   |
 
 </Workbench>

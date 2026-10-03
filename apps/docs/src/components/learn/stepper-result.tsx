@@ -62,7 +62,7 @@ export function StepperResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — walk it forward and back
+          the real component: walk it forward and back
         </span>
       </div>
       <div className="relative flex min-h-[280px] flex-col items-center justify-center gap-8 p-6 md:p-10">

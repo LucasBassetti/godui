@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "image-trail",
   "title": "Image Trail",
-  "description": "Images spawn along the pointer's path, pop in, and drift away — the signature portfolio hover effect.",
+  "description": "Images spawn along the pointer's path, pop in, and drift away, as a portfolio-style hover effect.",
   "registryDependencies": ["@godui/godui-theme"],
   "files": [
     {

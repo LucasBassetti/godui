@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "live-cursors",
   "title": "Live Cursors",
-  "description": "Smoothly interpolated multiplayer cursors with trailing name flags and optional cursor-chat, plus a self-driving simulated-peer mode.",
+  "description": "Interpolated multiplayer cursors with trailing name flags and optional cursor-chat, plus a self-driving simulated-peer mode.",
   "dependencies": ["framer-motion"],
   "registryDependencies": ["@godui/godui-theme"],
   "files": [

@@ -84,7 +84,7 @@ existing imports keep working. It also installs `godui-motion` (easings,
 keyframes, the FLIP hook) into your project, plus the
 `godui-progress-indeterminate` keyframe.
 
-One fix rides along: shadcn reads `value` but never hands it to Radix, so its
+GodUI also fixes a shadcn bug: shadcn reads `value` but never hands it to Radix, so its
 bar has no `aria-valuenow` and always reports `data-state="indeterminate"`.
 GodUI passes `value` through, so screen readers hear the percentage and only a
 missing value counts as indeterminate.

@@ -1,13 +1,13 @@
 ---
 title: Anatomy of the Liquid Glass Card
-description: How a rim-banded displacement map, a chromatic triple-displace filter, and a pointer sheen turn backdrop-filter into living glass — with a clean frost fallback when url() is unsupported.
+description: How a rim-banded displacement map, a chromatic triple-displace filter, and a pointer sheen turn backdrop-filter into refracting glass, with a frost fallback when url() is unsupported.
 learnPlayer: true
 ---
 
 <LearnPlayer>
 
 <LearnChapter
-  label="Frost, sheen, rim — three layers"
+  label="Frost, sheen, rim: three layers"
   scene={<LiquidGlassCardAnatomy />}
   code={`backdropFilter: active
   ? \`blur(\${blur}px) saturate(\${saturation}) url(#\${filterId})\`
@@ -15,10 +15,9 @@ learnPlayer: true
 // WebkitBackdropFilter stays blur+saturate only — Safari can't take url()`}
 >
 
-`LiquidGlassCard` is not a PNG overlay or a static blur. It samples the
-**live DOM** behind the panel through `backdrop-filter`, bends that sample
+`LiquidGlassCard` samples the **live DOM** behind the panel through `backdrop-filter`, bends that sample
 with an SVG displacement map sized to the card, and fringes color at the rim
-by running the bend at three scales. Children stay crisp above the glass in
+by running the bend at three scales. Children stay unblurred above the glass in
 `relative z-raised`.
 
 Three absolute layers share the same rounded box:
@@ -34,12 +33,12 @@ Defaults: `radius={28}`, `blur={2}`, `strength={60}`, `dispersion={0.15}`,
 
 **The map bends the rim, not the center**
 
-`buildDisplacementMap(w, h, band)` paints a data-URL SVG. Under the hood, red
-encodes horizontal shift and green vertical; mid-gray `128`
-(`#800000` / `#008000`) means **no shift**. That channel packing is an SVG
-filter detail — Learn diagrams stay grayscale (dashed mid = no bend) so the
-band shape reads without borrowing map hues. With `band={0.3}` the mid stays
-neutral so only the perimeter bends — the flat-panel / convex-edge look:
+`buildDisplacementMap(w, h, band)` paints a data-URL SVG. Red encodes
+horizontal shift and green vertical; mid-gray `128` (`#800000` / `#008000`)
+means **no shift**. That channel packing is an SVG filter detail. Learn
+diagrams stay grayscale (dashed mid = no bend) so the band shape reads
+without borrowing map hues. With `band={0.3}` the mid stays neutral and only
+the perimeter bends, giving the flat-panel / convex-edge look:
 
 ```tsx
 const lo = (0.5 - band / 2).toFixed(3); // 0.350 at band 0.3
@@ -48,7 +47,7 @@ const hi = (0.5 + band / 2).toFixed(3); // 0.650
 ```
 
 A `ResizeObserver` rebuilds the map whenever the card's content box changes,
-so the rim stays registered to real geometry after fonts load or content
+so the rim stays registered to the card's geometry after fonts load or content
 reflows.
 
 ```tsx
@@ -71,8 +70,8 @@ const map = buildDisplacementMap(size.width, size.height, 0.3);
 `RefractionFilter` runs `feDisplacementMap` three times against the same map,
 isolates R / G / B with `feColorMatrix`, then recombines with
 `feBlend mode="screen"`. Dispersion widens the fringe where the bend is
-strongest. The Learn diagram shows that as **three grayscale offsets** — the
-mechanism is the scale difference, not a rainbow UI.
+strongest. The Learn diagram shows that as **three grayscale offsets**, because
+the mechanism is the scale difference between channels.
 
 | Channel | Scale |
 | --- | --- |
@@ -106,12 +105,12 @@ The sheen layer paints
 on enter / leave with `transition-opacity duration-200`.
 
 Under `prefers-reduced-motion`, pointer updates are **skipped** and the sheen
-layer is `motion-reduce:hidden` — frost stays, specular dies.
+layer is `motion-reduce:hidden`. The frost stays; the specular highlight goes.
 
 **Chrome-only `url()`, clean fallback**
 
-Live-DOM refraction needs `backdrop-filter: url(#id)` — Chrome and Edge
-today. `useRefractionSupport` probes once:
+Live-DOM refraction needs `backdrop-filter: url(#id)`, which only Chrome and
+Edge support today. `useRefractionSupport` probes once:
 
 ```tsx
 CSS.supports("backdrop-filter", "url(#a)")
@@ -128,8 +127,8 @@ broken transparent box. Decorative layers and the filter SVG are
 
 Move across the panel. Watch the rim fringe and the specular follow.
 
-One map, three displaces, one CSS sheen — and a frost fallback when the GPU
-path is unavailable.
+One map, three displaces, and one CSS sheen, with a frost fallback when the
+GPU path is unavailable.
 
 </LearnChapter>
 

@@ -9,7 +9,7 @@ import { SwipeDeckDemo } from "@/components/demos/swipe-deck-demo";
 
 <Workbench>
 
-A tactile way to page through profiles, testimonials, or onboarding screens. Drag the top card — it rotates with the throw and tints toward your intent; release past the threshold and it flies off while the next card springs forward. Drag, use the buttons, or the arrow keys.
+Page through profiles, testimonials, or onboarding screens by throwing cards. Drag the top card and it rotates with the throw and tints toward your intent. Release past the threshold and it flies off while the next card springs forward. Drag, use the buttons, or press the arrow keys.
 
 <Example
   label="Default"
@@ -35,7 +35,7 @@ export function People() {
 
 The front card is a draggable spring; its rotation is mapped from the drag
 distance and the intent badges fade in as you pass a small offset. A release
-past `threshold` — or a fast enough flick — dismisses it with momentum, and the
+past `threshold` (or a fast enough flick) dismisses it with momentum, and the
 deck behind springs up a rank.
 
 ## Usage
@@ -54,7 +54,7 @@ import { SwipeDeck } from "@/components/godui/swipe-deck";
 
 ### Looping
 
-With `loop`, swiped cards are re-appended so the deck never empties — handy for
+With `loop`, swiped cards are re-appended so the deck never empties. Use it for
 testimonial reels.
 
 ```tsx
@@ -77,10 +77,10 @@ spring settling is removed.
 
 | Prop        | Type                                        | Default | Description                                              |
 | ----------- | ------------------------------------------- | ------- | -------------------------------------------------------- |
-| `onSwipe`   | `(index: number, dir: SwipeDirection) => void` | —    | Fired when the front card is swiped away.                |
+| `onSwipe`   | `(index: number, dir: SwipeDirection) => void` | none    | Fired when the front card is swiped away.                |
 | `loop`      | `boolean`                                   | `false` | Re-append swiped cards so the deck never empties.        |
-| `threshold` | `number`                                    | `120`   | Drag distance (px) past which a release dismisses.       |
-| `actions`   | `{ left: string; right: string }`           | —       | Labels for the left/right actions and intent badges.     |
+| `threshold` | `number`                                    | `110`   | Drag distance (px) past which a release dismisses.       |
+| `actions`   | `{ left: string; right: string }`           | none       | Labels for the left/right actions and intent badges.     |
 
 `SwipeDeck` also forwards every standard `<div>` attribute to the root element.
 

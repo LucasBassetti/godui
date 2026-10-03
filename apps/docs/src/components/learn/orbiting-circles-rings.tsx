@@ -44,7 +44,7 @@ const LEGEND = [
   },
   {
     name: "Center",
-    desc: "shared anchor — each ring is its own instance",
+    desc: "shared anchor; each ring is its own instance",
     kind: "center" as const,
   },
 ] as const;

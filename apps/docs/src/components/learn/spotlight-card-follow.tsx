@@ -76,7 +76,7 @@ const LEGEND: {
   },
   {
     name: "setProperty",
-    desc: "direct DOM write on pointer move — zero re-renders",
+    desc: "direct DOM write on pointer move, zero re-renders",
     kind: "cursor",
   },
   {

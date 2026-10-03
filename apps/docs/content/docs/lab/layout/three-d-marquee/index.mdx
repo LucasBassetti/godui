@@ -8,7 +8,7 @@ import { ThreeDMarqueeDemo } from "@/components/demos/three-d-marquee-demo";
 
 <Workbench>
 
-A wall of images laid on a tilted 3D plane, its columns drifting up and down in alternating directions — an ambient, high-impact showcase for a hero background or gallery.
+A wall of images laid on a tilted 3D plane, its columns drifting up and down in alternating directions. Use it as an ambient hero background or gallery.
 
 <Example
   label="Default"
@@ -34,7 +34,7 @@ export function Showcase() {
 
 `ThreeDMarquee` splits `images` into columns, lays them on a
 `rotateX(55deg) rotateZ(-45deg)` plane, and drives an ambient vertical drift per
-column with alternating direction. Give it a sized container — it fills its
+column with alternating direction. Give it a sized container, since it fills its
 parent. Under reduced motion the grid holds still.
 
 ## Usage
@@ -53,7 +53,7 @@ import { ThreeDMarquee } from "@/components/godui/three-d-marquee";
 
 | Prop      | Type       | Default | Description                                    |
 | --------- | ---------- | ------- | ---------------------------------------------- |
-| `images`  | `string[]` | —       | Image URLs to tile across the grid (best 8+).  |
+| `images`  | `string[]` | none       | Image URLs to tile across the grid (best 8+).  |
 | `columns` | `3 \| 4`   | `4`     | Number of columns.                             |
 
 `ThreeDMarquee` also forwards every standard `<div>` attribute to the root.

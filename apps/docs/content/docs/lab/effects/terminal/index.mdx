@@ -9,7 +9,7 @@ import { TerminalDemo } from "@/components/demos/terminal-demo";
 
 <Workbench>
 
-Nothing says "developer tool" like a terminal that types itself. `Terminal` plays a scripted sequence — commands type out character by character with a blinking caret, output lands after a beat — inside a clean window frame. It starts when it scrolls into view, can loop, and collapses to plain text for screen readers and reduced-motion users.
+`Terminal` plays a scripted sequence inside a window frame: commands type out character by character with a blinking caret, and output appears after a short pause. It starts when it scrolls into view, can loop, and collapses to plain text for screen readers and reduced-motion users.
 
 <Example
   label="Default"
@@ -19,7 +19,7 @@ Nothing says "developer tool" like a terminal that types itself. `Terminal` play
 export function Install() {
   return (
     <Terminal
-      title="zsh — godui"
+      title="zsh: godui"
       loop
       lines={[
         { text: "npm install @godui/components", type: "command" },
@@ -73,11 +73,11 @@ blink, and the full transcript is always exposed to assistive tech.
 
 | Prop | Type | Default | Description |
 | ---- | ---- | ------- | ----------- |
-| `lines` | `TerminalLine[]` | — | Scripted lines. Each is `{ text, type?, prompt?, delay? }`. |
+| `lines` | `TerminalLine[]` | none | Scripted lines. Each is `{ text, type?, prompt?, delay? }`. |
 | `typingSpeed` | `number` | `38` | Milliseconds per character while typing a command. |
 | `startOnView` | `boolean` | `true` | Start playing only once scrolled into view. |
 | `loop` | `boolean` | `false` | Restart from the top after finishing. |
-| `title` | `string` | — | Title shown in the window chrome. |
+| `title` | `string` | none | Title shown in the window chrome. |
 | `showChrome` | `boolean` | `true` | Render the traffic-light window chrome. |
 | `promptSymbol` | `string` | `"$"` | Default prompt symbol for command lines. |
 

@@ -35,12 +35,12 @@ const CSS = `
 const LEGEND = [
   {
     name: "Mask ring",
-    desc: "mask-intersect: padding-box + border-box — only the border shows",
+    desc: "mask-intersect of padding-box + border-box, so only the border shows",
     kind: "mask",
   },
   {
     name: "Beam square",
-    desc: "aspect-square, size px — longer streak when size grows",
+    desc: "aspect-square, size px; a longer streak when size grows",
     kind: "beam",
   },
   {

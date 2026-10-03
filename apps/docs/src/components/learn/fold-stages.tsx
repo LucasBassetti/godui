@@ -74,21 +74,21 @@ const COLUMNS: {
 }[] = [
   {
     key: "idle",
-    caption: "idle — rotateX(0deg)",
+    caption: "idle: rotateX(0deg)",
     delay: 0,
     folded: false,
     loading: false,
   },
   {
     key: "hover",
-    caption: "hover / focus — rotateX(35deg)",
+    caption: "hover / focus: rotateX(35deg)",
     delay: 150,
     folded: true,
     loading: false,
   },
   {
     key: "loading",
-    caption: "loading — rotateX(35deg)",
+    caption: "loading: rotateX(35deg)",
     delay: 300,
     folded: true,
     loading: true,

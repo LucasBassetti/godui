@@ -53,7 +53,7 @@ import { ReorderList, ReorderItem } from "@/components/godui/reorder-list";
 ```
 
 Hold `values` in state and pass the matching `setState` as `onReorder`. Each
-`ReorderItem` takes the `value` it represents — use a stable `key`.
+`ReorderItem` takes the `value` it represents. Use a stable `key`.
 
 ```tsx
 <ReorderList values={items} onReorder={setItems}>
@@ -73,15 +73,15 @@ Set `axis="x"` for a horizontal list.
 
 | Prop        | Type                    | Default | Description                               |
 | ----------- | ----------------------- | ------- | ----------------------------------------- |
-| `values`    | `T[]`                   | —       | Ordered values rendered as items.         |
-| `onReorder` | `(values: T[]) => void` | —       | Called with the next order while dragging. |
+| `values`    | `T[]`                   | none       | Ordered values rendered as items.         |
+| `onReorder` | `(values: T[]) => void` | none       | Called with the next order while dragging. |
 | `axis`      | `"x" \| "y"`            | `"y"`   | Drag axis.                                |
 
 ### ReorderItem
 
 | Prop    | Type | Default | Description                                          |
 | ------- | ---- | ------- | ---------------------------------------------------- |
-| `value` | `T`  | —       | The value this item represents within `values`.      |
+| `value` | `T`  | none       | The value this item represents within `values`.      |
 
 Both components forward every standard attribute to their underlying `<ul>` / `<li>`.
 

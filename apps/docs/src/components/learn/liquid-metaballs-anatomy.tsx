@@ -53,7 +53,7 @@ export function LiquidMetaballsAnatomy() {
                 Blobs
               </dt>
               <dd className="text-[12px] text-fd-muted-foreground">
-                blobCount=7 · radius ~8–16% of min side
+                blobCount=7 · radius ~8 to 16% of min side
               </dd>
             </div>
             <div className="flex flex-col gap-1.5">
@@ -62,7 +62,7 @@ export function LiquidMetaballsAnatomy() {
                 Paint
               </dt>
               <dd className="text-[12px] text-fd-muted-foreground">
-                setAttribute cx/cy — no React re-render
+                setAttribute cx/cy, no React re-render
               </dd>
             </div>
             <div className="flex flex-col gap-1.5">

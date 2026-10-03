@@ -82,11 +82,11 @@ const scrollRef = useRef(null);
 | ---- | ---- | ------- | ----------- |
 | `logo` | `ReactNode` | `"GodUI"` | Brand mark on the left |
 | `links` | `HeaderLink[]` | `[]` | Navigation links: `{ label, href }` |
-| `activeHref` | `string` | — | `href` of the active link |
-| `cta` | `ReactNode` | — | Call-to-action node on the right |
+| `activeHref` | `string` | none | `href` of the active link |
+| `cta` | `ReactNode` | none | Call-to-action node on the right |
 | `scrollThreshold` | `number` | `24` | Scroll px before the bar morphs to a pill |
 | `sticky` | `boolean` | `true` | Stick the header to the top |
-| `scrollRef` | `RefObject<HTMLElement>` | — | Scroll container to track (defaults to window) |
-| `onNavigate` | `(href: string) => void` | — | Called on link click (prevents default) |
+| `scrollRef` | `RefObject<HTMLElement>` | none | Scroll container to track (defaults to window) |
+| `onNavigate` | `(href: string) => void` | none | Called on link click (prevents default) |
 
 </Workbench>

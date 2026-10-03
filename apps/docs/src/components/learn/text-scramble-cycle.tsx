@@ -59,8 +59,8 @@ const LEGEND: {
         locked{" "}
         <code className="rounded bg-[var(--muted)] px-1 py-0.5 font-mono text-[0.9em] text-fd-foreground">
           to
-        </code>{" "}
-        — inherits foreground
+        </code>
+        , inherits foreground
       </>
     ),
     kind: "resolved",

@@ -1,6 +1,6 @@
 ---
 title: Combobox
-description: Autocomplete input and command palette with a list of suggestions. The popup grows on a spring; chips pop in and make room smoothly.
+description: Autocomplete input and command palette with a list of suggestions. The popup grows on a spring; chips pop in, and the chips after a removed one slide over.
 workbench: true
 ---
 
@@ -11,10 +11,10 @@ import { ComboboxMultipleDemo } from "@/components/demos/core/combobox-multiple-
 
 The shadcn/ui combobox, built on Base UI like shadcn's own. The popup grows
 from the input and drifts out of it on a spring, and the check pops in on
-the item you select. In multiple mode, each chip you add pops in (the chips
-and checks already there when the combobox or popup mounts don't), and when
-you remove one, the chips after it slide over instead of jumping (FLIP). Only `scale`,
-`translate` and `opacity` animate.
+the item you select. In multiple mode, each chip you add pops in; chips and
+checks already there when the combobox or popup mounts stay still. When you
+remove a chip, the chips after it slide over instead of jumping (FLIP). Only
+`scale`, `translate` and `opacity` animate.
 
 <Example label="Default" story="ui-combobox" code={`"use client";
 
@@ -131,7 +131,7 @@ import {
 | Selected check | `godui-fade-scale-in` from 50% | `scale`, `opacity` | `ease-spring-snappy` | 260ms |
 | Chip added | `godui-fade-scale-in` | `scale`, `opacity` | `ease-spring-snappy` | 260ms |
 | Chip removed | the chips after it FLIP | `translate` | `ease-out-expo` | 260ms |
-| Item highlight | snaps | — | — | — |
+| Item highlight | snaps | none | none | none |
 
 Under `prefers-reduced-motion` the popup, check and chips only fade, and
 chips move into place in one step.

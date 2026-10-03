@@ -20,14 +20,14 @@ if (addTopWall) {
 }`}
 >
 
-`Gravity` isn't a canvas — it's a real, invisible physics world running
-underneath ordinary DOM elements. `matter-js` never draws anything; every
-frame, a sync loop copies each body's position straight into
-`style.transform` on the element you actually see.
+`Gravity` is an invisible physics world running underneath ordinary DOM
+elements. `matter-js` never draws anything; every frame, a sync loop copies
+each body's position straight into `style.transform` on the element you
+see.
 
 The canvas is a plain `relative overflow-hidden` div. On mount, `Gravity`
-adds static rectangle walls just past each edge — `200px` thick, so a body
-moving fast can't tunnel through in a single frame — and every `MatterBody`
+adds static rectangle walls just past each edge (`200px` thick, so a body
+moving fast can't tunnel through in a single frame), and every `MatterBody`
 child becomes one more rectangle or circle body in that same world.
 
 A `ResizeObserver` rebuilds the walls whenever the canvas changes size, so
@@ -39,12 +39,12 @@ The engine is created at render, not in an effect:
 const [engine] = React.useState(() => Matter.Engine.create());
 ```
 
-This is the one non-obvious line in the file. A child `MatterBody`'s effect
-runs and calls `ctx.register(...)` before the parent `Gravity`'s own effect
-runs — React fires child effects first. If the engine were created inside
+This is the one non-obvious line in the file. React fires child effects
+first, so a child `MatterBody`'s effect calls `ctx.register(...)` before the
+parent `Gravity`'s own effect runs. If the engine were created inside
 `Gravity`'s effect, every body registered by a child would already have
 tried to add itself to a `world` that doesn't exist yet. Creating it during
-render (via lazy `useState`) guarantees the engine — and its `world` — exist
+render (via lazy `useState`) guarantees the engine and its `world` exist
 before any child can register a body against it.
 
 `x`/`y` accept a `%` string, a px string, or a number, so a body can be
@@ -58,7 +58,7 @@ function resolve(value: number | string, size: number): number {
 }
 ```
 
-This only runs once, at registration — after that, the body is a free
+This runs once, at registration. After that, the body is a free
 physics object and its position is whatever the simulation computes, not
 the original percentage.
 
@@ -81,15 +81,15 @@ the original percentage.
 
 Matter.js has no idea a DOM exists. A `sync` function, scheduled with
 `requestAnimationFrame`, reads every registered body's `position` and
-`angle` each frame and writes them into the matching element's `transform` —
-nothing else moves the plate.
+`angle` each frame and writes them into the matching element's `transform`.
+Nothing else moves the element.
 
 Subtracting half the element's own width and height re-centers the
 translation, because Matter tracks a body's *center* while `transform`
 moves from the element's top-left origin. `translate`/`rotate` are both
-compositor-only — the browser moves an already-painted layer without
-re-running layout, which is what makes dozens of simultaneously falling
-bodies stay smooth.
+compositor-only: the browser moves an already-painted layer without
+re-running layout, which keeps dozens of simultaneously falling bodies
+smooth.
 
 A single shared `Matter.MouseConstraint` handles every pointer interaction
 in the world. Each `MatterBody` carries its own `isDraggable` flag, checked
@@ -107,7 +107,7 @@ Matter.Events.on(mouseConstraint, "startdrag", (e) => {
 ```
 
 If the body that was grabbed isn't draggable, the constraint's target is
-cleared on the same tick — the pointer never actually attaches, so the body
+cleared on the same tick. The pointer never attaches, so the body
 keeps falling under gravity instead of following the cursor.
 
 </LearnChapter>
@@ -136,16 +136,16 @@ burning frames. An `IntersectionObserver` on the canvas and a
 functions: `resume()` starts the Matter `Runner` and reschedules the rAF
 sync loop; `pause()` stops both.
 
-Either condition failing is enough to pause — visible-but-hidden-tab and
+Either condition failing is enough to pause. Visible-but-hidden-tab and
 intersecting-but-off-screen both stop the simulation, and either one
-becoming true again resumes it exactly where the bodies were left.
+becoming true again resumes it where the bodies were left.
 
 </LearnChapter>
 
 <LearnChapter label="The result" scene={<GravityResult />} isResult>
 
-A matter-js world, invisible and running underneath, mirrored onto the DOM
-one `transform` write per frame — paused the instant nobody's watching.
+An invisible matter-js world mirrored onto the DOM with one `transform`
+write per frame, paused while the canvas is off screen or the tab is hidden.
 
 </LearnChapter>
 
@@ -154,9 +154,9 @@ one `transform` write per frame — paused the instant nobody's watching.
 ## Reduced motion
 
 Under `prefers-reduced-motion`, `Gravity` never creates an engine and
-`MatterBody` never registers — each body just lays itself out statically at
-its authored `x`/`y`/`angle` using ordinary absolute positioning. No physics
-runs, no walls exist, nothing falls.
+`MatterBody` never registers. Each body lays itself out statically at its
+authored `x`/`y`/`angle` using ordinary absolute positioning. No physics
+runs and no walls exist.
 
 ```tsx
 const staticPlacement =

@@ -183,7 +183,7 @@ export function TopographicDriftMarch() {
           </div>
 
           <p className="max-w-[40ch] text-center text-[13px] text-fd-muted-foreground">
-            Filled corners are above the level. The segment is the isoline —
+            Filled corners are above the level. The segment is the isoline,
             interpolated where the field crosses{" "}
             <span className="font-mono text-[12px]">level</span> on each edge.
           </p>

@@ -47,8 +47,8 @@ export function PricingCard() {
 
 <ComponentInstall registry="lab" componentName="SpotlightCard" />
 
-`SpotlightCard` writes the pointer position to CSS variables on each move — no React
-re-render — and reveals a radial gradient that fades in on hover. The border highlight
+`SpotlightCard` writes the pointer position to CSS variables on each move, without a React
+re-render, and reveals a radial gradient that fades in on hover. The border highlight
 is the same gradient masked to the 1px ring.
 
 ## Usage
@@ -82,7 +82,7 @@ import { SpotlightCard } from "@/components/godui/spotlight-card";
 
 ### Single card
 
-A standalone surface — move the pointer across it to see the glow track and the
+A standalone surface. Move the pointer across it to see the glow track and the
 border light up.
 
 <Example

@@ -72,7 +72,7 @@ export function MotionScorePanel({ name }: { name: string }) {
         <span className="inline-flex items-center gap-2.5">
           <TierChip grade={final.grade} size="md" />
           <span className="font-semibold text-foreground text-sm">
-            {final.grade} — {meta.name}
+            {final.grade}: {meta.name}
           </span>
         </span>
       </div>

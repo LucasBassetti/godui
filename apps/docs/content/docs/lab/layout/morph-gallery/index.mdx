@@ -9,7 +9,7 @@ import { MorphGalleryDemo } from "@/components/demos/morph-gallery-demo";
 
 <Workbench>
 
-Click a thumbnail and it morphs — the same image element grows from its grid slot into a fullscreen detail via a shared-layout transition. Move between photos with the arrows or keys; close and it morphs back into place.
+Click a thumbnail and it morphs: the same image element grows from its grid slot into a fullscreen detail via a shared-layout transition. Move between photos with the arrows or keys; close and it morphs back into place.
 
 <Example
   label="Default"
@@ -37,8 +37,8 @@ export function Gallery() {
 <ComponentInstall registry="lab" componentName="MorphGallery" />
 
 The grid image and the detail image share a `layoutId`, so opening and closing
-animate the same element between the two positions with a spring — no cross-fade
-seam. The detail view traps focus, restores it to the originating tile on close,
+animate the same element between the two positions with a spring, so there is no
+cross-fade seam. The detail view traps focus, restores it to the originating tile on close,
 and supports arrow-key and button navigation.
 
 ## Usage
@@ -60,7 +60,7 @@ import { MorphGallery } from "@/components/godui/morph-gallery";
 
 ### Columns
 
-`columns` sets the grid width (2–5); it drops to fewer columns on small screens.
+`columns` sets the grid width (2 to 5); it drops to fewer columns on small screens.
 
 ```tsx
 <MorphGallery columns={4} items={items} />
@@ -78,9 +78,9 @@ cross-fade.
 
 | Prop           | Type                             | Default | Description                                   |
 | -------------- | -------------------------------- | ------- | --------------------------------------------- |
-| `items`        | `MorphGalleryItem[]`             | —       | Images: `{ src, alt, caption? }`.             |
+| `items`        | `MorphGalleryItem[]`             | none       | Images: `{ src, alt, caption? }`.             |
 | `columns`      | `2 \| 3 \| 4 \| 5`               | `3`     | Grid column count.                            |
-| `onOpenChange` | `(index: number \| null) => void` | —      | Fired when the detail view opens or closes.   |
+| `onOpenChange` | `(index: number \| null) => void` | none      | Fired when the detail view opens or closes.   |
 
 `MorphGallery` also forwards every standard `<div>` attribute to the root element.
 

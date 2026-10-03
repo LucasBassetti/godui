@@ -70,13 +70,13 @@ Set `direction="down"` to count from `value` to `startValue`.
 
 | Prop            | Type              | Default | Description                                                        |
 | --------------- | ----------------- | ------- | ------------------------------------------------------------------ |
-| `value`         | `number`          | —       | Target value the ticker animates to (or from, when counting down). |
+| `value`         | `number`          | none       | Target value the ticker animates to (or from, when counting down). |
 | `startValue`    | `number`          | `0`     | Value the counter starts at.                                       |
 | `direction`     | `"up" \| "down"`  | `"up"`  | `"up"` counts toward `value`; `"down"` counts from `value`.        |
 | `delay`         | `number`          | `0`     | Delay in seconds before the animation begins once in view.         |
 | `decimalPlaces` | `number`          | `0`     | Number of decimal places to render.                                |
-| `damping`       | `number`          | `60`    | Spring damping — higher is less bouncy.                            |
-| `stiffness`     | `number`          | `100`   | Spring stiffness — higher is faster.                               |
+| `damping`       | `number`          | `60`    | Spring damping. Higher is less bouncy.                            |
+| `stiffness`     | `number`          | `100`   | Spring stiffness. Higher is faster.                               |
 
 `NumberTicker` also forwards every standard `<span>` attribute (`className`,
 `style`, `id`, …) to the root element.

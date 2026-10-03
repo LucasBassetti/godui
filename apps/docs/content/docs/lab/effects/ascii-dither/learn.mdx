@@ -1,6 +1,6 @@
 ---
 title: Anatomy of ASCII Dither
-description: How a photo or video becomes a live field of characters and halftone dots — sampled to a low-res grid, mapped by luminance, and revealed with a center-out wipe and a pointer focus-lens, all on a single 2D canvas.
+description: How a photo or video becomes a live field of characters and halftone dots. It is sampled to a low-res grid, mapped by luminance, and revealed with a center-out wipe and a pointer focus-lens, all on one 2D canvas.
 learnPlayer: true
 ---
 
@@ -18,16 +18,16 @@ octx.drawImage(source, (cols - dw) / 2, (rows - dh) / 2, dw, dh);
 pixels = octx.getImageData(0, 0, cols, rows).data;`}
 >
 
-The whole effect starts by throwing away resolution. The source — image or video
-— is drawn *"contain"* into a tiny offscreen canvas that's exactly `cols × rows`,
+The effect starts by throwing away resolution. The source (image or video) is
+drawn *"contain"* into a tiny offscreen canvas that's exactly `cols × rows`,
 one pixel per output cell. Reading it back with `getImageData` gives a flat
 `RGBA` buffer: the average color of each cell, for free, courtesy of the
 browser's own downscaling.
 
-Nothing about the source's real dimensions survives — a 4K photo and a 400px
+The source's real dimensions don't survive. A 4K photo and a 400px
 thumbnail both collapse to the same little grid, so the cost of a frame scales
 with the *grid*, not the media. Cross-origin sources without CORS throw on
-`getImageData`; that's caught and the field simply stays empty rather than
+`getImageData`; the error is caught and the field stays empty instead of
 crashing.
 
 </LearnChapter>
@@ -52,12 +52,12 @@ Each cell reduces to a single number: **ink coverage**, the perceptual luminance
 (Rec. 601 weights) flipped so dark pixels want more ink. That one value feeds
 both variants.
 
-For **ASCII**, ink indexes the character ramp `" .:-=+*#%@"` — bright cells land
+For **ASCII**, ink indexes the character ramp `" .:-=+*#%@"`. Bright cells land
 on a space, dark cells on `@`, and the glyph is stamped dead-center in its cell
 with `textAlign`/`textBaseline` set to `center`/`middle`.
 
 For **dither**, ink is thresholded against a 4×4 **Bayer** matrix (or diffused
-with **Floyd–Steinberg**) and quantized to `levels` steps — `2` gives crisp
+with **Floyd-Steinberg**) and quantized to `levels` steps; `2` gives crisp
 1-bit halftone. The surviving level sets the dot's size, drawn as a square or a
 circle. Either way the color comes from `color`: the `--foreground` token, the
 sampled source pixel, or any CSS string.
@@ -76,15 +76,15 @@ const focus = clamp01(1 - Math.hypot(px - ptr.x, py - ptr.y) / lensRadius);
 alpha *= 0.25 + 0.75 * easeInOut(focus);`}
 >
 
-Because every cell is drawn by hand each frame, motion is just a per-cell alpha
-term — no extra layers, no DOM. The **reveal** compares each cell's normalized
+Because every cell is drawn by hand each frame, motion is a per-cell alpha
+term with no extra layers or DOM nodes. The **reveal** compares each cell's normalized
 distance from center against an advancing `revealP`, so the field resolves in a
 soft wipe outward from the middle the first time it scrolls into view.
 
 The **focus-lens** turns the pointer into a magnifier of *detail*: a cell's alpha
 falls off with its distance from the cursor, so glyphs snap sharp under the
 pointer and recede to a quarter-opacity ghost further out. (The scene above fakes
-the cursor with a roaming window — the real component tracks `pointermove`.) Both
+the cursor with a roaming window; the real component tracks `pointermove`.) Both
 effects stack multiplicatively on the same `alpha`, so a cell revealing *and*
 sitting outside the lens gets both discounts at once.
 
@@ -93,7 +93,7 @@ sitting outside the lens gets both discounts at once.
 <LearnChapter label="The result" scene={<AsciiDitherResult />} isResult>
 
 A tiny offscreen sample, one luminance per cell, a ramp or a Bayer threshold, and
-two alpha terms — that's a photo turned into living type on one canvas. Hover it
+two alpha terms turn a photo into living type on one canvas. Hover it
 to sweep the lens; it cycles variants and color modes on its own.
 
 </LearnChapter>
@@ -102,9 +102,9 @@ to sweep the lens; it cycles variants and color modes on its own.
 
 ## Cheap when idle
 
-The render loop only runs when something is actually moving. A **static image with
-no motion flags draws exactly once** and then sits there — no `requestAnimationFrame`
-at all.
+The render loop runs only when something moves. A **static image with
+no motion flags draws exactly once** and never starts a `requestAnimationFrame`
+loop.
 
 ```tsx
 const needsLoop = () =>
@@ -134,7 +134,7 @@ The container is a single `role="img"` labelled by `alt`; the canvas underneath
 is decorative, so it isn't announced separately. Under
 `prefers-reduced-motion` the reveal and glitch are skipped, the loop never starts
 for those effects, and a video source is drawn as one still frame instead of
-playing — the reader gets the picture, not the animation.
+playing.
 
 ## Motion Score
 

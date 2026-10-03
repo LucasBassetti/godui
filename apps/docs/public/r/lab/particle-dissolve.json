@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "particle-dissolve",
   "title": "Particle Dissolve",
-  "description": "Text or an image is sampled into particles that scatter and reform — a dramatic entrance or transition.",
+  "description": "Text or an image is sampled into particles that scatter and reform, as an entrance or a transition.",
   "dependencies": ["framer-motion"],
   "registryDependencies": ["@godui/godui-theme"],
   "files": [

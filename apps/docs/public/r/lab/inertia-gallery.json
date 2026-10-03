@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "inertia-gallery",
   "title": "Inertia Gallery",
-  "description": "A horizontal gallery you throw with the pointer — momentum carries it, it rubber-bands at the ends, and slides scale, blur, and fade with distance from center.",
+  "description": "A horizontal gallery you throw with the pointer. Momentum carries it, it rubber-bands at the ends, and slides scale, blur, and fade with distance from center.",
   "dependencies": ["framer-motion"],
   "registryDependencies": ["@godui/godui-theme"],
   "files": [

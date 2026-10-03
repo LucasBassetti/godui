@@ -14,14 +14,14 @@ learnPlayer: true
 
 `BorderBeam` never draws a travelling stroke. A square sits on
 `offsetPath: rect(...)`, `offsetDistance` loops forever, and a dual-layer
-mask reveals only the border ring — so the square looks like light skating
+mask reveals only the border ring, so the square looks like light skating
 the edge.
 
 The host is `absolute inset-0`, `pointer-events-none`,
 `rounded-[inherit]`. Its border is transparent but sized via
-`--border-beam-width`. The mask composite is the trick: one layer clips to
-`padding-box`, the other to `border-box`, intersected — everything inside the
-padding edge disappears, leaving a hollow ring where the beam can show.
+`--border-beam-width`. The mask composite does the work: one layer clips to
+`padding-box`, the other to `border-box`, and the two intersect. Everything
+inside the padding edge disappears, leaving a hollow ring where the beam can show.
 
 Inside that ring, an `aspect-square` `motion.div` gets:
 
@@ -48,8 +48,8 @@ to a thin line; the mask does that job for free.
 
 Motion is a single property: `offsetDistance`. Default travel runs
 `[initialOffset%, 100 + initialOffset%]` on an infinite linear loop.
-`reverse` doesn't set `direction: "reverse"` — it swaps the tween to
-`[100 − initialOffset%, −initialOffset%]` so the timeline still plays
+`reverse` swaps the tween to `[100 − initialOffset%, −initialOffset%]`
+instead of setting `direction: "reverse"`, so the timeline still plays
 forward through opposite percentages.
 
 `delay` is applied as `delay: -delay` so a late start still looks mid-loop
@@ -65,14 +65,14 @@ instead of waiting from rest.
 >
 
 With `rainbow` (the default), the square paints
-`RAINBOW_BEAM` — the same hue order as MagicButton
+`RAINBOW_BEAM`, the same hue order as MagicButton
 (`rainbow-1 → 5 → 3 → 4 → transparent`), trailing off so the streak reads as
 a comet. Flip `rainbow={false}` and the utilities
 `from-(--color-from) via-(--color-to) to-transparent` take over.
 
 `glow` duplicates the square behind the main beam at `opacity-60 blur-md`,
-same `animate` / `transition` — a soft neon echo without a second motion
-timeline to keep in sync.
+with the same `animate` / `transition`. The result is a soft neon echo with no
+second motion timeline to keep in sync.
 
 </LearnChapter>
 
@@ -88,8 +88,8 @@ Mask the ring, park a gradient square on `offsetPath`, loop
 ## Reduced motion
 
 `useReducedMotion()` freezes `offsetDistance` at `${initialOffset}%` with
-`duration: 0`. The ring still shows a colored tick at the start position —
-no orbit.
+`duration: 0`. The ring still shows a colored tick at the start position
+and doesn't orbit.
 
 ## Motion Score
 

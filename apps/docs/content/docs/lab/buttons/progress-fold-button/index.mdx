@@ -91,12 +91,12 @@ import { ProgressFoldButton } from "@/components/godui/progress-fold-button";
 ```
 
 The front face folds back on hover, revealing the layers behind it. Set
-`status="loading"` to hold the fold open and run a progress bar — controlled by
-you, like the Magic Input.
+`status="loading"` to hold the fold open and run a progress bar. You control it,
+like the Magic Input.
 
 `status` and `progress` are fully controlled. While `status="loading"` the front
-face folds open and a progress bar runs behind it — determinate when you pass
-`progress`, otherwise an indeterminate segment sweeps across. Back to `idle` and
+face folds open and a progress bar runs behind it. It is determinate when you pass
+`progress`; otherwise an indeterminate segment sweeps across. Back to `idle` and
 the front folds flat again.
 
 Wire it up by flipping `status` from your handler:
@@ -135,6 +135,6 @@ export function Example() {
 | `variant` | `"primary" \| "secondary"` | `"primary"` | Front face color scheme |
 | `size` | `"sm" \| "md" \| "lg"` | `"md"` | Button padding and text size |
 | `status` | `"idle" \| "loading"` | `"idle"` | Fold open and show the progress bar while loading |
-| `progress` | `number` | — | 0–100; makes loading determinate (omit for indeterminate) |
+| `progress` | `number` | none | 0 to 100; makes loading determinate (omit for indeterminate) |
 
 </Workbench>

@@ -22,7 +22,7 @@ const FEATURES = [
   {
     icon: ScrollText,
     title: "Audit logs",
-    body: "Know who did what, and when — exportable on demand.",
+    body: "Know who did what, and when. Export it on demand.",
   },
 ];
 

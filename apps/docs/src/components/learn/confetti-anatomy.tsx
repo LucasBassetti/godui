@@ -54,12 +54,12 @@ const CSS = `
 const LEGEND = [
   {
     name: "spread",
-    desc: "70° cone — how wide the burst fans",
+    desc: "70° cone: how wide the burst fans",
     kind: "spread",
   },
   {
     name: "startVelocity",
-    desc: "45 — how far chips travel from origin",
+    desc: "45: how far chips travel from origin",
     kind: "velocity",
   },
   {

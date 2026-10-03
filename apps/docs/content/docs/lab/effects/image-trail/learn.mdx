@@ -17,16 +17,16 @@ slotIndex.current += 1;
 img.src = images[imageIndex.current % images.length];`}
 >
 
-`ImageTrail` doesn't mount a new `<img>` every time the pointer moves. It
-keeps a fixed pool of slots, skips spawns until you've travelled far enough,
-and drives each appearance with `element.animate()` — direct style writes,
+`ImageTrail` keeps a fixed pool of `<img>` slots instead of mounting a new one
+on every pointer move. It skips spawns until you've travelled far enough and
+drives each appearance with `element.animate()`: direct style writes, with
 zero React updates on the hot path.
 
 On render, `max` (default 12) invisible `<img>` nodes are created once and
 stored in `slots.current`. Each spawn takes `slots[slotIndex % max]`, bumps
 the index, swaps `src` from the `images` array, and animates. When the pool
-wraps, the oldest slot is reused mid-flight — that's intentional: the
-previous animation is simply overwritten.
+wraps, the oldest slot is reused mid-flight on purpose, and its
+previous animation is overwritten.
 
 </LearnChapter>
 
@@ -42,7 +42,7 @@ last.current = { x, y };`}
 
 `onPointerMove` converts the event to container-local coordinates and
 compares against `last`. If `Math.hypot(dx, dy)` is under `threshold`
-(default 64px), the handler returns — no spawn, no animation. Past the
+(default 64px), the handler returns without spawning or animating. Past the
 threshold, `atan2(dy, dx)` becomes a clamped tilt (±12°) so each image leans
 slightly into the direction of travel.
 
@@ -71,10 +71,10 @@ path calls `setState`.
 
 <LearnChapter label="The result" scene={<ImageTrailResult />} isResult>
 
-Move across the stage — images spawn only after you've travelled, then drift
+Move across the stage. Images spawn only after you've travelled, then drift
 away on their own timeline.
 
-One recycled pool, one distance check, one `animate()` call — that's the
+One recycled pool, one distance check, and one `animate()` call make up the
 whole trail.
 
 </LearnChapter>
@@ -83,9 +83,9 @@ whole trail.
 
 ## Reduced motion
 
-`motion-reduce:grid` reveals a calm static gallery of the first five images;
-`motion-reduce:hidden` hides the live pool. No trail, no WAAPI — just a quiet
-row of photos.
+`motion-reduce:grid` shows a static gallery of the first five images;
+`motion-reduce:hidden` hides the live pool. The user sees a row of photos with
+no trail and no WAAPI.
 
 ```tsx
 <div className="… hidden place-items-center motion-reduce:grid">

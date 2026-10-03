@@ -10,9 +10,9 @@ const appDir = resolve(
 );
 
 const SITE_URL = "https://godui.design";
-const SITE_TITLE = "GodUI — UI Collection for Modern Interfaces";
+const SITE_TITLE = "GodUI: UI Collection for Modern Interfaces";
 const SITE_DESCRIPTION =
-  "An open-source collection of beautifully crafted motion components built with React, TypeScript, Tailwind CSS, Motion, and shadcn/ui.";
+  "An open-source collection of animated components built with React, TypeScript, Tailwind CSS, Motion, and shadcn/ui.";
 
 const pages = [
   {
@@ -109,7 +109,7 @@ for (const page of pages) {
     const expectedCanonical =
       page.path === "/" ? SITE_URL : `${SITE_URL}${page.path}`;
     const expectedTitle =
-      page.path === "/" ? page.title : `${page.title} — GodUI`;
+      page.path === "/" ? page.title : `${page.title} | GodUI`;
 
     assert.deepEqual(metadata, {
       title: expectedTitle,

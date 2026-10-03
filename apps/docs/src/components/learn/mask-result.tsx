@@ -31,7 +31,7 @@ export function MaskResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — hover, focus, or press each
+          the real component: hover, focus, or press each
         </span>
       </div>
       <div className="flex min-h-[240px] flex-wrap items-center justify-center gap-6 p-10">

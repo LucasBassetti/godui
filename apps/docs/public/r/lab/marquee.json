@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "marquee",
   "title": "Marquee",
-  "description": "An infinite, seamless scrolling row or column of content that pauses on hover.",
+  "description": "An infinite scrolling row or column of content that loops without a gap and pauses on hover.",
   "registryDependencies": ["@godui/godui-theme"],
   "files": [
     {

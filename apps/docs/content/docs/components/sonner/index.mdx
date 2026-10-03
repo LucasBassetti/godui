@@ -106,9 +106,9 @@ toast("Event has been created.");
 | Interaction | Keyframe / mechanism | Properties | Easing | Duration |
 | --- | --- | --- | --- | --- |
 | Enter, exit, stack | sonner's transitions | `transform`, `opacity` | `ease-spring-snappy` | 400ms |
-| Stack expand (heights) | snaps | — | — | — |
-| Swipe to dismiss | pointer-driven `transform` | `transform` | — | live |
-| Action, cancel, close buttons | sonner's transition | `opacity` | — | sonner's |
+| Stack expand (heights) | snaps | none | none | none |
+| Swipe to dismiss | pointer-driven `transform` | `transform` | none | live |
+| Action, cancel, close buttons | sonner's transition | `opacity` | none | sonner's |
 
 Sonner injects its stylesheet unlayered, so GodUI's overrides use
 `!important`; only `transition-property` and the easing are forced. Sonner's

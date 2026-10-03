@@ -14,9 +14,9 @@ const distance = Math.abs(index - reveal.activeIndex);
 const depth = reveal.maxDepth != null ? Math.min(distance, reveal.maxDepth) : distance;`}
 >
 
-Progressive Card Reveal never toggles a card's own "am I open" flag — every
+Progressive Card Reveal never toggles a card's own "am I open" flag. Every
 card compares its position to one shared `activeIndex` and funnels its width
-accordingly. Here's how five cards asking the same question produces a
+accordingly. This page covers how five cards asking the same question produce a
 symmetric funnel, and the one place this component chooses a real layout
 animation over a transform trick.
 
@@ -32,9 +32,9 @@ function collapsedWidth(distance: number) {
 }
 ```
 
-No card knows about its siblings. The funnel — wider near the active card,
-narrower toward the edges — is an emergent property of five independent
-`distance` calculations, not a hand-authored gradient.
+No card knows about its siblings. The funnel (wider near the active card,
+narrower toward the edges) comes from five independent `distance`
+calculations. Nobody authors it as a gradient.
 
 </LearnChapter>
 
@@ -52,29 +52,28 @@ narrower toward the edges — is an emergent property of five independent
 >
 
 `width` and `borderRadius` are the only two properties that change when a
-card expands or collapses, and both ride on `motion.div`'s `layout` prop —
+card expands or collapses, and both ride on `motion.div`'s `layout` prop:
 a real FLIP measure-and-tween, the one deliberate exception to
-transform-only motion in this component. It's justified here because the
-funnel is a genuine width *handoff*: the active card actually needs more of
-the row's real width, and its neighbours actually need to give some up — a
-`scale` transform can't redistribute space between siblings, only a layout
-animation can.
+transform-only motion in this component. The funnel is a width *handoff*:
+the active card needs more of the row's real width, and its neighbours need
+to give some up. A `scale` transform can't redistribute space between
+siblings. Only a layout animation can.
 
-`LAYOUT_TRANSITION` is `{ stiffness: 320, damping: 32, mass: 0.9 }` — kept
+`LAYOUT_TRANSITION` is `{ stiffness: 320, damping: 32, mass: 0.9 }`, kept
 close to critically damped (critical ≈ 2·√stiffness ≈ 35.8) on purpose.
 Underdamping here would make the moving edges wobble as the width settles,
 which reads as a flick rather than a resize.
 
-`borderRadius` is set via `style`, not `animate`. Framer only applies its
-inverse-scale correction to radius when it's a style value — animating it
-through `animate` instead would let the layout scale-correction warp the
+`borderRadius` is set via `style` instead of `animate`. Framer only applies its
+inverse-scale correction to radius when it's a style value. Animating it
+through `animate` would let the layout scale-correction warp the
 corners as the box resizes.
 
 The collapsed and expanded content are two different subtrees, swapped by
 `AnimatePresence mode="popLayout"`. `popLayout` pulls the exiting view out of
 document flow, so the parent's width/height morph and the content's
 crossfade run *together* instead of the crossfade waiting for the resize to
-finish. Each subtree also carries `layout="position"` — it keeps its own box
+finish. Each subtree also carries `layout="position"`, which keeps its own box
 unscaled while the parent resizes around it, so text never stretches
 mid-morph.
 
@@ -88,12 +87,12 @@ mid-morph.
 </AnimatePresence>
 ```
 
-The collapsed pill's `exit` has `duration: 0` — on click it vanishes
+The collapsed pill's `exit` has `duration: 0`. On click it vanishes
 instantly instead of fading out, so the expanded view never crossfades over
 a lingering ghost of the pill it replaced.
 
-Hovering a collapsed card scales it to `1.03` via `whileHover` — a transform,
-not a width change. Reusing `width` for the hover lift would re-lay-out the
+Hovering a collapsed card scales it to `1.03` via `whileHover`, a transform
+instead of a width change. Reusing `width` for the hover lift would re-lay-out the
 card's right-aligned content on every spring frame, which reads as a
 flicker. `scale` and `width` are independent animated values on the same
 element, so a later `activeIndex` change still updates width correctly even
@@ -103,9 +102,9 @@ mid-hover.
 
 <LearnChapter label="The result" scene={<ProgressiveCardRevealResult />} isResult>
 
-One shared index, a distance formula five cards each run for themselves, and
-one deliberate layout animation for the width handoff a transform can't
-fake — that's the whole funnel.
+The funnel is one shared index, a distance formula each of the five cards runs
+for itself, and one deliberate layout animation for the width handoff a
+transform can't fake.
 
 </LearnChapter>
 
@@ -116,7 +115,7 @@ fake — that's the whole funnel.
 Collapsed cards are real `<button>` elements with `aria-expanded={false}`,
 so the whole stack is keyboard- and screen-reader-navigable without any
 custom logic. Under `prefers-reduced-motion`, `layout` is disabled entirely
-and every transition collapses to `{ duration: 0 }` — cards jump straight to
+and every transition collapses to `{ duration: 0 }`. Cards jump straight to
 their target width instead of morphing.
 
 ## Motion Score

@@ -49,7 +49,7 @@ const LEGEND = [
   },
   {
     name: "pathLength",
-    desc: "SVG stroke fill fraction — 0 empty, 1 complete",
+    desc: "SVG stroke fill fraction: 0 empty, 1 complete",
     kind: "path",
   },
 ] as const;

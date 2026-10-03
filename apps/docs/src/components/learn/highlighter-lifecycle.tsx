@@ -58,7 +58,7 @@ const LEGEND: {
 }[] = [
   {
     name: "In-view gate",
-    desc: "useInView once, margin −10% — annotate only when shouldShow",
+    desc: "useInView once, margin −10%; annotate only when shouldShow",
     kind: "gate",
   },
   {

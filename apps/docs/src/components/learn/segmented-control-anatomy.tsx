@@ -32,7 +32,7 @@ const CSS = `
 const LEGEND: { name: string; desc: string; swatch: string }[] = [
   {
     name: "Track",
-    desc: 'role="tablist" — bg-muted, rounded, p-1',
+    desc: 'role="tablist": bg-muted, rounded, p-1',
     swatch:
       "h-3 w-8 rounded-md bg-[var(--muted)] ring-1 ring-fd-border ring-inset",
   },

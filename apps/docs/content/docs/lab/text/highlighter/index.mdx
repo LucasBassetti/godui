@@ -1,6 +1,6 @@
 ---
 title: Highlighter
-description: Draw hand-drawn sketch annotations over inline text — highlight, underline, box, circle, and more. Powered by Rough Notation.
+description: Draw hand-drawn sketch annotations (highlight, underline, box, circle, and more) over inline text. Powered by Rough Notation.
 workbench: true
 ---
 
@@ -79,7 +79,7 @@ Wrap any inline text. The annotation is drawn over the element on mount.
 ```
 
 The `highlight` action paints a pale marker behind the text and renders it in
-dark ink — like a real highlighter pen — so it stays legible in both light and
+dark ink, like a real highlighter pen, so it stays legible in both light and
 dark mode. The other actions draw around the text and keep the inherited color.
 
 ### Animate on scroll
@@ -111,7 +111,7 @@ Set `isView` to defer the draw-in animation until the element scrolls into view.
 
 ### In a sentence
 
-Drop it around any inline word — the sketch draws over the text in place.
+Wrap it around any inline word and the sketch draws over the text in place.
 
 <Example
   label="In a Sentence"
@@ -163,7 +163,7 @@ export function HighlighterTuned() {
 
 | Prop | Type | Default | Description |
 | ---- | ---- | ------- | ----------- |
-| `children` | `ReactNode` | — | Inline text to annotate |
+| `children` | `ReactNode` | none | Inline text to annotate |
 | `action` | `"highlight" \| "underline" \| "box" \| "circle" \| "strike-through" \| "crossed-off" \| "bracket"` | `"highlight"` | Annotation style |
 | `color` | `string` | `"#ffd1dc"` | Annotation color (any CSS color string) |
 | `strokeWidth` | `number` | `1.5` | Stroke width of the annotation |

@@ -68,7 +68,7 @@ import { Globe } from "@/components/godui/globe";
 ### Custom markers and colors
 
 `config` is merged over the defaults and accepts any
-[cobe option](https://github.com/shuding/cobe#props) — markers, arcs, colors, glow.
+[cobe option](https://github.com/shuding/cobe#props), including markers, arcs, colors and glow.
 
 ```tsx
 <Globe
@@ -86,7 +86,7 @@ import { Globe } from "@/components/godui/globe";
 
 | Prop     | Type                    | Default | Description                                       |
 | -------- | ----------------------- | ------- | ------------------------------------------------- |
-| `config` | `Partial<COBEOptions>`  | —       | Override any cobe option (markers, colors, glow). |
+| `config` | `Partial<COBEOptions>`  | none       | Override any cobe option (markers, colors, glow). |
 
 `Globe` also forwards every standard `<div>` attribute to the root element.
 

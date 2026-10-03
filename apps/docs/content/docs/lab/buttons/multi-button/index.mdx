@@ -280,14 +280,14 @@ These props apply to both `MultiButton` and `CompactMultiButton`.
 
 | Prop | Type | Default | Description |
 | ---- | ---- | ------- | ----------- |
-| `items` | `MultiButtonItem[]` | — | Two or more ordered actions; the item count is not fixed |
+| `items` | `MultiButtonItem[]` | none | Two or more ordered actions; the item count is not fixed |
 | `variant` | `"default" \| "outline" \| "secondary" \| "ghost"` | `"default"` | Surface treatment |
 | `size` | `"sm" \| "md" \| "lg"` | `"md"` | Control height, icon scale, and label typography |
-| `syncWidthTo` | `MultiButtonItem[]` | — | Reserves label space from another item set without a group |
-| `highlightColor` | `string` | — | CSS color or token reference for the faint active-action tint |
+| `syncWidthTo` | `MultiButtonItem[]` | none | Reserves label space from another item set without a group |
+| `highlightColor` | `string` | none | CSS color or token reference for the faint active-action tint |
 | `gooey` | `boolean` | `false` | Uses the elastic SVG metaball treatment instead of Original motion |
-| `className` | `string` | — | Adds classes to the rail root |
-| `style` | `React.CSSProperties` | — | Adds inline styles to the rail root |
+| `className` | `string` | none | Adds classes to the rail root |
+| `style` | `React.CSSProperties` | none | Adds inline styles to the rail root |
 
 The root also accepts compatible `HTMLDivElement` attributes. Internal interaction handlers are composed with consumer handlers.
 
@@ -295,9 +295,9 @@ The root also accepts compatible `HTMLDivElement` attributes. Internal interacti
 
 | Prop | Type | Default | Description |
 | ---- | ---- | ------- | ----------- |
-| `selectedId` | `string` | — | Required ID of the selected action, independent of a custom collapsed trigger |
+| `selectedId` | `string` | none | Required ID of the selected action, independent of a custom collapsed trigger |
 | `iconOnly` | `boolean` | `false` | Keeps labels hidden after Compact expands |
-| `restIcon` | `MultiButtonItem["icon"]` | — | Independent collapsed-trigger icon that crossfades to the selected action icon as opening begins; it is not part of `items` |
+| `restIcon` | `MultiButtonItem["icon"]` | none | Independent collapsed-trigger icon that crossfades to the selected action icon as opening begins; it is not part of `items` |
 | `restAriaLabel` | `string` | `"Open actions"` | Accessible name for the independent collapsed trigger |
 
 ## MultiButtonItem
@@ -317,6 +317,6 @@ The root also accepts compatible `HTMLDivElement` attributes. Internal interacti
 
 | Prop | Type | Default | Description |
 | ---- | ---- | ------- | ----------- |
-| `children` | `React.ReactNode` | — | Descendant Standard or Compact rails whose reserved label widths should match |
+| `children` | `React.ReactNode` | none | Descendant Standard or Compact rails whose reserved label widths should match |
 
 </Workbench>

@@ -34,11 +34,11 @@ export function Download() {
 
 ## Scan to download
 
-Add the `qr` prop and the badge gains the pro "scan to download" behaviour: on a
+Add the `qr` prop and the badge gains "scan to download" behaviour: on a
 desktop (fine pointer), hovering or focusing the badge reveals a QR popover that
-encodes the badge's `href` (or `qrUrl`) — so a laptop visitor can install on
+encodes the badge's `href` (or `qrUrl`), so a laptop visitor can install on
 their phone. On touch, the popover is skipped and the badge links normally. The
-QR is generated on the client from the URL — no image, no setup.
+QR is generated on the client from the URL, with no image or setup.
 
 <Example
   label="Scan To Download"
@@ -64,7 +64,7 @@ import { StoreBadge, StoreBadgeGroup } from "@/components/godui/store-badge";
 <StoreBadge store="app-store" href="https://apps.apple.com/app/id6761287549" qr />
 ```
 
-The `QrCode` primitive is exported too, for any link — with theming and an
+The `QrCode` primitive is exported too, for any link, with theming and an
 optional center logo:
 
 ```tsx
@@ -79,16 +79,16 @@ import { QrCode } from "@/components/godui/store-badge";
 
 | Prop        | Type                           | Default              | Description                                     |
 | ----------- | ------------------------------ | -------------------- | ----------------------------------------------- |
-| `store`     | `"app-store" \| "google-play"` | —                    | Which store the badge links to.                 |
+| `store`     | `"app-store" \| "google-play"` | none                    | Which store the badge links to.                 |
 | `theme`     | `"dark" \| "light"`            | `"dark"`             | Dark (black) or light (white) finish.           |
 | `height`    | `number`                       | `52`                 | Badge height in px; type scales with it.        |
-| `href`      | `string`                       | —                    | Destination URL (forwarded to `<a>`).           |
+| `href`      | `string`                       | none                    | Destination URL (forwarded to `<a>`).           |
 | `qr`        | `boolean`                      | `false`              | Reveal a scan-to-download QR popover on hover.  |
 | `qrUrl`     | `string`                       | `href`               | Override what the QR encodes.                   |
 | `qrLabel`   | `string`                       | `"Scan to download"` | Heading in the QR popover.                      |
 | `qrCaption` | `string`                       | `"Point your phone…"`| Small line under the QR.                        |
 | `qrSize`    | `number`                       | `148`                | QR render size in px.                           |
-| `qrLogo`    | `React.ReactNode`              | —                    | Node knocked out in the QR center.              |
+| `qrLogo`    | `React.ReactNode`              | none                    | Node knocked out in the QR center.              |
 
 `StoreBadge` forwards every standard `<a>` attribute. `StoreBadgeGroup` is a flex
 row wrapper for the dual-badge CTA and forwards `<div>` attributes.

@@ -34,7 +34,7 @@ export function AppShowcaseResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — auto-scrolling while in view
+          the real component: auto-scrolling while in view
         </span>
       </div>
       <div className="flex min-h-[320px] items-center justify-center p-10">

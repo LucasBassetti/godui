@@ -48,7 +48,7 @@ const LEGEND: {
   },
   {
     name: "Reflow",
-    desc: "siblings shift on the same spring — a transform, not a resize",
+    desc: "siblings shift on the same spring with a transform, not a resize",
     kind: "reflow",
   },
   {

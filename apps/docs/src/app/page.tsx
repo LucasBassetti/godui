@@ -24,7 +24,7 @@ const structuredData = {
       "@type": "WebPage",
       "@id": `${siteConfig.url}/#webpage`,
       url: siteConfig.url,
-      name: "GodUI — UI Collection for Modern Interfaces",
+      name: "GodUI: UI Collection for Modern Interfaces",
       description: siteConfig.description,
       isPartOf: { "@id": `${siteConfig.url}/#website` },
       about: { "@id": `${siteConfig.url}/#organization` },
@@ -76,8 +76,8 @@ export default function Home() {
               <span className="font-semibold text-fd-foreground">
                 shadcn/ui
               </span>{" "}
-              components — same files and API, with motion that runs entirely on
-              the GPU. Built with{" "}
+              components with the same files and API, and motion that runs
+              entirely on the GPU. Built with{" "}
               <span className="font-semibold text-fd-foreground">React</span>,{" "}
               <span className="font-semibold text-fd-foreground">
                 TypeScript

@@ -341,12 +341,11 @@ Turn on Slow motion in the Focus ring example to watch the ring grow on a 900ms 
 | Interaction | Keyframe / mechanism | Properties | Easing | Duration |
 | --- | --- | --- | --- | --- |
 | Focus ring | `::before` transition | `opacity`, `scale` | `ease-out-expo` | 150ms |
-| Border colour, invalid colour | snap | — | — | — |
+| Border colour, invalid colour | snap | none | none | none |
 
-Blur fades it out the same way. The ring is shadcn's: 3px of
-`ring/50` (or `destructive/20`, `destructive/40` in dark, on an invalid
-control), drawn by a layer that covers the group's border box with the same
-radius.
+Blur fades it out the same way. The ring is shadcn's: 3px of `ring/50`, or of
+`destructive/20` on an invalid control (`destructive/40` in dark). A layer
+that covers the group's border box with the same radius draws it.
 
 Under `prefers-reduced-motion` the ring appears and disappears without a
 transition.

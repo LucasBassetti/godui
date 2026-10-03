@@ -14,7 +14,7 @@ import {
 
 <Workbench>
 
-Any image or video, sampled on a grid and re-drawn as luminance-mapped ASCII glyphs or halftone dither dots. The ink follows your theme, the source colors, or any CSS color — a retro-computed hero moment that stays crisp at any size.
+Samples any image or video on a grid and redraws it as luminance-mapped ASCII glyphs or halftone dither dots. The ink follows your theme, the source colors, or any CSS color, and the result stays crisp at any size.
 
 <Example
   label="ASCII"
@@ -144,7 +144,7 @@ Point `src` at a video file (or set `type="video"`). Each frame is re-sampled;
 ### Motion
 
 `reveal` staggers cells in from the center, `interactive` turns the pointer into a
-focus lens, and `glitch` adds an ambient retro flicker — all independent flags.
+focus lens, and `glitch` adds an ambient retro flicker. Each flag works on its own.
 
 ## Accessibility
 
@@ -156,11 +156,11 @@ single still frame.
 
 | Prop          | Type                                | Default     | Description                                             |
 | ------------- | ----------------------------------- | ----------- | ------------------------------------------------------- |
-| `src`         | `string`                            | —           | Image or video URL (required).                          |
+| `src`         | `string`                            | none           | Image or video URL (required).                          |
 | `alt`         | `string`                            | `""`        | Accessible label (`role="img"`).                        |
 | `type`        | `"auto" \| "image" \| "video"`      | `"auto"`    | Source kind; `auto` infers video from the extension.    |
 | `variant`     | `"ascii" \| "dither"`               | `"ascii"`   | Glyph ramp or halftone dots.                            |
-| `cellSize`    | `number`                            | `8`         | Cell size in CSS px — smaller is finer.                 |
+| `cellSize`    | `number`                            | `8`         | Cell size in CSS px. Smaller is finer.                 |
 | `charset`     | `string`                            | `" .:-=+*#%@"` | ASCII ramp, brightest → darkest.                     |
 | `fontFamily`  | `string`                            | mono        | Font for the glyphs.                                    |
 | `ditherType`  | `"bayer" \| "floyd-steinberg"`      | `"bayer"`   | Dither algorithm.                                       |
@@ -169,7 +169,7 @@ single still frame.
 | `color`       | `"theme" \| "source" \| string`     | `"theme"`   | Ink color source.                                       |
 | `background`  | `string`                            | transparent | Canvas background.                                      |
 | `invert`      | `boolean`                           | `false`     | Invert the luminance mapping.                           |
-| `contrast`    | `number`                            | `1`         | Midtone contrast — `>1` sharpens features.              |
+| `contrast`    | `number`                            | `1`         | Midtone contrast. `>1` sharpens features.              |
 | `reveal`      | `boolean`                           | `true`      | Stagger cells in from the center on view.               |
 | `interactive` | `boolean`                           | `false`     | Pointer focus-lens.                                     |
 | `glitch`      | `boolean`                           | `false`     | Ambient retro flicker.                                  |

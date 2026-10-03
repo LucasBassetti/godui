@@ -20,7 +20,7 @@ export function HoverCardDemo() {
           <div className="flex flex-col gap-1">
             <h4 className="font-semibold text-sm">@nextjs</h4>
             <p className="text-sm">
-              The React Framework – created and maintained by @vercel.
+              The React Framework, created and maintained by @vercel.
             </p>
             <div className="flex items-center gap-1 text-muted-foreground text-xs">
               <CalendarDays className="size-3.5" /> Joined December 2021

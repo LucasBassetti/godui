@@ -9,7 +9,7 @@ import { OrbitCarouselDemo } from "@/components/demos/orbit-carousel-demo";
 
 <Workbench>
 
-Slides fan out on a wheel and rotate around a pivot below the stage. The front slide sits upright and full-size; the rest tilt, shrink, and dim as they curve away. Drag, click a slide, use the buttons, or the arrow keys.
+Slides fan out on a wheel and rotate around a pivot below the stage. The front slide sits upright and full-size; the rest tilt, shrink, and dim as they curve away. Drag, click a slide, or use the buttons or the arrow keys.
 
 <Example
   label="Default"
@@ -55,7 +55,7 @@ import { OrbitCarousel } from "@/components/godui/orbit-carousel";
 ### Shaping the arc
 
 `radius` sets how far slides sit from the pivot; `angleStep` sets the degrees
-between adjacent slides — smaller values pack the wheel tighter.
+between adjacent slides. Smaller values pack the wheel tighter.
 
 ```tsx
 <OrbitCarousel radius={280} angleStep={20}>
@@ -78,7 +78,7 @@ set, the per-slide tilt is dropped.
 | `itemWidth`    | `number`                  | `160`   | Slide width in px.                             |
 | `itemHeight`   | `number`                  | `200`   | Slide height in px.                            |
 | `defaultIndex` | `number`                  | `0`     | Slide at the front on mount.                   |
-| `onChange`     | `(index: number) => void` | —       | Fired when a new slide settles at the front.   |
+| `onChange`     | `(index: number) => void` | none       | Fired when a new slide settles at the front.   |
 
 `OrbitCarousel` also forwards every standard `<div>` attribute to the root element.
 

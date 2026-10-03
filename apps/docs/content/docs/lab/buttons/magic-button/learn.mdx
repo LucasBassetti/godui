@@ -18,7 +18,7 @@ learnPlayer: true
 
 There is no 3D geometry here. The depth is three stacked `<span>`s: a blurred
 **shadow** on the surface, a colored **edge** that fakes the side wall, and the
-**front face** you actually read. Lift the face a few pixels above the edge and
+**front face** you read. Lift the face a few pixels above the edge and
 your eye fills in a solid object.
 
 Each layer is absolutely positioned in the same box, so they overlap perfectly
@@ -37,15 +37,15 @@ at rest. Only their vertical offsets differ.
 >
 
 Depth is static; _push_ is motion. The face sits at `-4px`, lifts to `-6px` on
-hover, and dips to `-2px` on press — while the shadow deepens underneath. What
-sells it is the timing: a slow, springy settle at rest, a snappy overshoot on
+hover, and dips to `-2px` on press, while the shadow deepens underneath. The timing
+does most of the work: a slow, springy settle at rest, a snappy overshoot on
 hover, and a near-instant `34ms` dip on press.
 
-The overshoot lives in the bezier: `cubic-bezier(0.3, 0.7, 0.4, 1.5)` — that
+The overshoot lives in the bezier `cubic-bezier(0.3, 0.7, 0.4, 1.5)`. Its
 final `1.5` control point pushes past the target and springs back.
 
 Every offset animates `translate`, never `top`/`margin` or an animated
-`box-shadow`. Transforms are composited — the browser moves an already-painted
+`box-shadow`. Transforms are composited: the browser moves an already-painted
 layer on the GPU without re-running layout or paint. Animating `top` would
 re-flow the page every frame; animating `box-shadow` would re-paint it. This is
 the house rule across GodUI's motion, enforced in CI.
@@ -63,17 +63,17 @@ the house rule across GodUI's motion, enforced in CI.
  [background-size:200%_100%] animate-magic-rainbow motion-reduce:animate-none"`}
 >
 
-The optional rainbow isn't a video or a canvas — it's one gradient twice as wide
-as the button, slid sideways forever. `background-size: 200% 100%` gives the
+The optional rainbow is one gradient twice as wide as the button, slid sideways
+forever. No video, no canvas. `background-size: 200% 100%` gives the
 slack; a keyframe animates `background-position` across it.
 
 `motion-reduce:animate-none` freezes the sweep for anyone who's asked the OS to
 cut motion.
 
-An infinite `background-position` keyframe is main-thread paint — cheap, but not
-free, and pointless when the button is off screen. An `IntersectionObserver`
+An infinite `background-position` keyframe is main-thread paint. It is cheap
+but not free, and wasted when the button is off screen. An `IntersectionObserver`
 pauses the animation's `animationPlayState` whenever the button scrolls out of
-view, and resumes it seamlessly on the way back in.
+view, and resumes it on the way back in.
 
 ```tsx
 const io = new IntersectionObserver(
@@ -92,11 +92,9 @@ mid-restart.
 
 <LearnChapter label="The result" scene={<ResultPreview />} isResult>
 
-Every piece, assembled — the real component. Hover it, tab to it, press and
-hold. Each motion is one of the mechanisms above doing its job.
-
-That's the whole illusion: three flat layers, one springy curve, a gradient on a
-timer, and the discipline to animate only what the GPU can move for free.
+Every piece assembled in the real component. Hover it, tab to it, press and
+hold. Each motion comes from one of the mechanisms above: three flat layers,
+one springy curve, and a gradient on a timer.
 
 </LearnChapter>
 
@@ -104,10 +102,10 @@ timer, and the discipline to animate only what the GPU can move for free.
 
 ## Accessibility
 
-Real motion needs real semantics. The button tracks a `pressed` state from
+The button tracks a `pressed` state from
 `Enter`/`Space` so keyboard users get the same dip as a mouse press;
 `focus-visible` mirrors the hover lift so the focused state reads as raised; and
-`motion-reduce` disables both the rainbow and — via the OS setting — the springy
+`motion-reduce` (the OS setting) disables both the rainbow and the springy
 transitions.
 
 ```tsx

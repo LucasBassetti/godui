@@ -1,6 +1,6 @@
 ---
 title: Agent Flow
-description: A draggable, pannable node-graph that visualizes an agent workflow — labelled nodes with live run status and data packets that flow along the edges between them.
+description: "A draggable, pannable node-graph that visualizes an agent workflow: labelled nodes with live run status, and data packets that flow along the edges between them."
 date: "2026-07-12"
 workbench: true
 ---
@@ -10,7 +10,7 @@ import { AgentFlowPersistDemo } from "@/components/demos/agent-flow-persist-demo
 
 <Workbench>
 
-A draggable, pannable node-graph that visualizes an agent workflow — labelled nodes with live run status and data packets that flow along the edges between them.
+A draggable, pannable node-graph that visualizes an agent workflow: labelled nodes with live run status, and data packets that flow along the edges between them.
 
 <Example
   label="Default"
@@ -43,12 +43,12 @@ export function AgentFlowDemo() {
   <AgentFlowDemo />
 </Example>
 
-With `autoPlay`, the graph plays as one continuous light: each node traces its
-border on — growing from the left-edge centre out to both sides — then its icon
+With `autoPlay`, the graph plays as one continuous light. Each node traces its
+border on, growing from the left-edge centre out to both sides. Then its icon
 lights and the beam flows down the outgoing edge to the next node, which traces
 in turn. The lit border stays; the flowing line is transient. Root nodes (no
-incoming edge) start the sequence. Drag any node to rearrange it — the edges
-follow live — or drag the dotted backdrop to pan.
+incoming edge) start the sequence. Drag any node to rearrange it (the edges
+follow live), or drag the dotted backdrop to pan.
 
 ## Installation
 
@@ -75,17 +75,17 @@ import {
 />
 ```
 
-Give the canvas an explicit height (and width) — it is an absolutely-positioned
+Give the canvas an explicit height (and width). It is an absolutely-positioned
 graph, so it fills its container. With `fitView` (default) the graph scales and
 centers itself so the whole graph is visible on mount.
 
 ## Auto-play
 
-Pass `autoPlay` and the component runs the whole choreography for you — trace
-border → light icon → flow to the next node — starting from the root(s). Add
+Pass `autoPlay` and the component runs the whole sequence from the root(s):
+trace border → light icon → flow to the next node. Add
 `continuous` to loop it. One `flowSpeed` (px/second) drives everything: each
 card's border and every beam derive their duration from their own length, so the
-light holds a constant pace — bigger cards trace longer, longer edges flow
+light holds a constant pace. Bigger cards trace longer, longer edges flow
 longer, and the speed never changes at the card→line seam. (`flowDuration` sets
 packet speed only when you drive the edges yourself, without `autoPlay`.)
 
@@ -96,7 +96,7 @@ packet speed only when you drive the edges yourself, without `autoPlay`.)
 ## Persistent edges
 
 Mark an edge `persist` and its line draws on as the packet travels and then
-**stays lit** — the same behaviour as a card's traced border. A completed path
+**stays lit**, the same behaviour as a card's traced border. A completed path
 reads as an established connection, so the whole traversed route glows once the
 flow reaches the end.
 
@@ -143,40 +143,40 @@ const [arrived, setArrived] = useState(new Set<string>());
 
 | Prop           | Type              | Default            | Description                                          |
 | -------------- | ----------------- | ------------------ | ---------------------------------------------------- |
-| `nodes`        | `AgentFlowNode[]` | —                  | The graph nodes.                                     |
-| `edges`        | `AgentFlowEdge[]` | —                  | Directed connectors between node ids.                |
+| `nodes`        | `AgentFlowNode[]` | none                  | The graph nodes.                                     |
+| `edges`        | `AgentFlowEdge[]` | none                  | Directed connectors between node ids.                |
 | `draggable`    | `boolean`         | `true`             | Allow dragging nodes to reposition them.             |
 | `pannable`     | `boolean`         | `true`             | Allow panning the canvas by dragging the backdrop.   |
 | `flowDuration` | `number`          | `3`                | Seconds per packet travel (manual mode; `autoPlay` uses `flowSpeed`). |
-| `flowSpeed`    | `number`          | `280`              | Continuous-flow speed in px/second — one pace for every border trace and beam under `autoPlay`. |
+| `flowSpeed`    | `number`          | `280`              | Continuous-flow speed in px/second: one pace for every border trace and beam under `autoPlay`. |
 | `fitView`      | `boolean`         | `true`             | Scale + center the graph in view on mount.           |
 | `autoPlay`     | `boolean`         | `false`            | Play the trace → light → flow choreography from the root(s). Overrides `status`/`animated`. |
 | `continuous`   | `boolean`         | `false`            | With `autoPlay`, loop forever instead of stopping at the leaves. |
-| `onEdgeArrive` | `(id: string) => void` | —             | Fires when a non-looping edge's packet reaches its target.     |
-| `onNodeActivate` | `(id: string) => void` | —           | Fires when a node finishes tracing its border (its icon lights). |
+| `onEdgeArrive` | `(id: string) => void` | none             | Fires when a non-looping edge's packet reaches its target.     |
+| `onNodeActivate` | `(id: string) => void` | none           | Fires when a node finishes tracing its border (its icon lights). |
 | `aria-label`   | `string`          | `"Agent workflow"` | Accessible label for the canvas group.               |
 
 ### AgentFlowNode
 
 | Prop       | Type                                          | Default  | Description                                |
 | ---------- | --------------------------------------------- | -------- | ------------------------------------------ |
-| `id`       | `string`                                      | —        | Unique node id (referenced by edges).      |
-| `label`    | `string`                                      | —        | Primary label.                             |
-| `sublabel` | `string`                                      | —        | Secondary label (tool, model, duration).   |
-| `icon`     | `ReactNode`                                   | —        | Glyph shown in the icon chip.              |
+| `id`       | `string`                                      | none        | Unique node id (referenced by edges).      |
+| `label`    | `string`                                      | none        | Primary label.                             |
+| `sublabel` | `string`                                      | none        | Secondary label (tool, model, duration).   |
+| `icon`     | `ReactNode`                                   | none        | Glyph shown in the icon chip.              |
 | `status`   | `"idle" \| "running" \| "done" \| "error"`    | `"idle"` | Drives the chip style and running pulse.   |
-| `x` / `y`  | `number`                                      | —        | Node **center** in canvas units.           |
+| `x` / `y`  | `number`                                      | none        | Node **center** in canvas units.           |
 
 ### AgentFlowEdge
 
 | Prop        | Type      | Default | Description                                     |
 | ----------- | --------- | ------- | ----------------------------------------------- |
-| `id`        | `string`  | —       | Unique edge id.                                 |
-| `from`      | `string`  | —       | Source node id.                                 |
-| `to`        | `string`  | —       | Target node id.                                 |
+| `id`        | `string`  | none       | Unique edge id.                                 |
+| `from`      | `string`  | none       | Source node id.                                 |
+| `to`        | `string`  | none       | Target node id.                                 |
 | `animated`  | `boolean` | `true`  | Animate a packet along the edge.                |
 | `loop`      | `boolean` | `true`  | Repeat the packet forever. `false` sends one packet that fires `onEdgeArrive` on landing. |
-| `persist`   | `boolean` | `false` | Keep the line lit after its packet passes — draws on like a card's border and stays. |
+| `persist`   | `boolean` | `false` | Keep the line lit after its packet passes. It draws on like a card's border and stays. |
 | `curvature` | `number`  | `0`     | Bow of the curve in pixels (positive = upward). |
 
 </Workbench>

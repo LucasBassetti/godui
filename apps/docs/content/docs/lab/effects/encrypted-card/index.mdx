@@ -9,7 +9,7 @@ import { EncryptedCardDemo } from "@/components/demos/encrypted-card-demo";
 
 <Workbench>
 
-Security and AI products love the "there's something powerful under the hood" feeling. `EncryptedCard` renders your real content on top, but the surface underneath is a living field of ciphertext that re-scrambles every frame — visible only inside a radial reveal that tracks the cursor. Move across the card and the encryption bleeds through, then re-seals.
+`EncryptedCard` renders your content on top of a field of ciphertext that re-scrambles every frame. The ciphertext shows only inside a radial reveal that tracks the cursor: move across the card and it bleeds through, then hides again. It suits security and AI products.
 
 <Example
   label="Default"
@@ -47,7 +47,7 @@ export function ApiKeyCard() {
 import { EncryptedCard } from "@/components/godui/encrypted-card";
 ```
 
-Wrap any content — the card is a drop-in surface:
+Wrap any content. The card is a drop-in surface:
 
 ```tsx
 <EncryptedCard className="w-80">
@@ -74,7 +74,7 @@ reveal becomes a static peek, so nothing flickers for motion-sensitive users.
 | `speed` | `number` | `55` | Milliseconds between glyph re-randomizations while hovered. |
 | `revealRadius` | `number` | `130` | Radius of the pointer-following reveal window, in pixels. |
 | `streamColor` | `string` | `var(--primary)` | Color of the encrypted glyph stream. |
-| `streamOpacity` | `number` | `1` | Opacity of the revealed glyph stream, 0–1. Lower values make the ciphertext subtler. |
+| `streamOpacity` | `number` | `1` | Opacity of the revealed glyph stream, 0 to 1. Lower values make the ciphertext subtler. |
 
 All other `div` props are forwarded to the root element.
 

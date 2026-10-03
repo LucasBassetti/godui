@@ -1,6 +1,6 @@
 ---
 title: Presence Facepile
-description: Live avatars with animated status rings, spring join/leave, and a +N overflow that expands into a presence list — who's online, idle, or typing right now.
+description: Live avatars with animated status rings, spring join/leave, and a +N overflow that expands into a presence list showing who's online, idle, or typing.
 workbench: true
 ---
 
@@ -8,7 +8,7 @@ import { PresenceFacepileDemo } from "@/components/demos/presence-facepile-demo"
 
 <Workbench>
 
-Live avatars with animated status rings, spring join/leave, and a +N overflow that expands into a presence list — who's online, idle, or typing right now.
+Live avatars with animated status rings, spring join/leave, and a +N overflow that expands into a presence list showing who's online, idle, or typing.
 
 <Example
   label="Default"
@@ -54,7 +54,7 @@ import { PresenceFacepile } from "@/components/godui/presence-facepile";
 
 | Prop         | Type                      | Default | Description                          |
 | ------------ | ------------------------- | ------- | ------------------------------------ |
-| `users`      | `PresenceUser[]`          | —       | People to render.                    |
+| `users`      | `PresenceUser[]`          | none       | People to render.                    |
 | `max`        | `number`                  | `5`     | Avatars before the `+N` chip.        |
 | `size`       | `"sm" \| "md" \| "lg"`    | `"md"`  | Avatar size.                         |
 | `showStatus` | `boolean`                 | `true`  | Render status rings/typing dots.     |

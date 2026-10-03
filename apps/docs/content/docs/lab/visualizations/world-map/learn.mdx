@@ -21,18 +21,17 @@ between server and client.
 Everything shares a single SVG coordinate space. A static grid of land dots
 is generated once with [`dotted-map`](https://github.com/NTgamesoft/dotted-map)
 and drawn with `currentColor`; a pin marks every arc endpoint; an arc is
-just a quadratic Bézier bow between two pins.
+a quadratic Bézier bow between two pins.
 
 Rendering the dots with `currentColor` instead of baking a fixed color into
 the generated markup means `dotColor`, set on the SVG's own `style.color`,
 can restyle every dot without regenerating the grid.
 
 `DottedMap` with fixed arguments always produces the exact same grid. That
-determinism is what lets `WorldMap` render this way at all: a hydration
-mismatch would happen the instant the server's markup differed from the
-client's, and there's no client-only escape hatch here — the dots are
-injected with `dangerouslySetInnerHTML` on first render, not patched in
-after mount.
+determinism is what lets `WorldMap` render this way. Any difference between
+the server's markup and the client's would cause a hydration mismatch, and
+there is no client-only escape hatch: the dots are injected with
+`dangerouslySetInnerHTML` on first render, not patched in after mount.
 
 ```tsx
 const { markup, width, height, map } = React.useMemo(() => {
@@ -55,9 +54,9 @@ const cy = Math.min(a.y, b.y) - bow;
 ```
 
 The control point sits above the midpoint, offset by 35% of the
-start-to-end distance — the farther apart two points are, the higher the
-arc bows, which is what keeps a short hop and a transcontinental line both
-reading as "an arc" instead of the long one looking almost flat.
+start-to-end distance. The farther apart two points are, the higher the
+arc bows, so a short hop and a transcontinental line both read as "an arc"
+instead of the long one looking almost flat.
 
 </LearnChapter>
 
@@ -78,7 +77,7 @@ transition={{
 Each arc animates `pathLength` from `0` to `1`, staggered per connection so
 a whole map full of routes doesn't snap in all at once.
 
-`repeatDelay` scales with `connections.length` — more arcs means a longer
+`repeatDelay` scales with `connections.length`: more arcs means a longer
 pause before the whole set redraws together, so the loop always reads as
 "the map refreshes," not "arc 1 restarts while arc 4 is still drawing."
 
@@ -108,22 +107,22 @@ pin rather than terminating with a hard-edged cap:
 />`}
 >
 
-Every endpoint gets a second, purely decorative circle behind the solid pin
-— the ripple. It scales from `1` to `3` while fading from `0.6` to `0`,
+Every endpoint gets a second, decorative circle behind the solid pin: the
+ripple. It scales from `1` to `3` while fading from `0.6` to `0`,
 forever, using `transformBox: fill-box` so it scales around its own center
 instead of the SVG's coordinate origin.
 
 Without `transformBox: fill-box`, an SVG element's default transform origin
-is the coordinate `(0, 0)` of its nearest viewport, not its own shape — the
-ripple would scale away from the pin instead of growing outward from it.
+is the coordinate `(0, 0)` of its nearest viewport, not its own shape, so
+the ripple would scale away from the pin instead of growing outward from it.
 
 </LearnChapter>
 
 <LearnChapter label="The result" scene={<WorldMapResult />} isResult>
 
 A deterministic dot grid, arcs projected from the same math that placed the
-dots, and two independent infinite loops — the draw and the ripple — that
-both vanish cleanly under reduced motion.
+dots, and two independent infinite loops (the draw and the ripple) that
+both stop under reduced motion.
 
 </LearnChapter>
 
@@ -132,9 +131,8 @@ both vanish cleanly under reduced motion.
 ## Reduced motion
 
 Under `prefers-reduced-motion`, arcs render fully drawn immediately and the
-ripple circle isn't rendered at all — not paused, not frozen mid-animation,
-simply absent. The map is fully legible on first paint with nothing left
-looping.
+ripple circle isn't rendered at all. The map is fully legible on first paint
+with nothing looping.
 
 ```tsx
 initial={reduceMotion ? false : { pathLength: 0 }}

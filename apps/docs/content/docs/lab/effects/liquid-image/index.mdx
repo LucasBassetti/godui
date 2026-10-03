@@ -1,6 +1,6 @@
 ---
 title: Liquid Image
-description: A premium hover effect that ripples and distorts an image like liquid, intensifying with cursor speed.
+description: A hover effect that ripples and distorts an image like liquid, intensifying with cursor speed.
 workbench: true
 ---
 
@@ -9,7 +9,7 @@ import { LiquidImageDemo } from "@/components/demos/liquid-image-demo";
 
 <Workbench>
 
-Hover an image and it distorts like the surface of water — the ripple ramps in, follows your cursor speed, and settles with a damped wave when you leave. Hover the images below.
+Hover an image and it distorts like the surface of water. The ripple ramps in, follows your cursor speed, and settles with a damped wave when you leave. Hover the images below.
 
 <Example
   label="Default"
@@ -34,7 +34,7 @@ export function Gallery() {
 <ComponentInstall registry="lab" componentName="LiquidImage" />
 
 `LiquidImage` distorts the image with an SVG `feTurbulence` + `feDisplacementMap`
-filter — supported in every modern browser. The displacement scale is eased
+filter, which every modern browser supports. The displacement scale is eased
 toward its target in a single `requestAnimationFrame` loop and written straight
 to the filter, so the image itself never re-renders. Cursor velocity intensifies
 the ripple; leaving the image lets it settle back with a damped wave.
@@ -60,7 +60,7 @@ Set `trigger="always"` for a continuously breathing ripple, independent of hover
 ### Tuning the ripple
 
 `strength` is the peak displacement in pixels; `frequency` controls the ripple
-scale — smaller is larger and smoother.
+scale. Smaller values give larger, smoother ripples.
 
 ```tsx
 <LiquidImage src="/photo.jpg" alt="Mountain" strength={40} frequency={0.008} />
@@ -68,20 +68,19 @@ scale — smaller is larger and smoother.
 
 ## Accessibility & fallback
 
-When `prefers-reduced-motion` is set — or if SVG `filter: url()` is unavailable —
-`LiquidImage` falls back to a gentle CSS scale-and-brighten on hover, so the
-component degrades cleanly. Always pass a meaningful `alt`.
+When `prefers-reduced-motion` is set, or SVG `filter: url()` is unavailable,
+`LiquidImage` falls back to a gentle CSS scale-and-brighten on hover. Always pass a meaningful `alt`.
 
 ## Props
 
 | Prop          | Type                   | Default   | Description                                                   |
 | ------------- | ---------------------- | --------- | ------------------------------------------------------------ |
-| `src`         | `string`               | —         | Image source.                                                |
-| `alt`         | `string`               | —         | Accessible description of the image.                         |
+| `src`         | `string`               | none         | Image source.                                                |
+| `alt`         | `string`               | none         | Accessible description of the image.                         |
 | `strength`    | `number`               | `28`      | Peak ripple displacement on interaction, in px.              |
-| `frequency`   | `number`               | `0.012`   | Turbulence frequency — smaller gives larger, smoother ripples. |
+| `frequency`   | `number`               | `0.012`   | Turbulence frequency. Smaller gives larger, smoother ripples. |
 | `trigger`     | `"hover" \| "always"`  | `"hover"` | When the ripple is active.                                   |
-| `imgClassName`| `string`               | —         | Classes for the inner `<img>` (sizing, aspect, object-fit).  |
+| `imgClassName`| `string`               | none         | Classes for the inner `<img>` (sizing, aspect, object-fit).  |
 
 `LiquidImage` also forwards every standard `<div>` attribute to the root element.
 

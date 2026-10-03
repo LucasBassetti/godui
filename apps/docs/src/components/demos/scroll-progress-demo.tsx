@@ -26,7 +26,7 @@ function ScrollBox({ variant }: { variant: "bar" | "circle" }) {
             className="text-muted-foreground text-sm leading-relaxed"
           >
             The progress indicator tracks this scroll container. Keep scrolling
-            to watch it fill — paragraph {i + 1} of {filler.length}.
+            to watch it fill. Paragraph {i + 1} of {filler.length}.
           </p>
         ))}
       </div>

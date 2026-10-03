@@ -1,6 +1,6 @@
 ---
 title: Anatomy of the GodUI Select
-description: Two positioning modes, one keyframe — and the check mark that pops each time the list reopens on your choice.
+description: Two positioning modes share one keyframe, and the check mark pops each time the list reopens on your choice.
 learnPlayer: true
 ---
 
@@ -43,7 +43,7 @@ only scales and fades into place.
 With `position="popper"` the list opens below or above the trigger like a
 popover. Radix sets `data-side`, the drift variables kick in, and the list
 slides 4px out of the trigger as it grows: the same `godui-popover-in`
-keyframe, picking up the extra motion only where it means something.
+keyframe, with the extra drift only in popper mode.
 
 </LearnChapter>
 

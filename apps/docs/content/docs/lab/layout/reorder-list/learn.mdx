@@ -1,6 +1,6 @@
 ---
 title: Anatomy of Reorder List
-description: How a data attribute (not whileDrag) drives the grab lift, and how one spring resolves the dragged item and every displaced neighbor together.
+description: How a data attribute (instead of whileDrag) drives the grab lift, and how one spring resolves the dragged item and every displaced neighbor together.
 learnPlayer: true
 ---
 
@@ -20,26 +20,25 @@ learnPlayer: true
 >
 
 Reorder List leans almost entirely on Motion's built-in drag-to-reorder
-primitives — `Reorder.Group` and `Reorder.Item` already know how to swap
-values and animate the rest of the list around a drag. The interesting
-decisions here are in what this component deliberately does *not* let
-Framer drive: the lift.
+primitives. `Reorder.Group` and `Reorder.Item` already know how to swap
+values and animate the rest of the list around a drag. The main decision
+here is what this component deliberately does *not* let Framer drive: the lift.
 
 Each row is a `Reorder.Item` with a `value` inside one `Reorder.Group`
-holding the ordered array and the `onReorder` callback. The grab lift —
-`scale-[1.03]` and a shadow — isn't a Framer `whileDrag` animation. It's a
-plain `data-dragging` attribute flipped by `onDragStart`/`onDragEnd`, read by
-a Tailwind `data-[dragging]:scale-[1.03]` and a CSS `transition`.
+holding the ordered array and the `onReorder` callback. The grab lift
+(`scale-[1.03]` and a shadow) comes from a plain `data-dragging` attribute
+flipped by `onDragStart`/`onDragEnd`, read by a Tailwind
+`data-[dragging]:scale-[1.03]` and a CSS `transition`. Framer's `whileDrag`
+doesn't drive it.
 
-`whileDrag` was the first approach, and it has a real failure mode: a
+`whileDrag` was the first approach, and it has a failure mode: a
 `scale`/`boxShadow` animation driven that way can get stranded as an inline
 style if a drop lands mid-gesture, leaving the row visibly wider or shadowed
-afterward. A CSS class keyed off a data attribute always resets cleanly —
-when `dragging` flips back to `false`, the CSS transition just runs in
-reverse.
+afterward. A CSS class keyed off a data attribute always resets cleanly.
+When `dragging` flips back to `false`, the CSS transition runs in reverse.
 
 The lift shadow lives on a *sibling* overlay whose `opacity` fades in,
-rather than transitioning `box-shadow` on the row itself — `box-shadow` is a
+rather than transitioning `box-shadow` on the row itself. `box-shadow` is a
 main-thread paint property; `opacity` is compositor-only.
 
 ```tsx
@@ -61,7 +60,7 @@ const REORDER_SPRING = { type: "spring" as const, stiffness: 520, damping: 32 };
 
 What Framer *does* own is the reordering itself. The moment a dragged
 item's center crosses a neighbour's, `Reorder.Group` swaps them in the
-`values` array and calls `onReorder` — every item, dragged or not, then
+`values` array and calls `onReorder`. Every item, dragged or not, then
 animates to its new slot under the same `REORDER_SPRING`.
 
 ```tsx
@@ -69,14 +68,13 @@ animates to its new slot under the same `REORDER_SPRING`.
 ```
 
 Stiffness 520 with damping 32 is snappier than the 320/32 spring used
-elsewhere in the library — a list reorder needs to feel instantaneous, not
-smoothed, or the displaced rows read as sluggish while a hand is still
-holding the dragged one.
+elsewhere in the library. A list reorder needs to feel instantaneous, or the
+displaced rows read as sluggish while a hand is still holding the dragged one.
 
 `ReorderList` never keeps its own copy of the order. `values` and
-`onReorder` are both owned by the caller — the component is a rendering and
+`onReorder` are both owned by the caller. The component is a rendering and
 gesture layer over state you already control, so anything downstream of the
-list (persistence, undo, syncing to a server) just reacts to the same
+list (persistence, undo, syncing to a server) reacts to the same
 `setState` call the drag already triggers.
 
 ```tsx
@@ -91,9 +89,8 @@ list (persistence, undo, syncing to a server) just reacts to the same
 
 <LearnChapter label="The result" scene={<ReorderListResult />} isResult>
 
-One built-in reorder primitive for the list, one intentionally CSS-driven
-lift so a stray drop can never strand an inline style — that's the whole
-mechanism.
+The list uses one built-in reorder primitive, and the lift is CSS-driven on
+purpose so a stray drop can never strand an inline style.
 
 </LearnChapter>
 
@@ -106,7 +103,7 @@ and `Reorder.Item`'s `as="li"`), so list semantics survive for anyone using
 a screen reader. `axis` can flip to `"x"` for a horizontal list without
 changing anything else. Under `prefers-reduced-motion`, both the scale
 transition and the shadow's opacity transition drop out
-(`motion-reduce:transition-none`) — the lift is skipped, though the drag
+(`motion-reduce:transition-none`). The lift is skipped, though the drag
 gesture itself still works.
 
 ## Motion Score

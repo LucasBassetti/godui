@@ -34,7 +34,7 @@ const APIS = [
   },
   {
     name: "Confetti.fire()",
-    desc: "imperative ref — toast()-style",
+    desc: "imperative ref, toast()-style",
     d: "100ms",
     shape: "ref",
   },
@@ -54,7 +54,7 @@ const LEGEND = [
   },
   {
     name: "Confetti.fire()",
-    desc: "imperative ref — toast()-style ergonomics",
+    desc: "imperative ref, toast()-style ergonomics",
     kind: "ref",
   },
   {

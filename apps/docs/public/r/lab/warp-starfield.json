@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "warp-starfield",
   "title": "Warp Starfield",
-  "description": "A depth starfield you fly through — stars stream toward the viewer with cursor parallax and an optional hyperspace warp.",
+  "description": "A depth starfield you fly through. Stars stream toward the viewer with cursor parallax and an optional hyperspace warp.",
   "registryDependencies": ["@godui/godui-theme"],
   "files": [
     {

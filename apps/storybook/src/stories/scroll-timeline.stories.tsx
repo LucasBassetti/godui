@@ -8,7 +8,7 @@ const DATA = [
     title: "The first commit",
     content: (
       <p className="text-sm text-muted-foreground md:text-base">
-        A single component and a big idea — a design system that feels alive.
+        A single component and a big idea: a design system that feels alive.
       </p>
     ),
   },

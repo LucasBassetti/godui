@@ -60,8 +60,8 @@ exactly one width off-screen whatever its width is, then springs in.
 }`}
 >
 
-Overriding a token locally usually means the component also escapes the
-reduced-motion setting. Not here. The keyframe multiplies the distance by
+Overriding a token locally usually lets a component escape the
+reduced-motion setting. The sheet can't, because the keyframe multiplies the distance by
 `--godui-motion`, which only `:root` sets, and sets it to `0` under
 `prefers-reduced-motion`. The sheet can say "100%", and the multiplier still
 turns that into zero.

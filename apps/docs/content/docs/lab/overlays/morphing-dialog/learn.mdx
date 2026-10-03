@@ -23,20 +23,19 @@ learnPlayer: true
 
 Most "expand to modal" implementations fake it: absolutely position a clone
 over the card, animate its box, then swap in the real modal underneath. Morphing
-Dialog doesn't clone anything — it renders the trigger and the content as two
+Dialog clones nothing. It renders the trigger and the content as two
 components that share one `layoutId`, and lets Framer Motion's layout engine
 do the interpolation.
 
 `MorphingDialog` is a context provider; it mints a single `layoutId` and hands
 it to both `MorphingDialogTrigger` and `MorphingDialogContent`.
 
-Both pieces are just `motion.div`s with `layoutId={layoutId}` set. Framer
+Both pieces are `motion.div`s with `layoutId={layoutId}` set. Framer
 tracks every element with a shared `layoutId` across the tree; when one
 unmounts (the trigger, conceptually, once the content mounts in its place)
 and the other is present, it measures both rects and animates the difference
-— position, size, border radius, all of it — every frame. There's no
-`morph()` call anywhere in the source; the "morph" is just two elements
-agreeing to be the same thing.
+(position, size and border radius) every frame. There's no `morph()` call
+anywhere in the source; the "morph" is two elements sharing one `layoutId`.
 
 </LearnChapter>
 
@@ -58,15 +57,14 @@ const MORPH_SPRING = {
 />`}
 >
 
-The interpolation itself runs on one transition, tuned specifically for this
-motion.
+The interpolation runs on one transition tuned for this motion.
 
 `stiffness: 320` with `damping: 32` is underdamped enough to overshoot by a
-hair before settling — the card doesn't just resize, it feels like it has
-mass. `mass: 0.9` pulls that overshoot in slightly so it never looks loose.
-Everything else about the panel — its border radius, its internal layout —
-rides along on the same spring because it's the same animated `layoutId`
-element, not a second thing chasing it.
+hair before settling, so the card moves as if it has mass instead of only
+resizing. `mass: 0.9` pulls that overshoot in slightly so it never looks loose.
+Everything else about the panel (its border radius, its internal layout)
+rides along on the same spring because it belongs to the same animated
+`layoutId` element.
 
 </LearnChapter>
 
@@ -87,12 +85,12 @@ element, not a second thing chasing it.
 The morph is only one of three things happening on open. `MorphingDialogContent`
 mounts through `createPortal` into `document.body` (so `z-modal` always wins,
 regardless of where the trigger lives in the DOM), and it renders its own
-backdrop with a completely separate transition.
+backdrop with a separate transition.
 
-The backdrop is a flat opacity tween — no spring, no overshoot, because a
-dimming layer springing would look like a glitch. The close button uses the
-same flat-fade idea but held back with `transition={{ delay: 0.1 }}` so it
-never appears mid-morph, only once the panel has essentially arrived:
+The backdrop is a flat opacity tween with no spring, because a springing
+dimming layer would look like a glitch. The close button uses the same flat
+fade, held back with `transition={{ delay: 0.1 }}` so it appears once the
+panel has nearly arrived instead of mid-morph:
 
 ```tsx
 <motion.button
@@ -105,15 +103,15 @@ never appears mid-morph, only once the panel has essentially arrived:
 />
 ```
 
-Three timelines, three easings, one moment.
+Opening runs three timelines, each with its own easing.
 
 </LearnChapter>
 
 <LearnChapter label="The result" scene={<MorphingDialogResult />} isResult>
 
-One `layoutId`, one spring, and a portal — that's the entire mechanism.
+The entire mechanism is one `layoutId`, one spring and a portal.
 Everything else (the backdrop, the close delay, the escape key) is
-choreography layered on top of a single measured interpolation.
+layered on top of a single measured interpolation.
 
 </LearnChapter>
 
@@ -122,7 +120,7 @@ choreography layered on top of a single measured interpolation.
 ## Dismissal and reduced motion
 
 `MorphingDialogContent` wires up its own escape hatch independent of the
-animation: an effect that only runs `isOpen`, listening for `Escape` and
+animation: an effect that only runs while `isOpen`, listening for `Escape` and
 locking `document.body`'s scroll for the duration:
 
 ```tsx
@@ -141,11 +139,11 @@ React.useEffect(() => {
 }, [isOpen, close]);
 ```
 
-The trigger itself is keyboard-operable without any extra markup —
+The trigger is keyboard-operable without extra markup:
 `role="button"`, `tabIndex={0}`, and an `onKeyDown` that treats Enter and
 Space like a click. `useReducedMotion()` from Framer flips every transition
 above to `{ duration: 0 }`, so under `prefers-reduced-motion` the card still
-becomes the modal — it just doesn't travel to get there.
+becomes the modal, without traveling to get there.
 
 ## Motion Score
 

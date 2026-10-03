@@ -21,7 +21,7 @@ export function HolographicCardDemo() {
             GodUI
           </h3>
           <p className="mt-2 text-sm text-white/70 leading-relaxed">
-            Move your pointer across the card — the foil, glare, and glitter
+            Move your pointer across the card. The foil, glare, and glitter
             catch the light as it tilts.
           </p>
         </div>

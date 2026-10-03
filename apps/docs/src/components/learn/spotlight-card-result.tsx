@@ -51,7 +51,7 @@ export function SpotlightCardResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — move your pointer across each card
+          the real component: move your pointer across each card
         </span>
       </div>
       <div className="flex min-h-[300px] items-center justify-center p-10">

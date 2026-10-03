@@ -18,8 +18,8 @@ boxShadow: \`inset 0 2px 2px …, inset 0 -6px 12px …\``}
 >
 
 `LiquidGlassLens` shares `RefractionFilter` and `buildDisplacementMap` with
-the card — but the **geometry**, **pointer contract**, and **reduced-motion
-policy** are different. It is a `pointer-events-none` circle that follows the
+the card, but its **geometry**, **pointer contract**, and **reduced-motion
+policy** differ. It is a `pointer-events-none` circle that follows the
 cursor over a positioned parent, and it disappears entirely under
 `prefers-reduced-motion`.
 
@@ -28,7 +28,7 @@ across it.
 
 The root is `rounded-full` with frost via `backdrop-filter`. Unlike the
 card's pointer-tracked sheen, the specular is a **fixed** radial at
-`32% 28%` — a sphere highlight that stays put relative to the disc, plus an
+`32% 28%`: a sphere highlight that stays put relative to the disc, plus an
 inset depth shadow:
 
 The displacement map uses `band={0}`: a continuous ramp from edge to edge,
@@ -55,7 +55,7 @@ node.style.setProperty("--lg-py", \`\${e.clientY - rect.top}px\`);`}
 Listeners attach to `rootRef.current.parentElement`, **not** the lens. The
 parent must be `relative`; the lens never blocks clicks
 (`pointer-events-none`). On move it writes **pixel** offsets relative to the
-parent box — different units from the card's percentages:
+parent box, where the card uses percentages:
 
 Centering is a transform that subtracts half the lens size:
 
@@ -79,10 +79,9 @@ parent.addEventListener("pointerleave", leave);
 
 <LearnChapter label="Rim band vs lens band" scene={<LiquidGlassLensMap />}>
 
-Same builder, different `band`. This is the entire optical difference in one
-number. Diagrams use a grayscale ramp (dashed mid = no shift) — the real SVG
-map still packs X into red and Y into green under the hood, but Learn stays
-token-neutral:
+Same builder, different `band`. That one number is the entire optical
+difference. Diagrams use a grayscale ramp (dashed mid = no shift). The SVG
+map still packs X into red and Y into green, but Learn stays token-neutral:
 
 | | Card | Lens |
 | --- | --- | --- |
@@ -100,8 +99,8 @@ token-neutral:
 Hover the stage. The lens tracks without stealing clicks from the content
 beneath.
 
-Same refraction chain as the card — different map, different owner of the
-pointer, different contract with reduced motion.
+The lens runs the card's refraction chain with a different map, a different
+pointer owner, and a different reduced-motion contract.
 
 </LearnChapter>
 
@@ -110,12 +109,12 @@ pointer, different contract with reduced motion.
 ## Accessibility
 
 The entire root is `motion-reduce:hidden`. When reduced motion matches,
-pointer updates are skipped too — there is nothing to track. Frost / glint /
-SVG stay `aria-hidden`. There is no keyboard mode: this is a decorative
-optic, not a control. Prefer the card when you need a persistent glass
+pointer updates are skipped too, since there is nothing to track. Frost /
+glint / SVG stay `aria-hidden`. There is no keyboard mode because the lens is
+a decorative optic. Prefer the card when you need a persistent glass
 surface for content.
 
-Same `useRefractionSupport` probe as the card — without
+The lens uses the same `useRefractionSupport` probe as the card: without
 `backdrop-filter: url()`, frost is blur + saturate only.
 
 ## Motion Score

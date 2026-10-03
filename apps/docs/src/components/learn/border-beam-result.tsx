@@ -38,7 +38,7 @@ export function BorderBeamResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — rainbow · 8s loop
+          the real component: rainbow · 8s loop
         </span>
       </div>
       <div className="flex min-h-[260px] items-center justify-center p-8 md:p-12">

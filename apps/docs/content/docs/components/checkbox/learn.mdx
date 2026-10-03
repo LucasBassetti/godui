@@ -22,15 +22,13 @@ import { CheckboxDemo } from "@/components/demos/core/checkbox-demo";
 }`}
 >
 
-Checking the box doesn't switch its fill on. A dot appears in the middle and
-grows until it fills the box.
+Checking the box grows a dot from the middle until it fills the box.
 
 The dot is a circle exactly as wide as the box's diagonal, which is why it rests
 at `scale: 1.42`. The box clips it to its own rounded corners, so at rest you
 only see a filled box. Grow the circle from `scale: 0` and the clip does the
 shape change: a dot, then a disc whose edge reaches the sides, then the corners
-fill in. A circle turning into a rounded square, animated with a single
-`scale`.
+fill in. A circle turns into a rounded square with a single `scale`.
 
 </LearnChapter>
 
@@ -52,7 +50,7 @@ on the box and changes where the color is painted.
 While checked, the box clips its background to its text (`background-clip:
 text`). A checkbox has no text, so the box paints no fill at all. The indicator
 inherits the color the same way, without painting it, and the disc inherits it
-from the indicator. Your colors, drawn by the disc.
+from the indicator. The disc draws your colors.
 
 </LearnChapter>
 
@@ -123,7 +121,7 @@ if (checked !== lastChecked) {
 >
 
 A settings page that loads with ten boxes already checked shouldn't flood ten
-times. So the checkbox only animates after its state actually changes.
+times. So the checkbox only animates after its state changes.
 
 It starts with `data-animate` unset, which turns every keyframe off. The first
 change sets it: a click or Space through `onCheckedChange`, or a controlled

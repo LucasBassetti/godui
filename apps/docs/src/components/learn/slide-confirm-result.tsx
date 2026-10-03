@@ -38,7 +38,7 @@ export function SlideConfirmResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — drag the thumb, or release early
+          the real component: drag the thumb, or release early
         </span>
       </div>
       <div className="flex min-h-[240px] items-center justify-center p-10">

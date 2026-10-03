@@ -1,6 +1,6 @@
 ---
 title: Anatomy of the Magic Input
-description: How a flat text field lifts into a 3D card on focus, runs a rainbow edge, and turns its own depth layer into a submit progress bar — all on transform and opacity.
+description: How a flat text field lifts into a 3D card on focus, runs a rainbow edge, and turns its own depth layer into a submit progress bar.
 learnPlayer: true
 ---
 
@@ -16,20 +16,19 @@ learnPlayer: true
 </div>`}
 >
 
-Most inputs draw a border and change its color on focus. Magic Input does
-something physical instead: the field lifts off the page, casts a shadow, and
-reveals a colored edge underneath — then reuses that same edge as a progress
-bar when you submit. None of it touches layout. It's three stacked layers and a
-handful of `transform` / `opacity` transitions.
+Most inputs draw a border and change its color on focus. In Magic Input the
+field lifts off the page, casts a shadow, and reveals a colored edge underneath.
+On submit, that same edge becomes a progress bar. None of it touches layout:
+it's three stacked layers and a handful of `transform` / `opacity` transitions.
 
 The component renders one `group` wrapper containing three absolutely-positioned
 layers pinned to the same bounds: a blurred **shadow**, a colored **edge**, and
 the real `<input>` on top. At rest the shadow and edge are hidden; the field
 looks flat.
 
-Because all three share `inset-0`, they stack perfectly. The 3D illusion is
-entirely a matter of how far apart they sit on the Y axis — which is what the
-lift animates.
+Because all three share `inset-0`, they stack exactly. The 3D illusion comes
+from how far apart they sit on the Y axis, and that distance is what the lift
+animates.
 
 </LearnChapter>
 
@@ -48,20 +47,20 @@ lift animates.
 
 Focus lives on `group-focus-within`, so tabbing into the `<input>` drives every
 layer at once. The front translates up, the shadow drops down + fades in +
-blurs, and the edge fades in. That divergence — front going one way, shadow the
-other — is what sells the depth.
+blurs, and the edge fades in. The front moving one way while the shadow moves
+the other is what creates the depth.
 
 The front uses an overshoot bezier (`…,1.5`) so it springs slightly past its
-target and settles — the "pop" you feel on focus. The shadow rides a calmer
-`…,1` curve over `600ms`, because a shadow that snapped would read as a glitch
-rather than a cast. `depth="always"` simply moves the resting position to the
-lifted one, so the field is raised before you ever focus it.
+target and settles. That overshoot is the "pop" on focus. The shadow rides a
+calmer `…,1` curve over `600ms`, because a shadow that snapped would read as a
+glitch. `depth="always"` moves the resting position to the lifted one, so the
+field is raised before you focus it.
 
-There's no `box-shadow` transition, no `width` or `top` animation, no
+The lift uses no `box-shadow` transition, no `width` or `top` animation and no
 `clip-path`. The shadow is a solid blurred span whose `translate` and `opacity`
-change; the edge only fades. That's deliberate: `transform` and `opacity` are
-the two properties the browser can animate on the compositor without touching
-layout or paint, so the lift stays smooth even with several fields on screen.
+change; the edge only fades. `transform` and `opacity` are the two properties
+the browser can animate on the compositor without touching layout or paint, so
+the lift stays smooth even with several fields on screen.
 
 ```tsx
 const frontClass =
@@ -91,12 +90,11 @@ state change for anyone who asks for reduced motion.
 With `rainbow` (the default), focus swaps the edge **and** shadow fill for a
 single `200%`-wide linear gradient, and `animate-magic-rainbow` slides
 `background-position` across it. The front stays neutral, so the color reads as a
-glowing edge peeking out from under a plain field — not a tinted input.
+glowing edge under a plain field.
 
-The gradient is a full literal, not an interpolated string, because Tailwind's
-class scanner can't resolve a `${var}` nested inside an arbitrary value — so the
-colors are written out. Only `background-position` animates; the gradient itself
-never re-renders.
+The colors are written out as a full literal because Tailwind's class scanner
+can't resolve a `${var}` nested inside an arbitrary value. Only
+`background-position` animates; the gradient itself never re-renders.
 
 </LearnChapter>
 
@@ -115,16 +113,15 @@ never re-renders.
 >
 
 Pass `onSubmit` (or `submitButton`) and the field grows a submit button. Drive
-`status` and it runs a lifecycle: `loading` → `success` / `error`. The elegant
-part is that the **same edge/shadow layer that draws the depth becomes the
-progress bar** — its `background-size` grows for determinate progress, or a
-segment bounces end to end for indeterminate — while the button's icon
-cross-fades arrow → ring → check.
+`status` and it runs a lifecycle: `loading` → `success` / `error`. The same
+edge/shadow layer that draws the depth becomes the progress bar. Its
+`background-size` grows for determinate progress, or a segment bounces end to
+end for indeterminate, while the button's icon cross-fades arrow → ring → check.
 
-The four submit icons — arrow, ring/spinner, check, X — are all stacked in the
-same box; only the active one is `opacity-100 scale(1)`, the rest sit at
-`opacity-0 scale(0.4) rotate(-35deg)`. Switching status just changes which one
-is active, so they morph into each other instead of popping.
+The four submit icons (arrow, ring/spinner, check, X) are stacked in the same
+box. Only the active one is `opacity-100 scale(1)`; the rest sit at
+`opacity-0 scale(0.4) rotate(-35deg)`. Switching status changes which one is
+active, so they morph into each other instead of popping.
 
 ```tsx
 const iconClass = (active: boolean) =>
@@ -137,9 +134,9 @@ const iconClass = (active: boolean) =>
 
 <LearnChapter label="The result" scene={<MagicInputResult />} isResult>
 
-Three stacked layers, a focus-driven lift, and a progress bar that's really just
-the depth layer wearing a different fill — the whole component is `transform`
-and `opacity` doing the work that borders and box-shadows usually fake.
+Three stacked layers, a focus-driven lift, and a progress bar that is the depth
+layer with a different fill. `transform` and `opacity` do the work that borders
+and box-shadows usually fake.
 
 </LearnChapter>
 
@@ -148,7 +145,7 @@ and `opacity` doing the work that borders and box-shadows usually fake.
 ## Locked, not disabled
 
 While `loading` or `success`, the field has to stop accepting input without
-losing its lifted 3D look — a `disabled` input would flatten and gray out. So it
+losing its lifted 3D look. A `disabled` input would flatten and gray out, so it
 uses `readOnly` instead:
 
 ```tsx

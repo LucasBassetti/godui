@@ -25,7 +25,7 @@ const CSS = `
 const LEGEND: { name: string; desc: string; swatch: string }[] = [
   {
     name: "Base",
-    desc: "dark radial gradient — seats the foil so it reads as light",
+    desc: "dark radial gradient that seats the foil so it reads as light",
     swatch: "bg-black/70",
   },
   {

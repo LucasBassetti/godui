@@ -1,6 +1,6 @@
 ---
 title: Cover Flow
-description: A physics 3D cover flow — the centered slide faces front while neighbours rotate away in perspective, with momentum drag and snap.
+description: A physics 3D cover flow. The centered slide faces front while neighbours rotate away in perspective, with momentum drag and snap.
 workbench: true
 ---
 
@@ -9,7 +9,7 @@ import { CoverFlowDemo } from "@/components/demos/cover-flow-demo";
 
 <Workbench>
 
-A tactile way to browse album art, product shots, or covers. Drag across the stage — the row telescopes in 3D and snaps to the nearest slide when you let go. Drag, click a side slide, use the buttons, or the arrow keys.
+Browse album art, product shots, or covers. Drag across the stage and the row telescopes in 3D, then snaps to the nearest slide when you let go. You can also click a side slide, use the buttons, or press the arrow keys.
 
 <Example
   label="Default"
@@ -34,7 +34,7 @@ export function Albums() {
 <ComponentInstall registry="lab" componentName="CoverFlow" />
 
 Each slide derives its `translateX`, `rotateY`, `translateZ`, `scale`, and
-`opacity` from its signed distance to center — a single motion value the drag
+`opacity` from its signed distance to center, a single motion value the drag
 updates. A release snaps that value to the nearest index with a spring, and a
 fast flick advances an extra slide.
 
@@ -83,7 +83,7 @@ set, the 3D rotation and depth are dropped for a flat cross-fade.
 | Prop           | Type                        | Default | Description                                          |
 | -------------- | --------------------------- | ------- | ---------------------------------------------------- |
 | `defaultIndex` | `number`                    | `0`     | Slide centered on mount.                             |
-| `onChange`     | `(index: number) => void`   | —       | Fired when a new slide settles at center.            |
+| `onChange`     | `(index: number) => void`   | none       | Fired when a new slide settles at center.            |
 | `itemWidth`    | `number`                    | `240`   | Slide width in px.                                   |
 | `itemHeight`   | `number`                    | `300`   | Slide height in px.                                  |
 | `gap`          | `number`                    | `0`     | Extra px between slide centers.                      |

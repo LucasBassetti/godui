@@ -1,6 +1,6 @@
 ---
 title: Anatomy of Gooey Stack
-description: How stacked cards fuse into a liquid metaball bridge — three layers, one SVG filter, and a band-pass that only turns the goo on while surfaces are actually close.
+description: How stacked cards fuse into a liquid metaball bridge with three layers, one SVG filter, and a band-pass that turns the goo on only while surfaces are close.
 learnPlayer: true
 ---
 
@@ -22,15 +22,14 @@ learnPlayer: true
 
 Gooey Stack never bends a border-radius or animates a `border-radius` or a
 `clip-path`. The liquid look is an SVG filter fusing rectangles, cross-faded
-against the plain crisp cards underneath — and only while it needs to be.
-Here's the whole trick.
+against the plain crisp cards underneath, and only while it needs to be.
 
 Every card position is drawn three times. A **merge surface** (blurred
 silhouettes, behind everything) gets pushed through the goo filter so close
 cards visually fuse. A **native surface** (real `bg-card` rects with CSS
 borders) sits on top of it, pixel-perfect at every zoom. Your **content**
-sits on top of that, unfiltered and always sharp — it recedes and frosts
-with the cards, but text never blurs into soup.
+sits on top of that, unfiltered and always sharp. It recedes and frosts
+with the cards, but text never blurs.
 
 </LearnChapter>
 
@@ -46,15 +45,15 @@ const gooOpacity = useTransform(nearness, (v) => (reduce ? 0 : v));
 const nativeOpacity = useTransform(nearness, (v) => (reduce ? 1 : 1 - v));`}
 >
 
-The goo shouldn't show at rest — not fanned out, and not fully merged either
+The goo shouldn't show at rest, either fanned out or fully merged
 (a receded card should leave no ghost behind the anchor). `nearness` is a
 band-pass on the *live* gap: zero at both ends, peaking only while surfaces
-are actually necking. Watch the slow loop below — four held steps so the
-cross-fade is obvious: apart → necking (goo on) → merged (goo off) →
+are necking. The slow loop below holds four steps so the
+cross-fade is easy to see: apart → necking (goo on) → merged (goo off) →
 necking out.
 
-It reads off a **spring following the live gap**, not the target gap
-directly — at both rest ends the target's nearness is already 0, so
+It reads off a **spring following the live gap** instead of the target gap.
+At both rest ends the target's nearness is already 0, so
 deriving the cross-fade from the target alone would mean the goo never
 appears mid-toggle at all.
 
@@ -74,26 +73,26 @@ appears mid-toggle at all.
 
 Two SVG primitives do the fusing: `feGaussianBlur` softens the source into
 overlapping halos, then `feColorMatrix` multiplies the alpha channel back up
-past 1 and clips it — a razor-steep threshold that turns "soft overlapping
+past 1 and clips it. That steep threshold turns "soft overlapping
 blur" into "one hard-edged fused shape," almost without anti-aliasing. The
 demo crawls through the same four steps so you can see the bridge form and
 tear apart.
 
 The real filter also regrows a thin, radially-symmetric border ring around
-the fused shape from a second small blur + threshold pass — a Gaussian
+the fused shape from a second small blur + threshold pass. A Gaussian
 stays round at corners and through the neck, where a box-shadow or clip-path
 approach would go square or wobble with curvature.
 
-Why filter and opacity, not layout? Nothing here ever animates
+Nothing here ever animates
 `border-radius`, `height`, or `clip-path`. Cards move on `y`/`scale`/`opacity`,
-blur is a static `filter` on a layer that itself only fades in and out —
-every frame is compositor work, whether there are two cards or a dozen
+and blur is a static `filter` on a layer that itself only fades in and out.
+Every frame is compositor work, whether there are two cards or a dozen
 stacked behind the anchor.
 
-Cheap when idle: a `ResizeObserver` per card keeps the stack's height and
-each card's bottom offset registered to its real content — so the layout
+A `ResizeObserver` per card keeps the stack's height and
+each card's bottom offset matched to its real content, so the layout
 survives text reflow or a resize without measuring on every animation frame.
-The observer only fires on actual size changes, not on every spring tick.
+The observer fires only on size changes, never on spring ticks.
 
 ```tsx
 const ro = new ResizeObserver(measure);
@@ -104,11 +103,11 @@ for (const el of contentRefs.current) if (el) ro.observe(el);
 
 <LearnChapter label="The result" scene={<GooeyStackResult />} isResult>
 
-Every piece, assembled — tap the plug and watch the prompt card merge in,
-then split back out.
+All the pieces together. Tap the plug and the prompt card merges in,
+then splits back out.
 
-Two silhouette layers, one band-pass, and a filter that only ever touches
-pixels that are actually close — that's the whole liquid effect.
+The liquid effect is two silhouette layers, one band-pass, and a filter that
+only touches pixels that are close.
 
 </LearnChapter>
 
@@ -116,8 +115,8 @@ pixels that are actually close — that's the whole liquid effect.
 
 ## Accessibility
 
-The stack is presentational — `collapsed` or `gap` is driven by your own
-button, switch, or slider, and the surface layers are `aria-hidden` so only
+The stack is presentational. Your own button, switch, or slider drives
+`collapsed` or `gap`, and the surface layers are `aria-hidden` so only
 your content is read. Under `prefers-reduced-motion`, the goo filter is
 dropped entirely and cards snap directly between states instead of
 springing through the neck.

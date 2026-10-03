@@ -37,7 +37,7 @@ const LEGEND = [
   },
   {
     name: "Opacity",
-    desc: "clamped 0.4–1",
+    desc: "clamped 0.4 to 1",
     kind: "opacity" as const,
   },
   {

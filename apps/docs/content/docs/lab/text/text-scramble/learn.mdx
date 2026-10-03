@@ -1,6 +1,6 @@
 ---
 title: Anatomy of Text Scramble
-description: How a per-character cell queue flickers through a glyph pool and locks into the target — gated by mount, in-view, or hover.
+description: How a per-character cell queue flickers through a glyph pool and locks into the target, gated by mount, in-view, or hover.
 learnPlayer: true
 ---
 
@@ -18,12 +18,12 @@ for (let i = 0; i < len; i++) {
 }`}
 >
 
-TextScramble isn't a CSS animation. It's a frame loop over a queue of cells:
+TextScramble is a JavaScript frame loop over a queue of cells:
 each character gets a random `start` / `end` window, picks from a charset
 while unresolved, then locks to `to`. Unresolved glyphs glow
 `text-primary` for 120ms; assistive tech always sees the stable string.
 
-`run(toText)` builds one `Cell` per index — `from` (what's on screen),
+`run(toText)` builds one `Cell` per index: `from` (what's on screen),
 `to` (the new glyph), plus staggered `start` / `end` frames derived from
 `spread`. Before `start` the slot holds `from`; between them it picks a
 random character from the pool; at `end` it settles on `to`.
@@ -86,11 +86,11 @@ as the pool cycles. Charsets are named pools (`alphanumeric`, `symbols`,
 >
 
 The first scramble is gated by `trigger`. Later `text` changes always
-call `run` — only the initial pass waits.
+call `run`; only the initial pass waits.
 
 `mount` fires in the effect. `in-view` observes at `threshold: 0.4`, runs
-once, then disconnects. `hover` waits for `onPointerEnter` — and every
-subsequent hover re-runs, so the decrypt can replay on demand.
+once, then disconnects. `hover` waits for `onPointerEnter`, and every
+later hover re-runs it, so the decrypt can replay on demand.
 
 </LearnChapter>
 
@@ -108,7 +108,7 @@ string. Hover either line to watch it decrypt again.
 Two spans, two jobs. `sr-only` carries the resolved `text` for screen
 readers and copy/paste. The visual twin is `aria-hidden` and owns the
 flickering cells. With `prefers-reduced-motion`, `run` skips the queue
-entirely and jumps to final characters — no interval, no primary flash.
+entirely and jumps to the final characters, with no interval and no primary flash.
 
 ```tsx
 <span className="sr-only">{text}</span>

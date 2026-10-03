@@ -71,7 +71,7 @@ export function ResizableHeaderResult() {
                 Ship faster with Northwind
               </h3>
               <p className="max-w-md text-muted-foreground text-sm leading-relaxed">
-                Scroll this panel — the nav springs into a compact, blurred pill
+                Scroll this panel. The nav springs into a compact, blurred pill
                 and the active-link indicator rides along.
               </p>
             </div>
@@ -107,7 +107,7 @@ export function ResizableHeaderResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — scroll the panel below
+          the real component: scroll the panel below
         </span>
       </div>
       <div className="flex items-center justify-center p-4 sm:p-6 md:p-8">

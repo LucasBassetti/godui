@@ -18,18 +18,18 @@ const ROW_SPAN = { 1: "md:row-span-1", 2: "md:row-span-2" };
 </motion.div>`}
 >
 
-A bento grid looks like it needs a layout engine — cards of different sizes,
-packed with no gaps. It doesn't. `BentoGrid` is `display: grid` with three
-columns; every card just claims more of it.
+Cards of different sizes packed with no gaps look like they need a layout
+engine. They don't. `BentoGrid` is `display: grid` with three
+columns, and larger cards claim more of it.
 
-`BentoGrid` renders a plain grid — `grid-cols-3` (or however many `columns`
-you pass), `auto-rows-[minmax(11rem,auto)]`. There's no measuring pass, no
+`BentoGrid` renders a plain grid: `grid-cols-3` (or however many `columns`
+you pass) and `auto-rows-[minmax(11rem,auto)]`. There's no measuring pass and no
 packing algorithm. Each `BentoCard` declares how much room it wants with
 `colSpan`/`rowSpan`, and the browser's normal row-major auto-flow drops it
-into the next cell that fits:
+into the next cell that fits.
 
 Those lookup objects exist because the Tailwind scanner can't see an
-interpolated class like `` `md:col-span-${n}` `` — every valid span has to be a
+interpolated class like `` `md:col-span-${n}` ``. Every valid span has to be a
 literal string somewhere in the source for the class to ship.
 
 </LearnChapter>
@@ -61,11 +61,11 @@ const itemVariants: Variants = {
 The grid and its cards share one Framer `variants` pair. The grid is
 `hidden`/`visible` with `staggerChildren: 0.08`; every card's `itemVariants`
 resolves `opacity 0→1` and `y 20→0` on a spring. `whileInView` fires it once,
-the moment the grid crosses 15% into the viewport — nothing plays until then,
-and it never replays on its own:
+the moment the grid crosses 15% into the viewport. Nothing plays until then,
+and it never replays on its own.
 
 Because `staggerChildren` lives on the *parent's* transition, no card needs to
-know its own index or delay — Framer walks the children in DOM order and
+know its own index or delay. Framer walks the children in DOM order and
 staggers them for you.
 
 </LearnChapter>
@@ -83,11 +83,11 @@ staggers them for you.
 >
 
 Hovering a card reveals a soft radial glow that follows the pointer. Tracking
-that in React state would mean a re-render on every `pointermove` — instead,
-`onPointerMove` writes straight to the DOM:
+that in React state would mean a re-render on every `pointermove`, so
+`onPointerMove` writes straight to the DOM instead.
 
-`--x`/`--y` feed a `radial-gradient` that's already painted and just waiting
-for its center to move — the glow itself only animates `opacity` on
+`--x`/`--y` feed a `radial-gradient` that's already painted and only needs
+its center moved. The glow itself only animates `opacity` on
 `group-hover`, so lift and glow both stay off the main thread once they're
 running:
 
@@ -109,7 +109,7 @@ property just for opacity.
 <LearnChapter label="The result" scene={<BentoGridResult />} isResult>
 
 Three columns, a couple of `colSpan`/`rowSpan` numbers, one shared spring for
-the entrance, and a CSS variable for the glow — no layout library required.
+the entrance, and a CSS variable for the glow. No layout library required.
 
 </LearnChapter>
 
@@ -119,8 +119,8 @@ the entrance, and a CSS variable for the glow — no layout library required.
 
 Both the stagger and the hover lift respect `motion-reduce`: the card's
 `[transition:none]` variant kills the translate/shadow transition, and its
-`hover:translate-y-0` cancels the lift outright — the glow still shows (it's
-just an `opacity` fade), but nothing on the page moves. Every prop lands on a
+`hover:translate-y-0` cancels the lift outright. The glow still shows (it's
+an `opacity` fade), but nothing on the page moves. Every prop lands on a
 plain `<div>`, so anything you'd do to make card content accessible (headings,
 focusable CTAs) works exactly as it would outside the grid.
 

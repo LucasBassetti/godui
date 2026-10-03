@@ -52,12 +52,12 @@ const LEGEND: {
 }[] = [
   {
     name: "New top",
-    desc: "static — revealed as the old top peels away",
+    desc: "static, revealed as the old top peels away",
     kind: "top",
   },
   {
     name: "Old bottom",
-    desc: "static — holds until the new bottom lands",
+    desc: "static, holds until the new bottom lands",
     kind: "bottom",
   },
   { name: "Fall leaf", desc: "old top · rotateX 0 → −90°", kind: "fall" },

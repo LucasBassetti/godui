@@ -1,6 +1,6 @@
 ---
 title: Anatomy of Particle Dissolve
-description: How an offscreen canvas samples text or an image into particles, then a rAF loop assembles, disperses, or loops them with per-particle delay — triggered by mount, in-view, or hover.
+description: How an offscreen canvas samples text or an image into particles, then a rAF loop assembles, disperses, or loops them with per-particle delay, triggered by mount, in-view, or hover.
 learnPlayer: true
 ---
 
@@ -27,7 +27,7 @@ learnPlayer: true
 }`}
 >
 
-`ParticleDissolve` is not a CSS effect. It rasterizes text (or an image) onto
+`ParticleDissolve` rasterizes text (or an image) onto
 an offscreen canvas, samples opaque pixels into a `Particle[]`, then animates
 each particle from a random scatter point `(sx, sy)` toward its target
 `(tx, ty)` inside a canvas `requestAnimationFrame` loop.
@@ -39,7 +39,7 @@ the image. Then it walks the pixel buffer in `density` steps.
 Smaller `density` → denser (and heavier) clouds. Alpha threshold 128 keeps
 anti-aliased edges from spawning ghost particles.
 
-Each particle carries its own `delay` (0–0.4) and `jitter` so the cloud never
+Each particle carries its own `delay` (0 to 0.4) and `jitter` so the cloud never
 moves as a rigid sheet.
 
 </LearnChapter>
@@ -68,12 +68,12 @@ Per particle, effective progress is eased:
 
 Modes set the goal differently:
 
-- **assemble** — goal → 1 (scatter → form)
-- **disperse** — starts formed (`p = 1`), goal → 0 on trigger
-- **loop** — flips goal every 2600ms
+- **assemble**: goal → 1 (scatter → form)
+- **disperse**: starts formed (`p = 1`), goal → 0 on trigger
+- **loop**: flips goal every 2600ms
 
-Drawing is `fillRect` at `particleSize` with `globalAlpha = max(0.1, eff)` —
-cheap enough for thousands of dots at 60fps when density is sane.
+Drawing is `fillRect` at `particleSize` with `globalAlpha = max(0.1, eff)`.
+That is cheap enough for thousands of dots at 60fps at a reasonable density.
 
 </LearnChapter>
 
@@ -102,15 +102,15 @@ After particles are built, `start()` runs according to `trigger`:
 | `in-view` | `IntersectionObserver` at `threshold: 0.3`, then disconnect |
 | `hover` | pointer enter/leave flips `goal` (assemble ↔ disperse semantics) |
 
-Hover does not use Framer Motion — it mutates `goal.current` directly so the
+Hover mutates `goal.current` directly instead of using Framer Motion, so the
 existing rAF loop picks up the new destination without a React re-render.
 
 </LearnChapter>
 
 <LearnChapter label="The result" scene={<ParticleDissolveResult />} isResult>
 
-One offscreen sample, one progress lerp, per-particle delay and jitter —
-triggered when you choose, quiet when motion is reduced.
+One offscreen sample, one progress lerp, and per-particle delay and jitter.
+It starts on the trigger you choose and holds still when motion is reduced.
 
 </LearnChapter>
 

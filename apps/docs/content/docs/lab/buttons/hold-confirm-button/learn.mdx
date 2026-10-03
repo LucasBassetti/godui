@@ -1,6 +1,6 @@
 ---
 title: Anatomy of the Hold Confirm Button
-description: How a press-and-hold gesture replaces a confirmation dialog — one motion value, a linear fill, a spring cancel, and a label stack that never resizes the button.
+description: "How a press-and-hold gesture replaces a confirmation dialog: one motion value, a linear fill, a spring cancel, and a label stack that never resizes the button."
 learnPlayer: true
 ---
 
@@ -17,14 +17,13 @@ learnPlayer: true
 >
 
 Everything rides on a single `useMotionValue(0)` called `progress`. It never
-touches layout — it drives the `scaleX` of an absolutely-positioned span
+touches layout. It drives the `scaleX` of an absolutely-positioned span
 pinned to the button's own bounds, `transform-origin: left`. The button
 never resizes; only the fill's transform changes.
 
 On pointer/key down, `progress` animates `0 → 1` over `duration` (default
-`900`ms) with `ease: "linear"` — no acceleration, no easing curve. A hold is
-a countdown the user is timing themselves against; a non-linear fill would
-make that countdown lie.
+`900`ms) with `ease: "linear"`: no acceleration, no easing curve. The user times the
+hold against the fill, so a non-linear fill would misreport the time left.
 
 ```tsx
 playback.current = animate(progress, 1, {
@@ -52,16 +51,15 @@ playback.current = animate(progress, 1, {
 };`}
 >
 
-Release before the fill completes and `progress` doesn't just jump back —
-it springs, with enough damping to feel decisive rather than bouncy:
+Release before the fill completes and `progress` springs back instead of
+jumping, with enough damping to settle without bouncing:
 `stiffness: 320`, `damping: 32`, `mass: 0.9`. Hold all the way through and
 the fill locks at `1`, a checkmark draws itself in over the label, and
 `onConfirm` fires.
 
 The check draws with the same restraint as the fill: an SVG path animates
-`pathLength` from `0` to `1` over a flat `0.3`s, no spring, no overshoot. The
-fill already did the "effort" beat — the check is just confirmation, so it
-stays quiet.
+`pathLength` from `0` to `1` over a flat `0.3`s, with no spring and no overshoot. The
+fill already showed the effort; the check only confirms it.
 
 ```tsx
 <motion.path
@@ -93,17 +91,17 @@ occupy the **same grid cell**:
 ```
 
 A CSS grid track sizes to the largest child even when that child is
-`invisible` rather than `display: none` — invisible elements still occupy
-their box, they just don't paint. So the grid cell is always as wide as the
+`invisible` rather than `display: none`. Invisible elements still occupy
+their box; they just don't paint. So the grid cell is always as wide as the
 longest of the three labels, and the button's width is locked in before any
 status change. Swap `holdingLabel` for something long and the button doesn't
 twitch when the hold starts; it was already sized for it. The inactive
 labels also carry `aria-hidden`, so screen readers only ever see the one
 that's showing.
 
-Confirming doesn't reset immediately — the filled bar holds for `1100`ms so
-the "done" state actually registers, then eases back to `0` over a quick
-`0.2`s (no spring here; the moment has passed, this is just tidying up):
+Confirming doesn't reset immediately. The filled bar holds for `1100`ms so
+the "done" state registers, then eases back to `0` over a quick `0.2`s
+(no spring here, since this is only a reset):
 
 ```tsx
 const complete = () => {
@@ -123,8 +121,8 @@ unmount, so a hold that outlives its button never calls `setState` into the
 void.
 
 `onPointerDown` / `onPointerUp` / `onPointerLeave` / `onPointerCancel` all
-map to the same `start()` / `cancel()` pair that Enter and Space use — a
-keyboard hold is not a lesser affordance, it's the identical state machine:
+map to the same `start()` / `cancel()` pair that Enter and Space use, so a
+keyboard hold runs the same state machine as a pointer hold:
 
 ```tsx
 const handleKeyDown = (event) => {
@@ -146,21 +144,19 @@ the OS repeat rate, and without that guard every one of them would call
 
 <LearnChapter label="The result" scene={<HoldConfirmResult />} isResult>
 
-One motion value, two easings, and a grid trick — that's the entire
-mechanism. The fill tells you how much longer, the spring tells you it heard
-you let go, and the label stack means none of it ever costs you a layout
-shift.
+One motion value, two easings, and a grid trick. The fill shows how much
+longer to hold, the spring shows the release registered, and the label stack
+keeps every state change free of layout shift.
 
 </LearnChapter>
 
 </LearnPlayer>
 
-## No reduced-motion branch — and that's fine here
+## No reduced-motion branch
 
 Unlike most GodUI motion, this component doesn't check
-`prefers-reduced-motion`. That's a deliberate omission, not an oversight: the
-fill isn't a decorative flourish playing *at* the user, it's the direct,
-proportional feedback for a gesture *they* are actively performing and can
+`prefers-reduced-motion`. The omission is deliberate. The fill
+is direct, proportional feedback for a gesture the user is performing and can
 stop at any instant. Suppressing it would remove the only signal that tells
 someone how much longer to keep holding.
 

@@ -37,18 +37,18 @@ learnPlayer: true
 />`}
 >
 
-`LiquidImage` does not animate the `<img>` in React. It attaches an SVG
-`feTurbulence` + `feDisplacementMap` filter, then eases the displacement
-`scale` toward a target inside a single `requestAnimationFrame` loop —
-writing attributes directly so the image never re-renders.
+`LiquidImage` attaches an SVG `feTurbulence` + `feDisplacementMap` filter to
+the `<img>`, then eases the displacement `scale` toward a target inside a
+single `requestAnimationFrame` loop. It writes attributes directly, so React
+never re-renders the image.
 
 A zero-size `<svg>` holds a `<filter>` whose id comes from `useId()`
 (colons stripped). Think of it as three stages of the **same** image:
 
-1. **Source** — the `<img>` enters the filter as `SourceGraphic`.
-2. **Noise** — `feTurbulence` builds a fractal noise field (slowly drifted by
+1. **Source**: the `<img>` enters the filter as `SourceGraphic`.
+2. **Noise**: `feTurbulence` builds a fractal noise field (slowly drifted by
    an SMIL `<animate>` on `baseFrequency` so it never freezes).
-3. **Displaced** — `feDisplacementMap` uses that noise's R/G channels to
+3. **Displaced**: `feDisplacementMap` uses that noise's R/G channels to
    push each source pixel, with live `scale` controlling how hard.
 
 The filter's region is padded (`x/y −20%`, `width/height 140%`) so edge
@@ -70,13 +70,13 @@ pixels have room to displace without clipping hard against the image bounds.
 <feDisplacementMap … scale="0" /* rAF writes this */ />`}
 >
 
-The irregular silhouette you see on hover isn't a separate mask or
-`clip-path`. Displacement pushes the photo's own edge pixels outward using
-the noise field. Two animations keep it alive:
+The irregular silhouette you see on hover comes from displacement, with no
+separate mask or `clip-path`: it pushes the photo's own edge pixels outward
+using the noise field. Two animations keep it alive:
 
-1. **Noise drift** — SMIL slowly changes `baseFrequency`, so the push
+1. **Noise drift**: SMIL slowly changes `baseFrequency`, so the push
    directions keep shifting.
-2. **Scale** — the rAF lerp (next section) raises `feDisplacementMap`'s
+2. **Scale**: the rAF lerp (next section) raises `feDisplacementMap`'s
    `scale` on interaction. Higher scale → wilder fringe.
 
 </LearnChapter>
@@ -89,10 +89,12 @@ current.current = next;
 if (el) el.setAttribute("scale", next.toFixed(2));`}
 >
 
-`current` and `target` live in refs. Each frame:
+`current` and `target` live in refs. Each frame moves `current` 12% of the
+way to `target` and writes the result to `feDisplacementMap`'s `scale`
+attribute.
 
-That is the whole animation. No React state, no style recalculation on the
-img — only an SVG attribute write. The loop keeps running while
+That is the whole animation. There is no React state and no style
+recalculation on the img, only an SVG attribute write. The loop keeps running while
 `target > 0.01` or `current > 0.05`, then cancels itself so idle images cost
 nothing.
 
@@ -129,8 +131,8 @@ raise the target when they exceed the current hold.
 
 <LearnChapter label="The result" scene={<LiquidImageResult />} isResult>
 
-One filter id, one rAF lerp, three target writers — and a CSS fallback when
-the GPU path is unavailable.
+One filter id, one rAF lerp, three target writers, and a CSS fallback for
+when the GPU path is unavailable.
 
 </LearnChapter>
 

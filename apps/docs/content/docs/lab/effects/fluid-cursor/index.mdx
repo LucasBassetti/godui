@@ -46,14 +46,14 @@ without a pointer.
 import { FluidCursor } from "@/components/godui/fluid-cursor";
 ```
 
-**Global** — drop it once near the root for a page-wide cursor. Hide the system
+**Global**: drop it once near the root for a page-wide cursor. Hide the system
 cursor with `cursor: none` where you want it to take over:
 
 ```tsx
 <FluidCursor />
 ```
 
-**Scoped** — pass a `containerRef` (the element must be positioned) to confine it
+**Scoped**: pass a `containerRef` (the element must be positioned) to confine it
 to one region, e.g. a hero or a card:
 
 ```tsx
@@ -73,7 +73,7 @@ const ref = useRef(null);
 | `color`               | `string`                          | `"white"`          | Dot color; `white` inverts cleanly under `blend`.      |
 | `blend`               | `boolean`                         | `true`             | Invert the backdrop with `mix-blend-mode: difference`. |
 | `trail`               | `boolean`                         | `true`             | Render the soft lagging smear.                         |
-| `containerRef`        | `RefObject<HTMLElement \| null>`  | —                  | Scope the cursor to a positioned element.              |
+| `containerRef`        | `RefObject<HTMLElement \| null>`  | none                  | Scope the cursor to a positioned element.              |
 | `interactiveSelector` | `string`                          | links, buttons, `[data-cursor]` | Elements that enlarge the cursor on hover. |
 
 </Workbench>

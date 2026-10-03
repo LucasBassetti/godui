@@ -1,6 +1,6 @@
 ---
 title: Anatomy of Animated Testimonials
-description: A stack that never slides, a quote that fades as a block and dissolves word by word at the same time — two independent motion layers on one 5-second clock.
+description: A stack that never slides and a quote that fades as a block while it dissolves word by word. Two independent motion layers on one 5-second clock.
 learnPlayer: true
 ---
 
@@ -33,20 +33,20 @@ learnPlayer: true
 >
 
 Testimonial carousels usually fake depth with a sliding track and a fixed
-crop. `AnimatedTestimonials` doesn't slide anything — every portrait is
+crop. `AnimatedTestimonials` doesn't slide anything. Every portrait is
 mounted in the same box for the component's whole lifetime, and "advancing"
-is just every plate re-targeting the same four properties on a spring.
+means every plate re-targets the same four properties on a spring.
 
 `testimonials.map` renders every image up front, absolutely positioned on
 top of each other inside one `relative` box with `[perspective:1000px]`.
-`isActive` is the only thing that differs per render — there's no separate
-"current slide" node swapped in and out:
+`isActive` is the only thing that differs per render. No separate
+"current slide" node is swapped in and out.
 
-`rotations` is computed once with `useMemo` — `Math.floor(Math.random() * 16)
-- 8` per testimonial — and reused as both the `initial` and the resting
+`rotations` is computed once with `useMemo` (`Math.floor(Math.random() * 16)
+- 8` per testimonial) and reused as both the `initial` and the resting
 `rotate` for every inactive card. That's why the fan looks organic instead
-of a uniform deck: each portrait has its own fixed tilt for the component's
-whole life, not a fresh random value every re-render.
+of a uniform deck: each portrait keeps one fixed tilt for the component's
+whole life instead of getting a fresh random value every re-render.
 
 </LearnChapter>
 
@@ -57,7 +57,7 @@ whole life, not a fresh random value every re-render.
 >
 
 When `active` changes, React re-renders every `motion.img` with new
-`animate` values — the previously-active plate's `scale`/`rotate`/`zIndex`
+`animate` values. The previously-active plate's `scale`/`rotate`/`zIndex`
 relax back toward its `rotations[i]` resting state while the new active
 plate's animate toward `1`/`0`/`count`. Framer interpolates each property on
 the same spring independently, which is why the stack looks like it's
@@ -102,14 +102,13 @@ The name/role/quote block and the individual words inside it are two
 separate `AnimatePresence` layers with two separate transitions.
 
 `mode="wait"` on the outer `AnimatePresence` means the *previous* quote
-block fully exits (`y: -12`, fading out) before the next one mounts — so the
-per-word cascade always starts from a clean, empty frame. The words
-themselves don't have an `exit` — they're not independently removed, they
-just disappear with their parent block's exit animation. Only the entrance
-is staggered; the departure is one motion, not twenty-four unwinding in
-reverse.
+block fully exits (`y: -12`, fading out) before the next one mounts, so the
+per-word cascade always starts from an empty frame. The words
+themselves don't have an `exit`. They disappear with their parent
+block's exit animation. Only the entrance is staggered; the departure is a
+single motion.
 
-The clock resets on every navigation, not just autoplay:
+The clock resets on every navigation, including manual ones:
 
 ```tsx
 const next = React.useCallback(
@@ -125,7 +124,7 @@ React.useEffect(() => {
 ```
 
 The effect is keyed on `active`, not mounted once with a `setInterval`.
-Every time `active` changes — autoplay *or* a manual arrow click — the old
+Every time `active` changes (autoplay *or* a manual arrow click), the old
 timeout is cleared and a fresh 5-second one starts. Click "next" right
 before autoplay would have fired, and you get a full 5 seconds again instead
 of an almost-immediate second flip.
@@ -134,10 +133,10 @@ of an almost-immediate second flip.
 
 <LearnChapter label="The result" scene={<AnimatedTestimonialsResult />} isResult>
 
-One stack of always-mounted portraits re-targeting a shared spring, one
-quote block that fades as a unit while its words dissolve on their own
-staggered clock, one timeout that restarts on any navigation — three
-independent timing systems that read as a single, cohesive carousel.
+The carousel runs three independent timing systems: one stack of
+always-mounted portraits re-targeting a shared spring, one quote block that
+fades as a unit while its words dissolve on their own staggered clock, and
+one timeout that restarts on any navigation.
 
 </LearnChapter>
 

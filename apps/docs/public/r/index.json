@@ -1,7 +1,7 @@
 {
   "name": "godui",
   "homepage": "https://godui.design",
-  "revision": "71a17b3c9dded52b562ad0141b2e449a7040cef9",
+  "revision": "d68bfb3575c767ab1ef7a7b392ee2a702d73291f",
   "components": [
     {
       "name": "accordion",
@@ -16,7 +16,7 @@
     {
       "name": "agent-flow",
       "title": "Agent Flow",
-      "description": "A draggable, pannable node-graph that visualizes an agent workflow — labelled nodes with live run status and data packets that flow along the edges between them.",
+      "description": "A draggable, pannable node-graph that visualizes an agent workflow: labelled nodes with live run status and data packets that flow along the edges between them.",
       "category": "AI",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
@@ -136,7 +136,7 @@
     {
       "name": "blueprint-grid",
       "title": "Blueprint Grid",
-      "description": "A technical blueprint lattice — ruled lines, a dot matrix, or a perspective floor — with a diagonal light sweep and a cursor spotlight. Pure CSS.",
+      "description": "A technical blueprint lattice (ruled lines, a dot matrix, or a perspective floor) with a diagonal light sweep and a cursor spotlight. Pure CSS.",
       "category": "Backgrounds",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
@@ -271,7 +271,7 @@
     {
       "name": "container-scroll",
       "title": "Container Scroll",
-      "description": "A device frame that un-tilts from a 3D perspective and scales to rest as you scroll — the classic product hero.",
+      "description": "A device frame that un-tilts from a 3D perspective and scales to rest as you scroll, for a product hero section.",
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
@@ -281,7 +281,7 @@
     {
       "name": "context-menu",
       "title": "Context Menu",
-      "description": "Displays a menu to the user — such as a set of actions or functions — triggered by a right click. Grows from the pointer on a spring; checks pop in. GPU-only.",
+      "description": "Displays a menu to the user (such as a set of actions or functions), triggered by a right click. Grows from the pointer on a spring; checks pop in. GPU-only.",
       "category": "Components",
       "dependencies": ["radix-ui", "lucide-react"],
       "registryDependencies": ["utils", "@godui/godui-motion"],
@@ -301,7 +301,7 @@
     {
       "name": "cover-flow",
       "title": "Cover Flow",
-      "description": "A physics 3D cover flow — the centered slide faces front while neighbours rotate away in perspective, with momentum drag and snap.",
+      "description": "A physics 3D cover flow: the centered slide faces front while neighbours rotate away in perspective, with momentum drag and snap.",
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
@@ -351,7 +351,7 @@
     {
       "name": "dropdown-menu",
       "title": "Dropdown Menu",
-      "description": "Displays a menu to the user — such as a set of actions or functions — triggered by a button. Grows from its trigger on a spring; checks pop in. GPU-only.",
+      "description": "Displays a menu to the user (such as a set of actions or functions), triggered by a button. Grows from its trigger on a spring; checks pop in. GPU-only.",
       "category": "Components",
       "dependencies": ["radix-ui", "lucide-react"],
       "registryDependencies": ["utils", "@godui/godui-motion"],
@@ -421,7 +421,7 @@
     {
       "name": "flow-field",
       "title": "Flow Field",
-      "description": "Particles streaming along an evolving noise vector field, leaving silky fading trails. Paints its own themed background.",
+      "description": "Particles streaming along an evolving noise vector field, leaving fading trails. Paints its own themed background.",
       "category": "Backgrounds",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
@@ -541,7 +541,7 @@
     {
       "name": "holographic-card",
       "title": "Holographic Card",
-      "description": "A trading-card holo effect — iridescent foil, specular glare, and glitter that tilt and shift with the pointer or device gyroscope.",
+      "description": "A trading-card holo effect: iridescent foil, specular glare, and glitter that tilt and shift with the pointer or device gyroscope.",
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
@@ -561,7 +561,7 @@
     {
       "name": "image-accordion",
       "title": "Image Accordion",
-      "description": "Horizontal image panels that expand on hover to reveal their caption — an elegant, space-efficient gallery.",
+      "description": "A space-efficient gallery of horizontal image panels that expand on hover to reveal their caption.",
       "category": "Layout",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
@@ -581,7 +581,7 @@
     {
       "name": "image-trail",
       "title": "Image Trail",
-      "description": "Images spawn along the pointer's path, pop in, and drift away — the signature portfolio hover effect.",
+      "description": "Images spawn along the pointer's path, pop in, and drift away, as a portfolio-style hover effect.",
       "category": "Effects",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
@@ -591,7 +591,7 @@
     {
       "name": "inertia-gallery",
       "title": "Inertia Gallery",
-      "description": "A horizontal gallery you throw with the pointer — momentum carries it, it rubber-bands at the ends, and slides scale, blur, and fade with distance from center.",
+      "description": "A horizontal gallery you throw with the pointer. Momentum carries it, it rubber-bands at the ends, and slides scale, blur, and fade with distance from center.",
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
@@ -687,7 +687,7 @@
     {
       "name": "liquid-image",
       "title": "Liquid Image",
-      "description": "A premium hover effect that ripples and distorts an image like liquid, intensifying with cursor speed.",
+      "description": "A hover effect that ripples and distorts an image like liquid, intensifying with cursor speed.",
       "category": "Effects",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
@@ -707,7 +707,7 @@
     {
       "name": "live-cursors",
       "title": "Live Cursors",
-      "description": "Smoothly interpolated multiplayer cursors with trailing name flags and optional cursor-chat, plus a self-driving simulated-peer mode.",
+      "description": "Interpolated multiplayer cursors with trailing name flags and optional cursor-chat, plus a self-driving simulated-peer mode.",
       "category": "Collaboration",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
@@ -757,7 +757,7 @@
     {
       "name": "marquee",
       "title": "Marquee",
-      "description": "An infinite, seamless scrolling row or column of content that pauses on hover.",
+      "description": "An infinite scrolling row or column of content that loops without a gap and pauses on hover.",
       "category": "Effects",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
@@ -837,7 +837,7 @@
     {
       "name": "notification-inbox",
       "title": "Notification Inbox",
-      "description": "A Linear-style notification center with time-bucketed groups, unread accent rails, swipe-to-archive, mark-all-read, and a polished empty state.",
+      "description": "A Linear-style notification center with time-bucketed groups, unread accent rails, swipe-to-archive, mark-all-read, and an empty state.",
       "category": "Collaboration",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
@@ -887,7 +887,7 @@
     {
       "name": "particle-dissolve",
       "title": "Particle Dissolve",
-      "description": "Text or an image is sampled into particles that scatter and reform — a dramatic entrance or transition.",
+      "description": "Text or an image is sampled into particles that scatter and reform, as an entrance or a transition.",
       "category": "Effects",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
@@ -977,7 +977,7 @@
     {
       "name": "radio-group",
       "title": "Radio Group",
-      "description": "A set of checkable buttons — known as radio buttons — where no more than one of the buttons can be checked at a time. The dot grows in; items press on a spring. GPU-only.",
+      "description": "A set of checkable buttons (known as radio buttons) where no more than one of the buttons can be checked at a time. The dot grows in; items press on a spring. GPU-only.",
       "category": "Components",
       "dependencies": ["radix-ui", "lucide-react"],
       "registryDependencies": ["utils", "@godui/godui-motion"],
@@ -1007,7 +1007,7 @@
     {
       "name": "scroll-progress",
       "title": "Scroll Progress",
-      "description": "A spring-smoothed reading indicator — a pinned top bar or a fading back-to-top ring.",
+      "description": "A spring-smoothed reading indicator: a pinned top bar or a fading back-to-top ring.",
       "category": "Effects",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
@@ -1027,7 +1027,7 @@
     {
       "name": "scroll-stack",
       "title": "Scroll Stack",
-      "description": "Pinned cards that scale, recede, and stack as the page scrolls — the premium feature-reveal section.",
+      "description": "Pinned cards that scale, recede, and stack as the page scrolls, for a feature-reveal section.",
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
@@ -1037,7 +1037,7 @@
     {
       "name": "scroll-text-reveal",
       "title": "Scroll Text Reveal",
-      "description": "Kinetic typography that scrubs each word from dim to sharp as the paragraph scrolls through view — reverses cleanly on scroll-up.",
+      "description": "Kinetic typography that scrubs each word from dim to sharp as the paragraph scrolls through view, and reverses on scroll-up.",
       "category": "Text",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
@@ -1067,7 +1067,7 @@
     {
       "name": "select",
       "title": "Select",
-      "description": "Displays a list of options for the user to pick from — triggered by a button. Grows on a spring; the check pops in. GPU-only.",
+      "description": "Displays a list of options for the user to pick from, triggered by a button. Grows on a spring; the check pops in. GPU-only.",
       "category": "Components",
       "dependencies": ["radix-ui", "lucide-react"],
       "registryDependencies": ["utils", "@godui/godui-motion"],
@@ -1167,7 +1167,7 @@
     {
       "name": "spin-viewer",
       "title": "Spin Viewer",
-      "description": "A 360-degree product viewer — drag to spin an object through a sequence of frames, with optional idle auto-rotate and a touch-friendly hint.",
+      "description": "A 360-degree product viewer: drag to spin an object through a sequence of frames, with optional idle auto-rotate and a touch-friendly hint.",
       "category": "Layout",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
@@ -1177,7 +1177,7 @@
     {
       "name": "split-flap-display",
       "title": "Split-Flap Display",
-      "description": "A Solari departure-board display: each character spins through the charset on stacked flip leaves — the old top hinges away, the new bottom rises into place — settling on the value with a staggered column wave. View-only, compositor-only motion, reveals on scroll.",
+      "description": "A Solari departure-board display. Each character spins through the charset on stacked flip leaves (the old top hinges away, the new bottom rises into place) and settles on the value with a staggered column wave. View-only, compositor-only motion, reveals on scroll.",
       "category": "Layout",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
@@ -1277,7 +1277,7 @@
     {
       "name": "tabs",
       "title": "Tabs",
-      "description": "A set of layered sections of content — known as tab panels — that are displayed one at a time. One indicator slides between tabs with a FLIP; GPU-only.",
+      "description": "A set of layered sections of content (known as tab panels) that are displayed one at a time. One indicator slides between tabs with a FLIP; GPU-only.",
       "category": "Components",
       "dependencies": ["radix-ui", "class-variance-authority"],
       "registryDependencies": ["utils", "@godui/godui-motion"],
@@ -1307,7 +1307,7 @@
     {
       "name": "text-scramble",
       "title": "Text Scramble",
-      "description": "Characters cycle through random glyphs and resolve into the target text — a decrypt / matrix reveal.",
+      "description": "Characters cycle through random glyphs and resolve into the target text, like a decrypt / matrix reveal.",
       "category": "Text",
       "dependencies": ["framer-motion"],
       "registryDependencies": ["@godui/godui-theme"],
@@ -1377,7 +1377,7 @@
     {
       "name": "topographic-drift",
       "title": "Topographic Drift",
-      "description": "Slowly drifting topographic contour lines — a living elevation map drawn with marching squares on a Canvas.",
+      "description": "Slowly drifting topographic contour lines: an animated elevation map drawn with marching squares on a Canvas.",
       "category": "Backgrounds",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],
@@ -1397,7 +1397,7 @@
     {
       "name": "warp-starfield",
       "title": "Warp Starfield",
-      "description": "A depth starfield you fly through — stars stream toward the viewer with cursor parallax and an optional hyperspace warp.",
+      "description": "A depth starfield you fly through. Stars stream toward the viewer with cursor parallax and an optional hyperspace warp.",
       "category": "Backgrounds",
       "dependencies": [],
       "registryDependencies": ["@godui/godui-theme"],

@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "topographic-drift",
   "title": "Topographic Drift",
-  "description": "Slowly drifting topographic contour lines — a living elevation map drawn with marching squares on a Canvas.",
+  "description": "Slowly drifting topographic contour lines: an animated elevation map drawn with marching squares on a Canvas.",
   "registryDependencies": ["@godui/godui-theme"],
   "files": [
     {

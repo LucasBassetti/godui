@@ -109,15 +109,15 @@ clock. `CollapsibleContent` with `asChild` works the same way: the child it
 renders is the box and its children hold still.
 
 The box clips only while its edge sweeps (`data-sweeping`), so focus rings and
-shadows of the content aren't cut off at rest. Some panels can't be split into
-a box and still children: one with loose text, or an inline or
-`display: contents` child, directly inside (none of those can be moved on
-their own), and one whose box paints (a background, border or shadow, which
-would slide over the trigger). Those fade in and out instead, and the content
+shadows of the content aren't cut off at rest. Two kinds of panel can't be
+split into a box and still children. One has loose text, or an inline or
+`display: contents` child, directly inside it; none of those can move on their
+own. The other has a box that paints a background, border or shadow, which
+would slide over the trigger. Those fade in and out instead, and the content
 after them still glides. Wrap loose text in a block element to get the sweep.
 
-The root gets `ease-spring-smooth` (the clock's curve; add your own `ease-*`
-class to the root to change it).
+The root gets `ease-spring-smooth`, the clock's curve. Add your own `ease-*`
+class to the root to change it.
 
 Under `prefers-reduced-motion` nothing moves: the height and the content after
 it change in one step and the panel's content only fades, over

@@ -1,6 +1,6 @@
 ---
 title: Notification Inbox
-description: A Linear-style notification center with time-bucketed groups, unread accent rails, swipe-to-archive, mark-all-read, and a polished empty state.
+description: A Linear-style notification center with time-bucketed groups, unread accent rails, swipe-to-archive, mark-all-read, and an animated empty state.
 workbench: true
 ---
 
@@ -8,7 +8,7 @@ import { NotificationInboxDemo } from "@/components/demos/notification-inbox-dem
 
 <Workbench>
 
-A Linear-style notification center with time-bucketed groups, unread accent rails, swipe-to-archive, mark-all-read, and a polished empty state.
+A Linear-style notification center with time-bucketed groups, unread accent rails, swipe-to-archive, mark-all-read, and an animated empty state.
 
 <Example
   label="Default"
@@ -40,7 +40,7 @@ export function NotificationInboxDemo() {
 
 Notifications group by their `group` label with sticky headers and an unread
 count badge. Drag a row left past the threshold to archive it; **Mark all read**
-clears the unread state. An empty list shows a gentle caught-up state.
+clears the unread state. An empty list shows a caught-up state.
 
 ## Usage
 
@@ -61,10 +61,10 @@ import { NotificationInbox } from "@/components/godui/notification-inbox";
 
 | Prop            | Type                      | Default   | Description                         |
 | --------------- | ------------------------- | --------- | ----------------------------------- |
-| `notifications` | `Notification[]`          | —         | Items to render, grouped by `group`.|
-| `onRead`        | `(id: string) => void`    | —         | Fired when a row is clicked.        |
-| `onArchive`     | `(id: string) => void`    | —         | Fired when a row is swiped away.    |
-| `onMarkAllRead` | `() => void`              | —         | Fired by the mark-all-read action.  |
+| `notifications` | `Notification[]`          | none         | Items to render, grouped by `group`.|
+| `onRead`        | `(id: string) => void`    | none         | Fired when a row is clicked.        |
+| `onArchive`     | `(id: string) => void`    | none         | Fired when a row is swiped away.    |
+| `onMarkAllRead` | `() => void`              | none         | Fired by the mark-all-read action.  |
 | `title`         | `string`                  | `"Inbox"` | Header title.                       |
 
 </Workbench>

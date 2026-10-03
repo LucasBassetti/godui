@@ -45,7 +45,7 @@ export function TiltCardResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — move your pointer across each card
+          the real component: move your pointer across each card
         </span>
       </div>
       <div className="flex min-h-[300px] flex-wrap items-center justify-center gap-8 p-10">

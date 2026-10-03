@@ -52,7 +52,7 @@ export function PromptComposerResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — type, attach, send
+          the real component: type, attach, send
         </span>
       </div>
       <div className="flex min-h-[280px] flex-col items-center justify-center gap-3 p-10">

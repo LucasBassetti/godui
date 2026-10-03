@@ -43,7 +43,7 @@ export function LiquidGlassLensResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — hover the stage
+          the real component: hover the stage
         </span>
       </div>
       {demo}

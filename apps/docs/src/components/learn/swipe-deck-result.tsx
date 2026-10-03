@@ -63,7 +63,7 @@ export function SwipeDeckResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — drag, buttons, or ← / →
+          the real component: drag, buttons, or ← / →
         </span>
       </div>
       <div className="flex min-h-[420px] items-center justify-center p-10">

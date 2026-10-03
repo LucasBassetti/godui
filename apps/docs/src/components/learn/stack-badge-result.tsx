@@ -39,7 +39,7 @@ export function StackBadgeResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — hover a chip
+          the real component: hover a chip
         </span>
       </div>
       <div className="flex min-h-[220px] flex-wrap items-center justify-center gap-6 p-10">

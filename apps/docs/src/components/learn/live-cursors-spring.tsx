@@ -51,7 +51,7 @@ const LANES = [
 const LEGEND = [
   {
     name: "Raw",
-    desc: "position snaps — no interpolation between updates",
+    desc: "position snaps, no interpolation between updates",
     kind: "raw" as const,
   },
   {

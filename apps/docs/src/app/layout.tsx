@@ -12,14 +12,14 @@ import { SiteStructuredData } from "./structured-data";
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 
-const SITE_TITLE = "GodUI — UI Collection for Modern Interfaces";
+const SITE_TITLE = "GodUI: UI Collection for Modern Interfaces";
 const SITE_DESCRIPTION =
-  "An open-source collection of beautifully crafted motion components built with React, TypeScript, Tailwind CSS, Motion, and shadcn/ui.";
+  "An open-source collection of animated components built with React, TypeScript, Tailwind CSS, Motion, and shadcn/ui.";
 
 export const metadata: Metadata = {
   title: {
     default: SITE_TITLE,
-    template: "%s — GodUI",
+    template: "%s | GodUI",
   },
   description: SITE_DESCRIPTION,
   metadataBase: new URL("https://godui.design"),
@@ -47,7 +47,7 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 924,
         height: 540,
-        alt: "GodUI — UI Collection for Modern Interfaces",
+        alt: "GodUI: UI Collection for Modern Interfaces",
       },
     ],
   },

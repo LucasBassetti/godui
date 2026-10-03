@@ -87,7 +87,7 @@ scaling a plain bar is invisible.
 
 The values come from Radix itself. A MutationObserver watches the range's
 inline style and copies the start and length into two vars, so inverted, RTL,
-vertical and two-thumb sliders are all handled for free: whichever edge Radix
+vertical and two-thumb sliders need no extra code: whichever edge Radix
 anchors, the observer reads the physical left and right. The first box is
 also computed during render, so the server HTML already has it.
 

@@ -89,7 +89,7 @@ export function GlobeLifecycle() {
                 <span className="relative size-10 rounded-full bg-[var(--muted)]" />
               </div>
               <p className="font-mono text-[11px] text-fd-muted-foreground">
-                mounted — rAF running
+                mounted: rAF running
               </p>
             </div>
 
@@ -117,7 +117,7 @@ export function GlobeLifecycle() {
                 <span className="glf-ghost size-10 rounded-full bg-[var(--muted)]" />
               </div>
               <p className="font-mono text-[11px] text-fd-muted-foreground">
-                unmounted — context freed
+                unmounted: context freed
               </p>
             </div>
           </div>

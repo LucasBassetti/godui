@@ -27,15 +27,15 @@ learnPlayer: true
 Swipeable decks are often built by absolutely positioning every card and
 recomputing offsets on each swipe. `SwipeDeck` keeps the stack as one
 formula applied to whatever rank a card currently holds, so "the next card
-moves up" is a spring on a number, not a layout recalculation.
+moves up" is a spring on a number instead of a layout recalculation.
 
 Only the front card (`rank === 0`) is a `FrontCard` with drag handlers;
-everything behind it is a `BehindCard` whose entire visual state — scale,
-vertical offset, whether it's even visible — falls out of its `rank`. When a
+everything behind it is a `BehindCard` whose entire visual state (scale,
+vertical offset, whether it's visible at all) follows from its `rank`. When a
 swipe commits, `order` shifts by one and every remaining card's `rank` drops
 by one; React re-renders with new `rank` props, and the *same* spring
 animates each card from its old slot to its new one. There's no separate
-"promote" animation — it's the identical `STACK_SPRING` the deck already uses
+"promote" animation. It is the same `STACK_SPRING` the deck already uses
 for steady state.
 
 </LearnChapter>
@@ -59,19 +59,19 @@ const handleDragEnd = (_e, info: PanInfo) => {
 
 `rotate` is a live `useTransform` of the drag's `x` motion value, so the tilt
 tracks the finger in real time with zero extra state. On release, `power`
-blends distance and velocity into one number — a short, fast flick can commit
+blends distance and velocity into one number. A short, fast flick can commit
 a swipe even if it never crossed the raw `threshold` (110px), and a slow drag
-that overshoots the threshold but is decelerating still counts as a real
-commit rather than requiring a minimum speed.
+that overshoots the threshold while decelerating still commits, with no
+minimum speed required.
 
-The exit continues the gesture, it doesn't restart it. The exit spring's
+The exit continues the gesture instead of restarting it. The exit spring's
 `velocity` is seeded with the *release* velocity from the drag, not zero. A
-fast flick flies off fast; a slow drag past threshold drifts off slowly —
-the card's exit speed is a direct continuation of how it was moving the
+fast flick flies off fast; a slow drag past threshold drifts off slowly.
+The card's exit speed continues how it was moving the
 instant you let go, which is why `{ stiffness: 60, damping: 16 }` reads as
 "thrown" rather than "faded out." A snapped-back drag (one that didn't clear
 the threshold) uses a different, snappier spring (`520 / 32`) seeded the same
-way, so even an aborted swipe still feels like it remembers your hand.
+way, so an aborted swipe also keeps the hand's momentum.
 
 ```tsx
 const controls = animate(x, sign * (width * 0.9 + 360), {
@@ -84,10 +84,10 @@ const controls = animate(x, sign * (width * 0.9 + 360), {
 });
 ```
 
-Keyboard parity: arrow keys call the exact same `beginLeave` a completed drag
-would, just with a hardcoded velocity (±1200) standing in for a fast flick —
-so a keyboard user gets the same momentum-driven exit spring a mouse or touch
-gesture would produce, not a instant cut or a separate fade transition.
+Keyboard parity: arrow keys call the same `beginLeave` a completed drag
+would, with a hardcoded velocity (±1200) standing in for a fast flick.
+A keyboard user gets the same momentum-driven exit spring a mouse or touch
+gesture would produce, instead of an instant cut or a separate fade transition.
 
 ```tsx
 const handleKey = (e: React.KeyboardEvent) => {
@@ -101,9 +101,8 @@ const handleKey = (e: React.KeyboardEvent) => {
 <LearnChapter label="The result" scene={<SwipeDeckResult />} isResult>
 
 One rank formula drives the whole stack, one `useTransform` maps drag to
-rotation, and one seeded spring makes the exit feel like it's still being
-thrown after you've let go — drag the front card, or use the buttons or arrow
-keys below.
+rotation, and one seeded spring carries the throw's momentum into the exit.
+Drag the front card, or use the buttons or arrow keys below.
 
 </LearnChapter>
 

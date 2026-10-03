@@ -1,6 +1,6 @@
 ---
 title: Anatomy of the Card Swap
-description: How a 3D card stack cycles through a showcase loop with one array rotation, a shared spring, and a pointer-driven tilt — no per-card timers.
+description: How a 3D card stack cycles through a showcase loop with one array rotation, a shared spring, and a pointer-driven tilt, without per-card timers.
 learnPlayer: true
 ---
 
@@ -23,8 +23,8 @@ timeline per card. It doesn't. `CardSwap` keeps a single `order` array; every
 card reads its own position out of it and springs there.
 
 Nothing about a card's depth lives on the card. `CardSwap` keeps one `order`
-array — `order[r]` is the item index currently at rank `r`, `0` being the
-front — and derives each card's `rank` by inverting it:
+array (`order[r]` is the item index currently at rank `r`, `0` being the
+front) and derives each card's `rank` by inverting it:
 
 ```tsx
 const rankOf = React.useMemo(() => {
@@ -36,7 +36,7 @@ const rankOf = React.useMemo(() => {
 }, [order, n]);
 ```
 
-That one number then drives four transforms at once — `x`, `y`, `scale`,
+That one number then drives four transforms at once. `x`, `y`, `scale`, and
 `rotateZ` all step together as rank increases, so the whole fan reads as one
 consistent recession into the stack.
 
@@ -56,14 +56,14 @@ React.useEffect(() => {
 }, [interval, paused, n, advance]);`}
 >
 
-Advancing doesn't tween anyone's position directly — it rewrites `order` so
-the front item's index moves to the back, and lets every card's `rank`
-(and therefore its `animate` target) fall out of that new array on the next
-render:
+Advancing doesn't tween any card's position directly. It rewrites `order` so
+the front item's index moves to the back, and every card's `rank`
+(and therefore its `animate` target) falls out of that new array on the next
+render.
 
-Because every card's `animate` prop is just "whatever `rankOf[i]` says right
-now," Framer's own diffing handles the transition — there's no manual
-tween between old and new slot, just a spring (`stiffness 320 / damping 32 /
+Because every card's `animate` prop is "whatever `rankOf[i]` says right
+now," Framer's own diffing handles the transition. There's no manual
+tween between old and new slot, only a spring (`stiffness 320 / damping 32 /
 mass 0.9`) chasing a new target.
 
 </LearnChapter>
@@ -88,11 +88,10 @@ mass 0.9`) chasing a new target.
 </motion.div>`}
 >
 
-The pointer parallax lives one level up from the cards — on the
-`[transform-style:preserve-3d]` wrapper that holds all of them, not on any
-individual card:
+The pointer parallax lives one level up from the cards, on the
+`[transform-style:preserve-3d]` wrapper that holds all of them.
 
-One spring, applied once, tilts the entire fan together — cards don't fight
+One spring, applied once, tilts the entire fan together. Cards don't fight
 each other for depth because their individual `rotateZ` offsets and the
 group's `rotateX`/`rotateY` compose on the same 3D stage.
 
@@ -100,8 +99,8 @@ group's `rotateX`/`rotateY` compose on the same 3D stage.
 
 <LearnChapter label="The result" scene={<CardSwapResult />} isResult>
 
-One array, one lookup from index to rank, two springs (fast for the tilt,
-smooth for the re-flow) — that's the entire stack, cycling itself forever.
+The entire stack is one array, one lookup from index to rank, and two springs
+(fast for the tilt, smooth for the re-flow).
 
 </LearnChapter>
 
@@ -110,10 +109,10 @@ smooth for the re-flow) — that's the entire stack, cycling itself forever.
 ## Accessibility
 
 `useReducedMotion` is read once, at the top: reduced-motion swaps every
-card's `transition` to `{ duration: 0 }` (the position still updates, it just
-doesn't spring) and short-circuits `handleMove` before it ever calls
+card's `transition` to `{ duration: 0 }` (the position still updates without
+the spring) and short-circuits `handleMove` before it ever calls
 `setTilt`. The prev/next controls are always real `<button>`s with
-`aria-label`s — they work identically whether or not motion is enabled, and
+`aria-label`s. They work identically whether or not motion is enabled, and
 they're the only way to drive the stack when `interval={0}`.
 
 ```tsx

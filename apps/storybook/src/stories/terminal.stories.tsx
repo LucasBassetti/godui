@@ -17,7 +17,7 @@ const meta = {
   parameters: { layout: "centered" },
   args: {
     lines: LINES,
-    title: "zsh — godui",
+    title: "zsh: godui",
     typingSpeed: 38,
     startOnView: false,
     loop: false,

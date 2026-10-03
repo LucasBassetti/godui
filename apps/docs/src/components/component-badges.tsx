@@ -181,7 +181,7 @@ export function ComponentBadges({
         <Badge
           tone="sky"
           label={`Motion ${score.grade}`}
-          title={`${score.grade} — ${MOTION_TIER_META[score.grade].name}`}
+          title={`${score.grade}: ${MOTION_TIER_META[score.grade].name}`}
           href={scoreHref}
           hrefLabel="Motion Score table"
         >
@@ -201,8 +201,8 @@ export function ComponentBadges({
         </Badge>
       ) : isStatic ? (
         <Badge tone="emerald" label="Static" title="No animation">
-          Renders with plain CSS and never animates — nothing for the browser to
-          keep composing or repainting.
+          Renders with plain CSS and never animates, so the browser has nothing
+          to composite or repaint.
         </Badge>
       ) : (
         <Badge
@@ -210,8 +210,8 @@ export function ComponentBadges({
           label="GPU-only"
           title="Runs on the GPU compositor"
         >
-          Animates only transform, opacity and filter — no main-thread layout or
-          paint, so it stays smooth even under load.
+          Animates only transform, opacity and filter. There is no main-thread
+          layout or paint, so it stays smooth under load.
         </Badge>
       )}
       {dep ? (

@@ -30,14 +30,14 @@ const nameSize = Math.max(13, Math.round(height * 0.3));
 </a>`}
 >
 
-Download badges are usually a `<img src="app-store-badge.svg">` — a fixed
+Download badges are usually a `<img src="app-store-badge.svg">`: a fixed
 bitmap you can't restyle or resize cleanly. `StoreBadge` draws the lockup
 itself: one `height` prop drives the icon, the two lines of text, and the
 padding, so the badge scales like a font instead of an image.
 
-Every dimension — icon, gap, padding, corner radius, both text sizes — is a
+Every dimension (icon, gap, padding, corner radius, both text sizes) is a
 ratio of `height`, floored with `Math.max` so the caption never drops below a
-legible 9px. Hand it `height={72}` for a hero and `height={40}` for a footer;
+legible 9px. Pass `height={72}` for a hero and `height={40}` for a footer;
 nothing else changes, because nothing else is a hardcoded pixel value.
 
 </LearnChapter>
@@ -52,22 +52,22 @@ nothing else changes, because nothing else is a hardcoded pixel value.
 />`}
 >
 
-This isn't a shimmer that loops on an interval — it's a single `translate-x`
+The sheen does not loop on an interval. It is a single `translate-x`
 transition parked off-screen left (`-130%`) that eases to off-screen right
 (`130%`) the moment `group-hover` is true, and snaps back to `-130%` the
 instant the pointer leaves (no exit transition is defined, so it resets
-instantly, ready for the next hover). The `-12deg` skew is what makes it read
+instantly, ready for the next hover). The `-12deg` skew makes it read
 as a light streak crossing a curved badge edge instead of a rectangular bar
 sliding across a rectangular one.
 
-The QR is a popover, not a modal. `matchMedia("(pointer: coarse)")` gates the
-whole feature: on touch, `show` is a no-op and the badge just links normally —
-there's no tap-to-reveal state to get stuck in on a phone. On a fine pointer,
+The QR is a popover. `matchMedia("(pointer: coarse)")` gates the
+whole feature: on touch, `show` is a no-op and the badge links normally,
+so there's no tap-to-reveal state to get stuck in on a phone. On a fine pointer,
 hover *or* focus (so keyboard users get it too) mounts the `AnimatePresence`
 child, which pops in on the same `{ stiffness: 520, damping: 32 }` spring used
 everywhere else in the library for menus and popovers. The QR itself is
-generated client-side from the badge's `href` (or an explicit `qrUrl`) — no
-image asset, no server round trip.
+generated client-side from the badge's `href` (or an explicit `qrUrl`), with no
+image asset or server round trip.
 
 ```tsx
 const mq = window.matchMedia("(pointer: coarse)");
@@ -96,9 +96,9 @@ const show = () => !coarse && setOpen(true);
 
 <LearnChapter label="The result" scene={<StoreBadgeResult />} isResult>
 
-One `height` prop drives an entire scalable lockup, a sheen that crosses once
-per hover instead of looping, and a QR popover that only exists where a phone
-camera could actually use it — hover either badge below to see all three.
+One `height` prop drives the scalable lockup. The sheen crosses once per hover
+instead of looping, and the QR popover appears only where a phone camera
+could use it. Hover either badge below to see all three.
 
 </LearnChapter>
 
@@ -106,9 +106,9 @@ camera could actually use it — hover either badge below to see all three.
 
 ## Accessibility
 
-The badge is a real `<a>` the whole way through — `target`/`rel` pass through
-normally, and the sheen has `motion-reduce:hidden` so it never renders under
-reduced motion rather than just skipping its transition. The QR popover is
+The badge is a real `<a>` the whole way through: `target`/`rel` pass through
+normally, and the sheen has `motion-reduce:hidden` so it does not render at all
+under reduced motion instead of only skipping its transition. The QR popover is
 `role="dialog"` with an `aria-label`, and because it opens on `onFocusCapture`
 as well as `onMouseEnter`, tabbing to the badge reveals the same panel a mouse
 hover would.

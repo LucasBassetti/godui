@@ -1,6 +1,6 @@
 ---
 title: Anatomy of the Agent Timeline
-description: How a live agent run is a spring-filled connector, three cross-faded ring states, and a collapsible body that morphs open on its own clock.
+description: How a live agent run is a spring-filled connector, three ring states, and a collapsible body that morphs open on its own clock.
 learnPlayer: true
 ---
 
@@ -22,17 +22,17 @@ learnPlayer: true
 </li>`}
 >
 
-An agent run isn't a progress bar — it's a rail of independent decisions, each
-one reporting its own status as it lands. `AgentTimeline` renders that rail as
+An agent run is a rail of independent decisions, each one reporting its own
+status as it lands. `AgentTimeline` renders that rail as
 an `<ol>` of `AgentStep`s, and every piece of motion in it is keyed off one
 prop: `status`.
 
 Each `AgentStep` is a ring, a connector, and a body. The **ring** shows the
 step's current status. The **connector** below it fills as that status
-resolves, drawing the eye down to whatever's next. The **body** is optional —
+resolves, drawing the eye down to whatever's next. The **body** is optional:
 only steps with `children` get a chevron and something to expand.
 
-`last` is the only structural prop — it just hides the connector on the final
+`last` is the only structural prop. It hides the connector on the final
 step, so the rail doesn't dangle a line into nothing.
 
 </LearnChapter>
@@ -53,12 +53,12 @@ transition={{ type: "spring", stiffness: 320, damping: 32, mass: 0.9 }}`}
 
 The connector is a `motion.span` inside an overflow-hidden track, scaled from
 an `origin-top`. `scaleY` maps directly off `status`: `0` while pending, `0.5`
-while running — a half-fill that reads as "in flight" — and `1` once the step
+while running (a half-fill that reads as "in flight"), and `1` once the step
 lands on `success` or `error`. Every transition rides the same spring:
 `stiffness: 320, damping: 32, mass: 0.9`.
 
 A connector that grows by animating `height` has to re-run layout on every
-tick — the browser recalculates where every element below it sits, every
+tick: the browser recalculates where every element below it sits, every
 frame. `scaleY` on a fixed-height track is a compositor transform: the browser
 scales an already-painted layer with no layout or paint work at all. The
 track's own height never changes; only the fill inside it stretches from a
@@ -70,8 +70,8 @@ pinned top edge.
 </span>
 ```
 
-The ring's icon swap — dot → spinner → check — is a plain conditional render,
-not a cross-fade transition; only the connector and the collapsible body get
+The ring's icon swap (dot → spinner → check) is a plain conditional render
+with no cross-fade. Only the connector and the collapsible body get
 the spring treatment. The running ring also grows a `motion-reduce`-gated
 `animate-ping` halo, layered absolutely over the same box so it never
 disturbs the ring's own layout.
@@ -97,19 +97,19 @@ disturbs the ring's own layout.
 >
 
 Steps with `children` get a chevron and an `AnimatePresence`-wrapped panel.
-Opening one is the same spring as the connector — `height: "auto"` and
+Opening one uses the same spring as the connector, with `height: "auto"` and
 `opacity` animating together, so the panel never overshoots into visible
 overflow the way a plain `duration` tween would.
 
 `height: "auto"` is the one place this component reaches for a layout
-animation instead of a transform — Motion measures the panel's natural height
+animation instead of a transform. Motion measures the panel's natural height
 and interpolates a real pixel value under the hood, which is why the wrapper
-needs `overflow-hidden` to hide the in-between states. It's the right
-trade-off here: the panel's content is arbitrary (reasoning text, tool
+needs `overflow-hidden` to hide the in-between states. The trade-off fits
+here: the panel's content is arbitrary (reasoning text, tool
 output), so there's no fixed size to fake with a transform, and it only
 happens on a deliberate click, not every frame of a running step.
 
-The chevron is unrelated motion living on the same button — a plain
+The chevron is separate motion on the same button: a plain
 `rotate-90` toggle driven by `open`, with its own `transition-transform`, so
 it never has to wait on the spring to know which way it's pointing.
 
@@ -119,11 +119,11 @@ it never has to wait on the spring to know which way it's pointing.
 />
 ```
 
-The title pulses only while `status === "running"` —
+The title pulses only while `status === "running"`, with
 `motion-safe:animate-pulse` scoped to that one class, so a step that's
-already resolved sits perfectly still. Nothing here polls or ticks on an
+already resolved sits still. Nothing here polls or ticks on an
 interval; every step is a pure function of the `status` its caller passes in,
-so the whole timeline is exactly as busy as the run actually is.
+so the timeline is only as busy as the run.
 
 ```tsx
 className={`... ${status === "running" ? "text-muted-foreground motion-safe:animate-pulse" : ""}`}
@@ -133,12 +133,11 @@ className={`... ${status === "running" ? "text-muted-foreground motion-safe:anim
 
 <LearnChapter label="The result" scene={<AgentTimelineResult />} isResult>
 
-A full run, advancing on its own — watch the connectors spring-fill as each
+A full run, advancing on its own. Watch the connectors spring-fill as each
 step lands and the running step's body morph open.
 
 One prop drives all of it: `status` in, a filled connector and a settled ring
-out. That's the whole timeline — a rail that never has to be told how to
-move, only what happened.
+out. The rail is told what happened, never how to move.
 
 </LearnChapter>
 
@@ -146,13 +145,13 @@ move, only what happened.
 
 ## Accessibility
 
-The step header is a real `<button>`, disabled when there's no body to open —
+The step header is a real `<button>`, disabled when there's no body to open,
 so keyboard users can `Tab` to it and toggle with `Enter`/`Space` for free,
 and screen readers get `aria-expanded` reflecting the live state. Every
 `animate-spin`, `animate-ping`, and `motion-safe:animate-pulse` in the rail
 carries a `motion-reduce` counterpart, and the connector/body springs both
-collapse to `{ duration: 0 }` under `useReducedMotion()` — a run still reports
-its status instantly, just without the flourish.
+collapse to `{ duration: 0 }` under `useReducedMotion()`. A run still reports
+its status instantly, without the motion.
 
 ```tsx
 const reduce = useReducedMotion();

@@ -17,7 +17,7 @@ const CARDS = [
     icon: BarChart3,
     eyebrow: "Track",
     title: "Progress you can see",
-    body: "Live insight into velocity and scope — no spreadsheets, no status meetings.",
+    body: "Live insight into velocity and scope, without spreadsheets or status meetings.",
     stat: "98.2%",
     statLabel: "on-time delivery",
   },

@@ -33,7 +33,7 @@ export function LampResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — scroll it into view
+          the real component: scroll it into view
         </span>
       </div>
       <div className="flex min-h-[320px] items-center justify-center p-4 md:p-6">

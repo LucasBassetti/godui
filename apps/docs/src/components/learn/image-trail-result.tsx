@@ -23,7 +23,7 @@ export function ImageTrailResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — move to leave a trail
+          the real component: move to leave a trail
         </span>
       </div>
       <div className="min-h-[320px]">

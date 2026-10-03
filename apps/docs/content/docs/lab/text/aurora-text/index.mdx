@@ -33,8 +33,8 @@ export function AuroraTextDemo() {
 <ComponentInstall registry="lab" componentName="AuroraText" />
 
 AuroraText clips an animated gradient to the text via `background-clip: text`.
-The animation is CSS-only and respects `prefers-reduced-motion` — no font or
-JavaScript animation dependency required.
+The animation is CSS-only and respects `prefers-reduced-motion`. It needs no font or
+JavaScript animation dependency.
 
 ## Usage
 
@@ -53,8 +53,8 @@ weight. Wrap it inside a heading and style that parent:
 
 ### Custom colors
 
-Pass any list of CSS colors. The aurora loops back to the first stop for a
-seamless cycle, so two or three colors are enough.
+Pass any list of CSS colors. The aurora loops back to the first stop, so the
+cycle has no visible seam and two or three colors are enough.
 
 ```tsx
 <AuroraText colors={["#ff512f", "#dd2476", "#ff512f"]}>Sunset</AuroraText>
@@ -62,7 +62,7 @@ seamless cycle, so two or three colors are enough.
 
 ### Speed
 
-`speed` is a multiplier — `1` is roughly a 10s cycle, higher is faster.
+`speed` is a multiplier: `1` is roughly a 10s cycle, and higher is faster.
 
 ```tsx
 <AuroraText speed={3}>Lightspeed</AuroraText>
@@ -72,7 +72,7 @@ seamless cycle, so two or three colors are enough.
 
 | Prop       | Type       | Default            | Description                                              |
 | ---------- | ---------- | ------------------ | -------------------------------------------------------- |
-| `children` | `ReactNode`| —                  | Text to render with the aurora gradient.                 |
+| `children` | `ReactNode`| none                  | Text to render with the aurora gradient.                 |
 | `colors`   | `string[]` | Rainbow spectrum   | Gradient stops the aurora cycles through.                |
 | `speed`    | `number`   | `1`                | Speed multiplier; `1` ≈ 10s per cycle, higher is faster. |
 

@@ -69,7 +69,7 @@ const LEGEND: {
 }[] = [
   {
     name: "Hidden",
-    desc: "baseline off — cells only under the disc",
+    desc: "baseline off: cells only under the disc",
     kind: "dimCell",
   },
   {
@@ -138,7 +138,7 @@ export function PixelGridReveal() {
           </div>
 
           <p className="max-w-[38ch] text-center text-[13px] text-fd-muted-foreground">
-            Watch the soft disc trail the ring — that lag is{" "}
+            The soft disc trails the ring. That lag is{" "}
             <span className="font-mono text-[12px]">intensity</span> catching up
             at <span className="font-mono text-[12px]">min(dt×8, 1)</span>. Edge
             softness is smoothstep{" "}

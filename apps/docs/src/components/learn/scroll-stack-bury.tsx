@@ -95,7 +95,7 @@ const LEGEND: {
   },
   {
     name: "Front (depth 0)",
-    desc: "stays at scale 1 — never buries",
+    desc: "stays at scale 1 and never buries",
     kind: "front",
   },
 ];

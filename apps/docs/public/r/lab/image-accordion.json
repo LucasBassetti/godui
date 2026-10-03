@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "image-accordion",
   "title": "Image Accordion",
-  "description": "Horizontal image panels that expand on hover to reveal their caption — an elegant, space-efficient gallery.",
+  "description": "A space-efficient gallery of horizontal image panels that expand on hover to reveal their caption.",
   "registryDependencies": ["@godui/godui-theme"],
   "files": [
     {

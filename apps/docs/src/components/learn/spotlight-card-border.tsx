@@ -90,7 +90,7 @@ const LEGEND: {
   },
   {
     name: "Moving center",
-    desc: "only --x/--y change — layer stays put",
+    desc: "only --x/--y change; the layer stays put",
     kind: "center",
   },
 ];

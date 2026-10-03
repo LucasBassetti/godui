@@ -44,7 +44,7 @@ const LEGEND: {
   },
   {
     name: "Backdrop",
-    desc: "flat opacity tween, 0.2s — finishes on its own",
+    desc: "flat opacity tween, 0.2s, finishes on its own",
     kind: "backdrop",
   },
 ];

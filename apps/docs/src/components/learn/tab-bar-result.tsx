@@ -48,7 +48,7 @@ export function TabBarResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — click between tabs
+          the real component: click between tabs
         </span>
       </div>
       <div className="flex min-h-[240px] flex-col items-center justify-center gap-4 p-10">

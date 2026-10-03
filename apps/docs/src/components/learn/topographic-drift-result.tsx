@@ -25,7 +25,7 @@ export function TopographicDriftResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — drifting contours
+          the real component: drifting contours
         </span>
       </div>
       {demo}

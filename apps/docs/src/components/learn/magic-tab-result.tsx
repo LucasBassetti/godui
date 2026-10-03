@@ -36,7 +36,7 @@ export function MagicTabResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — click, or tab in with the keyboard
+          the real component: click, or tab in with the keyboard
         </span>
       </div>
       <div className="flex min-h-[240px] items-center justify-center p-10">

@@ -1,6 +1,6 @@
 ---
 title: Text Scramble
-description: Characters cycle through random glyphs and resolve into the target text — a decrypt / matrix reveal.
+description: Characters cycle through random glyphs and resolve into the target text, like a decrypt or matrix reveal.
 workbench: true
 ---
 
@@ -9,7 +9,7 @@ import { TextScrambleDemo } from "@/components/demos/text-scramble-demo";
 
 <Workbench>
 
-Each character flickers through a glyph pool then locks into place, left to right — the unresolved glyphs glow in the accent color until they settle. When the text changes, only the characters that differ re-scramble. The demo below swaps words on a timer.
+Each character flickers through a glyph pool then locks into place, left to right. Unresolved glyphs glow in the accent color until they settle. When the text changes, only the characters that differ re-scramble. The demo below swaps words on a timer.
 
 <Example
   label="Default"
@@ -44,7 +44,7 @@ import { TextScramble } from "@/components/godui/text-scramble";
 
 ### Charsets
 
-Choose `alphanumeric`, `symbols`, `katakana`, or `binary` — or pass your own
+Choose `alphanumeric`, `symbols`, `katakana`, or `binary`, or pass your own
 string of glyphs.
 
 ```tsx
@@ -81,10 +81,10 @@ with no scramble.
 
 | Prop      | Type                                              | Default          | Description                                          |
 | --------- | ------------------------------------------------- | ---------------- | ---------------------------------------------------- |
-| `text`    | `string`                                          | —                | The resolved text; changing it re-scrambles the diff.|
+| `text`    | `string`                                          | none                | The resolved text; changing it re-scrambles the diff.|
 | `trigger` | `"mount" \| "in-view" \| "hover"`                 | `"mount"`        | When the first scramble runs.                        |
 | `charset` | `"alphanumeric" \| "symbols" \| "katakana" \| "binary"` \| `string` | `"alphanumeric"` | Glyph pool used while unresolved.                    |
-| `speed`   | `number`                                          | `28`             | Milliseconds per frame — lower is faster.            |
+| `speed`   | `number`                                          | `28`             | Milliseconds per frame. Lower is faster.            |
 | `spread`  | `number`                                          | `28`             | Max stagger spread, in frames.                       |
 
 `TextScramble` also forwards every standard `<span>` attribute to the root element.

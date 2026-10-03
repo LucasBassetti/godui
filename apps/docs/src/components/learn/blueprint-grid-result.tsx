@@ -35,7 +35,7 @@ export function BlueprintGridResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — move for spotlight
+          the real component: move for spotlight
         </span>
       </div>
       {demo}

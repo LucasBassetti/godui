@@ -22,7 +22,7 @@ const comments = [
   {
     id: "c2",
     author: "Marco Bell",
-    body: "Agreed — bumping to 8px.",
+    body: "Agreed, bumping to 8px.",
     time: "1m",
   },
 ];

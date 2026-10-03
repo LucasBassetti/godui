@@ -55,7 +55,7 @@ export function DockResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — sweep the pointer across the row
+          the real component: sweep the pointer across the row
         </span>
       </div>
       <div className="relative flex min-h-[260px] items-end justify-center overflow-hidden p-10">

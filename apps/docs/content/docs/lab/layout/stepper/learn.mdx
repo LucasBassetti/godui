@@ -1,6 +1,6 @@
 ---
 title: Anatomy of Stepper
-description: How Stepper mixes three different motion techniques — a CSS color transition, a spring-filled connector, and an SVG pathLength draw — into one clean step-forward beat.
+description: How Stepper combines three motion techniques (a CSS color transition, a spring-filled connector, and an SVG pathLength draw) into one step-forward beat.
 learnPlayer: true
 ---
 
@@ -14,13 +14,13 @@ learnPlayer: true
 >
 
 `Stepper` looks like one animation when a step completes, but it's three
-independent techniques layered together, each picked for what it's
-animating rather than for consistency's sake.
+independent techniques layered together, each picked for what it
+animates.
 
-Every circle's tone comes from a single comparison against `active` — no
-per-step config, no variants map. Connectors follow the same logic: the one
-between step `i` and `i + 1` fills only once `active > i` — the step before
-it is actually done, not just reached.
+Every circle's tone comes from a single comparison against `active`, with
+no per-step config or variants map. Connectors follow the same logic: the one
+between step `i` and `i + 1` fills only once `active > i`, meaning the step
+before it is done and the user has moved past it.
 
 </LearnChapter>
 
@@ -46,19 +46,18 @@ className="[transition:background-color_250ms_ease,border-color_250ms_ease,color
 >
 
 Advancing a step fires three different animations at once, and each one
-is deliberately the "wrong" technique for the other two jobs.
+would be the wrong technique for the other two jobs.
 
-Why three techniques, not one? A color swap has no meaningful "motion" to
-it — a `transition` is cheaper than mounting a `motion` component for a
-property that's either on or off. The connector *is* motion — it's a line
-growing across visible space — so it gets the spring that gives every other
-GodUI surface transition its felt weight. The checkmark isn't a fade or a
-scale at all; `pathLength` draws the stroke the way a pen would, which a
-spring or an opacity fade can't reproduce. Each animation type is chosen for
-the shape of the change, not applied uniformly across the component.
+A color swap has no meaningful motion to it, so a `transition` is cheaper
+than mounting a `motion` component for a property that's either on or off.
+The connector is motion (a line growing across visible space), so it gets
+the spring that gives every other GodUI surface transition its weight. The
+checkmark uses neither a fade nor a scale: `pathLength` draws the stroke the
+way a pen would, which a spring or an opacity fade can't reproduce. Each
+animation type matches the shape of its change.
 
 Horizontal vs. vertical: the same `Connector` component renders either
-orientation from one prop — only the animated axis and its origin flip.
+orientation from one prop. Only the animated axis and its origin flip.
 
 ```tsx
 animate={horizontal ? { scaleX: filled ? 1 : 0 } : { scaleY: filled ? 1 : 0 }}
@@ -66,15 +65,15 @@ className={horizontal ? "mt-[17px] h-0.5 flex-1" : "my-1 w-0.5 flex-1 self-cente
 ```
 
 `scaleX` from `origin-left` reads as "filling left to right"; `scaleY`
-from `origin-top` reads as "filling downward" — the same spring, aimed
-along whichever axis the layout actually flows.
+from `origin-top` reads as "filling downward". It is the same spring, aimed
+along whichever axis the layout flows.
 
 </LearnChapter>
 
 <LearnChapter label="The result" scene={<StepperResult />} isResult>
 
-One state comparison, three purpose-built animations, and a stepper that
-never feels like it's animating for animation's sake.
+One state comparison drives three animations, each matched to the change it
+shows.
 
 </LearnChapter>
 
@@ -85,9 +84,8 @@ never feels like it's animating for animation's sake.
 The active step carries `aria-current="step"` so assistive tech announces
 where the user is without relying on visual state alone. Under
 `prefers-reduced-motion`, every `transition` collapses to `{ duration: 0 }`
-and the checkmark's `initial` is skipped (`reduceMotion ? false : { pathLength: 0 }`)
-— steps switch instantly, with the check already fully drawn rather than
-animating in.
+and the checkmark's `initial` is skipped (`reduceMotion ? false : { pathLength: 0 }`),
+so steps switch instantly with the check already fully drawn.
 
 ## Motion Score
 

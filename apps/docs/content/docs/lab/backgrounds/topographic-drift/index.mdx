@@ -1,6 +1,6 @@
 ---
 title: Topographic Drift
-description: Slowly drifting topographic contour lines — a living elevation map drawn with marching squares.
+description: "Slowly drifting topographic contour lines: an animated elevation map drawn with marching squares."
 workbench: true
 ---
 
@@ -9,8 +9,7 @@ import { TopographicDrift } from "@godui/lab";
 <Workbench>
 
 Contour lines of an imaginary landscape, slowly rising and falling as the terrain
-beneath them evolves. Editorial, cartographic, and calm — drawn with marching
-squares on one Canvas. Drop it as the first child of a `relative` container.
+beneath them evolves. They are drawn with marching squares on one Canvas. Drop it as the first child of a `relative` container.
 
 <Example
   label="Default"
@@ -90,7 +89,7 @@ export function TopographicDriftDense() {
 | `lineCount` | `number` | `9` | Number of contour levels. |
 | `speed` | `number` | `1` | Drift speed multiplier. |
 | `color` | `string` | `--color-foreground` | Contour color. |
-| `noiseScale` | `number` | `0.004` | Field scale — smaller is broader terrain. |
+| `noiseScale` | `number` | `0.004` | Field scale. Smaller is broader terrain. |
 | `weight` | `number` | `1` | Contour line width (px). |
 
 Also accepts standard `div` attributes (e.g. `className`, `style`).

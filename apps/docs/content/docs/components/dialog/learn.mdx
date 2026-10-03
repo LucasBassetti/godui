@@ -64,8 +64,8 @@ The entrance runs for 260ms on `ease-spring-snappy`, a critically damped
 spring sampled into a CSS `linear()` curve. It accelerates hard and eases into
 place with a barely visible settle.
 
-The exit is different on purpose: 150ms on `ease-out-expo`. Leaving should be
-quicker than arriving. Nobody waits for a dialog to finish closing.
+The exit is shorter: 150ms on `ease-out-expo`, because nobody waits for a
+dialog to finish closing.
 
 </LearnChapter>
 
@@ -114,8 +114,8 @@ the overlay. All three paths run the same exit keyframe.
 ## Why GPU-only
 
 The dialog animates `scale` and `opacity`; the overlay animates `opacity`.
-shadcn's version does the same through `tw-animate-css`, so the gain here is
-the curve, not the property list: a spring in, a fast exit out.
+shadcn's version does the same through `tw-animate-css`, so GodUI changes only
+the curve: a spring in, a fast exit out.
 
 ## Reduced motion
 

@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "select",
   "title": "Select",
-  "description": "Displays a list of options for the user to pick from — triggered by a button. Grows on a spring; the check pops in. GPU-only.",
+  "description": "Displays a list of options for the user to pick from, triggered by a button. Grows on a spring; the check pops in. GPU-only.",
   "dependencies": ["radix-ui", "lucide-react"],
   "registryDependencies": ["utils", "@godui/godui-motion"],
   "files": [

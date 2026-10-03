@@ -40,7 +40,7 @@ export function BentoGridDemo() {
           </span>
         }
         title="Interfaces that feel alive"
-        description="Spring-driven motion, pointer-aware surfaces, and pixel-tuned details — the same craft a senior design engineer ships by hand, ready to drop in."
+        description="Spring-driven motion, pointer-aware surfaces, and pixel-tuned details, ready to drop in."
       >
         <div className="mt-5 flex flex-wrap gap-2">
           {["60fps", "Reduced-motion safe", "Themed tokens", "Zero config"].map(
@@ -103,7 +103,7 @@ export function BentoGridDemo() {
           </span>
         }
         title="Automate the busywork"
-        description="Chain triggers, conditions, and actions into flows that run themselves — no glue code."
+        description="Chain triggers, conditions, and actions into flows that run without glue code."
         cta={
           <span className="inline-flex items-center gap-1.5 text-sm font-medium text-primary">
             <Zap className="size-4" strokeWidth={2} />

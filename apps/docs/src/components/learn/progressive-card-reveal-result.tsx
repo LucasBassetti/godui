@@ -113,7 +113,7 @@ export function ProgressiveCardRevealResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — click a collapsed pill
+          the real component: click a collapsed pill
         </span>
       </div>
       <div className="relative flex min-h-[280px] items-center justify-center p-6 sm:p-10">

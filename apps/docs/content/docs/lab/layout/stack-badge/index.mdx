@@ -9,7 +9,7 @@ import { StackBadgeDemo } from "@/components/demos/stack-badge-demo";
 
 <Workbench>
 
-The portfolio flex, done right. Instead of a flat row of grey logos, `StackBadge` renders your stack as calm monochrome chips that stagger in on scroll, then lift and warm into their full brand color on hover. Batteries-included: reference 20 popular technologies by name, or drop in any custom `{ name, icon, color }`.
+`StackBadge` renders your tech stack as monochrome chips that stagger in on scroll, then lift and warm into their full brand color on hover. Reference 20 built-in technologies by name, or pass any custom `{ name, icon, color }`.
 
 <Example
   label="Default"
@@ -43,7 +43,7 @@ Reference built-in logos by name:
 <StackBadge items={["react", "typescript", "tailwind", "nextjs"]} />
 ```
 
-Mix in a fully custom chip — pass any 24×24 SVG and a brand color:
+Mix in a custom chip by passing any 24×24 SVG and a brand color:
 
 ```tsx
 <StackBadge
@@ -74,7 +74,7 @@ Built-in keys: `react`, `nextjs`, `typescript`, `javascript`, `tailwind`, `node`
 
 | Prop        | Type                             | Default  | Description                                              |
 | ----------- | -------------------------------- | -------- | ------------------------------------------------------- |
-| `items`     | `StackBadgeItem[]`               | —        | Built-in tech names and/or custom `{ name, icon, color }`. |
+| `items`     | `StackBadgeItem[]`               | none        | Built-in tech names and/or custom `{ name, icon, color }`. |
 | `size`      | `"sm" \| "md" \| "lg"`           | `"md"`   | Chip scale.                                             |
 | `variant`   | `"soft" \| "outline"`            | `"soft"` | Filled or hairline chip surface.                        |
 | `showLabel` | `boolean`                        | `true`   | Show the label, or render an icon-only chip.            |
@@ -82,6 +82,6 @@ Built-in keys: `react`, `nextjs`, `typescript`, `javascript`, `tailwind`, `node`
 | `glow`      | `boolean`                        | `true`   | Hover brand-color glow + logo colorize.                 |
 
 `StackBadge` forwards every standard `<div>` attribute. The chips sit still at
-rest — the enter stagger and hover lift both respect `prefers-reduced-motion`.
+rest. The enter stagger and hover lift both respect `prefers-reduced-motion`.
 
 </Workbench>

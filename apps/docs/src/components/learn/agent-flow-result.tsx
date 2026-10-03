@@ -82,7 +82,7 @@ export function AgentFlowResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — autoPlay, one continuous light
+          the real component: autoPlay, one continuous light
         </span>
         <button
           type="button"

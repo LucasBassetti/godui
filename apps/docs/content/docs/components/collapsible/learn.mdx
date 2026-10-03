@@ -105,8 +105,9 @@ inner panel's change also glides the outer one's followers, on one clock. An
 inner one that just rides along with its outer one mustn't glide again, or it
 would move twice as far. One that its own stage re-centers still has to glide
 by that move. So a nested one glides by its own displacement minus the nearest
-outer root's (whatever moved the outer root, its own glide or its parent's
-FLIP puts it back): zero in the first case, the relative move in the second.
+outer root's. Whatever moved the outer root (its own glide or its parent's
+FLIP) also puts it back. That leaves zero in the first case and the relative
+move in the second.
 
 A FLIP group measures where things sit before a change. An inner Collapsible
 that mounts while the outer panel is still sweeping would measure its content

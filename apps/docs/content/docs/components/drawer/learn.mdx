@@ -1,6 +1,6 @@
 ---
 title: Anatomy of the GodUI Drawer
-description: When the library underneath is already GPU-only, the job is to prove it and stay out of its way — plus one stagger that makes the content feel carried by the sheet.
+description: When the library underneath is already GPU-only, the job is to prove it and stay out of its way. GodUI adds one stagger so the content looks carried by the sheet.
 learnPlayer: true
 ---
 
@@ -78,7 +78,7 @@ a fade, when the drawer content is `data-state="open"`. The header starts
 60ms after the sheet and the footer 120ms after it.
 
 The sheet arrives first and the content lands in it a moment later, so the
-drawer reads as one object being carried up, not a flat image. The keyframe
+content looks carried up by the sheet. The keyframe
 uses `both` fill, so during the delay the content waits in its starting
 position instead of flashing at rest.
 

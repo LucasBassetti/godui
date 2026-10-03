@@ -8,7 +8,7 @@ import { ProgressiveCardRevealDemo } from "@/components/demos/progressive-card-r
 
 <Workbench>
 
-A vertical stack of cards. Exactly one card is expanded at a time — the rest
+A vertical stack of cards. Exactly one card is expanded at a time, and the rest
 collapse to compact pills. The parent owns which card is active; clicking a
 collapsed pill asks it to switch, and Framer Motion animates the size morph and
 crossfades the content.
@@ -81,7 +81,7 @@ import { ProgressiveCardReveal } from "@/components/godui/progressive-card-revea
 ```
 
 `ProgressiveCardReveal` is a compound component. The root is **controlled** via
-`activeIndex` — keep it in state and update it from `onActiveChange`. Each
+`activeIndex`: keep it in state and update it from `onActiveChange`. Each
 `Card` declares two views with the `CardCollapsed` and `CardExpanded` slots; the
 card derives its index from its position, so you never pass an index manually.
 
@@ -90,18 +90,18 @@ const [active, setActive] = useState(0);
 
 <ProgressiveCardReveal activeIndex={active} onActiveChange={setActive}>
   <ProgressiveCardReveal.Card>
-    <ProgressiveCardReveal.CardCollapsed>Flight — ~3 hours</ProgressiveCardReveal.CardCollapsed>
+    <ProgressiveCardReveal.CardCollapsed>Flight: ~3 hours</ProgressiveCardReveal.CardCollapsed>
     <ProgressiveCardReveal.CardExpanded>{/* full content */}</ProgressiveCardReveal.CardExpanded>
   </ProgressiveCardReveal.Card>
   <ProgressiveCardReveal.Card>
-    <ProgressiveCardReveal.CardCollapsed>Driving — ~18 hours</ProgressiveCardReveal.CardCollapsed>
+    <ProgressiveCardReveal.CardCollapsed>Driving: ~18 hours</ProgressiveCardReveal.CardCollapsed>
     <ProgressiveCardReveal.CardExpanded>{/* full content */}</ProgressiveCardReveal.CardExpanded>
   </ProgressiveCardReveal.Card>
 </ProgressiveCardReveal>
 ```
 
 Clicking a collapsed card fires `onActiveChange(index)`. Clicking the
-already-expanded card is a no-op — one card stays open at all times. The
+already-expanded card does nothing, so one card stays open at all times. The
 transition respects `prefers-reduced-motion`, switching instantly when reduced
 motion is requested.
 
@@ -111,9 +111,9 @@ motion is requested.
 
 | Prop | Type | Default | Description |
 | ---- | ---- | ------- | ----------- |
-| `activeIndex` | `number` | — | Index of the expanded card (controlled). |
-| `onActiveChange` | `(index: number) => void` | — | Fired when a collapsed card is activated. |
-| `maxDepth` | `number` | — | Caps how far collapsed cards narrow. Cards more than `maxDepth` steps from the active one all share the width at `maxDepth`. Omit for unbounded funneling. |
+| `activeIndex` | `number` | none | Index of the expanded card (controlled). |
+| `onActiveChange` | `(index: number) => void` | none | Fired when a collapsed card is activated. |
+| `maxDepth` | `number` | none | Caps how far collapsed cards narrow. Cards more than `maxDepth` steps from the active one all share the width at `maxDepth`. Omit for unbounded funneling. |
 
 Also accepts all `div` attributes (e.g. `className`).
 
@@ -124,6 +124,6 @@ Accepts all `div` attributes. Children must be a `CardCollapsed` and a
 
 ### ProgressiveCardReveal.CardCollapsed / CardExpanded
 
-Slot wrappers — their children are the collapsed (pill) and expanded views.
+Slot wrappers. Their children are the collapsed (pill) and expanded views.
 
 </Workbench>

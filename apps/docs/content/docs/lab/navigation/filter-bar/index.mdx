@@ -77,10 +77,10 @@ selection inline (`Status: Open +2`) and clears with the inline `×`.
 
 | Prop | Type | Default | Description |
 | ---- | ---- | ------- | ----------- |
-| `facets` | `Facet[]` | — | `{ id, label, options: { label, value, count? }[] }` |
-| `value` | `Record<string, string[]>` | — | Controlled selection |
+| `facets` | `Facet[]` | none | `{ id, label, options: { label, value, count? }[] }` |
+| `value` | `Record<string, string[]>` | none | Controlled selection |
 | `defaultValue` | `Record<string, string[]>` | `{}` | Uncontrolled initial selection |
-| `onChange` | `(value) => void` | — | Called when the selection changes |
+| `onChange` | `(value) => void` | none | Called when the selection changes |
 | `searchable` | `boolean` | `true` | Show a search box in each popover |
 | `showCounts` | `boolean` | `true` | Show option count badges |
 

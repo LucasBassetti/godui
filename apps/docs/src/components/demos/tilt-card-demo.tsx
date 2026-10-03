@@ -15,7 +15,7 @@ export function TiltCardDemo() {
           Designed in 3D
         </h3>
         <p className="mt-2 text-muted-foreground text-sm">
-          Move your pointer across the card — it tilts toward you with parallax
+          Move your pointer across the card. It tilts toward you with parallax
           depth and a specular glare that tracks the cursor.
         </p>
         <div className="mt-5 inline-flex rounded-lg bg-accent px-3 py-1.5 font-medium text-accent-foreground text-xs">

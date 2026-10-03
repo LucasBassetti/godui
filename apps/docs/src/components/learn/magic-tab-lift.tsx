@@ -39,7 +39,7 @@ const CSS = `
 `;
 
 const PHASES: { label: string; dur: string; delta: string }[] = [
-  { label: "rest", dur: "—", delta: "0px" },
+  { label: "rest", dur: "none", delta: "0px" },
   { label: "selected", dur: "600ms", delta: "-4px · …,1" },
   { label: "focus", dur: "250ms", delta: "-6px · …,1.5" },
 ];

@@ -88,7 +88,7 @@ export function NotificationInboxResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — drag a row, or mark all read
+          the real component: drag a row, or mark all read
         </span>
       </div>
       <div className="flex min-h-[280px] items-center justify-center p-10">

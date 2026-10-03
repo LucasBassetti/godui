@@ -1,6 +1,6 @@
 ---
 title: Anatomy of Sticky Scroll
-description: How one IntersectionObserver line and one active index drive a dimming list on the left and a crossfading sticky panel on the right — no scroll math, no per-item listeners.
+description: How one IntersectionObserver line and one active index drive a dimming list on the left and a crossfading sticky panel on the right, with no scroll math or per-item listeners.
 learnPlayer: true
 ---
 
@@ -17,14 +17,14 @@ learnPlayer: true
 </div>`}
 >
 
-`StickyScroll` never reads a scroll offset. It watches for one thing —
-which item's element is crossing the container's vertical center — and
-every visual response, on both sides of the layout, follows from that
+`StickyScroll` never reads a scroll offset. It watches for one thing,
+which item's element is crossing the container's vertical center, and
+every visual response on both sides of the layout follows from that
 single `active` index.
 
 The left column is a plain scrolling list; the right column is a
 `position: sticky` panel that always renders `items[active].content`.
-Neither column knows the other exists — they only share the index.
+Neither column knows about the other. They only share the index.
 
 </LearnChapter>
 
@@ -48,15 +48,14 @@ The detection is one `IntersectionObserver`, scoped to the component's own
 scroll container, with a `rootMargin` that collapses the entire viewport
 down to a single horizontal line at its center.
 
-`-50%` off both the top and bottom of the root leaves nothing but a
-zero-height strip in the middle — an item only ever reports "intersecting"
-for the instant it's crossing that strip, so `active` always tracks
+`-50%` off both the top and bottom of the root leaves only a
+zero-height strip in the middle. An item reports "intersecting" only
+at the instant it crosses that strip, so `active` always tracks
 whichever section is nearest the panel's vertical center.
 
-Two springs, one state: once `active` changes, the left column and the right
-panel both react to it, on the same tuning, but through different Motion
-primitives — the list dims/brightens in place, while the panel replaces its
-content outright:
+Once `active` changes, the left column and the right panel both react to
+it with the same tuning, through different Motion primitives. The list
+dims or brightens in place, while the panel replaces its content outright:
 
 ```tsx
 // left column — same element stays mounted, values animate
@@ -70,21 +69,20 @@ content outright:
 
 Both read the same `SPRING` constant (`stiffness: 320, damping: 32, mass:
 0.9`), so even though one is a value animation and the other is an
-enter/exit swap, they resolve on the same beat and never feel like two
-separate systems.
+enter/exit swap, they resolve on the same beat.
 
 Mobile falls back to inline: below the `md` breakpoint the sticky panel is
-simply `hidden` — there isn't room for a pinned column next to a scrolling
-one on a narrow screen. Each list item instead renders its own `content`
-inline, directly beneath its copy, so nothing is lost — it's just laid out
+`hidden`, since a narrow screen has no room for a pinned column next to a
+scrolling one. Each list item instead renders its own `content` inline,
+directly beneath its copy, so nothing is lost. It is laid out
 top-to-bottom instead of side-by-side.
 
 </LearnChapter>
 
 <LearnChapter label="The result" scene={<StickyScrollResult />} isResult>
 
-One observer line, one active index, two independent renderers reading
-the same spring — scroll inside the panel above to watch it work.
+One observer line and one active index drive two independent renderers
+that read the same spring. Scroll inside the panel above to try it.
 
 </LearnChapter>
 
@@ -93,7 +91,7 @@ the same spring — scroll inside the panel above to watch it work.
 ## Accessibility
 
 Under `prefers-reduced-motion`, every `transition` becomes `{ duration: 0
-}` — the dimming and the crossfade both still happen, they just resolve
+}`. The dimming and the crossfade both still happen but resolve
 instantly instead of easing, so the state change stays legible without
 any motion.
 

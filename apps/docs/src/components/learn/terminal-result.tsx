@@ -23,7 +23,7 @@ export function TerminalResult() {
       <div className="flex min-h-[280px] w-full items-center justify-center p-6">
         <Terminal
           lines={LINES}
-          title="zsh — godui"
+          title="zsh: godui"
           loop
           className="w-full max-w-[26rem]"
         />
@@ -36,13 +36,13 @@ export function TerminalResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — types in view, loops after 2s
+          the real component: types in view, loops after 2s
         </span>
       </div>
       <div className="flex min-h-[300px] items-center justify-center p-6 md:p-10">
         <Terminal
           lines={LINES}
-          title="zsh — godui"
+          title="zsh: godui"
           loop
           className="w-full max-w-[26rem]"
         />

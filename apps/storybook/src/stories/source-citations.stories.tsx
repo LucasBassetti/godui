@@ -8,7 +8,7 @@ const sources = [
     title: "OKLCH in CSS: why we moved",
     url: "https://evilmartians.com/chronicles/oklch-in-css",
     snippet:
-      "OKLCH is a perceptual color space that keeps lightness consistent across hues — ideal for design tokens and dark mode.",
+      "OKLCH is a perceptual color space that keeps lightness consistent across hues, which suits design tokens and dark mode.",
   },
   {
     title: "Tailwind CSS v4 release notes",

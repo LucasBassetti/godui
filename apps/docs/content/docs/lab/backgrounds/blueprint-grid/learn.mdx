@@ -47,8 +47,8 @@ layer sits at `opacity-50` so content above stays readable.
 `variant="perspective"` wraps the grid in a 3D stage:
 
 The floor is oversized horizontally, tilted `72deg`, and faded toward the
-horizon. **Spotlight is skipped** on this variant — the foreshortening is
-the whole trick, and a radial mask would fight the perspective mask.
+horizon. This variant skips the spotlight: the foreshortening carries the
+effect, and a radial mask would fight the perspective mask.
 
 When `sweep` is on (default), a blurred diagonal band runs
 `animate-blueprint-sweep`:
@@ -63,7 +63,7 @@ When `sweep` is on (default), a blurred diagonal band runs
 ```
 
 The layer is `w-[55%] h-[140%]` with `blur(14px)` and
-`motion-reduce:hidden` — reduced-motion users keep the lattice, lose the
+`motion-reduce:hidden`. Reduced-motion users keep the lattice and lose the
 traveling light.
 
 </LearnChapter>
@@ -79,8 +79,8 @@ root.style.setProperty("--bo", "0.55");
 >
 
 Spotlight listeners attach to `offsetParent` (the nearest positioned
-ancestor), not the grid root — so moving over content stacked above still
-drives the disc:
+ancestor) instead of the grid root, so moving over content stacked above
+still drives the disc:
 
 The accent layer is an accent-colored copy of the grid plus a soft glow,
 both clipped with:
@@ -94,10 +94,10 @@ opacity: "var(--bo)" // transition 300ms ease-out
 
 <LearnChapter label="The result" scene={<BlueprintGridResult />} isResult>
 
-Move across the stage — the spotlight follows through the content layer.
+Move across the stage. The spotlight follows through the content layer.
 
-Lattice, optional floor, one keyframe, one parent pointer — technical
-atmosphere without a canvas.
+That is a lattice, an optional floor, one keyframe, and one pointer listener
+on the parent. No canvas.
 
 </LearnChapter>
 

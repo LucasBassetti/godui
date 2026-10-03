@@ -134,10 +134,10 @@ Pass `onSubmit` to render an arrow button on the right. It fires with the
 current value on click or when <kbd>Enter</kbd> is pressed. Without `onSubmit`,
 set `submitButton` to render a `type="submit"` button for an enclosing form.
 
-`status` and `progress` are fully controlled. While `status="loading"` the
-rainbow hides, the 3D depth locks in, and a progress bar runs along the bottom —
-determinate when you pass `progress`, otherwise an indeterminate segment bounces
-end to end. The arrow turns into a circular progress / spinner. `success` and
+`status` and `progress` are controlled. While `status="loading"` the
+rainbow hides, the 3D depth locks in, and a progress bar runs along the bottom.
+The bar is determinate when you pass `progress`; otherwise an indeterminate
+segment bounces end to end. The arrow turns into a circular progress / spinner. `success` and
 `error` flash a green / red sweep with a check / X icon.
 
 ```tsx
@@ -171,9 +171,9 @@ async function handleSubmit(value: string) {
 | `depth` | `"focus" \| "always"` | `"focus"` | Show the 3D depth only on focus, or always |
 | `rainbow` | `boolean` | `true` | Animate the edge and shadow with a rainbow gradient while focused |
 | `submitButton` | `boolean` | `false` | Show the arrow submit button (`type="submit"`) |
-| `onSubmit` | `(value: string) => void` | — | Fires with the value on click / Enter; also shows the button |
+| `onSubmit` | `(value: string) => void` | none | Fires with the value on click / Enter; also shows the button |
 | `submitLabel` | `string` | `"Submit"` | Accessible label for the submit button |
 | `status` | `"idle" \| "loading" \| "success" \| "error"` | `"idle"` | Submit lifecycle state |
-| `progress` | `number` | — | 0–100; makes `loading` determinate (omit for indeterminate) |
+| `progress` | `number` | none | 0 to 100; makes `loading` determinate (omit for indeterminate) |
 
 </Workbench>

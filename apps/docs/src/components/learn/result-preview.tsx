@@ -30,7 +30,7 @@ export function ResultPreview() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — hover, focus, press
+          the real component: hover, focus, press
         </span>
       </div>
       <div className="flex min-h-[240px] flex-wrap items-center justify-center gap-6 p-10">

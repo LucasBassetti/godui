@@ -1,6 +1,6 @@
 ---
 title: Anatomy of Text Animate
-description: How text is split into segments, staggered through a preset, and gated by the viewport — with a plain fallback for reduced motion.
+description: How text is split into segments, staggered through a preset, and gated by the viewport, with a plain fallback for reduced motion.
 learnPlayer: true
 ---
 
@@ -26,27 +26,26 @@ learnPlayer: true
 ))}`}
 >
 
-TextAnimate doesn't animate a string as one blob. It flattens children to
-text, splits that string by `by`, then hands each segment to Framer Motion
-as a child of a container with `staggerChildren`. The entrance you pick —
-`fadeIn`, `blurInUp`, `slideUp`, and friends — is just the item variant.
-Everything else is orchestration.
+TextAnimate flattens children to text, splits that string by `by`, then
+hands each segment to Framer Motion as a child of a container with
+`staggerChildren`. The entrance you pick (`fadeIn`, `blurInUp`, `slideUp`,
+and the rest) is only the item variant. The container handles the timing.
 
 `getTextContent(children)` collapses the tree to a string. Then
 `splitTextAnimate(text, by)` produces `{ key, segment }[]`:
 
-- `word` — `split(/(\s+)/)` so spaces stay as their own segments
-- `character` — `[...text]` (Unicode-aware)
-- `line` — split on `\n`
-- `text` — a single segment, the whole string
+- `word`: `split(/(\s+)/)` so spaces stay as their own segments
+- `character`: `[...text]` (Unicode-aware)
+- `line`: split on `\n`
+- `text`: a single segment, the whole string
 
 Each segment becomes a `motion.span` with a class from
 `getSegmentClassName` (`inline-block` for words/characters, `block` for
 lines). Keys encode split mode, offset, and content so remounts stay
 stable.
 
-Fewer segments (words) feel like a cascade of phrases. Characters feel like
-typewriter grit. Same preset, different density.
+Word segments read as a cascade of phrases; character segments read like
+typing. The preset is the same, only the density changes.
 
 </LearnChapter>
 
@@ -82,8 +81,8 @@ Default `startOnView` is `true`. The motion root uses
 (`once` defaults to `true`, amount to `0.3`). Flip `startOnView` off and
 it animates on mount via `animate="show"` instead.
 
-The root element itself is pluggable through `as` — `p`, `h1`–`h6`,
-`span`, `div`, and a few more — mapped to the matching `motion.*`
+The root element itself is pluggable through `as` (`p`, `h1` to `h6`,
+`span`, `div`, and a few more), mapped to the matching `motion.*`
 component so a hero can be a real `h1` without losing the stagger.
 
 ```tsx
@@ -124,9 +123,9 @@ Ten named presets live in `TEXT_ANIMATE_PRESETS`. They share the same
 container shell; only the item `hidden` / `show` / `exit` differ. Two
 useful contrasts:
 
-- **`blurInUp`** — `opacity 0`, `filter: blur(10px)`, `y: 20` → rest
+- **`blurInUp`**: `opacity 0`, `filter: blur(10px)`, `y: 20` → rest
   (filter and `y` at 0.3s, opacity slightly longer at 0.4s)
-- **`slideUp`** — `opacity 0`, `y: 20` → rest (no blur)
+- **`slideUp`**: `opacity 0`, `y: 20` → rest (no blur)
 
 `scaleUp` / `scaleDown` swap the linear duration for a spring on `scale`
 (`damping: 32`, `stiffness: 320`, `mass: 0.9`). Everything stays on the
@@ -136,8 +135,8 @@ compositor: opacity, transform, filter.
 
 <LearnChapter label="The result" scene={<TextAnimateResult />} isResult>
 
-Word blur-in, character slide-up, and a spring scale on a real heading —
-same splitter, three presets.
+Word blur-in, character slide-up, and a spring scale on a real heading:
+one splitter, three presets.
 
 </LearnChapter>
 
@@ -151,9 +150,8 @@ prefer it, and every animated segment is `aria-hidden`. Sighted users see
 the cascade; assistive tech hears the sentence once.
 
 `useReducedMotion()` short-circuits the whole path: no
-`AnimatePresence`, no segments — just the plain `as` element with the
-full textContent. Not a slower stagger. Not a faded reveal. The words,
-immediately.
+`AnimatePresence` and no segments, only the plain `as` element with the
+full textContent, shown immediately.
 
 ```tsx
 if (reducedMotion) {

@@ -23,7 +23,7 @@ const LEGEND: { name: string; desc: string; swatch: string }[] = [
   },
   {
     name: "Center line",
-    desc: "rootMargin -50%/-50% — the one trigger line",
+    desc: "rootMargin -50%/-50%: the one trigger line",
     swatch:
       "h-0 w-8 border-t-2 border-dashed border-[var(--foreground)]/40 bg-transparent",
   },

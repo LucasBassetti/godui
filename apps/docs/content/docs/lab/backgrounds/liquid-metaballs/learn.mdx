@@ -15,14 +15,14 @@ b.vy = (Math.random() - 0.5) * 0.6 * speed;`}
 >
 
 `LiquidMetaballs` is physics on SVG circles under a blur + contrast filter.
-Positions update with `setAttribute` so React stays out of the hot path —
+Positions update with `setAttribute` so React stays out of the hot path:
 the rAF loop never calls `setState`.
 
 Defaults: `blobCount={7}`, colors cycling
-`#6366f1 / #a855f7 / #ec4899 / #06b6d4`, radii roughly `8–16%` of the short
+`#6366f1 / #a855f7 / #ec4899 / #06b6d4`, radii roughly `8%` to `16%` of the short
 side, velocity `(rand - 0.5) * 0.6 * speed`.
 
-Edges wrap toroidally — leave left, enter right — so the field never piles
+Edges wrap toroidally (leave left, enter right), so the field never piles
 up in a corner.
 
 ```tsx
@@ -46,7 +46,7 @@ loop only mutates geometry.
 <feColorMatrix values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -9" />`}
 >
 
-Classic metaball filter — blur, then punch alpha back up with a contrast
+The classic metaball filter: blur, then punch alpha back up with a contrast
 matrix:
 
 Overlapping discs fuse into one liquid silhouette. Higher `gooeyness` =
@@ -74,7 +74,8 @@ It shares the same goo filter, so it melts into neighbors on contact.
 
 Move to merge. Leave and the cursor blob vanishes.
 
-Physics on attributes, fusion in a filter, zero React re-renders per frame.
+Physics runs on attributes and the fusion happens in a filter, so React never
+re-renders per frame.
 
 </LearnChapter>
 
@@ -83,8 +84,8 @@ Physics on attributes, fusion in a filter, zero React re-renders per frame.
 ## Lifecycle + a11y
 
 `ResizeObserver`, `IntersectionObserver`, and `visibilitychange` gate the
-loop. `prefers-reduced-motion` stops motion (no still-frame bake — the last
-positions simply freeze). Root is `aria-hidden`; the SVG is
+loop. `prefers-reduced-motion` stops motion (there is no still-frame bake; the last
+positions freeze in place). Root is `aria-hidden`; the SVG is
 `role="presentation"`.
 
 ## Motion Score

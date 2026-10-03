@@ -22,12 +22,12 @@ learnPlayer: true
 </div>`}
 >
 
-`PromptSuggestions` doesn't have three separate layouts — it has one
+`PromptSuggestions` doesn't have three separate layouts. It has one
 `motion.button` per suggestion and a lookup table that decides how the
 _wrapper_ arranges them:
 
 The button itself branches once, on `isChip`, to pick between a pill
-className and a card className — not a different component per variant:
+className and a card className. There is no separate component per variant:
 
 ```tsx
 className={
@@ -37,9 +37,9 @@ className={
 }
 ```
 
-That's why `hint` only ever renders outside chips — `{suggestion.hint &&
-!isChip ? … : null}` — a chip is one line by design, a card has room for a
-second. Swapping `variant` never remounts a different tree; it just changes
+That's why `hint` only renders outside chips (`{suggestion.hint &&
+!isChip ? … : null}`): a chip is one line by design, a card has room for a
+second. Swapping `variant` never remounts a different tree; it only changes
 which layout classes and which of these two branches apply.
 
 </LearnChapter>
@@ -63,14 +63,14 @@ which layout classes and which of these two branches apply.
 Every suggestion animates in with the same spring. The only thing that
 changes per item is `delay`:
 
-`320/32/0.9` is a slightly underdamped spring — the same feel used across
-GodUI's other enter animations (badges, command palette rows) — so each
+`320/32/0.9` is a slightly underdamped spring, the same one used in
+GodUI's other enter animations (badges, command palette rows), so each
 card overshoots its resting position by a hair before settling instead of
-easing to a flat stop. `index * 0.05` is the entire stagger: no
-`staggerChildren`, no parent `motion.div` orchestrating children, just each
-button computing its own 50ms offset from its position in the array.
+easing to a flat stop. `index * 0.05` is the entire stagger. There is no
+`staggerChildren` and no parent `motion.div` orchestrating children; each
+button computes its own 50ms offset from its position in the array.
 Reduced motion collapses `delay` to `0` and swaps `initial` to `false` in
-the same expression — the spring is gone, the layout isn't.
+the same expression. The spring is gone and the layout stays.
 
 </LearnChapter>
 
@@ -87,20 +87,20 @@ the same expression — the spring is gone, the layout isn't.
 "ml-auto size-4 -translate-x-1 opacity-0 transition-[transform,opacity] group-hover:translate-x-0 group-hover:opacity-100"`}
 >
 
-Hover is a second, independent motion system — plain Tailwind, not Framer —
-and it only ever touches `transform` and `opacity`:
+Hover is a second, independent motion system in plain Tailwind (not Framer),
+and it only touches `transform` and `opacity`:
 
-`-translate-y-px` and `-translate-y-0.5` lift the item on the compositor —
-no `top`, no `margin`, nothing the browser has to re-lay-out. The arrow
+`-translate-y-px` and `-translate-y-0.5` lift the item on the compositor,
+with no `top`, no `margin`, nothing the browser has to re-lay-out. The arrow
 follows the same rule from the opposite direction: it's rendered at
 `opacity-0 -translate-x-1` on every card from the start, so revealing it on
 hover is a transform + opacity flip, not a mount. Its box never changes
 size, which is why neighboring text never reflows when the arrow shows up.
-Cards additionally swap `shadow-2xs` for `shadow-md` on hover — the one
-concession to a paint property, and safe here because it's gated behind a
+Cards also swap `shadow-2xs` for `shadow-md` on hover. That is the one
+paint property, and it is safe here because it's gated behind a
 single hovered element rather than something looping on scroll.
 
-Setting `loading` doesn't hide the component behind a spinner — it renders
+Setting `loading` doesn't hide the component behind a spinner. It renders
 the same container with skeleton placeholders sized per variant:
 
 ```tsx
@@ -116,9 +116,9 @@ the same container with skeleton placeholders sized per variant:
 </div>
 ```
 
-Because it's the exact same `CONTAINER_BY_VARIANT[variant]` wrapper, the
+Because it's the same `CONTAINER_BY_VARIANT[variant]` wrapper, the
 skeleton grid occupies the same footprint the real suggestions will once
-they arrive — swapping `loading` off never causes a layout jump.
+they arrive, so swapping `loading` off never causes a layout jump.
 `motion-safe:animate-pulse` keeps the shimmer itself opt-out under reduced
 motion, same as the entrance spring above.
 
@@ -128,8 +128,7 @@ motion, same as the entrance spring above.
 
 One array of suggestions, one `variant` string picking a wrapper class, one
 spring staggered by index, and a hover system that only ever moves
-`transform`/`opacity`. Four small decisions, and an empty composer stops
-feeling empty.
+`transform`/`opacity`.
 
 </LearnChapter>
 
@@ -137,11 +136,11 @@ feeling empty.
 
 ## Reduced motion and the keyboard
 
-`useReducedMotion()` gates the stagger — `initial={reduce ? false : {...}}`
-and `delay: reduce ? 0 : index * 0.05` — so a reduced-motion user gets the
+`useReducedMotion()` gates the stagger with `initial={reduce ? false : {...}}`
+and `delay: reduce ? 0 : index * 0.05`, so a reduced-motion user gets the
 finished layout on the first frame instead of a slowed-down or stripped
 version of the same animation. Nothing about focus or selection depends on
-it, because that logic lives in a completely separate path:
+it, because that logic lives in a separate path:
 
 ```tsx
 const itemsRef = React.useRef<(HTMLButtonElement | null)[]>([]);
@@ -165,7 +164,7 @@ onKeyDown={(e) => {
 ```
 
 `focusItem` wraps with a modulo, so arrow keys cycle the row instead of
-running off either end — and it works identically across `grid`, `chips`,
+running off either end. It works identically across `grid`, `chips`,
 and `list`, because it walks `itemsRef` (population order), not the DOM's
 2D layout. `ArrowDown`/`ArrowRight` both move forward and
 `ArrowUp`/`ArrowLeft` both move back, so the same two key pairs make sense

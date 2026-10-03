@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "scroll-text-reveal",
   "title": "Scroll Text Reveal",
-  "description": "Kinetic typography that scrubs each word from dim to sharp as the paragraph scrolls through view — reverses cleanly on scroll-up.",
+  "description": "Kinetic typography that scrubs each word from dim to sharp as the paragraph scrolls through view, and reverses on scroll-up.",
   "dependencies": ["framer-motion"],
   "registryDependencies": ["@godui/godui-theme"],
   "files": [

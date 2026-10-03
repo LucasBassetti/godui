@@ -46,7 +46,7 @@ export function SegmentedControlResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — click between options
+          the real component: click between options
         </span>
       </div>
       <div className="flex min-h-[220px] flex-col items-center justify-center gap-4 p-10">

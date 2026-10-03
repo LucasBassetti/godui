@@ -66,7 +66,7 @@ const LEGEND: {
 }[] = [
   {
     name: "Pointer",
-    desc: "pan live — active ← offset.x / spacing",
+    desc: "pan live: active ← offset.x / spacing",
     kind: "pointer",
   },
   {

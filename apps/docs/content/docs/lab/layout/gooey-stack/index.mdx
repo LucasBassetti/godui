@@ -12,7 +12,7 @@ import { GooeyWalletDemo } from "@/components/demos/gooey-wallet-demo";
 
 <Workbench>
 
-Stack content and let the surfaces behave like liquid. As the gap between cards shrinks their rounded surfaces bulge and fuse through a gooey metaball bridge; push it negative and the upper cards frost over — heavy blur, fading opacity — and dissolve into the anchor. Toggle `collapsed`, or drive `gap` from a slider for the full continuous sweep.
+Stack content and the card surfaces behave like liquid. As the gap between cards shrinks, their rounded surfaces bulge and fuse through a gooey metaball bridge. Push the gap negative and the upper cards frost over (heavy blur, fading opacity) and dissolve into the anchor. Toggle `collapsed`, or drive `gap` from a slider for the full continuous sweep.
 
 <Example
   label="Default"
@@ -45,7 +45,7 @@ export function ConnectPrompt() {
 
 ## Examples
 
-Stacks with **more than two** children collapse rank by rank — the ones furthest
+Stacks with **more than two** children collapse rank by rank. The ones furthest
 from the anchor recede and frost the most, with a staggered spring. A notification
 tray folds its history into the newest alert:
 
@@ -70,9 +70,9 @@ export function NotificationTray() {
   <GooeyNotificationsDemo />
 </Example>
 
-The same shape reads as a wallet — three cards fanned out, folding into a stack.
-Keep children on the fused `bg-card` surface and let color come from small accents,
-so the metaball bridge stays seamless:
+The same shape works as a wallet: three cards fanned out, folding into a stack.
+Keep children on the fused `bg-card` surface and take color from small accents,
+so the metaball bridge shows no seams:
 
 <Example
   label="Wallet"
@@ -99,8 +99,8 @@ export function Wallet() {
 
 <ComponentInstall registry="lab" componentName="GooeyStack" />
 
-Two layers do the work. GooeyStack draws a **surface layer** — one `bg-card`
-rounded rect per child — and runs it through an SVG goo filter (`feGaussianBlur`
+Two layers do the work. GooeyStack draws a **surface layer** (one `bg-card`
+rounded rect per child) and runs it through an SVG goo filter (`feGaussianBlur`
 → `feColorMatrix` threshold), so surfaces that come close bulge and fuse into one
 continuous shape. Your children render **sharp and unfiltered** on top, so text
 and controls stay crisp while only the surfaces merge and the receding ones frost.
@@ -111,8 +111,8 @@ and controls stay crisp while only the surfaces merge and the receding ones fros
 import { GooeyStack } from "@/components/godui/gooey-stack";
 ```
 
-Children are the **inner content** of each card — GooeyStack supplies the fused
-`bg-card` surface, so give children padding and content, not their own background:
+Children are the **inner content** of each card. GooeyStack supplies the fused
+`bg-card` surface, so give children padding and content but no background of their own:
 
 ```tsx
 <GooeyStack collapsed={collapsed}>
@@ -121,13 +121,13 @@ Children are the **inner content** of each card — GooeyStack supplies the fuse
 </GooeyStack>
 ```
 
-The **last** child is the anchor — it stays pinned while the others slide down and
+The **last** child is the anchor. It stays pinned while the others slide down and
 merge into it.
 
 ### Driving it with a slider
 
-Set `gap` (px) directly for the full continuous effect — positive values space the
-cards out, small values neck them together, negative values overlap and frost:
+Set `gap` (px) directly for the full continuous effect. Positive values space the
+cards out, small values neck them together, and negative values overlap and frost them:
 
 ```tsx
 <GooeyStack gap={gap}>{/* content */}</GooeyStack>
@@ -147,7 +147,7 @@ how deep the `collapsed` toggle merges.
 
 ## Accessibility
 
-The stack is presentational — drive `collapsed` or `gap` from your own control (a
+The stack is presentational. Drive `collapsed` or `gap` from your own control (a
 button, switch, slider, or route). The surface layer is `aria-hidden`, so only your
 content is read. When `prefers-reduced-motion` is set, the goo filter is dropped
 and the cards snap between states instead of springing.
@@ -156,12 +156,12 @@ and the cards snap between states instead of springing.
 
 | Prop           | Type              | Default | Description                                                             |
 | -------------- | ----------------- | ------- | ----------------------------------------------------------------------- |
-| `children`     | `React.ReactNode` | —       | Inner content of each card (transparent). The last child is the anchor. |
-| `gap`          | `number`          | —       | Controlled gap (px); negative overlaps. Overrides `collapsed`.          |
+| `children`     | `React.ReactNode` | none       | Inner content of each card (transparent). The last child is the anchor. |
+| `gap`          | `number`          | none       | Controlled gap (px); negative overlaps. Overrides `collapsed`.          |
 | `collapsed`    | `boolean`         | `false` | Convenience toggle between `expandedGap` and `collapsedGap`.            |
 | `expandedGap`  | `number`          | `18`    | Resting gap (px) when expanded.                                         |
 | `collapsedGap` | `number`          | `-48`   | Gap (px) the `collapsed` toggle merges to.                             |
-| `gooeyness`    | `number`          | `10`    | Blur radius feeding the goo filter — larger fuses from further.        |
+| `gooeyness`    | `number`          | `10`    | Blur radius feeding the goo filter; larger fuses from further.         |
 | `radius`       | `number`          | `28`    | Corner radius (px) of the fused surfaces.                               |
 
 `GooeyStack` also forwards every standard `<div>` attribute to the root element.

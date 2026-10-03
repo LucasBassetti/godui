@@ -1,6 +1,6 @@
 ---
 title: Scroll Progress
-description: A spring-smoothed reading indicator — a pinned top bar or a fading back-to-top ring.
+description: A spring-smoothed reading indicator, shown as a pinned top bar or a fading back-to-top ring.
 workbench: true
 ---
 
@@ -61,8 +61,8 @@ const ref = useRef<HTMLElement>(null);
 | Prop | Type | Default | Description |
 | ---- | ---- | ------- | ----------- |
 | `variant` | `"bar" \| "circle"` | `"bar"` | Progress style. |
-| `container` | `RefObject<HTMLElement>` | — | Track a scrollable element and pin within it. |
-| `target` | `RefObject<HTMLElement>` | — | Track a target's progress through the viewport. |
+| `container` | `RefObject<HTMLElement>` | none | Track a scrollable element and pin within it. |
+| `target` | `RefObject<HTMLElement>` | none | Track a target's progress through the viewport. |
 | `height` | `number` | `3` | Bar thickness in px. |
 | `size` | `number` | `44` | Ring diameter in px. |
 | `showAfter` | `number` | `0.05` | Reveal the ring past this fraction. |

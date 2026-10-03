@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { radio, range, text, toggle } from "../playground/argtypes";
 
 const COPY =
-  "Great interfaces read like a sentence — one idea resolving into the next. As you scroll, each word settles into focus, pacing attention exactly where it belongs.";
+  "Great interfaces read like a sentence, one idea resolving into the next. As you scroll, each word settles into focus, pacing attention exactly where it belongs.";
 
 const meta = {
   title: "Lab/Text/Scroll Text Reveal",

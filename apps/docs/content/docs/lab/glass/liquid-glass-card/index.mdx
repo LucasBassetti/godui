@@ -46,7 +46,7 @@ fringe color at the edges (chromatic aberration). A radial highlight tracks the
 pointer and fades out when it leaves.
 
 True refraction requires `backdrop-filter: url()` (Chrome and Edge). In browsers
-without it the card gracefully falls back to a plain frosted blur, so it never
+without it the card falls back to a plain frosted blur, so it never
 renders as a broken transparent box.
 
 For a circular lens that follows the cursor over arbitrary content, see
@@ -58,8 +58,8 @@ For a circular lens that follows the cursor over arbitrary content, see
 import { LiquidGlassCard } from "@/components/godui/liquid-glass-card";
 ```
 
-Place it over any colorful or detailed backdrop — the more there is behind it,
-the more the refraction reads:
+Place it over a colorful or detailed backdrop. The more there is behind it, the
+more visible the refraction:
 
 ```tsx
 <div className="relative">
@@ -88,11 +88,11 @@ for a subtle pane of frost.
 | ------------ | -------- | ----------------------- | ----------------------------------------------------------- |
 | `radius`     | `number` | `28`                    | Corner radius in px.                                        |
 | `blur`       | `number` | `2`                     | Frost (backdrop blur) in px.                                |
-| `strength`   | `number` | `60`                    | Refraction displacement scale — how hard the edges bend.    |
-| `dispersion` | `number` | `0.15`                  | Chromatic aberration, `0`–`1`. Splits the R/G/B refraction. |
+| `strength`   | `number` | `60`                    | Refraction displacement scale: how hard the edges bend.     |
+| `dispersion` | `number` | `0.15`                  | Chromatic aberration, `0` to `1`. Splits the R/G/B refraction. |
 | `saturation` | `number` | `1.6`                   | Backdrop saturation multiplier.                             |
 | `tint`       | `string` | `rgba(255,255,255,.08)` | Glass tint color.                                           |
-| `sheen`      | `number` | `0.5`                   | Specular highlight intensity, `0`–`1`.                      |
+| `sheen`      | `number` | `0.5`                   | Specular highlight intensity, `0` to `1`.                   |
 
 `LiquidGlassCard` also forwards every standard `<div>` attribute (`className`,
 `style`, `id`, …) to the root element.

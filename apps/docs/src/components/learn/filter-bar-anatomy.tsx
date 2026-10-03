@@ -51,7 +51,7 @@ const CSS = `
 const LEGEND: { name: string; desc: string; swatch: string }[] = [
   {
     name: "Empty facet",
-    desc: "dashed ring + plus — click to open its options",
+    desc: "dashed ring + plus; click to open its options",
     swatch: "border border-dashed border-border bg-transparent",
   },
   {

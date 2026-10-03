@@ -73,7 +73,7 @@ export function ProgressFoldResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — click the left one
+          the real component: click the left one
         </span>
       </div>
       {demo}

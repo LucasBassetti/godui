@@ -22,7 +22,7 @@ const CSS = `
 const LEGEND = [
   {
     name: "Chrome",
-    desc: "showChrome — traffic lights + optional title",
+    desc: "showChrome: traffic lights + optional title",
     swatch:
       "size-2.5 rounded-full bg-red-500/80 ring-1 ring-fd-border ring-inset",
   },

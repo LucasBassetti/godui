@@ -23,7 +23,7 @@ export function FluidCursorResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — move inside the card
+          the real component: move inside the card
         </span>
       </div>
       <div className="flex min-h-[320px] items-center justify-center p-6 md:p-10">

@@ -56,7 +56,7 @@ const components: { title: string; href: string; description: string }[] = [
     title: "Tabs",
     href: "/docs/components/tabs",
     description:
-      "A set of layered sections of content—known as tab panels—that are displayed one at a time.",
+      "A set of layered sections of content (known as tab panels) that are displayed one at a time.",
   },
   {
     title: "Tooltip",
@@ -217,7 +217,7 @@ const components: { title: string; href: string; description: string }[] = [
     title: "Tabs",
     href: "/docs/components/tabs",
     description:
-      "A set of layered sections of content—known as tab panels—that are displayed one at a time.",
+      "A set of layered sections of content (known as tab panels) that are displayed one at a time.",
   },
   {
     title: "Tooltip",
@@ -348,8 +348,8 @@ function ListItem({
 match shadcn/ui new-york-v4, so existing imports keep working. It also
 installs `godui-motion` (easings, keyframes, the FLIP hook) into your project.
 
-One difference rides along. Radix currently drops the exit of viewport
-content: the content you leave is removed at once, so shadcn's slide-out
+GodUI also works around a Radix bug. Radix currently drops the exit of
+viewport content: the content you leave is removed at once, so shadcn's slide-out
 never plays. GodUI's `NavigationMenuViewport` keeps an inert copy of that
 content (no ids, `aria-hidden`, no pointer events) in place until its exit
 animation ends, then removes it. Once Radix keeps the content mounted through
@@ -400,11 +400,11 @@ import {
 | Switch item: new content | `godui-slide-in-from-right` / `-left` by direction | `opacity`, `translate` 3rem → 0 | `ease-spring-smooth` | 380ms |
 | Switch item: old content | `godui-slide-out-to-left` / `-right` by direction | `opacity`, `translate` 0 → 3rem | `ease-out-expo` | 260ms |
 | Viewport position on switch | glides under the new trigger (centered, clamped inside the menu); first open lands in place | `translate` | `ease-spring-snappy` | 260ms |
-| Viewport size on switch | snaps | — | — | — |
+| Viewport size on switch | snaps | none | none | none |
 | Without viewport: open / close | `godui-fade-scale-in` / `-out`, top origin | `opacity`, `scale` | `ease-spring-snappy` / `ease-out-expo` | 260ms / 150ms |
 | Chevron | `transition` | `transform` (`rotate` 0 → 180deg) | `ease-spring-snappy` | 260ms |
 | Indicator | `transition` (position), `godui-fade-in` / `-out` (visibility) | `transform`, `opacity` | `ease-spring-snappy` | 260ms |
-| Trigger and link highlight | snaps | — | — | — |
+| Trigger and link highlight | snaps | none | none | none |
 
 Radix opens a trigger on hover and toggles it on click, so resting on a trigger
 and then clicking it closed the menu the hover had just opened. GodUI keeps a

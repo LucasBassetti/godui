@@ -26,7 +26,7 @@ export function LiquidMetaballsResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — move to merge
+          the real component: move to merge
         </span>
       </div>
       {demo}

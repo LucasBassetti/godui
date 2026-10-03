@@ -32,7 +32,7 @@ export const MOTION_SCORE_PANELS: Record<string, MotionScorePanelEntry> = {
       {
         prop: "boxshadow",
         label: "box-shadow",
-        note: "node status glow shares its transition with border/background paint — isolating it wins nothing",
+        note: "node status glow shares its transition with border/background paint, so isolating it wins nothing",
       },
       {
         prop: "translate",
@@ -632,7 +632,7 @@ export const MOTION_SCORE_PANELS: Record<string, MotionScorePanelEntry> = {
       {
         prop: "flexgrow",
         label: "flex-grow",
-        note: "panels share one flex track; siblings must reflow — no compositor equivalent",
+        note: "panels share one flex track and siblings must reflow; there is no compositor equivalent",
       },
       {
         prop: "translate",
@@ -718,7 +718,7 @@ export const MOTION_SCORE_PANELS: Record<string, MotionScorePanelEntry> = {
       {
         prop: "scale",
         label: "scale",
-        note: "the squash-and-stretch deform — the only animated property, composited on the GPU",
+        note: "the squash-and-stretch deform, the only animated property (composited on the GPU)",
       },
     ],
   },
@@ -835,7 +835,7 @@ export const MOTION_SCORE_PANELS: Record<string, MotionScorePanelEntry> = {
       {
         prop: "translate",
         label: "translate",
-        note: "Push physics — shadow + front face lift and dip",
+        note: "Push physics: shadow + front face lift and dip",
       },
       {
         prop: "filter",
@@ -890,7 +890,7 @@ export const MOTION_SCORE_PANELS: Record<string, MotionScorePanelEntry> = {
       {
         prop: "transform",
         label: "x / y",
-        note: "Magnetic pull — spring-driven translate toward the pointer",
+        note: "Magnetic pull: spring-driven translate toward the pointer",
       },
       {
         prop: "scale",
@@ -1431,7 +1431,7 @@ export const MOTION_SCORE_PANELS: Record<string, MotionScorePanelEntry> = {
       {
         prop: "transform",
         label: "transform: rotateX",
-        note: "The flip leaves hinge on the X axis — top falls, bottom rises",
+        note: "The flip leaves hinge on the X axis: the top falls, the bottom rises",
       },
     ],
   },

@@ -75,7 +75,7 @@ export function BreadcrumbsResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — hover a crumb, or open the ellipsis below
+          the real component: hover a crumb, or open the ellipsis below
         </span>
       </div>
       <div className="flex min-h-[260px] flex-col items-center justify-center gap-8 p-10">

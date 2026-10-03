@@ -1,6 +1,6 @@
 ---
 title: Anatomy of the Filter Bar
-description: How a row of facet pills stays a set of plain buttons and a popover — with a compositor-only summary slide-in, and a spring-in clear button.
+description: How a row of facet pills stays a set of plain buttons and a popover, with a compositor-only summary slide-in and a spring-in clear button.
 learnPlayer: true
 ---
 
@@ -19,19 +19,19 @@ learnPlayer: true
 </div>`}
 >
 
-A filter bar reads like a form — checkboxes, a submit, a results count — but
+A filter bar reads like a form (checkboxes, a submit, a results count), but
 there's no `<select multiple>` and no schema anywhere in it. `FilterBar`
 takes a `facets` array and renders each one as a pill: a button that opens a
 popover of options, and, once you've picked something, an inline summary of
-what's selected. That's the entire vocabulary.
+what's selected.
 
-Every facet pill is the same markup wearing one of two looks. Empty, it's a
-dashed ring with a plus glyph and a muted label — an obvious "add a filter"
-affordance. Active, the ring solidifies, a summary of the selection appears
+Every facet pill is the same markup in one of two looks. Empty, it's a
+dashed ring with a plus glyph and a muted label, which reads as "add a filter".
+Active, the ring turns solid, a summary of the selection appears
 inline, and a clear button shows up on its trailing edge:
 
 `summarize()` collapses a multi-select down to `"<first label> +<n-1>"`, so
-the pill never grows unbounded — pick five options in one facet and the
+the pill never grows unbounded. Pick five options in one facet and the
 label still reads as one short phrase.
 
 </LearnChapter>
@@ -50,18 +50,18 @@ label still reads as one short phrase.
 </motion.span>`}
 >
 
-The pill's width still changes when a selection appears — content is
-content — but that reflow is a single layout pass, not a tween. The motion
-that sells the change stays on the compositor: the plus scales out, the
-summary slides in on `x` + opacity, and the clear button pops on scale, all
-on the same spring (`stiffness: 520 / damping: 32`):
+The pill's width still changes when a selection appears, but that reflow is
+a single layout pass with no tween. The motion that shows the change stays on
+the compositor: the plus scales out, the summary slides in on `x` + opacity,
+and the clear button pops on scale, all on the same spring
+(`stiffness: 520 / damping: 32`):
 
 There's no `width: 0 → "auto"` and no Framer `layout` on the row. Animating
 width to fit unknown text reflows every sibling every frame; snapping the
 pill and animating only presence reads cleaner and stays GPU-composited.
 
-Clicking a pill opens a `role="listbox"` popover — spring-scaled in from
-`0.96, y: -4`, same spring again — with an optional search input and a list
+Clicking a pill opens a `role="listbox"` popover (spring-scaled in from
+`0.96, y: -4` on the same spring) with an optional search input and a list
 of checkbox-style options. Toggling one doesn't close the popover; multi-select
 facets stay open so you can keep picking:
 
@@ -76,18 +76,18 @@ const toggleOption = (facetId: string, optValue: string) => {
 };
 ```
 
-Deleting the key entirely when a facet's list empties out — rather than
-leaving `{ status: [] }` around — is what makes `activeCount` and "Clear all"
-visibility a simple `Object.values(value).length` check downstream, with no
-empty-array edge case to filter out first.
+When a facet's list empties, the key is deleted instead of left as
+`{ status: [] }`. That makes `activeCount` and "Clear all" visibility a
+simple `Object.values(value).length` check downstream, with no empty-array
+edge case to filter out first.
 
 </LearnChapter>
 
 <LearnChapter label="The result" scene={<FilterBarResult />} isResult>
 
-A `facets` array in, a `FilterValue` record out — every pill is a button and
-a popover, the summary slides in on the compositor, and "Clear all" is
-nothing more than a count check away from disappearing again.
+A `facets` array goes in and a `FilterValue` record comes out. Every pill is
+a button and a popover, the summary slides in on the compositor, and a count
+check decides whether "Clear all" shows.
 
 </LearnChapter>
 
@@ -97,7 +97,7 @@ nothing more than a count check away from disappearing again.
 
 Each pill button carries `aria-haspopup="listbox"` and `aria-expanded`; each
 option row is `role="option"` with `aria-selected` mirroring the checkbox
-fill. Two listeners — `mousedown` outside and `keydown` for `Escape` — close
+fill. Two listeners (`mousedown` outside and `keydown` for `Escape`) close
 whichever popover is open, and both are bound only while `open` is non-null:
 
 ```tsx
@@ -116,8 +116,8 @@ React.useEffect(() => {
 }, [open]);
 ```
 
-`useReducedMotion` flattens every spring down to opacity-only — the summary
-still appears, it just doesn't slide or scale into place.
+`useReducedMotion` flattens every spring down to opacity only. The summary
+still appears but doesn't slide or scale into place.
 
 ## Motion Score
 

@@ -61,7 +61,7 @@ export function GravityLifecycle() {
                 Running
               </dt>
               <dd className="text-[12px] text-fd-muted-foreground">
-                intersecting and tab visible — runner + sync loop active
+                intersecting and tab visible: runner + sync loop active
               </dd>
             </div>
             <div className="flex flex-col gap-1.5">
@@ -70,7 +70,7 @@ export function GravityLifecycle() {
                 Paused
               </dt>
               <dd className="text-[12px] text-fd-muted-foreground">
-                off-screen or tab hidden — both loops stopped
+                off-screen or tab hidden: both loops stopped
               </dd>
             </div>
           </dl>

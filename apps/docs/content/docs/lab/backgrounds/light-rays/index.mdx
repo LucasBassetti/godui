@@ -9,8 +9,7 @@ import { LightRays } from "@godui/lab";
 <Workbench>
 
 A soft fan of volumetric light rays beams down from above, slowly sweeping and
-breathing in intensity, finished with a layer of film grain. Cinematic and warm —
-the spotlight-from-the-heavens hero. Pure CSS. Drop it as the first child of a
+breathing in intensity, finished with a layer of film grain. Pure CSS. Drop it as the first child of a
 `relative overflow-hidden` container.
 
 <Example
@@ -89,8 +88,8 @@ export function LightRaysWarm() {
 | `color` | `string` | `--color-primary` | Ray color. |
 | `speed` | `number` | `1` | Sweep speed multiplier. |
 | `angle` | `number` | `0` | Base angle (deg) the fan points from. |
-| `intensity` | `number` | `0.6` | Overall ray opacity, `0`–`1`. |
-| `grain` | `number` | `0.05` | Film-grain amount, `0`–`1` (`0` disables it). |
+| `intensity` | `number` | `0.6` | Overall ray opacity, `0` to `1`. |
+| `grain` | `number` | `0.05` | Film-grain amount, `0` to `1` (`0` disables it). |
 
 Also accepts standard `div` attributes (e.g. `className`, `style`).
 

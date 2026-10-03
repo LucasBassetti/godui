@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "liquid-image",
   "title": "Liquid Image",
-  "description": "A premium hover effect that ripples and distorts an image like liquid, intensifying with cursor speed.",
+  "description": "A hover effect that ripples and distorts an image like liquid, intensifying with cursor speed.",
   "dependencies": ["framer-motion"],
   "registryDependencies": ["@godui/godui-theme"],
   "files": [

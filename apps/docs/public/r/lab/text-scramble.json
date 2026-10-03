@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "text-scramble",
   "title": "Text Scramble",
-  "description": "Characters cycle through random glyphs and resolve into the target text — a decrypt / matrix reveal.",
+  "description": "Characters cycle through random glyphs and resolve into the target text, like a decrypt / matrix reveal.",
   "dependencies": ["framer-motion"],
   "registryDependencies": ["@godui/godui-theme"],
   "files": [

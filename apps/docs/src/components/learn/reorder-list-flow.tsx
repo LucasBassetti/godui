@@ -81,7 +81,7 @@ const LEGEND: {
   },
   {
     name: "Neighbor",
-    desc: "springs into the vacated slot — same REORDER_SPRING",
+    desc: "springs into the vacated slot on the same REORDER_SPRING",
     kind: "item",
   },
 ];

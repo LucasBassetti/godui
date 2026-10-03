@@ -29,8 +29,7 @@ export function ScrollTimelineResult() {
             title: "One hundred components",
             content: (
               <p className="text-sm text-muted-foreground md:text-base">
-                Every surface, polished — you&apos;re looking at the rail right
-                now.
+                You&apos;re looking at the rail right now.
               </p>
             ),
           },
@@ -51,7 +50,7 @@ export function ScrollTimelineResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — scroll the page through it
+          the real component: scroll the page through it
         </span>
       </div>
       <div className="px-4 py-10 md:px-8">{demo}</div>

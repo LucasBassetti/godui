@@ -114,12 +114,12 @@ import { MagneticButton } from "@/components/godui/magnetic-button";
 <MagneticButton>Get started</MagneticButton>
 ```
 
-`strength` controls how far the button follows the cursor (0–1); `range` adds
+`strength` controls how far the button follows the cursor (0 to 1); `range` adds
 invisible padding so the pull engages before the pointer reaches the edge.
 
 By default the label drifts a little further than the shell for parallax. Set
-`staticLabel` so the label rides with the button and stays centered — the whole
-button moves as one piece, with no drift.
+`staticLabel` so the label rides with the button and stays centered. The whole
+button then moves as one piece, with no drift.
 
 ## Props
 
@@ -127,7 +127,7 @@ button moves as one piece, with no drift.
 | ------------- | ----------------------------------------- | ----------- | ---------------------------------------------------------------- |
 | `variant`     | `"default" \| "secondary" \| "outline"`   | `"default"` | Visual style.                                                    |
 | `size`        | `"sm" \| "md" \| "lg"`                     | `"md"`      | Padding and text size.                                           |
-| `strength`    | `number`                                  | `0.4`       | How strongly the button follows the cursor (0–1).                |
+| `strength`    | `number`                                  | `0.4`       | How strongly the button follows the cursor (0 to 1).                |
 | `range`       | `number`                                  | `0`         | Invisible sensor padding in px around the button.                |
 | `staticLabel` | `boolean`                                 | `false`     | Keep the label centered in the button (rides with the shell, no drift). |
 

@@ -60,7 +60,7 @@ export function PromptSuggestionsResult() {
           Result
         </span>
         <span className="font-mono text-fd-muted-foreground text-xs">
-          the real component — hover, arrow-key, pick one
+          the real component: hover, arrow-key, pick one
         </span>
       </div>
       <div className="flex min-h-[280px] flex-col items-center justify-center gap-5 p-10">

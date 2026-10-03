@@ -12,9 +12,9 @@ import {
 
 <Workbench>
 
-The airport board, in the browser. `SplitFlapDisplay` renders each character as a
-mechanical flap that spins through the charset — the old top leaf hinges away, the
-new bottom leaf rises into place — until it lands on your value. Columns start on a
+An airport departure board in the browser. `SplitFlapDisplay` renders each character as a
+mechanical flap that spins through the charset (the old top leaf hinges away, the
+new bottom leaf rises into place) until it lands on your value. Columns start on a
 staggered wave, so the whole board resolves like a real Solari. It reveals from
 blanks the first time it scrolls into view, then re-flips whenever `value` changes.
 
@@ -77,7 +77,7 @@ export function Clock() {
 import { SplitFlapDisplay } from "@/components/godui/split-flap-display";
 ```
 
-Point it at a value — it reveals from blank flaps on scroll-in, then flips to any
+Give it a value. It reveals from blank flaps on scroll-in, then flips to any
 new `value`:
 
 ```tsx
@@ -91,10 +91,10 @@ reflows the board:
 <SplitFlapDisplay value="GATE 22" length={12} align="left" />
 ```
 
-Restrict the flap sequence to just the glyphs you need, and pass an **array** to
+Restrict the flap sequence to the glyphs you need, and pass an **array** to
 give each column its own reel by position. A clock's seconds-tens digit only
-cycles `0–5`, so `5 → 0` wraps in a single flip instead of climbing `6 7 8 9`;
-the `:` columns get a reel of just `":"` so they never spin:
+cycles `0` to `5`, so `5 → 0` wraps in a single flip instead of climbing `6 7 8 9`;
+the `:` columns get a reel of only `":"` so they never spin:
 
 ```tsx
 const CLOCK = ["012", "0123456789", ":", "012345", "0123456789", ":", "012345", "0123456789"];
@@ -106,17 +106,17 @@ const CLOCK = ["012", "0123456789", ":", "012345", "0123456789", ":", "012345", 
 
 | Prop       | Type                              | Default      | Description                                                              |
 | ---------- | --------------------------------- | ------------ | ------------------------------------------------------------------------ |
-| `value`    | `string`                          | —            | The text the board settles on. Uppercased against `charset`.             |
-| `length`   | `number`                          | value length | Fixed flap count — finite integers clamp to `0–100`; non-finite or fractional values fall back to the value length, also capped at 100. |
+| `value`    | `string`                          | none            | The text the board settles on. Uppercased against `charset`.             |
+| `length`   | `number`                          | value length | Fixed flap count. Finite integers clamp to `0` to `100`; non-finite or fractional values fall back to the value length, also capped at 100. |
 | `align`    | `"left" \| "center" \| "right"`   | `"left"`     | How the value sits inside a wider `length`.                              |
 | `size`     | `"sm" \| "md" \| "lg"`            | `"md"`       | Flap size preset.                                                        |
-| `charset`  | `string \| string[]`              | A–Z 0–9 …    | Glyphs the flaps rotate through. An array gives each column its own reel by position. Leading space is the blank flap. |
-| `stagger`  | `number`                          | `0.06`       | Seconds each successive column waits before it starts — the wave.        |
+| `charset`  | `string \| string[]`              | A to Z, 0 to 9, … | Glyphs the flaps rotate through. An array gives each column its own reel by position. Leading space is the blank flap. |
+| `stagger`  | `number`                          | `0.06`       | Seconds each successive column waits before it starts (the wave).        |
 | `maxFlaps` | `number`                          | `12`         | Cap on how many flips one column spins; finite non-negative values round down, while negative or non-finite values use `12`. |
 
 `SplitFlapDisplay` forwards every standard `<div>` attribute and exposes the
 current `value` as an `aria-label`. Motion is compositor-only (`rotateX`) and
-respects `prefers-reduced-motion` — reduced-motion viewers get the settled value
+respects `prefers-reduced-motion`: reduced-motion viewers get the settled value
 with no flip.
 
 </Workbench>

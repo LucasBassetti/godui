@@ -28,8 +28,7 @@ const hidden = reduceMotion
 
 `ScrollReveal` waits until 30% of its node is on screen, then springs from
 a directional offset (plus optional blur) to rest. Optionally, scroll
-velocity skews the plate on the Y axis for a fluid, reactive feel —
-disabled entirely under reduced motion.
+velocity skews the plate on the Y axis. Reduced motion turns the skew off.
 
 `OFFSET` maps each direction to `{ x, y }` multipliers. Hidden state is
 `offset * distance` (default 40px) with `opacity: 0` and, when `blur` is
@@ -83,14 +82,14 @@ style={velocitySkew && !reduceMotion ? { skewY: skew, ...style } : style}`}
 When `velocitySkew` is on, `useVelocity(scrollY)` feeds the same spring
 config, then `useTransform` maps `[-2000, 0, 2000]` → `[6, 0, -6]` degrees
 of `skewY` (clamped). Fast scroll tips the plate; settling returns it to
-square. Reduced motion skips the skew entirely — only opacity animates.
+square. Reduced motion skips the skew, and only opacity animates.
 
 </LearnChapter>
 
 <LearnChapter label="The result" scene={<ScrollRevealResult />} isResult>
 
 One intersection threshold, one spring recipe, and an optional velocity
-skew — compositor transforms from the first pixel to the last.
+skew, all animated with compositor transforms.
 
 </LearnChapter>
 
@@ -98,8 +97,8 @@ skew — compositor transforms from the first pixel to the last.
 
 ## Reduced motion
 
-Under `prefers-reduced-motion`, hidden/visible collapse to opacity alone —
-no translate, no blur, no skew. The spring still runs, so the fade isn't
+Under `prefers-reduced-motion`, hidden/visible collapse to opacity alone,
+with no translate, blur, or skew. The spring still runs, so the fade isn't
 instant, but the plate never slides or warps.
 
 ## Motion Score

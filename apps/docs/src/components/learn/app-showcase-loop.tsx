@@ -29,7 +29,7 @@ const LEGEND: {
   },
   {
     name: "Seamless wrap",
-    desc: "translateY 0 → -50%, linear — one copy's height, no seam",
+    desc: "translateY 0 → -50%, linear: one copy's height, no seam",
     kind: "wrap",
   },
 ];

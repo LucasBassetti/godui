@@ -93,8 +93,8 @@ export function Footer() {
             {siteConfig.name}
           </Link>
           <p className="max-w-xs text-fd-muted-foreground text-sm leading-relaxed">
-            An open-source collection of beautifully crafted motion components
-            for modern React interfaces.
+            An open-source collection of animated React components, including
+            shadcn/ui drop-ins with GPU-only motion.
           </p>
           <div className="flex items-center gap-2">
             <a

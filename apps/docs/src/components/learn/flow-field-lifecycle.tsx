@@ -69,7 +69,7 @@ const CARDS = [
     id: "reduce",
     delay: "180ms",
     name: "Reduced",
-    desc: "~240 frozen steps, then a still frame — no ongoing rAF",
+    desc: "~240 frozen steps, then a still frame with no ongoing rAF",
     caption: "240 steps → freeze",
   },
 ] as const;

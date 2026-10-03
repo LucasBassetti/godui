@@ -1,6 +1,6 @@
 ---
 title: Anatomy of Scroll Stack
-description: How one scroll progress value turns plain sticky elements into a stack of cards that pin, bury, and scale — with no scroll-jacking and no per-card listeners.
+description: How one scroll progress value turns plain sticky elements into a stack of cards that pin, bury, and scale, with no scroll-jacking and no per-card listeners.
 learnPlayer: true
 ---
 
@@ -17,18 +17,18 @@ learnPlayer: true
 >
 
 `ScrollStack` doesn't move anything to make cards "stack." Every card is a
-plain `position: sticky` element pinned to the same offset; the stacking
-illusion comes entirely from one shared scroll progress value driving each
+plain `position: sticky` element pinned to the same offset. The stacking
+illusion comes from one shared scroll progress value driving each
 card's own scale, brightness, and blur as it gets buried.
 
-Every card sits inside its own track — `h-screen` when the stack tracks the
-page, or `h-full` when it's self-contained — and pins to the same `top:
+Every card sits inside its own track (`h-screen` when the stack tracks the
+page, or `h-full` when it's self-contained) and pins to the same `top:
 pinTop` the moment its track reaches the top of the scroller. Because
 later cards render after earlier ones in the DOM, a later card's sticky
 box visually covers the one before it; the only thing keeping the buried
 card visible at all is a small `translateY` offset.
 
-`peek` (default `16`) is that offset — just enough of the buried card's
+`peek` (default `16`) is that offset: enough of the buried card's
 edge to read as depth without the stack looking like a random pile.
 
 </LearnChapter>
@@ -50,14 +50,14 @@ const filter = useTransform(progress, [0, segmentEnd, 1], [
 
 `depth` is how many cards end up stacked on top of a given one
 (`total - 1 - index`), and it's the only input to that card's `scale` and
-`filter`. Each card's own segment of the scroll range — `[index / total,
-(index + 1) / total]` — is where it's still "current"; past that, `scale`
+`filter`. Each card's own segment of the scroll range, `[index / total,
+(index + 1) / total]`, is where it's still "current". Past that, `scale`
 and `filter` ease from resting values toward the buried ones over the rest
 of the scroll:
 
 The `Math.max(baseScale, …)` clamp means a two-card stack never buries its
 back card past `baseScale` even though the formula alone would ask for
-more — depth stays readable instead of shrinking to a speck.
+more. Depth stays readable instead of shrinking to a speck.
 
 `ScrollStack` reads exactly one `useScroll` call, and which mode it uses
 flips on a single check:
@@ -72,10 +72,10 @@ const { scrollYProgress } = useScroll(
 ```
 
 Omit `height` and the stack tracks the **page** scroll across its own
-bounds — the right default for a full landing-page section, where the
+bounds. That is the right default for a full landing-page section, where the
 stack's total height is `total` viewports of scroll distance. Pass
-`height` and it becomes its own scroll viewport instead, useful anywhere
-you don't want to dedicate that much page scroll to it — inside a bounded
+`height` and it becomes its own scroll viewport instead. Use that anywhere
+you don't want to dedicate that much page scroll to it: inside a bounded
 panel, a modal, or (as below) a docs preview.
 
 </LearnChapter>
@@ -94,8 +94,8 @@ scroll.
 
 `useReducedMotion` short-circuits before any of the above runs. Under
 `prefers-reduced-motion`, `ScrollStack` skips `useScroll` entirely and
-renders the cards as a plain vertical list — no sticky positioning, no
-scale, no blur:
+renders the cards as a plain vertical list with no sticky positioning,
+scale, or blur:
 
 ```tsx
 if (reduce) {

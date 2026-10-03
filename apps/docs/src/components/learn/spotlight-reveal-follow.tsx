@@ -52,7 +52,7 @@ const LEGEND: {
   },
   {
     name: "Pinned",
-    desc: "click toggles — target freezes until unpin",
+    desc: "click toggles; the target freezes until unpin",
     kind: "pinned",
   },
 ];
